@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\ccF9PO6k.s 			page 1
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc7FUzj0.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,31 +27,119 @@ ARM GAS  C:\Users\VLED\AppData\Local\Temp\ccF9PO6k.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void)
-   2:Core/Src/main.c **** {
-  29              		.loc 1 2 1 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/main.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** int main(void)
+   4:Core/Src/main.c **** {
+  29              		.loc 1 4 1 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
   34              		@ link register save eliminated.
-  35              	.L2:
-   3:Core/Src/main.c ****     while(1){}
-  36              		.loc 1 3 5 view .LVU1
-  37              		.loc 1 3 14 view .LVU2
-  38              		.loc 1 3 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\ccF9PO6k.s 			page 2
+   5:Core/Src/main.c ****     // RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+   6:Core/Src/main.c ****     *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02;
+  35              		.loc 1 6 5 view .LVU1
+  36 0000 1B4A     		ldr	r2, .L3
+  37 0002 D2F83038 		ldr	r3, [r2, #2096]
+  38              		.loc 1 6 41 is_stmt 0 view .LVU2
+  39 0006 43F00203 		orr	r3, r3, #2
+  40 000a C2F83038 		str	r3, [r2, #2096]
+   7:Core/Src/main.c ****     
+   8:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER7_0);
+  41              		.loc 1 8 5 is_stmt 1 view .LVU3
+  42 000e 194B     		ldr	r3, .L3+4
+  43 0010 1A68     		ldr	r2, [r3]
+  44 0012 42F48042 		orr	r2, r2, #16384
+  45 0016 1A60     		str	r2, [r3]
+   9:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT7);
+  46              		.loc 1 9 5 view .LVU4
+  47 0018 5A68     		ldr	r2, [r3, #4]
+  48 001a 22F08002 		bic	r2, r2, #128
+  49 001e 5A60     		str	r2, [r3, #4]
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc7FUzj0.s 			page 2
+
+
+  10:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
+  50              		.loc 1 10 5 view .LVU5
+  51 0020 9A68     		ldr	r2, [r3, #8]
+  52 0022 42F48042 		orr	r2, r2, #16384
+  53 0026 9A60     		str	r2, [r3, #8]
+  11:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD7);
+  54              		.loc 1 11 5 view .LVU6
+  55 0028 DA68     		ldr	r2, [r3, #12]
+  56 002a 22F44042 		bic	r2, r2, #49152
+  57 002e DA60     		str	r2, [r3, #12]
+  12:Core/Src/main.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  58              		.loc 1 12 5 view .LVU7
+  59 0030 9A69     		ldr	r2, [r3, #24]
+  60 0032 42F40002 		orr	r2, r2, #8388608
+  61 0036 9A61     		str	r2, [r3, #24]
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000;
+  62              		.loc 1 14 5 view .LVU8
+  15:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00;
+  63              		.loc 1 15 5 view .LVU9
+  16:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000;
+  64              		.loc 1 16 5 view .LVU10
+  65 0038 A3F58063 		sub	r3, r3, #1024
+  66 003c D3F80824 		ldr	r2, [r3, #1032]
+  67              		.loc 1 16 41 is_stmt 0 view .LVU11
+  68 0040 42F48042 		orr	r2, r2, #16384
+  69 0044 C3F80824 		str	r2, [r3, #1032]
+  17:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00;
+  70              		.loc 1 17 5 is_stmt 1 view .LVU12
+  18:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x14UL) |= 0x80;
+  71              		.loc 1 18 5 view .LVU13
+  72 0048 D3F81424 		ldr	r2, [r3, #1044]
+  73              		.loc 1 18 41 is_stmt 0 view .LVU14
+  74 004c 42F08002 		orr	r2, r2, #128
+  75 0050 C3F81424 		str	r2, [r3, #1044]
+  19:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000;
+  76              		.loc 1 19 5 is_stmt 1 view .LVU15
+  77 0054 D3F81824 		ldr	r2, [r3, #1048]
+  78              		.loc 1 19 41 is_stmt 0 view .LVU16
+  79 0058 42F40002 		orr	r2, r2, #8388608
+  80 005c C3F81824 		str	r2, [r3, #1048]
+  81              	.L2:
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c ****     while(1)
+  82              		.loc 1 21 5 is_stmt 1 view .LVU17
+  22:Core/Src/main.c ****     {
+  23:Core/Src/main.c ****         *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80;
+  83              		.loc 1 23 9 discriminator 1 view .LVU18
+  84 0060 054A     		ldr	r2, .L3+8
+  85 0062 D2F81834 		ldr	r3, [r2, #1048]
+  86              		.loc 1 23 45 is_stmt 0 discriminator 1 view .LVU19
+  87 0066 43F08003 		orr	r3, r3, #128
+  88 006a C2F81834 		str	r3, [r2, #1048]
+  21:Core/Src/main.c ****     {
+  89              		.loc 1 21 10 is_stmt 1 view .LVU20
+  90 006e F7E7     		b	.L2
+  91              	.L4:
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc7FUzj0.s 			page 3
+
+
+  92              		.align	2
+  93              	.L3:
+  94 0070 00300240 		.word	1073885184
+  95 0074 00040240 		.word	1073873920
+  96 0078 00000240 		.word	1073872896
+  97              		.cfi_endproc
+  98              	.LFE130:
+ 100              		.text
+ 101              	.Letext0:
+ 102              		.file 2 "D:/MK/aboba/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 103              		.file 3 "D:/MK/aboba/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 104              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc7FUzj0.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\VLED\AppData\Local\Temp\ccF9PO6k.s:21     .text.main:00000000 $t
-C:\Users\VLED\AppData\Local\Temp\ccF9PO6k.s:27     .text.main:00000000 main
+C:\Users\VLED\AppData\Local\Temp\cc7FUzj0.s:21     .text.main:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc7FUzj0.s:27     .text.main:00000000 main
+C:\Users\VLED\AppData\Local\Temp\cc7FUzj0.s:94     .text.main:00000070 $d
 
 NO UNDEFINED SYMBOLS
