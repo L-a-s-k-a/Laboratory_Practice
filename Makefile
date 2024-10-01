@@ -37,6 +37,7 @@ BUILD_DIR = build
 # C sources
 C_SOURCES = \
 Core/Src/main.c \
+Core/src/init.c \
 
 
 # ASM sources
