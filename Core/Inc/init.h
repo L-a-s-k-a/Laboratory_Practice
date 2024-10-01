@@ -24,7 +24,4 @@
 #define READ_BIT(REG, BIT) (REG & BIT)
 #define SET_BIT(REG, BIT) (REG |= BIT)
 
- 
-
-
 void GPIO_Ini(void);
