@@ -10,8 +10,8 @@ void delay(uint32_t time_delay)
 int main(void){
     GPIO_Ini_Self();
     GPIO_Ini_CMSIS();
-    unsigned short int counter = 0;
-    short int flag = 0;
+    uint8_t counter = 0;
+    uint8_t flag = 0;
     //address of LED 1 (GPIOB_pin14)
     //address of LED 2 (GPIOB_pin0)
     //address of LED 3 (GPIOB_pin7)
