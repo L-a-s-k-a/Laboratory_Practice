@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccRQqnDp.s 			page 1
+ARM GAS  /tmp/ccw47Fp1.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,30 +27,80 @@ ARM GAS  /tmp/ccRQqnDp.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void){
-  29              		.loc 1 1 15 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** int main(void){
+  29              		.loc 1 3 15 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){}
-  36              		.loc 1 2 5 view .LVU1
-  37              		.loc 1 2 14 view .LVU2
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  /tmp/ccRQqnDp.s 			page 2
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c ****     GPIO_Ini();
+  39              		.loc 1 5 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Ini
+  41              	.LVL0:
+  42 0006 06E0     		b	.L2
+  43              	.L3:
+   6:Core/Src/main.c ****     while (1){
+   7:Core/Src/main.c ****         if(READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13)!= 0){
+   8:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET);
+   9:Core/Src/main.c ****         }
+  10:Core/Src/main.c ****         else{
+  11:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET);
+  44              		.loc 1 11 13 view .LVU2
+  45 0008 0A4A     		ldr	r2, .L6
+  46 000a D2F81834 		ldr	r3, [r2, #1048]
+  47 000e 43F40003 		orr	r3, r3, #8388608
+ARM GAS  /tmp/ccw47Fp1.s 			page 2
+
+
+  48 0012 C2F81834 		str	r3, [r2, #1048]
+  49              	.L2:
+   6:Core/Src/main.c ****     while (1){
+  50              		.loc 1 6 5 view .LVU3
+   7:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET);
+  51              		.loc 1 7 9 view .LVU4
+   7:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET);
+  52              		.loc 1 7 12 is_stmt 0 view .LVU5
+  53 0016 074B     		ldr	r3, .L6
+  54 0018 D3F81038 		ldr	r3, [r3, #2064]
+   7:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET);
+  55              		.loc 1 7 11 view .LVU6
+  56 001c 13F4005F 		tst	r3, #8192
+  57 0020 F2D0     		beq	.L3
+   8:Core/Src/main.c ****         }
+  58              		.loc 1 8 13 is_stmt 1 view .LVU7
+  59 0022 044A     		ldr	r2, .L6
+  60 0024 D2F81834 		ldr	r3, [r2, #1048]
+  61 0028 43F08003 		orr	r3, r3, #128
+  62 002c C2F81834 		str	r3, [r2, #1048]
+  63 0030 F1E7     		b	.L2
+  64              	.L7:
+  65 0032 00BF     		.align	2
+  66              	.L6:
+  67 0034 00000240 		.word	1073872896
+  68              		.cfi_endproc
+  69              	.LFE130:
+  71              		.text
+  72              	.Letext0:
+  73              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+  74              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+  75              		.file 4 "Core/Inc/init.h"
+ARM GAS  /tmp/ccw47Fp1.s 			page 3
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-     /tmp/ccRQqnDp.s:21     .text.main:00000000 $t
-     /tmp/ccRQqnDp.s:27     .text.main:00000000 main
+     /tmp/ccw47Fp1.s:21     .text.main:00000000 $t
+     /tmp/ccw47Fp1.s:27     .text.main:00000000 main
+     /tmp/ccw47Fp1.s:67     .text.main:00000034 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini

@@ -170,7 +170,8 @@ typedef enum
   * @}
   */
 
-#include "../include/core_cm4.h"             /* Cortex-M4 processor and core peripherals */
+#include "/home/arseniikostin/Desktop/mikruhi/Laboratory_Practice/CMSIS/Include/core_cm4.h"
+//#include "../include/core_cm4.h"             /* Cortex-M4 processor and core peripherals */
 #include "system_stm32f4xx.h"
 #include <stdint.h>
 

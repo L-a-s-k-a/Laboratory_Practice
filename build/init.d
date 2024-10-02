@@ -1,4 +1,4 @@
-build/main.o: Core/Src/main.c Core/Inc/init.h \
+build/init.o: Core/Src/init.c Core/Inc/init.h \
  /home/arseniikostin/Desktop/mikruhi/Laboratory_Practice/CMSIS/Devices/stm32f429xx.h \
  /home/arseniikostin/Desktop/mikruhi/Laboratory_Practice/CMSIS/Include/core_cm4.h \
  /home/arseniikostin/Desktop/mikruhi/Laboratory_Practice/CMSIS/Include/cmsis_version.h \
