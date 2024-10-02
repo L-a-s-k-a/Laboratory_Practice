@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define RCC_GPIO_EN (*(uint32_t*)(0x40023800UL + 0x30UL))
+#define RCC_AHB1ENR (*(uint32_t*)(0x40023800UL + 0x30UL))
 
 #define RCC_GPIOB_EN 0x02UL 
 #define RCC_GPIOC_EN 0x04UL 

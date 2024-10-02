@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccAOp6HF.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,93 +28,77 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s 			page 1
   25              		.thumb_func
   27              	main:
   28              	.LFB0:
-   1:Core/Src/main.c **** #include <stdint.h>
-   2:Core/Src/main.c **** int main(void){
-  29              		.loc 1 2 15 view -0
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** int main(void){
+  29              		.loc 1 3 15 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-   3:Core/Src/main.c **** *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02; //Включение тактирования порт
-  35              		.loc 1 3 1 view .LVU1
-  36 0000 144A     		ldr	r2, .L6
-  37 0002 D2F83038 		ldr	r3, [r2, #2096]
-  38              		.loc 1 3 37 is_stmt 0 view .LVU2
-  39 0006 43F00203 		orr	r3, r3, #2
-  40 000a C2F83038 		str	r3, [r2, #2096]
-   4:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000; //Настройка работы 7-го пина GP
-  41              		.loc 1 4 1 is_stmt 1 view .LVU3
-  42 000e 124B     		ldr	r3, .L6+4
-  43 0010 D3F80024 		ldr	r2, [r3, #1024]
-  44              		.loc 1 4 37 is_stmt 0 view .LVU4
-  45 0014 42F48042 		orr	r2, r2, #16384
-  46 0018 C3F80024 		str	r2, [r3, #1024]
-   5:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; //Настройка на Push-Pull работу 7-г�
-  47              		.loc 1 5 1 is_stmt 1 view .LVU5
-   6:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000; //Настройка скорости работы 7
-  48              		.loc 1 6 1 view .LVU6
-  49 001c D3F80824 		ldr	r2, [r3, #1032]
-  50              		.loc 1 6 37 is_stmt 0 view .LVU7
-  51 0020 42F48042 		orr	r2, r2, #16384
-  52 0024 C3F80824 		str	r2, [r3, #1032]
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s 			page 2
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   4:Core/Src/main.c **** GPIO_Ini();
+  39              		.loc 1 4 1 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Ini
+  41              	.LVL0:
+  42 0006 06E0     		b	.L2
+  43              	.L6:
+   5:Core/Src/main.c **** while(1){
+   6:Core/Src/main.c ****     if(READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0){
+   7:Core/Src/main.c ****         SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); //Установка единицы в 7-ой б�
+  44              		.loc 1 7 9 view .LVU2
+  45 0008 0A4A     		ldr	r2, .L7
+  46 000a D2F81834 		ldr	r3, [r2, #1048]
+  47 000e 43F08003 		orr	r3, r3, #128
+  48 0012 C2F81834 		str	r3, [r2, #1048]
+  49              	.L2:
+   5:Core/Src/main.c **** while(1){
+  50              		.loc 1 5 1 view .LVU3
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccAOp6HF.s 			page 2
 
 
-   7:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00; //Отключение PU/PD резисторов дл
-  53              		.loc 1 7 1 is_stmt 1 view .LVU8
-  54 0028 06E0     		b	.L2
-  55              	.L5:
-   8:Core/Src/main.c **** while(1){
-   9:Core/Src/main.c **** if((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x2000UL) != 0){
-  10:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-ой бит �
-  56              		.loc 1 10 1 view .LVU9
-  57 002a 0B4A     		ldr	r2, .L6+4
-  58 002c D2F81834 		ldr	r3, [r2, #1048]
-  59              		.loc 1 10 37 is_stmt 0 view .LVU10
-  60 0030 43F08003 		orr	r3, r3, #128
-  61 0034 C2F81834 		str	r3, [r2, #1048]
-  62              	.L2:
-   8:Core/Src/main.c **** while(1){
-  63              		.loc 1 8 1 is_stmt 1 view .LVU11
-   9:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-ой бит �
-  64              		.loc 1 9 1 view .LVU12
-   9:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-ой бит �
-  65              		.loc 1 9 5 is_stmt 0 view .LVU13
-  66 0038 074B     		ldr	r3, .L6+4
-  67 003a D3F81038 		ldr	r3, [r3, #2064]
-   9:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-ой бит �
-  68              		.loc 1 9 3 view .LVU14
-  69 003e 13F4005F 		tst	r3, #8192
-  70 0042 F2D1     		bne	.L5
-  11:Core/Src/main.c **** }
-  12:Core/Src/main.c **** else{
-  13:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000; //Установка нуля в 7-ой бит р�
-  71              		.loc 1 13 1 is_stmt 1 view .LVU15
-  72 0044 044A     		ldr	r2, .L6+4
-  73 0046 D2F81834 		ldr	r3, [r2, #1048]
-  74              		.loc 1 13 37 is_stmt 0 view .LVU16
-  75 004a 43F40003 		orr	r3, r3, #8388608
-  76 004e C2F81834 		str	r3, [r2, #1048]
-  77 0052 F1E7     		b	.L2
-  78              	.L7:
-  79              		.align	2
-  80              	.L6:
-  81 0054 00300240 		.word	1073885184
-  82 0058 00000240 		.word	1073872896
-  83              		.cfi_endproc
-  84              	.LFE0:
-  86              		.text
-  87              	.Letext0:
-  88              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
-  89              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s 			page 3
+   6:Core/Src/main.c ****         SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); //Установка единицы в 7-ой б�
+  51              		.loc 1 6 5 view .LVU4
+   6:Core/Src/main.c ****         SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); //Установка единицы в 7-ой б�
+  52              		.loc 1 6 8 is_stmt 0 view .LVU5
+  53 0016 074B     		ldr	r3, .L7
+  54 0018 D3F81038 		ldr	r3, [r3, #2064]
+   6:Core/Src/main.c ****         SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); //Установка единицы в 7-ой б�
+  55              		.loc 1 6 7 view .LVU6
+  56 001c 13F4005F 		tst	r3, #8192
+  57 0020 F2D1     		bne	.L6
+   8:Core/Src/main.c ****         }
+   9:Core/Src/main.c ****         else{
+  10:Core/Src/main.c ****         SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET); //Установка нуля в 7-ой бит 
+  58              		.loc 1 10 9 is_stmt 1 view .LVU7
+  59 0022 044A     		ldr	r2, .L7
+  60 0024 D2F81834 		ldr	r3, [r2, #1048]
+  61 0028 43F40003 		orr	r3, r3, #8388608
+  62 002c C2F81834 		str	r3, [r2, #1048]
+  63 0030 F1E7     		b	.L2
+  64              	.L8:
+  65 0032 00BF     		.align	2
+  66              	.L7:
+  67 0034 00000240 		.word	1073872896
+  68              		.cfi_endproc
+  69              	.LFE0:
+  71              		.text
+  72              	.Letext0:
+  73              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+  74              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+  75              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccAOp6HF.s 			page 3
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s:21     .text.main:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s:27     .text.main:00000000 main
-C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s:81     .text.main:00000054 $d
+C:\Users\rpong\AppData\Local\Temp\ccAOp6HF.s:21     .text.main:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccAOp6HF.s:27     .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\ccAOp6HF.s:67     .text.main:00000034 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini
