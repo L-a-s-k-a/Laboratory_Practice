@@ -1,5 +1,12 @@
 #include "../Inc/init.h"
 
+void delay(uint32_t time_delay)
+{    
+    uint32_t i;
+    for(i = 0; i < time_delay; i++);
+    //32768 KHz crystal oscillator
+}
+
 int main(void){
     GPIO_Ini_Self();
     GPIO_Ini_CMSIS();
@@ -15,10 +22,12 @@ int main(void){
             if(flag == 0){
                 flag = 1;
                 counter++;
+                delay(1638);
             }           
         }
         else if(flag == 1){
             flag = 0;
+            delay(1638);
         }
         if(counter%6 == 0)//включение всех светодиодов на 6-ое нажатие
         {
