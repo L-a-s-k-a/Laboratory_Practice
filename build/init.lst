@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -41,117 +41,172 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s 			page 1
    6:Core/Src/init.c ****     //set LED 2 (pin0)
    7:Core/Src/init.c ****     RCC_AHB1ENR |= RCC_GPIOB_EN | RCC_GPIOC_EN; //Включение тактирования по�
   34              		.loc 1 7 5 view .LVU1
-  35 0000 0A4A     		ldr	r2, .L2
+  35 0000 134A     		ldr	r2, .L2
   36 0002 D2F83038 		ldr	r3, [r2, #2096]
   37              		.loc 1 7 17 is_stmt 0 view .LVU2
   38 0006 43F00603 		orr	r3, r3, #6
   39 000a C2F83038 		str	r3, [r2, #2096]
-   8:Core/Src/init.c ****     GPIOB_MODER |= GPIOB_MODE_PIN0_OUT; //Настройка работы 0-го пина GPIOB в 
+   8:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL) |= 0x10000000UL;//Настройка работы 14-го пина G
   40              		.loc 1 8 5 is_stmt 1 view .LVU3
-  41 000e 084B     		ldr	r3, .L2+4
-  42 0010 D3F80024 		ldr	r2, [r3, #1024]
-  43              		.loc 1 8 17 is_stmt 0 view .LVU4
-  44 0014 42F00102 		orr	r2, r2, #1
-  45 0018 C3F80024 		str	r2, [r3, #1024]
-   9:Core/Src/init.c ****     GPIOB_OTYPER |= GPIOB_OTYPE_PIN0_PP; //Настройка на Push-Pull работу 0-го п
+  41 000e 114B     		ldr	r3, .L2+4
+  42 0010 D3F80004 		ldr	r0, [r3, #1024]
+  43              		.loc 1 8 32 is_stmt 0 view .LVU4
+  44 0014 40F08050 		orr	r0, r0, #268435456
+  45 0018 C3F80004 		str	r0, [r3, #1024]
+   9:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x0000UL; //Настройка на Push-Pull работ
   46              		.loc 1 9 5 is_stmt 1 view .LVU5
-  10:Core/Src/init.c ****     GPIOB_OSPEEDR |= GPIOB_OSPEED_PIN0_MID; //Настройка скорости работы 0-г
+  10:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x10000000UL; //Настройка скорости ра
   47              		.loc 1 10 5 view .LVU6
-  48 001c D3F80824 		ldr	r2, [r3, #1032]
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s 			page 2
+  48 001c D3F80814 		ldr	r1, [r3, #1032]
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s 			page 2
 
 
-  49              		.loc 1 10 19 is_stmt 0 view .LVU7
-  50 0020 42F00102 		orr	r2, r2, #1
-  51 0024 C3F80824 		str	r2, [r3, #1032]
-  11:Core/Src/init.c ****     GPIOB_PUPDR |= GPIOB_PUPDR_PIN0_NOPUPD; //Отключение PU/PD резисторов дл�
+  49              		.loc 1 10 41 is_stmt 0 view .LVU7
+  50 0020 41F08051 		orr	r1, r1, #268435456
+  51 0024 C3F80814 		str	r1, [r3, #1032]
+  11:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x0000UL; //Отключение PU/PD резистор�
   52              		.loc 1 11 5 is_stmt 1 view .LVU8
-  12:Core/Src/init.c **** }
-  53              		.loc 1 12 1 is_stmt 0 view .LVU9
-  54 0028 7047     		bx	lr
-  55              	.L3:
-  56 002a 00BF     		.align	2
-  57              	.L2:
-  58 002c 00300240 		.word	1073885184
-  59 0030 00000240 		.word	1073872896
-  60              		.cfi_endproc
-  61              	.LFE130:
-  63              		.section	.text.GPIO_Ini_CMSIS,"ax",%progbits
-  64              		.align	1
-  65              		.global	GPIO_Ini_CMSIS
-  66              		.syntax unified
-  67              		.thumb
-  68              		.thumb_func
-  70              	GPIO_Ini_CMSIS:
-  71              	.LFB131:
-  13:Core/Src/init.c **** void GPIO_Ini_CMSIS(void)
-  14:Core/Src/init.c **** {
-  72              		.loc 1 14 1 is_stmt 1 view -0
-  73              		.cfi_startproc
-  74              		@ args = 0, pretend = 0, frame = 0
-  75              		@ frame_needed = 0, uses_anonymous_args = 0
-  76              		@ link register save eliminated.
-  15:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение такт
-  77              		.loc 1 15 5 view .LVU11
-  78 0000 0D4A     		ldr	r2, .L5
-  79 0002 136B     		ldr	r3, [r2, #48]
-  80 0004 43F00603 		orr	r3, r3, #6
-  81 0008 1363     		str	r3, [r2, #48]
-  16:Core/Src/init.c ****     //set LED 3 (pin7)
-  17:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0); //Настройка работы 7-го пина GP
-  82              		.loc 1 17 5 view .LVU12
-  83 000a 0C4B     		ldr	r3, .L5+4
-  84 000c 1A68     		ldr	r2, [r3]
-  85 000e 42F48042 		orr	r2, r2, #16384
-  86 0012 1A60     		str	r2, [r3]
-  18:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT7);//Настройка на Push-Pull работу 0-г
-  87              		.loc 1 18 5 view .LVU13
-  88 0014 5A68     		ldr	r2, [r3, #4]
-  89 0016 22F08002 		bic	r2, r2, #128
-  90 001a 5A60     		str	r2, [r3, #4]
-  19:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);//Настройка скорости раб�
-  91              		.loc 1 19 5 view .LVU14
-  92 001c 9A68     		ldr	r2, [r3, #8]
-  93 001e 42F48042 		orr	r2, r2, #16384
-  94 0022 9A60     		str	r2, [r3, #8]
-  20:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD7);//Отключение PU/PD резисторов д�
-  95              		.loc 1 20 5 view .LVU15
-  96 0024 DA68     		ldr	r2, [r3, #12]
-  97 0026 22F44042 		bic	r2, r2, #49152
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s 			page 3
+  12:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светодиода
+  53              		.loc 1 12 5 view .LVU9
+  54 0028 D3F81824 		ldr	r2, [r3, #1048]
+  55              		.loc 1 12 41 is_stmt 0 view .LVU10
+  56 002c 42F08042 		orr	r2, r2, #1073741824
+  57 0030 C3F81824 		str	r2, [r3, #1048]
+  13:Core/Src/init.c **** 
+  14:Core/Src/init.c ****     GPIOB_MODER |= GPIOB_MODE_PIN0_OUT; //Настройка работы 0-го пина GPIOB в 
+  58              		.loc 1 14 5 is_stmt 1 view .LVU11
+  59              		.loc 1 14 17 is_stmt 0 view .LVU12
+  60 0034 40F00100 		orr	r0, r0, #1
+  61 0038 C3F80004 		str	r0, [r3, #1024]
+  15:Core/Src/init.c ****     GPIOB_OTYPER |= GPIOB_OTYPE_PIN0_PP; //Настройка на Push-Pull работу 0-го п
+  62              		.loc 1 15 5 is_stmt 1 view .LVU13
+  16:Core/Src/init.c ****     GPIOB_OSPEEDR |= GPIOB_OSPEED_PIN0_MID; //Настройка скорости работы 0-г
+  63              		.loc 1 16 5 view .LVU14
+  64              		.loc 1 16 19 is_stmt 0 view .LVU15
+  65 003c 41F00101 		orr	r1, r1, #1
+  66 0040 C3F80814 		str	r1, [r3, #1032]
+  17:Core/Src/init.c ****     GPIOB_PUPDR |= GPIOB_PUPDR_PIN0_NOPUPD; //Отключение PU/PD резисторов дл�
+  67              		.loc 1 17 5 is_stmt 1 view .LVU16
+  18:Core/Src/init.c ****     GPIOB_BSRR |= GPIOB_BSRR_PIN0_RESET;//выключение светодиода 0-го пина
+  68              		.loc 1 18 5 view .LVU17
+  69              		.loc 1 18 16 is_stmt 0 view .LVU18
+  70 0044 42F48032 		orr	r2, r2, #65536
+  71 0048 C3F81824 		str	r2, [r3, #1048]
+  19:Core/Src/init.c **** }
+  72              		.loc 1 19 1 view .LVU19
+  73 004c 7047     		bx	lr
+  74              	.L3:
+  75 004e 00BF     		.align	2
+  76              	.L2:
+  77 0050 00300240 		.word	1073885184
+  78 0054 00000240 		.word	1073872896
+  79              		.cfi_endproc
+  80              	.LFE130:
+  82              		.section	.text.GPIO_Ini_CMSIS,"ax",%progbits
+  83              		.align	1
+  84              		.global	GPIO_Ini_CMSIS
+  85              		.syntax unified
+  86              		.thumb
+  87              		.thumb_func
+  89              	GPIO_Ini_CMSIS:
+  90              	.LFB131:
+  20:Core/Src/init.c **** void GPIO_Ini_CMSIS(void)
+  21:Core/Src/init.c **** {
+  91              		.loc 1 21 1 is_stmt 1 view -0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 0
+  94              		@ frame_needed = 0, uses_anonymous_args = 0
+  95              		@ link register save eliminated.
+  22:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение такт
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s 			page 3
 
 
-  98 002a DA60     		str	r2, [r3, #12]
-  21:Core/Src/init.c ****     CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//сброс BSRR
-  99              		.loc 1 21 5 view .LVU16
- 100 002c 9A69     		ldr	r2, [r3, #24]
- 101 002e 22F40002 		bic	r2, r2, #8388608
- 102 0032 9A61     		str	r2, [r3, #24]
-  22:Core/Src/init.c **** }...
- 103              		.loc 1 22 1 is_stmt 0 view .LVU17
- 104 0034 7047     		bx	lr
- 105              	.L6:
- 106 0036 00BF     		.align	2
- 107              	.L5:
- 108 0038 00380240 		.word	1073887232
- 109 003c 00040240 		.word	1073873920
- 110              		.cfi_endproc
- 111              	.LFE131:
- 113              		.text
- 114              	.Letext0:
- 115              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
- 116              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 117              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s 			page 4
+  96              		.loc 1 22 5 view .LVU21
+  97 0000 174A     		ldr	r2, .L5
+  98 0002 136B     		ldr	r3, [r2, #48]
+  99 0004 43F00603 		orr	r3, r3, #6
+ 100 0008 1363     		str	r3, [r2, #48]
+  23:Core/Src/init.c ****     //set LED 3 (pin7)
+  24:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0); //Настройка работы 7-го пина GP
+ 101              		.loc 1 24 5 view .LVU22
+ 102 000a 164B     		ldr	r3, .L5+4
+ 103 000c 1A68     		ldr	r2, [r3]
+ 104 000e 42F48042 		orr	r2, r2, #16384
+ 105 0012 1A60     		str	r2, [r3]
+  25:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT7);//Настройка на Push-Pull работу 7-г
+ 106              		.loc 1 25 5 view .LVU23
+ 107 0014 5A68     		ldr	r2, [r3, #4]
+ 108 0016 22F08002 		bic	r2, r2, #128
+ 109 001a 5A60     		str	r2, [r3, #4]
+  26:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);//Настройка скорости раб�
+ 110              		.loc 1 26 5 view .LVU24
+ 111 001c 9A68     		ldr	r2, [r3, #8]
+ 112 001e 42F48042 		orr	r2, r2, #16384
+ 113 0022 9A60     		str	r2, [r3, #8]
+  27:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD7);//Отключение PU/PD резисторов д�
+ 114              		.loc 1 27 5 view .LVU25
+ 115 0024 DA68     		ldr	r2, [r3, #12]
+ 116 0026 22F44042 		bic	r2, r2, #49152
+ 117 002a DA60     		str	r2, [r3, #12]
+  28:Core/Src/init.c ****     CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//сброс BSRR, выключение светодио�
+ 118              		.loc 1 28 5 view .LVU26
+ 119 002c 9A69     		ldr	r2, [r3, #24]
+ 120 002e 22F40002 		bic	r2, r2, #8388608
+ 121 0032 9A61     		str	r2, [r3, #24]
+  29:Core/Src/init.c ****     //set LED 4 (pin8)
+  30:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0); //Настройка работы 8-го пина GP
+ 122              		.loc 1 30 5 view .LVU27
+ 123 0034 1A68     		ldr	r2, [r3]
+ 124 0036 42F48032 		orr	r2, r2, #65536
+ 125 003a 1A60     		str	r2, [r3]
+  31:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT8);//Настройка на Push-Pull работу 8-г
+ 126              		.loc 1 31 5 view .LVU28
+ 127 003c 5A68     		ldr	r2, [r3, #4]
+ 128 003e 22F48072 		bic	r2, r2, #256
+ 129 0042 5A60     		str	r2, [r3, #4]
+  32:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR8_0);//Настройка скорости раб�
+ 130              		.loc 1 32 5 view .LVU29
+ 131 0044 9A68     		ldr	r2, [r3, #8]
+ 132 0046 42F48032 		orr	r2, r2, #65536
+ 133 004a 9A60     		str	r2, [r3, #8]
+  33:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD8);//Отключение PU/PD резисторов д�
+ 134              		.loc 1 33 5 view .LVU30
+ 135 004c DA68     		ldr	r2, [r3, #12]
+ 136 004e 22F44032 		bic	r2, r2, #196608
+ 137 0052 DA60     		str	r2, [r3, #12]
+  34:Core/Src/init.c ****     CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//сброс BSRR, выключение светодио�
+ 138              		.loc 1 34 5 view .LVU31
+ 139 0054 9A69     		ldr	r2, [r3, #24]
+ 140 0056 22F08072 		bic	r2, r2, #16777216
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s 			page 4
+
+
+ 141 005a 9A61     		str	r2, [r3, #24]
+  35:Core/Src/init.c **** }...
+ 142              		.loc 1 35 1 is_stmt 0 view .LVU32
+ 143 005c 7047     		bx	lr
+ 144              	.L6:
+ 145 005e 00BF     		.align	2
+ 146              	.L5:
+ 147 0060 00380240 		.word	1073887232
+ 148 0064 00040240 		.word	1073873920
+ 149              		.cfi_endproc
+ 150              	.LFE131:
+ 152              		.text
+ 153              	.Letext0:
+ 154              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 155              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 156              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
-C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s:21     .text.GPIO_Ini_Self:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s:27     .text.GPIO_Ini_Self:00000000 GPIO_Ini_Self
-C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s:58     .text.GPIO_Ini_Self:0000002c $d
-C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s:64     .text.GPIO_Ini_CMSIS:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s:70     .text.GPIO_Ini_CMSIS:00000000 GPIO_Ini_CMSIS
-C:\Users\rpong\AppData\Local\Temp\ccMiWiI4.s:108    .text.GPIO_Ini_CMSIS:00000038 $d
+C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s:21     .text.GPIO_Ini_Self:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s:27     .text.GPIO_Ini_Self:00000000 GPIO_Ini_Self
+C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s:77     .text.GPIO_Ini_Self:00000050 $d
+C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s:83     .text.GPIO_Ini_CMSIS:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s:89     .text.GPIO_Ini_CMSIS:00000000 GPIO_Ini_CMSIS
+C:\Users\rpong\AppData\Local\Temp\ccJ3HLzy.s:147    .text.GPIO_Ini_CMSIS:00000060 $d
 
 NO UNDEFINED SYMBOLS
