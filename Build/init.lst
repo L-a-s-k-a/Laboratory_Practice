@@ -1,0 +1,146 @@
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Ini_Self_Def,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini_Self_Def
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini_Self_Def:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** // void GPIO_Ini_memory(void)
+   4:Core/Src/init.c **** // {
+   5:Core/Src/init.c **** 
+   6:Core/Src/init.c **** //    *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000;
+   7:Core/Src/init.c **** 
+   8:Core/Src/init.c **** // }
+   9:Core/Src/init.c **** void GPIO_Ini_Self_Def(void)
+  10:Core/Src/init.c **** {
+  29              		.loc 1 10 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  11:Core/Src/init.c ****     SET_BIT_SELF(RCC_AAB1ENR, RCC_GPIOBEN | RCC_GPIOCEN);
+  34              		.loc 1 11 5 view .LVU1
+  35 0000 0D4A     		ldr	r2, .L2
+  36 0002 D2F83038 		ldr	r3, [r2, #2096]
+  37 0006 43F00603 		orr	r3, r3, #6
+  38 000a C2F83038 		str	r3, [r2, #2096]
+  12:Core/Src/init.c ****     SET_BIT_SELF(GPIO_MODER, GPIO_PIN_7_OUT);
+  39              		.loc 1 12 5 view .LVU2
+  40 000e 0B4B     		ldr	r3, .L2+4
+  41 0010 D3F80024 		ldr	r2, [r3, #1024]
+  42 0014 42F48042 		orr	r2, r2, #16384
+  43 0018 C3F80024 		str	r2, [r3, #1024]
+  13:Core/Src/init.c ****     SET_BIT_SELF(GPIO_OSPEEDR, GPIO_PIN_7_MED);
+  44              		.loc 1 13 5 view .LVU3
+  45 001c D3F80824 		ldr	r2, [r3, #1032]
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s 			page 2
+
+
+  46 0020 42F48042 		orr	r2, r2, #16384
+  47 0024 C3F80824 		str	r2, [r3, #1032]
+  14:Core/Src/init.c ****     SET_BIT_SELF(GPIO_BSRR, GPIO_PIN_7_RESET);
+  48              		.loc 1 14 5 view .LVU4
+  49 0028 D3F81824 		ldr	r2, [r3, #1048]
+  50 002c 42F40002 		orr	r2, r2, #8388608
+  51 0030 C3F81824 		str	r2, [r3, #1048]
+  15:Core/Src/init.c **** }
+  52              		.loc 1 15 1 is_stmt 0 view .LVU5
+  53 0034 7047     		bx	lr
+  54              	.L3:
+  55 0036 00BF     		.align	2
+  56              	.L2:
+  57 0038 00300240 		.word	1073885184
+  58 003c 00000240 		.word	1073872896
+  59              		.cfi_endproc
+  60              	.LFE130:
+  62              		.section	.text.GPIO_Ini_CMSIS,"ax",%progbits
+  63              		.align	1
+  64              		.global	GPIO_Ini_CMSIS
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  69              	GPIO_Ini_CMSIS:
+  70              	.LFB131:
+  16:Core/Src/init.c **** void GPIO_Ini_CMSIS(void)
+  17:Core/Src/init.c **** {
+  71              		.loc 1 17 1 is_stmt 1 view -0
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 0
+  74              		@ frame_needed = 0, uses_anonymous_args = 0
+  75              		@ link register save eliminated.
+  18:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0); // GPIOB MODE 14 -> OUTPUT
+  76              		.loc 1 18 5 view .LVU7
+  77 0000 084B     		ldr	r3, .L5
+  78 0002 1A68     		ldr	r2, [r3]
+  79 0004 42F08052 		orr	r2, r2, #268435456
+  80 0008 1A60     		str	r2, [r3]
+  19:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT14);
+  81              		.loc 1 19 5 view .LVU8
+  82 000a 5A68     		ldr	r2, [r3, #4]
+  83 000c 22F48042 		bic	r2, r2, #16384
+  84 0010 5A60     		str	r2, [r3, #4]
+  20:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
+  85              		.loc 1 20 5 view .LVU9
+  86 0012 9A68     		ldr	r2, [r3, #8]
+  87 0014 42F08052 		orr	r2, r2, #268435456
+  88 0018 9A60     		str	r2, [r3, #8]
+  21:Core/Src/init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+  89              		.loc 1 21 5 view .LVU10
+  90 001a 9A69     		ldr	r2, [r3, #24]
+  91 001c 42F08042 		orr	r2, r2, #1073741824
+  92 0020 9A61     		str	r2, [r3, #24]
+  22:Core/Src/init.c **** }
+  93              		.loc 1 22 1 is_stmt 0 view .LVU11
+  94 0022 7047     		bx	lr
+  95              	.L6:
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s 			page 3
+
+
+  96              		.align	2
+  97              	.L5:
+  98 0024 00040240 		.word	1073873920
+  99              		.cfi_endproc
+ 100              	.LFE131:
+ 102              		.text
+ 103              	.Letext0:
+ 104              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 105              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 106              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s:21     .text.GPIO_Ini_Self_Def:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s:27     .text.GPIO_Ini_Self_Def:00000000 GPIO_Ini_Self_Def
+C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s:57     .text.GPIO_Ini_Self_Def:00000038 $d
+C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s:63     .text.GPIO_Ini_CMSIS:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s:69     .text.GPIO_Ini_CMSIS:00000000 GPIO_Ini_CMSIS
+C:\Users\Asus\AppData\Local\Temp\ccsphbrs.s:98     .text.GPIO_Ini_CMSIS:00000024 $d
+
+NO UNDEFINED SYMBOLS
