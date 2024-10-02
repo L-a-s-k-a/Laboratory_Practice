@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccUxzM9y.s 			page 1
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccfq8PB3.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,30 +27,129 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccUxzM9y.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main (void){
-  29              		.loc 1 1 16 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** // #include <stdint.h>
+   2:Core/Src/main.c **** #include "init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** int main(void){
+  29              		.loc 1 4 15 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){}
-  36              		.loc 1 2 5 view .LVU1
-  37              		.loc 1 2 14 view .LVU2
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccUxzM9y.s 			page 2
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   5:Core/Src/main.c ****     GPIO_Ini_Self_Def();
+  39              		.loc 1 5 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Ini_Self_Def
+  41              	.LVL0:
+   6:Core/Src/main.c ****     GPIO_Ini_CMSIS();
+  42              		.loc 1 6 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	GPIO_Ini_CMSIS
+  44              	.LVL1:
+  45 000a 0CE0     		b	.L2
+  46              	.L3:
+   7:Core/Src/main.c ****     // *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02;
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c ****     // *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000;
+  10:Core/Src/main.c ****     // *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000;
+  11:Core/Src/main.c ****     // *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000;
+  12:Core/Src/main.c **** 
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccfq8PB3.s 			page 2
+
+
+  13:Core/Src/main.c ****     while(1){
+  14:Core/Src/main.c ****         if(READ_BIT_SELF(GPIO_IDR, GPIO_PIN_13)!=0){
+  15:Core/Src/main.c ****             SET_BIT_SELF (GPIO_BSRR,GPIO_PIN_7_SET);
+  16:Core/Src/main.c ****         }
+  17:Core/Src/main.c ****         else{
+  18:Core/Src/main.c ****             SET_BIT_SELF(GPIO_BSRR, GPIO_PIN_7_RESET);
+  47              		.loc 1 18 13 view .LVU3
+  48 000c 124A     		ldr	r2, .L9
+  49 000e D2F81834 		ldr	r3, [r2, #1048]
+  50 0012 43F40003 		orr	r3, r3, #8388608
+  51 0016 C2F81834 		str	r3, [r2, #1048]
+  52 001a 11E0     		b	.L4
+  53              	.L8:
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c ****         }
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c ****         if(READ_BIT(GPIOA->IDR, GPIO_IDR_ID9)!=0){
+  23:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  54              		.loc 1 23 9 view .LVU4
+  55 001c 0F4A     		ldr	r2, .L9+4
+  56 001e 9369     		ldr	r3, [r2, #24]
+  57 0020 43F48043 		orr	r3, r3, #16384
+  58 0024 9361     		str	r3, [r2, #24]
+  59              	.L2:
+  13:Core/Src/main.c ****         if(READ_BIT_SELF(GPIO_IDR, GPIO_PIN_13)!=0){
+  60              		.loc 1 13 5 view .LVU5
+  14:Core/Src/main.c ****             SET_BIT_SELF (GPIO_BSRR,GPIO_PIN_7_SET);
+  61              		.loc 1 14 9 view .LVU6
+  14:Core/Src/main.c ****             SET_BIT_SELF (GPIO_BSRR,GPIO_PIN_7_SET);
+  62              		.loc 1 14 12 is_stmt 0 view .LVU7
+  63 0026 0C4B     		ldr	r3, .L9
+  64 0028 D3F81038 		ldr	r3, [r3, #2064]
+  14:Core/Src/main.c ****             SET_BIT_SELF (GPIO_BSRR,GPIO_PIN_7_SET);
+  65              		.loc 1 14 11 view .LVU8
+  66 002c 13F4005F 		tst	r3, #8192
+  67 0030 ECD0     		beq	.L3
+  15:Core/Src/main.c ****         }
+  68              		.loc 1 15 13 is_stmt 1 view .LVU9
+  69 0032 094A     		ldr	r2, .L9
+  70 0034 D2F81834 		ldr	r3, [r2, #1048]
+  71 0038 43F08003 		orr	r3, r3, #128
+  72 003c C2F81834 		str	r3, [r2, #1048]
+  73              	.L4:
+  22:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  74              		.loc 1 22 9 view .LVU10
+  22:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  75              		.loc 1 22 12 is_stmt 0 view .LVU11
+  76 0040 054B     		ldr	r3, .L9
+  77 0042 1B69     		ldr	r3, [r3, #16]
+  22:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  78              		.loc 1 22 11 view .LVU12
+  79 0044 13F4007F 		tst	r3, #512
+  80 0048 E8D1     		bne	.L8
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c ****         }
+  26:Core/Src/main.c **** 
+  27:Core/Src/main.c ****         else{
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccfq8PB3.s 			page 3
+
+
+  28:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  81              		.loc 1 28 9 is_stmt 1 view .LVU13
+  82 004a 044A     		ldr	r2, .L9+4
+  83 004c 9369     		ldr	r3, [r2, #24]
+  84 004e 43F48043 		orr	r3, r3, #16384
+  85 0052 9361     		str	r3, [r2, #24]
+  86 0054 E7E7     		b	.L2
+  87              	.L10:
+  88 0056 00BF     		.align	2
+  89              	.L9:
+  90 0058 00000240 		.word	1073872896
+  91 005c 00040240 		.word	1073873920
+  92              		.cfi_endproc
+  93              	.LFE130:
+  95              		.text
+  96              	.Letext0:
+  97              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+  98              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+  99              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 100              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccfq8PB3.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Asus\AppData\Local\Temp\ccUxzM9y.s:21     .text.main:00000000 $t
-C:\Users\Asus\AppData\Local\Temp\ccUxzM9y.s:27     .text.main:00000000 main
+C:\Users\Asus\AppData\Local\Temp\ccfq8PB3.s:21     .text.main:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\ccfq8PB3.s:27     .text.main:00000000 main
+C:\Users\Asus\AppData\Local\Temp\ccfq8PB3.s:90     .text.main:00000058 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini_Self_Def
+GPIO_Ini_CMSIS

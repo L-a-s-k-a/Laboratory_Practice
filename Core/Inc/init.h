@@ -23,5 +23,5 @@
 #define  READ_BIT_SELF(REG,BIT) ((REG)&(BIT))
 #define  SET_BIT_SELF(REG,BIT) ((REG)|=(BIT))
 
-void GPIO_Ini_Self_Def();
-void GPIO_Ini_CMSIS();
+void GPIO_Ini_Self_Def(void);
+void GPIO_Ini_CMSIS(void);
