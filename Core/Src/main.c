@@ -2,6 +2,11 @@
 
 uint8_t counter = 0;
 uint8_t flag = 0;
+uint8_t LED1 = 0;
+uint8_t LED2 = 0;
+uint8_t LED3 = 0;
+uint8_t LED4 = 0;
+
 
 int main(void){
     GPIO_Ini_Self();
@@ -27,6 +32,10 @@ int main(void){
             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET); //включение светодиода 0-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);//включение светодиода 7-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);//включение светодиода 8-го пина GPIOB
+            LED1 = 1;
+            LED2 = 1;
+            LED3 = 1;
+            LED4 = 1;
             counter = 0;
         }
         else if (counter%6 == 5)//выключение всех светодиодов
@@ -35,6 +44,10 @@ int main(void){
             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодиода 0-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-го пина GPIOB
+            LED1 = 0;
+            LED2 = 0;
+            LED3 = 0;
+            LED4 = 0;
         }
         else if (counter%6 == 1)//LED 1 //14
         {
@@ -42,6 +55,10 @@ int main(void){
             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодиода 0-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-го пина GPIOB
+            LED1 = 1;
+            LED2 = 0;
+            LED3 = 0;
+            LED4 = 0;
         }
         else if (counter%6 == 2)//LED 2 /0
         {
@@ -49,6 +66,10 @@ int main(void){
             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET);//включение светодиода 0-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-го пина GPIOB
+            LED1 = 0;
+            LED2 = 1;
+            LED3 = 0;
+            LED4 = 0;
         }
         else if (counter%6 == 3)//LED 3 / 7
         {
@@ -56,6 +77,10 @@ int main(void){
             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодиода 0-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);//включение светодиода 7-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-го пина GPIOB
+            LED1 = 0;
+            LED2 = 0;
+            LED3 = 1;
+            LED4 = 0;
         }
         else if (counter%6 == 4)//LED 4  /8
         {
@@ -63,6 +88,10 @@ int main(void){
             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодиода 0-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-го пина GPIOB
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);//включение светодиода 8-го пина GPIOB
+            LED1 = 0;
+            LED2 = 0;
+            LED3 = 0;
+            LED4 = 1;
         }         
     }
 }
