@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Admin\AppData\Local\Temp\cc2E4Qjl.s 			page 1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cckurOrd.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,34 +27,138 @@ ARM GAS  C:\Users\Admin\AppData\Local\Temp\cc2E4Qjl.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void)
-   2:Core/Src/main.c **** {
-  29              		.loc 1 2 1 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** uint8_t flag1;
+   4:Core/Src/main.c **** int button_count;
+   5:Core/Src/main.c **** int main(void)
+   6:Core/Src/main.c **** {
+  29              		.loc 1 6 1 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   3:Core/Src/main.c ****     while (1)
-  36              		.loc 1 3 5 view .LVU1
-   4:Core/Src/main.c ****     {
-   5:Core/Src/main.c ****     }
-  37              		.loc 1 5 5 view .LVU2
-   3:Core/Src/main.c ****     while (1)
-  38              		.loc 1 3 11 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\Admin\AppData\Local\Temp\cc2E4Qjl.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+   7:Core/Src/main.c ****     GPIO_Ini(); // инициализация портов
+  38              		.loc 1 7 5 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Ini
+  40              	.LVL0:
+  41 0006 07E0     		b	.L2
+  42              	.LVL1:
+  43              	.L6:
+  44              	.LBB2:
+   8:Core/Src/main.c ****     while (1)
+   9:Core/Src/main.c ****     {
+  10:Core/Src/main.c ****         int button = READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13);
+  11:Core/Src/main.c ****         if (button == 0) // проверка бита
+  12:Core/Src/main.c ****         {
+  13:Core/Src/main.c ****     /*        if (button_count < 3)
+  14:Core/Src/main.c ****             {
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cckurOrd.s 			page 2
+
+
+  15:Core/Src/main.c ****                 button_count++;
+  16:Core/Src/main.c ****                 return 0;
+  17:Core/Src/main.c ****             }
+  18:Core/Src/main.c ****             else if (button == 0)
+  19:Core/Src/main.c ****             {
+  20:Core/Src/main.c ****                 return 1;
+  21:Core/Src/main.c ****             } */
+  22:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой б�
+  45              		.loc 1 22 13 view .LVU2
+  46 0008 0A4A     		ldr	r2, .L7
+  47 000a 9369     		ldr	r3, [r2, #24]
+  48              	.LVL2:
+  49              		.loc 1 22 13 is_stmt 0 view .LVU3
+  50 000c 43F08003 		orr	r3, r3, #128
+  51 0010 9361     		str	r3, [r2, #24]
+  23:Core/Src/main.c ****             flag1 = 1;
+  52              		.loc 1 23 13 is_stmt 1 view .LVU4
+  53              		.loc 1 23 19 is_stmt 0 view .LVU5
+  54 0012 094B     		ldr	r3, .L7+4
+  55 0014 0122     		movs	r2, #1
+  56 0016 1A70     		strb	r2, [r3]
+  57              	.LVL3:
+  58              	.L2:
+  59              		.loc 1 23 19 view .LVU6
+  60              	.LBE2:
+   8:Core/Src/main.c ****     while (1)
+  61              		.loc 1 8 5 is_stmt 1 view .LVU7
+  62              	.LBB3:
+  10:Core/Src/main.c ****         if (button == 0) // проверка бита
+  63              		.loc 1 10 9 view .LVU8
+  10:Core/Src/main.c ****         if (button == 0) // проверка бита
+  64              		.loc 1 10 22 is_stmt 0 view .LVU9
+  65 0018 084B     		ldr	r3, .L7+8
+  66 001a 1B69     		ldr	r3, [r3, #16]
+  67              	.LVL4:
+  11:Core/Src/main.c ****         {
+  68              		.loc 1 11 9 is_stmt 1 view .LVU10
+  11:Core/Src/main.c ****         {
+  69              		.loc 1 11 12 is_stmt 0 view .LVU11
+  70 001c 13F4005F 		tst	r3, #8192
+  71 0020 F2D0     		beq	.L6
+  24:Core/Src/main.c ****         }
+  25:Core/Src/main.c ****         else
+  26:Core/Src/main.c ****         {
+  27:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); // Установка нуля в 7-ой бит р
+  72              		.loc 1 27 13 is_stmt 1 view .LVU12
+  73 0022 044A     		ldr	r2, .L7
+  74 0024 9369     		ldr	r3, [r2, #24]
+  75              	.LVL5:
+  76              		.loc 1 27 13 is_stmt 0 view .LVU13
+  77 0026 43F40003 		orr	r3, r3, #8388608
+  78 002a 9361     		str	r3, [r2, #24]
+  28:Core/Src/main.c ****             flag1 = 0;
+  79              		.loc 1 28 13 is_stmt 1 view .LVU14
+  80              		.loc 1 28 19 is_stmt 0 view .LVU15
+  81 002c 024B     		ldr	r3, .L7+4
+  82 002e 0022     		movs	r2, #0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cckurOrd.s 			page 3
+
+
+  83 0030 1A70     		strb	r2, [r3]
+  84 0032 F1E7     		b	.L2
+  85              	.L8:
+  86              		.align	2
+  87              	.L7:
+  88 0034 00040240 		.word	1073873920
+  89 0038 00000000 		.word	flag1
+  90 003c 00080240 		.word	1073874944
+  91              	.LBE3:
+  92              		.cfi_endproc
+  93              	.LFE130:
+  95              		.global	button_count
+  96              		.section	.bss.button_count,"aw",%nobits
+  97              		.align	2
+ 100              	button_count:
+ 101 0000 00000000 		.space	4
+ 102              		.global	flag1
+ 103              		.section	.bss.flag1,"aw",%nobits
+ 106              	flag1:
+ 107 0000 00       		.space	1
+ 108              		.text
+ 109              	.Letext0:
+ 110              		.file 2 "C:/Users/Admin/Desktop/StudioCode_Files/STM_files/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-
+ 111              		.file 3 "C:/Users/Admin/Desktop/StudioCode_Files/STM_files/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-
+ 112              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 113              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cckurOrd.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Admin\AppData\Local\Temp\cc2E4Qjl.s:21     .text.main:00000000 $t
-C:\Users\Admin\AppData\Local\Temp\cc2E4Qjl.s:27     .text.main:00000000 main
+C:\Users\Admin\AppData\Local\Temp\cckurOrd.s:21     .text.main:00000000 $t
+C:\Users\Admin\AppData\Local\Temp\cckurOrd.s:27     .text.main:00000000 main
+C:\Users\Admin\AppData\Local\Temp\cckurOrd.s:88     .text.main:00000034 $d
+C:\Users\Admin\AppData\Local\Temp\cckurOrd.s:106    .bss.flag1:00000000 flag1
+C:\Users\Admin\AppData\Local\Temp\cckurOrd.s:100    .bss.button_count:00000000 button_count
+C:\Users\Admin\AppData\Local\Temp\cckurOrd.s:97     .bss.button_count:00000000 $d
+C:\Users\Admin\AppData\Local\Temp\cckurOrd.s:107    .bss.flag1:00000000 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini

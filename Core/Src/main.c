@@ -1,21 +1,68 @@
 #include "../Inc/init.h"
 
 uint8_t flag1;
-
+int button_count;
 int main(void)
 {
     GPIO_Ini(); // инициализация портов
     while (1)
     {
-        if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) // проверка бита
+        int button = READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13);
+        // -------------------------------------------------
+        if (button == 0) // проверка бита
         {
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
-            flag1 = 1;
+            if (button_count < 5)
+            {
+                button_count++;
+            }
+            if (button_count >= 5)
+            {
+                SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
+                flag1 = 1;
+            }
         }
         else
         {
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); // Установка нуля в 7-ой бит регистра ODR
-            flag1 = 0;
+            if (button_count > 0)
+            {
+                button_count--;
+            }
+            if (button_count <= 0)
+            {
+                SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); // Установка нуля в 7-ой бит регистра ODR
+                flag1 = 0;
+            }
         }
+        //-------------------------------------------------
+        // lab1
+        /*
+        if (button == 0)
+        {
+            // minus drebezg
+            button_count++;
+        }
+        switch (button_count)
+        {
+        case 1:
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
+            break;
+        case 2:
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
+            break;
+        case 3:
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
+            break;
+        case 4:
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
+            break;
+        case 5:
+            // сбросить все лампы (_БР)
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); // Установка единицы в 7-ой бит регистра ODR
+            break;
+        default:
+            // зажечь все лампы (_БС)
+            button_count= 0;
+            break;
+        }*/
     }
 }
