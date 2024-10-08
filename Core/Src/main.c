@@ -1,7 +1,7 @@
 #include "../Inc/init.h"
 
-uint8_t flag1;
-int button_count;
+uint8_t flag1, flag1_pred;
+int button_count, button_drebezg;
 int main(void)
 {
     GPIO_Ini(); // инициализация портов
@@ -9,13 +9,13 @@ int main(void)
     {
         int button = READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13);
         // -------------------------------------------------
-        if (button == 0) // проверка бита
+        if (button == 1) // проверка бита
         {
-            if (button_count < 5)
+            if (button_drebezg < 10)
             {
-                button_count++;
+                button_drebezg++;
             }
-            if (button_count >= 5)
+            if (button_drebezg >= 10)
             {
                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
                 flag1 = 1;
@@ -23,16 +23,22 @@ int main(void)
         }
         else
         {
-            if (button_count > 0)
+            if (button_drebezg > 0)
             {
-                button_count--;
+                button_drebezg--;
             }
-            if (button_count <= 0)
+            if (button_drebezg <= 0)
             {
                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); // Установка нуля в 7-ой бит регистра ODR
                 flag1 = 0;
             }
         }
+
+        if (flag1 == 1 && flag1_pred == 0)
+        {
+            button_count++;
+        }
+        flag1_pred = flag1;
         //-------------------------------------------------
         // lab1
         /*
