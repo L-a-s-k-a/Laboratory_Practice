@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\vvman\AppData\Local\Temp\cc4f8y9B.s 			page 1
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,33 +27,570 @@ ARM GAS  C:\Users\vvman\AppData\Local\Temp\cc4f8y9B.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void){
-  29              		.loc 1 1 15 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** #include "stdint.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** int flag;
+   5:Core/Src/main.c **** int count;
+   6:Core/Src/main.c **** int flag_button;
+   7:Core/Src/main.c **** int but_state;
+   8:Core/Src/main.c **** #define DEBOUNCE_DELAY 50
+   9:Core/Src/main.c **** int last_butt_state = 0;
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** int last_button_press_time = 0;
+  12:Core/Src/main.c **** int last_button_press_time_0 = 0;
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c **** float timer_cnt;
+  15:Core/Src/main.c **** int time_count;
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** int main(void){
+  29              		.loc 1 18 15 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){
-  36              		.loc 1 2 5 view .LVU1
-   3:Core/Src/main.c ****         
-   4:Core/Src/main.c ****     }
-  37              		.loc 1 4 5 view .LVU2
-   2:Core/Src/main.c ****     while(1){
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\vvman\AppData\Local\Temp\cc4f8y9B.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  19:Core/Src/main.c **** 	*(uint32_t *)(0x40020400UL + 0x00UL) |= 0x800; //output
+  34              		.loc 1 19 2 view .LVU1
+  35 0000 694B     		ldr	r3, .L23
+  36 0002 D3F80024 		ldr	r2, [r3, #1024]
+  37              		.loc 1 19 39 is_stmt 0 view .LVU2
+  38 0006 42F40062 		orr	r2, r2, #2048
+  39 000a C3F80024 		str	r2, [r3, #1024]
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 2
+
+
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c ****     *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00; 
+  40              		.loc 1 21 5 is_stmt 1 view .LVU3
+  22:Core/Src/main.c ****     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x400; 
+  41              		.loc 1 22 5 view .LVU4
+  42 000e D3F80824 		ldr	r2, [r3, #1032]
+  43              		.loc 1 22 42 is_stmt 0 view .LVU5
+  44 0012 42F48062 		orr	r2, r2, #1024
+  45 0016 C3F80824 		str	r2, [r3, #1032]
+  23:Core/Src/main.c ****     *(uint32_t *)(0x40020400UL + 0x0CUL) |= 0x00; 
+  46              		.loc 1 23 5 is_stmt 1 view .LVU6
+  47 001a 5CE0     		b	.L2
+  48              	.LVL0:
+  49              	.L4:
+  50              	.LBB2:
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c ****     while(1){
+  26:Core/Src/main.c ****         timer_cnt = time_count++/16000;
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c **** 		if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13 ) !=0) {
+  29:Core/Src/main.c **** 			int current_time = timer_cnt;
+  30:Core/Src/main.c **** 			if ((current_time - last_button_press_time_0) > DEBOUNCE_DELAY) {
+  31:Core/Src/main.c **** 				if (last_butt_state == 0) {
+  32:Core/Src/main.c **** 					flag = !flag;
+  33:Core/Src/main.c **** 				}
+  34:Core/Src/main.c **** 				last_butt_state = 1;
+  35:Core/Src/main.c **** 			} else {
+  36:Core/Src/main.c **** 				last_butt_state = 0;
+  51              		.loc 1 36 5 view .LVU7
+  52              		.loc 1 36 21 is_stmt 0 view .LVU8
+  53 001c 634B     		ldr	r3, .L23+4
+  54 001e 0021     		movs	r1, #0
+  55 0020 1960     		str	r1, [r3]
+  56 0022 83E0     		b	.L6
+  57              	.LVL1:
+  58              	.L22:
+  59              		.loc 1 36 21 view .LVU9
+  60              	.LBE2:
+  37:Core/Src/main.c **** 			}
+  38:Core/Src/main.c **** 			last_button_press_time_0 = current_time;
+  39:Core/Src/main.c **** 		}
+  40:Core/Src/main.c **** 
+  41:Core/Src/main.c **** 		if (flag == 1) {
+  42:Core/Src/main.c **** 			switch (count) {
+  61              		.loc 1 42 4 is_stmt 1 view .LVU10
+  62 0024 624A     		ldr	r2, .L23+8
+  63 0026 1268     		ldr	r2, [r2]
+  64 0028 062A     		cmp	r2, #6
+  65 002a 00F28680 		bhi	.L7
+  66 002e DFE802F0 		tbb	[pc, r2]
+  67              	.L9:
+  68 0032 04       		.byte	(.L15-.L9)/2
+  69 0033 0C       		.byte	(.L14-.L9)/2
+  70 0034 18       		.byte	(.L13-.L9)/2
+  71 0035 24       		.byte	(.L12-.L9)/2
+  72 0036 2E       		.byte	(.L11-.L9)/2
+  73 0037 3A       		.byte	(.L10-.L9)/2
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 3
+
+
+  74 0038 46       		.byte	(.L8-.L9)/2
+  75 0039 00       		.p2align 1
+  76              	.L15:
+  43:Core/Src/main.c **** 			case 0:
+  44:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR,
+  77              		.loc 1 44 5 view .LVU11
+  78 003a 5E49     		ldr	r1, .L23+12
+  79 003c 8A69     		ldr	r2, [r1, #24]
+  80 003e 42F06042 		orr	r2, r2, #-536870912
+  81 0042 42F46012 		orr	r2, r2, #3670016
+  82 0046 8A61     		str	r2, [r1, #24]
+  45:Core/Src/main.c **** 						GPIO_BSRR_BR3 | GPIO_BSRR_BR4 | GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR14 | GPIO_BSRR_B
+  46:Core/Src/main.c **** 				break;
+  83              		.loc 1 46 5 view .LVU12
+  84 0048 77E0     		b	.L7
+  85              	.L14:
+  47:Core/Src/main.c **** 			case 1:
+  48:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS3);
+  86              		.loc 1 48 5 view .LVU13
+  87 004a 5A49     		ldr	r1, .L23+12
+  88 004c 8A69     		ldr	r2, [r1, #24]
+  89 004e 42F00802 		orr	r2, r2, #8
+  90 0052 8A61     		str	r2, [r1, #24]
+  49:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR,
+  91              		.loc 1 49 5 view .LVU14
+  92 0054 8A69     		ldr	r2, [r1, #24]
+  93 0056 42F06042 		orr	r2, r2, #-536870912
+  94 005a 42F44012 		orr	r2, r2, #3145728
+  95 005e 8A61     		str	r2, [r1, #24]
+  50:Core/Src/main.c **** 						GPIO_BSRR_BR4 | GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR14 | GPIO_BSRR_BR15);
+  51:Core/Src/main.c **** 				break;
+  96              		.loc 1 51 5 view .LVU15
+  97 0060 6BE0     		b	.L7
+  98              	.L13:
+  52:Core/Src/main.c **** 			case 2:
+  53:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS3 | GPIO_BSRR_BS4);
+  99              		.loc 1 53 5 view .LVU16
+ 100 0062 5449     		ldr	r1, .L23+12
+ 101 0064 8A69     		ldr	r2, [r1, #24]
+ 102 0066 42F01802 		orr	r2, r2, #24
+ 103 006a 8A61     		str	r2, [r1, #24]
+  54:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR,
+ 104              		.loc 1 54 5 view .LVU17
+ 105 006c 8A69     		ldr	r2, [r1, #24]
+ 106 006e 42F06042 		orr	r2, r2, #-536870912
+ 107 0072 42F40012 		orr	r2, r2, #2097152
+ 108 0076 8A61     		str	r2, [r1, #24]
+  55:Core/Src/main.c **** 						GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR14 | GPIO_BSRR_BR15);
+  56:Core/Src/main.c **** 				break;
+ 109              		.loc 1 56 5 view .LVU18
+ 110 0078 5FE0     		b	.L7
+ 111              	.L12:
+  57:Core/Src/main.c **** 			case 3:
+  58:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR,
+ 112              		.loc 1 58 5 view .LVU19
+ 113 007a 4E4A     		ldr	r2, .L23+12
+ 114 007c 9169     		ldr	r1, [r2, #24]
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 4
+
+
+ 115 007e 41F03801 		orr	r1, r1, #56
+ 116 0082 9161     		str	r1, [r2, #24]
+  59:Core/Src/main.c **** 						GPIO_BSRR_BS3 | GPIO_BSRR_BS4 | GPIO_BSRR_BS5);
+  60:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR,
+ 117              		.loc 1 60 5 view .LVU20
+ 118 0084 9169     		ldr	r1, [r2, #24]
+ 119 0086 41F06041 		orr	r1, r1, #-536870912
+ 120 008a 9161     		str	r1, [r2, #24]
+  61:Core/Src/main.c **** 						GPIO_BSRR_BR13 | GPIO_BSRR_BR14 | GPIO_BSRR_BR15);
+  62:Core/Src/main.c **** 				break;
+ 121              		.loc 1 62 5 view .LVU21
+ 122 008c 55E0     		b	.L7
+ 123              	.L11:
+  63:Core/Src/main.c **** 			case 4:
+  64:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR,
+ 124              		.loc 1 64 5 view .LVU22
+ 125 008e 4949     		ldr	r1, .L23+12
+ 126 0090 8A69     		ldr	r2, [r1, #24]
+ 127 0092 42F40052 		orr	r2, r2, #8192
+ 128 0096 42F03802 		orr	r2, r2, #56
+ 129 009a 8A61     		str	r2, [r1, #24]
+  65:Core/Src/main.c **** 						GPIO_BSRR_BS3 | GPIO_BSRR_BS4 | GPIO_BSRR_BS5 | GPIO_BSRR_BS13);
+  66:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14 | GPIO_BSRR_BR15);
+ 130              		.loc 1 66 5 view .LVU23
+ 131 009c 8A69     		ldr	r2, [r1, #24]
+ 132 009e 42F04042 		orr	r2, r2, #-1073741824
+ 133 00a2 8A61     		str	r2, [r1, #24]
+  67:Core/Src/main.c **** 				break;
+ 134              		.loc 1 67 5 view .LVU24
+ 135 00a4 49E0     		b	.L7
+ 136              	.L10:
+  68:Core/Src/main.c **** 			case 5:
+  69:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR,
+ 137              		.loc 1 69 5 view .LVU25
+ 138 00a6 4349     		ldr	r1, .L23+12
+ 139 00a8 8A69     		ldr	r2, [r1, #24]
+ 140 00aa 42F4C042 		orr	r2, r2, #24576
+ 141 00ae 42F03802 		orr	r2, r2, #56
+ 142 00b2 8A61     		str	r2, [r1, #24]
+  70:Core/Src/main.c **** 						GPIO_BSRR_BS3 | GPIO_BSRR_BS4 | GPIO_BSRR_BS5 | GPIO_BSRR_BS13 | GPIO_BSRR_BS14);
+  71:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);
+ 143              		.loc 1 71 5 view .LVU26
+ 144 00b4 8A69     		ldr	r2, [r1, #24]
+ 145 00b6 42F00042 		orr	r2, r2, #-2147483648
+ 146 00ba 8A61     		str	r2, [r1, #24]
+  72:Core/Src/main.c **** 				break;
+ 147              		.loc 1 72 5 view .LVU27
+ 148 00bc 3DE0     		b	.L7
+ 149              	.L8:
+  73:Core/Src/main.c **** 			case 6:
+  74:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR,
+ 150              		.loc 1 74 5 view .LVU28
+ 151 00be 3D49     		ldr	r1, .L23+12
+ 152 00c0 8A69     		ldr	r2, [r1, #24]
+ 153 00c2 42F46042 		orr	r2, r2, #57344
+ 154 00c6 42F03802 		orr	r2, r2, #56
+ 155 00ca 8A61     		str	r2, [r1, #24]
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 5
+
+
+  75:Core/Src/main.c **** 						GPIO_BSRR_BS3 | GPIO_BSRR_BS4 | GPIO_BSRR_BS5 | GPIO_BSRR_BS13 | GPIO_BSRR_BS14 | GPIO_BSRR_B
+  76:Core/Src/main.c **** 				break;
+ 156              		.loc 1 76 5 view .LVU29
+ 157 00cc 35E0     		b	.L7
+ 158              	.L17:
+  77:Core/Src/main.c **** 			}
+  78:Core/Src/main.c **** 		}
+  79:Core/Src/main.c **** 		if (flag == 0) {
+  80:Core/Src/main.c **** 			SET_BIT(GPIOB->BSRR,
+  81:Core/Src/main.c **** 					GPIO_BSRR_BR3 | GPIO_BSRR_BR4 | GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR14 | GPIO_BSRR_BR
+  82:Core/Src/main.c **** 		}
+  83:Core/Src/main.c **** 
+  84:Core/Src/main.c **** 		if (flag_button == 0) {
+  85:Core/Src/main.c **** 			if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_10) != 0) {
+  86:Core/Src/main.c **** 				int current_time = timer_cnt;
+  87:Core/Src/main.c **** 				if ((current_time - last_button_press_time) > DEBOUNCE_DELAY) {
+  88:Core/Src/main.c **** 					flag_button = 1;
+  89:Core/Src/main.c **** 					last_button_press_time = current_time;
+  90:Core/Src/main.c **** 				}
+  91:Core/Src/main.c **** 			}
+  92:Core/Src/main.c **** 		}
+  93:Core/Src/main.c **** 
+  94:Core/Src/main.c **** 		if (flag_button == 1) {
+ 159              		.loc 1 94 3 view .LVU30
+ 160              		.loc 1 94 19 is_stmt 0 view .LVU31
+ 161 00ce 3A4B     		ldr	r3, .L23+16
+ 162 00d0 1B68     		ldr	r3, [r3]
+ 163              		.loc 1 94 6 view .LVU32
+ 164 00d2 012B     		cmp	r3, #1
+ 165 00d4 55D0     		beq	.L21
+ 166              	.L2:
+  25:Core/Src/main.c ****         timer_cnt = time_count++/16000;
+ 167              		.loc 1 25 5 is_stmt 1 view .LVU33
+  26:Core/Src/main.c **** 
+ 168              		.loc 1 26 9 view .LVU34
+  26:Core/Src/main.c **** 
+ 169              		.loc 1 26 31 is_stmt 0 view .LVU35
+ 170 00d6 394A     		ldr	r2, .L23+20
+ 171 00d8 1368     		ldr	r3, [r2]
+ 172 00da 591C     		adds	r1, r3, #1
+ 173 00dc 1160     		str	r1, [r2]
+  26:Core/Src/main.c **** 
+ 174              		.loc 1 26 33 view .LVU36
+ 175 00de 384A     		ldr	r2, .L23+24
+ 176 00e0 82FB0312 		smull	r1, r2, r2, r3
+ 177 00e4 DB17     		asrs	r3, r3, #31
+ 178 00e6 C3EBA223 		rsb	r3, r3, r2, asr #10
+  26:Core/Src/main.c **** 
+ 179              		.loc 1 26 19 view .LVU37
+ 180 00ea 07EE903A 		vmov	s15, r3	@ int
+ 181 00ee F8EEE77A 		vcvt.f32.s32	s15, s15
+ 182 00f2 344B     		ldr	r3, .L23+28
+ 183 00f4 C3ED007A 		vstr.32	s15, [r3]
+  28:Core/Src/main.c **** 			int current_time = timer_cnt;
+ 184              		.loc 1 28 3 is_stmt 1 view .LVU38
+  28:Core/Src/main.c **** 			int current_time = timer_cnt;
+ 185              		.loc 1 28 7 is_stmt 0 view .LVU39
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 6
+
+
+ 186 00f8 334B     		ldr	r3, .L23+32
+ 187 00fa 1B69     		ldr	r3, [r3, #16]
+  28:Core/Src/main.c **** 			int current_time = timer_cnt;
+ 188              		.loc 1 28 6 view .LVU40
+ 189 00fc 13F4005F 		tst	r3, #8192
+ 190 0100 16D0     		beq	.L3
+ 191              	.LBB3:
+  29:Core/Src/main.c **** 			if ((current_time - last_button_press_time_0) > DEBOUNCE_DELAY) {
+ 192              		.loc 1 29 4 is_stmt 1 view .LVU41
+  29:Core/Src/main.c **** 			if ((current_time - last_button_press_time_0) > DEBOUNCE_DELAY) {
+ 193              		.loc 1 29 8 is_stmt 0 view .LVU42
+ 194 0102 BDEEE77A 		vcvt.s32.f32	s14, s15
+ 195 0106 17EE102A 		vmov	r2, s14	@ int
+ 196              	.LVL2:
+  30:Core/Src/main.c **** 				if (last_butt_state == 0) {
+ 197              		.loc 1 30 4 is_stmt 1 view .LVU43
+  30:Core/Src/main.c **** 				if (last_butt_state == 0) {
+ 198              		.loc 1 30 22 is_stmt 0 view .LVU44
+ 199 010a 304B     		ldr	r3, .L23+36
+ 200 010c 1B68     		ldr	r3, [r3]
+ 201 010e D31A     		subs	r3, r2, r3
+  30:Core/Src/main.c **** 				if (last_butt_state == 0) {
+ 202              		.loc 1 30 7 view .LVU45
+ 203 0110 322B     		cmp	r3, #50
+ 204 0112 83DD     		ble	.L4
+  31:Core/Src/main.c **** 					flag = !flag;
+ 205              		.loc 1 31 5 is_stmt 1 view .LVU46
+  31:Core/Src/main.c **** 					flag = !flag;
+ 206              		.loc 1 31 25 is_stmt 0 view .LVU47
+ 207 0114 254B     		ldr	r3, .L23+4
+ 208 0116 1B68     		ldr	r3, [r3]
+  31:Core/Src/main.c **** 					flag = !flag;
+ 209              		.loc 1 31 8 view .LVU48
+ 210 0118 2BB9     		cbnz	r3, .L5
+  32:Core/Src/main.c **** 				}
+ 211              		.loc 1 32 6 is_stmt 1 view .LVU49
+  32:Core/Src/main.c **** 				}
+ 212              		.loc 1 32 13 is_stmt 0 view .LVU50
+ 213 011a 2D49     		ldr	r1, .L23+40
+ 214 011c 0B68     		ldr	r3, [r1]
+ 215 011e B3FA83F3 		clz	r3, r3
+ 216 0122 5B09     		lsrs	r3, r3, #5
+  32:Core/Src/main.c **** 				}
+ 217              		.loc 1 32 11 view .LVU51
+ 218 0124 0B60     		str	r3, [r1]
+ 219              	.L5:
+  34:Core/Src/main.c **** 			} else {
+ 220              		.loc 1 34 5 is_stmt 1 view .LVU52
+  34:Core/Src/main.c **** 			} else {
+ 221              		.loc 1 34 21 is_stmt 0 view .LVU53
+ 222 0126 214B     		ldr	r3, .L23+4
+ 223 0128 0121     		movs	r1, #1
+ 224 012a 1960     		str	r1, [r3]
+ 225              	.L6:
+  38:Core/Src/main.c **** 		}
+ 226              		.loc 1 38 4 is_stmt 1 view .LVU54
+  38:Core/Src/main.c **** 		}
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 7
+
+
+ 227              		.loc 1 38 29 is_stmt 0 view .LVU55
+ 228 012c 274B     		ldr	r3, .L23+36
+ 229 012e 1A60     		str	r2, [r3]
+ 230              	.LVL3:
+ 231              	.L3:
+  38:Core/Src/main.c **** 		}
+ 232              		.loc 1 38 29 view .LVU56
+ 233              	.LBE3:
+  41:Core/Src/main.c **** 			switch (count) {
+ 234              		.loc 1 41 3 is_stmt 1 view .LVU57
+  41:Core/Src/main.c **** 			switch (count) {
+ 235              		.loc 1 41 12 is_stmt 0 view .LVU58
+ 236 0130 274B     		ldr	r3, .L23+40
+ 237 0132 1B68     		ldr	r3, [r3]
+  41:Core/Src/main.c **** 			switch (count) {
+ 238              		.loc 1 41 6 view .LVU59
+ 239 0134 012B     		cmp	r3, #1
+ 240 0136 3FF475AF 		beq	.L22
+ 241              	.L7:
+  79:Core/Src/main.c **** 			SET_BIT(GPIOB->BSRR,
+ 242              		.loc 1 79 3 is_stmt 1 view .LVU60
+  79:Core/Src/main.c **** 			SET_BIT(GPIOB->BSRR,
+ 243              		.loc 1 79 6 is_stmt 0 view .LVU61
+ 244 013a 33B9     		cbnz	r3, .L16
+  80:Core/Src/main.c **** 					GPIO_BSRR_BR3 | GPIO_BSRR_BR4 | GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR14 | GPIO_BSRR_BR
+ 245              		.loc 1 80 4 is_stmt 1 view .LVU62
+ 246 013c 1D4A     		ldr	r2, .L23+12
+ 247 013e 9369     		ldr	r3, [r2, #24]
+ 248 0140 43F06043 		orr	r3, r3, #-536870912
+ 249 0144 43F46013 		orr	r3, r3, #3670016
+ 250 0148 9361     		str	r3, [r2, #24]
+ 251              	.L16:
+  84:Core/Src/main.c **** 			if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_10) != 0) {
+ 252              		.loc 1 84 3 view .LVU63
+  84:Core/Src/main.c **** 			if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_10) != 0) {
+ 253              		.loc 1 84 19 is_stmt 0 view .LVU64
+ 254 014a 1B4B     		ldr	r3, .L23+16
+ 255 014c 1B68     		ldr	r3, [r3]
+  84:Core/Src/main.c **** 			if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_10) != 0) {
+ 256              		.loc 1 84 6 view .LVU65
+ 257 014e 002B     		cmp	r3, #0
+ 258 0150 BDD1     		bne	.L17
+  85:Core/Src/main.c **** 				int current_time = timer_cnt;
+ 259              		.loc 1 85 4 is_stmt 1 view .LVU66
+  85:Core/Src/main.c **** 				int current_time = timer_cnt;
+ 260              		.loc 1 85 8 is_stmt 0 view .LVU67
+ 261 0152 03F18043 		add	r3, r3, #1073741824
+ 262 0156 03F50133 		add	r3, r3, #132096
+ 263 015a 1B69     		ldr	r3, [r3, #16]
+  85:Core/Src/main.c **** 				int current_time = timer_cnt;
+ 264              		.loc 1 85 7 view .LVU68
+ 265 015c 13F4806F 		tst	r3, #1024
+ 266 0160 B5D0     		beq	.L17
+ 267              	.LBB4:
+  86:Core/Src/main.c **** 				if ((current_time - last_button_press_time) > DEBOUNCE_DELAY) {
+ 268              		.loc 1 86 5 is_stmt 1 view .LVU69
+  86:Core/Src/main.c **** 				if ((current_time - last_button_press_time) > DEBOUNCE_DELAY) {
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 8
+
+
+ 269              		.loc 1 86 9 is_stmt 0 view .LVU70
+ 270 0162 FDEEE77A 		vcvt.s32.f32	s15, s15
+ 271 0166 17EE903A 		vmov	r3, s15	@ int
+ 272              	.LVL4:
+  87:Core/Src/main.c **** 					flag_button = 1;
+ 273              		.loc 1 87 5 is_stmt 1 view .LVU71
+  87:Core/Src/main.c **** 					flag_button = 1;
+ 274              		.loc 1 87 23 is_stmt 0 view .LVU72
+ 275 016a 1A4A     		ldr	r2, .L23+44
+ 276 016c 1268     		ldr	r2, [r2]
+ 277 016e 9A1A     		subs	r2, r3, r2
+  87:Core/Src/main.c **** 					flag_button = 1;
+ 278              		.loc 1 87 8 view .LVU73
+ 279 0170 322A     		cmp	r2, #50
+ 280 0172 ACDD     		ble	.L17
+  88:Core/Src/main.c **** 					last_button_press_time = current_time;
+ 281              		.loc 1 88 6 is_stmt 1 view .LVU74
+  88:Core/Src/main.c **** 					last_button_press_time = current_time;
+ 282              		.loc 1 88 18 is_stmt 0 view .LVU75
+ 283 0174 104A     		ldr	r2, .L23+16
+ 284 0176 0121     		movs	r1, #1
+ 285 0178 1160     		str	r1, [r2]
+  89:Core/Src/main.c **** 				}
+ 286              		.loc 1 89 6 is_stmt 1 view .LVU76
+  89:Core/Src/main.c **** 				}
+ 287              		.loc 1 89 29 is_stmt 0 view .LVU77
+ 288 017a 164A     		ldr	r2, .L23+44
+ 289 017c C2ED007A 		vstr.32	s15, [r2]	@ int
+ 290 0180 A5E7     		b	.L17
+ 291              	.LVL5:
+ 292              	.L21:
+  89:Core/Src/main.c **** 				}
+ 293              		.loc 1 89 29 view .LVU78
+ 294              	.LBE4:
+  95:Core/Src/main.c **** 			if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_10) == 0) {
+ 295              		.loc 1 95 4 is_stmt 1 view .LVU79
+ 296              		.loc 1 95 8 is_stmt 0 view .LVU80
+ 297 0182 0C4B     		ldr	r3, .L23+12
+ 298 0184 1B69     		ldr	r3, [r3, #16]
+ 299              		.loc 1 95 7 view .LVU81
+ 300 0186 13F4806F 		tst	r3, #1024
+ 301 018a A4D1     		bne	.L2
+  96:Core/Src/main.c **** 				count++;
+ 302              		.loc 1 96 5 is_stmt 1 view .LVU82
+ 303              		.loc 1 96 10 is_stmt 0 view .LVU83
+ 304 018c 084A     		ldr	r2, .L23+8
+ 305 018e 1368     		ldr	r3, [r2]
+ 306 0190 0133     		adds	r3, r3, #1
+ 307 0192 1360     		str	r3, [r2]
+  97:Core/Src/main.c **** 				if (count > 6) {
+ 308              		.loc 1 97 5 is_stmt 1 view .LVU84
+ 309              		.loc 1 97 8 is_stmt 0 view .LVU85
+ 310 0194 062B     		cmp	r3, #6
+ 311 0196 02DD     		ble	.L19
+  98:Core/Src/main.c **** 					count = 0;
+ 312              		.loc 1 98 6 is_stmt 1 view .LVU86
+ 313              		.loc 1 98 12 is_stmt 0 view .LVU87
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 9
+
+
+ 314 0198 1346     		mov	r3, r2
+ 315 019a 0022     		movs	r2, #0
+ 316 019c 1A60     		str	r2, [r3]
+ 317              	.L19:
+  99:Core/Src/main.c **** 				}
+ 100:Core/Src/main.c **** 				flag_button = 0;
+ 318              		.loc 1 100 5 is_stmt 1 view .LVU88
+ 319              		.loc 1 100 17 is_stmt 0 view .LVU89
+ 320 019e 064B     		ldr	r3, .L23+16
+ 321 01a0 0022     		movs	r2, #0
+ 322 01a2 1A60     		str	r2, [r3]
+ 323 01a4 97E7     		b	.L2
+ 324              	.L24:
+ 325 01a6 00BF     		.align	2
+ 326              	.L23:
+ 327 01a8 00000240 		.word	1073872896
+ 328 01ac 00000000 		.word	last_butt_state
+ 329 01b0 00000000 		.word	count
+ 330 01b4 00040240 		.word	1073873920
+ 331 01b8 00000000 		.word	flag_button
+ 332 01bc 00000000 		.word	time_count
+ 333 01c0 D34D6210 		.word	274877907
+ 334 01c4 00000000 		.word	timer_cnt
+ 335 01c8 00080240 		.word	1073874944
+ 336 01cc 00000000 		.word	last_button_press_time_0
+ 337 01d0 00000000 		.word	flag
+ 338 01d4 00000000 		.word	last_button_press_time
+ 339              		.cfi_endproc
+ 340              	.LFE130:
+ 342              		.global	time_count
+ 343              		.section	.bss.time_count,"aw",%nobits
+ 344              		.align	2
+ 347              	time_count:
+ 348 0000 00000000 		.space	4
+ 349              		.global	timer_cnt
+ 350              		.section	.bss.timer_cnt,"aw",%nobits
+ 351              		.align	2
+ 354              	timer_cnt:
+ 355 0000 00000000 		.space	4
+ 356              		.global	last_button_press_time_0
+ 357              		.section	.bss.last_button_press_time_0,"aw",%nobits
+ 358              		.align	2
+ 361              	last_button_press_time_0:
+ 362 0000 00000000 		.space	4
+ 363              		.global	last_button_press_time
+ 364              		.section	.bss.last_button_press_time,"aw",%nobits
+ 365              		.align	2
+ 368              	last_button_press_time:
+ 369 0000 00000000 		.space	4
+ 370              		.global	last_butt_state
+ 371              		.section	.bss.last_butt_state,"aw",%nobits
+ 372              		.align	2
+ 375              	last_butt_state:
+ 376 0000 00000000 		.space	4
+ 377              		.global	but_state
+ 378              		.section	.bss.but_state,"aw",%nobits
+ 379              		.align	2
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 10
+
+
+ 382              	but_state:
+ 383 0000 00000000 		.space	4
+ 384              		.global	flag_button
+ 385              		.section	.bss.flag_button,"aw",%nobits
+ 386              		.align	2
+ 389              	flag_button:
+ 390 0000 00000000 		.space	4
+ 391              		.global	count
+ 392              		.section	.bss.count,"aw",%nobits
+ 393              		.align	2
+ 396              	count:
+ 397 0000 00000000 		.space	4
+ 398              		.global	flag
+ 399              		.section	.bss.flag,"aw",%nobits
+ 400              		.align	2
+ 403              	flag:
+ 404 0000 00000000 		.space	4
+ 405              		.text
+ 406              	.Letext0:
+ 407              		.file 2 "C:/LB_Np/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_
+ 408              		.file 3 "C:/LB_Np/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 409              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s 			page 11
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\vvman\AppData\Local\Temp\cc4f8y9B.s:21     .text.main:00000000 $t
-C:\Users\vvman\AppData\Local\Temp\cc4f8y9B.s:27     .text.main:00000000 main
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:21     .text.main:00000000 $t
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:27     .text.main:00000000 main
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:68     .text.main:00000032 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:327    .text.main:000001a8 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:375    .bss.last_butt_state:00000000 last_butt_state
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:396    .bss.count:00000000 count
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:389    .bss.flag_button:00000000 flag_button
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:347    .bss.time_count:00000000 time_count
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:354    .bss.timer_cnt:00000000 timer_cnt
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:361    .bss.last_button_press_time_0:00000000 last_button_press_time_0
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:403    .bss.flag:00000000 flag
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:368    .bss.last_button_press_time:00000000 last_button_press_time
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:344    .bss.time_count:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:351    .bss.timer_cnt:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:358    .bss.last_button_press_time_0:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:365    .bss.last_button_press_time:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:372    .bss.last_butt_state:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:382    .bss.but_state:00000000 but_state
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:379    .bss.but_state:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:386    .bss.flag_button:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:393    .bss.count:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:400    .bss.flag:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:75     .text.main:00000039 $d
+C:\Users\vvman\AppData\Local\Temp\ccNBSvy5.s:75     .text.main:0000003a $t
 
 NO UNDEFINED SYMBOLS
