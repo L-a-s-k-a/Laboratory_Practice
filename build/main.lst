@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 1
    7:Core/Src/main.c ****     //32768 KHz crystal oscillator
    8:Core/Src/main.c **** }
   50              		.loc 1 8 1 is_stmt 0 view .LVU7
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 2
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s 			page 2
 
 
   51 000a 7047     		bx	lr
@@ -73,347 +73,364 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 1
   62              	main:
   63              	.LFB131:
    9:Core/Src/main.c **** 
-  10:Core/Src/main.c **** int main(void){
-  64              		.loc 1 10 15 is_stmt 1 view -0
+  10:Core/Src/main.c **** uint8_t counter = 0;
+  11:Core/Src/main.c **** uint8_t flag = 0;
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** int main(void){
+  64              		.loc 1 13 15 is_stmt 1 view -0
   65              		.cfi_startproc
-  66              		@ args = 0, pretend = 0, frame = 0
-  67              		@ frame_needed = 0, uses_anonymous_args = 0
-  68 0000 10B5     		push	{r4, lr}
-  69              	.LCFI0:
-  70              		.cfi_def_cfa_offset 8
-  71              		.cfi_offset 4, -8
-  72              		.cfi_offset 14, -4
-  11:Core/Src/main.c ****     GPIO_Ini_Self();
-  73              		.loc 1 11 5 view .LVU9
-  74 0002 FFF7FEFF 		bl	GPIO_Ini_Self
-  75              	.LVL3:
-  12:Core/Src/main.c ****     GPIO_Ini_CMSIS();
-  76              		.loc 1 12 5 view .LVU10
-  77 0006 FFF7FEFF 		bl	GPIO_Ini_CMSIS
-  78              	.LVL4:
-  13:Core/Src/main.c ****     uint8_t counter = 0;
-  79              		.loc 1 13 5 view .LVU11
-  14:Core/Src/main.c ****     uint8_t flag = 0;
-  80              		.loc 1 14 5 view .LVU12
-  81              		.loc 1 14 13 is_stmt 0 view .LVU13
-  82 000a 0020     		movs	r0, #0
-  13:Core/Src/main.c ****     uint8_t counter = 0;
-  83              		.loc 1 13 13 view .LVU14
-  84 000c 0246     		mov	r2, r0
-  85 000e 1FE0     		b	.L5
-  86              	.LVL5:
-  87              	.L7:
-  15:Core/Src/main.c ****     //address of LED 1 (GPIOB_pin14)
-  16:Core/Src/main.c ****     //address of LED 2 (GPIOB_pin0)
-  17:Core/Src/main.c ****     //address of LED 3 (GPIOB_pin7)
-  18:Core/Src/main.c ****     //address of LED 4 (GPIOB_pin8)
-  19:Core/Src/main.c ****     //address of Button (GPIOB_pin13)
-  20:Core/Src/main.c ****     while(1){
+  66              		@ Volatile: function does not return.
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69 0000 08B5     		push	{r3, lr}
+  70              	.LCFI0:
+  71              		.cfi_def_cfa_offset 8
+  72              		.cfi_offset 3, -8
+  73              		.cfi_offset 14, -4
+  14:Core/Src/main.c ****     GPIO_Ini_Self();
+  74              		.loc 1 14 5 view .LVU9
+  75 0002 FFF7FEFF 		bl	GPIO_Ini_Self
+  76              	.LVL3:
+  15:Core/Src/main.c ****     GPIO_Ini_CMSIS();
+  77              		.loc 1 15 5 view .LVU10
+  78 0006 FFF7FEFF 		bl	GPIO_Ini_CMSIS
+  79              	.LVL4:
+  80 000a 26E0     		b	.L5
+  81              	.L7:
+  16:Core/Src/main.c ****     //address of LED 1 (GPIOB_pin14)
+  17:Core/Src/main.c ****     //address of LED 2 (GPIOB_pin0)
+  18:Core/Src/main.c ****     //address of LED 3 (GPIOB_pin7)
+  19:Core/Src/main.c ****     //address of LED 4 (GPIOB_pin8)
+  20:Core/Src/main.c ****     //address of Button (GPIOB_pin13)
+  21:Core/Src/main.c ****     while(1){
+  22:Core/Src/main.c ****         if(READ_BIT_Self(GPIOC_IDR, GPIOC_IDR_PIN13) != 0){
+  23:Core/Src/main.c ****             if(flag == 0){
+  24:Core/Src/main.c ****                 flag = 1;
+  25:Core/Src/main.c ****                 counter++;
+  26:Core/Src/main.c ****                 delay(1638);
+  27:Core/Src/main.c ****             }           
+  28:Core/Src/main.c ****         }
+  29:Core/Src/main.c ****         else if(flag == 1){
+  82              		.loc 1 29 14 view .LVU11
+  83              		.loc 1 29 22 is_stmt 0 view .LVU12
+  84 000c 584B     		ldr	r3, .L19
+  85 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  86              		.loc 1 29 16 view .LVU13
+  87 0010 012B     		cmp	r3, #1
+  88 0012 34D0     		beq	.L18
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s 			page 3
+
+
+  89              	.L8:
+  30:Core/Src/main.c ****             flag = 0;
+  31:Core/Src/main.c ****             delay(1638);
+  32:Core/Src/main.c ****         }
+  33:Core/Src/main.c ****         if(counter%6 == 0)//включение всех светодиодов на 6-ое нажа
+  90              		.loc 1 33 9 is_stmt 1 view .LVU14
+  91              		.loc 1 33 22 is_stmt 0 view .LVU15
+  92 0014 574B     		ldr	r3, .L19+4
+  93 0016 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+  94 0018 574B     		ldr	r3, .L19+8
+  95 001a A3FB0213 		umull	r1, r3, r3, r2
+  96 001e 9B08     		lsrs	r3, r3, #2
+  97 0020 03EB4303 		add	r3, r3, r3, lsl #1
+  98 0024 5900     		lsls	r1, r3, #1
+  99 0026 511A     		subs	r1, r2, r1
+ 100              		.loc 1 33 11 view .LVU16
+ 101 0028 11F0FF0F 		tst	r1, #255
+ 102 002c 2BD1     		bne	.L9
+  34:Core/Src/main.c ****         {
+  35:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x4000UL;//включение светодиод
+ 103              		.loc 1 35 13 is_stmt 1 view .LVU17
+ 104 002e 5349     		ldr	r1, .L19+12
+ 105 0030 D1F81834 		ldr	r3, [r1, #1048]
+ 106              		.loc 1 35 49 is_stmt 0 view .LVU18
+ 107 0034 43F48043 		orr	r3, r3, #16384
+ 108 0038 C1F81834 		str	r3, [r1, #1048]
+  36:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET); //включение светодиод�
+ 109              		.loc 1 36 13 is_stmt 1 view .LVU19
+  37:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//включение светодиода 7-го п
+ 110              		.loc 1 37 13 view .LVU20
+ 111 003c 504B     		ldr	r3, .L19+16
+ 112 003e 9969     		ldr	r1, [r3, #24]
+ 113 0040 41F40001 		orr	r1, r1, #8388608
+ 114 0044 9961     		str	r1, [r3, #24]
+  38:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//включение светодиода 8-го п
+ 115              		.loc 1 38 13 view .LVU21
+ 116 0046 9969     		ldr	r1, [r3, #24]
+ 117 0048 41F08071 		orr	r1, r1, #16777216
+ 118 004c 9961     		str	r1, [r3, #24]
+  39:Core/Src/main.c ****             if(counter%4 == 0)
+ 119              		.loc 1 39 13 view .LVU22
+ 120              		.loc 1 39 15 is_stmt 0 view .LVU23
+ 121 004e 12F0030F 		tst	r2, #3
+ 122 0052 02D1     		bne	.L5
+  40:Core/Src/main.c ****             {
+  41:Core/Src/main.c ****                 counter = 0;
+ 123              		.loc 1 41 17 is_stmt 1 view .LVU24
+ 124              		.loc 1 41 25 is_stmt 0 view .LVU25
+ 125 0054 474B     		ldr	r3, .L19+4
+ 126 0056 0022     		movs	r2, #0
+ 127 0058 1A70     		strb	r2, [r3]
+ 128              	.L5:
   21:Core/Src/main.c ****         if(READ_BIT_Self(GPIOC_IDR, GPIOC_IDR_PIN13) != 0){
+ 129              		.loc 1 21 5 is_stmt 1 view .LVU26
   22:Core/Src/main.c ****             if(flag == 0){
+ 130              		.loc 1 22 9 view .LVU27
+  22:Core/Src/main.c ****             if(flag == 0){
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s 			page 4
+
+
+ 131              		.loc 1 22 12 is_stmt 0 view .LVU28
+ 132 005a 484B     		ldr	r3, .L19+12
+ 133 005c D3F81038 		ldr	r3, [r3, #2064]
+  22:Core/Src/main.c ****             if(flag == 0){
+ 134              		.loc 1 22 11 view .LVU29
+ 135 0060 13F4005F 		tst	r3, #8192
+ 136 0064 D2D0     		beq	.L7
   23:Core/Src/main.c ****                 flag = 1;
+ 137              		.loc 1 23 13 is_stmt 1 view .LVU30
+  23:Core/Src/main.c ****                 flag = 1;
+ 138              		.loc 1 23 21 is_stmt 0 view .LVU31
+ 139 0066 424B     		ldr	r3, .L19
+ 140 0068 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  23:Core/Src/main.c ****                 flag = 1;
+ 141              		.loc 1 23 15 view .LVU32
+ 142 006a 002B     		cmp	r3, #0
+ 143 006c D2D1     		bne	.L8
   24:Core/Src/main.c ****                 counter++;
+ 144              		.loc 1 24 17 is_stmt 1 view .LVU33
+  24:Core/Src/main.c ****                 counter++;
+ 145              		.loc 1 24 22 is_stmt 0 view .LVU34
+ 146 006e 404B     		ldr	r3, .L19
+ 147 0070 0122     		movs	r2, #1
+ 148 0072 1A70     		strb	r2, [r3]
   25:Core/Src/main.c ****                 delay(1638);
+ 149              		.loc 1 25 17 is_stmt 1 view .LVU35
+  25:Core/Src/main.c ****                 delay(1638);
+ 150              		.loc 1 25 24 is_stmt 0 view .LVU36
+ 151 0074 3F4A     		ldr	r2, .L19+4
+ 152 0076 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 153 0078 0133     		adds	r3, r3, #1
+ 154 007a 1370     		strb	r3, [r2]
   26:Core/Src/main.c ****             }           
-  27:Core/Src/main.c ****         }
-  28:Core/Src/main.c ****         else if(flag == 1){
-  88              		.loc 1 28 14 is_stmt 1 view .LVU15
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 3
-
-
-  89              		.loc 1 28 16 is_stmt 0 view .LVU16
-  90 0010 50BB     		cbnz	r0, .L21
-  91              	.LVL6:
-  92              	.L8:
-  29:Core/Src/main.c ****             flag = 0;
+ 155              		.loc 1 26 17 is_stmt 1 view .LVU37
+ 156 007c CAE7     		b	.L8
+ 157              	.L18:
   30:Core/Src/main.c ****             delay(1638);
+ 158              		.loc 1 30 13 view .LVU38
+  30:Core/Src/main.c ****             delay(1638);
+ 159              		.loc 1 30 18 is_stmt 0 view .LVU39
+ 160 007e 3C4B     		ldr	r3, .L19
+ 161 0080 0022     		movs	r2, #0
+ 162 0082 1A70     		strb	r2, [r3]
   31:Core/Src/main.c ****         }
-  32:Core/Src/main.c ****         if(counter%6 == 0)//включение всех светодиодов на 6-ое нажа
-  93              		.loc 1 32 9 is_stmt 1 view .LVU17
-  94              		.loc 1 32 22 is_stmt 0 view .LVU18
-  95 0012 514B     		ldr	r3, .L22
-  96 0014 A3FB0213 		umull	r1, r3, r3, r2
-  97 0018 9B08     		lsrs	r3, r3, #2
-  98 001a 03EB4303 		add	r3, r3, r3, lsl #1
-  99 001e 5900     		lsls	r1, r3, #1
- 100 0020 511A     		subs	r1, r2, r1
- 101              		.loc 1 32 11 view .LVU19
- 102 0022 11F0FF0F 		tst	r1, #255
- 103 0026 21D1     		bne	.L9
-  33:Core/Src/main.c ****         {
-  34:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x4000UL;//включение светодиод
- 104              		.loc 1 34 13 is_stmt 1 view .LVU20
- 105 0028 4C49     		ldr	r1, .L22+4
- 106 002a D1F81834 		ldr	r3, [r1, #1048]
- 107              		.loc 1 34 49 is_stmt 0 view .LVU21
- 108 002e 43F48043 		orr	r3, r3, #16384
- 109 0032 C1F81834 		str	r3, [r1, #1048]
-  35:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET); //включение светодиод�
- 110              		.loc 1 35 13 is_stmt 1 view .LVU22
-  36:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//включение светодиода 7-го п
- 111              		.loc 1 36 13 view .LVU23
- 112 0036 4A4B     		ldr	r3, .L22+8
- 113 0038 9969     		ldr	r1, [r3, #24]
- 114 003a 41F40001 		orr	r1, r1, #8388608
- 115 003e 9961     		str	r1, [r3, #24]
-  37:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//включение светодиода 8-го п
- 116              		.loc 1 37 13 view .LVU24
- 117 0040 9969     		ldr	r1, [r3, #24]
- 118 0042 41F08071 		orr	r1, r1, #16777216
- 119 0046 9961     		str	r1, [r3, #24]
-  38:Core/Src/main.c ****             if(counter%4 == 0)
- 120              		.loc 1 38 13 view .LVU25
- 121              		.loc 1 38 15 is_stmt 0 view .LVU26
- 122 0048 12F00303 		ands	r3, r2, #3
- 123 004c 00D1     		bne	.L5
-  39:Core/Src/main.c ****             {
-  40:Core/Src/main.c ****                 counter = 0;
- 124              		.loc 1 40 25 view .LVU27
- 125 004e 1A46     		mov	r2, r3
- 126              	.LVL7:
- 127              	.L5:
-  20:Core/Src/main.c ****         if(READ_BIT_Self(GPIOC_IDR, GPIOC_IDR_PIN13) != 0){
- 128              		.loc 1 20 5 is_stmt 1 view .LVU28
-  21:Core/Src/main.c ****             if(flag == 0){
- 129              		.loc 1 21 9 view .LVU29
-  21:Core/Src/main.c ****             if(flag == 0){
- 130              		.loc 1 21 12 is_stmt 0 view .LVU30
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 4
+ 163              		.loc 1 31 13 is_stmt 1 view .LVU40
+ 164 0084 C6E7     		b	.L8
+ 165              	.L9:
+  42:Core/Src/main.c ****             }
+  43:Core/Src/main.c ****         }
+  44:Core/Src/main.c ****         else if (counter%5 == 0)//выключение всех светодиодов
+ 166              		.loc 1 44 14 view .LVU41
+ 167              		.loc 1 44 28 is_stmt 0 view .LVU42
+ 168 0086 3F4B     		ldr	r3, .L19+20
+ 169 0088 A3FB0213 		umull	r1, r3, r3, r2
+ 170 008c 03F0FC01 		and	r1, r3, #252
+ 171 0090 01EB9303 		add	r3, r1, r3, lsr #2
+ 172 0094 D21A     		subs	r2, r2, r3
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s 			page 5
 
 
- 131 0050 424B     		ldr	r3, .L22+4
- 132 0052 D3F81038 		ldr	r3, [r3, #2064]
-  21:Core/Src/main.c ****             if(flag == 0){
- 133              		.loc 1 21 11 view .LVU31
- 134 0056 13F4005F 		tst	r3, #8192
- 135 005a D9D0     		beq	.L7
-  22:Core/Src/main.c ****                 flag = 1;
- 136              		.loc 1 22 13 is_stmt 1 view .LVU32
-  22:Core/Src/main.c ****                 flag = 1;
- 137              		.loc 1 22 15 is_stmt 0 view .LVU33
- 138 005c 0028     		cmp	r0, #0
- 139 005e D8D1     		bne	.L8
-  23:Core/Src/main.c ****                 counter++;
- 140              		.loc 1 23 17 is_stmt 1 view .LVU34
- 141              	.LVL8:
-  24:Core/Src/main.c ****                 delay(1638);
- 142              		.loc 1 24 17 view .LVU35
-  24:Core/Src/main.c ****                 delay(1638);
- 143              		.loc 1 24 24 is_stmt 0 view .LVU36
- 144 0060 0132     		adds	r2, r2, #1
- 145              	.LVL9:
-  24:Core/Src/main.c ****                 delay(1638);
- 146              		.loc 1 24 24 view .LVU37
- 147 0062 D2B2     		uxtb	r2, r2
- 148              	.LVL10:
-  25:Core/Src/main.c ****             }           
- 149              		.loc 1 25 17 is_stmt 1 view .LVU38
-  23:Core/Src/main.c ****                 counter++;
- 150              		.loc 1 23 22 is_stmt 0 view .LVU39
- 151 0064 0120     		movs	r0, #1
- 152 0066 D4E7     		b	.L8
- 153              	.LVL11:
- 154              	.L21:
-  29:Core/Src/main.c ****             delay(1638);
- 155              		.loc 1 29 18 view .LVU40
- 156 0068 0020     		movs	r0, #0
- 157              	.LVL12:
-  29:Core/Src/main.c ****             delay(1638);
- 158              		.loc 1 29 18 view .LVU41
- 159 006a D2E7     		b	.L8
- 160              	.LVL13:
- 161              	.L9:
-  41:Core/Src/main.c ****             }
-  42:Core/Src/main.c ****         }
-  43:Core/Src/main.c ****         else if (counter%5 == 0)//выключение всех светодиодов
- 162              		.loc 1 43 14 is_stmt 1 view .LVU42
- 163              		.loc 1 43 28 is_stmt 0 view .LVU43
- 164 006c 3D49     		ldr	r1, .L22+12
- 165 006e A1FB0231 		umull	r3, r1, r1, r2
- 166 0072 21F00303 		bic	r3, r1, #3
- 167 0076 03EB9103 		add	r3, r3, r1, lsr #2
- 168 007a D31A     		subs	r3, r2, r3
- 169 007c DBB2     		uxtb	r3, r3
- 170 007e 042B     		cmp	r3, #4
- 171 0080 E6D8     		bhi	.L5
- 172 0082 DFE803F0 		tbb	[pc, r3]
- 173              	.L12:
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 5
+ 173 0096 D2B2     		uxtb	r2, r2
+ 174 0098 042A     		cmp	r2, #4
+ 175 009a DED8     		bhi	.L5
+ 176 009c DFE802F0 		tbb	[pc, r2]
+ 177              	.L11:
+ 178 00a0 03       		.byte	(.L15-.L11)/2
+ 179 00a1 18       		.byte	(.L14-.L11)/2
+ 180 00a2 2D       		.byte	(.L13-.L11)/2
+ 181 00a3 3E       		.byte	(.L12-.L11)/2
+ 182 00a4 53       		.byte	(.L10-.L11)/2
+ 183 00a5 00       		.p2align 1
+ 184              	.L15:
+  45:Core/Src/main.c ****         {
+  46:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светод
+ 185              		.loc 1 46 13 is_stmt 1 view .LVU43
+ 186 00a6 354A     		ldr	r2, .L19+12
+ 187 00a8 D2F81834 		ldr	r3, [r2, #1048]
+ 188              		.loc 1 46 49 is_stmt 0 view .LVU44
+ 189 00ac 43F08043 		orr	r3, r3, #1073741824
+ 190 00b0 C2F81834 		str	r3, [r2, #1048]
+  47:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодио
+ 191              		.loc 1 47 13 is_stmt 1 view .LVU45
+ 192 00b4 43F48033 		orr	r3, r3, #65536
+ 193 00b8 C2F81834 		str	r3, [r2, #1048]
+  48:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-г�
+ 194              		.loc 1 48 13 view .LVU46
+ 195 00bc 304B     		ldr	r3, .L19+16
+ 196 00be 9A69     		ldr	r2, [r3, #24]
+ 197 00c0 22F40002 		bic	r2, r2, #8388608
+ 198 00c4 9A61     		str	r2, [r3, #24]
+  49:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-г�
+ 199              		.loc 1 49 13 view .LVU47
+ 200 00c6 9A69     		ldr	r2, [r3, #24]
+ 201 00c8 22F08072 		bic	r2, r2, #16777216
+ 202 00cc 9A61     		str	r2, [r3, #24]
+ 203 00ce C4E7     		b	.L5
+ 204              	.L14:
+  50:Core/Src/main.c ****         }
+  51:Core/Src/main.c ****         else if (counter%5 == 1)//LED 1
+  52:Core/Src/main.c ****         {
+  53:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x4000UL;//включение светодиод
+ 205              		.loc 1 53 13 view .LVU48
+ 206 00d0 2A4A     		ldr	r2, .L19+12
+ 207 00d2 D2F81834 		ldr	r3, [r2, #1048]
+ 208              		.loc 1 53 49 is_stmt 0 view .LVU49
+ 209 00d6 43F48041 		orr	r1, r3, #16384
+ 210 00da C2F81814 		str	r1, [r2, #1048]
+  54:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодио
+ 211              		.loc 1 54 13 is_stmt 1 view .LVU50
+ 212 00de 43F4A033 		orr	r3, r3, #81920
+ 213 00e2 C2F81834 		str	r3, [r2, #1048]
+  55:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-г�
+ 214              		.loc 1 55 13 view .LVU51
+ 215 00e6 264B     		ldr	r3, .L19+16
+ 216 00e8 9A69     		ldr	r2, [r3, #24]
+ 217 00ea 22F40002 		bic	r2, r2, #8388608
+ 218 00ee 9A61     		str	r2, [r3, #24]
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s 			page 6
 
 
- 174 0086 03       		.byte	(.L16-.L12)/2
- 175 0087 18       		.byte	(.L15-.L12)/2
- 176 0088 2D       		.byte	(.L14-.L12)/2
- 177 0089 3E       		.byte	(.L13-.L12)/2
- 178 008a 53       		.byte	(.L11-.L12)/2
- 179 008b 00       		.p2align 1
- 180              	.L16:
-  44:Core/Src/main.c ****         {
-  45:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светод
- 181              		.loc 1 45 13 is_stmt 1 view .LVU44
- 182 008c 3349     		ldr	r1, .L22+4
- 183 008e D1F81834 		ldr	r3, [r1, #1048]
- 184              		.loc 1 45 49 is_stmt 0 view .LVU45
- 185 0092 43F08043 		orr	r3, r3, #1073741824
- 186 0096 C1F81834 		str	r3, [r1, #1048]
-  46:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодио
- 187              		.loc 1 46 13 is_stmt 1 view .LVU46
- 188 009a 43F48033 		orr	r3, r3, #65536
- 189 009e C1F81834 		str	r3, [r1, #1048]
-  47:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-г�
- 190              		.loc 1 47 13 view .LVU47
- 191 00a2 2F4B     		ldr	r3, .L22+8
- 192 00a4 9969     		ldr	r1, [r3, #24]
- 193 00a6 21F40001 		bic	r1, r1, #8388608
- 194 00aa 9961     		str	r1, [r3, #24]
-  48:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-г�
- 195              		.loc 1 48 13 view .LVU48
- 196 00ac 9969     		ldr	r1, [r3, #24]
- 197 00ae 21F08071 		bic	r1, r1, #16777216
- 198 00b2 9961     		str	r1, [r3, #24]
- 199 00b4 CCE7     		b	.L5
- 200              	.L15:
-  49:Core/Src/main.c ****         }
-  50:Core/Src/main.c ****         else if (counter%5 == 1)//LED 1
-  51:Core/Src/main.c ****         {
-  52:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x4000UL;//включение светодиод
- 201              		.loc 1 52 13 view .LVU49
- 202 00b6 2949     		ldr	r1, .L22+4
- 203 00b8 D1F81834 		ldr	r3, [r1, #1048]
- 204              		.loc 1 52 49 is_stmt 0 view .LVU50
- 205 00bc 43F48044 		orr	r4, r3, #16384
- 206 00c0 C1F81844 		str	r4, [r1, #1048]
-  53:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодио
- 207              		.loc 1 53 13 is_stmt 1 view .LVU51
- 208 00c4 43F4A033 		orr	r3, r3, #81920
- 209 00c8 C1F81834 		str	r3, [r1, #1048]
-  54:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-г�
- 210              		.loc 1 54 13 view .LVU52
- 211 00cc 244B     		ldr	r3, .L22+8
- 212 00ce 9969     		ldr	r1, [r3, #24]
- 213 00d0 21F40001 		bic	r1, r1, #8388608
- 214 00d4 9961     		str	r1, [r3, #24]
-  55:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-г�
- 215              		.loc 1 55 13 view .LVU53
- 216 00d6 9969     		ldr	r1, [r3, #24]
- 217 00d8 21F08071 		bic	r1, r1, #16777216
- 218 00dc 9961     		str	r1, [r3, #24]
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 6
+  56:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-г�
+ 219              		.loc 1 56 13 view .LVU52
+ 220 00f0 9A69     		ldr	r2, [r3, #24]
+ 221 00f2 22F08072 		bic	r2, r2, #16777216
+ 222 00f6 9A61     		str	r2, [r3, #24]
+ 223 00f8 AFE7     		b	.L5
+ 224              	.L13:
+  57:Core/Src/main.c ****         }
+  58:Core/Src/main.c ****         else if (counter%5 == 2)//LED 2
+  59:Core/Src/main.c ****         {
+  60:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светод
+ 225              		.loc 1 60 13 view .LVU53
+ 226 00fa 204A     		ldr	r2, .L19+12
+ 227 00fc D2F81834 		ldr	r3, [r2, #1048]
+ 228              		.loc 1 60 49 is_stmt 0 view .LVU54
+ 229 0100 43F08043 		orr	r3, r3, #1073741824
+ 230 0104 C2F81834 		str	r3, [r2, #1048]
+  61:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET);//включение светодиода
+ 231              		.loc 1 61 13 is_stmt 1 view .LVU55
+  62:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-г�
+ 232              		.loc 1 62 13 view .LVU56
+ 233 0108 1D4B     		ldr	r3, .L19+16
+ 234 010a 9A69     		ldr	r2, [r3, #24]
+ 235 010c 22F40002 		bic	r2, r2, #8388608
+ 236 0110 9A61     		str	r2, [r3, #24]
+  63:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-г�
+ 237              		.loc 1 63 13 view .LVU57
+ 238 0112 9A69     		ldr	r2, [r3, #24]
+ 239 0114 22F08072 		bic	r2, r2, #16777216
+ 240 0118 9A61     		str	r2, [r3, #24]
+ 241 011a 9EE7     		b	.L5
+ 242              	.L12:
+  64:Core/Src/main.c ****         }
+  65:Core/Src/main.c ****         else if (counter%5 == 3)//LED 3
+  66:Core/Src/main.c ****         {
+  67:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светод
+ 243              		.loc 1 67 13 view .LVU58
+ 244 011c 174A     		ldr	r2, .L19+12
+ 245 011e D2F81834 		ldr	r3, [r2, #1048]
+ 246              		.loc 1 67 49 is_stmt 0 view .LVU59
+ 247 0122 43F08043 		orr	r3, r3, #1073741824
+ 248 0126 C2F81834 		str	r3, [r2, #1048]
+  68:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодио
+ 249              		.loc 1 68 13 is_stmt 1 view .LVU60
+ 250 012a 43F48033 		orr	r3, r3, #65536
+ 251 012e C2F81834 		str	r3, [r2, #1048]
+  69:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//включение светодиода 7-го п
+ 252              		.loc 1 69 13 view .LVU61
+ 253 0132 134B     		ldr	r3, .L19+16
+ 254 0134 9A69     		ldr	r2, [r3, #24]
+ 255 0136 42F40002 		orr	r2, r2, #8388608
+ 256 013a 9A61     		str	r2, [r3, #24]
+  70:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-г�
+ 257              		.loc 1 70 13 view .LVU62
+ 258 013c 9A69     		ldr	r2, [r3, #24]
+ 259 013e 22F08072 		bic	r2, r2, #16777216
+ 260 0142 9A61     		str	r2, [r3, #24]
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s 			page 7
 
 
- 219 00de B7E7     		b	.L5
- 220              	.L14:
-  56:Core/Src/main.c ****         }
-  57:Core/Src/main.c ****         else if (counter%5 == 2)//LED 2
-  58:Core/Src/main.c ****         {
-  59:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светод
- 221              		.loc 1 59 13 view .LVU54
- 222 00e0 1E49     		ldr	r1, .L22+4
- 223 00e2 D1F81834 		ldr	r3, [r1, #1048]
- 224              		.loc 1 59 49 is_stmt 0 view .LVU55
- 225 00e6 43F08043 		orr	r3, r3, #1073741824
- 226 00ea C1F81834 		str	r3, [r1, #1048]
-  60:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET);//включение светодиода
- 227              		.loc 1 60 13 is_stmt 1 view .LVU56
-  61:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-г�
- 228              		.loc 1 61 13 view .LVU57
- 229 00ee 1C4B     		ldr	r3, .L22+8
- 230 00f0 9969     		ldr	r1, [r3, #24]
- 231 00f2 21F40001 		bic	r1, r1, #8388608
- 232 00f6 9961     		str	r1, [r3, #24]
-  62:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-г�
- 233              		.loc 1 62 13 view .LVU58
- 234 00f8 9969     		ldr	r1, [r3, #24]
- 235 00fa 21F08071 		bic	r1, r1, #16777216
- 236 00fe 9961     		str	r1, [r3, #24]
- 237 0100 A6E7     		b	.L5
- 238              	.L13:
-  63:Core/Src/main.c ****         }
-  64:Core/Src/main.c ****         else if (counter%5 == 3)//LED 3
-  65:Core/Src/main.c ****         {
-  66:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светод
- 239              		.loc 1 66 13 view .LVU59
- 240 0102 1649     		ldr	r1, .L22+4
- 241 0104 D1F81834 		ldr	r3, [r1, #1048]
- 242              		.loc 1 66 49 is_stmt 0 view .LVU60
- 243 0108 43F08043 		orr	r3, r3, #1073741824
- 244 010c C1F81834 		str	r3, [r1, #1048]
-  67:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодио
- 245              		.loc 1 67 13 is_stmt 1 view .LVU61
- 246 0110 43F48033 		orr	r3, r3, #65536
- 247 0114 C1F81834 		str	r3, [r1, #1048]
-  68:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//включение светодиода 7-го п
- 248              		.loc 1 68 13 view .LVU62
- 249 0118 114B     		ldr	r3, .L22+8
- 250 011a 9969     		ldr	r1, [r3, #24]
- 251 011c 41F40001 		orr	r1, r1, #8388608
- 252 0120 9961     		str	r1, [r3, #24]
-  69:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//выключение светодиода 8-г�
- 253              		.loc 1 69 13 view .LVU63
- 254 0122 9969     		ldr	r1, [r3, #24]
- 255 0124 21F08071 		bic	r1, r1, #16777216
- 256 0128 9961     		str	r1, [r3, #24]
- 257 012a 91E7     		b	.L5
- 258              	.L11:
-  70:Core/Src/main.c ****         }
-  71:Core/Src/main.c ****         else if (counter%5 == 4)//LED 4
-  72:Core/Src/main.c ****         {
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 7
-
-
-  73:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светод
- 259              		.loc 1 73 13 view .LVU64
- 260 012c 0B49     		ldr	r1, .L22+4
- 261 012e D1F81834 		ldr	r3, [r1, #1048]
- 262              		.loc 1 73 49 is_stmt 0 view .LVU65
- 263 0132 43F08043 		orr	r3, r3, #1073741824
- 264 0136 C1F81834 		str	r3, [r1, #1048]
-  74:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодио
- 265              		.loc 1 74 13 is_stmt 1 view .LVU66
- 266 013a 43F48033 		orr	r3, r3, #65536
- 267 013e C1F81834 		str	r3, [r1, #1048]
-  75:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-г�
- 268              		.loc 1 75 13 view .LVU67
- 269 0142 074B     		ldr	r3, .L22+8
- 270 0144 9969     		ldr	r1, [r3, #24]
- 271 0146 21F40001 		bic	r1, r1, #8388608
- 272 014a 9961     		str	r1, [r3, #24]
-  76:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//включение светодиода 8-го п
- 273              		.loc 1 76 13 view .LVU68
- 274 014c 9969     		ldr	r1, [r3, #24]
- 275 014e 41F08071 		orr	r1, r1, #16777216
- 276 0152 9961     		str	r1, [r3, #24]
- 277              	.LVL14:
- 278              		.loc 1 76 13 is_stmt 0 view .LVU69
- 279 0154 7CE7     		b	.L5
- 280              	.L23:
- 281 0156 00BF     		.align	2
- 282              	.L22:
- 283 0158 ABAAAAAA 		.word	-1431655765
- 284 015c 00000240 		.word	1073872896
- 285 0160 00040240 		.word	1073873920
- 286 0164 CDCCCCCC 		.word	-858993459
- 287              		.cfi_endproc
- 288              	.LFE131:
- 290              		.text
- 291              	.Letext0:
- 292              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
- 293              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 294              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
- 295              		.file 5 "Core/Src/../Inc/init.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s 			page 8
+ 261 0144 89E7     		b	.L5
+ 262              	.L10:
+  71:Core/Src/main.c ****         }
+  72:Core/Src/main.c ****         else if (counter%5 == 4)//LED 4
+  73:Core/Src/main.c ****         {
+  74:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;//выключение светод
+ 263              		.loc 1 74 13 view .LVU63
+ 264 0146 0D4A     		ldr	r2, .L19+12
+ 265 0148 D2F81834 		ldr	r3, [r2, #1048]
+ 266              		.loc 1 74 49 is_stmt 0 view .LVU64
+ 267 014c 43F08043 		orr	r3, r3, #1073741824
+ 268 0150 C2F81834 		str	r3, [r2, #1048]
+  75:Core/Src/main.c ****             SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);//выключение светодио
+ 269              		.loc 1 75 13 is_stmt 1 view .LVU65
+ 270 0154 43F48033 		orr	r3, r3, #65536
+ 271 0158 C2F81834 		str	r3, [r2, #1048]
+  76:Core/Src/main.c ****             CLEAR_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-г�
+ 272              		.loc 1 76 13 view .LVU66
+ 273 015c 084B     		ldr	r3, .L19+16
+ 274 015e 9A69     		ldr	r2, [r3, #24]
+ 275 0160 22F40002 		bic	r2, r2, #8388608
+ 276 0164 9A61     		str	r2, [r3, #24]
+  77:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//включение светодиода 8-го п
+ 277              		.loc 1 77 13 view .LVU67
+ 278 0166 9A69     		ldr	r2, [r3, #24]
+ 279 0168 42F08072 		orr	r2, r2, #16777216
+ 280 016c 9A61     		str	r2, [r3, #24]
+ 281 016e 74E7     		b	.L5
+ 282              	.L20:
+ 283              		.align	2
+ 284              	.L19:
+ 285 0170 00000000 		.word	flag
+ 286 0174 00000000 		.word	counter
+ 287 0178 ABAAAAAA 		.word	-1431655765
+ 288 017c 00000240 		.word	1073872896
+ 289 0180 00040240 		.word	1073873920
+ 290 0184 CDCCCCCC 		.word	-858993459
+ 291              		.cfi_endproc
+ 292              	.LFE131:
+ 294              		.global	flag
+ 295              		.section	.bss.flag,"aw",%nobits
+ 298              	flag:
+ 299 0000 00       		.space	1
+ 300              		.global	counter
+ 301              		.section	.bss.counter,"aw",%nobits
+ 304              	counter:
+ 305 0000 00       		.space	1
+ 306              		.text
+ 307              	.Letext0:
+ 308              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 309              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 310              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 311              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s 			page 8
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s:21     .text.delay:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s:27     .text.delay:00000000 delay
-C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s:56     .text.main:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s:62     .text.main:00000000 main
-C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s:174    .text.main:00000086 $d
-C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s:283    .text.main:00000158 $d
-C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s:179    .text.main:0000008b $d
-C:\Users\rpong\AppData\Local\Temp\cckLgdhP.s:179    .text.main:0000008c $t
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:21     .text.delay:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:27     .text.delay:00000000 delay
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:56     .text.main:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:62     .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:178    .text.main:000000a0 $d
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:285    .text.main:00000170 $d
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:298    .bss.flag:00000000 flag
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:304    .bss.counter:00000000 counter
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:299    .bss.flag:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:305    .bss.counter:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:183    .text.main:000000a5 $d
+C:\Users\rpong\AppData\Local\Temp\cc6AGWvq.s:183    .text.main:000000a6 $t
 
 UNDEFINED SYMBOLS
 GPIO_Ini_Self
