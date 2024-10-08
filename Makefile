@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = F429ZI_CMSIS
+TARGET = Laboratory_Practice-1
 
 
 ######################################
@@ -35,8 +35,9 @@ BUILD_DIR = build
 # source
 ######################################
 # C sources
-C_SOURCES =  \
+C_SOURCES = \
 Core/Src/main.c \
+Core/src/init.c \
 
 
 # ASM sources
