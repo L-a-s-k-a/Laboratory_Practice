@@ -37,6 +37,7 @@ BUILD_DIR = Build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
+Core/Src/init.c \
 
 
 # ASM sources
@@ -91,7 +92,7 @@ C_DEFS =  \
 
 
 # AS includes
-AS_INCLUDES = 
+AS_INCLUDES = \
 
 # C includes
 C_INCLUDES =  \

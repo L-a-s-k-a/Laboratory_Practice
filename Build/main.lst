@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccBogadc.s 			page 1
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,30 +27,642 @@ ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccBogadc.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void){
-  29              		.loc 1 1 15 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** uint8_t flag = 1;
+   4:Core/Src/main.c **** uint8_t flag_rev_1 = 1;
+   5:Core/Src/main.c **** uint8_t flag_rev_2 = 1;
+   6:Core/Src/main.c **** uint8_t count = 0;
+   7:Core/Src/main.c **** uint8_t reverse = 1;
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** int main(void){
+  29              		.loc 1 11 15 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){}
-  36              		.loc 1 2 5 view .LVU1
-  37              		.loc 1 2 14 view .LVU2
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccBogadc.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c ****     GPIO_Ini();
+  38              		.loc 1 13 5 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Ini
+  40              	.LVL0:
+  41 0006 20E0     		b	.L2
+  42              	.L32:
+  14:Core/Src/main.c ****     while(1){     
+  15:Core/Src/main.c ****         if ((READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_6 ) !=0)){
+  16:Core/Src/main.c ****             reverse = !reverse;
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 2
+
+
+  43              		.loc 1 16 13 view .LVU2
+  44              		.loc 1 16 23 is_stmt 0 view .LVU3
+  45 0008 764A     		ldr	r2, .L35
+  46 000a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  47 000c B3FA83F3 		clz	r3, r3
+  48 0010 5B09     		lsrs	r3, r3, #5
+  49              		.loc 1 16 21 view .LVU4
+  50 0012 1370     		strb	r3, [r2]
+  17:Core/Src/main.c ****             for (int i = 0; i < 500000; i++);   
+  51              		.loc 1 17 13 is_stmt 1 view .LVU5
+  52              	.LBB2:
+  53              		.loc 1 17 18 view .LVU6
+  54              	.LVL1:
+  55              		.loc 1 17 22 is_stmt 0 view .LVU7
+  56 0014 0023     		movs	r3, #0
+  57              		.loc 1 17 13 view .LVU8
+  58 0016 00E0     		b	.L5
+  59              	.LVL2:
+  60              	.L6:
+  61              		.loc 1 17 42 is_stmt 1 discriminator 3 view .LVU9
+  62 0018 0133     		adds	r3, r3, #1
+  63              	.LVL3:
+  64              	.L5:
+  65              		.loc 1 17 31 discriminator 1 view .LVU10
+  66 001a 734A     		ldr	r2, .L35+4
+  67 001c 9342     		cmp	r3, r2
+  68 001e FBDD     		ble	.L6
+  69 0020 18E0     		b	.L4
+  70              	.LVL4:
+  71              	.L10:
+  72              		.loc 1 17 31 is_stmt 0 discriminator 1 view .LVU11
+  73              	.LBE2:
+  74              	.LBB3:
+  18:Core/Src/main.c ****         }
+  19:Core/Src/main.c ****         if (reverse == 0){
+  20:Core/Src/main.c ****             if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_7 ) !=0){
+  21:Core/Src/main.c ****                 count++;
+  22:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+  75              		.loc 1 22 46 is_stmt 1 discriminator 3 view .LVU12
+  76 0022 0133     		adds	r3, r3, #1
+  77              	.LVL5:
+  78              	.L9:
+  79              		.loc 1 22 35 discriminator 1 view .LVU13
+  80 0024 704A     		ldr	r2, .L35+4
+  81 0026 9342     		cmp	r3, r2
+  82 0028 FBDD     		ble	.L10
+  83              	.LBE3:
+  23:Core/Src/main.c ****                 if (count > 6){
+  84              		.loc 1 23 17 view .LVU14
+  85              		.loc 1 23 20 is_stmt 0 view .LVU15
+  86 002a 0628     		cmp	r0, #6
+  87 002c 02D9     		bls	.L8
+  24:Core/Src/main.c ****                     count = 0;
+  88              		.loc 1 24 21 is_stmt 1 view .LVU16
+  89              		.loc 1 24 27 is_stmt 0 view .LVU17
+  90 002e 6F4B     		ldr	r3, .L35+8
+  91              	.LVL6:
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 3
+
+
+  92              		.loc 1 24 27 view .LVU18
+  93 0030 0022     		movs	r2, #0
+  94 0032 1A70     		strb	r2, [r3]
+  95              	.LVL7:
+  96              	.L8:
+  25:Core/Src/main.c ****                 }
+  26:Core/Src/main.c ****             }
+  27:Core/Src/main.c ****             
+  28:Core/Src/main.c ****             if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0) { 
+  97              		.loc 1 28 13 is_stmt 1 view .LVU19
+  98              		.loc 1 28 17 is_stmt 0 view .LVU20
+  99 0034 6E4B     		ldr	r3, .L35+12
+ 100 0036 1B69     		ldr	r3, [r3, #16]
+ 101              		.loc 1 28 16 view .LVU21
+ 102 0038 13F4807F 		tst	r3, #256
+ 103 003c 1AD1     		bne	.L29
+ 104              	.L7:
+  29:Core/Src/main.c ****                 count--;
+  30:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+  31:Core/Src/main.c ****                 if (count > 6) {
+  32:Core/Src/main.c ****                     count = 0; 
+  33:Core/Src/main.c ****                 }
+  34:Core/Src/main.c ****             }
+  35:Core/Src/main.c ****         }
+  36:Core/Src/main.c ****         if (reverse == 1){
+ 105              		.loc 1 36 9 is_stmt 1 view .LVU22
+ 106              		.loc 1 36 12 is_stmt 0 view .LVU23
+ 107 003e 0129     		cmp	r1, #1
+ 108 0040 29D0     		beq	.L30
+ 109              	.L13:
+  37:Core/Src/main.c ****             if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8 ) !=0){
+  38:Core/Src/main.c ****                 count++;
+  39:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+  40:Core/Src/main.c ****                 if (count > 6){
+  41:Core/Src/main.c ****                     count = 0;
+  42:Core/Src/main.c ****                 }
+  43:Core/Src/main.c ****             }
+  44:Core/Src/main.c ****             
+  45:Core/Src/main.c ****             if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_7) != 0) { 
+  46:Core/Src/main.c ****                 count--;
+  47:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+  48:Core/Src/main.c ****                 if (count > 6) {
+  49:Core/Src/main.c ****                     count = 0; 
+  50:Core/Src/main.c ****                 }
+  51:Core/Src/main.c ****             }
+  52:Core/Src/main.c ****         }
+  53:Core/Src/main.c **** 
+  54:Core/Src/main.c ****         if (flag == 1){
+ 110              		.loc 1 54 9 is_stmt 1 view .LVU24
+ 111              		.loc 1 54 18 is_stmt 0 view .LVU25
+ 112 0042 6C4B     		ldr	r3, .L35+16
+ 113 0044 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 114              		.loc 1 54 12 view .LVU26
+ 115 0046 012B     		cmp	r3, #1
+ 116 0048 51D0     		beq	.L31
+ 117              	.L2:
+  14:Core/Src/main.c ****         if ((READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_6 ) !=0)){
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 4
+
+
+ 118              		.loc 1 14 5 is_stmt 1 view .LVU27
+  15:Core/Src/main.c ****             reverse = !reverse;
+ 119              		.loc 1 15 9 view .LVU28
+  15:Core/Src/main.c ****             reverse = !reverse;
+ 120              		.loc 1 15 14 is_stmt 0 view .LVU29
+ 121 004a 694B     		ldr	r3, .L35+12
+ 122 004c 1B69     		ldr	r3, [r3, #16]
+  15:Core/Src/main.c ****             reverse = !reverse;
+ 123              		.loc 1 15 12 view .LVU30
+ 124 004e 13F0400F 		tst	r3, #64
+ 125 0052 D9D1     		bne	.L32
+ 126              	.L4:
+  19:Core/Src/main.c ****             if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_7 ) !=0){
+ 127              		.loc 1 19 9 is_stmt 1 view .LVU31
+  19:Core/Src/main.c ****             if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_7 ) !=0){
+ 128              		.loc 1 19 21 is_stmt 0 view .LVU32
+ 129 0054 634B     		ldr	r3, .L35
+ 130 0056 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  19:Core/Src/main.c ****             if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_7 ) !=0){
+ 131              		.loc 1 19 12 view .LVU33
+ 132 0058 0029     		cmp	r1, #0
+ 133 005a F0D1     		bne	.L7
+  20:Core/Src/main.c ****                 count++;
+ 134              		.loc 1 20 13 is_stmt 1 view .LVU34
+  20:Core/Src/main.c ****                 count++;
+ 135              		.loc 1 20 17 is_stmt 0 view .LVU35
+ 136 005c 664B     		ldr	r3, .L35+20
+ 137 005e 1B69     		ldr	r3, [r3, #16]
+  20:Core/Src/main.c ****                 count++;
+ 138              		.loc 1 20 16 view .LVU36
+ 139 0060 13F0800F 		tst	r3, #128
+ 140 0064 E6D0     		beq	.L8
+  21:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+ 141              		.loc 1 21 17 is_stmt 1 view .LVU37
+  21:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+ 142              		.loc 1 21 22 is_stmt 0 view .LVU38
+ 143 0066 614B     		ldr	r3, .L35+8
+ 144 0068 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 145 006a 0130     		adds	r0, r0, #1
+ 146 006c C0B2     		uxtb	r0, r0
+ 147 006e 1870     		strb	r0, [r3]
+  22:Core/Src/main.c ****                 if (count > 6){
+ 148              		.loc 1 22 17 is_stmt 1 view .LVU39
+ 149              	.LBB4:
+  22:Core/Src/main.c ****                 if (count > 6){
+ 150              		.loc 1 22 22 view .LVU40
+ 151              	.LVL8:
+  22:Core/Src/main.c ****                 if (count > 6){
+ 152              		.loc 1 22 26 is_stmt 0 view .LVU41
+ 153 0070 0023     		movs	r3, #0
+  22:Core/Src/main.c ****                 if (count > 6){
+ 154              		.loc 1 22 17 view .LVU42
+ 155 0072 D7E7     		b	.L9
+ 156              	.LVL9:
+ 157              	.L29:
+  22:Core/Src/main.c ****                 if (count > 6){
+ 158              		.loc 1 22 17 view .LVU43
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 5
+
+
+ 159              	.LBE4:
+  29:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+ 160              		.loc 1 29 17 is_stmt 1 view .LVU44
+  29:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+ 161              		.loc 1 29 22 is_stmt 0 view .LVU45
+ 162 0074 5D4B     		ldr	r3, .L35+8
+ 163 0076 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 164 0078 0138     		subs	r0, r0, #1
+ 165 007a C0B2     		uxtb	r0, r0
+ 166 007c 1870     		strb	r0, [r3]
+  30:Core/Src/main.c ****                 if (count > 6) {
+ 167              		.loc 1 30 17 is_stmt 1 view .LVU46
+ 168              	.LBB5:
+  30:Core/Src/main.c ****                 if (count > 6) {
+ 169              		.loc 1 30 22 view .LVU47
+ 170              	.LVL10:
+  30:Core/Src/main.c ****                 if (count > 6) {
+ 171              		.loc 1 30 26 is_stmt 0 view .LVU48
+ 172 007e 0023     		movs	r3, #0
+ 173              	.LVL11:
+ 174              	.L11:
+  30:Core/Src/main.c ****                 if (count > 6) {
+ 175              		.loc 1 30 35 is_stmt 1 discriminator 1 view .LVU49
+ 176 0080 594A     		ldr	r2, .L35+4
+ 177 0082 9342     		cmp	r3, r2
+ 178 0084 01DC     		bgt	.L33
+  30:Core/Src/main.c ****                 if (count > 6) {
+ 179              		.loc 1 30 46 discriminator 3 view .LVU50
+ 180 0086 0133     		adds	r3, r3, #1
+ 181              	.LVL12:
+  30:Core/Src/main.c ****                 if (count > 6) {
+ 182              		.loc 1 30 46 is_stmt 0 discriminator 3 view .LVU51
+ 183 0088 FAE7     		b	.L11
+ 184              	.L33:
+  30:Core/Src/main.c ****                 if (count > 6) {
+ 185              		.loc 1 30 46 discriminator 3 view .LVU52
+ 186              	.LBE5:
+  31:Core/Src/main.c ****                     count = 0; 
+ 187              		.loc 1 31 17 is_stmt 1 view .LVU53
+  31:Core/Src/main.c ****                     count = 0; 
+ 188              		.loc 1 31 20 is_stmt 0 view .LVU54
+ 189 008a 0628     		cmp	r0, #6
+ 190 008c D7D9     		bls	.L7
+  32:Core/Src/main.c ****                 }
+ 191              		.loc 1 32 21 is_stmt 1 view .LVU55
+  32:Core/Src/main.c ****                 }
+ 192              		.loc 1 32 27 is_stmt 0 view .LVU56
+ 193 008e 574B     		ldr	r3, .L35+8
+ 194              	.LVL13:
+  32:Core/Src/main.c ****                 }
+ 195              		.loc 1 32 27 view .LVU57
+ 196 0090 0022     		movs	r2, #0
+ 197 0092 1A70     		strb	r2, [r3]
+ 198 0094 D3E7     		b	.L7
+ 199              	.LVL14:
+ 200              	.L30:
+  37:Core/Src/main.c ****                 count++;
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 6
+
+
+ 201              		.loc 1 37 13 is_stmt 1 view .LVU58
+  37:Core/Src/main.c ****                 count++;
+ 202              		.loc 1 37 17 is_stmt 0 view .LVU59
+ 203 0096 564B     		ldr	r3, .L35+12
+ 204 0098 1B69     		ldr	r3, [r3, #16]
+  37:Core/Src/main.c ****                 count++;
+ 205              		.loc 1 37 16 view .LVU60
+ 206 009a 13F4807F 		tst	r3, #256
+ 207 009e 0BD1     		bne	.L34
+ 208              	.L14:
+  45:Core/Src/main.c ****                 count--;
+ 209              		.loc 1 45 13 is_stmt 1 view .LVU61
+  45:Core/Src/main.c ****                 count--;
+ 210              		.loc 1 45 17 is_stmt 0 view .LVU62
+ 211 00a0 554B     		ldr	r3, .L35+20
+ 212 00a2 1B69     		ldr	r3, [r3, #16]
+  45:Core/Src/main.c ****                 count--;
+ 213              		.loc 1 45 16 view .LVU63
+ 214 00a4 13F0800F 		tst	r3, #128
+ 215 00a8 CBD0     		beq	.L13
+  46:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+ 216              		.loc 1 46 17 is_stmt 1 view .LVU64
+  46:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+ 217              		.loc 1 46 22 is_stmt 0 view .LVU65
+ 218 00aa 504B     		ldr	r3, .L35+8
+ 219 00ac 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 220 00ae 0139     		subs	r1, r1, #1
+ 221 00b0 C9B2     		uxtb	r1, r1
+ 222 00b2 1970     		strb	r1, [r3]
+  47:Core/Src/main.c ****                 if (count > 6) {
+ 223              		.loc 1 47 17 is_stmt 1 view .LVU66
+ 224              	.LBB6:
+  47:Core/Src/main.c ****                 if (count > 6) {
+ 225              		.loc 1 47 22 view .LVU67
+ 226              	.LVL15:
+  47:Core/Src/main.c ****                 if (count > 6) {
+ 227              		.loc 1 47 26 is_stmt 0 view .LVU68
+ 228 00b4 0023     		movs	r3, #0
+  47:Core/Src/main.c ****                 if (count > 6) {
+ 229              		.loc 1 47 17 view .LVU69
+ 230 00b6 11E0     		b	.L17
+ 231              	.LVL16:
+ 232              	.L34:
+  47:Core/Src/main.c ****                 if (count > 6) {
+ 233              		.loc 1 47 17 view .LVU70
+ 234              	.LBE6:
+  38:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+ 235              		.loc 1 38 17 is_stmt 1 view .LVU71
+  38:Core/Src/main.c ****                 for (int i = 0; i < 500000; i++);
+ 236              		.loc 1 38 22 is_stmt 0 view .LVU72
+ 237 00b8 4C4B     		ldr	r3, .L35+8
+ 238 00ba 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 239 00bc 0131     		adds	r1, r1, #1
+ 240 00be C9B2     		uxtb	r1, r1
+ 241 00c0 1970     		strb	r1, [r3]
+  39:Core/Src/main.c ****                 if (count > 6){
+ 242              		.loc 1 39 17 is_stmt 1 view .LVU73
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 7
+
+
+ 243              	.LBB7:
+  39:Core/Src/main.c ****                 if (count > 6){
+ 244              		.loc 1 39 22 view .LVU74
+ 245              	.LVL17:
+  39:Core/Src/main.c ****                 if (count > 6){
+ 246              		.loc 1 39 26 is_stmt 0 view .LVU75
+ 247 00c2 0023     		movs	r3, #0
+  39:Core/Src/main.c ****                 if (count > 6){
+ 248              		.loc 1 39 17 view .LVU76
+ 249 00c4 00E0     		b	.L15
+ 250              	.LVL18:
+ 251              	.L16:
+  39:Core/Src/main.c ****                 if (count > 6){
+ 252              		.loc 1 39 46 is_stmt 1 discriminator 3 view .LVU77
+ 253 00c6 0133     		adds	r3, r3, #1
+ 254              	.LVL19:
+ 255              	.L15:
+  39:Core/Src/main.c ****                 if (count > 6){
+ 256              		.loc 1 39 35 discriminator 1 view .LVU78
+ 257 00c8 474A     		ldr	r2, .L35+4
+ 258 00ca 9342     		cmp	r3, r2
+ 259 00cc FBDD     		ble	.L16
+ 260              	.LBE7:
+  40:Core/Src/main.c ****                     count = 0;
+ 261              		.loc 1 40 17 view .LVU79
+  40:Core/Src/main.c ****                     count = 0;
+ 262              		.loc 1 40 20 is_stmt 0 view .LVU80
+ 263 00ce 0629     		cmp	r1, #6
+ 264 00d0 E6D9     		bls	.L14
+  41:Core/Src/main.c ****                 }
+ 265              		.loc 1 41 21 is_stmt 1 view .LVU81
+  41:Core/Src/main.c ****                 }
+ 266              		.loc 1 41 27 is_stmt 0 view .LVU82
+ 267 00d2 464B     		ldr	r3, .L35+8
+ 268              	.LVL20:
+  41:Core/Src/main.c ****                 }
+ 269              		.loc 1 41 27 view .LVU83
+ 270 00d4 0022     		movs	r2, #0
+ 271 00d6 1A70     		strb	r2, [r3]
+ 272 00d8 E2E7     		b	.L14
+ 273              	.LVL21:
+ 274              	.L18:
+ 275              	.LBB8:
+  47:Core/Src/main.c ****                 if (count > 6) {
+ 276              		.loc 1 47 46 is_stmt 1 discriminator 3 view .LVU84
+ 277 00da 0133     		adds	r3, r3, #1
+ 278              	.LVL22:
+ 279              	.L17:
+  47:Core/Src/main.c ****                 if (count > 6) {
+ 280              		.loc 1 47 35 discriminator 1 view .LVU85
+ 281 00dc 424A     		ldr	r2, .L35+4
+ 282 00de 9342     		cmp	r3, r2
+ 283 00e0 FBDD     		ble	.L18
+ 284              	.LBE8:
+  48:Core/Src/main.c ****                     count = 0; 
+ 285              		.loc 1 48 17 view .LVU86
+  48:Core/Src/main.c ****                     count = 0; 
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 8
+
+
+ 286              		.loc 1 48 20 is_stmt 0 view .LVU87
+ 287 00e2 0629     		cmp	r1, #6
+ 288 00e4 ADD9     		bls	.L13
+  49:Core/Src/main.c ****                 }
+ 289              		.loc 1 49 21 is_stmt 1 view .LVU88
+  49:Core/Src/main.c ****                 }
+ 290              		.loc 1 49 27 is_stmt 0 view .LVU89
+ 291 00e6 414B     		ldr	r3, .L35+8
+ 292              	.LVL23:
+  49:Core/Src/main.c ****                 }
+ 293              		.loc 1 49 27 view .LVU90
+ 294 00e8 0022     		movs	r2, #0
+ 295 00ea 1A70     		strb	r2, [r3]
+ 296 00ec A9E7     		b	.L13
+ 297              	.LVL24:
+ 298              	.L31:
+  55:Core/Src/main.c ****             switch (count) {
+ 299              		.loc 1 55 13 is_stmt 1 view .LVU91
+ 300 00ee 3F4B     		ldr	r3, .L35+8
+ 301 00f0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 302 00f2 062B     		cmp	r3, #6
+ 303 00f4 A9D8     		bhi	.L2
+ 304 00f6 DFE803F0 		tbb	[pc, r3]
+ 305              	.L20:
+ 306 00fa 04       		.byte	(.L26-.L20)/2
+ 307 00fb 12       		.byte	(.L25-.L20)/2
+ 308 00fc 23       		.byte	(.L24-.L20)/2
+ 309 00fd 31       		.byte	(.L23-.L20)/2
+ 310 00fe 43       		.byte	(.L22-.L20)/2
+ 311 00ff 55       		.byte	(.L21-.L20)/2
+ 312 0100 67       		.byte	(.L19-.L20)/2
+ 313 0101 00       		.p2align 1
+ 314              	.L26:
+  56:Core/Src/main.c ****                 case 0:
+  57:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR
+ 315              		.loc 1 57 21 view .LVU92
+ 316 0102 3B4A     		ldr	r2, .L35+12
+ 317 0104 9369     		ldr	r3, [r2, #24]
+ 318 0106 43F00053 		orr	r3, r3, #536870912
+ 319 010a 43F40C13 		orr	r3, r3, #2293760
+ 320 010e 9361     		str	r3, [r2, #24]
+  58:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR6 | GPIO_BSRR_BR7);
+ 321              		.loc 1 58 21 view .LVU93
+ 322 0110 02F50062 		add	r2, r2, #2048
+ 323 0114 9369     		ldr	r3, [r2, #24]
+ 324 0116 43F44003 		orr	r3, r3, #12582912
+ 325 011a 9361     		str	r3, [r2, #24]
+  59:Core/Src/main.c ****                     break;
+ 326              		.loc 1 59 21 view .LVU94
+ 327 011c 95E7     		b	.L2
+ 328              	.L25:
+  60:Core/Src/main.c ****                 case 1:
+  61:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6);  
+ 329              		.loc 1 61 21 view .LVU95
+ 330 011e 374A     		ldr	r2, .L35+24
+ 331 0120 9369     		ldr	r3, [r2, #24]
+ 332 0122 43F04003 		orr	r3, r3, #64
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 9
+
+
+ 333 0126 9361     		str	r3, [r2, #24]
+  62:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR
+ 334              		.loc 1 62 21 view .LVU96
+ 335 0128 3149     		ldr	r1, .L35+12
+ 336 012a 8B69     		ldr	r3, [r1, #24]
+ 337 012c 43F00053 		orr	r3, r3, #536870912
+ 338 0130 43F40C13 		orr	r3, r3, #2293760
+ 339 0134 8B61     		str	r3, [r1, #24]
+  63:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
+ 340              		.loc 1 63 21 view .LVU97
+ 341 0136 9369     		ldr	r3, [r2, #24]
+ 342 0138 43F40003 		orr	r3, r3, #8388608
+ 343 013c 9361     		str	r3, [r2, #24]
+  64:Core/Src/main.c ****                     break;
+ 344              		.loc 1 64 21 view .LVU98
+ 345 013e 84E7     		b	.L2
+ 346              	.L24:
+  65:Core/Src/main.c ****                 case 2:
+  66:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7);  
+ 347              		.loc 1 66 21 view .LVU99
+ 348 0140 2E4A     		ldr	r2, .L35+24
+ 349 0142 9369     		ldr	r3, [r2, #24]
+ 350 0144 43F0C003 		orr	r3, r3, #192
+ 351 0148 9361     		str	r3, [r2, #24]
+  67:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR
+ 352              		.loc 1 67 21 view .LVU100
+ 353 014a A2F50062 		sub	r2, r2, #2048
+ 354 014e 9369     		ldr	r3, [r2, #24]
+ 355 0150 43F00053 		orr	r3, r3, #536870912
+ 356 0154 43F40C13 		orr	r3, r3, #2293760
+ 357 0158 9361     		str	r3, [r2, #24]
+  68:Core/Src/main.c ****                     break;
+ 358              		.loc 1 68 21 view .LVU101
+ 359 015a 76E7     		b	.L2
+ 360              	.L23:
+  69:Core/Src/main.c ****                 case 3:
+  70:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7); 
+ 361              		.loc 1 70 21 view .LVU102
+ 362 015c 274A     		ldr	r2, .L35+24
+ 363 015e 9369     		ldr	r3, [r2, #24]
+ 364 0160 43F0C003 		orr	r3, r3, #192
+ 365 0164 9361     		str	r3, [r2, #24]
+  71:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5); 
+ 366              		.loc 1 71 21 view .LVU103
+ 367 0166 A2F50062 		sub	r2, r2, #2048
+ 368 016a 9369     		ldr	r3, [r2, #24]
+ 369 016c 43F02003 		orr	r3, r3, #32
+ 370 0170 9361     		str	r3, [r2, #24]
+  72:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR13 | GPIO_BSRR_BR10 | GPIO_BSRR_BR1);
+ 371              		.loc 1 72 21 view .LVU104
+ 372 0172 9369     		ldr	r3, [r2, #24]
+ 373 0174 43F01053 		orr	r3, r3, #603979776
+ 374 0178 43F40033 		orr	r3, r3, #131072
+ 375 017c 9361     		str	r3, [r2, #24]
+  73:Core/Src/main.c ****                     break;
+ 376              		.loc 1 73 21 view .LVU105
+ 377 017e 64E7     		b	.L2
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 10
+
+
+ 378              	.L22:
+  74:Core/Src/main.c ****                 case 4:
+  75:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7); 
+ 379              		.loc 1 75 21 view .LVU106
+ 380 0180 1E4A     		ldr	r2, .L35+24
+ 381 0182 9369     		ldr	r3, [r2, #24]
+ 382 0184 43F0C003 		orr	r3, r3, #192
+ 383 0188 9361     		str	r3, [r2, #24]
+  76:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13);  
+ 384              		.loc 1 76 21 view .LVU107
+ 385 018a A2F50062 		sub	r2, r2, #2048
+ 386 018e 9369     		ldr	r3, [r2, #24]
+ 387 0190 43F40053 		orr	r3, r3, #8192
+ 388 0194 43F02003 		orr	r3, r3, #32
+ 389 0198 9361     		str	r3, [r2, #24]
+  77:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
+ 390              		.loc 1 77 21 view .LVU108
+ 391 019a 9369     		ldr	r3, [r2, #24]
+ 392 019c 43F44033 		orr	r3, r3, #196608
+ 393 01a0 9361     		str	r3, [r2, #24]
+  78:Core/Src/main.c ****                     break;
+ 394              		.loc 1 78 21 view .LVU109
+ 395 01a2 52E7     		b	.L2
+ 396              	.L21:
+  79:Core/Src/main.c ****                 case 5:
+  80:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7);
+ 397              		.loc 1 80 21 view .LVU110
+ 398 01a4 154A     		ldr	r2, .L35+24
+ 399 01a6 9369     		ldr	r3, [r2, #24]
+ 400 01a8 43F0C003 		orr	r3, r3, #192
+ 401 01ac 9361     		str	r3, [r2, #24]
+  81:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13 | GPIO_BSRR_BS0);  
+ 402              		.loc 1 81 21 view .LVU111
+ 403 01ae A2F50062 		sub	r2, r2, #2048
+ 404 01b2 9369     		ldr	r3, [r2, #24]
+ 405 01b4 43F40053 		orr	r3, r3, #8192
+ 406 01b8 43F02103 		orr	r3, r3, #33
+ 407 01bc 9361     		str	r3, [r2, #24]
+  82:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR1);
+ 408              		.loc 1 82 21 view .LVU112
+ 409 01be 9369     		ldr	r3, [r2, #24]
+ 410 01c0 43F40033 		orr	r3, r3, #131072
+ 411 01c4 9361     		str	r3, [r2, #24]
+  83:Core/Src/main.c ****                     break;
+ 412              		.loc 1 83 21 view .LVU113
+ 413 01c6 40E7     		b	.L2
+ 414              	.L19:
+  84:Core/Src/main.c ****                 case 6:
+  85:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7);
+ 415              		.loc 1 85 21 view .LVU114
+ 416 01c8 0C4A     		ldr	r2, .L35+24
+ 417 01ca 9369     		ldr	r3, [r2, #24]
+ 418 01cc 43F0C003 		orr	r3, r3, #192
+ 419 01d0 9361     		str	r3, [r2, #24]
+  86:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13 | GPIO_BSRR_BS0 | GPIO_BSRR
+ 420              		.loc 1 86 21 view .LVU115
+ 421 01d2 A2F50062 		sub	r2, r2, #2048
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 11
+
+
+ 422 01d6 9369     		ldr	r3, [r2, #24]
+ 423 01d8 43F40053 		orr	r3, r3, #8192
+ 424 01dc 43F02303 		orr	r3, r3, #35
+ 425 01e0 9361     		str	r3, [r2, #24]
+  87:Core/Src/main.c ****                     break;
+ 426              		.loc 1 87 21 view .LVU116
+ 427 01e2 32E7     		b	.L2
+ 428              	.L36:
+ 429              		.align	2
+ 430              	.L35:
+ 431 01e4 00000000 		.word	reverse
+ 432 01e8 1FA10700 		.word	499999
+ 433 01ec 00000000 		.word	count
+ 434 01f0 00040240 		.word	1073873920
+ 435 01f4 00000000 		.word	flag
+ 436 01f8 00080240 		.word	1073874944
+ 437 01fc 000C0240 		.word	1073875968
+ 438              		.cfi_endproc
+ 439              	.LFE130:
+ 441              		.global	reverse
+ 442              		.section	.data.reverse,"aw"
+ 445              	reverse:
+ 446 0000 01       		.byte	1
+ 447              		.global	count
+ 448              		.section	.bss.count,"aw",%nobits
+ 451              	count:
+ 452 0000 00       		.space	1
+ 453              		.global	flag_rev_2
+ 454              		.section	.data.flag_rev_2,"aw"
+ 457              	flag_rev_2:
+ 458 0000 01       		.byte	1
+ 459              		.global	flag_rev_1
+ 460              		.section	.data.flag_rev_1,"aw"
+ 463              	flag_rev_1:
+ 464 0000 01       		.byte	1
+ 465              		.global	flag
+ 466              		.section	.data.flag,"aw"
+ 469              	flag:
+ 470 0000 01       		.byte	1
+ 471              		.text
+ 472              	.Letext0:
+ 473              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 474              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 475              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 476              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s 			page 12
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\druzh\AppData\Local\Temp\ccBogadc.s:21     .text.main:00000000 $t
-C:\Users\druzh\AppData\Local\Temp\ccBogadc.s:27     .text.main:00000000 main
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:21     .text.main:00000000 $t
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:27     .text.main:00000000 main
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:306    .text.main:000000fa $d
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:431    .text.main:000001e4 $d
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:445    .data.reverse:00000000 reverse
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:451    .bss.count:00000000 count
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:469    .data.flag:00000000 flag
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:452    .bss.count:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:457    .data.flag_rev_2:00000000 flag_rev_2
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:463    .data.flag_rev_1:00000000 flag_rev_1
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:313    .text.main:00000101 $d
+C:\Users\druzh\AppData\Local\Temp\cc8KtZhm.s:313    .text.main:00000102 $t
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini
