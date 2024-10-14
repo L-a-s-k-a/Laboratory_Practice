@@ -1,25 +1,25 @@
-#include <init.h>
+#include "init.h"
 
 int main(void)
 {
-    *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x06; // Включение тактирования порта GPIOB
+    RCC_GPIO_EN |= 0x06; // Включение тактирования порта GPIOB
 
-    *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000; // Настройка работы 7-го пина GPIOB в режиме вывода сигнала (Output mode)
+    GPIOB_MODER |= GPIO_PIN_7_OUT; // Настройка работы 7-го пина GPIOB в режиме вывода сигнала (Output mode)
 
-    *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00;   // Настройка на PushPull работу 7-го пина GPIOB (Output Push-Pull) работы 7-го пина GPIOB на среднюю
-    *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000; // Настройка скорости
+    // *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00;   // Настройка на PushPull работу 7-го пина GPIOB (Output Push-Pull) работы 7-го пина GPIOB на среднюю
+    GPIOB_OSPEEDR |= GPIO_PIN_7_MED; // Настройка скорости
 
-    *(uint32_t *)(0x40020400UL + 0x0CUL) |= 0x00; // Отключение PU/PD резисторов для 7-го пина GPIOB
+    GPIOB_PUPDR |= 0x00; // Отключение PU/PD резисторов для 7-го пина GPIOB
 
     while (1)
     {
-        if ((*(uint32_t *)(0x40020800UL + 0x10UL) & (0x2000)) != 0)
+        if ((GPIOC_IDR & (GPIO_PIN_13)) != 0)
         {
-            *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80; // Установка единицы в 7-ой бит регистра ODR
+            GPIOB_BSRR |= GPIO_PIN_7_SET; // Установка единицы в 7-ой бит регистра ODR
         }
         else
         {
-            *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000; // Установка единицы в 7-ой бит регистра ODR
+            GPIOB_BSRR |= GPIO_PIN_7_RESET; // Установка единицы в 7-ой бит регистра ODR
         }
     }
 }
