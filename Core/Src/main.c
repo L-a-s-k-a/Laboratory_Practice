@@ -16,7 +16,7 @@ int main(void)
     *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00;
     *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000;
     *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00;
-    *(uint32_t*)(0x40020400UL + 0x14UL) |= 0x80;
+   // *(uint32_t*)(0x40020400UL + 0x14UL) |= 0x80;
     *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000;
     //PB14
     *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x10000000;
@@ -26,13 +26,24 @@ int main(void)
     //PullUpPulldownReg
     *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00;
     //Outputdatareg ODR
-    *(uint32_t*)(0x40020400UL + 0x14UL) |= 0x2000;
+  //  *(uint32_t*)(0x40020400UL + 0x14UL) |= 0x2000;
     //Outputdatasetresetreg BSRR
-    *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x20000000;  
+    *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000;  
     while(1)
     {
         *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80;
         *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x4000;
+        uint32_t i = 0;
+        while(i < 10000000)
+        {
+            i++;
+        }
+        i = 0;
+        while(i < 10000000)
+        {
+            *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000;
+            *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000;
+        }
         // SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
     }
 }
