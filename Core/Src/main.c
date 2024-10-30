@@ -1,14 +1,13 @@
-#include <stdint.h>
-#include <init.h>
-int main(void){
-    RCC_AHB1ENR |= RCC_GPIOBEN | RCC_GPIOCEN;
-    while (1){
-        if(READ_BIT(GPIOC_IDR, GPIO_PIN_13)!=0){
-            SET_BIT(GPIOB_BSRR, GPIO_PIN_7_SET);
-        }
-        else{
-            SET_BIT(GPIOB_BSRR, GPIO_PIN_7_RESET);
-        }
-        *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80;
-    }
+//#include <stdint.h>
+#include <../Inc/init.h>
+int main(void) {
+ *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02; //Включение
+ *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000; //Настройка работы
+ *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; //Настройка на PushPull работу 7-го пина GPIOB (Output Push-Pull)
+ *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000; //Настройка скорости
+ *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00; //Отключение PU/PD
+ while(1){
+    *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы
+ }
+ //eee
 }
