@@ -10,13 +10,13 @@ int main(void)
     {
         int button = READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13);
         // -------------------------------------------------
-        if (button == 0) // проверка бита
+        if (button == 1) // проверка бита
         {
-            if (button_drebezg < 10)
+            if (button_drebezg < 100)
             {
                 button_drebezg++;
             }
-            if (button_drebezg >= 10)
+            if (button_drebezg >= 100)
             {
                 //   SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
                 flag1 = 1;
@@ -60,7 +60,7 @@ int main(void)
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12); // Установка единицы в 7-ой бит регистра ODR
             break;
         case 5:
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8); // Установка единицы в 7-ой бит регистра ODR
+            //   SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8); // Установка единицы в 7-ой бит регистра ODR
             break;
         case 6:
             // сбросить все лампы (_БР)

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s 			page 1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccOKpy3a.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,7 +28,7 @@ ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s 			page 1
   25              		.thumb_func
   27              	GPIO_Ini:
   28              	.LFB130:
-   1:Core/Src/init.c **** #include "init.h"
+   1:Core/Src/init.c **** #include "../Inc/init.h"
    2:Core/Src/init.c **** 
    3:Core/Src/init.c **** void GPIO_Ini(void)
    4:Core/Src/init.c **** {
@@ -37,104 +37,189 @@ ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s 			page 1
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
   33              		@ link register save eliminated.
-   5:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); // Включение так�
+   5:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIODEN); // Вк
   34              		.loc 1 5 5 view .LVU1
-  35 0000 1B4A     		ldr	r2, .L2
+  35 0000 354A     		ldr	r2, .L2
   36 0002 136B     		ldr	r3, [r2, #48]
-  37 0004 43F00603 		orr	r3, r3, #6
+  37 0004 43F00E03 		orr	r3, r3, #14
   38 0008 1363     		str	r3, [r2, #48]
-   6:Core/Src/init.c **** 
-   7:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER7_0);        // Настройка работы 7-го п
-  39              		.loc 1 7 5 view .LVU2
-  40 000a 1A4B     		ldr	r3, .L2+4
-  41 000c 1A68     		ldr	r2, [r3]
-  42 000e 42F48042 		orr	r2, r2, #16384
+   6:Core/Src/init.c ****     // не работают 3-4-5
+   7:Core/Src/init.c ****     //  SET_BIT(GPIOB->MODER, GPIO_MODER_MODER4_0);                       // Настройка р�
+   8:Core/Src/init.c ****     //  SET_BIT(GPIOB->MODER, GPIO_MODER_MODER3_0);                       // Настройка р�
+   9:Core/Src/init.c ****     //  SET_BIT(GPIOB->MODER, GPIO_MODER_MODER5_0);                       // Настройка р�
+  10:Core/Src/init.c **** 
+  11:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0);         // Настройка работы 14-го �
+  39              		.loc 1 11 5 view .LVU2
+  40 000a 344B     		ldr	r3, .L2+4
+  41 000c 1968     		ldr	r1, [r3]
+  42 000e 41F48032 		orr	r2, r1, #65536
   43 0012 1A60     		str	r2, [r3]
-   8:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7);        // Настройка на Push-Pull раб�
-  44              		.loc 1 8 5 view .LVU3
+  12:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_8);        // Настройка на Push-Pull раб�
+  44              		.loc 1 12 5 view .LVU3
   45 0014 5A68     		ldr	r2, [r3, #4]
-  46 0016 22F08002 		bic	r2, r2, #128
+  46 0016 22F48072 		bic	r2, r2, #256
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccOKpy3a.s 			page 2
+
+
   47 001a 5A60     		str	r2, [r3, #4]
-   9:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0); // Настройка скорости ра�
-  48              		.loc 1 9 5 view .LVU4
+  13:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR8_0); // Настройка скорости ра�
+  48              		.loc 1 13 5 view .LVU4
   49 001c 9A68     		ldr	r2, [r3, #8]
-ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s 			page 2
-
-
-  50 001e 42F48042 		orr	r2, r2, #16384
+  50 001e 42F48032 		orr	r2, r2, #65536
   51 0022 9A60     		str	r2, [r3, #8]
-  10:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD7_0);       // Отключение PU/PD резисто
-  52              		.loc 1 10 5 view .LVU5
+  14:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD8_0);
+  52              		.loc 1 14 5 view .LVU5
   53 0024 DA68     		ldr	r2, [r3, #12]
-  54 0026 22F48042 		bic	r2, r2, #16384
+  54 0026 22F48032 		bic	r2, r2, #65536
   55 002a DA60     		str	r2, [r3, #12]
-  11:Core/Src/init.c **** 
-  12:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER14_0);        // Настройка работы 14-го 
-  56              		.loc 1 12 5 view .LVU6
-  57 002c 1A68     		ldr	r2, [r3]
-  58 002e 42F08052 		orr	r2, r2, #268435456
-  59 0032 1A60     		str	r2, [r3]
-  13:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);        // Настройка на Push-Pull раб
-  60              		.loc 1 13 5 view .LVU7
-  61 0034 5A68     		ldr	r2, [r3, #4]
-  62 0036 22F48042 		bic	r2, r2, #16384
-  63 003a 5A60     		str	r2, [r3, #4]
-  14:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0); // Настройка скорости ра
-  64              		.loc 1 14 5 view .LVU8
-  65 003c 9A68     		ldr	r2, [r3, #8]
-  66 003e 42F08052 		orr	r2, r2, #268435456
-  67 0042 9A60     		str	r2, [r3, #8]
-  15:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD14_0);       // Отключение PU/PD резист�
-  68              		.loc 1 15 5 view .LVU9
-  69 0044 DA68     		ldr	r2, [r3, #12]
-  70 0046 22F08052 		bic	r2, r2, #268435456
-  71 004a DA60     		str	r2, [r3, #12]
-  16:Core/Src/init.c **** 
-  17:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER0_0);        // Настройка работы 0-го п
-  72              		.loc 1 17 5 view .LVU10
-  73 004c 1A68     		ldr	r2, [r3]
-  74 004e 42F00102 		orr	r2, r2, #1
-  75 0052 1A60     		str	r2, [r3]
-  18:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);        // Настройка на Push-Pull раб�
-  76              		.loc 1 18 5 view .LVU11
-  77 0054 5A68     		ldr	r2, [r3, #4]
-  78 0056 22F00102 		bic	r2, r2, #1
-  79 005a 5A60     		str	r2, [r3, #4]
-  19:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0); // Настройка скорости ра�
-  80              		.loc 1 19 5 view .LVU12
-  81 005c 9A68     		ldr	r2, [r3, #8]
-  82 005e 42F00102 		orr	r2, r2, #1
-  83 0062 9A60     		str	r2, [r3, #8]
-  20:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD0_0);       // Отключение PU/PD резисто
-  84              		.loc 1 20 5 view .LVU13
-  85 0064 DA68     		ldr	r2, [r3, #12]
-  86 0066 22F00102 		bic	r2, r2, #1
-  87 006a DA60     		str	r2, [r3, #12]
-  21:Core/Src/init.c **** }...
-  88              		.loc 1 21 1 is_stmt 0 view .LVU14
-  89 006c 7047     		bx	lr
-  90              	.L3:
-  91 006e 00BF     		.align	2
-  92              	.L2:
-  93 0070 00380240 		.word	1073887232
-  94 0074 00040240 		.word	1073873920
-ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s 			page 3
+  15:Core/Src/init.c ****     int test = 5;
+  56              		.loc 1 15 5 view .LVU6
+  57              	.LVL0:
+  16:Core/Src/init.c ****     (*(uint32_t *)(0x40020400UL + 0x00UL)) |= 0x004000UL; // Настройка работы 7-го
+  58              		.loc 1 16 5 view .LVU7
+  59              		.loc 1 16 44 is_stmt 0 view .LVU8
+  60 002c 2C4A     		ldr	r2, .L2+8
+  61 002e 41F4A031 		orr	r1, r1, #81920
+  62 0032 C2F80014 		str	r1, [r2, #1024]
+  17:Core/Src/init.c ****     (*(uint32_t *)(0x40020400UL + 0x04UL)) |= 0x000000UL; // Настройка на Push-Pull ра
+  63              		.loc 1 17 5 is_stmt 1 view .LVU9
+  18:Core/Src/init.c ****     (*(uint32_t *)(0x40020400UL + 0x08UL)) |= 0x004000UL; // Настройка скорости р
+  64              		.loc 1 18 5 view .LVU10
+  65              		.loc 1 18 6 is_stmt 0 view .LVU11
+  66 0036 D2F80814 		ldr	r1, [r2, #1032]
+  67              		.loc 1 18 44 view .LVU12
+  68 003a 41F48041 		orr	r1, r1, #16384
+  69 003e C2F80814 		str	r1, [r2, #1032]
+  19:Core/Src/init.c ****     (*(uint32_t *)(0x40020400UL + 0x0CUL)) |= 0x000000UL; // Отключение PU/PD резис�
+  70              		.loc 1 19 5 is_stmt 1 view .LVU13
+  20:Core/Src/init.c **** 
+  21:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0);         // Настройка работы 14-го 
+  71              		.loc 1 21 5 view .LVU14
+  72 0042 1968     		ldr	r1, [r3]
+  73 0044 41F08071 		orr	r1, r1, #16777216
+  74 0048 1960     		str	r1, [r3]
+  22:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_12);        // Настройка на Push-Pull раб
+  75              		.loc 1 22 5 view .LVU15
+  76 004a 5968     		ldr	r1, [r3, #4]
+  77 004c 21F48051 		bic	r1, r1, #4096
+  78 0050 5960     		str	r1, [r3, #4]
+  23:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR12_0); // Настройка скорости ра
+  79              		.loc 1 23 5 view .LVU16
+  80 0052 9968     		ldr	r1, [r3, #8]
+  81 0054 41F08071 		orr	r1, r1, #16777216
+  82 0058 9960     		str	r1, [r3, #8]
+  24:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD12_0);       // Отключение PU/PD резист�
+  83              		.loc 1 24 5 view .LVU17
+  84 005a D968     		ldr	r1, [r3, #12]
+  85 005c 21F08071 		bic	r1, r1, #16777216
+  86 0060 D960     		str	r1, [r3, #12]
+  25:Core/Src/init.c **** 
+  26:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE13_0);         // Настройка работы 14-го 
+  87              		.loc 1 26 5 view .LVU18
+  88 0062 1968     		ldr	r1, [r3]
+  89 0064 41F08061 		orr	r1, r1, #67108864
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccOKpy3a.s 			page 3
 
 
-  95              		.cfi_endproc
-  96              	.LFE130:
-  98              		.text
-  99              	.Letext0:
- 100              		.file 2 "C:/Users/Admin/Desktop/StudioCode_Files/STM_files/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-
- 101              		.file 3 "C:/Users/Admin/Desktop/StudioCode_Files/STM_files/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-
- 102              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
-ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s 			page 4
+  90 0068 1960     		str	r1, [r3]
+  27:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_13);        // Настройка на Push-Pull раб
+  91              		.loc 1 27 5 view .LVU19
+  92 006a 5968     		ldr	r1, [r3, #4]
+  93 006c 21F40051 		bic	r1, r1, #8192
+  94 0070 5960     		str	r1, [r3, #4]
+  28:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR13_0); // Настройка скорости ра
+  95              		.loc 1 28 5 view .LVU20
+  96 0072 9968     		ldr	r1, [r3, #8]
+  97 0074 41F08061 		orr	r1, r1, #67108864
+  98 0078 9960     		str	r1, [r3, #8]
+  29:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD13_0);
+  99              		.loc 1 29 5 view .LVU21
+ 100 007a D968     		ldr	r1, [r3, #12]
+ 101 007c 21F08061 		bic	r1, r1, #67108864
+ 102 0080 D960     		str	r1, [r3, #12]
+  30:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE15_0);         // Настройка работы 14-го 
+ 103              		.loc 1 30 5 view .LVU22
+ 104 0082 1968     		ldr	r1, [r3]
+ 105 0084 41F08041 		orr	r1, r1, #1073741824
+ 106 0088 1960     		str	r1, [r3]
+  31:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_15);        // Настройка на Push-Pull раб
+ 107              		.loc 1 31 5 view .LVU23
+ 108 008a 5968     		ldr	r1, [r3, #4]
+ 109 008c 21F40041 		bic	r1, r1, #32768
+ 110 0090 5960     		str	r1, [r3, #4]
+  32:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0); // Настройка скорости ра
+ 111              		.loc 1 32 5 view .LVU24
+ 112 0092 9968     		ldr	r1, [r3, #8]
+ 113 0094 41F08041 		orr	r1, r1, #1073741824
+ 114 0098 9960     		str	r1, [r3, #8]
+  33:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD15_0);
+ 115              		.loc 1 33 5 view .LVU25
+ 116 009a D968     		ldr	r1, [r3, #12]
+ 117 009c 21F08041 		bic	r1, r1, #1073741824
+ 118 00a0 D960     		str	r1, [r3, #12]
+  34:Core/Src/init.c **** 
+  35:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0);        // Настройка работы 14-го п
+ 119              		.loc 1 35 5 view .LVU26
+ 120 00a2 1968     		ldr	r1, [r3]
+ 121 00a4 41F48030 		orr	r0, r1, #65536
+ 122 00a8 1860     		str	r0, [r3]
+  36:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_8);        // Настройка на Push-Pull раб�
+ 123              		.loc 1 36 5 view .LVU27
+ 124 00aa 5868     		ldr	r0, [r3, #4]
+ 125 00ac 20F48070 		bic	r0, r0, #256
+ 126 00b0 5860     		str	r0, [r3, #4]
+  37:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR8_0); // Настройка скорости ра�
+ 127              		.loc 1 37 5 view .LVU28
+ 128 00b2 9868     		ldr	r0, [r3, #8]
+ 129 00b4 40F48030 		orr	r0, r0, #65536
+ 130 00b8 9860     		str	r0, [r3, #8]
+  38:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD8_0);
+ 131              		.loc 1 38 5 view .LVU29
+ 132 00ba D868     		ldr	r0, [r3, #12]
+ 133 00bc 20F48030 		bic	r0, r0, #65536
+ 134 00c0 D860     		str	r0, [r3, #12]
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccOKpy3a.s 			page 4
+
+
+  39:Core/Src/init.c ****     (*(uint32_t *)(0x40020400UL + 0x00UL)) |= 0x004000UL; // Настройка работы 7-го
+ 135              		.loc 1 39 5 view .LVU30
+ 136              		.loc 1 39 44 is_stmt 0 view .LVU31
+ 137 00c2 41F4A031 		orr	r1, r1, #81920
+ 138 00c6 C2F80014 		str	r1, [r2, #1024]
+  40:Core/Src/init.c ****     (*(uint32_t *)(0x40020400UL + 0x04UL)) |= 0x000000UL; // Настройка на Push-Pull ра
+ 139              		.loc 1 40 5 is_stmt 1 view .LVU32
+  41:Core/Src/init.c ****     (*(uint32_t *)(0x40020400UL + 0x08UL)) |= 0x004000UL; // Настройка скорости р
+ 140              		.loc 1 41 5 view .LVU33
+ 141              		.loc 1 41 6 is_stmt 0 view .LVU34
+ 142 00ca D2F80834 		ldr	r3, [r2, #1032]
+ 143              		.loc 1 41 44 view .LVU35
+ 144 00ce 43F48043 		orr	r3, r3, #16384
+ 145 00d2 C2F80834 		str	r3, [r2, #1032]
+  42:Core/Src/init.c ****     (*(uint32_t *)(0x40020400UL + 0x0CUL)) |= 0x000000UL; // Отключение PU/PD резис�
+ 146              		.loc 1 42 5 is_stmt 1 view .LVU36
+  43:Core/Src/init.c **** }...
+ 147              		.loc 1 43 1 is_stmt 0 view .LVU37
+ 148 00d6 7047     		bx	lr
+ 149              	.L3:
+ 150              		.align	2
+ 151              	.L2:
+ 152 00d8 00380240 		.word	1073887232
+ 153 00dc 00040240 		.word	1073873920
+ 154 00e0 00000240 		.word	1073872896
+ 155              		.cfi_endproc
+ 156              	.LFE130:
+ 158              		.text
+ 159              	.Letext0:
+ 160              		.file 2 "C:/Users/Admin/Desktop/StudioCode_Files/STM_files/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-
+ 161              		.file 3 "C:/Users/Admin/Desktop/StudioCode_Files/STM_files/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-
+ 162              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccOKpy3a.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
-C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s:21     .text.GPIO_Ini:00000000 $t
-C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
-C:\Users\Admin\AppData\Local\Temp\ccAmzsAp.s:93     .text.GPIO_Ini:00000070 $d
+C:\Users\Admin\AppData\Local\Temp\ccOKpy3a.s:21     .text.GPIO_Ini:00000000 $t
+C:\Users\Admin\AppData\Local\Temp\ccOKpy3a.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\Admin\AppData\Local\Temp\ccOKpy3a.s:152    .text.GPIO_Ini:000000d8 $d
 
 NO UNDEFINED SYMBOLS
