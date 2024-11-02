@@ -63,24 +63,24 @@ int main(void)
             break;
         case 6:
             // сбросить все лампы (_БР)
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR4);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR3);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR13);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR12);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);
             break;
         case 7:
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS4);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS3);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS13);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
             break;
         default:
             // зажечь все лампы (_БС)
             button_count = 0;
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS4);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS3);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS13);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12);
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
             break;
         }
     }
