@@ -3,6 +3,7 @@
 uint8_t flag1, flag1_pred;
 int button_count = 0, button_drebezg;
 int main(void)
+
 {
     GPIO_Ini(); // инициализация портов
     while (1)
