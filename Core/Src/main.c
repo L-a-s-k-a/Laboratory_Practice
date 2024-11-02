@@ -49,17 +49,17 @@ int main(void)
         case 1:
             break;
         case 2:
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS4); // Установка единицы в 7-ой бит регистра ODR
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS13); // Установка единицы в 7-ой бит регистра ODR
             //    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Установка единицы в 7-ой бит регистра ODR
             break;
         case 3:
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14); // Установка единицы в 7-ой бит регистра ODR
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15); // Установка единицы в 7-ой бит регистра ODR
             break;
         case 4:
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS3); // Установка единицы в 7-ой бит регистра ODR
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12); // Установка единицы в 7-ой бит регистра ODR
             break;
         case 5:
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5); // Установка единицы в 7-ой бит регистра ODR
+            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8); // Установка единицы в 7-ой бит регистра ODR
             break;
         case 6:
             // сбросить все лампы (_БР)
