@@ -15,13 +15,13 @@ void GPIO_Ini(void)
     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x001000000UL; // Настройка скорости работы 13-го пина GPIOB на среднюю
     *(uint32_t *)(0x40020400UL + 0x0CUL) |= 0x00;          // Отключение PU/PD резисторов для 13-го пина GPIOB
 
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0);         // Настройка работы 14-го пина GPIOB в режиме вывода сигнала (Output mode)
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_12);        // Настройка на Push-Pull работу 14-го пина GPIOB (Output Push-Pull)
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR12_0); // Настройка скорости работы 14-го пина GPIOB на среднюю
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD12_0);       // Отключение PU/PD резисторов для 14-го пина GPIOB
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0);         // Настройка работы 12-го пина GPIOB в режиме вывода сигнала (Output mode)
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_12);        // Настройка на Push-Pull работу 12-го пина GPIOB (Output Push-Pull)
+    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR12_0); // Настройка скорости работы 12-го пина GPIOB на среднюю
+    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD12_0);       // Отключение PU/PD резисторов для 12-го пина GPIOB
 
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE15_0);         // Настройка работы 14-го пина GPIOB в режиме вывода сигнала (Output mode)
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_15);        // Настройка на Push-Pull работу 14-го пина GPIOB (Output Push-Pull)
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0); // Настройка скорости работы 14-го пина GPIOB на среднюю
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE15_0);         // Настройка работы 15-го пина GPIOB в режиме вывода сигнала (Output mode)
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_15);        // Настройка на Push-Pull работу 15-го пина GPIOB (Output Push-Pull)
+    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0); // Настройка скорости работы 15-го пина GPIOB на среднюю
     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD15_0);
 }

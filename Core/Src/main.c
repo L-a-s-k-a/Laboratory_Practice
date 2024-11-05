@@ -59,7 +59,6 @@ int main(void)
             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN6_SET); // Установка единицы в 7-ой бит регистра ODR
             break;
         case 5:
-            // сбросить все лампы (_БР)
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR13);
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR12);
