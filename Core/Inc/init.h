@@ -7,7 +7,7 @@
 #include "..\..\CMSIS\Devices\system_stm32f4xx.h"
 
 #define CLEAR_BIT_CUSTOM(REG, BIT)  REG &= ~BIT
-#define READ_BIT_CUSTOM(REG, BIT)   REG &BIT
+#define READ_BIT_CUSTOM(REG, BIT)   REG & BIT
 #define SET_BIT_CUSTOM(REG, BIT)    REG |= BIT
 #define GPIOB_ADDRESS       0x40020400UL
 #define GPIOB_CUSTOM        ((GPIO_TYPEDEF *) GPIOB_ADDRESS)
@@ -28,9 +28,6 @@ typedef struct {
     uint32_t AFRL;    // 0x20
     uint32_t AFRH;    // 0x24
 } GPIO_TYPEDEF;
-
-void GPIO_Ini_CMSIS();
-void GPIO_Ini_Manual();
 
 // Task #6
 void GPIO_Ini();
