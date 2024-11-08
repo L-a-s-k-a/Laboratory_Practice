@@ -1,3 +1,6 @@
+#include "var_6.h"
+
 int main(void) {
-    while (1) {}
+    main_func_6();
+    return 0;
 }
