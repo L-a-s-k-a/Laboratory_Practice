@@ -16,3 +16,5 @@
 #define GPIOB_BSRR_PIN6_RESET 0x800000UL
 
 void GPIO_Ini(void);
+void RCC_Init(void);
+void ITR_init(void);

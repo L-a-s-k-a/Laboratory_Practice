@@ -1,10 +1,11 @@
 #include "../Inc/init.h"
 
-uint8_t flag1, flag1_pred;
+uint8_t flag1, flag1_pred, LedState;
 int button_count = 0, button_drebezg, button;
 int main(void)
-
 {
+    ITR_init(); // инициализация прерываний
+    RCC_Init(); // инициализация таймеров
     GPIO_Ini(); // инициализация портов
     while (1)
     {
@@ -69,7 +70,7 @@ int main(void)
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS13);
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15);
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12);
-            SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN6_SET); 
+            SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN6_SET);
             break;
         default:
             // зажечь все лампы (_БС)
