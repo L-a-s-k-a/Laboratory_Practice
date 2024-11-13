@@ -1,3 +1,5 @@
+#include "../Inc/init.h"
 int main(void){
-    while(1){}
+    GPIO_Ini_CMSIS();
+        
 }

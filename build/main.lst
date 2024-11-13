@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccMVweR0.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,29 +28,93 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccMVweR0.s 			page 1
   25              		.thumb_func
   27              	main:
   28              	.LFB0:
-   1:Core/Src/main.c **** int main(void){
-  29              		.loc 1 1 15 view -0
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** int main(void){
+  29              		.loc 1 2 15 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
   34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){}
-  36              		.loc 1 2 5 view .LVU1
-  37              		.loc 1 2 14 view .LVU2
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccMVweR0.s 			page 2
+   3:Core/Src/main.c **** *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02; //Включение тактирования порт
+  35              		.loc 1 3 1 view .LVU1
+  36 0000 144A     		ldr	r2, .L6
+  37 0002 D2F83038 		ldr	r3, [r2, #2096]
+  38              		.loc 1 3 37 is_stmt 0 view .LVU2
+  39 0006 43F00203 		orr	r3, r3, #2
+  40 000a C2F83038 		str	r3, [r2, #2096]
+   4:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000; //Настройка работы 7-го пина GP
+  41              		.loc 1 4 1 is_stmt 1 view .LVU3
+  42 000e 124B     		ldr	r3, .L6+4
+  43 0010 D3F80024 		ldr	r2, [r3, #1024]
+  44              		.loc 1 4 37 is_stmt 0 view .LVU4
+  45 0014 42F48042 		orr	r2, r2, #16384
+  46 0018 C3F80024 		str	r2, [r3, #1024]
+   5:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; //Настройка на Push-Pull работу 7-г�
+  47              		.loc 1 5 1 is_stmt 1 view .LVU5
+   6:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000; //Настройка скорости работы 7
+  48              		.loc 1 6 1 view .LVU6
+  49 001c D3F80824 		ldr	r2, [r3, #1032]
+  50              		.loc 1 6 37 is_stmt 0 view .LVU7
+  51 0020 42F48042 		orr	r2, r2, #16384
+  52 0024 C3F80824 		str	r2, [r3, #1032]
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s 			page 2
+
+
+   7:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00; //Отключение PU/PD резисторов дл
+  53              		.loc 1 7 1 is_stmt 1 view .LVU8
+  54 0028 06E0     		b	.L2
+  55              	.L5:
+   8:Core/Src/main.c **** while(1){
+   9:Core/Src/main.c **** if((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x2000UL) != 0){
+  10:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-ой бит �
+  56              		.loc 1 10 1 view .LVU9
+  57 002a 0B4A     		ldr	r2, .L6+4
+  58 002c D2F81834 		ldr	r3, [r2, #1048]
+  59              		.loc 1 10 37 is_stmt 0 view .LVU10
+  60 0030 43F08003 		orr	r3, r3, #128
+  61 0034 C2F81834 		str	r3, [r2, #1048]
+  62              	.L2:
+   8:Core/Src/main.c **** while(1){
+  63              		.loc 1 8 1 is_stmt 1 view .LVU11
+   9:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-ой бит �
+  64              		.loc 1 9 1 view .LVU12
+   9:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-ой бит �
+  65              		.loc 1 9 5 is_stmt 0 view .LVU13
+  66 0038 074B     		ldr	r3, .L6+4
+  67 003a D3F81038 		ldr	r3, [r3, #2064]
+   9:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-ой бит �
+  68              		.loc 1 9 3 view .LVU14
+  69 003e 13F4005F 		tst	r3, #8192
+  70 0042 F2D1     		bne	.L5
+  11:Core/Src/main.c **** }
+  12:Core/Src/main.c **** else{
+  13:Core/Src/main.c **** *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000; //Установка нуля в 7-ой бит р�
+  71              		.loc 1 13 1 is_stmt 1 view .LVU15
+  72 0044 044A     		ldr	r2, .L6+4
+  73 0046 D2F81834 		ldr	r3, [r2, #1048]
+  74              		.loc 1 13 37 is_stmt 0 view .LVU16
+  75 004a 43F40003 		orr	r3, r3, #8388608
+  76 004e C2F81834 		str	r3, [r2, #1048]
+  77 0052 F1E7     		b	.L2
+  78              	.L7:
+  79              		.align	2
+  80              	.L6:
+  81 0054 00300240 		.word	1073885184
+  82 0058 00000240 		.word	1073872896
+  83              		.cfi_endproc
+  84              	.LFE0:
+  86              		.text
+  87              	.Letext0:
+  88              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+  89              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s 			page 3
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\rpong\AppData\Local\Temp\ccMVweR0.s:21     .text.main:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccMVweR0.s:27     .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s:21     .text.main:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s:27     .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\cc9HQNQ5.s:81     .text.main:00000054 $d
 
 NO UNDEFINED SYMBOLS
