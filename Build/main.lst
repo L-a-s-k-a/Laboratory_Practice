@@ -1,0 +1,352 @@
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <init.h>
+   2:Core/Src/main.c **** #include <stdint.h>
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** int button_state=0;
+   5:Core/Src/main.c **** int led_state=0;
+   6:Core/Src/main.c **** int led_num=0;
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** int main(void){
+  29              		.loc 1 8 15 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+   9:Core/Src/main.c ****         GPIO_Ini();
+  38              		.loc 1 9 9 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Ini
+  40              	.LVL0:
+  10:Core/Src/main.c ****         GPIO_Ini_Self_Def();
+  41              		.loc 1 10 9 view .LVU2
+  42 0006 FFF7FEFF 		bl	GPIO_Ini_Self_Def
+  43              	.LVL1:
+  11:Core/Src/main.c ****         GPIO_Ini_CMSIS();
+  44              		.loc 1 11 9 view .LVU3
+  45 000a FFF7FEFF 		bl	GPIO_Ini_CMSIS
+  46              	.LVL2:
+  47 000e 13E0     		b	.L12
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s 			page 2
+
+
+  48              	.LVL3:
+  49              	.L4:
+  50              	.LBB2:
+  12:Core/Src/main.c ****         while(1){
+  13:Core/Src/main.c ****                 if(button_state==0 && READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0){
+  14:Core/Src/main.c ****                       button_state=1;  
+  15:Core/Src/main.c ****                       led_num+=1;
+  16:Core/Src/main.c ****                       for(int i=0;i<500000;i++);
+  51              		.loc 1 16 45 discriminator 3 view .LVU4
+  52 0010 0133     		adds	r3, r3, #1
+  53              	.LVL4:
+  54              	.L3:
+  55              		.loc 1 16 36 discriminator 1 view .LVU5
+  56 0012 314A     		ldr	r2, .L21
+  57 0014 9342     		cmp	r3, r2
+  58 0016 FBDD     		ble	.L4
+  59              	.LVL5:
+  60              	.L2:
+  61              		.loc 1 16 36 is_stmt 0 discriminator 1 view .LVU6
+  62              	.LBE2:
+  17:Core/Src/main.c ****                 }
+  18:Core/Src/main.c ****                 if(button_state==1 && READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0){
+  63              		.loc 1 18 17 is_stmt 1 view .LVU7
+  64              		.loc 1 18 32 is_stmt 0 view .LVU8
+  65 0018 304B     		ldr	r3, .L21+4
+  66 001a 1B68     		ldr	r3, [r3]
+  67              		.loc 1 18 19 view .LVU9
+  68 001c 012B     		cmp	r3, #1
+  69 001e 1CD0     		beq	.L15
+  70              	.L5:
+  19:Core/Src/main.c ****                       button_state=0;  
+  20:Core/Src/main.c ****                       led_num+=1;
+  21:Core/Src/main.c ****                       for(int i=0;i<500000;i++);
+  22:Core/Src/main.c ****                 }
+  23:Core/Src/main.c ****                 if(led_num==1)SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  71              		.loc 1 23 17 is_stmt 1 view .LVU10
+  72              		.loc 1 23 27 is_stmt 0 view .LVU11
+  73 0020 2F4B     		ldr	r3, .L21+8
+  74 0022 1B68     		ldr	r3, [r3]
+  75              		.loc 1 23 19 view .LVU12
+  76 0024 012B     		cmp	r3, #1
+  77 0026 2AD0     		beq	.L16
+  78              	.L8:
+  24:Core/Src/main.c ****                 if(led_num==2)SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  79              		.loc 1 24 17 is_stmt 1 view .LVU13
+  80              		.loc 1 24 19 is_stmt 0 view .LVU14
+  81 0028 022B     		cmp	r3, #2
+  82 002a 2ED0     		beq	.L17
+  83              	.L9:
+  25:Core/Src/main.c ****                 if(led_num==3)SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  84              		.loc 1 25 17 is_stmt 1 view .LVU15
+  85              		.loc 1 25 19 is_stmt 0 view .LVU16
+  86 002c 032B     		cmp	r3, #3
+  87 002e 32D0     		beq	.L18
+  88              	.L10:
+  26:Core/Src/main.c ****                 if(led_num==4)SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
+  89              		.loc 1 26 17 is_stmt 1 view .LVU17
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s 			page 3
+
+
+  90              		.loc 1 26 19 is_stmt 0 view .LVU18
+  91 0030 042B     		cmp	r3, #4
+  92 0032 36D0     		beq	.L19
+  93              	.L11:
+  27:Core/Src/main.c ****                 
+  28:Core/Src/main.c ****                 if(led_num==5){
+  94              		.loc 1 28 17 is_stmt 1 view .LVU19
+  95              		.loc 1 28 19 is_stmt 0 view .LVU20
+  96 0034 052B     		cmp	r3, #5
+  97 0036 3AD0     		beq	.L20
+  98              	.L12:
+  12:Core/Src/main.c ****                 if(button_state==0 && READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0){
+  99              		.loc 1 12 9 is_stmt 1 view .LVU21
+  13:Core/Src/main.c ****                       button_state=1;  
+ 100              		.loc 1 13 17 view .LVU22
+  13:Core/Src/main.c ****                       button_state=1;  
+ 101              		.loc 1 13 32 is_stmt 0 view .LVU23
+ 102 0038 284B     		ldr	r3, .L21+4
+ 103 003a 1B68     		ldr	r3, [r3]
+  13:Core/Src/main.c ****                       button_state=1;  
+ 104              		.loc 1 13 19 view .LVU24
+ 105 003c 002B     		cmp	r3, #0
+ 106 003e EBD1     		bne	.L2
+  13:Core/Src/main.c ****                       button_state=1;  
+ 107              		.loc 1 13 39 discriminator 1 view .LVU25
+ 108 0040 284A     		ldr	r2, .L21+12
+ 109 0042 1269     		ldr	r2, [r2, #16]
+  13:Core/Src/main.c ****                       button_state=1;  
+ 110              		.loc 1 13 36 discriminator 1 view .LVU26
+ 111 0044 12F4005F 		tst	r2, #8192
+ 112 0048 E6D0     		beq	.L2
+  14:Core/Src/main.c ****                       led_num+=1;
+ 113              		.loc 1 14 23 is_stmt 1 view .LVU27
+  14:Core/Src/main.c ****                       led_num+=1;
+ 114              		.loc 1 14 35 is_stmt 0 view .LVU28
+ 115 004a 244A     		ldr	r2, .L21+4
+ 116 004c 0121     		movs	r1, #1
+ 117 004e 1160     		str	r1, [r2]
+  15:Core/Src/main.c ****                       for(int i=0;i<500000;i++);
+ 118              		.loc 1 15 23 is_stmt 1 view .LVU29
+  15:Core/Src/main.c ****                       for(int i=0;i<500000;i++);
+ 119              		.loc 1 15 30 is_stmt 0 view .LVU30
+ 120 0050 2349     		ldr	r1, .L21+8
+ 121 0052 0A68     		ldr	r2, [r1]
+ 122 0054 0132     		adds	r2, r2, #1
+ 123 0056 0A60     		str	r2, [r1]
+  16:Core/Src/main.c ****                 }
+ 124              		.loc 1 16 23 is_stmt 1 view .LVU31
+ 125              	.LBB3:
+  16:Core/Src/main.c ****                 }
+ 126              		.loc 1 16 27 view .LVU32
+ 127              	.LVL6:
+  16:Core/Src/main.c ****                 }
+ 128              		.loc 1 16 23 is_stmt 0 view .LVU33
+ 129 0058 DBE7     		b	.L3
+ 130              	.LVL7:
+ 131              	.L15:
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s 			page 4
+
+
+  16:Core/Src/main.c ****                 }
+ 132              		.loc 1 16 23 view .LVU34
+ 133              	.LBE3:
+  18:Core/Src/main.c ****                       button_state=0;  
+ 134              		.loc 1 18 39 discriminator 1 view .LVU35
+ 135 005a 224B     		ldr	r3, .L21+12
+ 136 005c 1B69     		ldr	r3, [r3, #16]
+  18:Core/Src/main.c ****                       button_state=0;  
+ 137              		.loc 1 18 36 discriminator 1 view .LVU36
+ 138 005e 13F4005F 		tst	r3, #8192
+ 139 0062 DDD0     		beq	.L5
+  19:Core/Src/main.c ****                       led_num+=1;
+ 140              		.loc 1 19 23 is_stmt 1 view .LVU37
+  19:Core/Src/main.c ****                       led_num+=1;
+ 141              		.loc 1 19 35 is_stmt 0 view .LVU38
+ 142 0064 0023     		movs	r3, #0
+ 143 0066 1D4A     		ldr	r2, .L21+4
+ 144 0068 1360     		str	r3, [r2]
+  20:Core/Src/main.c ****                       for(int i=0;i<500000;i++);
+ 145              		.loc 1 20 23 is_stmt 1 view .LVU39
+  20:Core/Src/main.c ****                       for(int i=0;i<500000;i++);
+ 146              		.loc 1 20 30 is_stmt 0 view .LVU40
+ 147 006a 1D49     		ldr	r1, .L21+8
+ 148 006c 0A68     		ldr	r2, [r1]
+ 149 006e 0132     		adds	r2, r2, #1
+ 150 0070 0A60     		str	r2, [r1]
+  21:Core/Src/main.c ****                 }
+ 151              		.loc 1 21 23 is_stmt 1 view .LVU41
+ 152              	.LBB4:
+  21:Core/Src/main.c ****                 }
+ 153              		.loc 1 21 27 view .LVU42
+ 154              	.LVL8:
+  21:Core/Src/main.c ****                 }
+ 155              		.loc 1 21 23 is_stmt 0 view .LVU43
+ 156 0072 00E0     		b	.L6
+ 157              	.LVL9:
+ 158              	.L7:
+  21:Core/Src/main.c ****                 }
+ 159              		.loc 1 21 45 is_stmt 1 discriminator 3 view .LVU44
+ 160 0074 0133     		adds	r3, r3, #1
+ 161              	.LVL10:
+ 162              	.L6:
+  21:Core/Src/main.c ****                 }
+ 163              		.loc 1 21 36 discriminator 1 view .LVU45
+ 164 0076 184A     		ldr	r2, .L21
+ 165 0078 9342     		cmp	r3, r2
+ 166 007a FBDD     		ble	.L7
+ 167 007c D0E7     		b	.L5
+ 168              	.LVL11:
+ 169              	.L16:
+  21:Core/Src/main.c ****                 }
+ 170              		.loc 1 21 36 is_stmt 0 discriminator 1 view .LVU46
+ 171              	.LBE4:
+  23:Core/Src/main.c ****                 if(led_num==2)SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+ 172              		.loc 1 23 31 is_stmt 1 discriminator 1 view .LVU47
+ 173 007e 1A49     		ldr	r1, .L21+16
+ 174 0080 8A69     		ldr	r2, [r1, #24]
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s 			page 5
+
+
+ 175 0082 42F00102 		orr	r2, r2, #1
+ 176 0086 8A61     		str	r2, [r1, #24]
+ 177 0088 CEE7     		b	.L8
+ 178              	.L17:
+  24:Core/Src/main.c ****                 if(led_num==3)SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 179              		.loc 1 24 31 discriminator 1 view .LVU48
+ 180 008a 1749     		ldr	r1, .L21+16
+ 181 008c 8A69     		ldr	r2, [r1, #24]
+ 182 008e 42F08002 		orr	r2, r2, #128
+ 183 0092 8A61     		str	r2, [r1, #24]
+ 184 0094 CAE7     		b	.L9
+ 185              	.L18:
+  25:Core/Src/main.c ****                 if(led_num==4)SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
+ 186              		.loc 1 25 31 discriminator 1 view .LVU49
+ 187 0096 1449     		ldr	r1, .L21+16
+ 188 0098 8A69     		ldr	r2, [r1, #24]
+ 189 009a 42F48042 		orr	r2, r2, #16384
+ 190 009e 8A61     		str	r2, [r1, #24]
+ 191 00a0 C6E7     		b	.L10
+ 192              	.L19:
+  26:Core/Src/main.c ****                 
+ 193              		.loc 1 26 31 discriminator 1 view .LVU50
+ 194 00a2 1149     		ldr	r1, .L21+16
+ 195 00a4 8A69     		ldr	r2, [r1, #24]
+ 196 00a6 42F48072 		orr	r2, r2, #256
+ 197 00aa 8A61     		str	r2, [r1, #24]
+ 198 00ac C2E7     		b	.L11
+ 199              	.L20:
+  29:Core/Src/main.c ****                         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 200              		.loc 1 29 25 view .LVU51
+ 201 00ae 0E4B     		ldr	r3, .L21+16
+ 202 00b0 9A69     		ldr	r2, [r3, #24]
+ 203 00b2 42F48032 		orr	r2, r2, #65536
+ 204 00b6 9A61     		str	r2, [r3, #24]
+  30:Core/Src/main.c ****                         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 205              		.loc 1 30 25 view .LVU52
+ 206 00b8 9A69     		ldr	r2, [r3, #24]
+ 207 00ba 42F40002 		orr	r2, r2, #8388608
+ 208 00be 9A61     		str	r2, [r3, #24]
+  31:Core/Src/main.c ****                         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 209              		.loc 1 31 25 view .LVU53
+ 210 00c0 9A69     		ldr	r2, [r3, #24]
+ 211 00c2 42F08042 		orr	r2, r2, #1073741824
+ 212 00c6 9A61     		str	r2, [r3, #24]
+  32:Core/Src/main.c ****                         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);
+ 213              		.loc 1 32 25 view .LVU54
+ 214 00c8 9A69     		ldr	r2, [r3, #24]
+ 215 00ca 42F08072 		orr	r2, r2, #16777216
+ 216 00ce 9A61     		str	r2, [r3, #24]
+  33:Core/Src/main.c ****                         led_num=0;
+ 217              		.loc 1 33 25 view .LVU55
+ 218              		.loc 1 33 32 is_stmt 0 view .LVU56
+ 219 00d0 034B     		ldr	r3, .L21+8
+ 220 00d2 0022     		movs	r2, #0
+ 221 00d4 1A60     		str	r2, [r3]
+ 222 00d6 AFE7     		b	.L12
+ 223              	.L22:
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s 			page 6
+
+
+ 224              		.align	2
+ 225              	.L21:
+ 226 00d8 1FA10700 		.word	499999
+ 227 00dc 00000000 		.word	button_state
+ 228 00e0 00000000 		.word	led_num
+ 229 00e4 00080240 		.word	1073874944
+ 230 00e8 00040240 		.word	1073873920
+ 231              		.cfi_endproc
+ 232              	.LFE130:
+ 234              		.global	led_num
+ 235              		.section	.bss.led_num,"aw",%nobits
+ 236              		.align	2
+ 239              	led_num:
+ 240 0000 00000000 		.space	4
+ 241              		.global	led_state
+ 242              		.section	.bss.led_state,"aw",%nobits
+ 243              		.align	2
+ 246              	led_state:
+ 247 0000 00000000 		.space	4
+ 248              		.global	button_state
+ 249              		.section	.bss.button_state,"aw",%nobits
+ 250              		.align	2
+ 253              	button_state:
+ 254 0000 00000000 		.space	4
+ 255              		.text
+ 256              	.Letext0:
+ 257              		.file 2 "C:/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 258              		.file 3 "C:/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 259              		.file 4 "C:\\Users\\mns94\\OneDrive\\Documents\\digital_microprocessor_technology\\Laboratory_Prac
+ 260              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:21     .text.main:00000000 $t
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:27     .text.main:00000000 main
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:226    .text.main:000000d8 $d
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:253    .bss.button_state:00000000 button_state
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:239    .bss.led_num:00000000 led_num
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:236    .bss.led_num:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:246    .bss.led_state:00000000 led_state
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:243    .bss.led_state:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cctqIoqa.s:250    .bss.button_state:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
+GPIO_Ini_Self_Def
+GPIO_Ini_CMSIS
