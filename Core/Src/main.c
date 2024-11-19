@@ -53,34 +53,40 @@ int main(void){
             switch (count) {
                 case 0:
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
-                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR6 | GPIO_BSRR_BR7);
+                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
+                    SET_BIT(GPIOС->BSRR, GPIOC_PIN6_R);
                     break;
                 case 1:
-                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6);  
+                    SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);  
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
                     break;
                 case 2:
-                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7);  
+                    SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
+                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);  
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
                     break;
                 case 3:
-                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7); 
+                    SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
+                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7); 
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5); 
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
                     break;
                 case 4:
-                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7); 
+                    SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
+                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7); 
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13);  
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
                     break;
                 case 5:
-                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7);
+                    SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
+                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13 | GPIO_BSRR_BS0);  
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR1);
                     break;
                 case 6:
-                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6 | GPIO_BSRR_BS7);
+                    SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
+                    SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13 | GPIO_BSRR_BS0 | GPIO_BSRR_BS1);  
                     break;
             }
