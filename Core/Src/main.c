@@ -1,51 +1,20 @@
 #include "../Inc/init.h"
 
-uint8_t flag1, flag1_pred, LedState;
+uint8_t flag1, flag1_pred, LedState, BtnCount1, LongBtnCount1;
+uint16_t GlobalTickCount;
 int button_count = 0, button_drebezg, button;
 int main(void)
 {
-    ITR_init(); // инициализация прерываний
-    RCC_Init(); // инициализация таймеров
-    GPIO_Ini(); // инициализация портов
+    ITR_init();     // инициализация прерываний
+    RCC_Init();     // инициализация таймеров
+    GPIO_Ini();     // инициализация портов
+    SysTick_Init(); // инициализация системного таймера
     while (1)
     {
-        button = READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13);
-        // -------------------------------------------------
-        if (button != 0) // проверка бита
-        {
-            flag1 = 1;
-        }
-        if (flag1 == 1)
-        {
-            button_drebezg++;
-        }
-        if (button_drebezg >= 100000)
-        {
-            if (button != 0)
-            {
-                if (flag1_pred == 0)
-                {
-                    button_count++; /* code */
-                    flag1_pred = 1;
-                    button_drebezg = 0;
-                }
-            }
-            else
-            {
-                flag1 = 0;
-                flag1_pred = 0;
-                button_drebezg = 0;
-            }
-        }
 
-        if (flag1 == 1 && flag1_pred == 0)
-        {
-            button_count++;
-        }
-        flag1_pred = flag1;
         //-------------------------------------------------
         // lab1
-        switch (button_count)
+        switch (BtnCount1)
         {
         case 1:
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS13); // Установка единицы в 7-ой бит регистра ODR
@@ -66,14 +35,7 @@ int main(void)
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR6);
             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN6_RESET);
             break;
-        case 6:
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS13);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12);
-            SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN6_SET);
-            break;
         default:
-            // зажечь все лампы (_БС)
             button_count = 0;
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR13);
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);

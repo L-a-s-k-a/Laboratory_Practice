@@ -83,3 +83,13 @@ void GPIO_Ini(void)
     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0); // Настройка скорости работы 15-го пина GPIOB на среднюю
     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD15_0);
 }
+
+void SysTick_Init(void)
+{
+    CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);                                     // На всякий случай, предварительно, выключим счётчик
+    SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk);                                      // Разрешаем прерывание по системному таймеру
+    SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk);                                    // Источник тактирования будет идти из AHB без деления
+    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, 179999 << SysTick_LOAD_RELOAD_Pos); // Значение с которого начинается счёт, эквивалентное 1 кГц
+    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, 179999 << SysTick_VAL_CURRENT_Pos);  // Очистка поля
+    SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);                                       // Включим счётчик
+}
