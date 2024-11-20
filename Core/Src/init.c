@@ -57,6 +57,13 @@ void ITR_init(void)
     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13);                                                     // Настройка детектирования спадающего фронта 13 линии
     NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); // Установка 0 приоритета прерывания для вектора EXTI15_10
     NVIC_EnableIRQ(EXTI15_10_IRQn);                                                          // Включение прерывания по вектору EXTI15_10
+
+    MODIFY_REG(SYSCFG->EXTICR[2], SYSCFG_EXTICR3_EXTI9_Msk, SYSCFG_EXTICR3_EXTI9_PC);      // Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13
+    SET_BIT(EXTI->IMR, EXTI_IMR_MR9);                                                      // Настройка маскирования 9 линии
+    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR9);                                                    // Настройка детектирования нарастающего фронта 13 линии
+    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR9);                                                    // Настройка детектирования спадающего фронта 13 линии
+    NVIC_SetPriority(EXTI9_5_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 1)); // Установка 0 приоритета прерывания для вектора EXTI15_10
+    NVIC_EnableIRQ(EXTI9_5_IRQn);                                                          // Включение прерывания по вектору EXTI15_10
 }
 
 void GPIO_Ini(void)
