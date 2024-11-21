@@ -2,13 +2,17 @@
 
 #define GPIO_IDRX(X) 1UL << X
 
-// Use only with WRITE_REG()
+// BSRR редактировать только с WRITE_REG()
 #define GPIO_BSRR_BSX(X) 1UL << X
 #define GPIO_BSRR_BRX(X) 1UL << (X + 16)
 
 uint8_t pin[] = {1, 2, 3};
+uint8_t led[] = {0, 7, 14}; // диоды на плате
 uint8_t j = 0;
-uint8_t b = 0, bp = 0; // mode button / previous
+uint8_t b = 0, bp = 0;   // состояние кнопки режима
+uint8_t b1 = 0, b1p = 0; // состояния кнопки 1
+uint8_t b2 = 0, b2p = 0; // состояния кнопки 2
+uint8_t b3 = 0, b3p = 0; // состояния кнопки 3
 
 void set_modes(uint8_t pins) {
     for (int i = 0; i < 3; ++i) {
@@ -47,9 +51,18 @@ void process_pbpin(uint8_t pin) {
     }
 }
 
+void process_pbbtn(uint8_t pin) {
+
+}
+
 int main_func_3() {
     while (1) {
-        b = (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) != 0);
+        b = (READ_BIT(GPIOC->IDR, GPIO_IDRX(13)) != 0);
+        if (READ_BIT(GPIOB->IDR, GPIO_IDRX(1)) != 0) {
+
+        }
+        b2 = (READ_BIT(GPIOB->IDR, GPIO_IDRX(2)) != 0);
+        b3 = (READ_BIT(GPIOB->IDR, GPIO_IDRX(3)) != 0);
 
         process_pbpin(1);
         process_pbpin(2);
