@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\cctKEuob.s 			page 1
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,11 +20,658 @@ ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\cctKEuob.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/Init.c"
-  20              	.Letext0:
-ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\cctKEuob.s 			page 2
+  20              		.section	.text.GPIO_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Init:
+  28              	.LFB130:
+   1:Core/Src/Init.c **** #include "Init.h"
+   2:Core/Src/Init.c **** 
+   3:Core/Src/Init.c **** void GPIO_Init(void){ // buttons 12, 15, 9, user // led 12, 15, 9, 4, 5, 6 
+  29              		.loc 1 3 21 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   4:Core/Src/Init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Тактирование н
+  34              		.loc 1 4 5 view .LVU1
+  35 0000 0B4A     		ldr	r2, .L2
+  36 0002 136B     		ldr	r3, [r2, #48]
+  37 0004 43F00603 		orr	r3, r3, #6
+  38 0008 1363     		str	r3, [r2, #48]
+   5:Core/Src/Init.c ****     //SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN); 
+   6:Core/Src/Init.c ****     //Тактирование на B и C
+   7:Core/Src/Init.c ****     //SET_BIT(GPIOC->MODER, GPIO_MODER_MODE13_1);
+   8:Core/Src/Init.c ****     //CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR13_0);
+   9:Core/Src/Init.c ****     
+  10:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0); //7 pin - output
+  39              		.loc 1 10 5 view .LVU2
+  40 000a 0A4B     		ldr	r3, .L2+4
+  41 000c 1A68     		ldr	r2, [r3]
+  42 000e 42F48042 		orr	r2, r2, #16384
+  43 0012 1A60     		str	r2, [r3]
+  11:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7); //7 pin on PP
+  44              		.loc 1 11 5 view .LVU3
+  45 0014 5A68     		ldr	r2, [r3, #4]
+  46 0016 22F08002 		bic	r2, r2, #128
+  47 001a 5A60     		str	r2, [r3, #4]
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 2
+
+
+  12:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED7_0);
+  48              		.loc 1 12 5 view .LVU4
+  49 001c 9A68     		ldr	r2, [r3, #8]
+  50 001e 42F48042 		orr	r2, r2, #16384
+  51 0022 9A60     		str	r2, [r3, #8]
+  13:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0); // 2 - 10 
+  52              		.loc 1 13 5 view .LVU5
+  53 0024 DA68     		ldr	r2, [r3, #12]
+  54 0026 22F48042 		bic	r2, r2, #16384
+  55 002a DA60     		str	r2, [r3, #12]
+  14:Core/Src/Init.c **** 
+  15:Core/Src/Init.c ****     // SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_1); 
+  16:Core/Src/Init.c ****     // CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR8_0);  
+  17:Core/Src/Init.c **** 
+  18:Core/Src/Init.c ****     // SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0); //8 pin - output
+  19:Core/Src/Init.c ****     // CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_8); //8 pin on PP
+  20:Core/Src/Init.c ****     // SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED8_0);
+  21:Core/Src/Init.c ****     // CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR8_0); // 2 - 10
+  22:Core/Src/Init.c ****     // RCC_GPIO_EN |= RCC_GPIOB_EN + RCC_GPIOC_EN; //включение тактирования п
+  23:Core/Src/Init.c **** 
+  24:Core/Src/Init.c ****     // GPIOB_MODER |= GPIOB_MODE_PIN7_OUT; //настройка пин 7 на вывод
+  25:Core/Src/Init.c ****     // GPIOB_OTYPER |= GPIOB_OTYPE_PIN7_PP; //включение PUSH-PULL на пин 7
+  26:Core/Src/Init.c ****     // GPIOB_OSPEEDER |= GPIOB_OSPEED_PIN7_MID; //настройка средней скорост�
+  27:Core/Src/Init.c ****     //GPIOB_PUPDR |= GPIOB_PUPDR_PIN7_NOPUPD; //Отключение PU/PD резисторов н�
+  28:Core/Src/Init.c **** }
+  56              		.loc 1 28 1 is_stmt 0 view .LVU6
+  57 002c 7047     		bx	lr
+  58              	.L3:
+  59 002e 00BF     		.align	2
+  60              	.L2:
+  61 0030 00380240 		.word	1073887232
+  62 0034 00040240 		.word	1073873920
+  63              		.cfi_endproc
+  64              	.LFE130:
+  66              		.section	.text.GPIO_led_init,"ax",%progbits
+  67              		.align	1
+  68              		.global	GPIO_led_init
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	GPIO_led_init:
+  74              	.LFB131:
+  29:Core/Src/Init.c **** void GPIO_led_init(void){
+  75              		.loc 1 29 25 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              		@ link register save eliminated.
+  30:Core/Src/Init.c ****     //SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //RCC on GPIOB
+  31:Core/Src/Init.c ****     //PB0 - green
+  32:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);  
+  80              		.loc 1 32 5 view .LVU8
+  81 0000 184B     		ldr	r3, .L5
+  82 0002 1A68     		ldr	r2, [r3]
+  83 0004 42F00102 		orr	r2, r2, #1
+  84 0008 1A60     		str	r2, [r3]
+  33:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 3
+
+
+  85              		.loc 1 33 5 view .LVU9
+  86 000a 5A68     		ldr	r2, [r3, #4]
+  87 000c 22F00102 		bic	r2, r2, #1
+  88 0010 5A60     		str	r2, [r3, #4]
+  34:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED0_0);
+  89              		.loc 1 34 5 view .LVU10
+  90 0012 9A68     		ldr	r2, [r3, #8]
+  91 0014 42F00102 		orr	r2, r2, #1
+  92 0018 9A60     		str	r2, [r3, #8]
+  35:Core/Src/Init.c ****     SET_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0); //0x1 - 01  10 &= ~01 => 10 &= 10 = 10
+  93              		.loc 1 35 5 view .LVU11
+  94 001a DA68     		ldr	r2, [r3, #12]
+  95 001c 42F00102 		orr	r2, r2, #1
+  96 0020 DA60     		str	r2, [r3, #12]
+  36:Core/Src/Init.c ****     //PB7 - blue
+  37:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE5_0);
+  97              		.loc 1 37 5 view .LVU12
+  98 0022 1A68     		ldr	r2, [r3]
+  99 0024 42F48062 		orr	r2, r2, #1024
+ 100 0028 1A60     		str	r2, [r3]
+  38:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7);
+ 101              		.loc 1 38 5 view .LVU13
+ 102 002a 5A68     		ldr	r2, [r3, #4]
+ 103 002c 22F08002 		bic	r2, r2, #128
+ 104 0030 5A60     		str	r2, [r3, #4]
+  39:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED7_0);
+ 105              		.loc 1 39 5 view .LVU14
+ 106 0032 9A68     		ldr	r2, [r3, #8]
+ 107 0034 42F48042 		orr	r2, r2, #16384
+ 108 0038 9A60     		str	r2, [r3, #8]
+  40:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
+ 109              		.loc 1 40 5 view .LVU15
+ 110 003a DA68     		ldr	r2, [r3, #12]
+ 111 003c 22F48042 		bic	r2, r2, #16384
+ 112 0040 DA60     		str	r2, [r3, #12]
+  41:Core/Src/Init.c ****     //PB14 - red
+  42:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
+ 113              		.loc 1 42 5 view .LVU16
+ 114 0042 1A68     		ldr	r2, [r3]
+ 115 0044 42F08052 		orr	r2, r2, #268435456
+ 116 0048 1A60     		str	r2, [r3]
+  43:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
+ 117              		.loc 1 43 5 view .LVU17
+ 118 004a 5A68     		ldr	r2, [r3, #4]
+ 119 004c 22F48042 		bic	r2, r2, #16384
+ 120 0050 5A60     		str	r2, [r3, #4]
+  44:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED14_0);
+ 121              		.loc 1 44 5 view .LVU18
+ 122 0052 9A68     		ldr	r2, [r3, #8]
+ 123 0054 42F08052 		orr	r2, r2, #268435456
+ 124 0058 9A60     		str	r2, [r3, #8]
+  45:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);    
+ 125              		.loc 1 45 5 view .LVU19
+ 126 005a DA68     		ldr	r2, [r3, #12]
+ 127 005c 22F08052 		bic	r2, r2, #268435456
+ 128 0060 DA60     		str	r2, [r3, #12]
+  46:Core/Src/Init.c **** }
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 4
+
+
+ 129              		.loc 1 46 1 is_stmt 0 view .LVU20
+ 130 0062 7047     		bx	lr
+ 131              	.L6:
+ 132              		.align	2
+ 133              	.L5:
+ 134 0064 00040240 		.word	1073873920
+ 135              		.cfi_endproc
+ 136              	.LFE131:
+ 138              		.section	.text.GPIO_button_input,"ax",%progbits
+ 139              		.align	1
+ 140              		.global	GPIO_button_input
+ 141              		.syntax unified
+ 142              		.thumb
+ 143              		.thumb_func
+ 145              	GPIO_button_input:
+ 146              	.LFB132:
+  47:Core/Src/Init.c **** 
+  48:Core/Src/Init.c **** void GPIO_button_input(void){
+ 147              		.loc 1 48 29 is_stmt 1 view -0
+ 148              		.cfi_startproc
+ 149              		@ args = 0, pretend = 0, frame = 0
+ 150              		@ frame_needed = 0, uses_anonymous_args = 0
+ 151              		@ link register save eliminated.
+  49:Core/Src/Init.c ****     //PB12
+  50:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE12_0);
+ 152              		.loc 1 50 5 view .LVU22
+ 153 0000 0C4B     		ldr	r3, .L8
+ 154 0002 1A68     		ldr	r2, [r3]
+ 155 0004 22F08072 		bic	r2, r2, #16777216
+ 156 0008 1A60     		str	r2, [r3]
+  51:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR12_0);
+ 157              		.loc 1 51 5 view .LVU23
+ 158 000a DA68     		ldr	r2, [r3, #12]
+ 159 000c 22F08072 		bic	r2, r2, #16777216
+ 160 0010 DA60     		str	r2, [r3, #12]
+  52:Core/Src/Init.c ****     //PB15
+  53:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE15_0);
+ 161              		.loc 1 53 5 view .LVU24
+ 162 0012 1A68     		ldr	r2, [r3]
+ 163 0014 22F08042 		bic	r2, r2, #1073741824
+ 164 0018 1A60     		str	r2, [r3]
+  54:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR15_0);
+ 165              		.loc 1 54 5 view .LVU25
+ 166 001a DA68     		ldr	r2, [r3, #12]
+ 167 001c 22F08042 		bic	r2, r2, #1073741824
+ 168 0020 DA60     		str	r2, [r3, #12]
+  55:Core/Src/Init.c ****     //PB9
+  56:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE9_0);
+ 169              		.loc 1 56 5 view .LVU26
+ 170 0022 1A68     		ldr	r2, [r3]
+ 171 0024 22F48022 		bic	r2, r2, #262144
+ 172 0028 1A60     		str	r2, [r3]
+  57:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR9_0);
+ 173              		.loc 1 57 5 view .LVU27
+ 174 002a DA68     		ldr	r2, [r3, #12]
+ 175 002c 22F48022 		bic	r2, r2, #262144
+ 176 0030 DA60     		str	r2, [r3, #12]
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 5
+
+
+  58:Core/Src/Init.c **** }
+ 177              		.loc 1 58 1 is_stmt 0 view .LVU28
+ 178 0032 7047     		bx	lr
+ 179              	.L9:
+ 180              		.align	2
+ 181              	.L8:
+ 182 0034 00080240 		.word	1073874944
+ 183              		.cfi_endproc
+ 184              	.LFE132:
+ 186              		.section	.text.GPIO_button_output,"ax",%progbits
+ 187              		.align	1
+ 188              		.global	GPIO_button_output
+ 189              		.syntax unified
+ 190              		.thumb
+ 191              		.thumb_func
+ 193              	GPIO_button_output:
+ 194              	.LFB133:
+  59:Core/Src/Init.c **** 
+  60:Core/Src/Init.c **** void GPIO_button_output(void){ //PB12, PB15, PB9
+ 195              		.loc 1 60 30 is_stmt 1 view -0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 0
+ 198              		@ frame_needed = 0, uses_anonymous_args = 0
+ 199              		@ link register save eliminated.
+  61:Core/Src/Init.c ****     //PB12
+  62:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0);
+ 200              		.loc 1 62 5 view .LVU30
+ 201 0000 184B     		ldr	r3, .L11
+ 202 0002 1A68     		ldr	r2, [r3]
+ 203 0004 42F08072 		orr	r2, r2, #16777216
+ 204 0008 1A60     		str	r2, [r3]
+  63:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_12);
+ 205              		.loc 1 63 5 view .LVU31
+ 206 000a 5A68     		ldr	r2, [r3, #4]
+ 207 000c 22F48052 		bic	r2, r2, #4096
+ 208 0010 5A60     		str	r2, [r3, #4]
+  64:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED12_0);
+ 209              		.loc 1 64 5 view .LVU32
+ 210 0012 9A68     		ldr	r2, [r3, #8]
+ 211 0014 42F08072 		orr	r2, r2, #16777216
+ 212 0018 9A60     		str	r2, [r3, #8]
+  65:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR12_0);   
+ 213              		.loc 1 65 5 view .LVU33
+ 214 001a DA68     		ldr	r2, [r3, #12]
+ 215 001c 22F08072 		bic	r2, r2, #16777216
+ 216 0020 DA60     		str	r2, [r3, #12]
+  66:Core/Src/Init.c ****     //PB15
+  67:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE15_0);
+ 217              		.loc 1 67 5 view .LVU34
+ 218 0022 1A68     		ldr	r2, [r3]
+ 219 0024 42F08042 		orr	r2, r2, #1073741824
+ 220 0028 1A60     		str	r2, [r3]
+  68:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_15);
+ 221              		.loc 1 68 5 view .LVU35
+ 222 002a 5A68     		ldr	r2, [r3, #4]
+ 223 002c 22F40042 		bic	r2, r2, #32768
+ 224 0030 5A60     		str	r2, [r3, #4]
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 6
+
+
+  69:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED15_0);
+ 225              		.loc 1 69 5 view .LVU36
+ 226 0032 9A68     		ldr	r2, [r3, #8]
+ 227 0034 42F08042 		orr	r2, r2, #1073741824
+ 228 0038 9A60     		str	r2, [r3, #8]
+  70:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR15_0);   
+ 229              		.loc 1 70 5 view .LVU37
+ 230 003a DA68     		ldr	r2, [r3, #12]
+ 231 003c 22F08042 		bic	r2, r2, #1073741824
+ 232 0040 DA60     		str	r2, [r3, #12]
+  71:Core/Src/Init.c ****     //PB9
+  72:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0);
+ 233              		.loc 1 72 5 view .LVU38
+ 234 0042 1A68     		ldr	r2, [r3]
+ 235 0044 42F48022 		orr	r2, r2, #262144
+ 236 0048 1A60     		str	r2, [r3]
+  73:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_9);
+ 237              		.loc 1 73 5 view .LVU39
+ 238 004a 5A68     		ldr	r2, [r3, #4]
+ 239 004c 22F40072 		bic	r2, r2, #512
+ 240 0050 5A60     		str	r2, [r3, #4]
+  74:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED9_0);
+ 241              		.loc 1 74 5 view .LVU40
+ 242 0052 9A68     		ldr	r2, [r3, #8]
+ 243 0054 42F48022 		orr	r2, r2, #262144
+ 244 0058 9A60     		str	r2, [r3, #8]
+  75:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR9_0);   
+ 245              		.loc 1 75 5 view .LVU41
+ 246 005a DA68     		ldr	r2, [r3, #12]
+ 247 005c 22F48022 		bic	r2, r2, #262144
+ 248 0060 DA60     		str	r2, [r3, #12]
+  76:Core/Src/Init.c **** }
+ 249              		.loc 1 76 1 is_stmt 0 view .LVU42
+ 250 0062 7047     		bx	lr
+ 251              	.L12:
+ 252              		.align	2
+ 253              	.L11:
+ 254 0064 00040240 		.word	1073873920
+ 255              		.cfi_endproc
+ 256              	.LFE133:
+ 258              		.section	.text.button1_output,"ax",%progbits
+ 259              		.align	1
+ 260              		.global	button1_output
+ 261              		.syntax unified
+ 262              		.thumb
+ 263              		.thumb_func
+ 265              	button1_output:
+ 266              	.LFB134:
+  77:Core/Src/Init.c **** void button1_output(void){
+ 267              		.loc 1 77 26 is_stmt 1 view -0
+ 268              		.cfi_startproc
+ 269              		@ args = 0, pretend = 0, frame = 0
+ 270              		@ frame_needed = 0, uses_anonymous_args = 0
+ 271              		@ link register save eliminated.
+  78:Core/Src/Init.c ****     //PB12
+  79:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0);
+ 272              		.loc 1 79 5 view .LVU44
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 7
+
+
+ 273 0000 0A4B     		ldr	r3, .L14
+ 274 0002 1A68     		ldr	r2, [r3]
+ 275 0004 42F08072 		orr	r2, r2, #16777216
+ 276 0008 1A60     		str	r2, [r3]
+  80:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_12);
+ 277              		.loc 1 80 5 view .LVU45
+ 278 000a 5A68     		ldr	r2, [r3, #4]
+ 279 000c 22F48052 		bic	r2, r2, #4096
+ 280 0010 5A60     		str	r2, [r3, #4]
+  81:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED12_0);
+ 281              		.loc 1 81 5 view .LVU46
+ 282 0012 9A68     		ldr	r2, [r3, #8]
+ 283 0014 42F08072 		orr	r2, r2, #16777216
+ 284 0018 9A60     		str	r2, [r3, #8]
+  82:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR12_0);
+ 285              		.loc 1 82 5 view .LVU47
+ 286 001a DA68     		ldr	r2, [r3, #12]
+ 287 001c 22F08072 		bic	r2, r2, #16777216
+ 288 0020 DA60     		str	r2, [r3, #12]
+  83:Core/Src/Init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12);
+ 289              		.loc 1 83 5 view .LVU48
+ 290 0022 9A69     		ldr	r2, [r3, #24]
+ 291 0024 42F48052 		orr	r2, r2, #4096
+ 292 0028 9A61     		str	r2, [r3, #24]
+  84:Core/Src/Init.c **** 
+  85:Core/Src/Init.c **** }
+ 293              		.loc 1 85 1 is_stmt 0 view .LVU49
+ 294 002a 7047     		bx	lr
+ 295              	.L15:
+ 296              		.align	2
+ 297              	.L14:
+ 298 002c 00040240 		.word	1073873920
+ 299              		.cfi_endproc
+ 300              	.LFE134:
+ 302              		.section	.text.button2_output,"ax",%progbits
+ 303              		.align	1
+ 304              		.global	button2_output
+ 305              		.syntax unified
+ 306              		.thumb
+ 307              		.thumb_func
+ 309              	button2_output:
+ 310              	.LFB135:
+  86:Core/Src/Init.c **** void button2_output(void){
+ 311              		.loc 1 86 26 is_stmt 1 view -0
+ 312              		.cfi_startproc
+ 313              		@ args = 0, pretend = 0, frame = 0
+ 314              		@ frame_needed = 0, uses_anonymous_args = 0
+ 315              		@ link register save eliminated.
+  87:Core/Src/Init.c ****     //PB15
+  88:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE15_0);
+ 316              		.loc 1 88 5 view .LVU51
+ 317 0000 0A4B     		ldr	r3, .L17
+ 318 0002 1A68     		ldr	r2, [r3]
+ 319 0004 42F08042 		orr	r2, r2, #1073741824
+ 320 0008 1A60     		str	r2, [r3]
+  89:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_15);
+ 321              		.loc 1 89 5 view .LVU52
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 8
+
+
+ 322 000a 5A68     		ldr	r2, [r3, #4]
+ 323 000c 22F40042 		bic	r2, r2, #32768
+ 324 0010 5A60     		str	r2, [r3, #4]
+  90:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED15_0);
+ 325              		.loc 1 90 5 view .LVU53
+ 326 0012 9A68     		ldr	r2, [r3, #8]
+ 327 0014 42F08042 		orr	r2, r2, #1073741824
+ 328 0018 9A60     		str	r2, [r3, #8]
+  91:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR15_0);
+ 329              		.loc 1 91 5 view .LVU54
+ 330 001a DA68     		ldr	r2, [r3, #12]
+ 331 001c 22F08042 		bic	r2, r2, #1073741824
+ 332 0020 DA60     		str	r2, [r3, #12]
+  92:Core/Src/Init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15);
+ 333              		.loc 1 92 5 view .LVU55
+ 334 0022 9A69     		ldr	r2, [r3, #24]
+ 335 0024 42F40042 		orr	r2, r2, #32768
+ 336 0028 9A61     		str	r2, [r3, #24]
+  93:Core/Src/Init.c **** }
+ 337              		.loc 1 93 1 is_stmt 0 view .LVU56
+ 338 002a 7047     		bx	lr
+ 339              	.L18:
+ 340              		.align	2
+ 341              	.L17:
+ 342 002c 00040240 		.word	1073873920
+ 343              		.cfi_endproc
+ 344              	.LFE135:
+ 346              		.section	.text.button3_output,"ax",%progbits
+ 347              		.align	1
+ 348              		.global	button3_output
+ 349              		.syntax unified
+ 350              		.thumb
+ 351              		.thumb_func
+ 353              	button3_output:
+ 354              	.LFB136:
+  94:Core/Src/Init.c **** void button3_output(void){
+ 355              		.loc 1 94 26 is_stmt 1 view -0
+ 356              		.cfi_startproc
+ 357              		@ args = 0, pretend = 0, frame = 0
+ 358              		@ frame_needed = 0, uses_anonymous_args = 0
+ 359              		@ link register save eliminated.
+  95:Core/Src/Init.c ****     //PB9
+  96:Core/Src/Init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0);
+ 360              		.loc 1 96 5 view .LVU58
+ 361 0000 0A4B     		ldr	r3, .L20
+ 362 0002 1A68     		ldr	r2, [r3]
+ 363 0004 42F48022 		orr	r2, r2, #262144
+ 364 0008 1A60     		str	r2, [r3]
+  97:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_9);
+ 365              		.loc 1 97 5 view .LVU59
+ 366 000a 5A68     		ldr	r2, [r3, #4]
+ 367 000c 22F40072 		bic	r2, r2, #512
+ 368 0010 5A60     		str	r2, [r3, #4]
+  98:Core/Src/Init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED9_0);
+ 369              		.loc 1 98 5 view .LVU60
+ 370 0012 9A68     		ldr	r2, [r3, #8]
+ 371 0014 42F48022 		orr	r2, r2, #262144
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 9
+
+
+ 372 0018 9A60     		str	r2, [r3, #8]
+  99:Core/Src/Init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR9_0);
+ 373              		.loc 1 99 5 view .LVU61
+ 374 001a DA68     		ldr	r2, [r3, #12]
+ 375 001c 22F48022 		bic	r2, r2, #262144
+ 376 0020 DA60     		str	r2, [r3, #12]
+ 100:Core/Src/Init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS9);
+ 377              		.loc 1 100 5 view .LVU62
+ 378 0022 9A69     		ldr	r2, [r3, #24]
+ 379 0024 42F40072 		orr	r2, r2, #512
+ 380 0028 9A61     		str	r2, [r3, #24]
+ 101:Core/Src/Init.c **** }
+ 381              		.loc 1 101 1 is_stmt 0 view .LVU63
+ 382 002a 7047     		bx	lr
+ 383              	.L21:
+ 384              		.align	2
+ 385              	.L20:
+ 386 002c 00040240 		.word	1073873920
+ 387              		.cfi_endproc
+ 388              	.LFE136:
+ 390              		.section	.text.button1_input,"ax",%progbits
+ 391              		.align	1
+ 392              		.global	button1_input
+ 393              		.syntax unified
+ 394              		.thumb
+ 395              		.thumb_func
+ 397              	button1_input:
+ 398              	.LFB137:
+ 102:Core/Src/Init.c **** void button1_input(void){
+ 399              		.loc 1 102 25 is_stmt 1 view -0
+ 400              		.cfi_startproc
+ 401              		@ args = 0, pretend = 0, frame = 0
+ 402              		@ frame_needed = 0, uses_anonymous_args = 0
+ 403              		@ link register save eliminated.
+ 103:Core/Src/Init.c ****     //PB12
+ 104:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE12_0);
+ 404              		.loc 1 104 5 view .LVU65
+ 405 0000 074B     		ldr	r3, .L23
+ 406 0002 1A68     		ldr	r2, [r3]
+ 407 0004 22F08072 		bic	r2, r2, #16777216
+ 408 0008 1A60     		str	r2, [r3]
+ 105:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR12_0);
+ 409              		.loc 1 105 5 view .LVU66
+ 410 000a DA68     		ldr	r2, [r3, #12]
+ 411 000c 22F08072 		bic	r2, r2, #16777216
+ 412 0010 DA60     		str	r2, [r3, #12]
+ 106:Core/Src/Init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR12);
+ 413              		.loc 1 106 5 view .LVU67
+ 414 0012 044A     		ldr	r2, .L23+4
+ 415 0014 9369     		ldr	r3, [r2, #24]
+ 416 0016 43F08053 		orr	r3, r3, #268435456
+ 417 001a 9361     		str	r3, [r2, #24]
+ 107:Core/Src/Init.c **** }
+ 418              		.loc 1 107 1 is_stmt 0 view .LVU68
+ 419 001c 7047     		bx	lr
+ 420              	.L24:
+ 421 001e 00BF     		.align	2
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 10
+
+
+ 422              	.L23:
+ 423 0020 00080240 		.word	1073874944
+ 424 0024 00040240 		.word	1073873920
+ 425              		.cfi_endproc
+ 426              	.LFE137:
+ 428              		.section	.text.button2_input,"ax",%progbits
+ 429              		.align	1
+ 430              		.global	button2_input
+ 431              		.syntax unified
+ 432              		.thumb
+ 433              		.thumb_func
+ 435              	button2_input:
+ 436              	.LFB138:
+ 108:Core/Src/Init.c **** void button2_input(void){
+ 437              		.loc 1 108 25 is_stmt 1 view -0
+ 438              		.cfi_startproc
+ 439              		@ args = 0, pretend = 0, frame = 0
+ 440              		@ frame_needed = 0, uses_anonymous_args = 0
+ 441              		@ link register save eliminated.
+ 109:Core/Src/Init.c ****     //PB15
+ 110:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE15_0);
+ 442              		.loc 1 110 5 view .LVU70
+ 443 0000 074B     		ldr	r3, .L26
+ 444 0002 1A68     		ldr	r2, [r3]
+ 445 0004 22F08042 		bic	r2, r2, #1073741824
+ 446 0008 1A60     		str	r2, [r3]
+ 111:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR15_0);
+ 447              		.loc 1 111 5 view .LVU71
+ 448 000a DA68     		ldr	r2, [r3, #12]
+ 449 000c 22F08042 		bic	r2, r2, #1073741824
+ 450 0010 DA60     		str	r2, [r3, #12]
+ 112:Core/Src/Init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);
+ 451              		.loc 1 112 5 view .LVU72
+ 452 0012 044A     		ldr	r2, .L26+4
+ 453 0014 9369     		ldr	r3, [r2, #24]
+ 454 0016 43F00043 		orr	r3, r3, #-2147483648
+ 455 001a 9361     		str	r3, [r2, #24]
+ 113:Core/Src/Init.c **** }
+ 456              		.loc 1 113 1 is_stmt 0 view .LVU73
+ 457 001c 7047     		bx	lr
+ 458              	.L27:
+ 459 001e 00BF     		.align	2
+ 460              	.L26:
+ 461 0020 00080240 		.word	1073874944
+ 462 0024 00040240 		.word	1073873920
+ 463              		.cfi_endproc
+ 464              	.LFE138:
+ 466              		.section	.text.button3_input,"ax",%progbits
+ 467              		.align	1
+ 468              		.global	button3_input
+ 469              		.syntax unified
+ 470              		.thumb
+ 471              		.thumb_func
+ 473              	button3_input:
+ 474              	.LFB139:
+ 114:Core/Src/Init.c **** void button3_input(void){
+ 475              		.loc 1 114 25 is_stmt 1 view -0
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 11
+
+
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 0, uses_anonymous_args = 0
+ 479              		@ link register save eliminated.
+ 115:Core/Src/Init.c ****     //PB9
+ 116:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE9_0);
+ 480              		.loc 1 116 5 view .LVU75
+ 481 0000 074B     		ldr	r3, .L29
+ 482 0002 1A68     		ldr	r2, [r3]
+ 483 0004 22F48022 		bic	r2, r2, #262144
+ 484 0008 1A60     		str	r2, [r3]
+ 117:Core/Src/Init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR9_0);
+ 485              		.loc 1 117 5 view .LVU76
+ 486 000a DA68     		ldr	r2, [r3, #12]
+ 487 000c 22F48022 		bic	r2, r2, #262144
+ 488 0010 DA60     		str	r2, [r3, #12]
+ 118:Core/Src/Init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR9);
+ 489              		.loc 1 118 5 view .LVU77
+ 490 0012 044A     		ldr	r2, .L29+4
+ 491 0014 9369     		ldr	r3, [r2, #24]
+ 492 0016 43F00073 		orr	r3, r3, #33554432
+ 493 001a 9361     		str	r3, [r2, #24]
+ 119:Core/Src/Init.c **** }
+ 494              		.loc 1 119 1 is_stmt 0 view .LVU78
+ 495 001c 7047     		bx	lr
+ 496              	.L30:
+ 497 001e 00BF     		.align	2
+ 498              	.L29:
+ 499 0020 00080240 		.word	1073874944
+ 500 0024 00040240 		.word	1073873920
+ 501              		.cfi_endproc
+ 502              	.LFE139:
+ 504              		.text
+ 505              	.Letext0:
+ 506              		.file 2 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 507              		.file 3 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 508              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s 			page 12
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 Init.c
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:21     .text.GPIO_Init:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:27     .text.GPIO_Init:00000000 GPIO_Init
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:61     .text.GPIO_Init:00000030 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:67     .text.GPIO_led_init:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:73     .text.GPIO_led_init:00000000 GPIO_led_init
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:134    .text.GPIO_led_init:00000064 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:139    .text.GPIO_button_input:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:145    .text.GPIO_button_input:00000000 GPIO_button_input
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:182    .text.GPIO_button_input:00000034 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:187    .text.GPIO_button_output:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:193    .text.GPIO_button_output:00000000 GPIO_button_output
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:254    .text.GPIO_button_output:00000064 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:259    .text.button1_output:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:265    .text.button1_output:00000000 button1_output
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:298    .text.button1_output:0000002c $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:303    .text.button2_output:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:309    .text.button2_output:00000000 button2_output
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:342    .text.button2_output:0000002c $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:347    .text.button3_output:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:353    .text.button3_output:00000000 button3_output
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:386    .text.button3_output:0000002c $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:391    .text.button1_input:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:397    .text.button1_input:00000000 button1_input
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:423    .text.button1_input:00000020 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:429    .text.button2_input:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:435    .text.button2_input:00000000 button2_input
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:461    .text.button2_input:00000020 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:467    .text.button3_input:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:473    .text.button3_input:00000000 button3_input
+C:\Users\Shtefan\AppData\Local\Temp\ccgIpyAJ.s:499    .text.button3_input:00000020 $d
 
 NO UNDEFINED SYMBOLS

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\cc9zuFpN.s 			page 1
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,30 +27,193 @@ ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\cc9zuFpN.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main (void){
-  29              		.loc 1 1 16 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** #include "Init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** uint8_t flag, count, mode, mode_prev = 0; // 10000000 & (1 << 7)
+   5:Core/Src/main.c **** // uint8_t state = 0b00000111;//0 - output / 1 - input
+   6:Core/Src/main.c **** /*  
+   7:Core/Src/main.c **** state (uint8_t):
+   8:Core/Src/main.c ****     1   0   0   0   0   0   0   0
+   9:Core/Src/main.c ****     b1  b2  b3  l1  l2  l3
+  10:Core/Src/main.c **** */
+  11:Core/Src/main.c **** uint8_t but1 = 1;
+  12:Core/Src/main.c **** uint8_t but2 = 1;
+  13:Core/Src/main.c **** uint8_t but3 = 1;
+  14:Core/Src/main.c **** int main(void){
+  29              		.loc 1 14 15 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){}
-  36              		.loc 1 2 5 view .LVU1
-  37              		.loc 1 2 14 view .LVU2
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\cc9zuFpN.s 			page 2
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  15:Core/Src/main.c ****     // GPIOB_RCC_ON;
+  16:Core/Src/main.c ****     // GPIOC_RCC_ON;
+  17:Core/Src/main.c ****     //  *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x02; // включение тактировани�
+  18:Core/Src/main.c ****     //  *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x04; // включение тактировани�
+  19:Core/Src/main.c ****     //  *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000;   // 7пин на вывод
+  20:Core/Src/main.c ****     //  *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00;     // 7пин push-pull
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s 			page 2
+
+
+  21:Core/Src/main.c ****     //  *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000;   // 7пин средняя скорост�
+  22:Core/Src/main.c ****     //  *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000; // 7пин - 0 (0DR)
+  23:Core/Src/main.c ****     GPIO_Init();
+  39              		.loc 1 23 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Init
+  41              	.LVL0:
+  24:Core/Src/main.c ****     GPIO_led_init();
+  42              		.loc 1 24 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	GPIO_led_init
+  44              	.LVL1:
+  25:Core/Src/main.c ****     //GPIO_button_input();
+  26:Core/Src/main.c ****     GPIO_button_output();
+  45              		.loc 1 26 5 view .LVU3
+  46 000a FFF7FEFF 		bl	GPIO_button_output
+  47              	.LVL2:
+  48 000e 0DE0     		b	.L3
+  49              	.L5:
+  27:Core/Src/main.c ****     while (1)
+  28:Core/Src/main.c ****     {
+  29:Core/Src/main.c ****         // if (((*(uint32_t *)(0x40020800UL + 0x10UL) & 0x2000)) != 0){
+  30:Core/Src/main.c ****         //     *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80; // 7пин - 1 (0DR)
+  31:Core/Src/main.c ****         // }
+  32:Core/Src/main.c ****         // else *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000; // 7пин - 0 (0DR)
+  33:Core/Src/main.c ****         // if(READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0){
+  34:Core/Src/main.c ****         //     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); //Установка 1 в 7 бит рег�
+  35:Core/Src/main.c ****         // }
+  36:Core/Src/main.c ****         // else{
+  37:Core/Src/main.c ****         //     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET); //Установка 0 в 7 бит ре�
+  38:Core/Src/main.c ****         // }
+  39:Core/Src/main.c ****         // if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) != 0){
+  40:Core/Src/main.c ****         //     flag = 1;
+  41:Core/Src/main.c ****         //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Установка 1 в 7 бит регист
+  42:Core/Src/main.c ****         // }
+  43:Core/Src/main.c ****         // else{
+  44:Core/Src/main.c ****         //     flag = 0;
+  45:Core/Src/main.c ****         //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Установка 0 в 7 бит регист
+  46:Core/Src/main.c ****         // }
+  47:Core/Src/main.c ****         // SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8); //Установка 1 в 7 бит регистра
+  48:Core/Src/main.c ****         // if(READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) !=  0){
+  49:Core/Src/main.c ****         //     flag = 1;
+  50:Core/Src/main.c ****         //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Установка 1 в 7 бит регист
+  51:Core/Src/main.c ****         // }
+  52:Core/Src/main.c ****         // else{
+  53:Core/Src/main.c ****         //     flag = 0;
+  54:Core/Src/main.c ****         //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Установка 0 в 7 бит регист
+  55:Core/Src/main.c ****         // }
+  56:Core/Src/main.c **** 
+  57:Core/Src/main.c ****         //SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+  58:Core/Src/main.c ****         //mode = (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_9) != 0);
+  59:Core/Src/main.c ****         if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_9) == 0){
+  60:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  50              		.loc 1 60 13 view .LVU4
+  51 0010 094A     		ldr	r2, .L6
+  52 0012 9369     		ldr	r3, [r2, #24]
+  53 0014 43F00103 		orr	r3, r3, #1
+  54 0018 9361     		str	r3, [r2, #24]
+  55              	.L2:
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s 			page 3
+
+
+  61:Core/Src/main.c ****         }
+  62:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+  56              		.loc 1 62 9 view .LVU5
+  57 001a 074B     		ldr	r3, .L6
+  58 001c 9A69     		ldr	r2, [r3, #24]
+  59 001e 42F48032 		orr	r2, r2, #65536
+  60 0022 9A61     		str	r2, [r3, #24]
+  63:Core/Src/main.c **** 
+  64:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS9); 
+  61              		.loc 1 64 9 view .LVU6
+  62 0024 9A69     		ldr	r2, [r3, #24]
+  63 0026 42F40072 		orr	r2, r2, #512
+  64 002a 9A61     		str	r2, [r3, #24]
+  27:Core/Src/main.c ****     {
+  65              		.loc 1 27 11 view .LVU7
+  66              	.L3:
+  27:Core/Src/main.c ****     {
+  67              		.loc 1 27 5 view .LVU8
+  59:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  68              		.loc 1 59 9 view .LVU9
+  59:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  69              		.loc 1 59 13 is_stmt 0 view .LVU10
+  70 002c 024B     		ldr	r3, .L6
+  71 002e 1B69     		ldr	r3, [r3, #16]
+  59:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  72              		.loc 1 59 12 view .LVU11
+  73 0030 13F4007F 		tst	r3, #512
+  74 0034 F1D1     		bne	.L2
+  75 0036 EBE7     		b	.L5
+  76              	.L7:
+  77              		.align	2
+  78              	.L6:
+  79 0038 00040240 		.word	1073873920
+  80              		.cfi_endproc
+  81              	.LFE130:
+  83              		.global	but3
+  84              		.section	.data.but3,"aw"
+  87              	but3:
+  88 0000 01       		.byte	1
+  89              		.global	but2
+  90              		.section	.data.but2,"aw"
+  93              	but2:
+  94 0000 01       		.byte	1
+  95              		.global	but1
+  96              		.section	.data.but1,"aw"
+  99              	but1:
+ 100 0000 01       		.byte	1
+ 101              		.global	mode_prev
+ 102              		.section	.bss.mode_prev,"aw",%nobits
+ 105              	mode_prev:
+ 106 0000 00       		.space	1
+ 107              		.global	mode
+ 108              		.section	.bss.mode,"aw",%nobits
+ 111              	mode:
+ 112 0000 00       		.space	1
+ 113              		.global	count
+ 114              		.section	.bss.count,"aw",%nobits
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s 			page 4
+
+
+ 117              	count:
+ 118 0000 00       		.space	1
+ 119              		.global	flag
+ 120              		.section	.bss.flag,"aw",%nobits
+ 123              	flag:
+ 124 0000 00       		.space	1
+ 125              		.text
+ 126              	.Letext0:
+ 127              		.file 2 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 128              		.file 3 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 129              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 130              		.file 5 "Core/Inc/Init.h"
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Shtefan\AppData\Local\Temp\cc9zuFpN.s:21     .text.main:00000000 $t
-C:\Users\Shtefan\AppData\Local\Temp\cc9zuFpN.s:27     .text.main:00000000 main
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:21     .text.main:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:27     .text.main:00000000 main
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:79     .text.main:00000038 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:87     .data.but3:00000000 but3
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:93     .data.but2:00000000 but2
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:99     .data.but1:00000000 but1
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:105    .bss.mode_prev:00000000 mode_prev
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:106    .bss.mode_prev:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:111    .bss.mode:00000000 mode
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:112    .bss.mode:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:117    .bss.count:00000000 count
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:118    .bss.count:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:123    .bss.flag:00000000 flag
+C:\Users\Shtefan\AppData\Local\Temp\ccGzFoXi.s:124    .bss.flag:00000000 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Init
+GPIO_led_init
+GPIO_button_output
