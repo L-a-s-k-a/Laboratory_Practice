@@ -1,0 +1,162 @@
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccpRDQr1.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** int main(void)
+   4:Core/Src/main.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   5:Core/Src/main.c ****     GPIO_Ini_self_Def();
+  39              		.loc 1 5 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Ini_self_Def
+  41              	.LVL0:
+   6:Core/Src/main.c ****     GPIO_Ini_CMSIS();
+  42              		.loc 1 6 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	GPIO_Ini_CMSIS
+  44              	.LVL1:
+  45 000a 10E0     		b	.L2
+  46              	.L3:
+   7:Core/Src/main.c ****     while(1)
+   8:Core/Src/main.c ****     {
+   9:Core/Src/main.c ****         if(READ_BIT_SELF(GPIOC_IDR,GPIO_PIN_13) !=0)
+  10:Core/Src/main.c ****         {
+  11:Core/Src/main.c ****             SET_BIT_SELF(GPIOB_BSRR,GPIO_PIN_7_SET);
+  12:Core/Src/main.c ****         }
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccpRDQr1.s 			page 2
+
+
+  13:Core/Src/main.c ****         else
+  14:Core/Src/main.c ****         {
+  15:Core/Src/main.c ****             SET_BIT_SELF(GPIOB_BSRR,GPIO_PIN_7_RESET);
+  47              		.loc 1 15 13 view .LVU3
+  48 000c 164A     		ldr	r2, .L9
+  49 000e D2F81834 		ldr	r3, [r2, #1048]
+  50 0012 43F00063 		orr	r3, r3, #134217728
+  51 0016 C2F81834 		str	r3, [r2, #1048]
+  52 001a 15E0     		b	.L4
+  53              	.L8:
+  16:Core/Src/main.c ****         }
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c ****         if(READ_BIT(GPIOC->IDR,GPIO_IDR_ID13)!=0)
+  20:Core/Src/main.c ****         {
+  21:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR,GPIO_BSRR_BS14);
+  54              		.loc 1 21 13 view .LVU4
+  55 001c 134B     		ldr	r3, .L9+4
+  56 001e 9A69     		ldr	r2, [r3, #24]
+  57 0020 42F48042 		orr	r2, r2, #16384
+  58 0024 9A61     		str	r2, [r3, #24]
+  22:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR,GPIO_BSRR_BS0);
+  59              		.loc 1 22 13 view .LVU5
+  60 0026 9A69     		ldr	r2, [r3, #24]
+  61 0028 42F00102 		orr	r2, r2, #1
+  62 002c 9A61     		str	r2, [r3, #24]
+  63              	.L2:
+   7:Core/Src/main.c ****     while(1)
+  64              		.loc 1 7 5 view .LVU6
+   9:Core/Src/main.c ****         {
+  65              		.loc 1 9 9 view .LVU7
+   9:Core/Src/main.c ****         {
+  66              		.loc 1 9 12 is_stmt 0 view .LVU8
+  67 002e 0E4B     		ldr	r3, .L9
+  68 0030 D3F81038 		ldr	r3, [r3, #2064]
+   9:Core/Src/main.c ****         {
+  69              		.loc 1 9 11 view .LVU9
+  70 0034 13F4005F 		tst	r3, #8192
+  71 0038 E8D0     		beq	.L3
+  11:Core/Src/main.c ****         }
+  72              		.loc 1 11 13 is_stmt 1 view .LVU10
+  73 003a 0B4A     		ldr	r2, .L9
+  74 003c D2F81834 		ldr	r3, [r2, #1048]
+  75 0040 43F08003 		orr	r3, r3, #128
+  76 0044 C2F81834 		str	r3, [r2, #1048]
+  77              	.L4:
+  19:Core/Src/main.c ****         {
+  78              		.loc 1 19 9 view .LVU11
+  19:Core/Src/main.c ****         {
+  79              		.loc 1 19 12 is_stmt 0 view .LVU12
+  80 0048 094B     		ldr	r3, .L9+8
+  81 004a 1B69     		ldr	r3, [r3, #16]
+  19:Core/Src/main.c ****         {
+  82              		.loc 1 19 11 view .LVU13
+  83 004c 13F4005F 		tst	r3, #8192
+  84 0050 E4D1     		bne	.L8
+  23:Core/Src/main.c ****         }
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccpRDQr1.s 			page 3
+
+
+  24:Core/Src/main.c ****         else
+  25:Core/Src/main.c ****         {
+  26:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR14);
+  85              		.loc 1 26 13 is_stmt 1 view .LVU14
+  86 0052 064B     		ldr	r3, .L9+4
+  87 0054 9A69     		ldr	r2, [r3, #24]
+  88 0056 42F08042 		orr	r2, r2, #1073741824
+  89 005a 9A61     		str	r2, [r3, #24]
+  27:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR0);
+  90              		.loc 1 27 13 view .LVU15
+  91 005c 9A69     		ldr	r2, [r3, #24]
+  92 005e 42F48032 		orr	r2, r2, #65536
+  93 0062 9A61     		str	r2, [r3, #24]
+  94 0064 E3E7     		b	.L2
+  95              	.L10:
+  96 0066 00BF     		.align	2
+  97              	.L9:
+  98 0068 00000240 		.word	1073872896
+  99 006c 00040240 		.word	1073873920
+ 100 0070 00080240 		.word	1073874944
+ 101              		.cfi_endproc
+ 102              	.LFE130:
+ 104              		.text
+ 105              	.Letext0:
+ 106              		.file 2 "D:/mk/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 107              		.file 3 "D:/mk/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 108              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccpRDQr1.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\CHANGY~1\AppData\Local\Temp\ccpRDQr1.s:21     .text.main:00000000 $t
+C:\Users\CHANGY~1\AppData\Local\Temp\ccpRDQr1.s:27     .text.main:00000000 main
+C:\Users\CHANGY~1\AppData\Local\Temp\ccpRDQr1.s:98     .text.main:00000068 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini_self_Def
+GPIO_Ini_CMSIS
