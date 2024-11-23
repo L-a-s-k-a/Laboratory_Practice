@@ -19,12 +19,12 @@
 ><br/> Строка 32 указывает на директорию, в которую будет собираться проект (*BUILD_DIR*).
   
 **startup_stm32f429xx.s** - имеет расшщирение .s, является ассемблерным фалом, в котором прописаны все возможные вектора прерываний для микроконтроллера STM32F429ZI. Он необходим для отслеживания прерываний и вызова их обработчиков.  
-***
-<br/>
 
 **system_stm32f4xx.c** - файл с описанием настроек системы. В функции SystemInit() были внесены изменения, связанные с настройкой аппаратного вычисления чисел с плавающей точкой.
 > Было изменено значение в условии *__FPU_USED == 1* на *__FPU_USED == 0*
 > Это изменение связано с тем, что настроить глобальный макрос *__SOFTFP__* не получается. Это должно настраиваться в *Makefile*, однако, пока не получается сделать этого.
+***
+<br/>
 
 ## <a name="en_description"></a> Microcontroller Programming Lab Workshop
 Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. 
@@ -39,4 +39,10 @@ Here will be the starting project for programming the Nucleo-144 lab bench based
 ><br/> Line 16 points to the project to be built (*TARGET*).
 ><br/> Line 32 indicates the directory where the project will be built (*BUILD_DIR*).
   
-**startup_stm32f429xx.s** - has the extension .s, is an assembler file that contains all possible interrupt vectors for the STM32F429ZI microcontroller. It is necessary for tracking interrupts and calling their handlers.  
+**startup_stm32f429xx.s** - has the extension .s, is an assembler file that contains all possible interrupt vectors for the STM32F429ZI microcontroller. It is necessary for tracking interrupts and calling their handlers.
+
+**system_stm32f4xx.c** - a file describing system settings. Changes were made in the SystemInit() function related to setting up hardware floating-point numbers calculation.
+> The value in the condition *__FPU_USED == 1* was changed to *__FPU_USED == 0*
+> This change is because it is not possible to customize the global macro *__SOFTFP__*. This should be configured in the *Makefile*, however, it is not possible to do this yet.
+***
+<br/>
