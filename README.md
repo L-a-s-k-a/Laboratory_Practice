@@ -22,6 +22,10 @@
 ***
 <br/>
 
+**system_stm32f4xx.c** - Файл с описанием настроек системы. В функции SystemInit() были внесены изменения, связанные с настройкой аппаратного вычисления чисел с плавающей точкой.
+> Было изменено значение в условии *__FPU_USED == 1* на *__FPU_USED == 0*
+> Это изменение связано с тем, что настроить глобальный макрос *__SOFTFP__* не получается. Это должно настраиваться в *Makefile*, однако, пока не получается сделать этого.
+
 ## <a name="en_description"></a> Microcontroller Programming Lab Workshop
 Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. 
 
