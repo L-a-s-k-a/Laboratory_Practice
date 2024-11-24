@@ -1,0 +1,455 @@
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.GPIO_Ini_1,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini_1
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini_1:
+  28              	.LFB130:
+  29              		.file 2 "Core/Src/init.c"
+   1:Core/Src/init.c **** #include "init.h" 
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void GPIO_Ini_1(void){
+  30              		.loc 2 3 22 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+   4:Core/Src/init.c ****     SET_BIT(RCC_GPIO_EN, RCC_GPIOB_EN | RCC_GPIOC_EN); // 开启GPIO B, GPIO C
+  35              		.loc 2 4 5 view .LVU1
+  36 0000 094A     		ldr	r2, .L2
+  37 0002 D2F83038 		ldr	r3, [r2, #2096]
+  38 0006 43F00603 		orr	r3, r3, #6
+  39 000a C2F83038 		str	r3, [r2, #2096]
+   5:Core/Src/init.c ****     SET_BIT(GPIOB_MODER, GPIOB_MODE_PIN7_OUT | GPIOB_MODE_PIN0_OUT | GPIOB_MODE_PIN14_OUT); // 设�
+  40              		.loc 2 5 5 view .LVU2
+  41 000e 074B     		ldr	r3, .L2+4
+  42 0010 D3F80024 		ldr	r2, [r3, #1024]
+  43 0014 0649     		ldr	r1, .L2+8
+  44 0016 0A43     		orrs	r2, r2, r1
+  45 0018 C3F80024 		str	r2, [r3, #1024]
+   6:Core/Src/init.c ****     SET_BIT(GPIOB_OTYPER, GPIOB_OTYPE_PIN7_PP | GPIOB_OTYPE_PIN0_PP | GPIOB_OTYPE_PIN14_PP); // 设
+  46              		.loc 2 6 5 view .LVU3
+   7:Core/Src/init.c ****     SET_BIT(GPIOB_OSPEEDR, GPIOB_OSPEED_PIN7_MID | GPIOB_OSPEED_PIN0_MID | GPIOB_OSPEED_PIN14_MID);
+  47              		.loc 2 7 5 view .LVU4
+  48 001c D3F80824 		ldr	r2, [r3, #1032]
+  49 0020 0A43     		orrs	r2, r2, r1
+  50 0022 C3F80824 		str	r2, [r3, #1032]
+   8:Core/Src/init.c ****     SET_BIT(GPIOB_PUPDR, GPIOB_PUPDR_PIN7_NOPUPD | GPIOB_PUPDR_PIN0_NOPUPD | GPIOB_PUPDR_PIN14_NOPU
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 2
+
+
+  51              		.loc 2 8 5 view .LVU5
+   9:Core/Src/init.c **** 
+  10:Core/Src/init.c ****   
+  11:Core/Src/init.c **** }
+  52              		.loc 2 11 1 is_stmt 0 view .LVU6
+  53 0026 7047     		bx	lr
+  54              	.L3:
+  55              		.align	2
+  56              	.L2:
+  57 0028 00300240 		.word	1073885184
+  58 002c 00000240 		.word	1073872896
+  59 0030 01400010 		.word	268451841
+  60              		.cfi_endproc
+  61              	.LFE130:
+  63              		.section	.text.delay,"ax",%progbits
+  64              		.align	1
+  65              		.global	delay
+  66              		.syntax unified
+  67              		.thumb
+  68              		.thumb_func
+  70              	delay:
+  71              	.LFB131:
+   1:Core/Src/main.c **** #include <stdint.h> 
+   2:Core/Src/main.c **** #include "init.h" 
+   3:Core/Src/main.c **** #include "init.c" 
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** //实验1
+   6:Core/Src/main.c **** #define DEBOUNCE_DELAY 20 // 防抖延迟时间，单位为毫秒
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** void delay(uint32_t s){
+  72              		.loc 1 8 23 is_stmt 1 view -0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76              		@ link register save eliminated.
+  77              	.LVL0:
+  78              	.L5:
+   9:Core/Src/main.c ****     while(s--);
+  79              		.loc 1 9 11 discriminator 1 view .LVU8
+  80 0000 0346     		mov	r3, r0
+  81              	.LVL1:
+  82              		.loc 1 9 12 is_stmt 0 discriminator 1 view .LVU9
+  83 0002 0138     		subs	r0, r0, #1
+  84              	.LVL2:
+  85              		.loc 1 9 11 discriminator 1 view .LVU10
+  86 0004 002B     		cmp	r3, #0
+  87 0006 FBD1     		bne	.L5
+  10:Core/Src/main.c **** }
+  88              		.loc 1 10 1 view .LVU11
+  89 0008 7047     		bx	lr
+  90              		.cfi_endproc
+  91              	.LFE131:
+  93              		.section	.text.main,"ax",%progbits
+  94              		.align	1
+  95              		.global	main
+  96              		.syntax unified
+  97              		.thumb
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 3
+
+
+  98              		.thumb_func
+ 100              	main:
+ 101              	.LFB132:
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c **** int main(void) {
+ 102              		.loc 1 12 16 is_stmt 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106 0000 38B5     		push	{r3, r4, r5, lr}
+ 107              	.LCFI0:
+ 108              		.cfi_def_cfa_offset 16
+ 109              		.cfi_offset 3, -16
+ 110              		.cfi_offset 4, -12
+ 111              		.cfi_offset 5, -8
+ 112              		.cfi_offset 14, -4
+  13:Core/Src/main.c ****     
+  14:Core/Src/main.c ****     GPIO_Ini_1();
+ 113              		.loc 1 14 5 view .LVU13
+ 114 0002 FFF7FEFF 		bl	GPIO_Ini_1
+ 115              	.LVL3:
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c ****     uint8_t led_state = 0; // LED 状态变量
+ 116              		.loc 1 16 5 view .LVU14
+  17:Core/Src/main.c ****     uint8_t button1_pressed = 0; // 按钮1状态变量
+ 117              		.loc 1 17 5 view .LVU15
+  18:Core/Src/main.c ****     uint8_t button2_pressed = 0; // 按钮2状态变量
+ 118              		.loc 1 18 5 view .LVU16
+  19:Core/Src/main.c ****     uint8_t mode = 0; // 按钮2的工作模式，0: 开启LED，1: 关闭LED
+ 119              		.loc 1 19 5 view .LVU17
+ 120              		.loc 1 19 13 is_stmt 0 view .LVU18
+ 121 0006 0025     		movs	r5, #0
+  18:Core/Src/main.c ****     uint8_t button2_pressed = 0; // 按钮2状态变量
+ 122              		.loc 1 18 13 view .LVU19
+ 123 0008 2846     		mov	r0, r5
+  17:Core/Src/main.c ****     uint8_t button1_pressed = 0; // 按钮1状态变量
+ 124              		.loc 1 17 13 view .LVU20
+ 125 000a 2C46     		mov	r4, r5
+  16:Core/Src/main.c ****     uint8_t button1_pressed = 0; // 按钮1状态变量
+ 126              		.loc 1 16 13 view .LVU21
+ 127 000c 2946     		mov	r1, r5
+ 128 000e 45E0     		b	.L20
+ 129              	.LVL4:
+ 130              	.L7:
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c ****     while (1) {
+  22:Core/Src/main.c ****         // 检查按钮1状态（PC12）
+  23:Core/Src/main.c ****         if ((READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN12) == 0) && !button1_pressed) { // 按钮1按下时�
+  24:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+  25:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN12) == 0) {
+  26:Core/Src/main.c ****                 mode ^= 1; // 切换模式
+  27:Core/Src/main.c ****                 button1_pressed = 1; // 更新按钮状态为已按下
+  28:Core/Src/main.c ****             }
+  29:Core/Src/main.c ****         } else if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN12) != 0) {
+ 131              		.loc 1 29 16 is_stmt 1 view .LVU22
+ 132              		.loc 1 29 19 is_stmt 0 view .LVU23
+ 133 0010 02B1     		cbz	r2, .L8
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 4
+
+
+  30:Core/Src/main.c ****             button1_pressed = 0; // 重置按钮状态
+ 134              		.loc 1 30 29 view .LVU24
+ 135 0012 0024     		movs	r4, #0
+ 136              	.LVL5:
+ 137              	.L8:
+  31:Core/Src/main.c ****         }
+  32:Core/Src/main.c **** 
+  33:Core/Src/main.c ****         // 检查按钮2状态（PC13）
+  34:Core/Src/main.c ****         if ((READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) == 0) && !button2_pressed) { // 按钮2按下时�
+ 138              		.loc 1 34 9 is_stmt 1 view .LVU25
+ 139              		.loc 1 34 12 is_stmt 0 view .LVU26
+ 140 0014 13F40053 		ands	r3, r3, #8192
+ 141 0018 3FD1     		bne	.L9
+ 142              		.loc 1 34 57 discriminator 1 view .LVU27
+ 143 001a 0028     		cmp	r0, #0
+ 144 001c 3DD1     		bne	.L9
+  35:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+ 145              		.loc 1 35 13 is_stmt 1 view .LVU28
+  36:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) == 0) {
+ 146              		.loc 1 36 13 view .LVU29
+  37:Core/Src/main.c ****                 // 根据模式切换LED状态
+  38:Core/Src/main.c ****                 if (mode == 0) { // 打开模式
+ 147              		.loc 1 38 17 view .LVU30
+ 148              		.loc 1 38 20 is_stmt 0 view .LVU31
+ 149 001e 0DBB     		cbnz	r5, .L10
+  39:Core/Src/main.c ****                     if (led_state < 3) {
+ 150              		.loc 1 39 21 is_stmt 1 view .LVU32
+ 151              		.loc 1 39 24 is_stmt 0 view .LVU33
+ 152 0020 0229     		cmp	r1, #2
+ 153 0022 47D8     		bhi	.L22
+  40:Core/Src/main.c ****                         if (led_state == 0) {
+ 154              		.loc 1 40 25 is_stmt 1 view .LVU34
+ 155              		.loc 1 40 28 is_stmt 0 view .LVU35
+ 156 0024 51B9     		cbnz	r1, .L12
+  41:Core/Src/main.c ****                             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET); // 点亮 LED1
+ 157              		.loc 1 41 29 is_stmt 1 view .LVU36
+ 158 0026 264A     		ldr	r2, .L28
+ 159 0028 D2F81834 		ldr	r3, [r2, #1048]
+ 160 002c 43F00103 		orr	r3, r3, #1
+ 161 0030 C2F81834 		str	r3, [r2, #1048]
+ 162              	.L13:
+  42:Core/Src/main.c ****                         } else if (led_state == 1) {
+  43:Core/Src/main.c ****                             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); // 点亮 LED2
+  44:Core/Src/main.c ****                         } else if (led_state == 2) {
+  45:Core/Src/main.c ****                             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); // 点亮 LED3
+  46:Core/Src/main.c ****                         }
+  47:Core/Src/main.c ****                         led_state++; // 更新状态
+ 163              		.loc 1 47 25 view .LVU37
+ 164              		.loc 1 47 34 is_stmt 0 view .LVU38
+ 165 0034 0131     		adds	r1, r1, #1
+ 166              	.LVL6:
+ 167              		.loc 1 47 34 view .LVU39
+ 168 0036 C9B2     		uxtb	r1, r1
+ 169              	.LVL7:
+  48:Core/Src/main.c ****                     }
+  49:Core/Src/main.c ****                 } else { // 关闭模式
+  50:Core/Src/main.c ****                     if (led_state > 0) {
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 5
+
+
+  51:Core/Src/main.c ****                         if (led_state == 1) {
+  52:Core/Src/main.c ****                             SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR0);
+  53:Core/Src/main.c ****                             //SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET); // 熄灭 LED1
+  54:Core/Src/main.c ****                         } else if (led_state == 2) {
+  55:Core/Src/main.c ****                             SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR7);
+  56:Core/Src/main.c ****                             //SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET); // 熄灭 LED2
+  57:Core/Src/main.c ****                         } else if (led_state == 3) {
+  58:Core/Src/main.c ****                             SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR14);
+  59:Core/Src/main.c ****                             //SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_RESET); // 熄灭 LED3
+  60:Core/Src/main.c ****                         }
+  61:Core/Src/main.c ****                         led_state--; // 更新状态
+  62:Core/Src/main.c ****                     }
+  63:Core/Src/main.c ****                 }
+  64:Core/Src/main.c **** 
+  65:Core/Src/main.c ****                 button2_pressed = 1; // 更新按钮状态为已按下
+ 170              		.loc 1 65 33 view .LVU40
+ 171 0038 0120     		movs	r0, #1
+ 172              	.LVL8:
+ 173              		.loc 1 65 33 view .LVU41
+ 174 003a 2FE0     		b	.L20
+ 175              	.LVL9:
+ 176              	.L12:
+  42:Core/Src/main.c ****                         } else if (led_state == 1) {
+ 177              		.loc 1 42 32 is_stmt 1 view .LVU42
+  42:Core/Src/main.c ****                         } else if (led_state == 1) {
+ 178              		.loc 1 42 35 is_stmt 0 view .LVU43
+ 179 003c 0129     		cmp	r1, #1
+ 180 003e 09D0     		beq	.L27
+  44:Core/Src/main.c ****                             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); // 点亮 LED3
+ 181              		.loc 1 44 32 is_stmt 1 view .LVU44
+  44:Core/Src/main.c ****                             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); // 点亮 LED3
+ 182              		.loc 1 44 35 is_stmt 0 view .LVU45
+ 183 0040 0229     		cmp	r1, #2
+ 184 0042 F7D1     		bne	.L13
+  45:Core/Src/main.c ****                         }
+ 185              		.loc 1 45 29 is_stmt 1 view .LVU46
+ 186 0044 1E4A     		ldr	r2, .L28
+ 187 0046 D2F81834 		ldr	r3, [r2, #1048]
+ 188 004a 43F48043 		orr	r3, r3, #16384
+ 189 004e C2F81834 		str	r3, [r2, #1048]
+ 190 0052 EFE7     		b	.L13
+ 191              	.L27:
+  43:Core/Src/main.c ****                         } else if (led_state == 2) {
+ 192              		.loc 1 43 29 view .LVU47
+ 193 0054 1A4A     		ldr	r2, .L28
+ 194 0056 D2F81834 		ldr	r3, [r2, #1048]
+ 195 005a 43F08003 		orr	r3, r3, #128
+ 196 005e C2F81834 		str	r3, [r2, #1048]
+ 197 0062 E7E7     		b	.L13
+ 198              	.L10:
+  50:Core/Src/main.c ****                         if (led_state == 1) {
+ 199              		.loc 1 50 21 view .LVU48
+ 200 0064 0329     		cmp	r1, #3
+ 201 0066 08D8     		bhi	.L15
+ 202 0068 DFE801F0 		tbb	[pc, r1]
+ 203              	.L17:
+ 204 006c 26       		.byte	(.L23-.L17)/2
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 6
+
+
+ 205 006d 02       		.byte	(.L19-.L17)/2
+ 206 006e 0B       		.byte	(.L18-.L17)/2
+ 207 006f 11       		.byte	(.L16-.L17)/2
+ 208              		.p2align 1
+ 209              	.L19:
+  52:Core/Src/main.c ****                             //SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET); // 熄灭 LED1
+ 210              		.loc 1 52 29 view .LVU49
+ 211 0070 144A     		ldr	r2, .L28+4
+ 212 0072 9369     		ldr	r3, [r2, #24]
+ 213 0074 43F48033 		orr	r3, r3, #65536
+ 214 0078 9361     		str	r3, [r2, #24]
+ 215              	.L15:
+  61:Core/Src/main.c ****                     }
+ 216              		.loc 1 61 25 view .LVU50
+  61:Core/Src/main.c ****                     }
+ 217              		.loc 1 61 34 is_stmt 0 view .LVU51
+ 218 007a 0139     		subs	r1, r1, #1
+ 219              	.LVL10:
+  61:Core/Src/main.c ****                     }
+ 220              		.loc 1 61 34 view .LVU52
+ 221 007c C9B2     		uxtb	r1, r1
+ 222              	.LVL11:
+ 223              		.loc 1 65 33 view .LVU53
+ 224 007e 0120     		movs	r0, #1
+ 225              	.LVL12:
+ 226              		.loc 1 65 33 view .LVU54
+ 227 0080 0CE0     		b	.L20
+ 228              	.LVL13:
+ 229              	.L18:
+  55:Core/Src/main.c ****                             //SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET); // 熄灭 LED2
+ 230              		.loc 1 55 29 is_stmt 1 view .LVU55
+ 231 0082 104A     		ldr	r2, .L28+4
+ 232 0084 9369     		ldr	r3, [r2, #24]
+ 233 0086 43F40003 		orr	r3, r3, #8388608
+ 234 008a 9361     		str	r3, [r2, #24]
+ 235 008c F5E7     		b	.L15
+ 236              	.L16:
+  58:Core/Src/main.c ****                             //SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_RESET); // 熄灭 LED3
+ 237              		.loc 1 58 29 view .LVU56
+ 238 008e 0D4A     		ldr	r2, .L28+4
+ 239 0090 9369     		ldr	r3, [r2, #24]
+ 240 0092 43F08043 		orr	r3, r3, #1073741824
+ 241 0096 9361     		str	r3, [r2, #24]
+ 242 0098 EFE7     		b	.L15
+ 243              	.L9:
+  66:Core/Src/main.c ****             }
+  67:Core/Src/main.c ****         } else if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0) {
+ 244              		.loc 1 67 16 view .LVU57
+ 245              		.loc 1 67 19 is_stmt 0 view .LVU58
+ 246 009a 7BB9     		cbnz	r3, .L24
+ 247              	.LVL14:
+ 248              	.L20:
+  21:Core/Src/main.c ****         // 检查按钮1状态（PC12）
+ 249              		.loc 1 21 5 is_stmt 1 view .LVU59
+  23:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+ 250              		.loc 1 23 9 view .LVU60
+  23:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 7
+
+
+ 251              		.loc 1 23 14 is_stmt 0 view .LVU61
+ 252 009c 084B     		ldr	r3, .L28
+ 253 009e D3F81038 		ldr	r3, [r3, #2064]
+  23:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+ 254              		.loc 1 23 12 view .LVU62
+ 255 00a2 13F48052 		ands	r2, r3, #4096
+ 256 00a6 B3D1     		bne	.L7
+  23:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+ 257              		.loc 1 23 57 discriminator 1 view .LVU63
+ 258 00a8 002C     		cmp	r4, #0
+ 259 00aa B1D1     		bne	.L7
+  24:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN12) == 0) {
+ 260              		.loc 1 24 13 is_stmt 1 view .LVU64
+  25:Core/Src/main.c ****                 mode ^= 1; // 切换模式
+ 261              		.loc 1 25 13 view .LVU65
+  26:Core/Src/main.c ****                 button1_pressed = 1; // 更新按钮状态为已按下
+ 262              		.loc 1 26 17 view .LVU66
+  26:Core/Src/main.c ****                 button1_pressed = 1; // 更新按钮状态为已按下
+ 263              		.loc 1 26 22 is_stmt 0 view .LVU67
+ 264 00ac 85F00105 		eor	r5, r5, #1
+ 265              	.LVL15:
+  27:Core/Src/main.c ****             }
+ 266              		.loc 1 27 17 is_stmt 1 view .LVU68
+  27:Core/Src/main.c ****             }
+ 267              		.loc 1 27 33 is_stmt 0 view .LVU69
+ 268 00b0 0124     		movs	r4, #1
+ 269 00b2 AFE7     		b	.L8
+ 270              	.LVL16:
+ 271              	.L22:
+  65:Core/Src/main.c ****             }
+ 272              		.loc 1 65 33 view .LVU70
+ 273 00b4 0120     		movs	r0, #1
+ 274              	.LVL17:
+  65:Core/Src/main.c ****             }
+ 275              		.loc 1 65 33 view .LVU71
+ 276 00b6 F1E7     		b	.L20
+ 277              	.LVL18:
+ 278              	.L23:
+  38:Core/Src/main.c ****                     if (led_state < 3) {
+ 279              		.loc 1 38 20 view .LVU72
+ 280 00b8 0120     		movs	r0, #1
+ 281              	.LVL19:
+  38:Core/Src/main.c ****                     if (led_state < 3) {
+ 282              		.loc 1 38 20 view .LVU73
+ 283 00ba EFE7     		b	.L20
+ 284              	.LVL20:
+ 285              	.L24:
+  68:Core/Src/main.c ****             button2_pressed = 0; // 重置按钮状态
+ 286              		.loc 1 68 29 view .LVU74
+ 287 00bc 0020     		movs	r0, #0
+ 288              	.LVL21:
+  69:Core/Src/main.c ****         }
+  70:Core/Src/main.c **** 
+  71:Core/Src/main.c ****         delay(20000); // 延时，防止快速循环
+ 289              		.loc 1 71 9 is_stmt 1 view .LVU75
+  21:Core/Src/main.c ****         // 检查按钮1状态（PC12）
+ 290              		.loc 1 21 11 view .LVU76
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 8
+
+
+  23:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+ 291              		.loc 1 23 12 is_stmt 0 view .LVU77
+ 292 00be EDE7     		b	.L20
+ 293              	.L29:
+ 294              		.align	2
+ 295              	.L28:
+ 296 00c0 00000240 		.word	1073872896
+ 297 00c4 00040240 		.word	1073873920
+ 298              		.cfi_endproc
+ 299              	.LFE132:
+ 301              		.text
+ 302              	.Letext0:
+ 303              		.file 3 "E:/STM32TOOLS/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 304              		.file 4 "E:/STM32TOOLS/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ 305              		.file 5 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:21     .text.GPIO_Ini_1:00000000 $t
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:27     .text.GPIO_Ini_1:00000000 GPIO_Ini_1
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:57     .text.GPIO_Ini_1:00000028 $d
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:64     .text.delay:00000000 $t
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:70     .text.delay:00000000 delay
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:94     .text.main:00000000 $t
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:100    .text.main:00000000 main
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:204    .text.main:0000006c $d
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:208    .text.main:00000070 $t
+C:\Users\HUAWEI\AppData\Local\Temp\ccskUDJF.s:296    .text.main:000000c0 $d
+
+NO UNDEFINED SYMBOLS
