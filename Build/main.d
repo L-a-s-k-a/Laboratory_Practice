@@ -1,1 +1,1 @@
-build/main.o: Core/Src/main.c
+Build/main.o: Core/Src/main.c
