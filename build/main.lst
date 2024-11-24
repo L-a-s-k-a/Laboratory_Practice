@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\mono\AppData\Local\Temp\cceONBni.s 			page 1
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccazCkTj.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,94 +27,101 @@ ARM GAS  C:\Users\mono\AppData\Local\Temp\cceONBni.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
+  28              	.LFB130:
    1:Core/Src/main.c **** #include <stdint.h> 
-   2:Core/Src/main.c **** int main(void) { 
-  29              		.loc 1 2 16 view -0
+   2:Core/Src/main.c **** #include <init.h> 
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** int main(void) { 
+  29              		.loc 1 4 16 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
   34              		@ link register save eliminated.
-   3:Core/Src/main.c ****     *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02; //Включение тактирования по
-  35              		.loc 1 3 5 view .LVU1
-  36 0000 144A     		ldr	r2, .L6
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c ****      SET_BIT(RCC_GPIO_EN,RCC_GPIOB_EN | RCC_GPIOC_EN | RCC_GPIOC_EN);
+  35              		.loc 1 6 6 view .LVU1
+  36 0000 174A     		ldr	r2, .L6
   37 0002 D2F83038 		ldr	r3, [r2, #2096]
-  38              		.loc 1 3 41 is_stmt 0 view .LVU2
-  39 0006 43F00203 		orr	r3, r3, #2
-  40 000a C2F83038 		str	r3, [r2, #2096]
-   4:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000; //Настройка работы 7-го пин�
-  41              		.loc 1 4 5 is_stmt 1 view .LVU3
-  42 000e 124B     		ldr	r3, .L6+4
-  43 0010 D3F80024 		ldr	r2, [r3, #1024]
-  44              		.loc 1 4 41 is_stmt 0 view .LVU4
-  45 0014 42F48042 		orr	r2, r2, #16384
-  46 0018 C3F80024 		str	r2, [r3, #1024]
-   5:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; //Настройка на PushPull работу 7-
-  47              		.loc 1 5 5 is_stmt 1 view .LVU5
-   6:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000; //Настройка скорости работ
-  48              		.loc 1 6 5 view .LVU6
-  49 001c D3F80824 		ldr	r2, [r3, #1032]
-  50              		.loc 1 6 41 is_stmt 0 view .LVU7
-  51 0020 42F48042 		orr	r2, r2, #16384
-  52 0024 C3F80824 		str	r2, [r3, #1032]
-ARM GAS  C:\Users\mono\AppData\Local\Temp\cceONBni.s 			page 2
+  38 0006 43F00603 		orr	r3, r3, #6
+  39 000a C2F83038 		str	r3, [r2, #2096]
+   7:Core/Src/main.c ****    // *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x06; //Включение тактирования п
+   8:Core/Src/main.c ****      SET_BIT(GPIOB_MODER,GPIOB_MODE_PIN7_OUT | GPIOB_MODE_PIN14_OUT);
+  40              		.loc 1 8 6 view .LVU2
+  41 000e A2F54052 		sub	r2, r2, #12288
+  42 0012 D2F80034 		ldr	r3, [r2, #1024]
+  43 0016 43F08053 		orr	r3, r3, #268435456
+  44 001a 43F48043 		orr	r3, r3, #16384
+  45 001e C2F80034 		str	r3, [r2, #1024]
+   9:Core/Src/main.c ****     //*(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000; //Настройка работы 7-го пи�
+  10:Core/Src/main.c ****       SET_BIT(GPIOB_OTYPER,GPIOB_OTYPE_PIN7_PP | GPIOB_OTYPE_PIN14_PP );
+  46              		.loc 1 10 7 view .LVU3
+  11:Core/Src/main.c ****     //*(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; //Настройка на PushPull работу 
+  12:Core/Src/main.c ****     SET_BIT(GPIOB_OSPEEDR, GPIOB_OSPEED_PIN7_MID | GPIOB_OSPEED_PIN14_MID);
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccazCkTj.s 			page 2
 
 
-   7:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00; //Отключение PU/PD резисторов 
-  53              		.loc 1 7 5 is_stmt 1 view .LVU8
-  54 0028 06E0     		b	.L2
-  55              	.L5:
-   8:Core/Src/main.c ****     while(1){ 
-   9:Core/Src/main.c ****         if((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x2000UL) != 0){ 
-  10:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-�
-  56              		.loc 1 10 13 view .LVU9
-  57 002a 0B4A     		ldr	r2, .L6+4
-  58 002c D2F81834 		ldr	r3, [r2, #1048]
-  59              		.loc 1 10 49 is_stmt 0 view .LVU10
-  60 0030 43F08003 		orr	r3, r3, #128
-  61 0034 C2F81834 		str	r3, [r2, #1048]
-  62              	.L2:
-   8:Core/Src/main.c ****     while(1){ 
-  63              		.loc 1 8 5 is_stmt 1 view .LVU11
-   9:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-�
-  64              		.loc 1 9 9 view .LVU12
-   9:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-�
-  65              		.loc 1 9 13 is_stmt 0 view .LVU13
-  66 0038 074B     		ldr	r3, .L6+4
-  67 003a D3F81038 		ldr	r3, [r3, #2064]
-   9:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7-�
-  68              		.loc 1 9 11 view .LVU14
-  69 003e 13F4005F 		tst	r3, #8192
-  70 0042 F2D1     		bne	.L5
-  11:Core/Src/main.c ****         } 
-  12:Core/Src/main.c ****         else{ 
-  13:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000; //Установка нуля в 7-о�
-  71              		.loc 1 13 13 is_stmt 1 view .LVU15
-  72 0044 044A     		ldr	r2, .L6+4
-  73 0046 D2F81834 		ldr	r3, [r2, #1048]
-  74              		.loc 1 13 49 is_stmt 0 view .LVU16
-  75 004a 43F40003 		orr	r3, r3, #8388608
-  76 004e C2F81834 		str	r3, [r2, #1048]
-  77 0052 F1E7     		b	.L2
-  78              	.L7:
-  79              		.align	2
-  80              	.L6:
-  81 0054 00300240 		.word	1073885184
-  82 0058 00000240 		.word	1073872896
-  83              		.cfi_endproc
-  84              	.LFE0:
-  86              		.text
-  87              	.Letext0:
-  88              		.file 2 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/machine/_default_types.h"
-  89              		.file 3 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/sys/_stdint.h"
-ARM GAS  C:\Users\mono\AppData\Local\Temp\cceONBni.s 			page 3
+  47              		.loc 1 12 5 view .LVU4
+  48 0022 D2F80834 		ldr	r3, [r2, #1032]
+  49 0026 43F08053 		orr	r3, r3, #268435456
+  50 002a 43F48043 		orr	r3, r3, #16384
+  51 002e C2F80834 		str	r3, [r2, #1032]
+  13:Core/Src/main.c ****     //*(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000; //Настройка скорости рабо
+  14:Core/Src/main.c ****     SET_BIT(GPIOB_PUPDR,GPIOB_PUPDR_PIN7_NOPUPD | GPIOB_PUPDR_PIN14_NOPUPD);
+  52              		.loc 1 14 5 view .LVU5
+  53 0032 06E0     		b	.L2
+  54              	.L5:
+  15:Core/Src/main.c ****     
+  16:Core/Src/main.c ****     //*(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00; //Отключение PU/PD резисторо�
+  17:Core/Src/main.c ****     while(1){ 
+  18:Core/Src/main.c ****         if((READ_BIT(GPIOC_IDR ,GPIOC_IDR_PIN13  ) != 0)){ 
+  19:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET);
+  55              		.loc 1 19 13 view .LVU6
+  56 0034 0B4A     		ldr	r2, .L6+4
+  57 0036 D2F81834 		ldr	r3, [r2, #1048]
+  58 003a 43F08143 		orr	r3, r3, #1082130432
+  59 003e C2F81834 		str	r3, [r2, #1048]
+  60              	.L2:
+  17:Core/Src/main.c ****         if((READ_BIT(GPIOC_IDR ,GPIOC_IDR_PIN13  ) != 0)){ 
+  61              		.loc 1 17 5 view .LVU7
+  18:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET);
+  62              		.loc 1 18 9 view .LVU8
+  18:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET);
+  63              		.loc 1 18 13 is_stmt 0 view .LVU9
+  64 0042 084B     		ldr	r3, .L6+4
+  65 0044 D3F81038 		ldr	r3, [r3, #2064]
+  18:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET);
+  66              		.loc 1 18 11 view .LVU10
+  67 0048 13F4005F 		tst	r3, #8192
+  68 004c F2D1     		bne	.L5
+  20:Core/Src/main.c ****            // *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7
+  21:Core/Src/main.c ****         } 
+  22:Core/Src/main.c ****         else{ 
+  23:Core/Src/main.c ****              SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_SET | GPIOB_BSRR_PIN14_SET);
+  69              		.loc 1 23 14 is_stmt 1 view .LVU11
+  70 004e 054A     		ldr	r2, .L6+4
+  71 0050 D2F81834 		ldr	r3, [r2, #1048]
+  72 0054 43F48143 		orr	r3, r3, #16512
+  73 0058 C2F81834 		str	r3, [r2, #1048]
+  74 005c F1E7     		b	.L2
+  75              	.L7:
+  76 005e 00BF     		.align	2
+  77              	.L6:
+  78 0060 00300240 		.word	1073885184
+  79 0064 00000240 		.word	1073872896
+  80              		.cfi_endproc
+  81              	.LFE130:
+  83              		.text
+  84              	.Letext0:
+  85              		.file 2 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+  86              		.file 3 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccazCkTj.s 			page 3
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\mono\AppData\Local\Temp\cceONBni.s:21     .text.main:00000000 $t
-C:\Users\mono\AppData\Local\Temp\cceONBni.s:27     .text.main:00000000 main
-C:\Users\mono\AppData\Local\Temp\cceONBni.s:81     .text.main:00000054 $d
+C:\Users\mono\AppData\Local\Temp\ccazCkTj.s:21     .text.main:00000000 $t
+C:\Users\mono\AppData\Local\Temp\ccazCkTj.s:27     .text.main:00000000 main
+C:\Users\mono\AppData\Local\Temp\ccazCkTj.s:78     .text.main:00000060 $d
 
 NO UNDEFINED SYMBOLS
