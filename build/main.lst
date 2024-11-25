@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccsFtprS.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6hrVbk.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -29,8 +29,13 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccsFtprS.s 			page 1
   27              	main:
   28              	.LFB130:
    1:Core/Src/main.c **** #include "../Inc/init.h"
-   2:Core/Src/main.c **** int main(void){
-  29              		.loc 1 2 15 view -0
+   2:Core/Src/main.c **** #include "../Inc/it_handlers.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** uint8_t LedState; 
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** int main(void) 
+   7:Core/Src/main.c **** { 
+  29              		.loc 1 7 1 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
@@ -40,50 +45,82 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccsFtprS.s 			page 1
   36              		.cfi_def_cfa_offset 8
   37              		.cfi_offset 3, -8
   38              		.cfi_offset 14, -4
-   3:Core/Src/main.c ****     GPIO_Ini_CMSIS();
-  39              		.loc 1 3 5 view .LVU1
-  40 0002 FFF7FEFF 		bl	GPIO_Ini_CMSIS
+   8:Core/Src/main.c ****     GPIO_Ini_Self();
+  39              		.loc 1 8 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Ini_Self
   41              	.LVL0:
-  42              	.L2:
-   4:Core/Src/main.c ****     while(1){
-  43              		.loc 1 4 5 view .LVU2
-   5:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);//выключение светодиода 7-го пи
-  44              		.loc 1 5 9 view .LVU3
-  45 0006 054B     		ldr	r3, .L4
-  46 0008 9A69     		ldr	r2, [r3, #24]
-  47 000a 42F08002 		orr	r2, r2, #128
-  48 000e 9A61     		str	r2, [r3, #24]
-   6:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);//выключение светодиода 8-го пи
-  49              		.loc 1 6 9 discriminator 1 view .LVU4
-  50 0010 9A69     		ldr	r2, [r3, #24]
-  51 0012 42F48072 		orr	r2, r2, #256
-  52 0016 9A61     		str	r2, [r3, #24]
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccsFtprS.s 			page 2
+   9:Core/Src/main.c ****     GPIO_Ini_CMSIS();
+  42              		.loc 1 9 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	GPIO_Ini_CMSIS
+  44              	.LVL1:
+  10:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
+  45              		.loc 1 10 5 view .LVU3
+  46 000a FFF7FEFF 		bl	RCC_Init
+  47              	.LVL2:
+  11:Core/Src/main.c ****     ITR_init();// Инициализация прерываний 
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6hrVbk.s 			page 2
 
 
-   4:Core/Src/main.c ****     while(1){
-  53              		.loc 1 4 10 view .LVU5
-  54 0018 F5E7     		b	.L2
-  55              	.L5:
-  56 001a 00BF     		.align	2
-  57              	.L4:
-  58 001c 00040240 		.word	1073873920
-  59              		.cfi_endproc
-  60              	.LFE130:
-  62              		.text
-  63              	.Letext0:
-  64              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
-  65              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
-  66              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
-  67              		.file 5 "Core/Src/../Inc/init.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccsFtprS.s 			page 3
+  48              		.loc 1 11 5 view .LVU4
+  49 000e FFF7FEFF 		bl	ITR_init
+  50              	.LVL3:
+  51 0012 04E0     		b	.L2
+  52              	.L6:
+  12:Core/Src/main.c ****     while (1) 
+  13:Core/Src/main.c ****     { 
+  14:Core/Src/main.c ****         if(LedState) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); 
+  53              		.loc 1 14 22 discriminator 1 view .LVU5
+  54 0014 074A     		ldr	r2, .L7
+  55 0016 9369     		ldr	r3, [r2, #24]
+  56 0018 43F08003 		orr	r3, r3, #128
+  57 001c 9361     		str	r3, [r2, #24]
+  58              	.L2:
+  12:Core/Src/main.c ****     while (1) 
+  59              		.loc 1 12 5 view .LVU6
+  60              		.loc 1 14 9 view .LVU7
+  61              		.loc 1 14 12 is_stmt 0 view .LVU8
+  62 001e 064B     		ldr	r3, .L7+4
+  63 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  64              		.loc 1 14 11 view .LVU9
+  65 0022 002B     		cmp	r3, #0
+  66 0024 F6D1     		bne	.L6
+  15:Core/Src/main.c ****         else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); 
+  67              		.loc 1 15 14 is_stmt 1 view .LVU10
+  68 0026 034A     		ldr	r2, .L7
+  69 0028 9369     		ldr	r3, [r2, #24]
+  70 002a 43F40003 		orr	r3, r3, #8388608
+  71 002e 9361     		str	r3, [r2, #24]
+  72 0030 F5E7     		b	.L2
+  73              	.L8:
+  74 0032 00BF     		.align	2
+  75              	.L7:
+  76 0034 00040240 		.word	1073873920
+  77 0038 00000000 		.word	LedState
+  78              		.cfi_endproc
+  79              	.LFE130:
+  81              		.global	LedState
+  82              		.section	.bss.LedState,"aw",%nobits
+  85              	LedState:
+  86 0000 00       		.space	1
+  87              		.text
+  88              	.Letext0:
+  89              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+  90              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+  91              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+  92              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc6hrVbk.s 			page 3
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\rpong\AppData\Local\Temp\ccsFtprS.s:21     .text.main:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccsFtprS.s:27     .text.main:00000000 main
-C:\Users\rpong\AppData\Local\Temp\ccsFtprS.s:58     .text.main:0000001c $d
+C:\Users\rpong\AppData\Local\Temp\cc6hrVbk.s:21     .text.main:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cc6hrVbk.s:27     .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\cc6hrVbk.s:76     .text.main:00000034 $d
+C:\Users\rpong\AppData\Local\Temp\cc6hrVbk.s:85     .bss.LedState:00000000 LedState
+C:\Users\rpong\AppData\Local\Temp\cc6hrVbk.s:86     .bss.LedState:00000000 $d
 
 UNDEFINED SYMBOLS
+GPIO_Ini_Self
 GPIO_Ini_CMSIS
+RCC_Init
+ITR_init

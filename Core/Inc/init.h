@@ -28,3 +28,4 @@
 void GPIO_Ini_Self(void);
 void GPIO_Ini_CMSIS(void);
 void RCC_Init(void);
+void ITR_init(void);

@@ -1,0 +1,112 @@
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaCWCow.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+  21              		.align	1
+  22              		.global	EXTI15_10_IRQHandler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	EXTI15_10_IRQHandler:
+  28              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "it_handlers.h" 
+   2:Core/Src/it_handlers.c **** extern uint8_t LedState; //extern - обозначает, что переменная будет о
+   3:Core/Src/it_handlers.c **** uint8_t BtnCount; 
+   4:Core/Src/it_handlers.c **** 
+   5:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void){ 
+  29              		.loc 1 5 32 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   6:Core/Src/it_handlers.c ****     BtnCount++; 
+  34              		.loc 1 6 5 view .LVU1
+  35              		.loc 1 6 13 is_stmt 0 view .LVU2
+  36 0000 0A4A     		ldr	r2, .L3
+  37 0002 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 DBB2     		uxtb	r3, r3
+  40 0008 1370     		strb	r3, [r2]
+   7:Core/Src/it_handlers.c ****     if(BtnCount >= 2){ 
+  41              		.loc 1 7 5 is_stmt 1 view .LVU3
+  42              		.loc 1 7 7 is_stmt 0 view .LVU4
+  43 000a 012B     		cmp	r3, #1
+  44 000c 08D9     		bls	.L2
+   8:Core/Src/it_handlers.c ****         LedState = !LedState; 
+  45              		.loc 1 8 9 is_stmt 1 view .LVU5
+  46              		.loc 1 8 20 is_stmt 0 view .LVU6
+  47 000e 084A     		ldr	r2, .L3+4
+  48 0010 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  49 0012 B3FA83F3 		clz	r3, r3
+  50 0016 5B09     		lsrs	r3, r3, #5
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaCWCow.s 			page 2
+
+
+  51              		.loc 1 8 18 view .LVU7
+  52 0018 1370     		strb	r3, [r2]
+   9:Core/Src/it_handlers.c ****         BtnCount = 0; 
+  53              		.loc 1 9 9 is_stmt 1 view .LVU8
+  54              		.loc 1 9 18 is_stmt 0 view .LVU9
+  55 001a 044B     		ldr	r3, .L3
+  56 001c 0022     		movs	r2, #0
+  57 001e 1A70     		strb	r2, [r3]
+  58              	.L2:
+  10:Core/Src/it_handlers.c ****     } 
+  11:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+  59              		.loc 1 11 5 is_stmt 1 view .LVU10
+  60 0020 044A     		ldr	r2, .L3+8
+  61 0022 5369     		ldr	r3, [r2, #20]
+  62 0024 43F40053 		orr	r3, r3, #8192
+  63 0028 5361     		str	r3, [r2, #20]
+  12:Core/Src/it_handlers.c **** }  ...
+  64              		.loc 1 12 1 is_stmt 0 view .LVU11
+  65 002a 7047     		bx	lr
+  66              	.L4:
+  67              		.align	2
+  68              	.L3:
+  69 002c 00000000 		.word	BtnCount
+  70 0030 00000000 		.word	LedState
+  71 0034 003C0140 		.word	1073822720
+  72              		.cfi_endproc
+  73              	.LFE130:
+  75              		.global	BtnCount
+  76              		.section	.bss.BtnCount,"aw",%nobits
+  79              	BtnCount:
+  80 0000 00       		.space	1
+  81              		.text
+  82              	.Letext0:
+  83              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+  84              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+  85              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaCWCow.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\rpong\AppData\Local\Temp\ccaCWCow.s:21     .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccaCWCow.s:27     .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\rpong\AppData\Local\Temp\ccaCWCow.s:69     .text.EXTI15_10_IRQHandler:0000002c $d
+C:\Users\rpong\AppData\Local\Temp\ccaCWCow.s:79     .bss.BtnCount:00000000 BtnCount
+C:\Users\rpong\AppData\Local\Temp\ccaCWCow.s:80     .bss.BtnCount:00000000 $d
+
+UNDEFINED SYMBOLS
+LedState
