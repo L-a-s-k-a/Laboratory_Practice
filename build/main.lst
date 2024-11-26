@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccT9G1eo.s 			page 1
+ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,30 +27,340 @@ ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccT9G1eo.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main (void){      
-  29              		.loc 1 1 16 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** int main(void)
+   4:Core/Src/main.c **** {
+  29              		.loc 1 4 1 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){} 
-  36              		.loc 1 2 5 view .LVU1
-  37              		.loc 1 2 14 view .LVU2
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccT9G1eo.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+   5:Core/Src/main.c ****     GPIO_Ini(); //Инициализация поротв GPIO
+  38              		.loc 1 5 5 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Ini
+  40              	.LVL0:
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c ****     int press_butt = 0;
+  41              		.loc 1 7 5 view .LVU2
+   8:Core/Src/main.c ****     int butt_press = 0;
+  42              		.loc 1 8 5 view .LVU3
+  43              		.loc 1 8 9 is_stmt 0 view .LVU4
+  44 0006 0022     		movs	r2, #0
+   7:Core/Src/main.c ****     int butt_press = 0;
+  45              		.loc 1 7 9 view .LVU5
+  46 0008 1146     		mov	r1, r2
+  47 000a 19E0     		b	.L2
+  48              	.LVL1:
+  49              	.L16:
+ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s 			page 2
+
+
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c ****     while (1)
+  11:Core/Src/main.c ****     {
+  12:Core/Src/main.c ****         if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) != 0){
+  13:Core/Src/main.c ****             if (butt_press == 0){
+  14:Core/Src/main.c ****                 butt_press = 1;
+  15:Core/Src/main.c ****                 press_butt++;
+  16:Core/Src/main.c ****                 if (press_butt > 4) {
+  17:Core/Src/main.c ****                     press_butt = 1;
+  18:Core/Src/main.c ****                 }
+  19:Core/Src/main.c ****                 
+  20:Core/Src/main.c ****             }
+  21:Core/Src/main.c ****             
+  22:Core/Src/main.c ****         }
+  23:Core/Src/main.c ****         else {
+  24:Core/Src/main.c ****             butt_press = 0;
+  25:Core/Src/main.c ****         }
+  26:Core/Src/main.c ****         switch (press_butt)
+  50              		.loc 1 26 9 view .LVU6
+  51 000c 0021     		movs	r1, #0
+  52              	.LVL2:
+  53              		.loc 1 26 9 view .LVU7
+  54 000e 17E0     		b	.L2
+  55              	.LVL3:
+  56              	.L14:
+  24:Core/Src/main.c ****         }
+  57              		.loc 1 24 24 view .LVU8
+  58 0010 0022     		movs	r2, #0
+  59              	.LVL4:
+  60              	.L4:
+  61              		.loc 1 26 9 is_stmt 1 view .LVU9
+  62 0012 4B1E     		subs	r3, r1, #1
+  63 0014 032B     		cmp	r3, #3
+  64 0016 F9D8     		bhi	.L16
+  65 0018 DFE803F0 		tbb	[pc, r3]
+  66              	.L7:
+  67 001c 04       		.byte	(.L5-.L7)/2
+  68 001d 2C       		.byte	(.L9-.L7)/2
+  69 001e 49       		.byte	(.L8-.L7)/2
+  70 001f 66       		.byte	(.L6-.L7)/2
+  71              	.LVL5:
+  72              		.p2align 1
+  73              	.L15:
+  14:Core/Src/main.c ****                 press_butt++;
+  74              		.loc 1 14 28 is_stmt 0 view .LVU10
+  75 0020 0122     		movs	r2, #1
+  17:Core/Src/main.c ****                 }
+  76              		.loc 1 17 32 view .LVU11
+  77 0022 1146     		mov	r1, r2
+  78              	.LVL6:
+  79              	.L5:
+  27:Core/Src/main.c ****         {
+  28:Core/Src/main.c ****         case 1:
+  29:Core/Src/main.c ****             if (butt_press) {
+  80              		.loc 1 29 13 is_stmt 1 view .LVU12
+  81              		.loc 1 29 16 is_stmt 0 view .LVU13
+  82 0024 C2B1     		cbz	r2, .L10
+ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s 			page 3
+
+
+  30:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  83              		.loc 1 30 13 is_stmt 1 view .LVU14
+  84 0026 3F4B     		ldr	r3, .L19
+  85 0028 9869     		ldr	r0, [r3, #24]
+  86 002a 40F08000 		orr	r0, r0, #128
+  87 002e 9861     		str	r0, [r3, #24]
+  31:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+  88              		.loc 1 31 13 view .LVU15
+  89 0030 9869     		ldr	r0, [r3, #24]
+  90 0032 40F08040 		orr	r0, r0, #1073741824
+  91 0036 9861     		str	r0, [r3, #24]
+  32:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+  92              		.loc 1 32 13 view .LVU16
+  93 0038 9869     		ldr	r0, [r3, #24]
+  94 003a 40F48030 		orr	r0, r0, #65536
+  95 003e 9861     		str	r0, [r3, #24]
+  96              	.L2:
+  97              	.LVL7:
+  10:Core/Src/main.c ****     {
+  98              		.loc 1 10 5 view .LVU17
+  12:Core/Src/main.c ****             if (butt_press == 0){
+  99              		.loc 1 12 9 view .LVU18
+  12:Core/Src/main.c ****             if (butt_press == 0){
+ 100              		.loc 1 12 12 is_stmt 0 view .LVU19
+ 101 0040 394B     		ldr	r3, .L19+4
+ 102 0042 1B69     		ldr	r3, [r3, #16]
+  12:Core/Src/main.c ****             if (butt_press == 0){
+ 103              		.loc 1 12 11 view .LVU20
+ 104 0044 13F4005F 		tst	r3, #8192
+ 105 0048 E2D0     		beq	.L14
+  13:Core/Src/main.c ****                 butt_press = 1;
+ 106              		.loc 1 13 13 is_stmt 1 view .LVU21
+  13:Core/Src/main.c ****                 butt_press = 1;
+ 107              		.loc 1 13 16 is_stmt 0 view .LVU22
+ 108 004a 002A     		cmp	r2, #0
+ 109 004c E1D1     		bne	.L4
+  14:Core/Src/main.c ****                 press_butt++;
+ 110              		.loc 1 14 17 is_stmt 1 view .LVU23
+ 111              	.LVL8:
+  15:Core/Src/main.c ****                 if (press_butt > 4) {
+ 112              		.loc 1 15 17 view .LVU24
+  15:Core/Src/main.c ****                 if (press_butt > 4) {
+ 113              		.loc 1 15 27 is_stmt 0 view .LVU25
+ 114 004e 0131     		adds	r1, r1, #1
+ 115              	.LVL9:
+  16:Core/Src/main.c ****                     press_butt = 1;
+ 116              		.loc 1 16 17 is_stmt 1 view .LVU26
+  16:Core/Src/main.c ****                     press_butt = 1;
+ 117              		.loc 1 16 20 is_stmt 0 view .LVU27
+ 118 0050 0429     		cmp	r1, #4
+ 119 0052 E5DC     		bgt	.L15
+  14:Core/Src/main.c ****                 press_butt++;
+ 120              		.loc 1 14 28 view .LVU28
+ 121 0054 0122     		movs	r2, #1
+ 122 0056 DCE7     		b	.L4
+ 123              	.LVL10:
+ 124              	.L10:
+ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s 			page 4
+
+
+  33:Core/Src/main.c ****             } else {
+  34:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 125              		.loc 1 34 17 is_stmt 1 view .LVU29
+ 126 0058 324B     		ldr	r3, .L19
+ 127 005a 9869     		ldr	r0, [r3, #24]
+ 128 005c 40F40000 		orr	r0, r0, #8388608
+ 129 0060 9861     		str	r0, [r3, #24]
+  35:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 130              		.loc 1 35 17 view .LVU30
+ 131 0062 9869     		ldr	r0, [r3, #24]
+ 132 0064 40F08040 		orr	r0, r0, #1073741824
+ 133 0068 9861     		str	r0, [r3, #24]
+  36:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 134              		.loc 1 36 17 view .LVU31
+ 135 006a 9869     		ldr	r0, [r3, #24]
+ 136 006c 40F48030 		orr	r0, r0, #65536
+ 137 0070 9861     		str	r0, [r3, #24]
+ 138 0072 E5E7     		b	.L2
+ 139              	.LVL11:
+ 140              	.L9:
+  37:Core/Src/main.c ****             }
+  38:Core/Src/main.c ****             break;
+  39:Core/Src/main.c ****         case 2:
+  40:Core/Src/main.c ****             if (butt_press) {
+ 141              		.loc 1 40 13 view .LVU32
+ 142              		.loc 1 40 16 is_stmt 0 view .LVU33
+ 143 0074 6AB1     		cbz	r2, .L11
+  41:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 144              		.loc 1 41 13 is_stmt 1 view .LVU34
+ 145 0076 2B4B     		ldr	r3, .L19
+ 146 0078 9869     		ldr	r0, [r3, #24]
+ 147 007a 40F40000 		orr	r0, r0, #8388608
+ 148 007e 9861     		str	r0, [r3, #24]
+  42:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 149              		.loc 1 42 13 view .LVU35
+ 150 0080 9869     		ldr	r0, [r3, #24]
+ 151 0082 40F48040 		orr	r0, r0, #16384
+ 152 0086 9861     		str	r0, [r3, #24]
+  43:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 153              		.loc 1 43 13 view .LVU36
+ 154 0088 9869     		ldr	r0, [r3, #24]
+ 155 008a 40F48030 		orr	r0, r0, #65536
+ 156 008e 9861     		str	r0, [r3, #24]
+ 157 0090 D6E7     		b	.L2
+ 158              	.L11:
+  44:Core/Src/main.c ****             } else {
+  45:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 159              		.loc 1 45 17 view .LVU37
+ 160 0092 244B     		ldr	r3, .L19
+ 161 0094 9869     		ldr	r0, [r3, #24]
+ 162 0096 40F40000 		orr	r0, r0, #8388608
+ 163 009a 9861     		str	r0, [r3, #24]
+  46:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 164              		.loc 1 46 17 view .LVU38
+ 165 009c 9869     		ldr	r0, [r3, #24]
+ 166 009e 40F08040 		orr	r0, r0, #1073741824
+ 167 00a2 9861     		str	r0, [r3, #24]
+ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s 			page 5
+
+
+  47:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 168              		.loc 1 47 17 view .LVU39
+ 169 00a4 9869     		ldr	r0, [r3, #24]
+ 170 00a6 40F48030 		orr	r0, r0, #65536
+ 171 00aa 9861     		str	r0, [r3, #24]
+ 172 00ac C8E7     		b	.L2
+ 173              	.L8:
+  48:Core/Src/main.c ****             }
+  49:Core/Src/main.c ****             break;
+  50:Core/Src/main.c ****         case 3:
+  51:Core/Src/main.c ****             if (butt_press) {
+ 174              		.loc 1 51 13 view .LVU40
+ 175              		.loc 1 51 16 is_stmt 0 view .LVU41
+ 176 00ae 6AB1     		cbz	r2, .L12
+  52:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 177              		.loc 1 52 13 is_stmt 1 view .LVU42
+ 178 00b0 1C4B     		ldr	r3, .L19
+ 179 00b2 9869     		ldr	r0, [r3, #24]
+ 180 00b4 40F40000 		orr	r0, r0, #8388608
+ 181 00b8 9861     		str	r0, [r3, #24]
+  53:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 182              		.loc 1 53 13 view .LVU43
+ 183 00ba 9869     		ldr	r0, [r3, #24]
+ 184 00bc 40F08040 		orr	r0, r0, #1073741824
+ 185 00c0 9861     		str	r0, [r3, #24]
+  54:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+ 186              		.loc 1 54 13 view .LVU44
+ 187 00c2 9869     		ldr	r0, [r3, #24]
+ 188 00c4 40F00100 		orr	r0, r0, #1
+ 189 00c8 9861     		str	r0, [r3, #24]
+ 190 00ca B9E7     		b	.L2
+ 191              	.L12:
+  55:Core/Src/main.c ****             } else {
+  56:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 192              		.loc 1 56 17 view .LVU45
+ 193 00cc 154B     		ldr	r3, .L19
+ 194 00ce 9869     		ldr	r0, [r3, #24]
+ 195 00d0 40F40000 		orr	r0, r0, #8388608
+ 196 00d4 9861     		str	r0, [r3, #24]
+  57:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 197              		.loc 1 57 17 view .LVU46
+ 198 00d6 9869     		ldr	r0, [r3, #24]
+ 199 00d8 40F08040 		orr	r0, r0, #1073741824
+ 200 00dc 9861     		str	r0, [r3, #24]
+  58:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 201              		.loc 1 58 17 view .LVU47
+ 202 00de 9869     		ldr	r0, [r3, #24]
+ 203 00e0 40F48030 		orr	r0, r0, #65536
+ 204 00e4 9861     		str	r0, [r3, #24]
+ 205 00e6 ABE7     		b	.L2
+ 206              	.L6:
+  59:Core/Src/main.c ****             }
+  60:Core/Src/main.c ****             break;
+  61:Core/Src/main.c ****         case 4:
+  62:Core/Src/main.c ****             if (butt_press) {
+ 207              		.loc 1 62 13 view .LVU48
+ 208              		.loc 1 62 16 is_stmt 0 view .LVU49
+ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s 			page 6
+
+
+ 209 00e8 6AB1     		cbz	r2, .L13
+  63:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+ 210              		.loc 1 63 13 is_stmt 1 view .LVU50
+ 211 00ea 0E4B     		ldr	r3, .L19
+ 212 00ec 9869     		ldr	r0, [r3, #24]
+ 213 00ee 40F08000 		orr	r0, r0, #128
+ 214 00f2 9861     		str	r0, [r3, #24]
+  64:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 215              		.loc 1 64 13 view .LVU51
+ 216 00f4 9869     		ldr	r0, [r3, #24]
+ 217 00f6 40F48040 		orr	r0, r0, #16384
+ 218 00fa 9861     		str	r0, [r3, #24]
+  65:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+ 219              		.loc 1 65 13 view .LVU52
+ 220 00fc 9869     		ldr	r0, [r3, #24]
+ 221 00fe 40F00100 		orr	r0, r0, #1
+ 222 0102 9861     		str	r0, [r3, #24]
+ 223 0104 9CE7     		b	.L2
+ 224              	.L13:
+  66:Core/Src/main.c ****             } else {
+  67:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 225              		.loc 1 67 17 view .LVU53
+ 226 0106 074B     		ldr	r3, .L19
+ 227 0108 9869     		ldr	r0, [r3, #24]
+ 228 010a 40F40000 		orr	r0, r0, #8388608
+ 229 010e 9861     		str	r0, [r3, #24]
+  68:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 230              		.loc 1 68 17 view .LVU54
+ 231 0110 9869     		ldr	r0, [r3, #24]
+ 232 0112 40F08040 		orr	r0, r0, #1073741824
+ 233 0116 9861     		str	r0, [r3, #24]
+  69:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 234              		.loc 1 69 17 view .LVU55
+ 235 0118 9869     		ldr	r0, [r3, #24]
+ 236 011a 40F48030 		orr	r0, r0, #65536
+ 237 011e 9861     		str	r0, [r3, #24]
+ 238 0120 8EE7     		b	.L2
+ 239              	.L20:
+ 240 0122 00BF     		.align	2
+ 241              	.L19:
+ 242 0124 00040240 		.word	1073873920
+ 243 0128 00080240 		.word	1073874944
+ 244              		.cfi_endproc
+ 245              	.LFE130:
+ 247              		.text
+ 248              	.Letext0:
+ 249              		.file 2 "C:/Users/\320\241\320\260\320\262\320\265\320\273\320\270\320\271/Desktop/LABI_MP_MK/xpac
+ 250              		.file 3 "C:/Users/\320\241\320\260\320\262\320\265\320\273\320\270\320\271/Desktop/LABI_MP_MK/xpac
+ 251              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 252              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s 			page 7
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\970A~1\AppData\Local\Temp\ccT9G1eo.s:21     .text.main:00000000 $t
-C:\Users\970A~1\AppData\Local\Temp\ccT9G1eo.s:27     .text.main:00000000 main
+C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s:21     .text.main:00000000 $t
+C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s:27     .text.main:00000000 main
+C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s:67     .text.main:0000001c $d
+C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s:72     .text.main:00000020 $t
+C:\Users\970A~1\AppData\Local\Temp\ccUDCe5i.s:242    .text.main:00000124 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini
