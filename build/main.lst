@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 1
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,372 +20,885 @@ ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.GPIO_Init,"ax",%progbits
+  20              		.section	.text.LED1_out,"ax",%progbits
   21              		.align	1
-  22              		.global	GPIO_Init
+  22              		.global	LED1_out
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	GPIO_Init:
+  27              	LED1_out:
   28              	.LFB130:
   29              		.file 2 "D:\\MK\\aboba\\rep\\Laboratory_Practice\\Core\\Src\\init.c"
    1:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** #include "D:\MK\aboba\rep\Laboratory_Practice\Core\Inc\init.h"
-   2:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void GPIO_Init(){
-  30              		.loc 2 2 17 view -0
+   2:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void LED1_out()
+   3:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
+  30              		.loc 2 3 1 view -0
   31              		.cfi_startproc
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
   34              		@ link register save eliminated.
-   3:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIODEN);
-  35              		.loc 2 3 5 view .LVU1
-  36 0000 044B     		ldr	r3, .L2
-  37 0002 1A6B     		ldr	r2, [r3, #48]
-  38 0004 42F00E02 		orr	r2, r2, #14
-  39 0008 1A63     		str	r2, [r3, #48]
-   4:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN); 
-  40              		.loc 2 4 5 view .LVU2
-  41 000a 1A6B     		ldr	r2, [r3, #48]
-  42 000c 42F00102 		orr	r2, r2, #1
-  43 0010 1A63     		str	r2, [r3, #48]
-   5:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
-  44              		.loc 2 5 1 is_stmt 0 view .LVU3
-  45 0012 7047     		bx	lr
-  46              	.L3:
-  47              		.align	2
-  48              	.L2:
-  49 0014 00380240 		.word	1073887232
-  50              		.cfi_endproc
-  51              	.LFE130:
-  53              		.section	.text.GPIO_Init_const_LED_button,"ax",%progbits
-  54              		.align	1
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 2
+   4:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOA->MODER, GPIO_MODER_MODE3_0); //PA3, указан A0
+  35              		.loc 2 4 5 view .LVU1
+  36 0000 0A4B     		ldr	r3, .L2
+  37 0002 1A68     		ldr	r2, [r3]
+  38 0004 42F04002 		orr	r2, r2, #64
+  39 0008 1A60     		str	r2, [r3]
+   5:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT_3);
+  40              		.loc 2 5 5 view .LVU2
+  41 000a 5A68     		ldr	r2, [r3, #4]
+  42 000c 22F00802 		bic	r2, r2, #8
+  43 0010 5A60     		str	r2, [r3, #4]
+   6:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR3_0);
+  44              		.loc 2 6 5 view .LVU3
+  45 0012 9A68     		ldr	r2, [r3, #8]
+  46 0014 42F04002 		orr	r2, r2, #64
+  47 0018 9A60     		str	r2, [r3, #8]
+   7:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR3_0);
+  48              		.loc 2 7 5 view .LVU4
+  49 001a DA68     		ldr	r2, [r3, #12]
+  50 001c 22F04002 		bic	r2, r2, #64
+  51 0020 DA60     		str	r2, [r3, #12]
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 2
 
 
-  55              		.global	GPIO_Init_const_LED_button
-  56              		.syntax unified
-  57              		.thumb
-  58              		.thumb_func
-  60              	GPIO_Init_const_LED_button:
-  61              	.LFB131:
-   6:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** 
-   7:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void GPIO_Init_const_LED_button()
-   8:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
-  62              		.loc 2 8 1 is_stmt 1 view -0
-  63              		.cfi_startproc
-  64              		@ args = 0, pretend = 0, frame = 0
-  65              		@ frame_needed = 0, uses_anonymous_args = 0
-  66              		@ link register save eliminated.
-   9:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //PB7
-  10:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0); //настройка в output mode
-  67              		.loc 2 10 5 view .LVU5
-  68 0000 184B     		ldr	r3, .L5
-  69 0002 1A68     		ldr	r2, [r3]
-  70 0004 42F48042 		orr	r2, r2, #16384
-  71 0008 1A60     		str	r2, [r3]
-  11:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****      CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7); //настройка на push pull
-  72              		.loc 2 11 6 view .LVU6
-  73 000a 5A68     		ldr	r2, [r3, #4]
-  74 000c 22F08002 		bic	r2, r2, #128
-  75 0010 5A60     		str	r2, [r3, #4]
-  12:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0); //настройка скорости раб
-  76              		.loc 2 12 5 view .LVU7
-  77 0012 9A68     		ldr	r2, [r3, #8]
-  78 0014 42F48042 		orr	r2, r2, #16384
-  79 0018 9A60     		str	r2, [r3, #8]
-  13:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0); //отключение pull up pull down рези
-  80              		.loc 2 13 5 view .LVU8
-  81 001a DA68     		ldr	r2, [r3, #12]
-  82 001c 22F48042 		bic	r2, r2, #16384
-  83 0020 DA60     		str	r2, [r3, #12]
-  14:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //PB14
-  15:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
-  84              		.loc 2 15 5 view .LVU9
-  85 0022 1A68     		ldr	r2, [r3]
-  86 0024 42F08052 		orr	r2, r2, #268435456
-  87 0028 1A60     		str	r2, [r3]
-  16:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
-  88              		.loc 2 16 5 view .LVU10
-  89 002a 5A68     		ldr	r2, [r3, #4]
-  90 002c 22F48042 		bic	r2, r2, #16384
-  91 0030 5A60     		str	r2, [r3, #4]
-  17:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
-  92              		.loc 2 17 5 view .LVU11
-  93 0032 9A68     		ldr	r2, [r3, #8]
-  94 0034 42F08052 		orr	r2, r2, #268435456
-  95 0038 9A60     		str	r2, [r3, #8]
-  18:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
-  96              		.loc 2 18 5 view .LVU12
-  97 003a DA68     		ldr	r2, [r3, #12]
-  98 003c 22F08052 		bic	r2, r2, #268435456
-  99 0040 DA60     		str	r2, [r3, #12]
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 3
+   8:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS3);
+  52              		.loc 2 8 5 view .LVU5
+  53 0022 9A69     		ldr	r2, [r3, #24]
+  54 0024 42F00802 		orr	r2, r2, #8
+  55 0028 9A61     		str	r2, [r3, #24]
+   9:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     return;
+  56              		.loc 2 9 5 view .LVU6
+  10:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
+  57              		.loc 2 10 1 is_stmt 0 view .LVU7
+  58 002a 7047     		bx	lr
+  59              	.L3:
+  60              		.align	2
+  61              	.L2:
+  62 002c 00000240 		.word	1073872896
+  63              		.cfi_endproc
+  64              	.LFE130:
+  66              		.section	.text.LED2_out,"ax",%progbits
+  67              		.align	1
+  68              		.global	LED2_out
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	LED2_out:
+  74              	.LFB131:
+  11:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void LED2_out()
+  12:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
+  75              		.loc 2 12 1 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              		@ link register save eliminated.
+  13:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODE0_0); //PC0 A1
+  80              		.loc 2 13 5 view .LVU9
+  81 0000 0A4B     		ldr	r3, .L5
+  82 0002 1A68     		ldr	r2, [r3]
+  83 0004 42F00102 		orr	r2, r2, #1
+  84 0008 1A60     		str	r2, [r3]
+  14:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_0);
+  85              		.loc 2 14 5 view .LVU10
+  86 000a 5A68     		ldr	r2, [r3, #4]
+  87 000c 22F00102 		bic	r2, r2, #1
+  88 0010 5A60     		str	r2, [r3, #4]
+  15:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
+  89              		.loc 2 15 5 view .LVU11
+  90 0012 9A68     		ldr	r2, [r3, #8]
+  91 0014 42F00102 		orr	r2, r2, #1
+  92 0018 9A60     		str	r2, [r3, #8]
+  16:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR0_0);
+  93              		.loc 2 16 5 view .LVU12
+  94 001a DA68     		ldr	r2, [r3, #12]
+  95 001c 22F00102 		bic	r2, r2, #1
+  96 0020 DA60     		str	r2, [r3, #12]
+  17:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS0);
+  97              		.loc 2 17 5 view .LVU13
+  98 0022 9A69     		ldr	r2, [r3, #24]
+  99 0024 42F00102 		orr	r2, r2, #1
+ 100 0028 9A61     		str	r2, [r3, #24]
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 3
 
 
-  19:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //PB0
-  20:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);
- 100              		.loc 2 20 5 view .LVU13
- 101 0042 1A68     		ldr	r2, [r3]
- 102 0044 42F00102 		orr	r2, r2, #1
- 103 0048 1A60     		str	r2, [r3]
-  21:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);
- 104              		.loc 2 21 5 view .LVU14
- 105 004a 5A68     		ldr	r2, [r3, #4]
- 106 004c 22F00102 		bic	r2, r2, #1
- 107 0050 5A60     		str	r2, [r3, #4]
-  22:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
- 108              		.loc 2 22 5 view .LVU15
- 109 0052 9A68     		ldr	r2, [r3, #8]
- 110 0054 42F00102 		orr	r2, r2, #1
- 111 0058 9A60     		str	r2, [r3, #8]
-  23:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
- 112              		.loc 2 23 5 view .LVU16
- 113 005a DA68     		ldr	r2, [r3, #12]
- 114 005c 22F00102 		bic	r2, r2, #1
- 115 0060 DA60     		str	r2, [r3, #12]
-  24:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
- 116              		.loc 2 24 1 is_stmt 0 view .LVU17
- 117 0062 7047     		bx	lr
- 118              	.L6:
- 119              		.align	2
- 120              	.L5:
- 121 0064 00040240 		.word	1073873920
- 122              		.cfi_endproc
- 123              	.LFE131:
- 125              		.section	.text.GPIOA_button_OUT,"ax",%progbits
- 126              		.align	1
- 127              		.global	GPIOA_button_OUT
- 128              		.syntax unified
- 129              		.thumb
- 130              		.thumb_func
- 132              	GPIOA_button_OUT:
- 133              	.LFB132:
-  25:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void GPIOA_button_OUT()
-  26:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
- 134              		.loc 2 26 1 is_stmt 1 view -0
- 135              		.cfi_startproc
- 136              		@ args = 0, pretend = 0, frame = 0
- 137              		@ frame_needed = 0, uses_anonymous_args = 0
- 138              		@ link register save eliminated.
-  27:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOA->MODER, GPIO_MODER_MODE3_0); //A0
- 139              		.loc 2 27 5 view .LVU19
- 140 0000 084B     		ldr	r3, .L8
- 141 0002 1A68     		ldr	r2, [r3]
- 142 0004 42F04002 		orr	r2, r2, #64
- 143 0008 1A60     		str	r2, [r3]
-  28:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT_3);
- 144              		.loc 2 28 5 view .LVU20
- 145 000a 5A68     		ldr	r2, [r3, #4]
- 146 000c 42F00802 		orr	r2, r2, #8
- 147 0010 5A60     		str	r2, [r3, #4]
-  29:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR3_0);
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 4
+  18:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     return;
+ 101              		.loc 2 18 5 view .LVU14
+  19:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
+ 102              		.loc 2 19 1 is_stmt 0 view .LVU15
+ 103 002a 7047     		bx	lr
+ 104              	.L6:
+ 105              		.align	2
+ 106              	.L5:
+ 107 002c 00080240 		.word	1073874944
+ 108              		.cfi_endproc
+ 109              	.LFE131:
+ 111              		.section	.text.LED3_out,"ax",%progbits
+ 112              		.align	1
+ 113              		.global	LED3_out
+ 114              		.syntax unified
+ 115              		.thumb
+ 116              		.thumb_func
+ 118              	LED3_out:
+ 119              	.LFB132:
+  20:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void LED3_out()
+  21:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
+ 120              		.loc 2 21 1 is_stmt 1 view -0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              		@ link register save eliminated.
+  22:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODE3_0); //PC3 A2
+ 125              		.loc 2 22 5 view .LVU17
+ 126 0000 0A4B     		ldr	r3, .L8
+ 127 0002 1A68     		ldr	r2, [r3]
+ 128 0004 42F04002 		orr	r2, r2, #64
+ 129 0008 1A60     		str	r2, [r3]
+  23:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_3);
+ 130              		.loc 2 23 5 view .LVU18
+ 131 000a 5A68     		ldr	r2, [r3, #4]
+ 132 000c 22F00802 		bic	r2, r2, #8
+ 133 0010 5A60     		str	r2, [r3, #4]
+  24:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR3_0);
+ 134              		.loc 2 24 5 view .LVU19
+ 135 0012 9A68     		ldr	r2, [r3, #8]
+ 136 0014 42F04002 		orr	r2, r2, #64
+ 137 0018 9A60     		str	r2, [r3, #8]
+  25:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR3_0);
+ 138              		.loc 2 25 5 view .LVU20
+ 139 001a DA68     		ldr	r2, [r3, #12]
+ 140 001c 22F04002 		bic	r2, r2, #64
+ 141 0020 DA60     		str	r2, [r3, #12]
+  26:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS3);
+ 142              		.loc 2 26 5 view .LVU21
+ 143 0022 9A69     		ldr	r2, [r3, #24]
+ 144 0024 42F00802 		orr	r2, r2, #8
+ 145 0028 9A61     		str	r2, [r3, #24]
+  27:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     return;
+ 146              		.loc 2 27 5 view .LVU22
+  28:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
+ 147              		.loc 2 28 1 is_stmt 0 view .LVU23
+ 148 002a 7047     		bx	lr
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 4
 
 
- 148              		.loc 2 29 5 view .LVU21
- 149 0012 9A68     		ldr	r2, [r3, #8]
- 150 0014 42F04002 		orr	r2, r2, #64
- 151 0018 9A60     		str	r2, [r3, #8]
-  30:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR3_0);
- 152              		.loc 2 30 5 view .LVU22
- 153 001a DA68     		ldr	r2, [r3, #12]
- 154 001c 22F04002 		bic	r2, r2, #64
- 155 0020 DA60     		str	r2, [r3, #12]
-  31:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
- 156              		.loc 2 31 1 is_stmt 0 view .LVU23
- 157 0022 7047     		bx	lr
- 158              	.L9:
- 159              		.align	2
- 160              	.L8:
- 161 0024 00000240 		.word	1073872896
- 162              		.cfi_endproc
- 163              	.LFE132:
- 165              		.section	.text.GPIOA_button_IN,"ax",%progbits
- 166              		.align	1
- 167              		.global	GPIOA_button_IN
- 168              		.syntax unified
- 169              		.thumb
- 170              		.thumb_func
- 172              	GPIOA_button_IN:
- 173              	.LFB133:
-  32:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** 
-  33:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void GPIOA_button_IN()
-  34:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
- 174              		.loc 2 34 1 is_stmt 1 view -0
- 175              		.cfi_startproc
- 176              		@ args = 0, pretend = 0, frame = 0
- 177              		@ frame_needed = 0, uses_anonymous_args = 0
- 178              		@ link register save eliminated.
-  35:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE0_0);
- 179              		.loc 2 35 5 view .LVU25
- 180 0000 054A     		ldr	r2, .L11
- 181 0002 1368     		ldr	r3, [r2]
- 182 0004 23F00103 		bic	r3, r3, #1
- 183 0008 1360     		str	r3, [r2]
-  36:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** 
-  37:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOC->MODER,  GPIO_MODER_MODE0_0); //A1
- 184              		.loc 2 37 5 view .LVU26
- 185 000a 02F50062 		add	r2, r2, #2048
- 186 000e 1368     		ldr	r3, [r2]
- 187 0010 23F00103 		bic	r3, r3, #1
- 188 0014 1360     		str	r3, [r2]
-  38:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }...
- 189              		.loc 2 38 1 is_stmt 0 view .LVU27
- 190 0016 7047     		bx	lr
- 191              	.L12:
- 192              		.align	2
- 193              	.L11:
- 194 0018 00000240 		.word	1073872896
- 195              		.cfi_endproc
- 196              	.LFE133:
- 198              		.section	.text.main,"ax",%progbits
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 5
+ 149              	.L9:
+ 150              		.align	2
+ 151              	.L8:
+ 152 002c 00080240 		.word	1073874944
+ 153              		.cfi_endproc
+ 154              	.LFE132:
+ 156              		.section	.text.LED1_in,"ax",%progbits
+ 157              		.align	1
+ 158              		.global	LED1_in
+ 159              		.syntax unified
+ 160              		.thumb
+ 161              		.thumb_func
+ 163              	LED1_in:
+ 164              	.LFB133:
+  29:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void LED1_in()
+  30:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
+ 165              		.loc 2 30 1 is_stmt 1 view -0
+ 166              		.cfi_startproc
+ 167              		@ args = 0, pretend = 0, frame = 0
+ 168              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169              		@ link register save eliminated.
+  31:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR3);
+ 170              		.loc 2 31 5 view .LVU25
+ 171 0000 044B     		ldr	r3, .L11
+ 172 0002 9A69     		ldr	r2, [r3, #24]
+ 173 0004 42F40022 		orr	r2, r2, #524288
+ 174 0008 9A61     		str	r2, [r3, #24]
+  32:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE3_0); //PA3
+ 175              		.loc 2 32 5 view .LVU26
+ 176 000a 1A68     		ldr	r2, [r3]
+ 177 000c 22F04002 		bic	r2, r2, #64
+ 178 0010 1A60     		str	r2, [r3]
+  33:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
+ 179              		.loc 2 33 1 is_stmt 0 view .LVU27
+ 180 0012 7047     		bx	lr
+ 181              	.L12:
+ 182              		.align	2
+ 183              	.L11:
+ 184 0014 00000240 		.word	1073872896
+ 185              		.cfi_endproc
+ 186              	.LFE133:
+ 188              		.section	.text.LED2_in,"ax",%progbits
+ 189              		.align	1
+ 190              		.global	LED2_in
+ 191              		.syntax unified
+ 192              		.thumb
+ 193              		.thumb_func
+ 195              	LED2_in:
+ 196              	.LFB134:
+  34:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void LED2_in()
+  35:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
+ 197              		.loc 2 35 1 is_stmt 1 view -0
+ 198              		.cfi_startproc
+ 199              		@ args = 0, pretend = 0, frame = 0
+ 200              		@ frame_needed = 0, uses_anonymous_args = 0
+ 201              		@ link register save eliminated.
+  36:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR3);
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 5
 
 
- 199              		.align	1
- 200              		.global	main
- 201              		.syntax unified
- 202              		.thumb
- 203              		.thumb_func
- 205              	main:
- 206              	.LFB134:
+ 202              		.loc 2 36 5 view .LVU29
+ 203 0000 054A     		ldr	r2, .L14
+ 204 0002 9369     		ldr	r3, [r2, #24]
+ 205 0004 43F40023 		orr	r3, r3, #524288
+ 206 0008 9361     		str	r3, [r2, #24]
+  37:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE0_0); //PC0
+ 207              		.loc 2 37 5 view .LVU30
+ 208 000a 02F50062 		add	r2, r2, #2048
+ 209 000e 1368     		ldr	r3, [r2]
+ 210 0010 23F00103 		bic	r3, r3, #1
+ 211 0014 1360     		str	r3, [r2]
+  38:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
+ 212              		.loc 2 38 1 is_stmt 0 view .LVU31
+ 213 0016 7047     		bx	lr
+ 214              	.L15:
+ 215              		.align	2
+ 216              	.L14:
+ 217 0018 00000240 		.word	1073872896
+ 218              		.cfi_endproc
+ 219              	.LFE134:
+ 221              		.section	.text.LED3_in,"ax",%progbits
+ 222              		.align	1
+ 223              		.global	LED3_in
+ 224              		.syntax unified
+ 225              		.thumb
+ 226              		.thumb_func
+ 228              	LED3_in:
+ 229              	.LFB135:
+  39:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void LED3_in()
+  40:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
+ 230              		.loc 2 40 1 is_stmt 1 view -0
+ 231              		.cfi_startproc
+ 232              		@ args = 0, pretend = 0, frame = 0
+ 233              		@ frame_needed = 0, uses_anonymous_args = 0
+ 234              		@ link register save eliminated.
+  41:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR3);
+ 235              		.loc 2 41 5 view .LVU33
+ 236 0000 044B     		ldr	r3, .L17
+ 237 0002 9A69     		ldr	r2, [r3, #24]
+ 238 0004 42F40022 		orr	r2, r2, #524288
+ 239 0008 9A61     		str	r2, [r3, #24]
+  42:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE3_0); //PC3
+ 240              		.loc 2 42 5 view .LVU34
+ 241 000a 1A68     		ldr	r2, [r3]
+ 242 000c 22F04002 		bic	r2, r2, #64
+ 243 0010 1A60     		str	r2, [r3]
+  43:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
+ 244              		.loc 2 43 1 is_stmt 0 view .LVU35
+ 245 0012 7047     		bx	lr
+ 246              	.L18:
+ 247              		.align	2
+ 248              	.L17:
+ 249 0014 00080240 		.word	1073874944
+ 250              		.cfi_endproc
+ 251              	.LFE135:
+ 253              		.section	.text.GPIO_Init,"ax",%progbits
+ 254              		.align	1
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 6
+
+
+ 255              		.global	GPIO_Init
+ 256              		.syntax unified
+ 257              		.thumb
+ 258              		.thumb_func
+ 260              	GPIO_Init:
+ 261              	.LFB136:
+  44:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void GPIO_Init(){
+ 262              		.loc 2 44 17 is_stmt 1 view -0
+ 263              		.cfi_startproc
+ 264              		@ args = 0, pretend = 0, frame = 0
+ 265              		@ frame_needed = 0, uses_anonymous_args = 0
+ 266              		@ link register save eliminated.
+  45:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIODEN);
+ 267              		.loc 2 45 5 view .LVU37
+ 268 0000 044B     		ldr	r3, .L20
+ 269 0002 1A6B     		ldr	r2, [r3, #48]
+ 270 0004 42F00E02 		orr	r2, r2, #14
+ 271 0008 1A63     		str	r2, [r3, #48]
+  46:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN); 
+ 272              		.loc 2 46 5 view .LVU38
+ 273 000a 1A6B     		ldr	r2, [r3, #48]
+ 274 000c 42F00102 		orr	r2, r2, #1
+ 275 0010 1A63     		str	r2, [r3, #48]
+  47:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }
+ 276              		.loc 2 47 1 is_stmt 0 view .LVU39
+ 277 0012 7047     		bx	lr
+ 278              	.L21:
+ 279              		.align	2
+ 280              	.L20:
+ 281 0014 00380240 		.word	1073887232
+ 282              		.cfi_endproc
+ 283              	.LFE136:
+ 285              		.section	.text.GPIO_Init_const_LED_button,"ax",%progbits
+ 286              		.align	1
+ 287              		.global	GPIO_Init_const_LED_button
+ 288              		.syntax unified
+ 289              		.thumb
+ 290              		.thumb_func
+ 292              	GPIO_Init_const_LED_button:
+ 293              	.LFB137:
+  48:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** 
+  49:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** void GPIO_Init_const_LED_button()
+  50:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** {
+ 294              		.loc 2 50 1 is_stmt 1 view -0
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 0
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              		@ link register save eliminated.
+  51:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //LEDS
+  52:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //PB7
+  53:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0); //настройка в output mode
+ 299              		.loc 2 53 5 view .LVU41
+ 300 0000 1B4B     		ldr	r3, .L23
+ 301 0002 1A68     		ldr	r2, [r3]
+ 302 0004 42F48042 		orr	r2, r2, #16384
+ 303 0008 1A60     		str	r2, [r3]
+  54:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****      CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7); //настройка на push pull
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 7
+
+
+ 304              		.loc 2 54 6 view .LVU42
+ 305 000a 5A68     		ldr	r2, [r3, #4]
+ 306 000c 22F08002 		bic	r2, r2, #128
+ 307 0010 5A60     		str	r2, [r3, #4]
+  55:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0); //настройка скорости раб
+ 308              		.loc 2 55 5 view .LVU43
+ 309 0012 9A68     		ldr	r2, [r3, #8]
+ 310 0014 42F48042 		orr	r2, r2, #16384
+ 311 0018 9A60     		str	r2, [r3, #8]
+  56:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0); //отключение pull up pull down рези
+ 312              		.loc 2 56 5 view .LVU44
+ 313 001a DA68     		ldr	r2, [r3, #12]
+ 314 001c 22F48042 		bic	r2, r2, #16384
+ 315 0020 DA60     		str	r2, [r3, #12]
+  57:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //PB14
+  58:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
+ 316              		.loc 2 58 5 view .LVU45
+ 317 0022 1A68     		ldr	r2, [r3]
+ 318 0024 42F08052 		orr	r2, r2, #268435456
+ 319 0028 1A60     		str	r2, [r3]
+  59:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
+ 320              		.loc 2 59 5 view .LVU46
+ 321 002a 5A68     		ldr	r2, [r3, #4]
+ 322 002c 22F48042 		bic	r2, r2, #16384
+ 323 0030 5A60     		str	r2, [r3, #4]
+  60:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
+ 324              		.loc 2 60 5 view .LVU47
+ 325 0032 9A68     		ldr	r2, [r3, #8]
+ 326 0034 42F08052 		orr	r2, r2, #268435456
+ 327 0038 9A60     		str	r2, [r3, #8]
+  61:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
+ 328              		.loc 2 61 5 view .LVU48
+ 329 003a DA68     		ldr	r2, [r3, #12]
+ 330 003c 22F08052 		bic	r2, r2, #268435456
+ 331 0040 DA60     		str	r2, [r3, #12]
+  62:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //PB0
+  63:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);
+ 332              		.loc 2 63 5 view .LVU49
+ 333 0042 1A68     		ldr	r2, [r3]
+ 334 0044 42F00102 		orr	r2, r2, #1
+ 335 0048 1A60     		str	r2, [r3]
+  64:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);
+ 336              		.loc 2 64 5 view .LVU50
+ 337 004a 5A68     		ldr	r2, [r3, #4]
+ 338 004c 22F00102 		bic	r2, r2, #1
+ 339 0050 5A60     		str	r2, [r3, #4]
+  65:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
+ 340              		.loc 2 65 5 view .LVU51
+ 341 0052 9A68     		ldr	r2, [r3, #8]
+ 342 0054 42F00102 		orr	r2, r2, #1
+ 343 0058 9A60     		str	r2, [r3, #8]
+  66:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
+ 344              		.loc 2 66 5 view .LVU52
+ 345 005a DA68     		ldr	r2, [r3, #12]
+ 346 005c 22F00102 		bic	r2, r2, #1
+ 347 0060 DA60     		str	r2, [r3, #12]
+  67:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //BUTTON
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 8
+
+
+  68:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     //PC13
+  69:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE13_0); //PC13
+ 348              		.loc 2 69 5 view .LVU53
+ 349 0062 044A     		ldr	r2, .L23+4
+ 350 0064 1368     		ldr	r3, [r2]
+ 351 0066 23F08063 		bic	r3, r3, #67108864
+ 352 006a 1360     		str	r3, [r2]
+  70:D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c **** }...
+ 353              		.loc 2 70 1 is_stmt 0 view .LVU54
+ 354 006c 7047     		bx	lr
+ 355              	.L24:
+ 356 006e 00BF     		.align	2
+ 357              	.L23:
+ 358 0070 00040240 		.word	1073873920
+ 359 0074 00080240 		.word	1073874944
+ 360              		.cfi_endproc
+ 361              	.LFE137:
+ 363              		.section	.text.main,"ax",%progbits
+ 364              		.align	1
+ 365              		.global	main
+ 366              		.syntax unified
+ 367              		.thumb
+ 368              		.thumb_func
+ 370              	main:
+ 371              	.LFB138:
    1:Core/Src/main.c **** #include "D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c"
    2:Core/Src/main.c **** #include "D:\MK\aboba\rep\Laboratory_Practice\Core\Inc\init.h"
-   3:Core/Src/main.c **** uint8_t flag;
-   4:Core/Src/main.c **** int main(void)
-   5:Core/Src/main.c **** {
- 207              		.loc 1 5 1 is_stmt 1 view -0
- 208              		.cfi_startproc
- 209              		@ Volatile: function does not return.
- 210              		@ args = 0, pretend = 0, frame = 0
- 211              		@ frame_needed = 0, uses_anonymous_args = 0
- 212 0000 08B5     		push	{r3, lr}
- 213              	.LCFI0:
- 214              		.cfi_def_cfa_offset 8
- 215              		.cfi_offset 3, -8
- 216              		.cfi_offset 14, -4
-   6:Core/Src/main.c ****     GPIO_Init();
- 217              		.loc 1 6 5 view .LVU29
- 218 0002 FFF7FEFF 		bl	GPIO_Init
- 219              	.LVL0:
-   7:Core/Src/main.c ****     GPIO_Init_const_LED_button();
- 220              		.loc 1 7 5 view .LVU30
- 221 0006 FFF7FEFF 		bl	GPIO_Init_const_LED_button
- 222              	.LVL1:
-   8:Core/Src/main.c ****     GPIOA_button_OUT();
- 223              		.loc 1 8 5 view .LVU31
- 224 000a FFF7FEFF 		bl	GPIOA_button_OUT
- 225              	.LVL2:
- 226 000e 11E0     		b	.L14
- 227              	.L18:
-   9:Core/Src/main.c ****     while(1)
-  10:Core/Src/main.c ****     {
-  11:Core/Src/main.c ****         if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_0)!=0)
-  12:Core/Src/main.c ****         {
-  13:Core/Src/main.c ****             SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR3);
- 228              		.loc 1 13 13 view .LVU32
- 229 0010 144A     		ldr	r2, .L19
- 230 0012 9369     		ldr	r3, [r2, #24]
- 231 0014 43F40023 		orr	r3, r3, #524288
- 232 0018 9361     		str	r3, [r2, #24]
-  14:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
- 233              		.loc 1 14 13 view .LVU33
- 234 001a 134B     		ldr	r3, .L19+4
- 235 001c 9A69     		ldr	r2, [r3, #24]
- 236 001e 42F08002 		orr	r2, r2, #128
- 237 0022 9A61     		str	r2, [r3, #24]
-  15:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
- 238              		.loc 1 15 13 view .LVU34
- 239 0024 9A69     		ldr	r2, [r3, #24]
- 240 0026 42F48042 		orr	r2, r2, #16384
- 241 002a 9A61     		str	r2, [r3, #24]
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 6
+   3:Core/Src/main.c **** int main(void)
+   4:Core/Src/main.c **** {
+ 372              		.loc 1 4 1 is_stmt 1 view -0
+ 373              		.cfi_startproc
+ 374              		@ args = 0, pretend = 0, frame = 0
+ 375              		@ frame_needed = 0, uses_anonymous_args = 0
+ 376 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 377              	.LCFI0:
+ 378              		.cfi_def_cfa_offset 24
+ 379              		.cfi_offset 3, -24
+ 380              		.cfi_offset 4, -20
+ 381              		.cfi_offset 5, -16
+ 382              		.cfi_offset 6, -12
+ 383              		.cfi_offset 7, -8
+ 384              		.cfi_offset 14, -4
+   5:Core/Src/main.c ****     uint8_t Q = 0;
+ 385              		.loc 1 5 5 view .LVU56
+ 386              	.LVL0:
+   6:Core/Src/main.c ****     uint8_t flag1 = 0;
+ 387              		.loc 1 6 5 view .LVU57
+   7:Core/Src/main.c ****     uint8_t flag2 = 0;
+ 388              		.loc 1 7 5 view .LVU58
+   8:Core/Src/main.c ****     uint8_t flag3 = 0;
+ 389              		.loc 1 8 5 view .LVU59
+   9:Core/Src/main.c ****     GPIO_Init();
+ 390              		.loc 1 9 5 view .LVU60
+ 391 0002 FFF7FEFF 		bl	GPIO_Init
+ 392              	.LVL1:
+  10:Core/Src/main.c ****     GPIO_Init_const_LED_button();
+ 393              		.loc 1 10 5 view .LVU61
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 9
 
 
-  16:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
- 242              		.loc 1 16 13 view .LVU35
- 243 002c 9A69     		ldr	r2, [r3, #24]
- 244 002e 42F00102 		orr	r2, r2, #1
- 245 0032 9A61     		str	r2, [r3, #24]
- 246              	.L14:
-   9:Core/Src/main.c ****     {
- 247              		.loc 1 9 5 view .LVU36
-  11:Core/Src/main.c ****         {
- 248              		.loc 1 11 9 view .LVU37
-  11:Core/Src/main.c ****         {
- 249              		.loc 1 11 12 is_stmt 0 view .LVU38
- 250 0034 0D4B     		ldr	r3, .L19+8
- 251 0036 1B69     		ldr	r3, [r3, #16]
-  11:Core/Src/main.c ****         {
- 252              		.loc 1 11 11 view .LVU39
- 253 0038 13F0010F 		tst	r3, #1
- 254 003c E8D1     		bne	.L18
-  17:Core/Src/main.c ****         }
-  18:Core/Src/main.c ****         else
-  19:Core/Src/main.c ****         {
-  20:Core/Src/main.c ****             SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS3);
- 255              		.loc 1 20 13 is_stmt 1 view .LVU40
- 256 003e 094A     		ldr	r2, .L19
- 257 0040 9369     		ldr	r3, [r2, #24]
- 258 0042 43F00803 		orr	r3, r3, #8
- 259 0046 9361     		str	r3, [r2, #24]
-  21:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
- 260              		.loc 1 21 13 view .LVU41
- 261 0048 074B     		ldr	r3, .L19+4
- 262 004a 9A69     		ldr	r2, [r3, #24]
- 263 004c 42F40002 		orr	r2, r2, #8388608
- 264 0050 9A61     		str	r2, [r3, #24]
-  22:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
- 265              		.loc 1 22 13 view .LVU42
- 266 0052 9A69     		ldr	r2, [r3, #24]
- 267 0054 42F08042 		orr	r2, r2, #1073741824
- 268 0058 9A61     		str	r2, [r3, #24]
-  23:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
- 269              		.loc 1 23 13 view .LVU43
- 270 005a 9A69     		ldr	r2, [r3, #24]
- 271 005c 42F48032 		orr	r2, r2, #65536
- 272 0060 9A61     		str	r2, [r3, #24]
- 273 0062 E7E7     		b	.L14
- 274              	.L20:
- 275              		.align	2
- 276              	.L19:
- 277 0064 00000240 		.word	1073872896
- 278 0068 00040240 		.word	1073873920
- 279 006c 00080240 		.word	1073874944
- 280              		.cfi_endproc
- 281              	.LFE134:
- 283              		.global	flag
- 284              		.section	.bss.flag,"aw",%nobits
- 287              	flag:
- 288 0000 00       		.space	1
- 289              		.text
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 7
+ 394 0006 FFF7FEFF 		bl	GPIO_Init_const_LED_button
+ 395              	.LVL2:
+  11:Core/Src/main.c ****     LED1_in();
+ 396              		.loc 1 11 5 view .LVU62
+ 397 000a FFF7FEFF 		bl	LED1_in
+ 398              	.LVL3:
+  12:Core/Src/main.c ****     LED2_in();
+ 399              		.loc 1 12 5 view .LVU63
+ 400 000e FFF7FEFF 		bl	LED2_in
+ 401              	.LVL4:
+  13:Core/Src/main.c ****     LED3_in();
+ 402              		.loc 1 13 5 view .LVU64
+ 403 0012 FFF7FEFF 		bl	LED3_in
+ 404              	.LVL5:
+   8:Core/Src/main.c ****     GPIO_Init();
+ 405              		.loc 1 8 13 is_stmt 0 view .LVU65
+ 406 0016 0025     		movs	r5, #0
+   7:Core/Src/main.c ****     uint8_t flag3 = 0;
+ 407              		.loc 1 7 13 view .LVU66
+ 408 0018 2F46     		mov	r7, r5
+   6:Core/Src/main.c ****     uint8_t flag2 = 0;
+ 409              		.loc 1 6 13 view .LVU67
+ 410 001a 2E46     		mov	r6, r5
+   5:Core/Src/main.c ****     uint8_t flag1 = 0;
+ 411              		.loc 1 5 13 view .LVU68
+ 412 001c 2C46     		mov	r4, r5
+ 413 001e 4AE0     		b	.L26
+ 414              	.LVL6:
+ 415              	.L44:
+ 416              	.LBB2:
+  14:Core/Src/main.c ****     while(1)
+  15:Core/Src/main.c ****     {   
+  16:Core/Src/main.c ****         if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0)
+  17:Core/Src/main.c ****         {
+  18:Core/Src/main.c ****            Q++;
+ 417              		.loc 1 18 12 is_stmt 1 view .LVU69
+ 418              		.loc 1 18 13 is_stmt 0 view .LVU70
+ 419 0020 0134     		adds	r4, r4, #1
+ 420              	.LVL7:
+ 421              		.loc 1 18 13 view .LVU71
+ 422 0022 E4B2     		uxtb	r4, r4
+ 423              	.LVL8:
+  19:Core/Src/main.c ****            int i = 0;
+ 424              		.loc 1 19 12 is_stmt 1 view .LVU72
+  20:Core/Src/main.c ****            while(i < 500000)
+ 425              		.loc 1 20 12 view .LVU73
+  19:Core/Src/main.c ****            int i = 0;
+ 426              		.loc 1 19 16 is_stmt 0 view .LVU74
+ 427 0024 0023     		movs	r3, #0
+ 428              		.loc 1 20 17 view .LVU75
+ 429 0026 00E0     		b	.L28
+ 430              	.LVL9:
+ 431              	.L29:
+  21:Core/Src/main.c ****            {
+  22:Core/Src/main.c ****             i++;
+ 432              		.loc 1 22 13 is_stmt 1 view .LVU76
+ 433              		.loc 1 22 14 is_stmt 0 view .LVU77
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 10
 
 
- 290              	.Letext0:
- 291              		.file 3 "D:/MK/aboba/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
- 292              		.file 4 "D:/MK/aboba/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 293              		.file 5 "D:/MK/aboba/rep/Laboratory_Practice/CMSIS/Devices/stm32f429xx.h"
-ARM GAS  C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s 			page 8
+ 434 0028 0133     		adds	r3, r3, #1
+ 435              	.LVL10:
+ 436              	.L28:
+  20:Core/Src/main.c ****            while(i < 500000)
+ 437              		.loc 1 20 20 is_stmt 1 view .LVU78
+ 438 002a 374A     		ldr	r2, .L45
+ 439 002c 9342     		cmp	r3, r2
+ 440 002e FBDD     		ble	.L29
+ 441              	.LVL11:
+ 442              	.L30:
+  23:Core/Src/main.c ****            }
+  24:Core/Src/main.c ****            while(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0)
+  25:Core/Src/main.c ****            {
+  26:Core/Src/main.c ****            }
+ 443              		.loc 1 26 12 view .LVU79
+  24:Core/Src/main.c ****            {
+ 444              		.loc 1 24 55 discriminator 1 view .LVU80
+  24:Core/Src/main.c ****            {
+ 445              		.loc 1 24 18 is_stmt 0 discriminator 1 view .LVU81
+ 446 0030 364B     		ldr	r3, .L45+4
+ 447 0032 1B69     		ldr	r3, [r3, #16]
+  24:Core/Src/main.c ****            {
+ 448              		.loc 1 24 55 discriminator 1 view .LVU82
+ 449 0034 13F4005F 		tst	r3, #8192
+ 450 0038 FAD1     		bne	.L30
+  27:Core/Src/main.c ****         switch(Q)
+ 451              		.loc 1 27 9 is_stmt 1 view .LVU83
+ 452 003a 631E     		subs	r3, r4, #1
+ 453 003c 032B     		cmp	r3, #3
+ 454 003e 3FD8     		bhi	.L27
+ 455 0040 DFE803F0 		tbb	[pc, r3]
+ 456              	.L32:
+ 457 0044 02       		.byte	(.L35-.L32)/2
+ 458 0045 06       		.byte	(.L34-.L32)/2
+ 459 0046 0A       		.byte	(.L33-.L32)/2
+ 460 0047 0E       		.byte	(.L31-.L32)/2
+ 461              		.p2align 1
+ 462              	.L35:
+  28:Core/Src/main.c ****         {
+  29:Core/Src/main.c ****             case 1:
+  30:Core/Src/main.c ****             {
+  31:Core/Src/main.c ****                 flag1 = 1;
+ 463              		.loc 1 31 17 view .LVU84
+ 464              	.LVL12:
+  32:Core/Src/main.c ****                 LED1_out();
+ 465              		.loc 1 32 17 view .LVU85
+ 466 0048 FFF7FEFF 		bl	LED1_out
+ 467              	.LVL13:
+  33:Core/Src/main.c ****                 break;
+ 468              		.loc 1 33 17 view .LVU86
+  31:Core/Src/main.c ****                 LED1_out();
+ 469              		.loc 1 31 23 is_stmt 0 view .LVU87
+ 470 004c 2646     		mov	r6, r4
+ 471              		.loc 1 33 17 view .LVU88
+ 472 004e 37E0     		b	.L27
+ 473              	.LVL14:
+ 474              	.L34:
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 11
+
+
+  34:Core/Src/main.c ****             }
+  35:Core/Src/main.c ****             case 2:
+  36:Core/Src/main.c ****             {
+  37:Core/Src/main.c ****                 flag2 = 1;
+ 475              		.loc 1 37 17 is_stmt 1 view .LVU89
+  38:Core/Src/main.c ****                 LED2_out();
+ 476              		.loc 1 38 17 view .LVU90
+ 477 0050 FFF7FEFF 		bl	LED2_out
+ 478              	.LVL15:
+  39:Core/Src/main.c ****                 break;
+ 479              		.loc 1 39 17 view .LVU91
+  37:Core/Src/main.c ****                 LED2_out();
+ 480              		.loc 1 37 23 is_stmt 0 view .LVU92
+ 481 0054 0127     		movs	r7, #1
+ 482              		.loc 1 39 17 view .LVU93
+ 483 0056 33E0     		b	.L27
+ 484              	.LVL16:
+ 485              	.L33:
+  40:Core/Src/main.c ****             }
+  41:Core/Src/main.c ****             case 3:
+  42:Core/Src/main.c ****             {
+  43:Core/Src/main.c ****                 flag3 = 1;
+ 486              		.loc 1 43 17 is_stmt 1 view .LVU94
+  44:Core/Src/main.c ****                 LED3_out();
+ 487              		.loc 1 44 17 view .LVU95
+ 488 0058 FFF7FEFF 		bl	LED3_out
+ 489              	.LVL17:
+  45:Core/Src/main.c ****                 break;
+ 490              		.loc 1 45 17 view .LVU96
+  43:Core/Src/main.c ****                 LED3_out();
+ 491              		.loc 1 43 23 is_stmt 0 view .LVU97
+ 492 005c 0125     		movs	r5, #1
+ 493              		.loc 1 45 17 view .LVU98
+ 494 005e 2FE0     		b	.L27
+ 495              	.LVL18:
+ 496              	.L31:
+  46:Core/Src/main.c ****             }
+  47:Core/Src/main.c ****             case 4:
+  48:Core/Src/main.c ****             {
+  49:Core/Src/main.c ****                 flag1 = 0;
+ 497              		.loc 1 49 17 is_stmt 1 view .LVU99
+  50:Core/Src/main.c ****                 flag2 = 0;
+ 498              		.loc 1 50 17 view .LVU100
+  51:Core/Src/main.c ****                 flag3 = 0;
+ 499              		.loc 1 51 17 view .LVU101
+  52:Core/Src/main.c ****                 LED1_in();
+ 500              		.loc 1 52 17 view .LVU102
+ 501 0060 FFF7FEFF 		bl	LED1_in
+ 502              	.LVL19:
+  53:Core/Src/main.c ****                 LED2_in();
+ 503              		.loc 1 53 17 view .LVU103
+ 504 0064 FFF7FEFF 		bl	LED2_in
+ 505              	.LVL20:
+  54:Core/Src/main.c ****                 LED3_in();
+ 506              		.loc 1 54 17 view .LVU104
+ 507 0068 FFF7FEFF 		bl	LED3_in
+ 508              	.LVL21:
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 12
+
+
+  55:Core/Src/main.c ****                 Q = 0;
+ 509              		.loc 1 55 17 view .LVU105
+  56:Core/Src/main.c ****                 break;
+ 510              		.loc 1 56 17 view .LVU106
+  51:Core/Src/main.c ****                 LED1_in();
+ 511              		.loc 1 51 23 is_stmt 0 view .LVU107
+ 512 006c 0025     		movs	r5, #0
+  50:Core/Src/main.c ****                 flag3 = 0;
+ 513              		.loc 1 50 23 view .LVU108
+ 514 006e 2F46     		mov	r7, r5
+  49:Core/Src/main.c ****                 flag2 = 0;
+ 515              		.loc 1 49 23 view .LVU109
+ 516 0070 2E46     		mov	r6, r5
+  55:Core/Src/main.c ****                 break;
+ 517              		.loc 1 55 19 view .LVU110
+ 518 0072 2C46     		mov	r4, r5
+ 519              		.loc 1 56 17 view .LVU111
+ 520 0074 24E0     		b	.L27
+ 521              	.LVL22:
+ 522              	.L37:
+ 523              		.loc 1 56 17 view .LVU112
+ 524              	.LBE2:
+  57:Core/Src/main.c ****             }
+  58:Core/Src/main.c ****         }
+  59:Core/Src/main.c ****         }
+  60:Core/Src/main.c ****         if(flag1 == 0) //PA3
+  61:Core/Src/main.c ****         {
+  62:Core/Src/main.c ****             if(READ_BIT(GPIOA->IDR, GPIO_IDR_IDR_3)!=0)
+  63:Core/Src/main.c ****             {
+  64:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  65:Core/Src/main.c ****             }
+  66:Core/Src/main.c ****             else
+  67:Core/Src/main.c ****             if(READ_BIT(GPIOA->IDR, GPIO_IDR_IDR_3)==0)
+ 525              		.loc 1 67 13 is_stmt 1 view .LVU113
+ 526              		.loc 1 67 16 is_stmt 0 view .LVU114
+ 527 0076 264B     		ldr	r3, .L45+8
+ 528 0078 1B69     		ldr	r3, [r3, #16]
+ 529              		.loc 1 67 15 view .LVU115
+ 530 007a 13F0080F 		tst	r3, #8
+ 531 007e 2AD1     		bne	.L36
+  68:Core/Src/main.c ****             {
+  69:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 532              		.loc 1 69 17 is_stmt 1 view .LVU116
+ 533 0080 244A     		ldr	r2, .L45+12
+ 534 0082 9369     		ldr	r3, [r2, #24]
+ 535 0084 43F48033 		orr	r3, r3, #65536
+ 536 0088 9361     		str	r3, [r2, #24]
+ 537 008a 24E0     		b	.L36
+ 538              	.L39:
+  70:Core/Src/main.c ****             }
+  71:Core/Src/main.c ****         }
+  72:Core/Src/main.c ****         if(flag2 == 0) //PC0
+  73:Core/Src/main.c ****         {
+  74:Core/Src/main.c ****             if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_0)!=0)
+  75:Core/Src/main.c ****             {
+  76:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  77:Core/Src/main.c ****             }
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 13
+
+
+  78:Core/Src/main.c ****             else
+  79:Core/Src/main.c ****             if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_0)==0)
+ 539              		.loc 1 79 13 view .LVU117
+ 540              		.loc 1 79 16 is_stmt 0 view .LVU118
+ 541 008c 1F4B     		ldr	r3, .L45+4
+ 542 008e 1B69     		ldr	r3, [r3, #16]
+ 543              		.loc 1 79 15 view .LVU119
+ 544 0090 13F0010F 		tst	r3, #1
+ 545 0094 2AD1     		bne	.L38
+  80:Core/Src/main.c ****             {
+  81:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 546              		.loc 1 81 17 is_stmt 1 view .LVU120
+ 547 0096 1F4A     		ldr	r2, .L45+12
+ 548 0098 9369     		ldr	r3, [r2, #24]
+ 549 009a 43F40003 		orr	r3, r3, #8388608
+ 550 009e 9361     		str	r3, [r2, #24]
+ 551 00a0 24E0     		b	.L38
+ 552              	.L41:
+  82:Core/Src/main.c ****             }
+  83:Core/Src/main.c ****         }
+  84:Core/Src/main.c ****         if(flag3 == 0) //PC3
+  85:Core/Src/main.c ****         {
+  86:Core/Src/main.c ****             if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_3)!=0)
+  87:Core/Src/main.c ****             {
+  88:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14); 
+  89:Core/Src/main.c ****             }
+  90:Core/Src/main.c ****             else
+  91:Core/Src/main.c ****             if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_3)==0)
+ 553              		.loc 1 91 13 view .LVU121
+ 554              		.loc 1 91 16 is_stmt 0 view .LVU122
+ 555 00a2 1A4B     		ldr	r3, .L45+4
+ 556 00a4 1B69     		ldr	r3, [r3, #16]
+ 557              		.loc 1 91 15 view .LVU123
+ 558 00a6 13F0080F 		tst	r3, #8
+ 559 00aa 04D1     		bne	.L26
+  92:Core/Src/main.c ****             {
+  93:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14); 
+ 560              		.loc 1 93 17 is_stmt 1 view .LVU124
+ 561 00ac 194A     		ldr	r2, .L45+12
+ 562 00ae 9369     		ldr	r3, [r2, #24]
+ 563 00b0 43F08043 		orr	r3, r3, #1073741824
+ 564 00b4 9361     		str	r3, [r2, #24]
+ 565              	.LVL23:
+ 566              	.L26:
+  14:Core/Src/main.c ****     {   
+ 567              		.loc 1 14 5 view .LVU125
+  16:Core/Src/main.c ****         {
+ 568              		.loc 1 16 9 view .LVU126
+  16:Core/Src/main.c ****         {
+ 569              		.loc 1 16 12 is_stmt 0 view .LVU127
+ 570 00b6 154B     		ldr	r3, .L45+4
+ 571 00b8 1B69     		ldr	r3, [r3, #16]
+  16:Core/Src/main.c ****         {
+ 572              		.loc 1 16 11 view .LVU128
+ 573 00ba 13F4005F 		tst	r3, #8192
+ 574 00be AFD1     		bne	.L44
+ 575              	.LVL24:
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 14
+
+
+ 576              	.L27:
+  60:Core/Src/main.c ****         {
+ 577              		.loc 1 60 9 is_stmt 1 view .LVU129
+  60:Core/Src/main.c ****         {
+ 578              		.loc 1 60 11 is_stmt 0 view .LVU130
+ 579 00c0 4EB9     		cbnz	r6, .L36
+  62:Core/Src/main.c ****             {
+ 580              		.loc 1 62 13 is_stmt 1 view .LVU131
+  62:Core/Src/main.c ****             {
+ 581              		.loc 1 62 16 is_stmt 0 view .LVU132
+ 582 00c2 134B     		ldr	r3, .L45+8
+ 583 00c4 1B69     		ldr	r3, [r3, #16]
+  62:Core/Src/main.c ****             {
+ 584              		.loc 1 62 15 view .LVU133
+ 585 00c6 13F0080F 		tst	r3, #8
+ 586 00ca D4D0     		beq	.L37
+  64:Core/Src/main.c ****             }
+ 587              		.loc 1 64 17 is_stmt 1 view .LVU134
+ 588 00cc 114A     		ldr	r2, .L45+12
+ 589 00ce 9369     		ldr	r3, [r2, #24]
+ 590 00d0 43F00103 		orr	r3, r3, #1
+ 591 00d4 9361     		str	r3, [r2, #24]
+ 592              	.L36:
+  72:Core/Src/main.c ****         {
+ 593              		.loc 1 72 9 view .LVU135
+  72:Core/Src/main.c ****         {
+ 594              		.loc 1 72 11 is_stmt 0 view .LVU136
+ 595 00d6 4FB9     		cbnz	r7, .L38
+  74:Core/Src/main.c ****             {
+ 596              		.loc 1 74 13 is_stmt 1 view .LVU137
+  74:Core/Src/main.c ****             {
+ 597              		.loc 1 74 16 is_stmt 0 view .LVU138
+ 598 00d8 0C4B     		ldr	r3, .L45+4
+ 599 00da 1B69     		ldr	r3, [r3, #16]
+  74:Core/Src/main.c ****             {
+ 600              		.loc 1 74 15 view .LVU139
+ 601 00dc 13F0010F 		tst	r3, #1
+ 602 00e0 D4D0     		beq	.L39
+  76:Core/Src/main.c ****             }
+ 603              		.loc 1 76 17 is_stmt 1 view .LVU140
+ 604 00e2 0C4A     		ldr	r2, .L45+12
+ 605 00e4 9369     		ldr	r3, [r2, #24]
+ 606 00e6 43F08003 		orr	r3, r3, #128
+ 607 00ea 9361     		str	r3, [r2, #24]
+ 608              	.L38:
+  84:Core/Src/main.c ****         {
+ 609              		.loc 1 84 9 view .LVU141
+  84:Core/Src/main.c ****         {
+ 610              		.loc 1 84 11 is_stmt 0 view .LVU142
+ 611 00ec 002D     		cmp	r5, #0
+ 612 00ee E2D1     		bne	.L26
+  86:Core/Src/main.c ****             {
+ 613              		.loc 1 86 13 is_stmt 1 view .LVU143
+  86:Core/Src/main.c ****             {
+ 614              		.loc 1 86 16 is_stmt 0 view .LVU144
+ 615 00f0 064B     		ldr	r3, .L45+4
+ 616 00f2 1B69     		ldr	r3, [r3, #16]
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 15
+
+
+  86:Core/Src/main.c ****             {
+ 617              		.loc 1 86 15 view .LVU145
+ 618 00f4 13F0080F 		tst	r3, #8
+ 619 00f8 D3D0     		beq	.L41
+  88:Core/Src/main.c ****             }
+ 620              		.loc 1 88 17 is_stmt 1 view .LVU146
+ 621 00fa 064A     		ldr	r2, .L45+12
+ 622 00fc 9369     		ldr	r3, [r2, #24]
+ 623 00fe 43F48043 		orr	r3, r3, #16384
+ 624 0102 9361     		str	r3, [r2, #24]
+ 625 0104 D7E7     		b	.L26
+ 626              	.L46:
+ 627 0106 00BF     		.align	2
+ 628              	.L45:
+ 629 0108 1FA10700 		.word	499999
+ 630 010c 00080240 		.word	1073874944
+ 631 0110 00000240 		.word	1073872896
+ 632 0114 00040240 		.word	1073873920
+ 633              		.cfi_endproc
+ 634              	.LFE138:
+ 636              		.text
+ 637              	.Letext0:
+ 638              		.file 3 "D:/MK/aboba/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 639              		.file 4 "D:/MK/aboba/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 640              		.file 5 "D:/MK/aboba/rep/Laboratory_Practice/CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s 			page 16
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:21     .text.GPIO_Init:00000000 $t
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:27     .text.GPIO_Init:00000000 GPIO_Init
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:49     .text.GPIO_Init:00000014 $d
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:54     .text.GPIO_Init_const_LED_button:00000000 $t
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:60     .text.GPIO_Init_const_LED_button:00000000 GPIO_Init_const_LED_button
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:121    .text.GPIO_Init_const_LED_button:00000064 $d
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:126    .text.GPIOA_button_OUT:00000000 $t
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:132    .text.GPIOA_button_OUT:00000000 GPIOA_button_OUT
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:161    .text.GPIOA_button_OUT:00000024 $d
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:166    .text.GPIOA_button_IN:00000000 $t
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:172    .text.GPIOA_button_IN:00000000 GPIOA_button_IN
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:194    .text.GPIOA_button_IN:00000018 $d
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:199    .text.main:00000000 $t
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:205    .text.main:00000000 main
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:277    .text.main:00000064 $d
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:287    .bss.flag:00000000 flag
-C:\Users\VLED\AppData\Local\Temp\cciq9gcl.s:288    .bss.flag:00000000 $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:21     .text.LED1_out:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:27     .text.LED1_out:00000000 LED1_out
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:62     .text.LED1_out:0000002c $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:67     .text.LED2_out:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:73     .text.LED2_out:00000000 LED2_out
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:107    .text.LED2_out:0000002c $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:112    .text.LED3_out:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:118    .text.LED3_out:00000000 LED3_out
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:152    .text.LED3_out:0000002c $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:157    .text.LED1_in:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:163    .text.LED1_in:00000000 LED1_in
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:184    .text.LED1_in:00000014 $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:189    .text.LED2_in:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:195    .text.LED2_in:00000000 LED2_in
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:217    .text.LED2_in:00000018 $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:222    .text.LED3_in:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:228    .text.LED3_in:00000000 LED3_in
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:249    .text.LED3_in:00000014 $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:254    .text.GPIO_Init:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:260    .text.GPIO_Init:00000000 GPIO_Init
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:281    .text.GPIO_Init:00000014 $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:286    .text.GPIO_Init_const_LED_button:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:292    .text.GPIO_Init_const_LED_button:00000000 GPIO_Init_const_LED_button
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:358    .text.GPIO_Init_const_LED_button:00000070 $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:364    .text.main:00000000 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:370    .text.main:00000000 main
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:457    .text.main:00000044 $d
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:461    .text.main:00000048 $t
+C:\Users\VLED\AppData\Local\Temp\cc2NcETT.s:629    .text.main:00000108 $d
 
 NO UNDEFINED SYMBOLS

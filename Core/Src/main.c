@@ -1,14 +1,102 @@
 #include "D:\MK\aboba\rep\Laboratory_Practice\Core\Src\init.c"
 #include "D:\MK\aboba\rep\Laboratory_Practice\Core\Inc\init.h"
-uint8_t flag;
 int main(void)
 {
+    uint8_t Q = 0;
+    uint8_t flag1 = 0;
+    uint8_t flag2 = 0;
+    uint8_t flag3 = 0;
     GPIO_Init();
     GPIO_Init_const_LED_button();
-    GPIOA_button_OUT();
+    LED1_in();
+    LED2_in();
+    LED3_in();
     while(1)
-    {
-        if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_0)!=0)
+    {   
+        if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0)
+        {
+           Q++;
+           int i = 0;
+           while(i < 1000000)
+           {
+            i++;
+           }
+           while(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0)
+           {
+           }
+        switch(Q)
+        {
+            case 1:
+            {
+                flag1 = 1;
+                LED1_out();
+                break;
+            }
+            case 2:
+            {
+                flag2 = 1;
+                LED2_out();
+                break;
+            }
+            case 3:
+            {
+                flag3 = 1;
+                LED3_out();
+                break;
+            }
+            case 4:
+            {
+                flag1 = 0;
+                flag2 = 0;
+                flag3 = 0;
+                LED1_in();
+                LED2_in();
+                LED3_in();
+                Q = 0;
+                break;
+            }
+        }
+        }
+        if(flag1 == 0) //PA3
+        {
+            if(READ_BIT(GPIOA->IDR, GPIO_IDR_IDR_3)!=0)
+            {
+                SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+            }
+            else
+            if(READ_BIT(GPIOA->IDR, GPIO_IDR_IDR_3)==0)
+            {
+                SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+            }
+        }
+        if(flag2 == 0) //PC0
+        {
+            if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_0)!=0)
+            {
+                SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+            }
+            else
+            if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_0)==0)
+            {
+                SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+            }
+        }
+        if(flag3 == 0) //PC3
+        {
+            if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_3)!=0)
+            {
+                SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14); 
+            }
+            else
+            if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_3)==0)
+            {
+                SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14); 
+            }
+        }    
+    }
+}
+/*#include "../Inc/main.h"
+ if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_0)!=0)
         {
             SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR3);
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
@@ -22,27 +110,9 @@ int main(void)
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
         }
-        /*
-        SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS3);
-        uint32_t i = 0;
-        while(i < 100000)
-        {
-            i++;
-        }
-        i = 0;
-        SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR3);
-        while(i < 100000)
-        {
-            i++;
-        }
-        i = 0;
-        */
-    }
-}
-/*#include "../Inc/main.h"
 
 int main(void)
-{s
+{
     //PB7
     // RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
     *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02;
