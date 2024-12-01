@@ -16,4 +16,7 @@
 #define GPIOC_PIN6_R 0x800000UL
 
 
+void RCC_Init(void);
+void ITR_init(void);
+void SysTick_Init(void);
 void GPIO_Ini(void);
