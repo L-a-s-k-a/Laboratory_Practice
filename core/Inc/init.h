@@ -25,29 +25,15 @@
 #define LED1_OFF        (0x80UL << 16)     // Pb7
 #define LED2_OFF        (0x00004000UL << 16) // Pb14
 #define LED3_OFF        (0x00000001UL << 16) // Pb0
-#define BUTTON1_PIN               0x2000UL 
 
-// // 定义 LED 对应的 GPIO BSRR 位
-// #define LED1_ON (1UL << 2)  // BSRR2
-// #define LED2_ON (1UL << 6)  // BSRR6
-// #define LED3_ON (1UL << 1)  // BSRR1
-// #define LED4_ON (1UL << 4)  // BSRR4
-// #define LED5_ON (1UL << 3)  // BSRR3
-// #define LED6_ON (1UL << 5)  // BSRR5
 
-// #define LED1_OFF (1UL << 18) // BR2
-// #define LED2_OFF (1UL << 22) // BR6
-// #define LED3_OFF (1UL << 17) // BR1
-// #define LED4_OFF (1UL << 20) // BR4
-// #define LED5_OFF (1UL << 19) // BR3
-// #define LED6_OFF (1UL << 21) // BR5
-
-// // 定义按钮引脚（假设 PC13 和 PC6 分别接按钮1和按钮2）
-// #define BUTTON1_PIN (1UL << 13) // PC13
-// #define BUTTON2_PIN (1UL << 6)  // PC6
+#define BUTTON1_PIN        (1U << 13) // PC13
+#define BUTTON2_PIN        (1U << 6)  // PC6
+#define LED_PORT           GPIOB
+#define BUTTON_PORT        GPIOC
 
 #define GPIOC_IDR                  *(uint32_t *)(0x40020800UL + 0x10UL)  /*GPIOC地址偏移量加GPIOx_IDR地址偏移量*/
-#define GPIO_PIN_3               0x40UL 
+#define GPIO_PIN_6               0x00000040UL 
 #define GPIO_PIN_13               0x2000UL 
 
 #define READ_BIT_SELF(REG,BIT) ((REG) & (BIT))

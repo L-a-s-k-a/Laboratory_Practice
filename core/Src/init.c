@@ -6,6 +6,11 @@ void GPIO_Ini_Self_Def(void)
     SET_BIT_SELF(GPIOB_MODER, GPIO_PIN_7_OUT); /*设置pb0=7 MODER0为01(General purpose output mode)*/
     SET_BIT_SELF(GPIOB_OSPEEDR, GPIO_PIN_7_MED);
     SET_BIT_SELF(GPIOB_BSRR, GPIO_PIN_7_RESET);
+     // 配置 PC13 和 PC6 为输入模式
+    GPIOC->MODER &= ~(GPIO_MODER_MODE13);
+    // // 配置为上拉模式
+    // GPIOC->PUPDR |= (GPIO_PUPDR_PUPD13_0 | GPIO_PUPDR_PUPD6_0);
+
 }
 
 void GPIO_Ini_CMSIS(void)
