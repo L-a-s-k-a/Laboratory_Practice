@@ -1,0 +1,393 @@
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Ini,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include <init.h>
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void GPIO_Ini(void){
+  29              		.loc 1 3 20 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   4:Core/Src/init.c ****         SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIOAEN);
+  34              		.loc 1 4 9 view .LVU1
+  35 0000 1D4A     		ldr	r2, .L2
+  36 0002 136B     		ldr	r3, [r2, #48]
+  37 0004 43F00703 		orr	r3, r3, #7
+  38 0008 1363     		str	r3, [r2, #48]
+   5:Core/Src/init.c **** 
+   6:Core/Src/init.c ****         *(uint32_t*)(0x40020400UL) |= 0x10000000UL;
+  39              		.loc 1 6 9 view .LVU2
+  40 000a 1C4B     		ldr	r3, .L2+4
+  41 000c D3F80004 		ldr	r0, [r3, #1024]
+  42              		.loc 1 6 36 is_stmt 0 view .LVU3
+  43 0010 40F08050 		orr	r0, r0, #268435456
+  44 0014 C3F80004 		str	r0, [r3, #1024]
+   7:Core/Src/init.c ****         *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x0000UL; 
+  45              		.loc 1 7 9 is_stmt 1 view .LVU4
+   8:Core/Src/init.c ****         *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x10000000UL; 
+  46              		.loc 1 8 9 view .LVU5
+  47 0018 D3F80814 		ldr	r1, [r3, #1032]
+  48              		.loc 1 8 45 is_stmt 0 view .LVU6
+  49 001c 41F08051 		orr	r1, r1, #268435456
+  50 0020 C3F80814 		str	r1, [r3, #1032]
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s 			page 2
+
+
+   9:Core/Src/init.c ****         *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x0000UL; 
+  51              		.loc 1 9 9 is_stmt 1 view .LVU7
+  10:Core/Src/init.c ****         *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL;
+  52              		.loc 1 10 9 view .LVU8
+  53 0024 D3F81824 		ldr	r2, [r3, #1048]
+  54              		.loc 1 10 45 is_stmt 0 view .LVU9
+  55 0028 42F08042 		orr	r2, r2, #1073741824
+  56 002c C3F81824 		str	r2, [r3, #1048]
+  11:Core/Src/init.c **** 
+  12:Core/Src/init.c ****         GPIOB_MODER |= GPIOB_MODE_PIN0_OUT; 
+  57              		.loc 1 12 9 is_stmt 1 view .LVU10
+  58              		.loc 1 12 21 is_stmt 0 view .LVU11
+  59 0030 40F00100 		orr	r0, r0, #1
+  60 0034 C3F80004 		str	r0, [r3, #1024]
+  13:Core/Src/init.c ****         GPIOB_OTYPER |= GPIOB_OTYPE_PIN0_PP; 
+  61              		.loc 1 13 9 is_stmt 1 view .LVU12
+  14:Core/Src/init.c ****         GPIOB_OSPEEDR |= GPIOB_OSPEED_PIN0_MID; 
+  62              		.loc 1 14 9 view .LVU13
+  63              		.loc 1 14 23 is_stmt 0 view .LVU14
+  64 0038 41F00101 		orr	r1, r1, #1
+  65 003c C3F80814 		str	r1, [r3, #1032]
+  15:Core/Src/init.c ****         GPIOB_PUPDR |= GPIOB_PUPDR_PIN0_NOPUPD; 
+  66              		.loc 1 15 9 is_stmt 1 view .LVU15
+  16:Core/Src/init.c ****         GPIOB_BSRR |= GPIOB_BSRR_PIN0_RESET;
+  67              		.loc 1 16 9 view .LVU16
+  68              		.loc 1 16 20 is_stmt 0 view .LVU17
+  69 0040 42F48032 		orr	r2, r2, #65536
+  70 0044 C3F81824 		str	r2, [r3, #1048]
+  17:Core/Src/init.c **** 
+  18:Core/Src/init.c ****         SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0); 
+  71              		.loc 1 18 9 is_stmt 1 view .LVU18
+  72 0048 03F58063 		add	r3, r3, #1024
+  73 004c 1A68     		ldr	r2, [r3]
+  74 004e 42F48042 		orr	r2, r2, #16384
+  75 0052 1A60     		str	r2, [r3]
+  19:Core/Src/init.c ****         CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT7);
+  76              		.loc 1 19 9 view .LVU19
+  77 0054 5A68     		ldr	r2, [r3, #4]
+  78 0056 22F08002 		bic	r2, r2, #128
+  79 005a 5A60     		str	r2, [r3, #4]
+  20:Core/Src/init.c ****         SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
+  80              		.loc 1 20 9 view .LVU20
+  81 005c 9A68     		ldr	r2, [r3, #8]
+  82 005e 42F48042 		orr	r2, r2, #16384
+  83 0062 9A60     		str	r2, [r3, #8]
+  21:Core/Src/init.c ****         CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
+  84              		.loc 1 21 9 view .LVU21
+  85 0064 DA68     		ldr	r2, [r3, #12]
+  86 0066 22F48042 		bic	r2, r2, #16384
+  87 006a DA60     		str	r2, [r3, #12]
+  22:Core/Src/init.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  88              		.loc 1 22 9 view .LVU22
+  89 006c 9A69     		ldr	r2, [r3, #24]
+  90 006e 42F40002 		orr	r2, r2, #8388608
+  91 0072 9A61     		str	r2, [r3, #24]
+  23:Core/Src/init.c **** }
+  92              		.loc 1 23 1 is_stmt 0 view .LVU23
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s 			page 3
+
+
+  93 0074 7047     		bx	lr
+  94              	.L3:
+  95 0076 00BF     		.align	2
+  96              	.L2:
+  97 0078 00380240 		.word	1073887232
+  98 007c 00000240 		.word	1073872896
+  99              		.cfi_endproc
+ 100              	.LFE130:
+ 102              		.section	.text.GPIOA_button_OUT,"ax",%progbits
+ 103              		.align	1
+ 104              		.global	GPIOA_button_OUT
+ 105              		.syntax unified
+ 106              		.thumb
+ 107              		.thumb_func
+ 109              	GPIOA_button_OUT:
+ 110              	.LFB131:
+  24:Core/Src/init.c **** 
+  25:Core/Src/init.c **** void GPIOA_button_OUT(){
+ 111              		.loc 1 25 24 is_stmt 1 view -0
+ 112              		.cfi_startproc
+ 113              		@ args = 0, pretend = 0, frame = 0
+ 114              		@ frame_needed = 0, uses_anonymous_args = 0
+ 115              		@ link register save eliminated.
+  26:Core/Src/init.c ****         CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE3_0); //A0
+ 116              		.loc 1 26 9 view .LVU25
+ 117 0000 084B     		ldr	r3, .L5
+ 118 0002 1A68     		ldr	r2, [r3]
+ 119 0004 22F04002 		bic	r2, r2, #64
+ 120 0008 1A60     		str	r2, [r3]
+  27:Core/Src/init.c ****         CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT_3);
+ 121              		.loc 1 27 9 view .LVU26
+ 122 000a 5A68     		ldr	r2, [r3, #4]
+ 123 000c 22F00802 		bic	r2, r2, #8
+ 124 0010 5A60     		str	r2, [r3, #4]
+  28:Core/Src/init.c ****         CLEAR_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR3_0);
+ 125              		.loc 1 28 9 view .LVU27
+ 126 0012 9A68     		ldr	r2, [r3, #8]
+ 127 0014 22F04002 		bic	r2, r2, #64
+ 128 0018 9A60     		str	r2, [r3, #8]
+  29:Core/Src/init.c ****         CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR3_0);
+ 129              		.loc 1 29 9 view .LVU28
+ 130 001a DA68     		ldr	r2, [r3, #12]
+ 131 001c 22F04002 		bic	r2, r2, #64
+ 132 0020 DA60     		str	r2, [r3, #12]
+  30:Core/Src/init.c **** }
+ 133              		.loc 1 30 1 is_stmt 0 view .LVU29
+ 134 0022 7047     		bx	lr
+ 135              	.L6:
+ 136              		.align	2
+ 137              	.L5:
+ 138 0024 00000240 		.word	1073872896
+ 139              		.cfi_endproc
+ 140              	.LFE131:
+ 142              		.section	.text.Ch_Led_On,"ax",%progbits
+ 143              		.align	1
+ 144              		.global	Ch_Led_On
+ 145              		.syntax unified
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s 			page 4
+
+
+ 146              		.thumb
+ 147              		.thumb_func
+ 149              	Ch_Led_On:
+ 150              	.LVL0:
+ 151              	.LFB132:
+  31:Core/Src/init.c **** 
+  32:Core/Src/init.c **** void Ch_Led_On(int NumS){
+ 152              		.loc 1 32 25 is_stmt 1 view -0
+ 153              		.cfi_startproc
+ 154              		@ args = 0, pretend = 0, frame = 0
+ 155              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156              		@ link register save eliminated.
+  33:Core/Src/init.c ****         if (NumS == 0){
+ 157              		.loc 1 33 9 view .LVU31
+ 158              		.loc 1 33 12 is_stmt 0 view .LVU32
+ 159 0000 38B9     		cbnz	r0, .L8
+  34:Core/Src/init.c ****                 SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET);
+ 160              		.loc 1 34 17 is_stmt 1 view .LVU33
+ 161 0002 0C4A     		ldr	r2, .L13
+ 162 0004 D2F81834 		ldr	r3, [r2, #1048]
+ 163 0008 43F00103 		orr	r3, r3, #1
+ 164 000c C2F81834 		str	r3, [r2, #1048]
+ 165 0010 7047     		bx	lr
+ 166              	.L8:
+  35:Core/Src/init.c ****         }else if (NumS == 1){
+ 167              		.loc 1 35 15 view .LVU34
+ 168              		.loc 1 35 18 is_stmt 0 view .LVU35
+ 169 0012 0128     		cmp	r0, #1
+ 170 0014 02D0     		beq	.L11
+  36:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  37:Core/Src/init.c ****         }else if (NumS == 2){
+ 171              		.loc 1 37 15 is_stmt 1 view .LVU36
+ 172              		.loc 1 37 18 is_stmt 0 view .LVU37
+ 173 0016 0228     		cmp	r0, #2
+ 174 0018 06D0     		beq	.L12
+ 175              	.L7:
+  38:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  39:Core/Src/init.c ****         }
+  40:Core/Src/init.c **** }
+ 176              		.loc 1 40 1 view .LVU38
+ 177 001a 7047     		bx	lr
+ 178              	.L11:
+  36:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+ 179              		.loc 1 36 17 is_stmt 1 view .LVU39
+ 180 001c 064A     		ldr	r2, .L13+4
+ 181 001e 9369     		ldr	r3, [r2, #24]
+ 182 0020 43F08003 		orr	r3, r3, #128
+ 183 0024 9361     		str	r3, [r2, #24]
+ 184 0026 7047     		bx	lr
+ 185              	.L12:
+  38:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 186              		.loc 1 38 17 view .LVU40
+ 187 0028 034A     		ldr	r2, .L13+4
+ 188 002a 9369     		ldr	r3, [r2, #24]
+ 189 002c 43F48043 		orr	r3, r3, #16384
+ 190 0030 9361     		str	r3, [r2, #24]
+ 191              		.loc 1 40 1 is_stmt 0 view .LVU41
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s 			page 5
+
+
+ 192 0032 F2E7     		b	.L7
+ 193              	.L14:
+ 194              		.align	2
+ 195              	.L13:
+ 196 0034 00000240 		.word	1073872896
+ 197 0038 00040240 		.word	1073873920
+ 198              		.cfi_endproc
+ 199              	.LFE132:
+ 201              		.section	.text.Ch_Led_Off,"ax",%progbits
+ 202              		.align	1
+ 203              		.global	Ch_Led_Off
+ 204              		.syntax unified
+ 205              		.thumb
+ 206              		.thumb_func
+ 208              	Ch_Led_Off:
+ 209              	.LFB133:
+  41:Core/Src/init.c **** 
+  42:Core/Src/init.c **** void Ch_Led_Off(){
+ 210              		.loc 1 42 18 is_stmt 1 view -0
+ 211              		.cfi_startproc
+ 212              		@ args = 0, pretend = 0, frame = 0
+ 213              		@ frame_needed = 0, uses_anonymous_args = 0
+ 214              		@ link register save eliminated.
+  43:Core/Src/init.c ****         SET_BIT_Self(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);
+ 215              		.loc 1 43 9 view .LVU43
+ 216 0000 084A     		ldr	r2, .L16
+ 217 0002 D2F81834 		ldr	r3, [r2, #1048]
+ 218 0006 43F48033 		orr	r3, r3, #65536
+ 219 000a C2F81834 		str	r3, [r2, #1048]
+  44:Core/Src/init.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 220              		.loc 1 44 9 view .LVU44
+ 221 000e 064B     		ldr	r3, .L16+4
+ 222 0010 9A69     		ldr	r2, [r3, #24]
+ 223 0012 42F40002 		orr	r2, r2, #8388608
+ 224 0016 9A61     		str	r2, [r3, #24]
+  45:Core/Src/init.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);  
+ 225              		.loc 1 45 9 view .LVU45
+ 226 0018 9A69     		ldr	r2, [r3, #24]
+ 227 001a 42F08042 		orr	r2, r2, #1073741824
+ 228 001e 9A61     		str	r2, [r3, #24]
+  46:Core/Src/init.c **** }
+ 229              		.loc 1 46 1 is_stmt 0 view .LVU46
+ 230 0020 7047     		bx	lr
+ 231              	.L17:
+ 232 0022 00BF     		.align	2
+ 233              	.L16:
+ 234 0024 00000240 		.word	1073872896
+ 235 0028 00040240 		.word	1073873920
+ 236              		.cfi_endproc
+ 237              	.LFE133:
+ 239              		.section	.text.On_Led,"ax",%progbits
+ 240              		.align	1
+ 241              		.global	On_Led
+ 242              		.syntax unified
+ 243              		.thumb
+ 244              		.thumb_func
+ 246              	On_Led:
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s 			page 6
+
+
+ 247              	.LVL1:
+ 248              	.LFB134:
+  47:Core/Src/init.c **** 
+  48:Core/Src/init.c **** void On_Led(int NumLed, int NumBut){
+ 249              		.loc 1 48 36 is_stmt 1 view -0
+ 250              		.cfi_startproc
+ 251              		@ args = 0, pretend = 0, frame = 0
+ 252              		@ frame_needed = 0, uses_anonymous_args = 0
+ 253              		.loc 1 48 36 is_stmt 0 view .LVU48
+ 254 0000 70B5     		push	{r4, r5, r6, lr}
+ 255              	.LCFI0:
+ 256              		.cfi_def_cfa_offset 16
+ 257              		.cfi_offset 4, -16
+ 258              		.cfi_offset 5, -12
+ 259              		.cfi_offset 6, -8
+ 260              		.cfi_offset 14, -4
+ 261 0002 0646     		mov	r6, r0
+ 262 0004 0D46     		mov	r5, r1
+  49:Core/Src/init.c ****         Ch_Led_Off();
+ 263              		.loc 1 49 9 is_stmt 1 view .LVU49
+ 264 0006 FFF7FEFF 		bl	Ch_Led_Off
+ 265              	.LVL2:
+  50:Core/Src/init.c ****         for(int i = NumBut; i < (NumBut + NumLed); i++){
+ 266              		.loc 1 50 9 view .LVU50
+ 267              	.LBB2:
+ 268              		.loc 1 50 13 view .LVU51
+ 269              		.loc 1 50 17 is_stmt 0 view .LVU52
+ 270 000a 2C46     		mov	r4, r5
+ 271              		.loc 1 50 9 view .LVU53
+ 272 000c 03E0     		b	.L19
+ 273              	.LVL3:
+ 274              	.L20:
+  51:Core/Src/init.c ****              Ch_Led_On(i);  
+ 275              		.loc 1 51 14 is_stmt 1 view .LVU54
+ 276 000e 2046     		mov	r0, r4
+ 277 0010 FFF7FEFF 		bl	Ch_Led_On
+ 278              	.LVL4:
+  50:Core/Src/init.c ****         for(int i = NumBut; i < (NumBut + NumLed); i++){
+ 279              		.loc 1 50 53 discriminator 3 view .LVU55
+ 280 0014 0134     		adds	r4, r4, #1
+ 281              	.LVL5:
+ 282              	.L19:
+  50:Core/Src/init.c ****         for(int i = NumBut; i < (NumBut + NumLed); i++){
+ 283              		.loc 1 50 31 discriminator 1 view .LVU56
+  50:Core/Src/init.c ****         for(int i = NumBut; i < (NumBut + NumLed); i++){
+ 284              		.loc 1 50 41 is_stmt 0 discriminator 1 view .LVU57
+ 285 0016 AB19     		adds	r3, r5, r6
+  50:Core/Src/init.c ****         for(int i = NumBut; i < (NumBut + NumLed); i++){
+ 286              		.loc 1 50 31 discriminator 1 view .LVU58
+ 287 0018 A342     		cmp	r3, r4
+ 288 001a F8DC     		bgt	.L20
+  50:Core/Src/init.c ****         for(int i = NumBut; i < (NumBut + NumLed); i++){
+ 289              		.loc 1 50 31 discriminator 1 view .LVU59
+ 290              	.LBE2:
+  52:Core/Src/init.c ****         }
+  53:Core/Src/init.c **** }...
+ 291              		.loc 1 53 1 view .LVU60
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s 			page 7
+
+
+ 292 001c 70BD     		pop	{r4, r5, r6, pc}
+ 293              		.loc 1 53 1 view .LVU61
+ 294              		.cfi_endproc
+ 295              	.LFE134:
+ 297              		.text
+ 298              	.Letext0:
+ 299              		.file 2 "D:/Code/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_t
+ 300              		.file 3 "D:/Code/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 301              		.file 4 "CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:21     .text.GPIO_Ini:00000000 $t
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:97     .text.GPIO_Ini:00000078 $d
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:103    .text.GPIOA_button_OUT:00000000 $t
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:109    .text.GPIOA_button_OUT:00000000 GPIOA_button_OUT
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:138    .text.GPIOA_button_OUT:00000024 $d
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:143    .text.Ch_Led_On:00000000 $t
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:149    .text.Ch_Led_On:00000000 Ch_Led_On
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:196    .text.Ch_Led_On:00000034 $d
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:202    .text.Ch_Led_Off:00000000 $t
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:208    .text.Ch_Led_Off:00000000 Ch_Led_Off
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:234    .text.Ch_Led_Off:00000024 $d
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:240    .text.On_Led:00000000 $t
+C:\Users\flymn\AppData\Local\Temp\ccVXiOwR.s:246    .text.On_Led:00000000 On_Led
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,328 @@
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <init.h>
+   2:Core/Src/main.c **** #include <stdint.h>
+   3:Core/Src/main.c ****  
+   4:Core/Src/main.c **** uint8_t NumLed = 1;
+   5:Core/Src/main.c **** uint8_t NumBut = 0;
+   6:Core/Src/main.c **** uint8_t flagAllLed  = 0;
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** int main(void){
+  29              		.loc 1 8 15 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+   9:Core/Src/main.c ****         GPIO_Ini();
+  38              		.loc 1 9 9 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Ini
+  40              	.LVL0:
+  10:Core/Src/main.c ****         GPIOA_button_OUT();
+  41              		.loc 1 10 9 view .LVU2
+  42 0006 FFF7FEFF 		bl	GPIOA_button_OUT
+  43              	.LVL1:
+  11:Core/Src/main.c ****         On_Led(NumLed, NumBut);
+  44              		.loc 1 11 9 view .LVU3
+  45 000a 2A4B     		ldr	r3, .L24
+  46 000c 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  47 000e 2A4B     		ldr	r3, .L24+4
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s 			page 2
+
+
+  48 0010 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  49 0012 FFF7FEFF 		bl	On_Led
+  50              	.LVL2:
+  51 0016 19E0     		b	.L11
+  52              	.L22:
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c ****         while(1){
+  14:Core/Src/main.c ****                 if((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13))!=0){
+  15:Core/Src/main.c ****                         if(NumLed<3){
+  16:Core/Src/main.c ****                                 On_Led(NumLed, NumBut + NumLed);                          
+  53              		.loc 1 16 33 view .LVU4
+  54 0018 264B     		ldr	r3, .L24
+  55 001a 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  56 001c 0144     		add	r1, r1, r0
+  57 001e FFF7FEFF 		bl	On_Led
+  58              	.LVL3:
+  59 0022 28E0     		b	.L4
+  60              	.L23:
+  17:Core/Src/main.c ****                         }else{
+  18:Core/Src/main.c ****                                 if(flagAllLed  == 3){
+  19:Core/Src/main.c ****                                         flagAllLed = 4;
+  61              		.loc 1 19 41 view .LVU5
+  62              		.loc 1 19 52 is_stmt 0 view .LVU6
+  63 0024 254B     		ldr	r3, .L24+8
+  64 0026 0422     		movs	r2, #4
+  65 0028 1A70     		strb	r2, [r3]
+  66 002a 1FE0     		b	.L6
+  67              	.LVL4:
+  68              	.L8:
+  69              	.LBB2:
+  20:Core/Src/main.c ****                                 } else{
+  21:Core/Src/main.c ****                                         flagAllLed  = 3;
+  22:Core/Src/main.c ****                                 }
+  23:Core/Src/main.c ****                                 On_Led(flagAllLed, flagAllLed); 
+  24:Core/Src/main.c ****                         }
+  25:Core/Src/main.c ****                         if(NumBut > 2){
+  26:Core/Src/main.c ****                                 NumBut = 0;   
+  27:Core/Src/main.c ****                         }   
+  28:Core/Src/main.c ****                         while((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13))!=0){
+  29:Core/Src/main.c ****                                 for(int i = 0; i < 300000; i++){}
+  70              		.loc 1 29 65 is_stmt 1 discriminator 3 view .LVU7
+  71              		.loc 1 29 61 discriminator 3 view .LVU8
+  72 002c 0133     		adds	r3, r3, #1
+  73              	.LVL5:
+  74              	.L10:
+  75              		.loc 1 29 50 discriminator 1 view .LVU9
+  76 002e 244A     		ldr	r2, .L24+12
+  77 0030 9342     		cmp	r3, r2
+  78 0032 FBDD     		ble	.L8
+  79              	.LVL6:
+  80              	.L9:
+  81              		.loc 1 29 50 is_stmt 0 discriminator 1 view .LVU10
+  82              	.LBE2:
+  28:Core/Src/main.c ****                                 for(int i = 0; i < 300000; i++){}
+  83              		.loc 1 28 70 is_stmt 1 view .LVU11
+  28:Core/Src/main.c ****                                 for(int i = 0; i < 300000; i++){}
+  84              		.loc 1 28 32 is_stmt 0 view .LVU12
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s 			page 3
+
+
+  85 0034 234B     		ldr	r3, .L24+16
+  86 0036 1B69     		ldr	r3, [r3, #16]
+  28:Core/Src/main.c ****                                 for(int i = 0; i < 300000; i++){}
+  87              		.loc 1 28 70 view .LVU13
+  88 0038 13F4005F 		tst	r3, #8192
+  89 003c 01D0     		beq	.L2
+  90              	.LBB3:
+  91              		.loc 1 29 41 view .LVU14
+  92 003e 0023     		movs	r3, #0
+  93 0040 F5E7     		b	.L10
+  94              	.L2:
+  95              	.LBE3:
+  30:Core/Src/main.c ****                         }
+  31:Core/Src/main.c ****                 }
+  32:Core/Src/main.c **** 
+  33:Core/Src/main.c ****                 if(READ_BIT(GPIOA->IDR, GPIO_IDR_IDR_3)!=0){
+  96              		.loc 1 33 17 is_stmt 1 view .LVU15
+  97              		.loc 1 33 20 is_stmt 0 view .LVU16
+  98 0042 214B     		ldr	r3, .L24+20
+  99 0044 1B69     		ldr	r3, [r3, #16]
+ 100              		.loc 1 33 19 view .LVU17
+ 101 0046 13F0080F 		tst	r3, #8
+ 102 004a 1CD1     		bne	.L21
+ 103              	.L11:
+  13:Core/Src/main.c ****                 if((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13))!=0){
+ 104              		.loc 1 13 9 is_stmt 1 view .LVU18
+  14:Core/Src/main.c ****                         if(NumLed<3){
+ 105              		.loc 1 14 17 view .LVU19
+  14:Core/Src/main.c ****                         if(NumLed<3){
+ 106              		.loc 1 14 21 is_stmt 0 view .LVU20
+ 107 004c 1D4B     		ldr	r3, .L24+16
+ 108 004e 1B69     		ldr	r3, [r3, #16]
+  14:Core/Src/main.c ****                         if(NumLed<3){
+ 109              		.loc 1 14 19 view .LVU21
+ 110 0050 13F4005F 		tst	r3, #8192
+ 111 0054 F5D0     		beq	.L2
+  15:Core/Src/main.c ****                                 On_Led(NumLed, NumBut + NumLed);                          
+ 112              		.loc 1 15 25 is_stmt 1 view .LVU22
+  15:Core/Src/main.c ****                                 On_Led(NumLed, NumBut + NumLed);                          
+ 113              		.loc 1 15 34 is_stmt 0 view .LVU23
+ 114 0056 184B     		ldr	r3, .L24+4
+ 115 0058 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  15:Core/Src/main.c ****                                 On_Led(NumLed, NumBut + NumLed);                          
+ 116              		.loc 1 15 27 view .LVU24
+ 117 005a 0228     		cmp	r0, #2
+ 118 005c DCD9     		bls	.L22
+  18:Core/Src/main.c ****                                         flagAllLed = 4;
+ 119              		.loc 1 18 33 is_stmt 1 view .LVU25
+  18:Core/Src/main.c ****                                         flagAllLed = 4;
+ 120              		.loc 1 18 48 is_stmt 0 view .LVU26
+ 121 005e 174B     		ldr	r3, .L24+8
+ 122 0060 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  18:Core/Src/main.c ****                                         flagAllLed = 4;
+ 123              		.loc 1 18 35 view .LVU27
+ 124 0062 032B     		cmp	r3, #3
+ 125 0064 DED0     		beq	.L23
+  21:Core/Src/main.c ****                                 }
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s 			page 4
+
+
+ 126              		.loc 1 21 41 is_stmt 1 view .LVU28
+  21:Core/Src/main.c ****                                 }
+ 127              		.loc 1 21 53 is_stmt 0 view .LVU29
+ 128 0066 154B     		ldr	r3, .L24+8
+ 129 0068 0322     		movs	r2, #3
+ 130 006a 1A70     		strb	r2, [r3]
+ 131              	.L6:
+  23:Core/Src/main.c ****                         }
+ 132              		.loc 1 23 33 is_stmt 1 view .LVU30
+ 133 006c 134B     		ldr	r3, .L24+8
+ 134 006e 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 135 0070 0146     		mov	r1, r0
+ 136 0072 FFF7FEFF 		bl	On_Led
+ 137              	.LVL7:
+ 138              	.L4:
+  25:Core/Src/main.c ****                                 NumBut = 0;   
+ 139              		.loc 1 25 25 view .LVU31
+  25:Core/Src/main.c ****                                 NumBut = 0;   
+ 140              		.loc 1 25 35 is_stmt 0 view .LVU32
+ 141 0076 0F4B     		ldr	r3, .L24
+ 142 0078 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  25:Core/Src/main.c ****                                 NumBut = 0;   
+ 143              		.loc 1 25 27 view .LVU33
+ 144 007a 022B     		cmp	r3, #2
+ 145 007c DAD9     		bls	.L9
+  26:Core/Src/main.c ****                         }   
+ 146              		.loc 1 26 33 is_stmt 1 view .LVU34
+  26:Core/Src/main.c ****                         }   
+ 147              		.loc 1 26 40 is_stmt 0 view .LVU35
+ 148 007e 0D4B     		ldr	r3, .L24
+ 149 0080 0022     		movs	r2, #0
+ 150 0082 1A70     		strb	r2, [r3]
+ 151 0084 D6E7     		b	.L9
+ 152              	.L21:
+  34:Core/Src/main.c ****                         if(NumLed < 3){
+ 153              		.loc 1 34 25 is_stmt 1 view .LVU36
+ 154              		.loc 1 34 35 is_stmt 0 view .LVU37
+ 155 0086 0C4B     		ldr	r3, .L24+4
+ 156 0088 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 157              		.loc 1 34 27 view .LVU38
+ 158 008a 022B     		cmp	r3, #2
+ 159 008c 03D8     		bhi	.L12
+  35:Core/Src/main.c ****                                 NumLed++;
+ 160              		.loc 1 35 33 is_stmt 1 view .LVU39
+ 161              		.loc 1 35 39 is_stmt 0 view .LVU40
+ 162 008e 0133     		adds	r3, r3, #1
+ 163 0090 094A     		ldr	r2, .L24+4
+ 164 0092 1370     		strb	r3, [r2]
+ 165 0094 07E0     		b	.L15
+ 166              	.L12:
+  36:Core/Src/main.c ****                         } else{
+  37:Core/Src/main.c ****                                 NumLed = 1;
+ 167              		.loc 1 37 33 is_stmt 1 view .LVU41
+ 168              		.loc 1 37 40 is_stmt 0 view .LVU42
+ 169 0096 084B     		ldr	r3, .L24+4
+ 170 0098 0122     		movs	r2, #1
+ 171 009a 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s 			page 5
+
+
+ 172 009c 03E0     		b	.L15
+ 173              	.LVL8:
+ 174              	.L14:
+ 175              	.LBB4:
+  38:Core/Src/main.c ****                         }
+  39:Core/Src/main.c ****                         while((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_3))!=0){
+  40:Core/Src/main.c ****                                 for(int i = 0; i < 300000; i++){}
+ 176              		.loc 1 40 65 is_stmt 1 discriminator 3 view .LVU43
+ 177              		.loc 1 40 61 discriminator 3 view .LVU44
+ 178 009e 0133     		adds	r3, r3, #1
+ 179              	.LVL9:
+ 180              	.L16:
+ 181              		.loc 1 40 50 discriminator 1 view .LVU45
+ 182 00a0 074A     		ldr	r2, .L24+12
+ 183 00a2 9342     		cmp	r3, r2
+ 184 00a4 FBDD     		ble	.L14
+ 185              	.LVL10:
+ 186              	.L15:
+ 187              		.loc 1 40 50 is_stmt 0 discriminator 1 view .LVU46
+ 188              	.LBE4:
+  39:Core/Src/main.c ****                                 for(int i = 0; i < 300000; i++){}
+ 189              		.loc 1 39 69 is_stmt 1 view .LVU47
+  39:Core/Src/main.c ****                                 for(int i = 0; i < 300000; i++){}
+ 190              		.loc 1 39 32 is_stmt 0 view .LVU48
+ 191 00a6 074B     		ldr	r3, .L24+16
+ 192 00a8 1B69     		ldr	r3, [r3, #16]
+  39:Core/Src/main.c ****                                 for(int i = 0; i < 300000; i++){}
+ 193              		.loc 1 39 69 view .LVU49
+ 194 00aa 13F0080F 		tst	r3, #8
+ 195 00ae CDD0     		beq	.L11
+ 196              	.LBB5:
+ 197              		.loc 1 40 41 view .LVU50
+ 198 00b0 0023     		movs	r3, #0
+ 199 00b2 F5E7     		b	.L16
+ 200              	.L25:
+ 201              		.align	2
+ 202              	.L24:
+ 203 00b4 00000000 		.word	NumBut
+ 204 00b8 00000000 		.word	NumLed
+ 205 00bc 00000000 		.word	flagAllLed
+ 206 00c0 DF930400 		.word	299999
+ 207 00c4 00080240 		.word	1073874944
+ 208 00c8 00000240 		.word	1073872896
+ 209              	.LBE5:
+ 210              		.cfi_endproc
+ 211              	.LFE130:
+ 213              		.global	flagAllLed
+ 214              		.section	.bss.flagAllLed,"aw",%nobits
+ 217              	flagAllLed:
+ 218 0000 00       		.space	1
+ 219              		.global	NumBut
+ 220              		.section	.bss.NumBut,"aw",%nobits
+ 223              	NumBut:
+ 224 0000 00       		.space	1
+ 225              		.global	NumLed
+ 226              		.section	.data.NumLed,"aw"
+ 229              	NumLed:
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s 			page 6
+
+
+ 230 0000 01       		.byte	1
+ 231              		.text
+ 232              	.Letext0:
+ 233              		.file 2 "D:/Code/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_t
+ 234              		.file 3 "D:/Code/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 235              		.file 4 "CMSIS/Devices/stm32f429xx.h"
+ 236              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s:21     .text.main:00000000 $t
+C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s:27     .text.main:00000000 main
+C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s:203    .text.main:000000b4 $d
+C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s:223    .bss.NumBut:00000000 NumBut
+C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s:229    .data.NumLed:00000000 NumLed
+C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s:217    .bss.flagAllLed:00000000 flagAllLed
+C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s:218    .bss.flagAllLed:00000000 $d
+C:\Users\flymn\AppData\Local\Temp\ccfCLNvK.s:224    .bss.NumBut:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
+GPIOA_button_OUT
+On_Led
