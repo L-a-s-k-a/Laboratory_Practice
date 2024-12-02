@@ -55,7 +55,6 @@
                variable is updated automatically.
   */
 
-#include <cstdint>
 extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Clock) */
 
 extern const uint8_t  AHBPrescTable[16];    /*!< AHB prescalers table values */
