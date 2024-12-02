@@ -8,7 +8,7 @@
 
 uint8_t pin[] = {1, 2, 3};
 uint8_t led[] = {0, 7, 14}; // диоды на плате
-uint8_t j = 0;
+uint8_t index_of_range = 0;
 uint8_t b = 0, bp = 0;   // состояние кнопки режима
 uint8_t b1 = 0, b1p = 0; // состояния кнопки 1
 uint8_t b2 = 0, b2p = 0; // состояния кнопки 2
@@ -33,13 +33,13 @@ void set_mode(uint8_t pin, uint8_t mode) {
 }
 
 void change_mode() {
-    switch(j++) {
+    switch(index_of_range++) {
     case 0: set_modes(0b001); break;
     case 1: set_modes(0b010); break;
     case 2: set_modes(0b100); break;
     case 3: set_modes(0b111); break;
     case 4: set_modes(0b000); break;
-    case 5: j = 0; break;
+    case 5: index_of_range = 0; break;
     }
 }
 
