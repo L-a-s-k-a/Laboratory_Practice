@@ -54,6 +54,8 @@
                is no need to call the 2 first functions listed above, since SystemCoreClock
                variable is updated automatically.
   */
+
+#include <cstdint>
 extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Clock) */
 
 extern const uint8_t  AHBPrescTable[16];    /*!< AHB prescalers table values */
