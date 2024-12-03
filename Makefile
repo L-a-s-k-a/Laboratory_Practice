@@ -32,6 +32,7 @@ C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/gpio.c \
 Core/Src/stm32f4xx_it.c\
+Core/Src/init.c \
 # ASM sources
 ASM_SOURCES =  \
 startup_stm32f411ceux.s
