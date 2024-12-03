@@ -1,0 +1,697 @@
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"stm32f4xx_it.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/stm32f4xx_it.c"
+  20              		.section	.text.TIM2_IRQHandler,"ax",%progbits
+  21              		.align	1
+  22              		.global	TIM2_IRQHandler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	TIM2_IRQHandler:
+  28              	.LFB130:
+   1:Core/Src/stm32f4xx_it.c **** #include "main.h"
+   2:Core/Src/stm32f4xx_it.c **** #include "stm32f4xx_it.h"
+   3:Core/Src/stm32f4xx_it.c **** #include "gpio.h"
+   4:Core/Src/stm32f4xx_it.c **** 
+   5:Core/Src/stm32f4xx_it.c **** extern uint8_t button1, button2;
+   6:Core/Src/stm32f4xx_it.c **** extern int period, flag_button1, flag_button2, period_bt2, bt1_state, bt2_state,
+   7:Core/Src/stm32f4xx_it.c **** 		bt2_change;
+   8:Core/Src/stm32f4xx_it.c **** extern int counter_tim2;
+   9:Core/Src/stm32f4xx_it.c **** extern int mas[6];
+  10:Core/Src/stm32f4xx_it.c **** extern int once, bt1_current;
+  11:Core/Src/stm32f4xx_it.c **** 
+  12:Core/Src/stm32f4xx_it.c **** void TIM2_IRQHandler(void) {
+  29              		.loc 1 12 28 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  13:Core/Src/stm32f4xx_it.c **** 	if (READ_BIT(TIM2->SR, TIM_SR_UIF)) {
+  33              		.loc 1 13 2 view .LVU1
+  34              		.loc 1 13 6 is_stmt 0 view .LVU2
+  35 0000 4FF08043 		mov	r3, #1073741824
+  36 0004 1B69     		ldr	r3, [r3, #16]
+  37              		.loc 1 13 5 view .LVU3
+  38 0006 13F0010F 		tst	r3, #1
+  39 000a 00F08380 		beq	.L15
+  12:Core/Src/stm32f4xx_it.c **** 	if (READ_BIT(TIM2->SR, TIM_SR_UIF)) {
+  40              		.loc 1 12 28 view .LVU4
+  41 000e 10B5     		push	{r4, lr}
+  42              		.cfi_def_cfa_offset 8
+  43              		.cfi_offset 4, -8
+  44              		.cfi_offset 14, -4
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 2
+
+
+  14:Core/Src/stm32f4xx_it.c **** 		CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
+  45              		.loc 1 14 3 is_stmt 1 view .LVU5
+  46 0010 4FF08042 		mov	r2, #1073741824
+  47 0014 1369     		ldr	r3, [r2, #16]
+  48 0016 23F00103 		bic	r3, r3, #1
+  49 001a 1361     		str	r3, [r2, #16]
+  15:Core/Src/stm32f4xx_it.c **** 		if (bt1_state != 0) {
+  50              		.loc 1 15 3 view .LVU6
+  51              		.loc 1 15 17 is_stmt 0 view .LVU7
+  52 001c 3E4B     		ldr	r3, .L23
+  53 001e 1B68     		ldr	r3, [r3]
+  54              		.loc 1 15 6 view .LVU8
+  55 0020 002B     		cmp	r3, #0
+  56 0022 38D0     		beq	.L3
+  16:Core/Src/stm32f4xx_it.c **** 			if (bt1_state != bt1_current) {
+  57              		.loc 1 16 4 is_stmt 1 view .LVU9
+  58              		.loc 1 16 18 is_stmt 0 view .LVU10
+  59 0024 3D4A     		ldr	r2, .L23+4
+  60 0026 1268     		ldr	r2, [r2]
+  61              		.loc 1 16 7 view .LVU11
+  62 0028 9342     		cmp	r3, r2
+  63 002a 02D0     		beq	.L4
+  17:Core/Src/stm32f4xx_it.c **** 				once = 0;
+  64              		.loc 1 17 5 is_stmt 1 view .LVU12
+  65              		.loc 1 17 10 is_stmt 0 view .LVU13
+  66 002c 3C4A     		ldr	r2, .L23+8
+  67 002e 0021     		movs	r1, #0
+  68 0030 1160     		str	r1, [r2]
+  69              	.L4:
+  18:Core/Src/stm32f4xx_it.c **** 			}
+  19:Core/Src/stm32f4xx_it.c **** 			bt1_current = bt1_state;
+  70              		.loc 1 19 4 is_stmt 1 view .LVU14
+  71              		.loc 1 19 16 is_stmt 0 view .LVU15
+  72 0032 3A4A     		ldr	r2, .L23+4
+  73 0034 1360     		str	r3, [r2]
+  20:Core/Src/stm32f4xx_it.c **** 			for (uint8_t i = 1; i <= 7; i++) {
+  74              		.loc 1 20 4 is_stmt 1 view .LVU16
+  75              	.LBB2:
+  76              		.loc 1 20 9 view .LVU17
+  77              	.LVL0:
+  78              		.loc 1 20 17 is_stmt 0 view .LVU18
+  79 0036 0124     		movs	r4, #1
+  80              		.loc 1 20 4 view .LVU19
+  81 0038 01E0     		b	.L5
+  82              	.LVL1:
+  83              	.L6:
+  84              		.loc 1 20 33 is_stmt 1 discriminator 2 view .LVU20
+  85 003a 0134     		adds	r4, r4, #1
+  86              	.LVL2:
+  87              		.loc 1 20 33 is_stmt 0 discriminator 2 view .LVU21
+  88 003c E4B2     		uxtb	r4, r4
+  89              	.LVL3:
+  90              	.L5:
+  91              		.loc 1 20 26 is_stmt 1 discriminator 1 view .LVU22
+  92 003e 072C     		cmp	r4, #7
+  93 0040 09D8     		bhi	.L18
+  21:Core/Src/stm32f4xx_it.c **** 				if (i == bt1_state) {
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 3
+
+
+  94              		.loc 1 21 5 view .LVU23
+  95              		.loc 1 21 11 is_stmt 0 view .LVU24
+  96 0042 354B     		ldr	r3, .L23
+  97 0044 1B68     		ldr	r3, [r3]
+  98              		.loc 1 21 8 view .LVU25
+  99 0046 9C42     		cmp	r4, r3
+ 100 0048 F7D0     		beq	.L6
+  22:Core/Src/stm32f4xx_it.c **** 					continue;
+  23:Core/Src/stm32f4xx_it.c **** 				} else {
+  24:Core/Src/stm32f4xx_it.c **** 					GPIO_WritePin(GPIOA, i, 0);
+ 101              		.loc 1 24 6 is_stmt 1 view .LVU26
+ 102 004a 0022     		movs	r2, #0
+ 103 004c 2146     		mov	r1, r4
+ 104 004e 3548     		ldr	r0, .L23+12
+ 105 0050 FFF7FEFF 		bl	GPIO_WritePin
+ 106              	.LVL4:
+ 107 0054 F1E7     		b	.L6
+ 108              	.L18:
+ 109              	.LBE2:
+  25:Core/Src/stm32f4xx_it.c **** 				}
+  26:Core/Src/stm32f4xx_it.c **** 			}
+  27:Core/Src/stm32f4xx_it.c **** 			if (once == 0) {
+ 110              		.loc 1 27 4 view .LVU27
+ 111              		.loc 1 27 13 is_stmt 0 view .LVU28
+ 112 0056 324B     		ldr	r3, .L23+8
+ 113 0058 1B68     		ldr	r3, [r3]
+ 114              		.loc 1 27 7 view .LVU29
+ 115 005a 0BB3     		cbz	r3, .L19
+ 116              	.L8:
+  28:Core/Src/stm32f4xx_it.c **** 				GPIO_WritePin(GPIOA, bt1_state, 1);
+  29:Core/Src/stm32f4xx_it.c **** 				once = 1;
+  30:Core/Src/stm32f4xx_it.c **** 			}
+  31:Core/Src/stm32f4xx_it.c **** 			if (mas[bt1_state - 1] == 0) {
+ 117              		.loc 1 31 4 is_stmt 1 view .LVU30
+ 118              		.loc 1 31 22 is_stmt 0 view .LVU31
+ 119 005c 2E4B     		ldr	r3, .L23
+ 120 005e 1968     		ldr	r1, [r3]
+ 121 0060 4A1E     		subs	r2, r1, #1
+ 122              		.loc 1 31 11 view .LVU32
+ 123 0062 314B     		ldr	r3, .L23+16
+ 124 0064 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 125              		.loc 1 31 7 view .LVU33
+ 126 0068 2BB9     		cbnz	r3, .L9
+  32:Core/Src/stm32f4xx_it.c **** 				counter_tim2++;
+ 127              		.loc 1 32 5 is_stmt 1 view .LVU34
+ 128              		.loc 1 32 17 is_stmt 0 view .LVU35
+ 129 006a 304A     		ldr	r2, .L23+20
+ 130 006c 1368     		ldr	r3, [r2]
+ 131 006e 0133     		adds	r3, r3, #1
+ 132 0070 1360     		str	r3, [r2]
+  33:Core/Src/stm32f4xx_it.c **** 				if (counter_tim2 >= 17) {
+ 133              		.loc 1 33 5 is_stmt 1 view .LVU36
+ 134              		.loc 1 33 8 is_stmt 0 view .LVU37
+ 135 0072 102B     		cmp	r3, #16
+ 136 0074 1EDC     		bgt	.L20
+ 137              	.L9:
+  34:Core/Src/stm32f4xx_it.c **** 					GPIO_TogglePin(GPIOA, bt1_state);
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 4
+
+
+  35:Core/Src/stm32f4xx_it.c **** 					counter_tim2 = 0;
+  36:Core/Src/stm32f4xx_it.c **** 				}
+  37:Core/Src/stm32f4xx_it.c **** 			}
+  38:Core/Src/stm32f4xx_it.c **** 			if (mas[bt1_state - 1] == 1) {
+ 138              		.loc 1 38 4 is_stmt 1 view .LVU38
+ 139              		.loc 1 38 22 is_stmt 0 view .LVU39
+ 140 0076 284B     		ldr	r3, .L23
+ 141 0078 1968     		ldr	r1, [r3]
+ 142 007a 4A1E     		subs	r2, r1, #1
+ 143              		.loc 1 38 11 view .LVU40
+ 144 007c 2A4B     		ldr	r3, .L23+16
+ 145 007e 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 146              		.loc 1 38 7 view .LVU41
+ 147 0082 012B     		cmp	r3, #1
+ 148 0084 1ED0     		beq	.L21
+ 149              	.L10:
+  39:Core/Src/stm32f4xx_it.c **** 				counter_tim2++;
+  40:Core/Src/stm32f4xx_it.c **** 				if (counter_tim2 >= 5) {
+  41:Core/Src/stm32f4xx_it.c **** 					counter_tim2 = 0;
+  42:Core/Src/stm32f4xx_it.c **** 					GPIO_TogglePin(GPIOA, bt1_state);
+  43:Core/Src/stm32f4xx_it.c **** 				}
+  44:Core/Src/stm32f4xx_it.c **** 			}
+  45:Core/Src/stm32f4xx_it.c **** 			if (mas[bt1_state - 1] == 2) {
+ 150              		.loc 1 45 4 is_stmt 1 view .LVU42
+ 151              		.loc 1 45 22 is_stmt 0 view .LVU43
+ 152 0086 244B     		ldr	r3, .L23
+ 153 0088 1968     		ldr	r1, [r3]
+ 154 008a 4A1E     		subs	r2, r1, #1
+ 155              		.loc 1 45 11 view .LVU44
+ 156 008c 264B     		ldr	r3, .L23+16
+ 157 008e 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 158              		.loc 1 45 7 view .LVU45
+ 159 0092 022B     		cmp	r3, #2
+ 160 0094 24D0     		beq	.L22
+ 161              	.LVL5:
+ 162              	.L3:
+  46:Core/Src/stm32f4xx_it.c **** 				counter_tim2++;
+  47:Core/Src/stm32f4xx_it.c **** 				if (counter_tim2 >= 3) {
+  48:Core/Src/stm32f4xx_it.c **** 					counter_tim2 = 0;
+  49:Core/Src/stm32f4xx_it.c **** 					GPIO_TogglePin(GPIOA, bt1_state);
+  50:Core/Src/stm32f4xx_it.c **** 				}
+  51:Core/Src/stm32f4xx_it.c **** 			}
+  52:Core/Src/stm32f4xx_it.c **** 		}
+  53:Core/Src/stm32f4xx_it.c **** 		if (bt1_state == 0) {
+ 163              		.loc 1 53 3 is_stmt 1 view .LVU46
+ 164              		.loc 1 53 17 is_stmt 0 view .LVU47
+ 165 0096 204B     		ldr	r3, .L23
+ 166 0098 1B68     		ldr	r3, [r3]
+ 167              		.loc 1 53 6 view .LVU48
+ 168 009a 002B     		cmp	r3, #0
+ 169 009c 38D0     		beq	.L13
+ 170              	.L1:
+  54:Core/Src/stm32f4xx_it.c **** 			for (uint8_t i = 1; i <= 7; i++) {
+  55:Core/Src/stm32f4xx_it.c **** 				GPIO_WritePin(GPIOA, i, 0);
+  56:Core/Src/stm32f4xx_it.c **** 			}
+  57:Core/Src/stm32f4xx_it.c **** 		}
+  58:Core/Src/stm32f4xx_it.c **** 	}
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 5
+
+
+  59:Core/Src/stm32f4xx_it.c **** }
+ 171              		.loc 1 59 1 view .LVU49
+ 172 009e 10BD     		pop	{r4, pc}
+ 173              	.LVL6:
+ 174              	.L19:
+  28:Core/Src/stm32f4xx_it.c **** 				once = 1;
+ 175              		.loc 1 28 5 is_stmt 1 view .LVU50
+ 176 00a0 0122     		movs	r2, #1
+ 177 00a2 1D4B     		ldr	r3, .L23
+ 178 00a4 1988     		ldrh	r1, [r3]
+ 179 00a6 1F48     		ldr	r0, .L23+12
+ 180 00a8 FFF7FEFF 		bl	GPIO_WritePin
+ 181              	.LVL7:
+  29:Core/Src/stm32f4xx_it.c **** 			}
+ 182              		.loc 1 29 5 view .LVU51
+  29:Core/Src/stm32f4xx_it.c **** 			}
+ 183              		.loc 1 29 10 is_stmt 0 view .LVU52
+ 184 00ac 1C4B     		ldr	r3, .L23+8
+ 185 00ae 0122     		movs	r2, #1
+ 186 00b0 1A60     		str	r2, [r3]
+ 187 00b2 D3E7     		b	.L8
+ 188              	.L20:
+  34:Core/Src/stm32f4xx_it.c **** 					counter_tim2 = 0;
+ 189              		.loc 1 34 6 is_stmt 1 view .LVU53
+ 190 00b4 89B2     		uxth	r1, r1
+ 191 00b6 1B48     		ldr	r0, .L23+12
+ 192 00b8 FFF7FEFF 		bl	GPIO_TogglePin
+ 193              	.LVL8:
+  35:Core/Src/stm32f4xx_it.c **** 				}
+ 194              		.loc 1 35 6 view .LVU54
+  35:Core/Src/stm32f4xx_it.c **** 				}
+ 195              		.loc 1 35 19 is_stmt 0 view .LVU55
+ 196 00bc 1B4B     		ldr	r3, .L23+20
+ 197 00be 0022     		movs	r2, #0
+ 198 00c0 1A60     		str	r2, [r3]
+ 199 00c2 D8E7     		b	.L9
+ 200              	.L21:
+  39:Core/Src/stm32f4xx_it.c **** 				if (counter_tim2 >= 5) {
+ 201              		.loc 1 39 5 is_stmt 1 view .LVU56
+  39:Core/Src/stm32f4xx_it.c **** 				if (counter_tim2 >= 5) {
+ 202              		.loc 1 39 17 is_stmt 0 view .LVU57
+ 203 00c4 194A     		ldr	r2, .L23+20
+ 204 00c6 1368     		ldr	r3, [r2]
+ 205 00c8 0133     		adds	r3, r3, #1
+ 206 00ca 1360     		str	r3, [r2]
+  40:Core/Src/stm32f4xx_it.c **** 					counter_tim2 = 0;
+ 207              		.loc 1 40 5 is_stmt 1 view .LVU58
+  40:Core/Src/stm32f4xx_it.c **** 					counter_tim2 = 0;
+ 208              		.loc 1 40 8 is_stmt 0 view .LVU59
+ 209 00cc 042B     		cmp	r3, #4
+ 210 00ce DADD     		ble	.L10
+  41:Core/Src/stm32f4xx_it.c **** 					GPIO_TogglePin(GPIOA, bt1_state);
+ 211              		.loc 1 41 6 is_stmt 1 view .LVU60
+  41:Core/Src/stm32f4xx_it.c **** 					GPIO_TogglePin(GPIOA, bt1_state);
+ 212              		.loc 1 41 19 is_stmt 0 view .LVU61
+ 213 00d0 1346     		mov	r3, r2
+ 214 00d2 0022     		movs	r2, #0
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 6
+
+
+ 215 00d4 1A60     		str	r2, [r3]
+  42:Core/Src/stm32f4xx_it.c **** 				}
+ 216              		.loc 1 42 6 is_stmt 1 view .LVU62
+ 217 00d6 89B2     		uxth	r1, r1
+ 218 00d8 1248     		ldr	r0, .L23+12
+ 219 00da FFF7FEFF 		bl	GPIO_TogglePin
+ 220              	.LVL9:
+ 221 00de D2E7     		b	.L10
+ 222              	.L22:
+  46:Core/Src/stm32f4xx_it.c **** 				if (counter_tim2 >= 3) {
+ 223              		.loc 1 46 5 view .LVU63
+  46:Core/Src/stm32f4xx_it.c **** 				if (counter_tim2 >= 3) {
+ 224              		.loc 1 46 17 is_stmt 0 view .LVU64
+ 225 00e0 124A     		ldr	r2, .L23+20
+ 226 00e2 1368     		ldr	r3, [r2]
+ 227 00e4 0133     		adds	r3, r3, #1
+ 228 00e6 1360     		str	r3, [r2]
+  47:Core/Src/stm32f4xx_it.c **** 					counter_tim2 = 0;
+ 229              		.loc 1 47 5 is_stmt 1 view .LVU65
+  47:Core/Src/stm32f4xx_it.c **** 					counter_tim2 = 0;
+ 230              		.loc 1 47 8 is_stmt 0 view .LVU66
+ 231 00e8 022B     		cmp	r3, #2
+ 232 00ea D4DD     		ble	.L3
+  48:Core/Src/stm32f4xx_it.c **** 					GPIO_TogglePin(GPIOA, bt1_state);
+ 233              		.loc 1 48 6 is_stmt 1 view .LVU67
+  48:Core/Src/stm32f4xx_it.c **** 					GPIO_TogglePin(GPIOA, bt1_state);
+ 234              		.loc 1 48 19 is_stmt 0 view .LVU68
+ 235 00ec 1346     		mov	r3, r2
+ 236 00ee 0022     		movs	r2, #0
+ 237 00f0 1A60     		str	r2, [r3]
+  49:Core/Src/stm32f4xx_it.c **** 				}
+ 238              		.loc 1 49 6 is_stmt 1 view .LVU69
+ 239 00f2 89B2     		uxth	r1, r1
+ 240 00f4 0B48     		ldr	r0, .L23+12
+ 241 00f6 FFF7FEFF 		bl	GPIO_TogglePin
+ 242              	.LVL10:
+ 243 00fa CCE7     		b	.L3
+ 244              	.LVL11:
+ 245              	.L12:
+ 246              	.LBB3:
+  55:Core/Src/stm32f4xx_it.c **** 			}
+ 247              		.loc 1 55 5 view .LVU70
+ 248 00fc 0022     		movs	r2, #0
+ 249 00fe 2146     		mov	r1, r4
+ 250 0100 0848     		ldr	r0, .L23+12
+ 251 0102 FFF7FEFF 		bl	GPIO_WritePin
+ 252              	.LVL12:
+  54:Core/Src/stm32f4xx_it.c **** 				GPIO_WritePin(GPIOA, i, 0);
+ 253              		.loc 1 54 33 discriminator 3 view .LVU71
+ 254 0106 0134     		adds	r4, r4, #1
+ 255              	.LVL13:
+  54:Core/Src/stm32f4xx_it.c **** 				GPIO_WritePin(GPIOA, i, 0);
+ 256              		.loc 1 54 33 is_stmt 0 discriminator 3 view .LVU72
+ 257 0108 E4B2     		uxtb	r4, r4
+ 258              	.LVL14:
+ 259              	.L11:
+  54:Core/Src/stm32f4xx_it.c **** 				GPIO_WritePin(GPIOA, i, 0);
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 7
+
+
+ 260              		.loc 1 54 26 is_stmt 1 discriminator 1 view .LVU73
+ 261 010a 072C     		cmp	r4, #7
+ 262 010c F6D9     		bls	.L12
+ 263 010e C6E7     		b	.L1
+ 264              	.LVL15:
+ 265              	.L13:
+  54:Core/Src/stm32f4xx_it.c **** 				GPIO_WritePin(GPIOA, i, 0);
+ 266              		.loc 1 54 17 is_stmt 0 view .LVU74
+ 267 0110 0124     		movs	r4, #1
+ 268 0112 FAE7     		b	.L11
+ 269              	.L15:
+ 270              		.cfi_def_cfa_offset 0
+ 271              		.cfi_restore 4
+ 272              		.cfi_restore 14
+ 273 0114 7047     		bx	lr
+ 274              	.L24:
+ 275 0116 00BF     		.align	2
+ 276              	.L23:
+ 277 0118 00000000 		.word	bt1_state
+ 278 011c 00000000 		.word	bt1_current
+ 279 0120 00000000 		.word	once
+ 280 0124 00000240 		.word	1073872896
+ 281 0128 00000000 		.word	mas
+ 282 012c 00000000 		.word	counter_tim2
+ 283              	.LBE3:
+ 284              		.cfi_endproc
+ 285              	.LFE130:
+ 287              		.section	.text.TIM3_IRQHandler,"ax",%progbits
+ 288              		.align	1
+ 289              		.global	TIM3_IRQHandler
+ 290              		.syntax unified
+ 291              		.thumb
+ 292              		.thumb_func
+ 294              	TIM3_IRQHandler:
+ 295              	.LFB131:
+  60:Core/Src/stm32f4xx_it.c **** 
+  61:Core/Src/stm32f4xx_it.c **** void TIM3_IRQHandler(void) {
+ 296              		.loc 1 61 28 is_stmt 1 view -0
+ 297              		.cfi_startproc
+ 298              		@ args = 0, pretend = 0, frame = 0
+ 299              		@ frame_needed = 0, uses_anonymous_args = 0
+ 300              		@ link register save eliminated.
+  62:Core/Src/stm32f4xx_it.c **** 	if (READ_BIT(TIM3->SR, TIM_SR_UIF)) {
+ 301              		.loc 1 62 2 view .LVU76
+ 302              		.loc 1 62 6 is_stmt 0 view .LVU77
+ 303 0000 344B     		ldr	r3, .L38
+ 304 0002 1B69     		ldr	r3, [r3, #16]
+ 305              		.loc 1 62 5 view .LVU78
+ 306 0004 13F0010F 		tst	r3, #1
+ 307 0008 42D0     		beq	.L25
+  63:Core/Src/stm32f4xx_it.c **** 		CLEAR_BIT(TIM3->SR, TIM_SR_UIF);
+ 308              		.loc 1 63 3 is_stmt 1 view .LVU79
+ 309 000a 324A     		ldr	r2, .L38
+ 310 000c 1369     		ldr	r3, [r2, #16]
+ 311 000e 23F00103 		bic	r3, r3, #1
+ 312 0012 1361     		str	r3, [r2, #16]
+  64:Core/Src/stm32f4xx_it.c **** 		if (flag_button1 == 1) {
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 8
+
+
+ 313              		.loc 1 64 3 view .LVU80
+ 314              		.loc 1 64 20 is_stmt 0 view .LVU81
+ 315 0014 304B     		ldr	r3, .L38+4
+ 316 0016 1B68     		ldr	r3, [r3]
+ 317              		.loc 1 64 6 view .LVU82
+ 318 0018 012B     		cmp	r3, #1
+ 319 001a 3AD0     		beq	.L35
+  65:Core/Src/stm32f4xx_it.c **** 			period++;
+  66:Core/Src/stm32f4xx_it.c **** 		} else {
+  67:Core/Src/stm32f4xx_it.c **** 			period = 0;
+ 320              		.loc 1 67 4 is_stmt 1 view .LVU83
+ 321              		.loc 1 67 11 is_stmt 0 view .LVU84
+ 322 001c 2F4B     		ldr	r3, .L38+8
+ 323 001e 0022     		movs	r2, #0
+ 324 0020 1A60     		str	r2, [r3]
+ 325              	.L28:
+  68:Core/Src/stm32f4xx_it.c **** 		}
+  69:Core/Src/stm32f4xx_it.c **** 		if (period > DELAY) {
+ 326              		.loc 1 69 3 is_stmt 1 view .LVU85
+ 327              		.loc 1 69 14 is_stmt 0 view .LVU86
+ 328 0022 2E4B     		ldr	r3, .L38+8
+ 329 0024 1B68     		ldr	r3, [r3]
+ 330              		.loc 1 69 6 view .LVU87
+ 331 0026 232B     		cmp	r3, #35
+ 332 0028 0BDD     		ble	.L29
+  70:Core/Src/stm32f4xx_it.c **** 			flag_button1 = 0;
+ 333              		.loc 1 70 4 is_stmt 1 view .LVU88
+ 334              		.loc 1 70 17 is_stmt 0 view .LVU89
+ 335 002a 2B4B     		ldr	r3, .L38+4
+ 336 002c 0022     		movs	r2, #0
+ 337 002e 1A60     		str	r2, [r3]
+  71:Core/Src/stm32f4xx_it.c **** 			bt1_state++;
+ 338              		.loc 1 71 4 is_stmt 1 view .LVU90
+ 339              		.loc 1 71 13 is_stmt 0 view .LVU91
+ 340 0030 2B4A     		ldr	r2, .L38+12
+ 341 0032 1368     		ldr	r3, [r2]
+ 342 0034 0133     		adds	r3, r3, #1
+ 343 0036 1360     		str	r3, [r2]
+  72:Core/Src/stm32f4xx_it.c **** 			if (bt1_state > 6) {
+ 344              		.loc 1 72 4 is_stmt 1 view .LVU92
+ 345              		.loc 1 72 7 is_stmt 0 view .LVU93
+ 346 0038 062B     		cmp	r3, #6
+ 347 003a 02DD     		ble	.L29
+  73:Core/Src/stm32f4xx_it.c **** 				bt1_state = 0;
+ 348              		.loc 1 73 5 is_stmt 1 view .LVU94
+ 349              		.loc 1 73 15 is_stmt 0 view .LVU95
+ 350 003c 1346     		mov	r3, r2
+ 351 003e 0022     		movs	r2, #0
+ 352 0040 1A60     		str	r2, [r3]
+ 353              	.L29:
+  74:Core/Src/stm32f4xx_it.c **** 			}
+  75:Core/Src/stm32f4xx_it.c **** 		}
+  76:Core/Src/stm32f4xx_it.c **** 
+  77:Core/Src/stm32f4xx_it.c **** 		if (flag_button2 == 1) {
+ 354              		.loc 1 77 3 is_stmt 1 view .LVU96
+ 355              		.loc 1 77 20 is_stmt 0 view .LVU97
+ 356 0042 284B     		ldr	r3, .L38+16
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 9
+
+
+ 357 0044 1A68     		ldr	r2, [r3]
+ 358              		.loc 1 77 6 view .LVU98
+ 359 0046 012A     		cmp	r2, #1
+ 360 0048 28D0     		beq	.L36
+ 361              	.L30:
+  78:Core/Src/stm32f4xx_it.c **** 			period_bt2++;
+  79:Core/Src/stm32f4xx_it.c **** 		}
+  80:Core/Src/stm32f4xx_it.c **** 		if (period_bt2 < 60 && period_bt2 > 10 && flag_button2 == 0) {
+ 362              		.loc 1 80 3 is_stmt 1 view .LVU99
+ 363              		.loc 1 80 23 is_stmt 0 view .LVU100
+ 364 004a 274B     		ldr	r3, .L38+20
+ 365 004c 1B68     		ldr	r3, [r3]
+ 366 004e 0B3B     		subs	r3, r3, #11
+ 367              		.loc 1 80 6 view .LVU101
+ 368 0050 302B     		cmp	r3, #48
+ 369 0052 14D8     		bhi	.L31
+ 370              		.loc 1 80 42 discriminator 1 view .LVU102
+ 371 0054 9AB9     		cbnz	r2, .L31
+  81:Core/Src/stm32f4xx_it.c **** 			period_bt2 = 0;
+ 372              		.loc 1 81 4 is_stmt 1 view .LVU103
+ 373              		.loc 1 81 15 is_stmt 0 view .LVU104
+ 374 0056 244B     		ldr	r3, .L38+20
+ 375 0058 0021     		movs	r1, #0
+ 376 005a 1960     		str	r1, [r3]
+  82:Core/Src/stm32f4xx_it.c **** 			bt2_change++;
+ 377              		.loc 1 82 4 is_stmt 1 view .LVU105
+ 378              		.loc 1 82 14 is_stmt 0 view .LVU106
+ 379 005c 2349     		ldr	r1, .L38+24
+ 380 005e 0B68     		ldr	r3, [r1]
+ 381 0060 0133     		adds	r3, r3, #1
+ 382 0062 0B60     		str	r3, [r1]
+  83:Core/Src/stm32f4xx_it.c **** 			if (bt2_change > 2) {
+ 383              		.loc 1 83 4 is_stmt 1 view .LVU107
+ 384              		.loc 1 83 7 is_stmt 0 view .LVU108
+ 385 0064 022B     		cmp	r3, #2
+ 386 0066 02DD     		ble	.L32
+  84:Core/Src/stm32f4xx_it.c **** 				bt2_change = 0;
+ 387              		.loc 1 84 5 is_stmt 1 view .LVU109
+ 388              		.loc 1 84 16 is_stmt 0 view .LVU110
+ 389 0068 0B46     		mov	r3, r1
+ 390 006a 0021     		movs	r1, #0
+ 391 006c 1960     		str	r1, [r3]
+ 392              	.L32:
+  85:Core/Src/stm32f4xx_it.c **** 			}
+  86:Core/Src/stm32f4xx_it.c **** 			mas[bt2_state - 1] = bt2_change;
+ 393              		.loc 1 86 4 is_stmt 1 view .LVU111
+ 394              		.loc 1 86 18 is_stmt 0 view .LVU112
+ 395 006e 204B     		ldr	r3, .L38+28
+ 396 0070 1B68     		ldr	r3, [r3]
+ 397 0072 013B     		subs	r3, r3, #1
+ 398              		.loc 1 86 23 view .LVU113
+ 399 0074 1D49     		ldr	r1, .L38+24
+ 400 0076 0868     		ldr	r0, [r1]
+ 401 0078 1E49     		ldr	r1, .L38+32
+ 402 007a 41F82300 		str	r0, [r1, r3, lsl #2]
+ 403              	.L31:
+  87:Core/Src/stm32f4xx_it.c **** 		}
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 10
+
+
+  88:Core/Src/stm32f4xx_it.c **** 		if (period_bt2 > 144 && flag_button2 == 1) {
+ 404              		.loc 1 88 3 is_stmt 1 view .LVU114
+ 405              		.loc 1 88 18 is_stmt 0 view .LVU115
+ 406 007e 1A4B     		ldr	r3, .L38+20
+ 407 0080 1B68     		ldr	r3, [r3]
+ 408              		.loc 1 88 6 view .LVU116
+ 409 0082 902B     		cmp	r3, #144
+ 410 0084 01DD     		ble	.L33
+ 411              		.loc 1 88 24 discriminator 1 view .LVU117
+ 412 0086 012A     		cmp	r2, #1
+ 413 0088 0DD0     		beq	.L37
+ 414              	.L33:
+  89:Core/Src/stm32f4xx_it.c **** 			bt2_state++;
+  90:Core/Src/stm32f4xx_it.c **** 			bt2_change = 0;
+  91:Core/Src/stm32f4xx_it.c **** 			period_bt2 = 0;
+  92:Core/Src/stm32f4xx_it.c **** 			if (bt2_state > 6) {
+  93:Core/Src/stm32f4xx_it.c **** 				bt2_state = 1;
+  94:Core/Src/stm32f4xx_it.c **** 			}
+  95:Core/Src/stm32f4xx_it.c **** 			mas[bt2_state - 1] = bt2_change;
+  96:Core/Src/stm32f4xx_it.c **** 
+  97:Core/Src/stm32f4xx_it.c **** 		} else {
+  98:Core/Src/stm32f4xx_it.c **** 			flag_button2 = 0;
+ 415              		.loc 1 98 4 is_stmt 1 view .LVU118
+ 416              		.loc 1 98 17 is_stmt 0 view .LVU119
+ 417 008a 164B     		ldr	r3, .L38+16
+ 418 008c 0022     		movs	r2, #0
+ 419 008e 1A60     		str	r2, [r3]
+ 420              	.L25:
+  99:Core/Src/stm32f4xx_it.c **** 		}
+ 100:Core/Src/stm32f4xx_it.c **** 	}
+ 101:Core/Src/stm32f4xx_it.c **** }
+ 421              		.loc 1 101 1 view .LVU120
+ 422 0090 7047     		bx	lr
+ 423              	.L35:
+  65:Core/Src/stm32f4xx_it.c **** 		} else {
+ 424              		.loc 1 65 4 is_stmt 1 view .LVU121
+  65:Core/Src/stm32f4xx_it.c **** 		} else {
+ 425              		.loc 1 65 10 is_stmt 0 view .LVU122
+ 426 0092 124A     		ldr	r2, .L38+8
+ 427 0094 1368     		ldr	r3, [r2]
+ 428 0096 0133     		adds	r3, r3, #1
+ 429 0098 1360     		str	r3, [r2]
+ 430 009a C2E7     		b	.L28
+ 431              	.L36:
+  78:Core/Src/stm32f4xx_it.c **** 		}
+ 432              		.loc 1 78 4 is_stmt 1 view .LVU123
+  78:Core/Src/stm32f4xx_it.c **** 		}
+ 433              		.loc 1 78 14 is_stmt 0 view .LVU124
+ 434 009c 1249     		ldr	r1, .L38+20
+ 435 009e 0B68     		ldr	r3, [r1]
+ 436 00a0 0133     		adds	r3, r3, #1
+ 437 00a2 0B60     		str	r3, [r1]
+ 438 00a4 D1E7     		b	.L30
+ 439              	.L37:
+  89:Core/Src/stm32f4xx_it.c **** 			bt2_change = 0;
+ 440              		.loc 1 89 4 is_stmt 1 view .LVU125
+  89:Core/Src/stm32f4xx_it.c **** 			bt2_change = 0;
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 11
+
+
+ 441              		.loc 1 89 13 is_stmt 0 view .LVU126
+ 442 00a6 124A     		ldr	r2, .L38+28
+ 443 00a8 1368     		ldr	r3, [r2]
+ 444 00aa 0133     		adds	r3, r3, #1
+ 445 00ac 1360     		str	r3, [r2]
+  90:Core/Src/stm32f4xx_it.c **** 			period_bt2 = 0;
+ 446              		.loc 1 90 4 is_stmt 1 view .LVU127
+  90:Core/Src/stm32f4xx_it.c **** 			period_bt2 = 0;
+ 447              		.loc 1 90 15 is_stmt 0 view .LVU128
+ 448 00ae 0022     		movs	r2, #0
+ 449 00b0 0E49     		ldr	r1, .L38+24
+ 450 00b2 0A60     		str	r2, [r1]
+  91:Core/Src/stm32f4xx_it.c **** 			if (bt2_state > 6) {
+ 451              		.loc 1 91 4 is_stmt 1 view .LVU129
+  91:Core/Src/stm32f4xx_it.c **** 			if (bt2_state > 6) {
+ 452              		.loc 1 91 15 is_stmt 0 view .LVU130
+ 453 00b4 0C49     		ldr	r1, .L38+20
+ 454 00b6 0A60     		str	r2, [r1]
+  92:Core/Src/stm32f4xx_it.c **** 				bt2_state = 1;
+ 455              		.loc 1 92 4 is_stmt 1 view .LVU131
+  92:Core/Src/stm32f4xx_it.c **** 				bt2_state = 1;
+ 456              		.loc 1 92 7 is_stmt 0 view .LVU132
+ 457 00b8 062B     		cmp	r3, #6
+ 458 00ba 02DD     		ble	.L34
+  93:Core/Src/stm32f4xx_it.c **** 			}
+ 459              		.loc 1 93 5 is_stmt 1 view .LVU133
+  93:Core/Src/stm32f4xx_it.c **** 			}
+ 460              		.loc 1 93 15 is_stmt 0 view .LVU134
+ 461 00bc 0C4B     		ldr	r3, .L38+28
+ 462 00be 0122     		movs	r2, #1
+ 463 00c0 1A60     		str	r2, [r3]
+ 464              	.L34:
+  95:Core/Src/stm32f4xx_it.c **** 
+ 465              		.loc 1 95 4 is_stmt 1 view .LVU135
+  95:Core/Src/stm32f4xx_it.c **** 
+ 466              		.loc 1 95 18 is_stmt 0 view .LVU136
+ 467 00c2 0B4B     		ldr	r3, .L38+28
+ 468 00c4 1B68     		ldr	r3, [r3]
+ 469 00c6 013B     		subs	r3, r3, #1
+  95:Core/Src/stm32f4xx_it.c **** 
+ 470              		.loc 1 95 23 view .LVU137
+ 471 00c8 0A4A     		ldr	r2, .L38+32
+ 472 00ca 0021     		movs	r1, #0
+ 473 00cc 42F82310 		str	r1, [r2, r3, lsl #2]
+ 474 00d0 7047     		bx	lr
+ 475              	.L39:
+ 476 00d2 00BF     		.align	2
+ 477              	.L38:
+ 478 00d4 00040040 		.word	1073742848
+ 479 00d8 00000000 		.word	flag_button1
+ 480 00dc 00000000 		.word	period
+ 481 00e0 00000000 		.word	bt1_state
+ 482 00e4 00000000 		.word	flag_button2
+ 483 00e8 00000000 		.word	period_bt2
+ 484 00ec 00000000 		.word	bt2_change
+ 485 00f0 00000000 		.word	bt2_state
+ 486 00f4 00000000 		.word	mas
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 12
+
+
+ 487              		.cfi_endproc
+ 488              	.LFE131:
+ 490              		.text
+ 491              	.Letext0:
+ 492              		.file 2 "C:/LB_Np/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_
+ 493              		.file 3 "C:/LB_Np/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 494              		.file 4 "CMSIS/Devices/stm32f411xe.h"
+ 495              		.file 5 "Core/Inc/gpio.h"
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f4xx_it.c
+C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s:21     .text.TIM2_IRQHandler:00000000 $t
+C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s:27     .text.TIM2_IRQHandler:00000000 TIM2_IRQHandler
+C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s:277    .text.TIM2_IRQHandler:00000118 $d
+C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s:288    .text.TIM3_IRQHandler:00000000 $t
+C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s:294    .text.TIM3_IRQHandler:00000000 TIM3_IRQHandler
+C:\Users\vvman\AppData\Local\Temp\ccwHNpjI.s:478    .text.TIM3_IRQHandler:000000d4 $d
+
+UNDEFINED SYMBOLS
+GPIO_WritePin
+GPIO_TogglePin
+bt1_state
+bt1_current
+once
+mas
+counter_tim2
+flag_button1
+period
+flag_button2
+period_bt2
+bt2_change
+bt2_state

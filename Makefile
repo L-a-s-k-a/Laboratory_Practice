@@ -30,12 +30,11 @@ BUILD_DIR = Build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
-Core/Src/init.c \
-Core/Src/it_handlers.c \
-
+Core/Src/gpio.c \
+Core/Src/stm32f4xx_it.c\
 # ASM sources
 ASM_SOURCES =  \
-startup_stm32f429xx.s
+startup_stm32f411ceux.s
 #######################################
 # binaries
 #######################################
@@ -72,7 +71,7 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 AS_DEFS = 
 # C defines
 C_DEFS =  \
--DSTM32F429xx
+-DSTM32F411xx
 #-DUSE_HAL_DRIVER \
 # AS includes
 AS_INCLUDES = \
@@ -85,7 +84,7 @@ C_INCLUDES =  \
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 ifeq ($(DEBUG), 1)
-CFLAGS += -g -gdwarf-2
+CFLAGS += -g -gdwarf-4
 endif
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
@@ -93,7 +92,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32F429ZITx_FLASH.ld
+LDSCRIPT = STM32F411CEUX_FLASH.ld
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 

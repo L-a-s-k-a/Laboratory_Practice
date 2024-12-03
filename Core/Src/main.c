@@ -1,157 +1,122 @@
-#include "../Inc/init.h"
+#include "main.h"
+#include "gpio.h"
 
-uint8_t flag = 1;
-uint8_t count = 0;
-uint8_t reverse = 1;
+volatile uint8_t button1, button2;
+volatile int period, flag_button1, flag_button2, period_bt2, bt1_state,
+	bt2_state, bt2_change;
+volatile int counter_tim2;
+volatile int mas[6];
+volatile int once, bt1_current;
+volatile int zhopa = 0;
 
-uint8_t flag1, flag2, flag3, flag4, flag5, flag6, LedState;
-uint8_t flag1ON, flag2ON, flag3ON, flag4ON, flag5ON, flag6ON;
-uint8_t BtnCount1, LongBtnCount1, VeryLongBtnCount;
-uint16_t ledTime1, ledTime2, ledTime3, ledTime4, ledTime5, ledTime6;
-uint16_t freq1, freq2, freq3, freq4, freq5, freq6;
-uint16_t GlobalTickCount;
-uint16_t dtime, cycleTime;
-int freq[3] = {2200, 1500, 300};
+void RCC_init()
+{
+	SET_BIT(RCC->CR, RCC_CR_HSION);
+	while (READ_BIT(RCC->CR, RCC_CR_HSIRDY) == 0)
+		;
+	MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, RCC_CR_HSITRIM_3);
+	SET_BIT(PWR->CR, PWR_CR_VOS);
+	CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
+	while (READ_BIT(RCC->CR, RCC_CR_PLLRDY))
+		;
+	CLEAR_REG(RCC->PLLCFGR);
+	// Настройка источника PLL: HSI
+	SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSI);
+	// Установка M = 8
+	MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, 8 << RCC_PLLCFGR_PLLM_Pos);
+	// Установка N = 100
+	MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, 100 << RCC_PLLCFGR_PLLN_Pos);
+	CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP);
+	MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_Msk, 4 << RCC_PLLCFGR_PLLQ_Pos);
+	SET_BIT(RCC->CR, RCC_CR_PLLON);
+	while (READ_BIT(RCC->CR, RCC_CR_PLLRDY))
+		;
+	MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);
+	MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);	// AHB = SYSCLK / 1
+	MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV2); // APB1 = AHB / 2
+	MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV1); // APB2 = AHB / 1
+	MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
+}
 
+void GPIO_init()
+{
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN;
+
+	GPIOA->MODER |= (1 << (1 * 2)) | (1 << (2 * 2)) | (1 << (3 * 2)) | (1 << (4 * 2)) | (1 << (5 * 2)) | (1 << (6 * 2));
+	GPIOA->OTYPER &= ~((1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6));
+	GPIOA->OSPEEDR |= (3 << (1 * 2)) | (3 << (2 * 2)) | (3 << (3 * 2)) | (3 << (4 * 2)) | (3 << (5 * 2)) | (3 << (6 * 2));
+	GPIOA->PUPDR &= ~((3 << (1 * 2)) | (3 << (2 * 2)) | (3 << (3 * 2)) | (3 << (4 * 2)) | (3 << (5 * 2)) | (3 << (6 * 2)));
+
+	GPIOA->MODER &= ~(3 << (0 * 2));
+	GPIOA->PUPDR |= (1 << (0 * 2));
+	GPIOB->MODER &= ~(3 << (1 * 2));
+	GPIOB->PUPDR |= (1 << (1 * 2));
+}
+
+void TIM2_init()
+{
+	SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM2EN);
+	CLEAR_BIT(TIM2->CR1, TIM_CR1_CEN);
+	TIM2->PSC = 1000 - 1;
+	TIM2->ARR = 20000 - 1;
+	CLEAR_BIT(TIM2->CR1, TIM_CR1_DIR);
+	CLEAR_BIT(TIM2->CR1, TIM_CR1_CKD);
+	CLEAR_BIT(TIM2->CR1, TIM_CR1_ARPE);
+	CLEAR_BIT(TIM2->SMCR, TIM_SMCR_SMS);
+	CLEAR_REG(TIM2->CR2);
+	MODIFY_REG(TIM2->CR2, TIM_CR2_MMS, 0x0);
+	CLEAR_BIT(TIM2->SMCR, TIM_SMCR_MSM);
+	SET_BIT(TIM2->DIER, TIM_DIER_UIE);
+	SET_BIT(TIM2->CR1, TIM_CR1_CEN);
+	NVIC_EnableIRQ(TIM2_IRQn);
+	NVIC_SetPriority(TIM2_IRQn, 1);
+}
+
+void TIM3_init()
+{
+	SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM3EN);
+	CLEAR_BIT(TIM3->CR1, TIM_CR1_CEN);
+	TIM3->PSC = 1000 - 1;
+	TIM3->ARR = 1000 - 1;
+	CLEAR_BIT(TIM3->CR1, TIM_CR1_DIR);
+	CLEAR_BIT(TIM3->CR1, TIM_CR1_CKD);
+	CLEAR_BIT(TIM3->CR1, TIM_CR1_ARPE);
+	CLEAR_BIT(TIM3->SMCR, TIM_SMCR_SMS);
+	CLEAR_REG(TIM3->CR2);
+	MODIFY_REG(TIM3->CR2, TIM_CR2_MMS, 0x0);
+	CLEAR_BIT(TIM3->SMCR, TIM_SMCR_MSM);
+	SET_BIT(TIM3->DIER, TIM_DIER_UIE);
+	SET_BIT(TIM3->CR1, TIM_CR1_CEN);
+
+	NVIC_EnableIRQ(TIM3_IRQn);
+	NVIC_SetPriority(TIM3_IRQn, 1);
+}
 int main(void)
 {
-
-	GPIO_Ini();
+	RCC_init();
+	GPIO_init();
+	TIM2_init();
+	TIM3_init();
+	bt2_state = 1;
 	while (1)
 	{
-		if ((READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_6) != 0))
+		button1 = GPIO_ReadPin(GPIOA, 0);
+		button2 = GPIO_ReadPin(GPIOB, 1);
+		if (button1)
 		{
-			reverse = !reverse;
-			for (int i = 0; i < 500000; i++)
-				;
+			flag_button1 = 1;
+			if (period > DELAY)
+			{
+				flag_button1 = 0;
+			}
 		}
-		if (reverse == 0)
+		if (button2)
 		{
-			if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_7) != 0)
-			{
-				count++;
-				for (int i = 0; i < 500000; i++)
-					;
-				if (count > 6)
-				{
-					count = 0;
-				}
-			}
-			ITR_init();		// инициализация прерываний
-			RCC_Init();		// инициализация таймеров
-			GPIO_Ini();		// инициализация портов
-			SysTick_Init(); // инициализация системного таймера
-
-			dtime = GlobalTickCount - cycleTime;
-			cycleTime = GlobalTickCount;
-
-			if (LongBtnCount1 >= 4 || LongBtnCount1 == 0)
-			{
-				LongBtnCount1 = 1;
-			}
-
-			ledTime1 = ledTime1 + dtime;
-			if (ledTime1 >= freq[LongBtnCount1 - 1])
-			{
-				flag1ON = !flag1ON;
-				ledTime1 = 0;
-			}
-			if (flag1ON)
-			{
-				if (BtnCount1 == 1)
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
-
-				if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0)
-				{
-					count--;
-					for (int i = 0; i < 500000; i++)
-						;
-					if (count > 6)
-					{
-						count = 0;
-					}
-				}
-			}
-			if (reverse == 1)
-			{
-				if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0)
-				{
-					count++;
-					for (int i = 0; i < 500000; i++)
-						;
-					if (count > 6)
-					{
-						count = 0;
-					}
-				}
-				else
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
-
-				if (BtnCount1 == 2)
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
-
-				if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_7) != 0)
-				{
-					count--;
-					for (int i = 0; i < 500000; i++)
-						;
-					if (count > 6)
-					{
-						count = 0;
-					}
-				}
-			}
-			else
-				SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
-
-			if (flag == 1)
-			{
-				switch (count)
-				{
-				case 0:
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
-					SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
-					SET_BIT(GPIOС->BSRR, GPIOC_PIN6_R);
-					break;
-				case 1:
-					SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
-					SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
-					break;
-				case 2:
-					SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
-					SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5 | GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
-					break;
-				case 3:
-					SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
-					SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR13 | GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
-					break;
-				case 4:
-					SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
-					SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0 | GPIO_BSRR_BR1);
-					break;
-				case 5:
-					SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
-					SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13 | GPIO_BSRR_BS0);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR1);
-					break;
-				case 6:
-					SET_BIT(GPIOС->BSRR, GPIOC_PIN6_S);
-					SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5 | GPIO_BSRR_BS13 | GPIO_BSRR_BS0 | GPIO_BSRR_BS1);
-					break;
-				}
-				if (BtnCount1 == 3)
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
-
-				else
-					SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
-			}
+			flag_button2 = 1;
+		}
+		else
+		{
+			flag_button2 = 0;
 		}
 	}
+}
