@@ -3,11 +3,6 @@
 void GPIO_Ini() {
     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOCEN);
 
-    // настраиваем PC9 на альтернативный режим, макс. скорость
-    // SET_BIT(GPIOC->MODER, GPIO_MODER_MODER9_1);
-    // SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED9_Msk);
-    // MODIFY_REG(GPIOC->AFR[1], GPIO_AFRH_AFSEL9_Msk, 0x0);
-
     // настройка пинов светодиодов PC 7-12
     SET_BIT(GPIOC->MODER, GPIO_MODER_MODE7_0);
     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED7_0);
@@ -66,53 +61,6 @@ void RCC_Ini() {
     MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk);
     CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);
     MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
-
-    // MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 1UL << 7);
-
-    // // очистка регистров, битов
-    // CLEAR_REG(RCC->CFGR);
-    // while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
-    // CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
-    // while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
-    // CLEAR_BIT(RCC->CR, RCC_CR_CSSON | RCC_CR_HSEON);
-    // while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET);
-    // CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
-
-    // // включаем внешний источник таковой частоты
-    // SET_BIT(RCC->CR, RCC_CR_HSEON);
-    // while (READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);
-    // CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
-    // SET_BIT(RCC->CR, RCC_CR_CSSON);
-
-    // // настройка блока PLL
-    // // устанавливаем входной предделитель M = 2
-    // // устанавливаем множитель N = 180
-    // // сбрасываем выходной предделитель P = 2
-    // CLEAR_REG(RCC->PLLCFGR);
-    // SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
-    // MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM_Msk, 2UL);
-    // MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, 180UL);
-    // CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP);
-    // // SET_BIT(RCC->CR, RCC_CR_PLLON);
-    // // while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
-    // SET_BIT(RCC->CR, RCC_CR_PLLON); //Запустим PLL
-    // while(READ_BIT(RCC->CR, RCC_CR_PLLRDY)); //Ждём запуска PLL
-
-
-    // // настройка конфигураций RCC
-    // // AHB предделитель = 1
-    // // APB1 предделитель = 4
-    // // APB2 предделитель = 2
-    // // MCO2 предделитель = 5 на выходе PC9
-    // MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);
-    // MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);
-    // MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4);
-    // MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2);
-    // MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk);
-    // CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);
-
-    // // настройка задержки внутренней памяти
-    // MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
 }
 
 void ITR_Ini() {
