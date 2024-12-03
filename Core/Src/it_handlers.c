@@ -1,7 +1,8 @@
 #include "it_handlers.h"
 #include "logic.h"
 
-extern unsigned int *led_tick[6];
+// extern unsigned int *led_tick[6];
+extern led_info led[6];
 extern uint32_t B1_tick, B2_tick;
 extern uint8_t B1_pressed, B2_pressed;
 
@@ -21,12 +22,12 @@ void EXTI3_IRQHandler(void) {
 
 void SysTick_Handler(void) {
     ++B1_tick;
-    // ++B2_tick;
+    ++B2_tick;
     
-    (*(led_tick[0]))++;
-    (*(led_tick[1]))++;
-    (*(led_tick[2]))++;
-    (*(led_tick[3]))++;
-    (*(led_tick[4]))++;
-    (*(led_tick[5]))++;
+    (*(led[0].tick))++;
+    (*(led[1].tick))++;
+    (*(led[2].tick))++;
+    (*(led[3].tick))++;
+    (*(led[4].tick))++;
+    (*(led[5].tick))++;
 }
