@@ -1,11 +1,8 @@
-#ifndef C6C0F2A4_57C1_48BB_BF76_38E914C47D16
-#define C6C0F2A4_57C1_48BB_BF76_38E914C47D16
 #ifndef A588CB56_BEC0_4357_8996_8DFEE9520F42
 #define A588CB56_BEC0_4357_8996_8DFEE9520F42
+#include "../../CMSIS/Devices/stm32f429xx.h"
 #include "../../CMSIS/Devices/stm32f4xx.h"
-#include "../../CMSIS/Devices/stm32f411xe.h"
+
 void GPIO_Ini(void);
 
 #endif /* A588CB56_BEC0_4357_8996_8DFEE9520F42 */
-
-#endif /* C6C0F2A4_57C1_48BB_BF76_38E914C47D16 */
