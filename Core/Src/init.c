@@ -30,51 +30,40 @@ void RCC_Ini() {
     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
     
     // включаем внешний источник таковой частоты
+    // на плате Nucleo144 HSE OSC имеет частоту 8 МГц
+    // включаем CSS для отслеживания нарушений работы в HSE
     SET_BIT(RCC->CR, RCC_CR_HSEON);
     while(READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);
     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
     SET_BIT(RCC->CR, RCC_CR_CSSON);
 
     // настройка блока PLL
-    // устанавливаем входной предделитель M = 2
+    // устанавливаем входной предделитель M = 4
     // устанавливаем множитель N = 180
     // сбрасываем выходной предделитель P = 2
+    // включаем PLL блок
     CLEAR_REG(RCC->PLLCFGR);
     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
-    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2);
-    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 |
-    RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7);
-    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk);
+    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, 4UL);
+    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN, 180UL << RCC_PLLCFGR_PLLN_Pos);
+    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP);
+    SET_BIT(RCC->CR, RCC_CR_PLLON);
+    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY));
 
-    // настройка конфигураций RCC
+    // устанавливаем PLL для системного тактирования
     // AHB предделитель = 1
     // APB1 предделитель = 4
     // APB2 предделитель = 2
-    // MCO2 предделитель = 5 на выходе PC9
     // настройка задержки внутренней памяти
-    SET_BIT(RCC->CR, RCC_CR_PLLON);
-    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY));
     MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);
     MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);
     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4);
     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2);
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk);
-    CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);
     MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
 }
 
 void ITR_Ini() {
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
-
-    // настройка мультиплексора на вывод линии прерывания EXTI13 на PC13
-    // настройка маскирования 13 линии и детектирования фронта
-    MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, SYSCFG_EXTICR4_EXTI13_PC);
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR13);
-    SET_BIT(EXTI->RTSR, EXTI_IMR_MR13);
-
-    // установка приоритета для вектора EXTI15_10 и его включение
-    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
-    NVIC_EnableIRQ(EXTI15_10_IRQn);
     
     MODIFY_REG(SYSCFG->EXTICR[0], SYSCFG_EXTICR1_EXTI0_Msk, SYSCFG_EXTICR1_EXTI0_PC);
     SET_BIT(EXTI->IMR, EXTI_IMR_MR0);

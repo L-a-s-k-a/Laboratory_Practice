@@ -1,8 +1,8 @@
 #include "it_handlers.h"
 #include "logic.h"
 
-// extern unsigned int *led_tick[6];
-extern led_info led[6];
+extern led_t led[6];
+extern uint32_t led_tick_map[3][3];
 extern uint32_t B1_tick, B2_tick;
 extern uint8_t B1_pressed, B2_pressed;
 
@@ -16,18 +16,17 @@ void EXTI3_IRQHandler(void) {
     B2_interrupt();
 }
 
-// одновременное мигание для диодов с одинаковой частотой.
-// обработка дребезга, доработать.
-// вынести логику в отдельный файл.
-
 void SysTick_Handler(void) {
     ++B1_tick;
     ++B2_tick;
-    
-    (*(led[0].tick))++;
-    (*(led[1].tick))++;
-    (*(led[2].tick))++;
-    (*(led[3].tick))++;
-    (*(led[4].tick))++;
-    (*(led[5].tick))++;
+
+    (led_tick_map[0][0])++;
+    (led_tick_map[0][1])++;
+    (led_tick_map[0][2])++;
+    (led_tick_map[1][0])++;
+    (led_tick_map[1][1])++;
+    (led_tick_map[1][2])++;
+    (led_tick_map[2][0])++;
+    (led_tick_map[2][1])++;
+    (led_tick_map[2][2])++;
 }

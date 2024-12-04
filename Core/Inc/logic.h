@@ -10,11 +10,11 @@
 #define LONG_PRESS_DURATION 2000
 
 typedef struct {
-    unsigned int *tick;
+    uint32_t *tick;
     uint16_t *period;
     uint8_t index_of_range;
     uint8_t index_in_range;
-} led_info;
+} led_t;
 
 void B1_interrupt();
 void B2_interrupt();
