@@ -1,0 +1,444 @@
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** #include "Init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** uint8_t mode, mode_prev = 0;
+   5:Core/Src/main.c **** uint8_t count = 4;
+   6:Core/Src/main.c **** uint8_t b1 = 0;
+   7:Core/Src/main.c **** uint8_t b2 = 2;
+   8:Core/Src/main.c **** uint8_t b3 = 4;
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** int main(void){
+  29              		.loc 1 10 15 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  11:Core/Src/main.c ****     // GPIOB_RCC_ON;
+  12:Core/Src/main.c ****     // GPIOC_RCC_ON;
+  13:Core/Src/main.c ****     //  *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x02; // включение тактировани�
+  14:Core/Src/main.c ****     //  *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x04; // включение тактировани�
+  15:Core/Src/main.c ****     //  *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000;   // 7пин на вывод
+  16:Core/Src/main.c ****     //  *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00;     // 7пин push-pull
+  17:Core/Src/main.c ****     //  *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000;   // 7пин средняя скорост�
+  18:Core/Src/main.c ****     //  *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000; // 7пин - 0 (0DR)
+  19:Core/Src/main.c ****     GPIO_Init();
+  39              		.loc 1 19 5 view .LVU1
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s 			page 2
+
+
+  40 0002 FFF7FEFF 		bl	GPIO_Init
+  41              	.LVL0:
+  20:Core/Src/main.c ****     GPIO_led_init();
+  42              		.loc 1 20 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	GPIO_led_init
+  44              	.LVL1:
+  21:Core/Src/main.c ****     GPIO_button_input();
+  45              		.loc 1 21 5 view .LVU3
+  46 000a FFF7FEFF 		bl	GPIO_button_input
+  47              	.LVL2:
+  48 000e 64E0     		b	.L2
+  49              	.L18:
+  22:Core/Src/main.c ****     //GPIO_button_output();
+  23:Core/Src/main.c ****     while (1)
+  24:Core/Src/main.c ****     {
+  25:Core/Src/main.c ****         // if (((*(uint32_t *)(0x40020800UL + 0x10UL) & 0x2000)) != 0){
+  26:Core/Src/main.c ****         //     *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80; // 7пин - 1 (0DR)
+  27:Core/Src/main.c ****         // }
+  28:Core/Src/main.c ****         // else *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000; // 7пин - 0 (0DR)
+  29:Core/Src/main.c ****         // if(READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0){
+  30:Core/Src/main.c ****         //     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); //Установка 1 в 7 бит рег�
+  31:Core/Src/main.c ****         // }
+  32:Core/Src/main.c ****         // else{
+  33:Core/Src/main.c ****         //     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET); //Установка 0 в 7 бит ре�
+  34:Core/Src/main.c ****         // }
+  35:Core/Src/main.c ****         // if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) != 0){
+  36:Core/Src/main.c ****         //     flag = 1;
+  37:Core/Src/main.c ****         //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Установка 1 в 7 бит регист
+  38:Core/Src/main.c ****         // }
+  39:Core/Src/main.c ****         // else{
+  40:Core/Src/main.c ****         //     flag = 0;
+  41:Core/Src/main.c ****         //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Установка 0 в 7 бит регист
+  42:Core/Src/main.c ****         // }
+  43:Core/Src/main.c ****         // SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8); //Установка 1 в 7 бит регистра
+  44:Core/Src/main.c ****         // if(READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) !=  0){
+  45:Core/Src/main.c ****         //     flag = 1;
+  46:Core/Src/main.c ****         //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Установка 1 в 7 бит регист
+  47:Core/Src/main.c ****         // }
+  48:Core/Src/main.c ****         // else{
+  49:Core/Src/main.c ****         //     flag = 0;
+  50:Core/Src/main.c ****         //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Установка 0 в 7 бит регист
+  51:Core/Src/main.c ****         // }
+  52:Core/Src/main.c **** 
+  53:Core/Src/main.c ****         mode = (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_3) != 0);
+  54:Core/Src/main.c ****         if (mode == 1 && mode_prev == 0){
+  50              		.loc 1 54 36 is_stmt 0 discriminator 1 view .LVU4
+  51 0010 414B     		ldr	r3, .L19
+  52 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  53              		.loc 1 54 23 discriminator 1 view .LVU5
+  54 0014 002B     		cmp	r3, #0
+  55 0016 68D1     		bne	.L3
+  55:Core/Src/main.c ****             count += 1;
+  56              		.loc 1 55 13 is_stmt 1 view .LVU6
+  57              		.loc 1 55 19 is_stmt 0 view .LVU7
+  58 0018 404A     		ldr	r2, .L19+4
+  59 001a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  60 001c 0133     		adds	r3, r3, #1
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s 			page 3
+
+
+  61 001e DBB2     		uxtb	r3, r3
+  62 0020 1370     		strb	r3, [r2]
+  56:Core/Src/main.c ****             switch (count) {
+  63              		.loc 1 56 13 is_stmt 1 view .LVU8
+  64 0022 013B     		subs	r3, r3, #1
+  65 0024 042B     		cmp	r3, #4
+  66 0026 60D8     		bhi	.L3
+  67 0028 DFE803F0 		tbb	[pc, r3]
+  68              	.L5:
+  69 002c 03       		.byte	(.L9-.L5)/2
+  70 002d 06       		.byte	(.L8-.L5)/2
+  71 002e 09       		.byte	(.L7-.L5)/2
+  72 002f 0C       		.byte	(.L6-.L5)/2
+  73 0030 0F       		.byte	(.L4-.L5)/2
+  74 0031 00       		.p2align 1
+  75              	.L9:
+  57:Core/Src/main.c ****             case 1: button1_output(); break;
+  76              		.loc 1 57 21 view .LVU9
+  77 0032 FFF7FEFF 		bl	button1_output
+  78              	.LVL3:
+  79              		.loc 1 57 39 discriminator 1 view .LVU10
+  80              		.loc 1 57 39 is_stmt 0 view .LVU11
+  81 0036 58E0     		b	.L3
+  82              	.L8:
+  58:Core/Src/main.c ****             case 2: button2_output(); break;
+  83              		.loc 1 58 21 is_stmt 1 view .LVU12
+  84 0038 FFF7FEFF 		bl	button2_output
+  85              	.LVL4:
+  86              		.loc 1 58 39 discriminator 1 view .LVU13
+  87              		.loc 1 58 39 is_stmt 0 view .LVU14
+  88 003c 55E0     		b	.L3
+  89              	.L7:
+  59:Core/Src/main.c ****             case 3: button3_output(); break;
+  90              		.loc 1 59 21 is_stmt 1 view .LVU15
+  91 003e FFF7FEFF 		bl	button3_output
+  92              	.LVL5:
+  93              		.loc 1 59 39 discriminator 1 view .LVU16
+  94              		.loc 1 59 39 is_stmt 0 view .LVU17
+  95 0042 52E0     		b	.L3
+  96              	.L6:
+  60:Core/Src/main.c ****             case 4: GPIO_button_output(); break;
+  97              		.loc 1 60 21 is_stmt 1 view .LVU18
+  98 0044 FFF7FEFF 		bl	GPIO_button_output
+  99              	.LVL6:
+ 100              		.loc 1 60 43 discriminator 1 view .LVU19
+ 101              		.loc 1 60 43 is_stmt 0 view .LVU20
+ 102 0048 4FE0     		b	.L3
+ 103              	.L4:
+  61:Core/Src/main.c ****             case 5: GPIO_button_input(); 
+ 104              		.loc 1 61 21 is_stmt 1 view .LVU21
+ 105 004a FFF7FEFF 		bl	GPIO_button_input
+ 106              	.LVL7:
+  62:Core/Src/main.c ****                     count = 0; break;
+ 107              		.loc 1 62 21 view .LVU22
+ 108              		.loc 1 62 27 is_stmt 0 view .LVU23
+ 109 004e 334B     		ldr	r3, .L19+4
+ 110 0050 0022     		movs	r2, #0
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s 			page 4
+
+
+ 111 0052 1A70     		strb	r2, [r3]
+ 112              		.loc 1 62 32 is_stmt 1 view .LVU24
+ 113 0054 49E0     		b	.L3
+ 114              	.L10:
+  63:Core/Src/main.c ****             }
+  64:Core/Src/main.c ****         }
+  65:Core/Src/main.c ****         mode_prev = mode;
+  66:Core/Src/main.c ****         //b1-pb14
+  67:Core/Src/main.c ****         if(!READ_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0) && READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_12) !=
+  68:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  69:Core/Src/main.c ****             b1 = 1;
+  70:Core/Src/main.c ****         }
+  71:Core/Src/main.c ****         else {
+  72:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14); //set pb12 CMSIS
+ 115              		.loc 1 72 13 view .LVU25
+ 116 0056 324A     		ldr	r2, .L19+8
+ 117 0058 9369     		ldr	r3, [r2, #24]
+ 118 005a 43F08043 		orr	r3, r3, #1073741824
+ 119 005e 9361     		str	r3, [r2, #24]
+  73:Core/Src/main.c ****             b1 = 0;
+ 120              		.loc 1 73 13 view .LVU26
+ 121              		.loc 1 73 16 is_stmt 0 view .LVU27
+ 122 0060 304B     		ldr	r3, .L19+12
+ 123 0062 0022     		movs	r2, #0
+ 124 0064 1A70     		strb	r2, [r3]
+ 125              	.L11:
+  74:Core/Src/main.c ****         }
+  75:Core/Src/main.c ****         //b2-pb7
+  76:Core/Src/main.c ****         if(!READ_BIT(GPIOB->MODER, GPIO_MODER_MODE15_0) && READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_15) !=
+ 126              		.loc 1 76 9 is_stmt 1 view .LVU28
+ 127              		.loc 1 76 13 is_stmt 0 view .LVU29
+ 128 0066 2E4B     		ldr	r3, .L19+8
+ 129 0068 1B68     		ldr	r3, [r3]
+ 130              		.loc 1 76 11 view .LVU30
+ 131 006a 13F0804F 		tst	r3, #1073741824
+ 132 006e 0DD1     		bne	.L12
+ 133              		.loc 1 76 60 discriminator 1 view .LVU31
+ 134 0070 2B4B     		ldr	r3, .L19+8
+ 135 0072 1B69     		ldr	r3, [r3, #16]
+ 136              		.loc 1 76 57 discriminator 1 view .LVU32
+ 137 0074 13F4004F 		tst	r3, #32768
+ 138 0078 08D0     		beq	.L12
+  77:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+ 139              		.loc 1 77 13 is_stmt 1 view .LVU33
+ 140 007a 294A     		ldr	r2, .L19+8
+ 141 007c 9369     		ldr	r3, [r2, #24]
+ 142 007e 43F08003 		orr	r3, r3, #128
+ 143 0082 9361     		str	r3, [r2, #24]
+  78:Core/Src/main.c ****             b2 = 3;
+ 144              		.loc 1 78 13 view .LVU34
+ 145              		.loc 1 78 16 is_stmt 0 view .LVU35
+ 146 0084 284B     		ldr	r3, .L19+16
+ 147 0086 0322     		movs	r2, #3
+ 148 0088 1A70     		strb	r2, [r3]
+ 149 008a 07E0     		b	.L13
+ 150              	.L12:
+  79:Core/Src/main.c ****             }
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s 			page 5
+
+
+  80:Core/Src/main.c ****         else{
+  81:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //set pb15 define
+ 151              		.loc 1 81 13 is_stmt 1 view .LVU36
+ 152 008c 244A     		ldr	r2, .L19+8
+ 153 008e 9369     		ldr	r3, [r2, #24]
+ 154 0090 43F40003 		orr	r3, r3, #8388608
+ 155 0094 9361     		str	r3, [r2, #24]
+  82:Core/Src/main.c ****             b2 = 2;
+ 156              		.loc 1 82 13 view .LVU37
+ 157              		.loc 1 82 16 is_stmt 0 view .LVU38
+ 158 0096 244B     		ldr	r3, .L19+16
+ 159 0098 0222     		movs	r2, #2
+ 160 009a 1A70     		strb	r2, [r3]
+ 161              	.L13:
+  83:Core/Src/main.c ****         }
+  84:Core/Src/main.c ****         //b3-pb0
+  85:Core/Src/main.c ****         if(!READ_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0) && READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_9) != 0
+ 162              		.loc 1 85 9 is_stmt 1 view .LVU39
+ 163              		.loc 1 85 13 is_stmt 0 view .LVU40
+ 164 009c 204B     		ldr	r3, .L19+8
+ 165 009e 1B68     		ldr	r3, [r3]
+ 166              		.loc 1 85 11 view .LVU41
+ 167 00a0 13F4802F 		tst	r3, #262144
+ 168 00a4 0FD1     		bne	.L14
+ 169              		.loc 1 85 59 discriminator 1 view .LVU42
+ 170 00a6 1E4B     		ldr	r3, .L19+8
+ 171 00a8 1B69     		ldr	r3, [r3, #16]
+ 172              		.loc 1 85 56 discriminator 1 view .LVU43
+ 173 00aa 13F4007F 		tst	r3, #512
+ 174 00ae 0AD0     		beq	.L14
+  86:Core/Src/main.c ****               *(uint32_t *)(0x40020400UL + 0x18UL) |= 1<<0;
+ 175              		.loc 1 86 15 is_stmt 1 view .LVU44
+ 176 00b0 1E4A     		ldr	r2, .L19+20
+ 177 00b2 D2F81834 		ldr	r3, [r2, #1048]
+ 178              		.loc 1 86 52 is_stmt 0 view .LVU45
+ 179 00b6 43F00103 		orr	r3, r3, #1
+ 180 00ba C2F81834 		str	r3, [r2, #1048]
+  87:Core/Src/main.c ****               b3 = 5;
+ 181              		.loc 1 87 15 is_stmt 1 view .LVU46
+ 182              		.loc 1 87 18 is_stmt 0 view .LVU47
+ 183 00be 1C4B     		ldr	r3, .L19+24
+ 184 00c0 0522     		movs	r2, #5
+ 185 00c2 1A70     		strb	r2, [r3]
+ 186 00c4 09E0     		b	.L2
+ 187              	.L14:
+  88:Core/Src/main.c ****         }
+  89:Core/Src/main.c ****         else {
+  90:Core/Src/main.c ****             *(uint32_t *)(0x40020400UL + 0x18UL) |= 1<<16; //set pb0 bin
+ 188              		.loc 1 90 13 is_stmt 1 view .LVU48
+ 189 00c6 194A     		ldr	r2, .L19+20
+ 190 00c8 D2F81834 		ldr	r3, [r2, #1048]
+ 191              		.loc 1 90 50 is_stmt 0 view .LVU49
+ 192 00cc 43F48033 		orr	r3, r3, #65536
+ 193 00d0 C2F81834 		str	r3, [r2, #1048]
+  91:Core/Src/main.c ****             b3 = 4;
+ 194              		.loc 1 91 13 is_stmt 1 view .LVU50
+ 195              		.loc 1 91 16 is_stmt 0 view .LVU51
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s 			page 6
+
+
+ 196 00d4 164B     		ldr	r3, .L19+24
+ 197 00d6 0422     		movs	r2, #4
+ 198 00d8 1A70     		strb	r2, [r3]
+ 199              	.L2:
+  23:Core/Src/main.c ****     {
+ 200              		.loc 1 23 5 is_stmt 1 view .LVU52
+  53:Core/Src/main.c ****         if (mode == 1 && mode_prev == 0){
+ 201              		.loc 1 53 9 view .LVU53
+  53:Core/Src/main.c ****         if (mode == 1 && mode_prev == 0){
+ 202              		.loc 1 53 17 is_stmt 0 view .LVU54
+ 203 00da 114B     		ldr	r3, .L19+8
+ 204 00dc 1B69     		ldr	r3, [r3, #16]
+  53:Core/Src/main.c ****         if (mode == 1 && mode_prev == 0){
+ 205              		.loc 1 53 54 view .LVU55
+ 206 00de C3F3C003 		ubfx	r3, r3, #3, #1
+  53:Core/Src/main.c ****         if (mode == 1 && mode_prev == 0){
+ 207              		.loc 1 53 14 view .LVU56
+ 208 00e2 144A     		ldr	r2, .L19+28
+ 209 00e4 1370     		strb	r3, [r2]
+  54:Core/Src/main.c ****             count += 1;
+ 210              		.loc 1 54 9 is_stmt 1 view .LVU57
+  54:Core/Src/main.c ****             count += 1;
+ 211              		.loc 1 54 12 is_stmt 0 view .LVU58
+ 212 00e6 002B     		cmp	r3, #0
+ 213 00e8 92D1     		bne	.L18
+ 214              	.L3:
+  65:Core/Src/main.c ****         //b1-pb14
+ 215              		.loc 1 65 9 is_stmt 1 view .LVU59
+  65:Core/Src/main.c ****         //b1-pb14
+ 216              		.loc 1 65 19 is_stmt 0 view .LVU60
+ 217 00ea 124B     		ldr	r3, .L19+28
+ 218 00ec 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 219 00ee 0A4B     		ldr	r3, .L19
+ 220 00f0 1A70     		strb	r2, [r3]
+  67:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 221              		.loc 1 67 9 is_stmt 1 view .LVU61
+  67:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 222              		.loc 1 67 13 is_stmt 0 view .LVU62
+ 223 00f2 0B4B     		ldr	r3, .L19+8
+ 224 00f4 1B68     		ldr	r3, [r3]
+  67:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 225              		.loc 1 67 11 view .LVU63
+ 226 00f6 13F0807F 		tst	r3, #16777216
+ 227 00fa ACD1     		bne	.L10
+  67:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 228              		.loc 1 67 60 discriminator 1 view .LVU64
+ 229 00fc 084B     		ldr	r3, .L19+8
+ 230 00fe 1B69     		ldr	r3, [r3, #16]
+  67:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 231              		.loc 1 67 57 discriminator 1 view .LVU65
+ 232 0100 13F4805F 		tst	r3, #4096
+ 233 0104 A7D0     		beq	.L10
+  68:Core/Src/main.c ****             b1 = 1;
+ 234              		.loc 1 68 13 is_stmt 1 view .LVU66
+ 235 0106 064A     		ldr	r2, .L19+8
+ 236 0108 9369     		ldr	r3, [r2, #24]
+ 237 010a 43F48043 		orr	r3, r3, #16384
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s 			page 7
+
+
+ 238 010e 9361     		str	r3, [r2, #24]
+  69:Core/Src/main.c ****         }
+ 239              		.loc 1 69 13 view .LVU67
+  69:Core/Src/main.c ****         }
+ 240              		.loc 1 69 16 is_stmt 0 view .LVU68
+ 241 0110 044B     		ldr	r3, .L19+12
+ 242 0112 0122     		movs	r2, #1
+ 243 0114 1A70     		strb	r2, [r3]
+ 244 0116 A6E7     		b	.L11
+ 245              	.L20:
+ 246              		.align	2
+ 247              	.L19:
+ 248 0118 00000000 		.word	mode_prev
+ 249 011c 00000000 		.word	count
+ 250 0120 00040240 		.word	1073873920
+ 251 0124 00000000 		.word	b1
+ 252 0128 00000000 		.word	b2
+ 253 012c 00000240 		.word	1073872896
+ 254 0130 00000000 		.word	b3
+ 255 0134 00000000 		.word	mode
+ 256              		.cfi_endproc
+ 257              	.LFE130:
+ 259              		.global	b3
+ 260              		.section	.data.b3,"aw"
+ 263              	b3:
+ 264 0000 04       		.byte	4
+ 265              		.global	b2
+ 266              		.section	.data.b2,"aw"
+ 269              	b2:
+ 270 0000 02       		.byte	2
+ 271              		.global	b1
+ 272              		.section	.bss.b1,"aw",%nobits
+ 275              	b1:
+ 276 0000 00       		.space	1
+ 277              		.global	count
+ 278              		.section	.data.count,"aw"
+ 281              	count:
+ 282 0000 04       		.byte	4
+ 283              		.global	mode_prev
+ 284              		.section	.bss.mode_prev,"aw",%nobits
+ 287              	mode_prev:
+ 288 0000 00       		.space	1
+ 289              		.global	mode
+ 290              		.section	.bss.mode,"aw",%nobits
+ 293              	mode:
+ 294 0000 00       		.space	1
+ 295              		.text
+ 296              	.Letext0:
+ 297              		.file 2 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 298              		.file 3 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 299              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 300              		.file 5 "Core/Inc/Init.h"
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:21     .text.main:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:27     .text.main:00000000 main
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:69     .text.main:0000002c $d
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:248    .text.main:00000118 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:287    .bss.mode_prev:00000000 mode_prev
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:281    .data.count:00000000 count
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:275    .bss.b1:00000000 b1
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:269    .data.b2:00000000 b2
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:263    .data.b3:00000000 b3
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:293    .bss.mode:00000000 mode
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:276    .bss.b1:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:288    .bss.mode_prev:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:294    .bss.mode:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:74     .text.main:00000031 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccaDQyFL.s:74     .text.main:00000032 $t
+
+UNDEFINED SYMBOLS
+GPIO_Init
+GPIO_led_init
+GPIO_button_input
+button1_output
+button2_output
+button3_output
+GPIO_button_output
