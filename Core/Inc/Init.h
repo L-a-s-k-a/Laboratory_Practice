@@ -1,7 +1,7 @@
 #include <stdint.h>
-#include "../../CMSIS/Devices/system_stm32f4xx.h"
-#include "../../CMSIS/Devices/stm32f429xx.h"
-#include "../../CMSIS/Devices/stm32f4xx.h"
+#include "../../CMSIS/Devices/Inc/system_stm32f4xx.h"
+#include "../../CMSIS/Devices/Inc/stm32f429xx.h"
+#include "../../CMSIS/Devices/Inc/stm32f4xx.h"
 
 void GPIO_Init(void);
 void GPIO_led_init(void);
