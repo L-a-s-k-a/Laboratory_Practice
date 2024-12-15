@@ -1,29 +1,51 @@
-#include  <init.h>
+#include "init.h"
 
-uint8_t LedState;
-
-int main(void)
-{   
-    GPIO_Ini_Self_Def();
-    GPIO_Ini_CMSIS();
+int main(void) {
+    // 初始化GPIO
+    GPIO_Ini_1();
+    GPIO_Ini_2();
     
-    while (1)
-    {
-        if(READ_BIT_SELF(GPIOC_IDR, GPIO_PIN_13) !=0){
-            SET_BIT_SELF(GPIOB_BSRR, GPIO_PIN_7_SET);
-        }
-        else{
-            SET_BIT_SELF(GPIOB_BSRR, GPIO_PIN_7_RESET);
+    // 按钮状态变量
+    uint32_t button1_status = 0;
+    uint32_t button2_status = 0;
+    uint32_t button3_status = 0;
+
+    // 主循环
+    while (1) {
+        // 读取按钮状态（按下时返回非零值）
+        button1_status = (GPIOC_IDR & GPIOC_IDR_PIN13) ? 1 : 0;
+        button2_status = (GPIOC_IDR & GPIOC_IDR_PIN12) ? 1 : 0;
+
+        if (button1_status) {
+            // 设置端口为输入模式，点亮红色LED
+            LED_On(GPIOB_BSRR_PIN0_SET);
+        } else {
+            LED_Off(GPIOB_BSRR_PIN0_RESET);
         }
 
-        if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) !=0){
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+        if (button2_status) {
+            // 设置端口为输出模式，点亮蓝色LED
+            LED_On(GPIOB_BSRR_PIN7_SET);
+        } else {
+            LED_Off(GPIOB_BSRR_PIN7_RESET);
         }
-        else{
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+
+        // 检查按钮3的状态，控制黄色和白色LED
+        button3_status = (GPIOC_IDR & GPIOC_IDR_PIN13) ? 1 : 0;
+        if (button3_status) {
+            if (button1_status) {
+                // 端口为输入模式，点亮黄色LED
+                LED_On(GPIOB_BSRR_PIN14_SET);
+            } else {
+                // 端口为输出模式，点亮白色LED
+                LED_On(GPIOB_BSRR_PIN8_SET);
+            }
+        } else {
+            LED_Off(GPIOB_BSRR_PIN14_RESET);
+            LED_Off(GPIOB_BSRR_PIN8_RESET);
         }
-        
+
+        // 延迟
+        for (volatile int i = 0; i < 1000000; i++);
     }
 }

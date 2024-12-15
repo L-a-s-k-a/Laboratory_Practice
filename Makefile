@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = LABORATORY_PRACTIC
+TARGET = LABORATORY_PRACTICE
 
 
 ######################################
@@ -37,6 +37,7 @@ BUILD_DIR = Build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
+Core/Src/init.c \
 
 
 # ASM sources
