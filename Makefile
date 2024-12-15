@@ -93,11 +93,10 @@ C_DEFS =  \
 # AS includes
 AS_INCLUDES = 
 
-# C includes
 C_INCLUDES =  \
 -ICore/Inc \
--ICMSIS/Devices \
--ICMSIS/Include
+-ICMSIS/Include \
+-ICMSIS/Devices/Inc
 
 
 # compile gcc flags
@@ -162,7 +161,9 @@ $(BUILD_DIR):
 # clean up
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	@if exist $(BUILD_DIR) (rmdir /S /Q $(BUILD_DIR))
+	@echo Build directory cleaned.
+
   
 #######################################
 # openocd
