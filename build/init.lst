@@ -1,88 +1,264 @@
-ARM GAS  C:\Users\kseni\AppData\Local\Temp\ccuRa7OH.s 			page 1
+ARM GAS  C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s 			page 1
 
 
    1              		.cpu cortex-m4
    2              		.arch armv7e-m
-   3              		.fpu fpv4-sp-d16
-   4              		.eabi_attribute 27, 1
-   5              		.eabi_attribute 28, 1
-   6              		.eabi_attribute 20, 1
-   7              		.eabi_attribute 21, 1
-   8              		.eabi_attribute 23, 3
-   9              		.eabi_attribute 24, 1
-  10              		.eabi_attribute 25, 1
-  11              		.eabi_attribute 26, 1
-  12              		.eabi_attribute 30, 1
-  13              		.eabi_attribute 34, 1
-  14              		.eabi_attribute 18, 4
-  15              		.file	"init.c"
-  16              		.text
-  17              	.Ltext0:
-  18              		.cfi_sections	.debug_frame
-  19              		.file 1 "Core/Src/init.c"
-  20              		.section	.text.GPIO_Ini,"ax",%progbits
-  21              		.align	1
-  22              		.global	GPIO_Ini
-  23              		.syntax unified
-  24              		.thumb
-  25              		.thumb_func
-  27              	GPIO_Ini:
-  28              	.LFB0:
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"init.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/init.c"
+  18              		.section	.text.GPIO_Init_Mem,"ax",%progbits
+  19              		.align	1
+  20              		.global	GPIO_Init_Mem
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	GPIO_Init_Mem:
+  26              	.LFB130:
    1:Core/Src/init.c **** #include "init.h"
-   2:Core/Src/init.c **** void GPIO_Ini(void){
-  29              		.loc 1 2 20 view -0
-  30              		.cfi_startproc
-  31              		@ args = 0, pretend = 0, frame = 0
-  32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33              		@ link register save eliminated.
-   3:Core/Src/init.c ****  RCC_GPIO_EN |= RCC_GPIOB_EN + RCC_GPIOC_EN; //Включение
-  34              		.loc 1 3 2 view .LVU1
-  35 0000 0A4A     		ldr	r2, .L2
-  36 0002 D2F83038 		ldr	r3, [r2, #2096]
-  37              		.loc 1 3 14 is_stmt 0 view .LVU2
-  38 0006 43F00603 		orr	r3, r3, #6
-  39 000a C2F83038 		str	r3, [r2, #2096]
-   4:Core/Src/init.c ****  GPIOB_MODER |= GPIOB_MODE_PIN7_OUT; //Настройка работы 7-го пина
-  40              		.loc 1 4 2 is_stmt 1 view .LVU3
-  41 000e 084B     		ldr	r3, .L2+4
-  42 0010 D3F80024 		ldr	r2, [r3, #1024]
-  43              		.loc 1 4 14 is_stmt 0 view .LVU4
-  44 0014 42F48042 		orr	r2, r2, #16384
-  45 0018 C3F80024 		str	r2, [r3, #1024]
-   5:Core/Src/init.c ****  GPIOB_OTYPER |= GPIOB_OTYPE_PIN7_PP; //Настройка на Push-Pull
-  46              		.loc 1 5 2 is_stmt 1 view .LVU5
-   6:Core/Src/init.c ****  GPIOB_OSPEEDR |= GPIOB_OSPEED_PIN7_MID; //Настройка скорости
-  47              		.loc 1 6 2 view .LVU6
-  48 001c D3F80824 		ldr	r2, [r3, #1032]
-  49              		.loc 1 6 16 is_stmt 0 view .LVU7
-  50 0020 42F48042 		orr	r2, r2, #16384
-  51 0024 C3F80824 		str	r2, [r3, #1032]
-   7:Core/Src/init.c ****  GPIOB_PUPDR |= GPIOB_PUPDR_PIN7_NOPUPD; //Отключение PU/PD
-ARM GAS  C:\Users\kseni\AppData\Local\Temp\ccuRa7OH.s 			page 2
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void GPIO_Init_Mem(void){
+  27              		.loc 1 3 25 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+   4:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x80UL; // Настройка работы 14-го пи
+  32              		.loc 1 4 5 view .LVU1
+  33 0000 0D4B     		ldr	r3, .L2
+  34 0002 D3F80024 		ldr	r2, [r3, #1024]
+  35              		.loc 1 4 42 is_stmt 0 view .LVU2
+  36 0006 42F08002 		orr	r2, r2, #128
+  37 000a C3F80024 		str	r2, [r3, #1024]
+   5:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000UL; // Настройка работы 7-го п�
+  38              		.loc 1 5 5 is_stmt 1 view .LVU3
+  39 000e D3F80824 		ldr	r2, [r3, #1032]
+  40              		.loc 1 5 42 is_stmt 0 view .LVU4
+  41 0012 42F48042 		orr	r2, r2, #16384
+  42 0016 C3F80824 		str	r2, [r3, #1032]
+   6:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x01UL;// Настройка работы 0-го пин
+  43              		.loc 1 6 5 is_stmt 1 view .LVU5
+  44 001a D3F81824 		ldr	r2, [r3, #1048]
+  45              		.loc 1 6 42 is_stmt 0 view .LVU6
+  46 001e 42F00102 		orr	r2, r2, #1
+  47 0022 C3F81824 		str	r2, [r3, #1048]
+   7:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x00UL;   // Настройка на PushPull рабо�
+  48              		.loc 1 7 5 is_stmt 1 view .LVU7
+   8:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x80UL; // Настройка скорости рабо
+  49              		.loc 1 8 5 view .LVU8
+   9:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000UL; // Настройка скорости раб
+ARM GAS  C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s 			page 2
 
 
-  52              		.loc 1 7 2 is_stmt 1 view .LVU8
-   8:Core/Src/init.c **** }...
-  53              		.loc 1 8 1 is_stmt 0 view .LVU9
-  54 0028 7047     		bx	lr
-  55              	.L3:
-  56 002a 00BF     		.align	2
-  57              	.L2:
-  58 002c 00300240 		.word	1073885184
-  59 0030 00000240 		.word	1073872896
-  60              		.cfi_endproc
-  61              	.LFE0:
-  63              		.text
-  64              	.Letext0:
-  65              		.file 2 "C:/tools/GCC/arm-none-eabi/include/machine/_default_types.h"
-  66              		.file 3 "C:/tools/GCC/arm-none-eabi/include/sys/_stdint.h"
-ARM GAS  C:\Users\kseni\AppData\Local\Temp\ccuRa7OH.s 			page 3
+  50              		.loc 1 9 5 view .LVU9
+  10:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x01UL; // Настройка скорости рабо
+  51              		.loc 1 10 5 view .LVU10
+  11:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x0CUL) |= 0x00000000UL;   // Отключение PU/PD рези�
+  52              		.loc 1 11 5 view .LVU11
+  12:Core/Src/init.c ****     *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x02; //Включение тактирования п�
+  53              		.loc 1 12 5 view .LVU12
+  54 0026 054A     		ldr	r2, .L2+4
+  55 0028 D2F83038 		ldr	r3, [r2, #2096]
+  56              		.loc 1 12 42 is_stmt 0 view .LVU13
+  57 002c 43F00203 		orr	r3, r3, #2
+  58 0030 C2F83038 		str	r3, [r2, #2096]
+  13:Core/Src/init.c **** }
+  59              		.loc 1 13 1 view .LVU14
+  60 0034 7047     		bx	lr
+  61              	.L3:
+  62 0036 00BF     		.align	2
+  63              	.L2:
+  64 0038 00000240 		.word	1073872896
+  65 003c 00300240 		.word	1073885184
+  66              		.cfi_endproc
+  67              	.LFE130:
+  69              		.section	.text.GPIO_Init_Self_Def,"ax",%progbits
+  70              		.align	1
+  71              		.global	GPIO_Init_Self_Def
+  72              		.syntax unified
+  73              		.thumb
+  74              		.thumb_func
+  76              	GPIO_Init_Self_Def:
+  77              	.LFB131:
+  14:Core/Src/init.c **** 
+  15:Core/Src/init.c **** void GPIO_Init_Self_Def(void){
+  78              		.loc 1 15 30 is_stmt 1 view -0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 0
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82              		@ link register save eliminated.
+  16:Core/Src/init.c ****     // RCC_GPIO_EN |= RCC_GPIOB_EN + RCC_GPIOC_EN; // Включение
+  17:Core/Src/init.c ****     // GPIOB_MODER |= GPIOB_MODE_PIN0_OUT;         // Настройка работы 0-го пин
+  18:Core/Src/init.c ****     // GPIOB_MODER |= GPIOB_MODE_PIN7_OUT;         // Настройка работы 7-го пин
+  19:Core/Src/init.c ****     // GPIOB_MODER |= GPIOB_MODE_PIN14_OUT;         // Настройка работы 7-го пи�
+  20:Core/Src/init.c ****     // GPIOB_OTYPER |= GPIOB_OTYPE_PIN0_PP;        // Настройка на Push-Pull
+  21:Core/Src/init.c ****     // GPIOB_OTYPER |= GPIOB_OTYPE_PIN7_PP;        // Настройка на Push-Pull
+  22:Core/Src/init.c ****     // GPIOB_OTYPER |= GPIOB_OTYPE_PIN14_PP;        // Настройка на Push-Pull
+  23:Core/Src/init.c ****     // GPIOB_OSPEEDR |= GPIOB_OSPEED_PIN0_MID;     // Настройка скорости
+  24:Core/Src/init.c ****     // GPIOB_PUPDR |= GPIOB_PUPDR_PIN0_NOPUPD;     // Отключение PU/PD
+  25:Core/Src/init.c ****     // GPIOB_OSPEEDR |= GPIOB_OSPEED_PIN7_MID;     // Настройка скорости
+  26:Core/Src/init.c ****     // GPIOB_PUPDR |= GPIOB_PUPDR_PIN7_NOPUPD;     // Отключение PU/PD
+  27:Core/Src/init.c ****     // GPIOB_OSPEEDR |= GPIOB_OSPEED_PIN14_MID;     // Настройка скорости
+  28:Core/Src/init.c ****     // GPIOB_PUPDR |= GPIOB_PUPDR_PIN14_NOPUPD;     // Отключение PU/PD
+  29:Core/Src/init.c **** }
+  83              		.loc 1 29 1 view .LVU16
+  84 0000 7047     		bx	lr
+  85              		.cfi_endproc
+  86              	.LFE131:
+  88              		.section	.text.GPIO_Init_CMSIS,"ax",%progbits
+  89              		.align	1
+ARM GAS  C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s 			page 3
+
+
+  90              		.global	GPIO_Init_CMSIS
+  91              		.syntax unified
+  92              		.thumb
+  93              		.thumb_func
+  95              	GPIO_Init_CMSIS:
+  96              	.LFB132:
+  30:Core/Src/init.c **** 
+  31:Core/Src/init.c **** void GPIO_Init_CMSIS(void){
+  97              		.loc 1 31 27 view -0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              		@ link register save eliminated.
+  32:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+ 102              		.loc 1 32 5 view .LVU18
+ 103 0000 234A     		ldr	r2, .L6
+ 104 0002 136B     		ldr	r3, [r2, #48]
+ 105 0004 43F00603 		orr	r3, r3, #6
+ 106 0008 1363     		str	r3, [r2, #48]
+  33:Core/Src/init.c **** 
+  34:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0);
+ 107              		.loc 1 34 5 view .LVU19
+ 108 000a 224B     		ldr	r3, .L6+4
+ 109 000c 1A68     		ldr	r2, [r3]
+ 110 000e 42F08072 		orr	r2, r2, #16777216
+ 111 0012 1A60     		str	r2, [r3]
+  35:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_12);
+ 112              		.loc 1 35 5 view .LVU20
+ 113 0014 5A68     		ldr	r2, [r3, #4]
+ 114 0016 22F48052 		bic	r2, r2, #4096
+ 115 001a 5A60     		str	r2, [r3, #4]
+  36:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR12_0);
+ 116              		.loc 1 36 5 view .LVU21
+ 117 001c 9A68     		ldr	r2, [r3, #8]
+ 118 001e 42F08072 		orr	r2, r2, #16777216
+ 119 0022 9A60     		str	r2, [r3, #8]
+  37:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR12_0);
+ 120              		.loc 1 37 5 view .LVU22
+ 121 0024 DA68     		ldr	r2, [r3, #12]
+ 122 0026 22F08072 		bic	r2, r2, #16777216
+ 123 002a DA60     		str	r2, [r3, #12]
+  38:Core/Src/init.c **** 
+  39:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);
+ 124              		.loc 1 39 5 view .LVU23
+ 125 002c 1A68     		ldr	r2, [r3]
+ 126 002e 42F48042 		orr	r2, r2, #16384
+ 127 0032 1A60     		str	r2, [r3]
+  40:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7);
+ 128              		.loc 1 40 5 view .LVU24
+ 129 0034 5A68     		ldr	r2, [r3, #4]
+ 130 0036 22F08002 		bic	r2, r2, #128
+ 131 003a 5A60     		str	r2, [r3, #4]
+  41:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
+ 132              		.loc 1 41 5 view .LVU25
+ 133 003c 9A68     		ldr	r2, [r3, #8]
+ 134 003e 42F48042 		orr	r2, r2, #16384
+ 135 0042 9A60     		str	r2, [r3, #8]
+ARM GAS  C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s 			page 4
+
+
+  42:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
+ 136              		.loc 1 42 5 view .LVU26
+ 137 0044 DA68     		ldr	r2, [r3, #12]
+ 138 0046 22F48042 		bic	r2, r2, #16384
+ 139 004a DA60     		str	r2, [r3, #12]
+  43:Core/Src/init.c **** 
+  44:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);
+ 140              		.loc 1 44 5 view .LVU27
+ 141 004c 1A68     		ldr	r2, [r3]
+ 142 004e 42F00102 		orr	r2, r2, #1
+ 143 0052 1A60     		str	r2, [r3]
+  45:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);
+ 144              		.loc 1 45 5 view .LVU28
+ 145 0054 5A68     		ldr	r2, [r3, #4]
+ 146 0056 22F00102 		bic	r2, r2, #1
+ 147 005a 5A60     		str	r2, [r3, #4]
+  46:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
+ 148              		.loc 1 46 5 view .LVU29
+ 149 005c 9A68     		ldr	r2, [r3, #8]
+ 150 005e 42F00102 		orr	r2, r2, #1
+ 151 0062 9A60     		str	r2, [r3, #8]
+  47:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
+ 152              		.loc 1 47 5 view .LVU30
+ 153 0064 DA68     		ldr	r2, [r3, #12]
+ 154 0066 22F00102 		bic	r2, r2, #1
+ 155 006a DA60     		str	r2, [r3, #12]
+  48:Core/Src/init.c **** 
+  49:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
+ 156              		.loc 1 49 5 view .LVU31
+ 157 006c 1A68     		ldr	r2, [r3]
+ 158 006e 42F08052 		orr	r2, r2, #268435456
+ 159 0072 1A60     		str	r2, [r3]
+  50:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
+ 160              		.loc 1 50 5 view .LVU32
+ 161 0074 5A68     		ldr	r2, [r3, #4]
+ 162 0076 22F48042 		bic	r2, r2, #16384
+ 163 007a 5A60     		str	r2, [r3, #4]
+  51:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
+ 164              		.loc 1 51 5 view .LVU33
+ 165 007c 9A68     		ldr	r2, [r3, #8]
+ 166 007e 42F08052 		orr	r2, r2, #268435456
+ 167 0082 9A60     		str	r2, [r3, #8]
+  52:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
+ 168              		.loc 1 52 5 view .LVU34
+ 169 0084 DA68     		ldr	r2, [r3, #12]
+ 170 0086 22F08052 		bic	r2, r2, #268435456
+ 171 008a DA60     		str	r2, [r3, #12]
+  53:Core/Src/init.c **** 
+  54:Core/Src/init.c **** }...
+ 172              		.loc 1 54 1 is_stmt 0 view .LVU35
+ 173 008c 7047     		bx	lr
+ 174              	.L7:
+ 175 008e 00BF     		.align	2
+ 176              	.L6:
+ 177 0090 00380240 		.word	1073887232
+ 178 0094 00040240 		.word	1073873920
+ 179              		.cfi_endproc
+ARM GAS  C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s 			page 5
+
+
+ 180              	.LFE132:
+ 182              		.text
+ 183              	.Letext0:
+ 184              		.file 2 "C:/tools/GCC/arm-none-eabi/include/machine/_default_types.h"
+ 185              		.file 3 "C:/tools/GCC/arm-none-eabi/include/sys/_stdint.h"
+ 186              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
-C:\Users\kseni\AppData\Local\Temp\ccuRa7OH.s:21     .text.GPIO_Ini:00000000 $t
-C:\Users\kseni\AppData\Local\Temp\ccuRa7OH.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
-C:\Users\kseni\AppData\Local\Temp\ccuRa7OH.s:58     .text.GPIO_Ini:0000002c $d
+C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s:19     .text.GPIO_Init_Mem:00000000 $t
+C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s:25     .text.GPIO_Init_Mem:00000000 GPIO_Init_Mem
+C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s:64     .text.GPIO_Init_Mem:00000038 $d
+C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s:70     .text.GPIO_Init_Self_Def:00000000 $t
+C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s:76     .text.GPIO_Init_Self_Def:00000000 GPIO_Init_Self_Def
+C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s:89     .text.GPIO_Init_CMSIS:00000000 $t
+C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s:95     .text.GPIO_Init_CMSIS:00000000 GPIO_Init_CMSIS
+C:\Users\kseni\AppData\Local\Temp\cc84TQVA.s:177    .text.GPIO_Init_CMSIS:00000090 $d
 
 NO UNDEFINED SYMBOLS
