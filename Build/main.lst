@@ -1,0 +1,493 @@
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <../Inc/init.h>
+   2:Core/Src/main.c **** uint8_t button1=0, button2=0, button3=0;
+   3:Core/Src/main.c **** int button1_clicks=0;
+   4:Core/Src/main.c **** int counter=0;
+   5:Core/Src/main.c **** int flag=0;
+   6:Core/Src/main.c **** int main(void)
+   7:Core/Src/main.c **** {  
+  29              		.loc 1 7 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+   8:Core/Src/main.c **** GPIO_Init_CMSIS();
+  38              		.loc 1 8 1 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Init_CMSIS
+  40              	.LVL0:
+  41 0006 7FE0     		b	.L17
+  42              	.LVL1:
+  43              	.L4:
+  44              	.LBB2:
+   9:Core/Src/main.c **** while (1){
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0 && flag==0) {
+  12:Core/Src/main.c ****   
+  13:Core/Src/main.c ****    flag=1;
+  14:Core/Src/main.c ****    for(int i=0;i<750000;i++);
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 2
+
+
+  45              		.loc 1 14 26 discriminator 3 view .LVU2
+  46 0008 0133     		adds	r3, r3, #1
+  47              	.LVL2:
+  48              	.L3:
+  49              		.loc 1 14 17 discriminator 1 view .LVU3
+  50 000a 604A     		ldr	r2, .L21
+  51 000c 9342     		cmp	r3, r2
+  52 000e FBDD     		ble	.L4
+  53              	.LBE2:
+  15:Core/Src/main.c ****    if( counter==0){
+  54              		.loc 1 15 4 view .LVU4
+  55              		.loc 1 15 15 is_stmt 0 view .LVU5
+  56 0010 5F4B     		ldr	r3, .L21+4
+  57              	.LVL3:
+  58              		.loc 1 15 15 view .LVU6
+  59 0012 1B68     		ldr	r3, [r3]
+  60 0014 032B     		cmp	r3, #3
+  61 0016 14D8     		bhi	.L2
+  62 0018 DFE803F0 		tbb	[pc, r3]
+  63              	.L6:
+  64 001c 02       		.byte	(.L9-.L6)/2
+  65 001d 83       		.byte	(.L8-.L6)/2
+  66 001e 95       		.byte	(.L7-.L6)/2
+  67 001f A7       		.byte	(.L5-.L6)/2
+  68              		.p2align 1
+  69              	.L9:
+  16:Core/Src/main.c ****       CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE0_Msk);
+  70              		.loc 1 16 7 is_stmt 1 view .LVU7
+  71 0020 5C4B     		ldr	r3, .L21+8
+  72 0022 1A68     		ldr	r2, [r3]
+  73 0024 22F00302 		bic	r2, r2, #3
+  74 0028 1A60     		str	r2, [r3]
+  17:Core/Src/main.c ****       SET_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0);
+  75              		.loc 1 17 7 view .LVU8
+  76 002a 1A68     		ldr	r2, [r3]
+  77 002c 42F08072 		orr	r2, r2, #16777216
+  78 0030 1A60     		str	r2, [r3]
+  18:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12);
+  79              		.loc 1 18 7 view .LVU9
+  80 0032 9A69     		ldr	r2, [r3, #24]
+  81 0034 42F48052 		orr	r2, r2, #4096
+  82 0038 9A61     		str	r2, [r3, #24]
+  19:Core/Src/main.c ****       counter+=1;
+  83              		.loc 1 19 7 view .LVU10
+  84              		.loc 1 19 14 is_stmt 0 view .LVU11
+  85 003a 554A     		ldr	r2, .L21+4
+  86 003c 1368     		ldr	r3, [r2]
+  87 003e 0133     		adds	r3, r3, #1
+  88 0040 1360     		str	r3, [r2]
+  89              	.LVL4:
+  90              	.L2:
+  20:Core/Src/main.c ****       }
+  21:Core/Src/main.c ****    else if(counter==1){
+  22:Core/Src/main.c ****       CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE7_Msk);
+  23:Core/Src/main.c ****       SET_BIT(GPIOB->MODER, GPIO_MODER_MODE11_0);
+  24:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS11);
+  25:Core/Src/main.c ****       counter+=1;
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 3
+
+
+  26:Core/Src/main.c ****       }
+  27:Core/Src/main.c ****    else if(counter==2){
+  28:Core/Src/main.c ****       CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE14_Msk);
+  29:Core/Src/main.c ****       SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0);
+  30:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS10);
+  31:Core/Src/main.c ****       counter+=1;
+  32:Core/Src/main.c ****       }
+  33:Core/Src/main.c ****    else if(counter==3){
+  34:Core/Src/main.c ****     //   CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE12_Msk);
+  35:Core/Src/main.c ****     //   CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE11_Msk);
+  36:Core/Src/main.c ****     //   CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE10_Msk);
+  37:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR12);
+  38:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR11);
+  39:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);
+  40:Core/Src/main.c ****       
+  41:Core/Src/main.c ****       counter=0;
+  42:Core/Src/main.c ****    }}
+  43:Core/Src/main.c ****    
+  44:Core/Src/main.c ****    if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)==0 ) {
+  91              		.loc 1 44 4 is_stmt 1 view .LVU12
+  92              		.loc 1 44 7 is_stmt 0 view .LVU13
+  93 0042 554B     		ldr	r3, .L21+12
+  94 0044 1B69     		ldr	r3, [r3, #16]
+  95              		.loc 1 44 6 view .LVU14
+  96 0046 13F4005F 		tst	r3, #8192
+  97 004a 02D1     		bne	.L10
+  45:Core/Src/main.c ****       flag=0;
+  98              		.loc 1 45 7 is_stmt 1 view .LVU15
+  99              		.loc 1 45 11 is_stmt 0 view .LVU16
+ 100 004c 534B     		ldr	r3, .L21+16
+ 101 004e 0022     		movs	r2, #0
+ 102 0050 1A60     		str	r2, [r3]
+ 103              	.L10:
+  46:Core/Src/main.c ****    }
+  47:Core/Src/main.c ****    if(counter==0){ 
+ 104              		.loc 1 47 4 is_stmt 1 view .LVU17
+ 105              		.loc 1 47 14 is_stmt 0 view .LVU18
+ 106 0052 4F4B     		ldr	r3, .L21+4
+ 107 0054 1B68     		ldr	r3, [r3]
+ 108              		.loc 1 47 6 view .LVU19
+ 109 0056 DBB9     		cbnz	r3, .L11
+  48:Core/Src/main.c ****       SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);
+ 110              		.loc 1 48 7 is_stmt 1 view .LVU20
+ 111 0058 03F18043 		add	r3, r3, #1073741824
+ 112 005c 03F50133 		add	r3, r3, #132096
+ 113 0060 1A68     		ldr	r2, [r3]
+ 114 0062 42F00102 		orr	r2, r2, #1
+ 115 0066 1A60     		str	r2, [r3]
+  49:Core/Src/main.c ****       SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);
+ 116              		.loc 1 49 7 view .LVU21
+ 117 0068 1A68     		ldr	r2, [r3]
+ 118 006a 42F48042 		orr	r2, r2, #16384
+ 119 006e 1A60     		str	r2, [r3]
+  50:Core/Src/main.c ****       SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
+ 120              		.loc 1 50 7 view .LVU22
+ 121 0070 1A68     		ldr	r2, [r3]
+ 122 0072 42F08052 		orr	r2, r2, #268435456
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 4
+
+
+ 123 0076 1A60     		str	r2, [r3]
+  51:Core/Src/main.c ****       CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE12_Msk);
+ 124              		.loc 1 51 7 view .LVU23
+ 125 0078 1A68     		ldr	r2, [r3]
+ 126 007a 22F04072 		bic	r2, r2, #50331648
+ 127 007e 1A60     		str	r2, [r3]
+  52:Core/Src/main.c ****       CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE11_Msk);
+ 128              		.loc 1 52 7 view .LVU24
+ 129 0080 1A68     		ldr	r2, [r3]
+ 130 0082 22F44002 		bic	r2, r2, #12582912
+ 131 0086 1A60     		str	r2, [r3]
+  53:Core/Src/main.c ****       CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE10_Msk);}
+ 132              		.loc 1 53 7 view .LVU25
+ 133 0088 1A68     		ldr	r2, [r3]
+ 134 008a 22F44012 		bic	r2, r2, #3145728
+ 135 008e 1A60     		str	r2, [r3]
+ 136              	.L11:
+  54:Core/Src/main.c ****      
+  55:Core/Src/main.c ****       if(READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_12)!=0 ){
+ 137              		.loc 1 55 7 view .LVU26
+ 138              		.loc 1 55 10 is_stmt 0 view .LVU27
+ 139 0090 404B     		ldr	r3, .L21+8
+ 140 0092 1B69     		ldr	r3, [r3, #16]
+ 141              		.loc 1 55 9 view .LVU28
+ 142 0094 13F4805F 		tst	r3, #4096
+ 143 0098 04D0     		beq	.L12
+  56:Core/Src/main.c ****          SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+ 144              		.loc 1 56 10 is_stmt 1 view .LVU29
+ 145 009a 3E4A     		ldr	r2, .L21+8
+ 146 009c 9369     		ldr	r3, [r2, #24]
+ 147 009e 43F00103 		orr	r3, r3, #1
+ 148 00a2 9361     		str	r3, [r2, #24]
+ 149              	.L12:
+  57:Core/Src/main.c ****       }
+  58:Core/Src/main.c ****       if(READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_12)==0){
+ 150              		.loc 1 58 7 view .LVU30
+ 151              		.loc 1 58 10 is_stmt 0 view .LVU31
+ 152 00a4 3B4B     		ldr	r3, .L21+8
+ 153 00a6 1B69     		ldr	r3, [r3, #16]
+ 154              		.loc 1 58 9 view .LVU32
+ 155 00a8 13F4805F 		tst	r3, #4096
+ 156 00ac 04D1     		bne	.L13
+  59:Core/Src/main.c ****          SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 157              		.loc 1 59 10 is_stmt 1 view .LVU33
+ 158 00ae 394A     		ldr	r2, .L21+8
+ 159 00b0 9369     		ldr	r3, [r2, #24]
+ 160 00b2 43F48033 		orr	r3, r3, #65536
+ 161 00b6 9361     		str	r3, [r2, #24]
+ 162              	.L13:
+  60:Core/Src/main.c ****       }
+  61:Core/Src/main.c ****       if(READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_11)!=0 ){
+ 163              		.loc 1 61 7 view .LVU34
+ 164              		.loc 1 61 10 is_stmt 0 view .LVU35
+ 165 00b8 364B     		ldr	r3, .L21+8
+ 166 00ba 1B69     		ldr	r3, [r3, #16]
+ 167              		.loc 1 61 9 view .LVU36
+ 168 00bc 13F4006F 		tst	r3, #2048
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 5
+
+
+ 169 00c0 04D0     		beq	.L14
+  62:Core/Src/main.c ****          SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+ 170              		.loc 1 62 10 is_stmt 1 view .LVU37
+ 171 00c2 344A     		ldr	r2, .L21+8
+ 172 00c4 9369     		ldr	r3, [r2, #24]
+ 173 00c6 43F08003 		orr	r3, r3, #128
+ 174 00ca 9361     		str	r3, [r2, #24]
+ 175              	.L14:
+  63:Core/Src/main.c ****       }
+  64:Core/Src/main.c ****       if(READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_11)==0){
+ 176              		.loc 1 64 7 view .LVU38
+ 177              		.loc 1 64 10 is_stmt 0 view .LVU39
+ 178 00cc 314B     		ldr	r3, .L21+8
+ 179 00ce 1B69     		ldr	r3, [r3, #16]
+ 180              		.loc 1 64 9 view .LVU40
+ 181 00d0 13F4006F 		tst	r3, #2048
+ 182 00d4 04D1     		bne	.L15
+  65:Core/Src/main.c ****          SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 183              		.loc 1 65 10 is_stmt 1 view .LVU41
+ 184 00d6 2F4A     		ldr	r2, .L21+8
+ 185 00d8 9369     		ldr	r3, [r2, #24]
+ 186 00da 43F40003 		orr	r3, r3, #8388608
+ 187 00de 9361     		str	r3, [r2, #24]
+ 188              	.L15:
+  66:Core/Src/main.c ****       }
+  67:Core/Src/main.c ****       if(READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_10)!=0 ){
+ 189              		.loc 1 67 7 view .LVU42
+ 190              		.loc 1 67 10 is_stmt 0 view .LVU43
+ 191 00e0 2C4B     		ldr	r3, .L21+8
+ 192 00e2 1B69     		ldr	r3, [r3, #16]
+ 193              		.loc 1 67 9 view .LVU44
+ 194 00e4 13F4806F 		tst	r3, #1024
+ 195 00e8 04D0     		beq	.L16
+  68:Core/Src/main.c ****          SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 196              		.loc 1 68 10 is_stmt 1 view .LVU45
+ 197 00ea 2A4A     		ldr	r2, .L21+8
+ 198 00ec 9369     		ldr	r3, [r2, #24]
+ 199 00ee 43F48043 		orr	r3, r3, #16384
+ 200 00f2 9361     		str	r3, [r2, #24]
+ 201              	.L16:
+  69:Core/Src/main.c ****       }
+  70:Core/Src/main.c ****       if(READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_10)==0)  {
+ 202              		.loc 1 70 7 view .LVU46
+ 203              		.loc 1 70 10 is_stmt 0 view .LVU47
+ 204 00f4 274B     		ldr	r3, .L21+8
+ 205 00f6 1B69     		ldr	r3, [r3, #16]
+ 206              		.loc 1 70 9 view .LVU48
+ 207 00f8 13F4806F 		tst	r3, #1024
+ 208 00fc 04D1     		bne	.L17
+  71:Core/Src/main.c ****          SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 209              		.loc 1 71 10 is_stmt 1 view .LVU49
+ 210 00fe 254A     		ldr	r2, .L21+8
+ 211 0100 9369     		ldr	r3, [r2, #24]
+ 212 0102 43F08043 		orr	r3, r3, #1073741824
+ 213 0106 9361     		str	r3, [r2, #24]
+ 214              	.L17:
+   9:Core/Src/main.c **** 
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 6
+
+
+ 215              		.loc 1 9 1 view .LVU50
+  11:Core/Src/main.c ****   
+ 216              		.loc 1 11 1 view .LVU51
+  11:Core/Src/main.c ****   
+ 217              		.loc 1 11 4 is_stmt 0 view .LVU52
+ 218 0108 234B     		ldr	r3, .L21+12
+ 219 010a 1B69     		ldr	r3, [r3, #16]
+  11:Core/Src/main.c ****   
+ 220              		.loc 1 11 3 view .LVU53
+ 221 010c 13F4005F 		tst	r3, #8192
+ 222 0110 97D0     		beq	.L2
+  11:Core/Src/main.c ****   
+ 223              		.loc 1 11 52 discriminator 1 view .LVU54
+ 224 0112 224B     		ldr	r3, .L21+16
+ 225 0114 1B68     		ldr	r3, [r3]
+  11:Core/Src/main.c ****   
+ 226              		.loc 1 11 45 discriminator 1 view .LVU55
+ 227 0116 002B     		cmp	r3, #0
+ 228 0118 93D1     		bne	.L2
+  13:Core/Src/main.c ****    for(int i=0;i<750000;i++);
+ 229              		.loc 1 13 4 is_stmt 1 view .LVU56
+  13:Core/Src/main.c ****    for(int i=0;i<750000;i++);
+ 230              		.loc 1 13 8 is_stmt 0 view .LVU57
+ 231 011a 204A     		ldr	r2, .L21+16
+ 232 011c 0121     		movs	r1, #1
+ 233 011e 1160     		str	r1, [r2]
+  14:Core/Src/main.c ****    if( counter==0){
+ 234              		.loc 1 14 4 is_stmt 1 view .LVU58
+ 235              	.LBB3:
+  14:Core/Src/main.c ****    if( counter==0){
+ 236              		.loc 1 14 8 view .LVU59
+ 237              	.LVL5:
+  14:Core/Src/main.c ****    if( counter==0){
+ 238              		.loc 1 14 4 is_stmt 0 view .LVU60
+ 239 0120 73E7     		b	.L3
+ 240              	.LVL6:
+ 241              	.L8:
+  14:Core/Src/main.c ****    if( counter==0){
+ 242              		.loc 1 14 4 view .LVU61
+ 243              	.LBE3:
+  22:Core/Src/main.c ****       SET_BIT(GPIOB->MODER, GPIO_MODER_MODE11_0);
+ 244              		.loc 1 22 7 is_stmt 1 view .LVU62
+ 245 0122 1C4B     		ldr	r3, .L21+8
+ 246 0124 1A68     		ldr	r2, [r3]
+ 247 0126 22F44042 		bic	r2, r2, #49152
+ 248 012a 1A60     		str	r2, [r3]
+  23:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS11);
+ 249              		.loc 1 23 7 view .LVU63
+ 250 012c 1A68     		ldr	r2, [r3]
+ 251 012e 42F48002 		orr	r2, r2, #4194304
+ 252 0132 1A60     		str	r2, [r3]
+  24:Core/Src/main.c ****       counter+=1;
+ 253              		.loc 1 24 7 view .LVU64
+ 254 0134 9A69     		ldr	r2, [r3, #24]
+ 255 0136 42F40062 		orr	r2, r2, #2048
+ 256 013a 9A61     		str	r2, [r3, #24]
+  25:Core/Src/main.c ****       }
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 7
+
+
+ 257              		.loc 1 25 7 view .LVU65
+  25:Core/Src/main.c ****       }
+ 258              		.loc 1 25 14 is_stmt 0 view .LVU66
+ 259 013c 144A     		ldr	r2, .L21+4
+ 260 013e 1368     		ldr	r3, [r2]
+ 261 0140 0133     		adds	r3, r3, #1
+ 262 0142 1360     		str	r3, [r2]
+ 263 0144 7DE7     		b	.L2
+ 264              	.L7:
+  28:Core/Src/main.c ****       SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0);
+ 265              		.loc 1 28 7 is_stmt 1 view .LVU67
+ 266 0146 134B     		ldr	r3, .L21+8
+ 267 0148 1A68     		ldr	r2, [r3]
+ 268 014a 22F04052 		bic	r2, r2, #805306368
+ 269 014e 1A60     		str	r2, [r3]
+  29:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS10);
+ 270              		.loc 1 29 7 view .LVU68
+ 271 0150 1A68     		ldr	r2, [r3]
+ 272 0152 42F48012 		orr	r2, r2, #1048576
+ 273 0156 1A60     		str	r2, [r3]
+  30:Core/Src/main.c ****       counter+=1;
+ 274              		.loc 1 30 7 view .LVU69
+ 275 0158 9A69     		ldr	r2, [r3, #24]
+ 276 015a 42F48062 		orr	r2, r2, #1024
+ 277 015e 9A61     		str	r2, [r3, #24]
+  31:Core/Src/main.c ****       }
+ 278              		.loc 1 31 7 view .LVU70
+  31:Core/Src/main.c ****       }
+ 279              		.loc 1 31 14 is_stmt 0 view .LVU71
+ 280 0160 0B4A     		ldr	r2, .L21+4
+ 281 0162 1368     		ldr	r3, [r2]
+ 282 0164 0133     		adds	r3, r3, #1
+ 283 0166 1360     		str	r3, [r2]
+ 284 0168 6BE7     		b	.L2
+ 285              	.L5:
+  37:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR11);
+ 286              		.loc 1 37 7 is_stmt 1 view .LVU72
+ 287 016a 0A4B     		ldr	r3, .L21+8
+ 288 016c 9A69     		ldr	r2, [r3, #24]
+ 289 016e 42F08052 		orr	r2, r2, #268435456
+ 290 0172 9A61     		str	r2, [r3, #24]
+  38:Core/Src/main.c ****       SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);
+ 291              		.loc 1 38 7 view .LVU73
+ 292 0174 9A69     		ldr	r2, [r3, #24]
+ 293 0176 42F00062 		orr	r2, r2, #134217728
+ 294 017a 9A61     		str	r2, [r3, #24]
+  39:Core/Src/main.c ****       
+ 295              		.loc 1 39 7 view .LVU74
+ 296 017c 9A69     		ldr	r2, [r3, #24]
+ 297 017e 42F08062 		orr	r2, r2, #67108864
+ 298 0182 9A61     		str	r2, [r3, #24]
+  41:Core/Src/main.c ****    }}
+ 299              		.loc 1 41 7 view .LVU75
+  41:Core/Src/main.c ****    }}
+ 300              		.loc 1 41 14 is_stmt 0 view .LVU76
+ 301 0184 024B     		ldr	r3, .L21+4
+ 302 0186 0022     		movs	r2, #0
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 8
+
+
+ 303 0188 1A60     		str	r2, [r3]
+ 304 018a 5AE7     		b	.L2
+ 305              	.L22:
+ 306              		.align	2
+ 307              	.L21:
+ 308 018c AF710B00 		.word	749999
+ 309 0190 00000000 		.word	counter
+ 310 0194 00040240 		.word	1073873920
+ 311 0198 00080240 		.word	1073874944
+ 312 019c 00000000 		.word	flag
+ 313              		.cfi_endproc
+ 314              	.LFE130:
+ 316              		.global	flag
+ 317              		.section	.bss.flag,"aw",%nobits
+ 318              		.align	2
+ 321              	flag:
+ 322 0000 00000000 		.space	4
+ 323              		.global	counter
+ 324              		.section	.bss.counter,"aw",%nobits
+ 325              		.align	2
+ 328              	counter:
+ 329 0000 00000000 		.space	4
+ 330              		.global	button1_clicks
+ 331              		.section	.bss.button1_clicks,"aw",%nobits
+ 332              		.align	2
+ 335              	button1_clicks:
+ 336 0000 00000000 		.space	4
+ 337              		.global	button3
+ 338              		.section	.bss.button3,"aw",%nobits
+ 341              	button3:
+ 342 0000 00       		.space	1
+ 343              		.global	button2
+ 344              		.section	.bss.button2,"aw",%nobits
+ 347              	button2:
+ 348 0000 00       		.space	1
+ 349              		.global	button1
+ 350              		.section	.bss.button1,"aw",%nobits
+ 353              	button1:
+ 354 0000 00       		.space	1
+ 355              		.text
+ 356              	.Letext0:
+ 357              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 358              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 359              		.file 4 "Core/Inc/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 360              		.file 5 "Core/Inc/../Inc/init.h"
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:21     .text.main:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:27     .text.main:00000000 main
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:64     .text.main:0000001c $d
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:68     .text.main:00000020 $t
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:308    .text.main:0000018c $d
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:328    .bss.counter:00000000 counter
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:321    .bss.flag:00000000 flag
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:318    .bss.flag:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:325    .bss.counter:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:335    .bss.button1_clicks:00000000 button1_clicks
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:332    .bss.button1_clicks:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:341    .bss.button3:00000000 button3
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:342    .bss.button3:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:347    .bss.button2:00000000 button2
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:348    .bss.button2:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:353    .bss.button1:00000000 button1
+C:\Users\Asus\AppData\Local\Temp\ccZwzqv1.s:354    .bss.button1:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init_CMSIS
