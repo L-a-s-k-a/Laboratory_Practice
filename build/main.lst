@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\mono\AppData\Local\Temp\ccazCkTj.s 			page 1
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,108 +20,525 @@ ARM GAS  C:\Users\mono\AppData\Local\Temp\ccazCkTj.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.main,"ax",%progbits
+  20              		.section	.text.Init_GPIO,"ax",%progbits
   21              		.align	1
-  22              		.global	main
+  22              		.global	Init_GPIO
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	main:
-  28              	.LFB130:
+  27              	Init_GPIO:
+  28              	.LFB131:
    1:Core/Src/main.c **** #include <stdint.h> 
    2:Core/Src/main.c **** #include <init.h> 
    3:Core/Src/main.c **** 
-   4:Core/Src/main.c **** int main(void) { 
-  29              		.loc 1 4 16 view -0
-  30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
+   4:Core/Src/main.c **** 
    5:Core/Src/main.c **** 
-   6:Core/Src/main.c ****      SET_BIT(RCC_GPIO_EN,RCC_GPIOB_EN | RCC_GPIOC_EN | RCC_GPIOC_EN);
-  35              		.loc 1 6 6 view .LVU1
-  36 0000 174A     		ldr	r2, .L6
-  37 0002 D2F83038 		ldr	r3, [r2, #2096]
-  38 0006 43F00603 		orr	r3, r3, #6
-  39 000a C2F83038 		str	r3, [r2, #2096]
-   7:Core/Src/main.c ****    // *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x06; //Включение тактирования п
-   8:Core/Src/main.c ****      SET_BIT(GPIOB_MODER,GPIOB_MODE_PIN7_OUT | GPIOB_MODE_PIN14_OUT);
-  40              		.loc 1 8 6 view .LVU2
-  41 000e A2F54052 		sub	r2, r2, #12288
-  42 0012 D2F80034 		ldr	r3, [r2, #1024]
-  43 0016 43F08053 		orr	r3, r3, #268435456
-  44 001a 43F48043 		orr	r3, r3, #16384
-  45 001e C2F80034 		str	r3, [r2, #1024]
-   9:Core/Src/main.c ****     //*(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000; //Настройка работы 7-го пи�
-  10:Core/Src/main.c ****       SET_BIT(GPIOB_OTYPER,GPIOB_OTYPE_PIN7_PP | GPIOB_OTYPE_PIN14_PP );
-  46              		.loc 1 10 7 view .LVU3
-  11:Core/Src/main.c ****     //*(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; //Настройка на PushPull работу 
-  12:Core/Src/main.c ****     SET_BIT(GPIOB_OSPEEDR, GPIOB_OSPEED_PIN7_MID | GPIOB_OSPEED_PIN14_MID);
-ARM GAS  C:\Users\mono\AppData\Local\Temp\ccazCkTj.s 			page 2
+   6:Core/Src/main.c **** // 函数声明
+   7:Core/Src/main.c **** void Init_GPIO(void);           // 初始化GPIO
+   8:Core/Src/main.c **** void ProcessButtons(void);      // 处理按钮输入
+   9:Core/Src/main.c **** void UpdateLEDs(uint8_t count); // 更新LED状态
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** // 全局变量
+  12:Core/Src/main.c **** volatile uint8_t led_count = 1;   // 当前设定同时点亮的LED数量
+  13:Core/Src/main.c **** volatile uint8_t current_led = 0; // 当前已点亮的LED数量
+  14:Core/Src/main.c **** volatile uint8_t offset = 0;      // 偏移量
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c **** int main(void) {
+  17:Core/Src/main.c ****     Init_GPIO(); // 初始化GPIO
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c ****     while (1) {
+  20:Core/Src/main.c ****         ProcessButtons(); // 持续处理按钮逻辑
+  21:Core/Src/main.c ****     }
+  22:Core/Src/main.c **** }
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c **** void Init_GPIO(void) {
+  29              		.loc 1 24 22 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  25:Core/Src/main.c ****     // 启用GPIOB和GPIOC时钟
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 2
 
 
-  47              		.loc 1 12 5 view .LVU4
-  48 0022 D2F80834 		ldr	r3, [r2, #1032]
-  49 0026 43F08053 		orr	r3, r3, #268435456
-  50 002a 43F48043 		orr	r3, r3, #16384
-  51 002e C2F80834 		str	r3, [r2, #1032]
-  13:Core/Src/main.c ****     //*(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000; //Настройка скорости рабо
-  14:Core/Src/main.c ****     SET_BIT(GPIOB_PUPDR,GPIOB_PUPDR_PIN7_NOPUPD | GPIOB_PUPDR_PIN14_NOPUPD);
-  52              		.loc 1 14 5 view .LVU5
-  53 0032 06E0     		b	.L2
-  54              	.L5:
-  15:Core/Src/main.c ****     
-  16:Core/Src/main.c ****     //*(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00; //Отключение PU/PD резисторо�
-  17:Core/Src/main.c ****     while(1){ 
-  18:Core/Src/main.c ****         if((READ_BIT(GPIOC_IDR ,GPIOC_IDR_PIN13  ) != 0)){ 
-  19:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET);
-  55              		.loc 1 19 13 view .LVU6
-  56 0034 0B4A     		ldr	r2, .L6+4
-  57 0036 D2F81834 		ldr	r3, [r2, #1048]
-  58 003a 43F08143 		orr	r3, r3, #1082130432
-  59 003e C2F81834 		str	r3, [r2, #1048]
-  60              	.L2:
-  17:Core/Src/main.c ****         if((READ_BIT(GPIOC_IDR ,GPIOC_IDR_PIN13  ) != 0)){ 
-  61              		.loc 1 17 5 view .LVU7
-  18:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET);
-  62              		.loc 1 18 9 view .LVU8
-  18:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET);
-  63              		.loc 1 18 13 is_stmt 0 view .LVU9
-  64 0042 084B     		ldr	r3, .L6+4
-  65 0044 D3F81038 		ldr	r3, [r3, #2064]
-  18:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET);
-  66              		.loc 1 18 11 view .LVU10
-  67 0048 13F4005F 		tst	r3, #8192
-  68 004c F2D1     		bne	.L5
-  20:Core/Src/main.c ****            // *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80; //Установка единицы в 7
-  21:Core/Src/main.c ****         } 
-  22:Core/Src/main.c ****         else{ 
-  23:Core/Src/main.c ****              SET_BIT(GPIOB_BSRR ,GPIOB_BSRR_PIN7_SET | GPIOB_BSRR_PIN14_SET);
-  69              		.loc 1 23 14 is_stmt 1 view .LVU11
-  70 004e 054A     		ldr	r2, .L6+4
-  71 0050 D2F81834 		ldr	r3, [r2, #1048]
-  72 0054 43F48143 		orr	r3, r3, #16512
-  73 0058 C2F81834 		str	r3, [r2, #1048]
-  74 005c F1E7     		b	.L2
-  75              	.L7:
-  76 005e 00BF     		.align	2
-  77              	.L6:
-  78 0060 00300240 		.word	1073885184
-  79 0064 00000240 		.word	1073872896
-  80              		.cfi_endproc
-  81              	.LFE130:
-  83              		.text
-  84              	.Letext0:
-  85              		.file 2 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/machine/_default_types.h"
-  86              		.file 3 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/sys/_stdint.h"
-ARM GAS  C:\Users\mono\AppData\Local\Temp\ccazCkTj.s 			page 3
+  26:Core/Src/main.c ****     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN;
+  34              		.loc 1 26 5 view .LVU1
+  35              		.loc 1 26 8 is_stmt 0 view .LVU2
+  36 0000 124A     		ldr	r2, .L2
+  37 0002 136B     		ldr	r3, [r2, #48]
+  38              		.loc 1 26 18 view .LVU3
+  39 0004 43F00603 		orr	r3, r3, #6
+  40 0008 1363     		str	r3, [r2, #48]
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c ****     // 配置GPIOB (PB0, PB7, PB14, PB8, PB9, PB10为输出模式)
+  29:Core/Src/main.c ****     GPIOB->MODER |= (GPIO_MODER_MODE0_0 | GPIO_MODER_MODE7_0 | GPIO_MODER_MODE14_0 |
+  41              		.loc 1 29 5 is_stmt 1 view .LVU4
+  42              		.loc 1 29 10 is_stmt 0 view .LVU5
+  43 000a 114B     		ldr	r3, .L2+4
+  44 000c 1968     		ldr	r1, [r3]
+  45              		.loc 1 29 18 view .LVU6
+  46 000e 114A     		ldr	r2, .L2+8
+  47 0010 0A43     		orrs	r2, r2, r1
+  48 0012 1A60     		str	r2, [r3]
+  30:Core/Src/main.c ****                      GPIO_MODER_MODE8_0 | GPIO_MODER_MODE9_0 | GPIO_MODER_MODE10_0);
+  31:Core/Src/main.c ****     GPIOB->OTYPER &= ~(GPIO_OTYPER_OT0 | GPIO_OTYPER_OT7 | GPIO_OTYPER_OT14 |
+  49              		.loc 1 31 5 is_stmt 1 view .LVU7
+  50              		.loc 1 31 10 is_stmt 0 view .LVU8
+  51 0014 5A68     		ldr	r2, [r3, #4]
+  52              		.loc 1 31 19 view .LVU9
+  53 0016 22F48F42 		bic	r2, r2, #18304
+  54 001a 22F00102 		bic	r2, r2, #1
+  55 001e 5A60     		str	r2, [r3, #4]
+  32:Core/Src/main.c ****                        GPIO_OTYPER_OT8 | GPIO_OTYPER_OT9 | GPIO_OTYPER_OT10);
+  33:Core/Src/main.c ****     GPIOB->OSPEEDR |= (GPIO_OSPEEDER_OSPEEDR0 | GPIO_OSPEEDER_OSPEEDR7 |
+  56              		.loc 1 33 5 is_stmt 1 view .LVU10
+  57              		.loc 1 33 10 is_stmt 0 view .LVU11
+  58 0020 9968     		ldr	r1, [r3, #8]
+  59              		.loc 1 33 20 view .LVU12
+  60 0022 0D4A     		ldr	r2, .L2+12
+  61 0024 0A43     		orrs	r2, r2, r1
+  62 0026 9A60     		str	r2, [r3, #8]
+  34:Core/Src/main.c ****                        GPIO_OSPEEDER_OSPEEDR14 | GPIO_OSPEEDER_OSPEEDR8 |
+  35:Core/Src/main.c ****                        GPIO_OSPEEDER_OSPEEDR9 | GPIO_OSPEEDER_OSPEEDR10);
+  36:Core/Src/main.c ****     GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD0 | GPIO_PUPDR_PUPD7 | GPIO_PUPDR_PUPD14 |
+  63              		.loc 1 36 5 is_stmt 1 view .LVU13
+  64              		.loc 1 36 10 is_stmt 0 view .LVU14
+  65 0028 D968     		ldr	r1, [r3, #12]
+  66              		.loc 1 36 18 view .LVU15
+  67 002a 0C4A     		ldr	r2, .L2+16
+  68 002c 0A40     		ands	r2, r2, r1
+  69 002e DA60     		str	r2, [r3, #12]
+  37:Core/Src/main.c ****                       GPIO_PUPDR_PUPD8 | GPIO_PUPDR_PUPD9 | GPIO_PUPDR_PUPD10);
+  38:Core/Src/main.c **** 
+  39:Core/Src/main.c ****     // 配置GPIOC (PC6和PC12为输入模式)
+  40:Core/Src/main.c ****     GPIOC->MODER &= ~(GPIO_MODER_MODE6 | GPIO_MODER_MODE12);
+  70              		.loc 1 40 5 is_stmt 1 view .LVU16
+  71              		.loc 1 40 10 is_stmt 0 view .LVU17
+  72 0030 0B4A     		ldr	r2, .L2+20
+  73 0032 1368     		ldr	r3, [r2]
+  74              		.loc 1 40 18 view .LVU18
+  75 0034 23F04073 		bic	r3, r3, #50331648
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 3
+
+
+  76 0038 23F44053 		bic	r3, r3, #12288
+  77 003c 1360     		str	r3, [r2]
+  41:Core/Src/main.c ****     GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPD6 | GPIO_PUPDR_PUPD12);
+  78              		.loc 1 41 5 is_stmt 1 view .LVU19
+  79              		.loc 1 41 10 is_stmt 0 view .LVU20
+  80 003e D368     		ldr	r3, [r2, #12]
+  81              		.loc 1 41 18 view .LVU21
+  82 0040 23F04073 		bic	r3, r3, #50331648
+  83 0044 23F44053 		bic	r3, r3, #12288
+  84 0048 D360     		str	r3, [r2, #12]
+  42:Core/Src/main.c **** }
+  85              		.loc 1 42 1 view .LVU22
+  86 004a 7047     		bx	lr
+  87              	.L3:
+  88              		.align	2
+  89              	.L2:
+  90 004c 00380240 		.word	1073887232
+  91 0050 00040240 		.word	1073873920
+  92 0054 01401510 		.word	269828097
+  93 0058 03C03F30 		.word	809484291
+  94 005c FC3FC0CF 		.word	-809484292
+  95 0060 00080240 		.word	1073874944
+  96              		.cfi_endproc
+  97              	.LFE131:
+  99              		.section	.text.UpdateLEDs,"ax",%progbits
+ 100              		.align	1
+ 101              		.global	UpdateLEDs
+ 102              		.syntax unified
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	UpdateLEDs:
+ 107              	.LVL0:
+ 108              	.LFB133:
+  43:Core/Src/main.c **** 
+  44:Core/Src/main.c **** void ProcessButtons(void) {
+  45:Core/Src/main.c ****     // 处理按钮1 (PC6) - 设置同时点亮LED数量
+  46:Core/Src/main.c ****     if ((GPIOC->IDR & GPIO_IDR_ID6) != 0) {
+  47:Core/Src/main.c ****         for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+  48:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID6) != 0) {
+  49:Core/Src/main.c ****             led_count++;
+  50:Core/Src/main.c ****             if (led_count > 6) led_count = 1; // 循环回到1
+  51:Core/Src/main.c ****         }
+  52:Core/Src/main.c ****     }
+  53:Core/Src/main.c **** 
+  54:Core/Src/main.c ****     // 处理按钮2 (PC12) - 控制LED点亮/熄灭并添加偏移
+  55:Core/Src/main.c ****     if ((GPIOC->IDR & GPIO_IDR_ID12) != 0) {
+  56:Core/Src/main.c ****         for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+  57:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID12) != 0) {
+  58:Core/Src/main.c ****             offset = (offset + 1) % 6; // 偏移量每次按下按钮2后递增
+  59:Core/Src/main.c ****             UpdateLEDs(led_count); // 根据当前设置数量和偏移更新LED
+  60:Core/Src/main.c ****         }
+  61:Core/Src/main.c ****     }
+  62:Core/Src/main.c **** }
+  63:Core/Src/main.c **** 
+  64:Core/Src/main.c **** void UpdateLEDs(uint8_t count) {
+ 109              		.loc 1 64 32 is_stmt 1 view -0
+ 110              		.cfi_startproc
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 4
+
+
+ 111              		@ args = 0, pretend = 0, frame = 8
+ 112              		@ frame_needed = 0, uses_anonymous_args = 0
+ 113              		@ link register save eliminated.
+ 114              		.loc 1 64 32 is_stmt 0 view .LVU24
+ 115 0000 82B0     		sub	sp, sp, #8
+ 116              	.LCFI0:
+ 117              		.cfi_def_cfa_offset 8
+  65:Core/Src/main.c ****     // 先关闭所有LED
+  66:Core/Src/main.c ****     GPIOB->BSRR = (GPIO_BSRR_BR0 | GPIO_BSRR_BR7 | GPIO_BSRR_BR14 |
+ 118              		.loc 1 66 5 is_stmt 1 view .LVU25
+ 119              		.loc 1 66 17 is_stmt 0 view .LVU26
+ 120 0002 114B     		ldr	r3, .L8
+ 121 0004 114A     		ldr	r2, .L8+4
+ 122 0006 9A61     		str	r2, [r3, #24]
+  67:Core/Src/main.c ****                    GPIO_BSRR_BR8 | GPIO_BSRR_BR9 | GPIO_BSRR_BR10);
+  68:Core/Src/main.c **** 
+  69:Core/Src/main.c ****     // 根据数量和偏移量点亮对应LED
+  70:Core/Src/main.c ****     uint8_t leds[6] = {GPIO_BSRR_BS0, GPIO_BSRR_BS7, GPIO_BSRR_BS14, GPIO_BSRR_BS8, GPIO_BSRR_BS9, 
+ 123              		.loc 1 70 5 is_stmt 1 view .LVU27
+ 124              		.loc 1 70 13 is_stmt 0 view .LVU28
+ 125 0008 48F20103 		movw	r3, #32769
+ 126 000c 0093     		str	r3, [sp]
+ 127 000e 0022     		movs	r2, #0
+ 128 0010 ADF80420 		strh	r2, [sp, #4]	@ movhi
+  71:Core/Src/main.c ****     for (uint8_t i = 0; i < count; i++) {
+ 129              		.loc 1 71 5 is_stmt 1 view .LVU29
+ 130              	.LBB2:
+ 131              		.loc 1 71 10 view .LVU30
+ 132              	.LVL1:
+ 133              		.loc 1 71 5 is_stmt 0 view .LVU31
+ 134 0014 13E0     		b	.L5
+ 135              	.LVL2:
+ 136              	.L6:
+  72:Core/Src/main.c ****         GPIOB->BSRR = leds[(i + offset) % 6]; // 根据偏移计算点亮位置
+ 137              		.loc 1 72 9 is_stmt 1 view .LVU32
+ 138              		.loc 1 72 31 is_stmt 0 view .LVU33
+ 139 0016 0E4B     		ldr	r3, .L8+8
+ 140 0018 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 141 001a 1144     		add	r1, r1, r2
+ 142              		.loc 1 72 41 view .LVU34
+ 143 001c 0D4B     		ldr	r3, .L8+12
+ 144 001e 83FB01C3 		smull	ip, r3, r3, r1
+ 145 0022 A3EBE173 		sub	r3, r3, r1, asr #31
+ 146 0026 03EB4303 		add	r3, r3, r3, lsl #1
+ 147 002a A1EB4303 		sub	r3, r1, r3, lsl #1
+ 148              		.loc 1 72 27 view .LVU35
+ 149 002e 0833     		adds	r3, r3, #8
+ 150 0030 6B44     		add	r3, sp, r3
+ 151 0032 13F8081C 		ldrb	r1, [r3, #-8]	@ zero_extendqisi2
+ 152              		.loc 1 72 21 view .LVU36
+ 153 0036 044B     		ldr	r3, .L8
+ 154 0038 9961     		str	r1, [r3, #24]
+  71:Core/Src/main.c ****     for (uint8_t i = 0; i < count; i++) {
+ 155              		.loc 1 71 37 is_stmt 1 discriminator 3 view .LVU37
+ 156 003a 0132     		adds	r2, r2, #1
+ 157              	.LVL3:
+  71:Core/Src/main.c ****     for (uint8_t i = 0; i < count; i++) {
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 5
+
+
+ 158              		.loc 1 71 37 is_stmt 0 discriminator 3 view .LVU38
+ 159 003c D2B2     		uxtb	r2, r2
+ 160              	.LVL4:
+ 161              	.L5:
+  71:Core/Src/main.c ****     for (uint8_t i = 0; i < count; i++) {
+ 162              		.loc 1 71 27 is_stmt 1 discriminator 1 view .LVU39
+ 163 003e 8242     		cmp	r2, r0
+ 164 0040 E9D3     		bcc	.L6
+ 165              	.LBE2:
+  73:Core/Src/main.c ****     }
+  74:Core/Src/main.c **** }
+ 166              		.loc 1 74 1 is_stmt 0 view .LVU40
+ 167 0042 02B0     		add	sp, sp, #8
+ 168              	.LCFI1:
+ 169              		.cfi_def_cfa_offset 0
+ 170              		@ sp needed
+ 171 0044 7047     		bx	lr
+ 172              	.L9:
+ 173 0046 00BF     		.align	2
+ 174              	.L8:
+ 175 0048 00040240 		.word	1073873920
+ 176 004c 00008147 		.word	1199636480
+ 177 0050 00000000 		.word	offset
+ 178 0054 ABAAAA2A 		.word	715827883
+ 179              		.cfi_endproc
+ 180              	.LFE133:
+ 182              		.section	.text.ProcessButtons,"ax",%progbits
+ 183              		.align	1
+ 184              		.global	ProcessButtons
+ 185              		.syntax unified
+ 186              		.thumb
+ 187              		.thumb_func
+ 189              	ProcessButtons:
+ 190              	.LFB132:
+  44:Core/Src/main.c ****     // 处理按钮1 (PC6) - 设置同时点亮LED数量
+ 191              		.loc 1 44 27 is_stmt 1 view -0
+ 192              		.cfi_startproc
+ 193              		@ args = 0, pretend = 0, frame = 8
+ 194              		@ frame_needed = 0, uses_anonymous_args = 0
+ 195 0000 00B5     		push	{lr}
+ 196              	.LCFI2:
+ 197              		.cfi_def_cfa_offset 4
+ 198              		.cfi_offset 14, -4
+ 199 0002 83B0     		sub	sp, sp, #12
+ 200              	.LCFI3:
+ 201              		.cfi_def_cfa_offset 16
+  46:Core/Src/main.c ****         for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+ 202              		.loc 1 46 5 view .LVU42
+  46:Core/Src/main.c ****         for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+ 203              		.loc 1 46 15 is_stmt 0 view .LVU43
+ 204 0004 234B     		ldr	r3, .L19
+ 205 0006 1B69     		ldr	r3, [r3, #16]
+  46:Core/Src/main.c ****         for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+ 206              		.loc 1 46 8 view .LVU44
+ 207 0008 13F0400F 		tst	r3, #64
+ 208 000c 1AD0     		beq	.L11
+  47:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID6) != 0) {
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 6
+
+
+ 209              		.loc 1 47 9 is_stmt 1 view .LVU45
+ 210              	.LBB3:
+  47:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID6) != 0) {
+ 211              		.loc 1 47 14 view .LVU46
+  47:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID6) != 0) {
+ 212              		.loc 1 47 27 is_stmt 0 view .LVU47
+ 213 000e 0023     		movs	r3, #0
+ 214 0010 0093     		str	r3, [sp]
+  47:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID6) != 0) {
+ 215              		.loc 1 47 9 view .LVU48
+ 216 0012 02E0     		b	.L12
+ 217              	.L13:
+  47:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID6) != 0) {
+ 218              		.loc 1 47 47 is_stmt 1 discriminator 3 view .LVU49
+ 219 0014 009B     		ldr	r3, [sp]
+ 220 0016 0133     		adds	r3, r3, #1
+ 221 0018 0093     		str	r3, [sp]
+ 222              	.L12:
+  47:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID6) != 0) {
+ 223              		.loc 1 47 36 discriminator 1 view .LVU50
+ 224 001a 009A     		ldr	r2, [sp]
+ 225 001c 1E4B     		ldr	r3, .L19+4
+ 226 001e 9A42     		cmp	r2, r3
+ 227 0020 F8DD     		ble	.L13
+ 228              	.LBE3:
+  48:Core/Src/main.c ****             led_count++;
+ 229              		.loc 1 48 9 view .LVU51
+  48:Core/Src/main.c ****             led_count++;
+ 230              		.loc 1 48 19 is_stmt 0 view .LVU52
+ 231 0022 1C4B     		ldr	r3, .L19
+ 232 0024 1B69     		ldr	r3, [r3, #16]
+  48:Core/Src/main.c ****             led_count++;
+ 233              		.loc 1 48 12 view .LVU53
+ 234 0026 13F0400F 		tst	r3, #64
+ 235 002a 0BD0     		beq	.L11
+  49:Core/Src/main.c ****             if (led_count > 6) led_count = 1; // 循环回到1
+ 236              		.loc 1 49 13 is_stmt 1 view .LVU54
+  49:Core/Src/main.c ****             if (led_count > 6) led_count = 1; // 循环回到1
+ 237              		.loc 1 49 22 is_stmt 0 view .LVU55
+ 238 002c 1B4A     		ldr	r2, .L19+8
+ 239 002e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 240 0030 0133     		adds	r3, r3, #1
+ 241 0032 DBB2     		uxtb	r3, r3
+ 242 0034 1370     		strb	r3, [r2]
+  50:Core/Src/main.c ****         }
+ 243              		.loc 1 50 13 is_stmt 1 view .LVU56
+  50:Core/Src/main.c ****         }
+ 244              		.loc 1 50 27 is_stmt 0 view .LVU57
+ 245 0036 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 246 0038 DBB2     		uxtb	r3, r3
+  50:Core/Src/main.c ****         }
+ 247              		.loc 1 50 16 view .LVU58
+ 248 003a 062B     		cmp	r3, #6
+ 249 003c 02D9     		bls	.L11
+  50:Core/Src/main.c ****         }
+ 250              		.loc 1 50 32 is_stmt 1 discriminator 1 view .LVU59
+  50:Core/Src/main.c ****         }
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 7
+
+
+ 251              		.loc 1 50 42 is_stmt 0 discriminator 1 view .LVU60
+ 252 003e 1346     		mov	r3, r2
+ 253 0040 0122     		movs	r2, #1
+ 254 0042 1A70     		strb	r2, [r3]
+ 255              	.L11:
+  55:Core/Src/main.c ****         for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+ 256              		.loc 1 55 5 is_stmt 1 view .LVU61
+  55:Core/Src/main.c ****         for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+ 257              		.loc 1 55 15 is_stmt 0 view .LVU62
+ 258 0044 134B     		ldr	r3, .L19
+ 259 0046 1B69     		ldr	r3, [r3, #16]
+  55:Core/Src/main.c ****         for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+ 260              		.loc 1 55 8 view .LVU63
+ 261 0048 13F4805F 		tst	r3, #4096
+ 262 004c 0ED0     		beq	.L10
+  56:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID12) != 0) {
+ 263              		.loc 1 56 9 is_stmt 1 view .LVU64
+ 264              	.LBB4:
+  56:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID12) != 0) {
+ 265              		.loc 1 56 14 view .LVU65
+  56:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID12) != 0) {
+ 266              		.loc 1 56 27 is_stmt 0 view .LVU66
+ 267 004e 0023     		movs	r3, #0
+ 268 0050 0193     		str	r3, [sp, #4]
+  56:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID12) != 0) {
+ 269              		.loc 1 56 9 view .LVU67
+ 270 0052 02E0     		b	.L15
+ 271              	.L16:
+  56:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID12) != 0) {
+ 272              		.loc 1 56 47 is_stmt 1 discriminator 3 view .LVU68
+ 273 0054 019B     		ldr	r3, [sp, #4]
+ 274 0056 0133     		adds	r3, r3, #1
+ 275 0058 0193     		str	r3, [sp, #4]
+ 276              	.L15:
+  56:Core/Src/main.c ****         if ((GPIOC->IDR & GPIO_IDR_ID12) != 0) {
+ 277              		.loc 1 56 36 discriminator 1 view .LVU69
+ 278 005a 019A     		ldr	r2, [sp, #4]
+ 279 005c 0E4B     		ldr	r3, .L19+4
+ 280 005e 9A42     		cmp	r2, r3
+ 281 0060 F8DD     		ble	.L16
+ 282              	.LBE4:
+  57:Core/Src/main.c ****             offset = (offset + 1) % 6; // 偏移量每次按下按钮2后递增
+ 283              		.loc 1 57 9 view .LVU70
+  57:Core/Src/main.c ****             offset = (offset + 1) % 6; // 偏移量每次按下按钮2后递增
+ 284              		.loc 1 57 19 is_stmt 0 view .LVU71
+ 285 0062 0C4B     		ldr	r3, .L19
+ 286 0064 1B69     		ldr	r3, [r3, #16]
+  57:Core/Src/main.c ****             offset = (offset + 1) % 6; // 偏移量每次按下按钮2后递增
+ 287              		.loc 1 57 12 view .LVU72
+ 288 0066 13F4805F 		tst	r3, #4096
+ 289 006a 02D1     		bne	.L18
+ 290              	.L10:
+  62:Core/Src/main.c **** 
+ 291              		.loc 1 62 1 view .LVU73
+ 292 006c 03B0     		add	sp, sp, #12
+ 293              	.LCFI4:
+ 294              		.cfi_remember_state
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 8
+
+
+ 295              		.cfi_def_cfa_offset 4
+ 296              		@ sp needed
+ 297 006e 5DF804FB 		ldr	pc, [sp], #4
+ 298              	.L18:
+ 299              	.LCFI5:
+ 300              		.cfi_restore_state
+  58:Core/Src/main.c ****             UpdateLEDs(led_count); // 根据当前设置数量和偏移更新LED
+ 301              		.loc 1 58 13 is_stmt 1 view .LVU74
+  58:Core/Src/main.c ****             UpdateLEDs(led_count); // 根据当前设置数量和偏移更新LED
+ 302              		.loc 1 58 30 is_stmt 0 view .LVU75
+ 303 0072 0B49     		ldr	r1, .L19+12
+ 304 0074 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 305 0076 0132     		adds	r2, r2, #1
+  58:Core/Src/main.c ****             UpdateLEDs(led_count); // 根据当前设置数量和偏移更新LED
+ 306              		.loc 1 58 35 view .LVU76
+ 307 0078 0A4B     		ldr	r3, .L19+16
+ 308 007a 83FB0203 		smull	r0, r3, r3, r2
+ 309 007e 03EB4303 		add	r3, r3, r3, lsl #1
+ 310 0082 5800     		lsls	r0, r3, #1
+ 311 0084 131A     		subs	r3, r2, r0
+  58:Core/Src/main.c ****             UpdateLEDs(led_count); // 根据当前设置数量和偏移更新LED
+ 312              		.loc 1 58 20 view .LVU77
+ 313 0086 DBB2     		uxtb	r3, r3
+ 314 0088 0B70     		strb	r3, [r1]
+  59:Core/Src/main.c ****         }
+ 315              		.loc 1 59 13 is_stmt 1 view .LVU78
+ 316 008a 044B     		ldr	r3, .L19+8
+ 317 008c 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 318 008e FFF7FEFF 		bl	UpdateLEDs
+ 319              	.LVL5:
+  62:Core/Src/main.c **** 
+ 320              		.loc 1 62 1 is_stmt 0 view .LVU79
+ 321 0092 EBE7     		b	.L10
+ 322              	.L20:
+ 323              		.align	2
+ 324              	.L19:
+ 325 0094 00080240 		.word	1073874944
+ 326 0098 9F860100 		.word	99999
+ 327 009c 00000000 		.word	led_count
+ 328 00a0 00000000 		.word	offset
+ 329 00a4 ABAAAA2A 		.word	715827883
+ 330              		.cfi_endproc
+ 331              	.LFE132:
+ 333              		.section	.text.main,"ax",%progbits
+ 334              		.align	1
+ 335              		.global	main
+ 336              		.syntax unified
+ 337              		.thumb
+ 338              		.thumb_func
+ 340              	main:
+ 341              	.LFB130:
+  16:Core/Src/main.c ****     Init_GPIO(); // 初始化GPIO
+ 342              		.loc 1 16 16 is_stmt 1 view -0
+ 343              		.cfi_startproc
+ 344              		@ Volatile: function does not return.
+ 345              		@ args = 0, pretend = 0, frame = 0
+ 346              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 9
+
+
+ 347 0000 08B5     		push	{r3, lr}
+ 348              	.LCFI6:
+ 349              		.cfi_def_cfa_offset 8
+ 350              		.cfi_offset 3, -8
+ 351              		.cfi_offset 14, -4
+  17:Core/Src/main.c **** 
+ 352              		.loc 1 17 5 view .LVU81
+ 353 0002 FFF7FEFF 		bl	Init_GPIO
+ 354              	.LVL6:
+ 355              	.L22:
+  19:Core/Src/main.c ****         ProcessButtons(); // 持续处理按钮逻辑
+ 356              		.loc 1 19 5 view .LVU82
+  20:Core/Src/main.c ****     }
+ 357              		.loc 1 20 9 discriminator 1 view .LVU83
+ 358 0006 FFF7FEFF 		bl	ProcessButtons
+ 359              	.LVL7:
+  19:Core/Src/main.c ****         ProcessButtons(); // 持续处理按钮逻辑
+ 360              		.loc 1 19 11 view .LVU84
+ 361 000a FCE7     		b	.L22
+ 362              		.cfi_endproc
+ 363              	.LFE130:
+ 365              		.global	offset
+ 366              		.section	.bss.offset,"aw",%nobits
+ 369              	offset:
+ 370 0000 00       		.space	1
+ 371              		.global	current_led
+ 372              		.section	.bss.current_led,"aw",%nobits
+ 375              	current_led:
+ 376 0000 00       		.space	1
+ 377              		.global	led_count
+ 378              		.section	.data.led_count,"aw"
+ 381              	led_count:
+ 382 0000 01       		.byte	1
+ 383              		.text
+ 384              	.Letext0:
+ 385              		.file 2 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 386              		.file 3 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ 387              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\mono\AppData\Local\Temp\ccazCkTj.s:21     .text.main:00000000 $t
-C:\Users\mono\AppData\Local\Temp\ccazCkTj.s:27     .text.main:00000000 main
-C:\Users\mono\AppData\Local\Temp\ccazCkTj.s:78     .text.main:00000060 $d
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:21     .text.Init_GPIO:00000000 $t
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:27     .text.Init_GPIO:00000000 Init_GPIO
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:90     .text.Init_GPIO:0000004c $d
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:100    .text.UpdateLEDs:00000000 $t
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:106    .text.UpdateLEDs:00000000 UpdateLEDs
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:175    .text.UpdateLEDs:00000048 $d
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:369    .bss.offset:00000000 offset
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:183    .text.ProcessButtons:00000000 $t
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:189    .text.ProcessButtons:00000000 ProcessButtons
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:325    .text.ProcessButtons:00000094 $d
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:381    .data.led_count:00000000 led_count
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:334    .text.main:00000000 $t
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:340    .text.main:00000000 main
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:370    .bss.offset:00000000 $d
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:375    .bss.current_led:00000000 current_led
+C:\Users\mono\AppData\Local\Temp\ccXqZcrV.s:376    .bss.current_led:00000000 $d
 
 NO UNDEFINED SYMBOLS

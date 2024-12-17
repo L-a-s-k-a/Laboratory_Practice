@@ -15,7 +15,7 @@
  //设置按钮
 #define GPIOC_IDR                   (*(uint32_t*)(0x40020800UL + 0x10UL)) 
 //按钮1
-#define GPIOC_IDR_PIN13             0x002000UL 
+#define GPIOC_IDR_PIN6             0x40UL 
 //按钮2
 #define GPIOC_IDR_PIN12             0x001000UL  
 //设置LED1
@@ -46,10 +46,23 @@
 #define GPIOB_PUPDR_PIN8_NOPUPD    0x000000UL
 #define GPIOB_BSRR_PIN8_SET        0x00100UL 
 #define GPIOB_BSRR_PIN8_RESET      0x001000000UL
-
+//设置LED5
+#define GPIOB_MODE_PIN9_OUT        0x40000UL 
+#define GPIOB_OTYPE_PIN9_PP        0x000000UL 
+#define GPIOB_OSPEED_PIN9_MID      0x40000UL 
+#define GPIOB_PUPDR_PIN9_NOPUPD    0x000000UL
+#define GPIOB_BSRR_PIN9_SET        0x00200UL 
+#define GPIOB_BSRR_PIN9_RESET      0x002000000UL
+//设置LED6
+#define GPIOB_MODE_PIN10_OUT        0x100000UL 
+#define GPIOB_OTYPE_PIN10_PP        0x000000UL 
+#define GPIOB_OSPEED_PIN10_MID      0x100000UL 
+#define GPIOB_PUPDR_PIN10_NOPUPD    0x000000UL
+#define GPIOB_BSRR_PIN10_SET        0x00400UL 
+#define GPIOB_BSRR_PIN10_RESET      0x004000000UL
  
 #define READ_BIT(REG, BIT)          (REG & BIT) 
 #define SET_BIT(REG, BIT)           (REG |= BIT) 
  
-void GPIO_Ini_1(void);
-void GPIO_Ini_2(void);
+// void GPIO_Ini_1(void);
+// void GPIO_Ini_2(void);
