@@ -1,0 +1,278 @@
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 1
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"it_handlers.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "Core/Src/it_handlers.c"
+  19              		.section	.text.SysTick_Handler,"ax",%progbits
+  20              		.align	1
+  21              		.global	SysTick_Handler
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	SysTick_Handler:
+  27              	.LFB141:
+   1:Core/Src/it_handlers.c **** #include "it_handlers.h"
+   2:Core/Src/it_handlers.c **** 
+   3:Core/Src/it_handlers.c **** extern uint16_t FLICKER_PERIOD;
+   4:Core/Src/it_handlers.c **** extern uint16_t GlobalTickCount,
+   5:Core/Src/it_handlers.c ****                 ExternInterruptTickCount1,
+   6:Core/Src/it_handlers.c ****                 ExternInterruptTickCount2, 
+   7:Core/Src/it_handlers.c ****                 ExternInterruptTickCount3;
+   8:Core/Src/it_handlers.c **** extern uint16_t LedState2Data[3][6];
+   9:Core/Src/it_handlers.c **** void SysTick_Handler(void)
+  10:Core/Src/it_handlers.c **** {
+  28              		.loc 1 10 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  11:Core/Src/it_handlers.c ****     ExternInterruptTickCount1++;
+  33              		.loc 1 11 5 view .LVU1
+  34              		.loc 1 11 30 is_stmt 0 view .LVU2
+  35 0000 0D4A     		ldr	r2, .L4
+  36 0002 1388     		ldrh	r3, [r2]
+  37 0004 0133     		adds	r3, r3, #1
+  38 0006 1380     		strh	r3, [r2]	@ movhi
+  12:Core/Src/it_handlers.c ****     ExternInterruptTickCount2++;
+  39              		.loc 1 12 5 is_stmt 1 view .LVU3
+  40              		.loc 1 12 30 is_stmt 0 view .LVU4
+  41 0008 0C4A     		ldr	r2, .L4+4
+  42 000a 1388     		ldrh	r3, [r2]
+  43 000c 0133     		adds	r3, r3, #1
+  44 000e 1380     		strh	r3, [r2]	@ movhi
+  13:Core/Src/it_handlers.c ****     ExternInterruptTickCount3++;
+  45              		.loc 1 13 5 is_stmt 1 view .LVU5
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s 			page 2
+
+
+  46              		.loc 1 13 30 is_stmt 0 view .LVU6
+  47 0010 0B4A     		ldr	r2, .L4+8
+  48 0012 1388     		ldrh	r3, [r2]
+  49 0014 0133     		adds	r3, r3, #1
+  50 0016 1380     		strh	r3, [r2]	@ movhi
+  14:Core/Src/it_handlers.c ****     for(int ii=0;ii<6;ii++){
+  51              		.loc 1 14 5 is_stmt 1 view .LVU7
+  52              	.LBB2:
+  53              		.loc 1 14 9 view .LVU8
+  54              	.LVL0:
+  55              		.loc 1 14 13 is_stmt 0 view .LVU9
+  56 0018 0023     		movs	r3, #0
+  57              		.loc 1 14 5 view .LVU10
+  58 001a 06E0     		b	.L2
+  59              	.LVL1:
+  60              	.L3:
+  15:Core/Src/it_handlers.c ****         LedState2Data[0][ii]++;
+  61              		.loc 1 15 9 is_stmt 1 discriminator 3 view .LVU11
+  62              		.loc 1 15 25 is_stmt 0 discriminator 3 view .LVU12
+  63 001c 0949     		ldr	r1, .L4+12
+  64 001e 31F81320 		ldrh	r2, [r1, r3, lsl #1]
+  65              		.loc 1 15 29 discriminator 3 view .LVU13
+  66 0022 0132     		adds	r2, r2, #1
+  67 0024 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
+  14:Core/Src/it_handlers.c ****     for(int ii=0;ii<6;ii++){
+  68              		.loc 1 14 25 is_stmt 1 discriminator 3 view .LVU14
+  69 0028 0133     		adds	r3, r3, #1
+  70              	.LVL2:
+  71              	.L2:
+  14:Core/Src/it_handlers.c ****     for(int ii=0;ii<6;ii++){
+  72              		.loc 1 14 20 discriminator 1 view .LVU15
+  73 002a 052B     		cmp	r3, #5
+  74 002c F6DD     		ble	.L3
+  75              	.LBE2:
+  16:Core/Src/it_handlers.c ****     }
+  17:Core/Src/it_handlers.c ****     GlobalTickCount++;
+  76              		.loc 1 17 5 view .LVU16
+  77              		.loc 1 17 20 is_stmt 0 view .LVU17
+  78 002e 064A     		ldr	r2, .L4+16
+  79 0030 1388     		ldrh	r3, [r2]
+  80              	.LVL3:
+  81              		.loc 1 17 20 view .LVU18
+  82 0032 0133     		adds	r3, r3, #1
+  83 0034 1380     		strh	r3, [r2]	@ movhi
+  18:Core/Src/it_handlers.c **** }
+  84              		.loc 1 18 1 view .LVU19
+  85 0036 7047     		bx	lr
+  86              	.L5:
+  87              		.align	2
+  88              	.L4:
+  89 0038 00000000 		.word	ExternInterruptTickCount1
+  90 003c 00000000 		.word	ExternInterruptTickCount2
+  91 0040 00000000 		.word	ExternInterruptTickCount3
+  92 0044 00000000 		.word	LedState2Data
+  93 0048 00000000 		.word	GlobalTickCount
+  94              		.cfi_endproc
+  95              	.LFE141:
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s 			page 3
+
+
+  97              		.section	.text.EXTI0_IRQHandler,"ax",%progbits
+  98              		.align	1
+  99              		.global	EXTI0_IRQHandler
+ 100              		.syntax unified
+ 101              		.thumb
+ 102              		.thumb_func
+ 104              	EXTI0_IRQHandler:
+ 105              	.LFB142:
+  19:Core/Src/it_handlers.c **** 
+  20:Core/Src/it_handlers.c **** void EXTI0_IRQHandler(void)
+  21:Core/Src/it_handlers.c **** {
+ 106              		.loc 1 21 1 is_stmt 1 view -0
+ 107              		.cfi_startproc
+ 108              		@ args = 0, pretend = 0, frame = 0
+ 109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110 0000 08B5     		push	{r3, lr}
+ 111              	.LCFI0:
+ 112              		.cfi_def_cfa_offset 8
+ 113              		.cfi_offset 3, -8
+ 114              		.cfi_offset 14, -4
+  22:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR0);
+ 115              		.loc 1 22 5 view .LVU21
+ 116 0002 044A     		ldr	r2, .L8
+ 117 0004 5369     		ldr	r3, [r2, #20]
+ 118 0006 43F00103 		orr	r3, r3, #1
+ 119 000a 5361     		str	r3, [r2, #20]
+  23:Core/Src/it_handlers.c ****     b1_clicked();
+ 120              		.loc 1 23 5 view .LVU22
+ 121 000c FFF7FEFF 		bl	b1_clicked
+ 122              	.LVL4:
+  24:Core/Src/it_handlers.c **** }
+ 123              		.loc 1 24 1 is_stmt 0 view .LVU23
+ 124 0010 08BD     		pop	{r3, pc}
+ 125              	.L9:
+ 126 0012 00BF     		.align	2
+ 127              	.L8:
+ 128 0014 003C0140 		.word	1073822720
+ 129              		.cfi_endproc
+ 130              	.LFE142:
+ 132              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+ 133              		.align	1
+ 134              		.global	EXTI9_5_IRQHandler
+ 135              		.syntax unified
+ 136              		.thumb
+ 137              		.thumb_func
+ 139              	EXTI9_5_IRQHandler:
+ 140              	.LFB143:
+  25:Core/Src/it_handlers.c **** 
+  26:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void)
+  27:Core/Src/it_handlers.c **** {
+ 141              		.loc 1 27 1 is_stmt 1 view -0
+ 142              		.cfi_startproc
+ 143              		@ args = 0, pretend = 0, frame = 0
+ 144              		@ frame_needed = 0, uses_anonymous_args = 0
+ 145 0000 08B5     		push	{r3, lr}
+ 146              	.LCFI1:
+ 147              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s 			page 4
+
+
+ 148              		.cfi_offset 3, -8
+ 149              		.cfi_offset 14, -4
+  28:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR9); // Сброс флага прерывания
+ 150              		.loc 1 28 5 view .LVU25
+ 151 0002 044A     		ldr	r2, .L12
+ 152 0004 5369     		ldr	r3, [r2, #20]
+ 153 0006 43F40073 		orr	r3, r3, #512
+ 154 000a 5361     		str	r3, [r2, #20]
+  29:Core/Src/it_handlers.c ****     b2_clicked();
+ 155              		.loc 1 29 5 view .LVU26
+ 156 000c FFF7FEFF 		bl	b2_clicked
+ 157              	.LVL5:
+  30:Core/Src/it_handlers.c **** }
+ 158              		.loc 1 30 1 is_stmt 0 view .LVU27
+ 159 0010 08BD     		pop	{r3, pc}
+ 160              	.L13:
+ 161 0012 00BF     		.align	2
+ 162              	.L12:
+ 163 0014 003C0140 		.word	1073822720
+ 164              		.cfi_endproc
+ 165              	.LFE143:
+ 167              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ 168              		.align	1
+ 169              		.global	EXTI15_10_IRQHandler
+ 170              		.syntax unified
+ 171              		.thumb
+ 172              		.thumb_func
+ 174              	EXTI15_10_IRQHandler:
+ 175              	.LFB144:
+  31:Core/Src/it_handlers.c **** 
+  32:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void)
+  33:Core/Src/it_handlers.c **** {
+ 176              		.loc 1 33 1 is_stmt 1 view -0
+ 177              		.cfi_startproc
+ 178              		@ args = 0, pretend = 0, frame = 0
+ 179              		@ frame_needed = 0, uses_anonymous_args = 0
+ 180 0000 08B5     		push	{r3, lr}
+ 181              	.LCFI2:
+ 182              		.cfi_def_cfa_offset 8
+ 183              		.cfi_offset 3, -8
+ 184              		.cfi_offset 14, -4
+  34:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR12); // Сброс флага прерывания
+ 185              		.loc 1 34 5 view .LVU29
+ 186 0002 044A     		ldr	r2, .L16
+ 187 0004 5369     		ldr	r3, [r2, #20]
+ 188 0006 43F48053 		orr	r3, r3, #4096
+ 189 000a 5361     		str	r3, [r2, #20]
+  35:Core/Src/it_handlers.c ****     b3_clicked();
+ 190              		.loc 1 35 5 view .LVU30
+ 191 000c FFF7FEFF 		bl	b3_clicked
+ 192              	.LVL6:
+  36:Core/Src/it_handlers.c **** }...
+ 193              		.loc 1 36 1 is_stmt 0 view .LVU31
+ 194 0010 08BD     		pop	{r3, pc}
+ 195              	.L17:
+ 196 0012 00BF     		.align	2
+ 197              	.L16:
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s 			page 5
+
+
+ 198 0014 003C0140 		.word	1073822720
+ 199              		.cfi_endproc
+ 200              	.LFE144:
+ 202              		.text
+ 203              	.Letext0:
+ 204              		.file 2 "C:\\ST\\STM32CubeCLT_1.17.0\\GNU-tools-for-STM32\\bin/../lib/gcc/arm-none-eabi/12.3.1/../
+ 205              		.file 3 "C:\\ST\\STM32CubeCLT_1.17.0\\GNU-tools-for-STM32\\bin/../lib/gcc/arm-none-eabi/12.3.1/../
+ 206              		.file 4 "CMSIS/Devices/.\\stm32f767xx.h"
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:20     .text.SysTick_Handler:00000000 $t
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:26     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:89     .text.SysTick_Handler:00000038 $d
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:98     .text.EXTI0_IRQHandler:00000000 $t
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:104    .text.EXTI0_IRQHandler:00000000 EXTI0_IRQHandler
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:128    .text.EXTI0_IRQHandler:00000014 $d
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:133    .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:139    .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:163    .text.EXTI9_5_IRQHandler:00000014 $d
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:168    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:174    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\mns94\AppData\Local\Temp\ccBdbSGb.s:198    .text.EXTI15_10_IRQHandler:00000014 $d
+
+UNDEFINED SYMBOLS
+ExternInterruptTickCount1
+ExternInterruptTickCount2
+ExternInterruptTickCount3
+LedState2Data
+GlobalTickCount
+b1_clicked
+b2_clicked
+b3_clicked

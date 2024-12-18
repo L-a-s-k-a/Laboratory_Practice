@@ -1,13 +1,11 @@
 /*
-******************************************************************************
+*****************************************************************************
 **
 
 **  File        : LinkerScript.ld
 **
-**  Author		: STM32CubeMX
-**
-**  Abstract    : Linker script for STM32F429ZITx series
-**                2048Kbytes FLASH and 256Kbytes RAM
+**  Abstract    : Linker script for STM32F767ZITx Device with
+**                2048KByte FLASH, 512KByte RAM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -16,35 +14,13 @@
 **
 **  Target      : STMicroelectronics STM32
 **
-**  Distribution: The file is distributed “as is,” without any warranty
+**
+**  Distribution: The file is distributed as is, without any warranty
 **                of any kind.
 **
 *****************************************************************************
-** @attention
 **
-** <h2><center>&copy; COPYRIGHT(c) 2019 STMicroelectronics</center></h2>
-**
-** Redistribution and use in source and binary forms, with or without modification,
-** are permitted provided that the following conditions are met:
-**   1. Redistributions of source code must retain the above copyright notice,
-**      this list of conditions and the following disclaimer.
-**   2. Redistributions in binary form must reproduce the above copyright notice,
-**      this list of conditions and the following disclaimer in the documentation
-**      and/or other materials provided with the distribution.
-**   3. Neither the name of STMicroelectronics nor the names of its contributors
-**      may be used to endorse or promote products derived from this software
-**      without specific prior written permission.
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-** IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-** DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-** FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-** DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-** SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-** CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-** OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**  File provided by SW4STM32
 **
 *****************************************************************************
 */
@@ -53,7 +29,7 @@
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
+_estack = 0x20080000;    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0x200;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
@@ -61,9 +37,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 192K
-CCMRAM (xrw)      : ORIGIN = 0x10000000, LENGTH = 64K
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 2048K
+FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 2048K
+RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 512K
 }
 
 /* Define output sections */
@@ -103,14 +78,14 @@ SECTIONS
     . = ALIGN(4);
   } >FLASH
 
-  .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
+  .ARM.extab   (READONLY): { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
   .ARM : {
     __exidx_start = .;
     *(.ARM.exidx*)
     __exidx_end = .;
   } >FLASH
 
-  .preinit_array     :
+  .preinit_array     (READONLY):
   {
     PROVIDE_HIDDEN (__preinit_array_start = .);
     KEEP (*(.preinit_array*))
@@ -146,31 +121,12 @@ SECTIONS
     _edata = .;        /* define a global symbol at data end */
   } >RAM AT> FLASH
 
-  _siccmram = LOADADDR(.ccmram);
-
-  /* CCM-RAM section 
-  * 
-  * IMPORTANT NOTE! 
-  * If initialized variables will be placed in this section,
-  * the startup code needs to be modified to copy the init-values.  
-  */
-  .ccmram :
-  {
-    . = ALIGN(4);
-    _sccmram = .;       /* create a global symbol at ccmram start */
-    *(.ccmram)
-    *(.ccmram*)
-    
-    . = ALIGN(4);
-    _eccmram = .;       /* create a global symbol at ccmram end */
-  } >CCMRAM AT> FLASH
-
   
   /* Uninitialized data section */
   . = ALIGN(4);
   .bss :
   {
-    /* This is used by the startup in order to initialize the .bss secion */
+    /* This is used by the startup in order to initialize the .bss section */
     _sbss = .;         /* define a global symbol at bss start */
     __bss_start__ = _sbss;
     *(.bss)
@@ -205,5 +161,4 @@ SECTIONS
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }
-
 

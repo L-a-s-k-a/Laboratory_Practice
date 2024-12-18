@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = F429ZI_CMSIS
+TARGET = test
 
 
 ######################################
@@ -29,7 +29,7 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-BUILD_DIR = build
+BUILD_DIR = Build
 
 ######################################
 # source
@@ -37,11 +37,15 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
+Core/Src/init.c \
+Core/Src/leds.c \
+Core/Src/it_handlers.c \
+Core/Src/system_stm32f7xx.c \
 
 
 # ASM sources
 ASM_SOURCES =  \
-startup_stm32f429xx.s
+startup_stm32f767xx.s
 
 
 #######################################
@@ -68,10 +72,10 @@ BIN = $(CP) -O binary -S
 # CFLAGS
 #######################################
 # cpu
-CPU = -mcpu=cortex-m4
+CPU = -mcpu=cortex-m7
 
 # fpu
-FPU = -mfpu=fpv4-sp-d16
+FPU = -mfpu=auto
 
 # float-abi
 FLOAT-ABI = -mfloat-abi=hard
@@ -85,7 +89,7 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
--DSTM32F429xx
+-DSTM32F767xx
 #-DUSE_HAL_DRIVER \
 
 
@@ -118,7 +122,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32F429ZITx_FLASH.ld
+LDSCRIPT = STM32F767ZITx_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
@@ -168,7 +172,7 @@ clean:
 # openocd
 #######################################
 flash: all
-	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
+	openocd -f interface/stlink.cfg -f target/stm32f7x.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
 
 #######################################
 # dependencies
