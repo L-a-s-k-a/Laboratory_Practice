@@ -1,0 +1,346 @@
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 1
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"main.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "Core/Src/main.c"
+  19              		.section	.text.main,"ax",%progbits
+  20              		.align	1
+  21              		.global	main
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	main:
+  27              	.LFB141:
+   1:Core/Src/main.c **** #include <init.h>
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** #include "it_handlers.h"
+   4:Core/Src/main.c **** #include "leds.h"
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** uint16_t LedFreq[2][3] = {{1600,450,330},{2000, 830, 500}};
+   7:Core/Src/main.c **** uint16_t LedState2Data[3][6]={{0,0,0,0,0,0},{2000,2000,2000,2000,2000,2000},{0,0,0,0,0,0}};
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** uint8_t b1_clicks= 0;
+  12:Core/Src/main.c **** uint8_t b2_clicks = 0;
+  13:Core/Src/main.c **** uint8_t b3_clicks = 0;
+  14:Core/Src/main.c **** uint16_t GlobalTickCount,
+  15:Core/Src/main.c ****         ExternInterruptTickCount1, 
+  16:Core/Src/main.c ****         ExternInterruptTickCount2, 
+  17:Core/Src/main.c ****         ExternInterruptTickCount3;
+  18:Core/Src/main.c **** uint16_t FLICKER_PERIOD = 4000;
+  19:Core/Src/main.c **** uint16_t delay = 500;
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c **** int8_t i1=0;
+  22:Core/Src/main.c **** int8_t i2=0;
+  23:Core/Src/main.c **** int8_t i3=0;
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c **** uint8_t flagUp2 = 1;
+  26:Core/Src/main.c **** uint8_t state2_flag=1;
+  27:Core/Src/main.c **** uint8_t state_check, p_state_check = 0;
+  28:Core/Src/main.c **** int main(void)
+  29:Core/Src/main.c **** {
+  28              		.loc 1 29 1 view -0
+  29              		.cfi_startproc
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s 			page 2
+
+
+  30              		@ Volatile: function does not return.
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  30:Core/Src/main.c ****         GPIO_Ini();     // Инициализация поротв GPIO
+  38              		.loc 1 30 9 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Ini
+  40              	.LVL0:
+  31:Core/Src/main.c ****         RCC_Ini();      // Инициализация системы тактирования RCC
+  41              		.loc 1 31 9 view .LVU2
+  42 0006 FFF7FEFF 		bl	RCC_Ini
+  43              	.LVL1:
+  32:Core/Src/main.c ****         ITR_Ini();      // Инициализация контроллера прерываний
+  44              		.loc 1 32 9 view .LVU3
+  45 000a FFF7FEFF 		bl	ITR_Ini
+  46              	.LVL2:
+  33:Core/Src/main.c ****         SysTick_Init(); // Инициализация системного таймера
+  47              		.loc 1 33 9 view .LVU4
+  48 000e FFF7FEFF 		bl	SysTick_Init
+  49              	.LVL3:
+  50 0012 05E0     		b	.L4
+  51              	.L5:
+  34:Core/Src/main.c ****         while (1)
+  35:Core/Src/main.c ****         {
+  36:Core/Src/main.c ****                 state_check = b1_clicks%2;
+  37:Core/Src/main.c ****                 switch (b1_clicks%2){
+  38:Core/Src/main.c ****                         case 1:
+  39:Core/Src/main.c ****                         if(state_check!=p_state_check)leds_state_down();
+  40:Core/Src/main.c ****                         leds_state2();
+  52              		.loc 1 40 25 view .LVU5
+  53 0014 FFF7FEFF 		bl	leds_state2
+  54              	.LVL4:
+  41:Core/Src/main.c ****                         p_state_check=state_check;
+  55              		.loc 1 41 25 view .LVU6
+  56              		.loc 1 41 38 is_stmt 0 view .LVU7
+  57 0018 104B     		ldr	r3, .L9
+  58 001a 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+  59 001c 104B     		ldr	r3, .L9+4
+  60 001e 1A70     		strb	r2, [r3]
+  42:Core/Src/main.c ****                         break;
+  61              		.loc 1 42 25 is_stmt 1 view .LVU8
+  62              	.L4:
+  34:Core/Src/main.c ****         while (1)
+  63              		.loc 1 34 9 view .LVU9
+  36:Core/Src/main.c ****                 switch (b1_clicks%2){
+  64              		.loc 1 36 17 view .LVU10
+  36:Core/Src/main.c ****                 switch (b1_clicks%2){
+  65              		.loc 1 36 40 is_stmt 0 view .LVU11
+  66 0020 104B     		ldr	r3, .L9+8
+  67 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  68 0024 03F00103 		and	r3, r3, #1
+  36:Core/Src/main.c ****                 switch (b1_clicks%2){
+  69              		.loc 1 36 29 view .LVU12
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s 			page 3
+
+
+  70 0028 0C4A     		ldr	r2, .L9
+  71 002a 1370     		strb	r3, [r2]
+  37:Core/Src/main.c ****                         case 1:
+  72              		.loc 1 37 17 is_stmt 1 view .LVU13
+  73 002c 43B1     		cbz	r3, .L3
+  74 002e 002B     		cmp	r3, #0
+  75 0030 F6D0     		beq	.L4
+  39:Core/Src/main.c ****                         leds_state2();
+  76              		.loc 1 39 25 view .LVU14
+  39:Core/Src/main.c ****                         leds_state2();
+  77              		.loc 1 39 39 is_stmt 0 view .LVU15
+  78 0032 0B4A     		ldr	r2, .L9+4
+  79 0034 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  39:Core/Src/main.c ****                         leds_state2();
+  80              		.loc 1 39 27 view .LVU16
+  81 0036 9342     		cmp	r3, r2
+  82 0038 ECD0     		beq	.L5
+  39:Core/Src/main.c ****                         leds_state2();
+  83              		.loc 1 39 55 is_stmt 1 discriminator 1 view .LVU17
+  84 003a FFF7FEFF 		bl	leds_state_down
+  85              	.LVL5:
+  86 003e E9E7     		b	.L5
+  87              	.L3:
+  43:Core/Src/main.c ****                         case 0:
+  44:Core/Src/main.c ****                         if(state_check!=p_state_check)leds_state_down();
+  88              		.loc 1 44 25 view .LVU18
+  89              		.loc 1 44 39 is_stmt 0 view .LVU19
+  90 0040 074A     		ldr	r2, .L9+4
+  91 0042 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  92              		.loc 1 44 27 view .LVU20
+  93 0044 9342     		cmp	r3, r2
+  94 0046 01D0     		beq	.L7
+  95              		.loc 1 44 55 is_stmt 1 discriminator 1 view .LVU21
+  96 0048 FFF7FEFF 		bl	leds_state_down
+  97              	.LVL6:
+  98              	.L7:
+  45:Core/Src/main.c ****                         leds_state1();
+  99              		.loc 1 45 25 view .LVU22
+ 100 004c FFF7FEFF 		bl	leds_state1
+ 101              	.LVL7:
+  46:Core/Src/main.c ****                         p_state_check=state_check;
+ 102              		.loc 1 46 25 view .LVU23
+ 103              		.loc 1 46 38 is_stmt 0 view .LVU24
+ 104 0050 024B     		ldr	r3, .L9
+ 105 0052 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 106 0054 024B     		ldr	r3, .L9+4
+ 107 0056 1A70     		strb	r2, [r3]
+  47:Core/Src/main.c ****                         break;
+ 108              		.loc 1 47 25 is_stmt 1 view .LVU25
+ 109 0058 E2E7     		b	.L4
+ 110              	.L10:
+ 111 005a 00BF     		.align	2
+ 112              	.L9:
+ 113 005c 00000000 		.word	state_check
+ 114 0060 00000000 		.word	p_state_check
+ 115 0064 00000000 		.word	b1_clicks
+ 116              		.cfi_endproc
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s 			page 4
+
+
+ 117              	.LFE141:
+ 119              		.global	p_state_check
+ 120              		.section	.bss.p_state_check,"aw",%nobits
+ 123              	p_state_check:
+ 124 0000 00       		.space	1
+ 125              		.global	state_check
+ 126              		.section	.bss.state_check,"aw",%nobits
+ 129              	state_check:
+ 130 0000 00       		.space	1
+ 131              		.global	state2_flag
+ 132              		.section	.data.state2_flag,"aw"
+ 135              	state2_flag:
+ 136 0000 01       		.byte	1
+ 137              		.global	flagUp2
+ 138              		.section	.data.flagUp2,"aw"
+ 141              	flagUp2:
+ 142 0000 01       		.byte	1
+ 143              		.global	i3
+ 144              		.section	.bss.i3,"aw",%nobits
+ 147              	i3:
+ 148 0000 00       		.space	1
+ 149              		.global	i2
+ 150              		.section	.bss.i2,"aw",%nobits
+ 153              	i2:
+ 154 0000 00       		.space	1
+ 155              		.global	i1
+ 156              		.section	.bss.i1,"aw",%nobits
+ 159              	i1:
+ 160 0000 00       		.space	1
+ 161              		.global	delay
+ 162              		.section	.data.delay,"aw"
+ 163              		.align	1
+ 166              	delay:
+ 167 0000 F401     		.short	500
+ 168              		.global	FLICKER_PERIOD
+ 169              		.section	.data.FLICKER_PERIOD,"aw"
+ 170              		.align	1
+ 173              	FLICKER_PERIOD:
+ 174 0000 A00F     		.short	4000
+ 175              		.global	ExternInterruptTickCount3
+ 176              		.section	.bss.ExternInterruptTickCount3,"aw",%nobits
+ 177              		.align	1
+ 180              	ExternInterruptTickCount3:
+ 181 0000 0000     		.space	2
+ 182              		.global	ExternInterruptTickCount2
+ 183              		.section	.bss.ExternInterruptTickCount2,"aw",%nobits
+ 184              		.align	1
+ 187              	ExternInterruptTickCount2:
+ 188 0000 0000     		.space	2
+ 189              		.global	ExternInterruptTickCount1
+ 190              		.section	.bss.ExternInterruptTickCount1,"aw",%nobits
+ 191              		.align	1
+ 194              	ExternInterruptTickCount1:
+ 195 0000 0000     		.space	2
+ 196              		.global	GlobalTickCount
+ 197              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 198              		.align	1
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s 			page 5
+
+
+ 201              	GlobalTickCount:
+ 202 0000 0000     		.space	2
+ 203              		.global	b3_clicks
+ 204              		.section	.bss.b3_clicks,"aw",%nobits
+ 207              	b3_clicks:
+ 208 0000 00       		.space	1
+ 209              		.global	b2_clicks
+ 210              		.section	.bss.b2_clicks,"aw",%nobits
+ 213              	b2_clicks:
+ 214 0000 00       		.space	1
+ 215              		.global	b1_clicks
+ 216              		.section	.bss.b1_clicks,"aw",%nobits
+ 219              	b1_clicks:
+ 220 0000 00       		.space	1
+ 221              		.global	LedState2Data
+ 222              		.section	.data.LedState2Data,"aw"
+ 223              		.align	2
+ 226              	LedState2Data:
+ 227 0000 0000     		.short	0
+ 228 0002 0000     		.short	0
+ 229 0004 0000     		.short	0
+ 230 0006 0000     		.short	0
+ 231 0008 0000     		.short	0
+ 232 000a 0000     		.short	0
+ 233 000c D007     		.short	2000
+ 234 000e D007     		.short	2000
+ 235 0010 D007     		.short	2000
+ 236 0012 D007     		.short	2000
+ 237 0014 D007     		.short	2000
+ 238 0016 D007     		.short	2000
+ 239 0018 0000     		.short	0
+ 240 001a 0000     		.short	0
+ 241 001c 0000     		.short	0
+ 242 001e 0000     		.short	0
+ 243 0020 0000     		.short	0
+ 244 0022 0000     		.short	0
+ 245              		.global	LedFreq
+ 246              		.section	.data.LedFreq,"aw"
+ 247              		.align	2
+ 250              	LedFreq:
+ 251 0000 4006     		.short	1600
+ 252 0002 C201     		.short	450
+ 253 0004 4A01     		.short	330
+ 254 0006 D007     		.short	2000
+ 255 0008 3E03     		.short	830
+ 256 000a F401     		.short	500
+ 257              		.text
+ 258              	.Letext0:
+ 259              		.file 2 "C:\\ST\\STM32CubeCLT_1.17.0\\GNU-tools-for-STM32\\bin/../lib/gcc/arm-none-eabi/12.3.1/../
+ 260              		.file 3 "C:\\ST\\STM32CubeCLT_1.17.0\\GNU-tools-for-STM32\\bin/../lib/gcc/arm-none-eabi/12.3.1/../
+ 261              		.file 4 "Core/Inc/leds.h"
+ 262              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:20     .text.main:00000000 $t
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:26     .text.main:00000000 main
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:113    .text.main:0000005c $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:129    .bss.state_check:00000000 state_check
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:123    .bss.p_state_check:00000000 p_state_check
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:219    .bss.b1_clicks:00000000 b1_clicks
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:124    .bss.p_state_check:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:130    .bss.state_check:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:135    .data.state2_flag:00000000 state2_flag
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:141    .data.flagUp2:00000000 flagUp2
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:147    .bss.i3:00000000 i3
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:148    .bss.i3:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:153    .bss.i2:00000000 i2
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:154    .bss.i2:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:159    .bss.i1:00000000 i1
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:160    .bss.i1:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:166    .data.delay:00000000 delay
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:163    .data.delay:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:173    .data.FLICKER_PERIOD:00000000 FLICKER_PERIOD
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:170    .data.FLICKER_PERIOD:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:180    .bss.ExternInterruptTickCount3:00000000 ExternInterruptTickCount3
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:177    .bss.ExternInterruptTickCount3:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:187    .bss.ExternInterruptTickCount2:00000000 ExternInterruptTickCount2
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:184    .bss.ExternInterruptTickCount2:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:194    .bss.ExternInterruptTickCount1:00000000 ExternInterruptTickCount1
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:191    .bss.ExternInterruptTickCount1:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:201    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:198    .bss.GlobalTickCount:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:207    .bss.b3_clicks:00000000 b3_clicks
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:208    .bss.b3_clicks:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:213    .bss.b2_clicks:00000000 b2_clicks
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:214    .bss.b2_clicks:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:220    .bss.b1_clicks:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:226    .data.LedState2Data:00000000 LedState2Data
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:223    .data.LedState2Data:00000000 $d
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:250    .data.LedFreq:00000000 LedFreq
+C:\Users\mns94\AppData\Local\Temp\cccyoUIP.s:247    .data.LedFreq:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
+RCC_Ini
+ITR_Ini
+SysTick_Init
+leds_state2
+leds_state_down
+leds_state1
