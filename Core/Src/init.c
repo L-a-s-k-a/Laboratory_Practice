@@ -1,7 +1,5 @@
-
 #include "../Inc/init.h"
 
-// GPIO初始化1：初始化GPIOB（LED控制引脚）
 void GPIO_Ini_1(void) {
     // 使能GPIOB时钟
     RCC_GPIO_EN |= RCC_GPIOB_EN;
@@ -19,21 +17,10 @@ void GPIO_Ini_1(void) {
     GPIOB_PUPDR &= ~(GPIOB_PUPDR_PIN0_NOPUPD | GPIOB_PUPDR_PIN7_NOPUPD | GPIOB_PUPDR_PIN14_NOPUPD | GPIOB_PUPDR_PIN8_NOPUPD);
 }
 
-// GPIO初始化2：初始化GPIOC（按钮输入引脚）
 void GPIO_Ini_2(void) {
     // 使能GPIOC时钟
     RCC_GPIO_EN |= RCC_GPIOC_EN;
 
     // 配置GPIOC引脚12和13为输入模式
     GPIOC_IDR |= GPIOC_IDR_PIN12 | GPIOC_IDR_PIN13;
-}
-
-// 点亮LED
-void LED_On(uint32_t pin) {
-    GPIOB_BSRR |= pin;  // 设置对应的引脚为高电平，点亮LED
-}
-
-// 熄灭LED
-void LED_Off(uint32_t pin) {
-    GPIOB_BSRR |= (pin << 16);  // 设置对应的引脚为低电平，熄灭LED
 }

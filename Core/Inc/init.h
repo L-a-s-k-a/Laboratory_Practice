@@ -46,12 +46,6 @@
 #define GPIOB_PUPDR_PIN8_NOPUPD    0x000000UL
 #define GPIOB_BSRR_PIN8_SET        0x00100UL 
 #define GPIOB_BSRR_PIN8_RESET      0x001000000UL
-
-// 寄存器操作宏
-#define RESET_BIT(REG, BIT)        (REG &= ~BIT) 
-
-// GPIO初始化函数声明
+ 
 void GPIO_Ini_1(void);
 void GPIO_Ini_2(void);
-void LED_On(uint32_t pin);
-void LED_Off(uint32_t pin);
