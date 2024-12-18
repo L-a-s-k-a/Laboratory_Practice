@@ -6,12 +6,12 @@ uint8_t led_state=0, led_num=0, alternative=0;
 uint8_t port_C8_state=0;
 
 void check_button_state_1(){
-   if(button_state_1==0 && (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_8)!=0)){
+   if(button_state_1==0 && (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0)){
       button_state_1=1;  
       button1_clicks+=1;
       for(int i=0;i<750000;i++);
    }
-   if(button_state_1==1 && (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_8)!=0)){
+   if(button_state_1==1 && (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)!=0)){
       button_state_1=0;  
       button1_clicks+=1;
       for(int i=0;i<750000;i++);
@@ -57,11 +57,7 @@ void reconfigure_pin_C8_to_out(){
 
 int main(void)
 {
-   //GPIO_Init_Mem();
-   //GPIO_Init_Self_Def();
-   GPIO_Init_CMSIS();
-   //uint8_t state = 0; // Состояние светодиодов
-   //uint8_t button_pressed = 0; // Флаг для отслеживания нажати
+   GPIO_Init_Self_Def();
 
    while (1){
       check_alternative();
@@ -88,11 +84,8 @@ int main(void)
             reconfigure_pin_C8_to_out();
             port_C8_state=0;
             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS8);
-            //SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
          }
          check_button_state_2();
-         //if(button2_clicks%2==1)SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS8);
-         //if(button2_clicks%2==0)SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
       }
    }
 }
