@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s 			page 1
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -30,256 +30,602 @@ ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s 			page 1
   28              	.LFB130:
    1:Core/Src/main.c **** #include "init.h"
    2:Core/Src/main.c **** 
-   3:Core/Src/main.c **** uint8_t flag;
-   4:Core/Src/main.c **** 
-   5:Core/Src/main.c **** int main(void) {
-  29              		.loc 1 5 16 view -0
-  30              		.cfi_startproc
-  31              		@ args = 0, pretend = 0, frame = 8
-  32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33 0000 30B5     		push	{r4, r5, lr}
-  34              	.LCFI0:
-  35              		.cfi_def_cfa_offset 12
-  36              		.cfi_offset 4, -12
-  37              		.cfi_offset 5, -8
-  38              		.cfi_offset 14, -4
-  39 0002 83B0     		sub	sp, sp, #12
-  40              	.LCFI1:
-  41              		.cfi_def_cfa_offset 24
-   6:Core/Src/main.c ****     // 初始化GPIO
-   7:Core/Src/main.c ****     GPIO_Ini_1();
-  42              		.loc 1 7 5 view .LVU1
-  43 0004 FFF7FEFF 		bl	GPIO_Ini_1
-  44              	.LVL0:
-   8:Core/Src/main.c ****     GPIO_Ini_2();
-  45              		.loc 1 8 5 view .LVU2
-  46 0008 FFF7FEFF 		bl	GPIO_Ini_2
-  47              	.LVL1:
-   9:Core/Src/main.c ****     
-  10:Core/Src/main.c ****     // 按钮状态变量
-  11:Core/Src/main.c ****     uint32_t button1_status = 0;
-ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s 			page 2
-
-
-  48              		.loc 1 11 5 view .LVU3
-  12:Core/Src/main.c ****     uint32_t button2_status = 0;
-  49              		.loc 1 12 5 view .LVU4
-  13:Core/Src/main.c ****     uint32_t button3_status = 0;
-  50              		.loc 1 13 5 view .LVU5
-  51              		.loc 1 13 5 is_stmt 0 view .LVU6
-  52 000c 16E0     		b	.L11
-  53              	.LVL2:
-  54              	.L2:
+   3:Core/Src/main.c **** uint8_t button1_pressed = 0; // 按钮1状态变量
+   4:Core/Src/main.c **** uint8_t button2_pressed = 0; // 按钮2状态变量
+   5:Core/Src/main.c **** uint8_t button3_pressed = 0; // 按钮3状态变量
+   6:Core/Src/main.c **** uint8_t mode1 = 0; // 按钮1的工作模式，0: 开启LED，1: 关闭LED
+   7:Core/Src/main.c **** uint8_t mode2 = 0; // 按钮2的工作模式，0: 开启LED，1: 关闭LED
+   8:Core/Src/main.c **** uint8_t mode3 = 0; // 按钮2的工作模式，0: 开启LED，1: 关闭LED
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** #define READ_BIT(REG, BIT)   ((REG) & (BIT))
+  11:Core/Src/main.c **** #define SET_BIT(REG, BIT)    ((REG) |= (BIT))
+  12:Core/Src/main.c **** #define RESET_BIT(REG, BIT)  ((REG) &= ~(BIT))
+  13:Core/Src/main.c **** 
   14:Core/Src/main.c **** 
-  15:Core/Src/main.c ****     // 主循环
-  16:Core/Src/main.c ****     while (1) {
-  17:Core/Src/main.c ****         // 读取按钮状态（按下时返回非零值）
-  18:Core/Src/main.c ****         button1_status = (GPIOC_IDR & GPIOC_IDR_PIN13) ? 1 : 0;
-  19:Core/Src/main.c ****         button2_status = (GPIOC_IDR & GPIOC_IDR_PIN12) ? 1 : 0;
-  20:Core/Src/main.c **** 
-  21:Core/Src/main.c ****         if (button1_status) {
-  22:Core/Src/main.c ****             // 设置端口为输入模式，点亮红色LED
-  23:Core/Src/main.c ****             flag = 1;
-  24:Core/Src/main.c ****             LED_On(GPIOB_BSRR_PIN0_SET);
-  25:Core/Src/main.c ****         } else {
-  26:Core/Src/main.c ****             flag = 0;
-  55              		.loc 1 26 13 is_stmt 1 view .LVU7
-  56              		.loc 1 26 18 is_stmt 0 view .LVU8
-  57 000e 224B     		ldr	r3, .L13
-  58 0010 0022     		movs	r2, #0
-  59 0012 1A70     		strb	r2, [r3]
-  27:Core/Src/main.c ****             LED_Off(GPIOB_BSRR_PIN0_RESET);
-  60              		.loc 1 27 13 is_stmt 1 view .LVU9
-  61 0014 4FF48030 		mov	r0, #65536
-  62 0018 FFF7FEFF 		bl	LED_Off
-  63              	.LVL3:
-  64 001c 1BE0     		b	.L3
-  65              	.L4:
-  28:Core/Src/main.c ****         }
-  29:Core/Src/main.c **** 
-  30:Core/Src/main.c ****         if (button2_status) {
-  31:Core/Src/main.c ****             // 设置端口为输出模式，点亮蓝色LED
-  32:Core/Src/main.c ****             LED_On(GPIOB_BSRR_PIN7_SET);
-  33:Core/Src/main.c ****         } else {
-  34:Core/Src/main.c ****             LED_Off(GPIOB_BSRR_PIN7_RESET);
-  66              		.loc 1 34 13 view .LVU10
-  67 001e 4FF40000 		mov	r0, #8388608
-  68 0022 FFF7FEFF 		bl	LED_Off
-  69              	.LVL4:
-  70 0026 1CE0     		b	.L5
-  71              	.LVL5:
-  72              	.L7:
-  35:Core/Src/main.c ****         }
-  36:Core/Src/main.c **** 
-  37:Core/Src/main.c ****         // 检查按钮3的状态，控制黄色和白色LED
-  38:Core/Src/main.c ****         button3_status = (GPIOC_IDR & GPIOC_IDR_PIN13) ? 1 : 0;
-  39:Core/Src/main.c ****         if (button3_status) {
-  40:Core/Src/main.c ****             if (button1_status) {
-  41:Core/Src/main.c ****                 // 端口为输入模式，点亮黄色LED
-  42:Core/Src/main.c ****                 LED_On(GPIOB_BSRR_PIN14_SET);
-  43:Core/Src/main.c ****             } else {
-ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s 			page 3
-
-
-  44:Core/Src/main.c ****                 // 端口为输出模式，点亮白色LED
-  45:Core/Src/main.c ****                 LED_On(GPIOB_BSRR_PIN8_SET);
-  73              		.loc 1 45 17 view .LVU11
-  74 0028 4FF48070 		mov	r0, #256
-  75 002c FFF7FEFF 		bl	LED_On
-  76              	.LVL6:
-  77              	.L8:
-  46:Core/Src/main.c ****             }
-  47:Core/Src/main.c ****         } else {
-  48:Core/Src/main.c ****             LED_Off(GPIOB_BSRR_PIN14_RESET);
-  49:Core/Src/main.c ****             LED_Off(GPIOB_BSRR_PIN8_RESET);
-  50:Core/Src/main.c ****         }
-  51:Core/Src/main.c **** 
-  52:Core/Src/main.c ****         // 延迟
-  53:Core/Src/main.c ****         for (volatile int i = 0; i < 1000000; i++);
-  78              		.loc 1 53 9 view .LVU12
-  79              	.LBB2:
-  80              		.loc 1 53 14 view .LVU13
-  81              		.loc 1 53 27 is_stmt 0 view .LVU14
-  82 0030 0023     		movs	r3, #0
-  83 0032 0193     		str	r3, [sp, #4]
-  84              	.L9:
-  85              		.loc 1 53 36 is_stmt 1 discriminator 1 view .LVU15
-  86 0034 019A     		ldr	r2, [sp, #4]
-  87 0036 194B     		ldr	r3, .L13+4
-  88 0038 9A42     		cmp	r2, r3
-  89 003a 28DD     		ble	.L10
-  90              	.LVL7:
-  91              	.L11:
-  92              		.loc 1 53 36 is_stmt 0 discriminator 1 view .LVU16
-  93              	.LBE2:
-  16:Core/Src/main.c ****         // 读取按钮状态（按下时返回非零值）
-  94              		.loc 1 16 5 is_stmt 1 view .LVU17
-  18:Core/Src/main.c ****         button2_status = (GPIOC_IDR & GPIOC_IDR_PIN12) ? 1 : 0;
-  95              		.loc 1 18 9 view .LVU18
-  18:Core/Src/main.c ****         button2_status = (GPIOC_IDR & GPIOC_IDR_PIN12) ? 1 : 0;
-  96              		.loc 1 18 27 is_stmt 0 view .LVU19
-  97 003c 184B     		ldr	r3, .L13+8
-  98 003e D3F81048 		ldr	r4, [r3, #2064]
-  18:Core/Src/main.c ****         button2_status = (GPIOC_IDR & GPIOC_IDR_PIN12) ? 1 : 0;
-  99              		.loc 1 18 24 view .LVU20
- 100 0042 C4F34035 		ubfx	r5, r4, #13, #1
- 101              	.LVL8:
+  15:Core/Src/main.c **** // 按钮标志（用于外部分析）
+  16:Core/Src/main.c **** uint8_t button1_flag = 0;
+  17:Core/Src/main.c **** uint8_t button2_flag = 0;
+  18:Core/Src/main.c **** uint8_t button3_flag = 0;
   19:Core/Src/main.c **** 
- 102              		.loc 1 19 9 is_stmt 1 view .LVU21
-  21:Core/Src/main.c ****             // 设置端口为输入模式，点亮红色LED
- 103              		.loc 1 21 9 view .LVU22
-  21:Core/Src/main.c ****             // 设置端口为输入模式，点亮红色LED
- 104              		.loc 1 21 12 is_stmt 0 view .LVU23
- 105 0046 14F4005F 		tst	r4, #8192
- 106 004a E0D0     		beq	.L2
-  23:Core/Src/main.c ****             LED_On(GPIOB_BSRR_PIN0_SET);
- 107              		.loc 1 23 13 is_stmt 1 view .LVU24
-  23:Core/Src/main.c ****             LED_On(GPIOB_BSRR_PIN0_SET);
- 108              		.loc 1 23 18 is_stmt 0 view .LVU25
- 109 004c 0120     		movs	r0, #1
- 110 004e 124B     		ldr	r3, .L13
-ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s 			page 4
+  20:Core/Src/main.c **** //LED状态变量（0：灭，1：亮）
+  21:Core/Src/main.c **** uint8_t led_1_state = 0;    // 红色LED状态
+  22:Core/Src/main.c **** uint8_t led_2_state = 0;   // 蓝色LED状态
+  23:Core/Src/main.c **** uint8_t led_3_state = 0; // 黄色LED状态
+  24:Core/Src/main.c **** uint8_t led_4_state = 0; // 外部LED状态
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c **** #define DEBOUNCE_DELAY 200 // 防抖延迟时间，单位为毫秒
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c **** int main(void) {
+  29              		.loc 1 28 16 view -0
+  30              		.cfi_startproc
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 2
 
 
- 111 0050 1870     		strb	r0, [r3]
-  24:Core/Src/main.c ****         } else {
- 112              		.loc 1 24 13 is_stmt 1 view .LVU26
- 113 0052 FFF7FEFF 		bl	LED_On
- 114              	.LVL9:
- 115              	.L3:
-  30:Core/Src/main.c ****             // 设置端口为输出模式，点亮蓝色LED
- 116              		.loc 1 30 9 view .LVU27
-  30:Core/Src/main.c ****             // 设置端口为输出模式，点亮蓝色LED
- 117              		.loc 1 30 12 is_stmt 0 view .LVU28
- 118 0056 14F4805F 		tst	r4, #4096
- 119 005a E0D0     		beq	.L4
-  32:Core/Src/main.c ****         } else {
- 120              		.loc 1 32 13 is_stmt 1 view .LVU29
- 121 005c 8020     		movs	r0, #128
- 122 005e FFF7FEFF 		bl	LED_On
- 123              	.LVL10:
- 124              	.L5:
-  38:Core/Src/main.c ****         if (button3_status) {
- 125              		.loc 1 38 9 view .LVU30
-  38:Core/Src/main.c ****         if (button3_status) {
- 126              		.loc 1 38 27 is_stmt 0 view .LVU31
- 127 0062 0F4B     		ldr	r3, .L13+8
- 128 0064 D3F81038 		ldr	r3, [r3, #2064]
- 129              	.LVL11:
-  39:Core/Src/main.c ****             if (button1_status) {
- 130              		.loc 1 39 9 is_stmt 1 view .LVU32
-  39:Core/Src/main.c ****             if (button1_status) {
- 131              		.loc 1 39 12 is_stmt 0 view .LVU33
- 132 0068 13F4005F 		tst	r3, #8192
- 133 006c 06D0     		beq	.L6
-  40:Core/Src/main.c ****                 // 端口为输入模式，点亮黄色LED
- 134              		.loc 1 40 13 is_stmt 1 view .LVU34
-  40:Core/Src/main.c ****                 // 端口为输入模式，点亮黄色LED
- 135              		.loc 1 40 16 is_stmt 0 view .LVU35
- 136 006e 002D     		cmp	r5, #0
- 137 0070 DAD0     		beq	.L7
-  42:Core/Src/main.c ****             } else {
- 138              		.loc 1 42 17 is_stmt 1 view .LVU36
- 139 0072 4FF48040 		mov	r0, #16384
- 140 0076 FFF7FEFF 		bl	LED_On
- 141              	.LVL12:
-  42:Core/Src/main.c ****             } else {
- 142              		.loc 1 42 17 is_stmt 0 view .LVU37
- 143 007a D9E7     		b	.L8
- 144              	.LVL13:
- 145              	.L6:
-  48:Core/Src/main.c ****             LED_Off(GPIOB_BSRR_PIN8_RESET);
- 146              		.loc 1 48 13 is_stmt 1 view .LVU38
- 147 007c 4FF08040 		mov	r0, #1073741824
- 148 0080 FFF7FEFF 		bl	LED_Off
- 149              	.LVL14:
-  49:Core/Src/main.c ****         }
- 150              		.loc 1 49 13 view .LVU39
- 151 0084 4FF08070 		mov	r0, #16777216
- 152 0088 FFF7FEFF 		bl	LED_Off
- 153              	.LVL15:
-ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s 			page 5
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  29:Core/Src/main.c ****     GPIO_Ini_1(); // 初始化GPIO端口
+  39              		.loc 1 29 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Ini_1
+  41              	.LVL0:
+  30:Core/Src/main.c ****     GPIO_Ini_2(); // 初始化GPIO端口
+  42              		.loc 1 30 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	GPIO_Ini_2
+  44              	.LVL1:
+  45 000a A1E0     		b	.L14
+  46              	.L15:
+  31:Core/Src/main.c **** 
+  32:Core/Src/main.c ****     while (1) {
+  33:Core/Src/main.c ****         // 检查按钮1状态（PC12）
+  34:Core/Src/main.c ****         button1_flag =! button1_pressed;
+  35:Core/Src/main.c ****         button2_flag =! button2_pressed;
+  36:Core/Src/main.c ****         button3_flag =! button3_pressed;
+  37:Core/Src/main.c ****         led_1_state =! mode1;
+  38:Core/Src/main.c ****         led_2_state =! mode2;
+  39:Core/Src/main.c ****         led_3_state =! mode1 && !mode3;
+  47              		.loc 1 39 30 is_stmt 0 discriminator 4 view .LVU3
+  48 000c 0021     		movs	r1, #0
+  49              	.L2:
+  50              		.loc 1 39 21 discriminator 6 view .LVU4
+  51 000e 6F4B     		ldr	r3, .L24
+  52 0010 1970     		strb	r1, [r3]
+  40:Core/Src/main.c ****         led_4_state =! mode2 && !mode3;
+  53              		.loc 1 40 9 is_stmt 1 view .LVU5
+  54              		.loc 1 40 30 is_stmt 0 view .LVU6
+  55 0012 22B9     		cbnz	r2, .L17
+  56              		.loc 1 40 33 discriminator 1 view .LVU7
+  57 0014 6E4B     		ldr	r3, .L24+4
+  58 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  59              		.loc 1 40 30 discriminator 1 view .LVU8
+  60 0018 13B9     		cbnz	r3, .L3
+  61              		.loc 1 40 30 discriminator 3 view .LVU9
+  62 001a 0122     		movs	r2, #1
+  63 001c 00E0     		b	.L3
+  64              	.L17:
+  65              		.loc 1 40 30 discriminator 4 view .LVU10
+  66 001e 0022     		movs	r2, #0
+  67              	.L3:
+  68              		.loc 1 40 21 discriminator 6 view .LVU11
+  69 0020 6C4B     		ldr	r3, .L24+8
+  70 0022 1A70     		strb	r2, [r3]
+  41:Core/Src/main.c ****         if ((READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN12) != 0) && !button1_pressed) { // 按钮1按下时�
+  71              		.loc 1 41 9 is_stmt 1 view .LVU12
+  72              		.loc 1 41 14 is_stmt 0 view .LVU13
+  73 0024 6C4B     		ldr	r3, .L24+12
+  74 0026 D3F81038 		ldr	r3, [r3, #2064]
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 3
 
 
- 154 008c D0E7     		b	.L8
- 155              	.L10:
- 156              	.LBB3:
- 157              		.loc 1 53 48 discriminator 3 view .LVU40
- 158 008e 019B     		ldr	r3, [sp, #4]
- 159 0090 0133     		adds	r3, r3, #1
- 160 0092 0193     		str	r3, [sp, #4]
- 161 0094 CEE7     		b	.L9
- 162              	.L14:
- 163 0096 00BF     		.align	2
- 164              	.L13:
- 165 0098 00000000 		.word	flag
- 166 009c 3F420F00 		.word	999999
- 167 00a0 00000240 		.word	1073872896
- 168              	.LBE3:
- 169              		.cfi_endproc
- 170              	.LFE130:
- 172              		.global	flag
- 173              		.section	.bss.flag,"aw",%nobits
- 176              	flag:
- 177 0000 00       		.space	1
- 178              		.text
- 179              	.Letext0:
- 180              		.file 2 "D:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
- 181              		.file 3 "D:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 182              		.file 4 "Core/Inc/init.h"
-ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s 			page 6
+  75              		.loc 1 41 12 view .LVU14
+  76 002a 13F48053 		ands	r3, r3, #4096
+  77 002e 01D0     		beq	.L4
+  78              		.loc 1 41 57 discriminator 1 view .LVU15
+  79 0030 0028     		cmp	r0, #0
+  80 0032 50D0     		beq	.L20
+  81              	.L4:
+  42:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+  43:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN12) != 0) {
+  44:Core/Src/main.c ****                 RESET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); // 点亮 LED红色
+  45:Core/Src/main.c ****                 mode1 = 1;  // 设置GPIOC_IDR_PIN6为输入模式
+  46:Core/Src/main.c ****                 button1_pressed = 1; // 更新按钮状态为已按下
+  47:Core/Src/main.c ****             }
+  48:Core/Src/main.c ****         } else if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN12) == 0) {
+  82              		.loc 1 48 16 is_stmt 1 view .LVU16
+  83              		.loc 1 48 19 is_stmt 0 view .LVU17
+  84 0034 5BB9     		cbnz	r3, .L5
+  49:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); // 熄灭 LED红色
+  85              		.loc 1 49 13 is_stmt 1 view .LVU18
+  86 0036 684A     		ldr	r2, .L24+12
+  87 0038 D2F81834 		ldr	r3, [r2, #1048]
+  88 003c 43F48043 		orr	r3, r3, #16384
+  89 0040 C2F81834 		str	r3, [r2, #1048]
+  50:Core/Src/main.c ****             mode1 = 0;  // 设置GPIOC_IDR_PIN6为输入模式
+  90              		.loc 1 50 13 view .LVU19
+  91              		.loc 1 50 19 is_stmt 0 view .LVU20
+  92 0044 0023     		movs	r3, #0
+  93 0046 654A     		ldr	r2, .L24+16
+  94 0048 1370     		strb	r3, [r2]
+  51:Core/Src/main.c ****             button1_pressed = 0; // 重置按钮状态
+  95              		.loc 1 51 13 is_stmt 1 view .LVU21
+  96              		.loc 1 51 29 is_stmt 0 view .LVU22
+  97 004a 654A     		ldr	r2, .L24+20
+  98 004c 1370     		strb	r3, [r2]
+  99              	.L5:
+  52:Core/Src/main.c ****         }        
+  53:Core/Src/main.c ****          // 检查按钮2状态（PC13）
+  54:Core/Src/main.c ****         if ((READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0) && !button2_pressed) { // 按钮2按下时�
+ 100              		.loc 1 54 9 is_stmt 1 view .LVU23
+ 101              		.loc 1 54 14 is_stmt 0 view .LVU24
+ 102 004e 624B     		ldr	r3, .L24+12
+ 103 0050 D3F81038 		ldr	r3, [r3, #2064]
+ 104              		.loc 1 54 12 view .LVU25
+ 105 0054 13F40053 		ands	r3, r3, #8192
+ 106 0058 03D0     		beq	.L6
+ 107              		.loc 1 54 60 discriminator 1 view .LVU26
+ 108 005a 624A     		ldr	r2, .L24+24
+ 109 005c 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 110              		.loc 1 54 57 discriminator 1 view .LVU27
+ 111 005e 002A     		cmp	r2, #0
+ 112 0060 4FD0     		beq	.L21
+ 113              	.L6:
+  55:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟
+  56:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0) {
+  57:Core/Src/main.c ****                 SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET); // 点亮 LED黄色
+  58:Core/Src/main.c ****                 mode2 = 1; // 切换模式                
+  59:Core/Src/main.c ****                 button2_pressed = 1; // 更新按钮状态为已按下                
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 4
+
+
+  60:Core/Src/main.c ****             }
+  61:Core/Src/main.c ****         } else if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) == 0) {
+ 114              		.loc 1 61 16 is_stmt 1 view .LVU28
+ 115              		.loc 1 61 19 is_stmt 0 view .LVU29
+ 116 0062 5BB9     		cbnz	r3, .L7
+  62:Core/Src/main.c ****             SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET); // 熄灭 LED黄色
+ 117              		.loc 1 62 13 is_stmt 1 view .LVU30
+ 118 0064 5C4A     		ldr	r2, .L24+12
+ 119 0066 D2F81834 		ldr	r3, [r2, #1048]
+ 120 006a 43F48033 		orr	r3, r3, #65536
+ 121 006e C2F81834 		str	r3, [r2, #1048]
+  63:Core/Src/main.c ****             mode2 = 0; // 切换模式
+ 122              		.loc 1 63 13 view .LVU31
+ 123              		.loc 1 63 19 is_stmt 0 view .LVU32
+ 124 0072 0023     		movs	r3, #0
+ 125 0074 5C4A     		ldr	r2, .L24+28
+ 126 0076 1370     		strb	r3, [r2]
+  64:Core/Src/main.c ****             button2_pressed = 0; // 重置按钮状态
+ 127              		.loc 1 64 13 is_stmt 1 view .LVU33
+ 128              		.loc 1 64 29 is_stmt 0 view .LVU34
+ 129 0078 5A4A     		ldr	r2, .L24+24
+ 130 007a 1370     		strb	r3, [r2]
+ 131              	.L7:
+  65:Core/Src/main.c ****         }       
+  66:Core/Src/main.c ****         // 检查按钮3状态（PC13）
+  67:Core/Src/main.c ****         if ((READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN6) != 0) && !button3_pressed) { // 按钮3按下时�
+ 132              		.loc 1 67 9 is_stmt 1 view .LVU35
+ 133              		.loc 1 67 14 is_stmt 0 view .LVU36
+ 134 007c 564B     		ldr	r3, .L24+12
+ 135 007e D3F81038 		ldr	r3, [r3, #2064]
+ 136              		.loc 1 67 12 view .LVU37
+ 137 0082 13F04003 		ands	r3, r3, #64
+ 138 0086 52D0     		beq	.L8
+ 139              		.loc 1 67 59 discriminator 1 view .LVU38
+ 140 0088 584A     		ldr	r2, .L24+32
+ 141 008a 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 142              		.loc 1 67 56 discriminator 1 view .LVU39
+ 143 008c 002A     		cmp	r2, #0
+ 144 008e 4ED1     		bne	.L8
+  68:Core/Src/main.c ****             delay(DEBOUNCE_DELAY); // 防抖延迟  
+ 145              		.loc 1 68 13 is_stmt 1 view .LVU40
+ 146 0090 C820     		movs	r0, #200
+ 147 0092 FFF7FEFF 		bl	delay
+ 148              	.LVL2:
+  69:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN6) != 0) {
+ 149              		.loc 1 69 13 view .LVU41
+ 150              		.loc 1 69 17 is_stmt 0 view .LVU42
+ 151 0096 504B     		ldr	r3, .L24+12
+ 152 0098 D3F81038 		ldr	r3, [r3, #2064]
+ 153              		.loc 1 69 16 view .LVU43
+ 154 009c 13F0400F 		tst	r3, #64
+ 155 00a0 53D0     		beq	.L9
+  70:Core/Src/main.c ****                 // 按下按钮3，根据 GPIOC_PIN6 模式点亮不同的LED          
+  71:Core/Src/main.c ****             if (mode1 == 0) { // 打开模式                    
+ 156              		.loc 1 71 13 is_stmt 1 view .LVU44
+ 157              		.loc 1 71 23 is_stmt 0 view .LVU45
+ 158 00a2 4E4B     		ldr	r3, .L24+16
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 5
+
+
+ 159 00a4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 160              		.loc 1 71 16 view .LVU46
+ 161 00a6 33B9     		cbnz	r3, .L10
+  72:Core/Src/main.c ****                     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); // 点亮LED3蓝色
+ 162              		.loc 1 72 21 is_stmt 1 view .LVU47
+ 163 00a8 4B4A     		ldr	r2, .L24+12
+ 164 00aa D2F81834 		ldr	r3, [r2, #1048]
+ 165 00ae 43F08003 		orr	r3, r3, #128
+ 166 00b2 C2F81834 		str	r3, [r2, #1048]
+ 167              	.L10:
+  73:Core/Src/main.c ****                     // led_3_state = !led_3_state; // 更新LED状态
+  74:Core/Src/main.c ****                 }
+  75:Core/Src/main.c ****             if (mode2 == 0) { // 打开模式                    
+ 168              		.loc 1 75 13 view .LVU48
+ 169              		.loc 1 75 23 is_stmt 0 view .LVU49
+ 170 00b6 4C4B     		ldr	r3, .L24+28
+ 171 00b8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 172              		.loc 1 75 16 view .LVU50
+ 173 00ba 33B9     		cbnz	r3, .L11
+  76:Core/Src/main.c ****                     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN8_SET); // 点亮LED4
+ 174              		.loc 1 76 21 is_stmt 1 view .LVU51
+ 175 00bc 464A     		ldr	r2, .L24+12
+ 176 00be D2F81834 		ldr	r3, [r2, #1048]
+ 177 00c2 43F48073 		orr	r3, r3, #256
+ 178 00c6 C2F81834 		str	r3, [r2, #1048]
+ 179              	.L11:
+  77:Core/Src/main.c ****                 }                 
+  78:Core/Src/main.c ****                 button3_pressed = 1; // 更新按钮状态为已按下
+ 180              		.loc 1 78 17 view .LVU52
+ 181              		.loc 1 78 33 is_stmt 0 view .LVU53
+ 182 00ca 0123     		movs	r3, #1
+ 183 00cc 474A     		ldr	r2, .L24+32
+ 184 00ce 1370     		strb	r3, [r2]
+  79:Core/Src/main.c ****                 mode3 = 1;
+ 185              		.loc 1 79 17 is_stmt 1 view .LVU54
+ 186              		.loc 1 79 23 is_stmt 0 view .LVU55
+ 187 00d0 3F4A     		ldr	r2, .L24+4
+ 188 00d2 1370     		strb	r3, [r2]
+ 189 00d4 39E0     		b	.L9
+ 190              	.L20:
+  42:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN12) != 0) {
+ 191              		.loc 1 42 13 is_stmt 1 view .LVU56
+ 192 00d6 C820     		movs	r0, #200
+ 193 00d8 FFF7FEFF 		bl	delay
+ 194              	.LVL3:
+  43:Core/Src/main.c ****                 RESET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); // 点亮 LED红色
+ 195              		.loc 1 43 13 view .LVU57
+  43:Core/Src/main.c ****                 RESET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); // 点亮 LED红色
+ 196              		.loc 1 43 17 is_stmt 0 view .LVU58
+ 197 00dc 3E4B     		ldr	r3, .L24+12
+ 198 00de D3F81038 		ldr	r3, [r3, #2064]
+  43:Core/Src/main.c ****                 RESET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); // 点亮 LED红色
+ 199              		.loc 1 43 16 view .LVU59
+ 200 00e2 13F4805F 		tst	r3, #4096
+ 201 00e6 B2D0     		beq	.L5
+  44:Core/Src/main.c ****                 mode1 = 1;  // 设置GPIOC_IDR_PIN6为输入模式
+ 202              		.loc 1 44 17 is_stmt 1 view .LVU60
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 6
+
+
+ 203 00e8 3B4A     		ldr	r2, .L24+12
+ 204 00ea D2F81834 		ldr	r3, [r2, #1048]
+ 205 00ee 23F48043 		bic	r3, r3, #16384
+ 206 00f2 C2F81834 		str	r3, [r2, #1048]
+  45:Core/Src/main.c ****                 button1_pressed = 1; // 更新按钮状态为已按下
+ 207              		.loc 1 45 17 view .LVU61
+  45:Core/Src/main.c ****                 button1_pressed = 1; // 更新按钮状态为已按下
+ 208              		.loc 1 45 23 is_stmt 0 view .LVU62
+ 209 00f6 0123     		movs	r3, #1
+ 210 00f8 384A     		ldr	r2, .L24+16
+ 211 00fa 1370     		strb	r3, [r2]
+  46:Core/Src/main.c ****             }
+ 212              		.loc 1 46 17 is_stmt 1 view .LVU63
+  46:Core/Src/main.c ****             }
+ 213              		.loc 1 46 33 is_stmt 0 view .LVU64
+ 214 00fc 384A     		ldr	r2, .L24+20
+ 215 00fe 1370     		strb	r3, [r2]
+ 216 0100 A5E7     		b	.L5
+ 217              	.L21:
+  55:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0) {
+ 218              		.loc 1 55 13 is_stmt 1 view .LVU65
+ 219 0102 C820     		movs	r0, #200
+ 220 0104 FFF7FEFF 		bl	delay
+ 221              	.LVL4:
+  56:Core/Src/main.c ****                 SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET); // 点亮 LED黄色
+ 222              		.loc 1 56 13 view .LVU66
+  56:Core/Src/main.c ****                 SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET); // 点亮 LED黄色
+ 223              		.loc 1 56 17 is_stmt 0 view .LVU67
+ 224 0108 334B     		ldr	r3, .L24+12
+ 225 010a D3F81038 		ldr	r3, [r3, #2064]
+  56:Core/Src/main.c ****                 SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET); // 点亮 LED黄色
+ 226              		.loc 1 56 16 view .LVU68
+ 227 010e 13F4005F 		tst	r3, #8192
+ 228 0112 B3D0     		beq	.L7
+  57:Core/Src/main.c ****                 mode2 = 1; // 切换模式                
+ 229              		.loc 1 57 17 is_stmt 1 view .LVU69
+ 230 0114 304A     		ldr	r2, .L24+12
+ 231 0116 D2F81834 		ldr	r3, [r2, #1048]
+ 232 011a 43F00103 		orr	r3, r3, #1
+ 233 011e C2F81834 		str	r3, [r2, #1048]
+  58:Core/Src/main.c ****                 button2_pressed = 1; // 更新按钮状态为已按下                
+ 234              		.loc 1 58 17 view .LVU70
+  58:Core/Src/main.c ****                 button2_pressed = 1; // 更新按钮状态为已按下                
+ 235              		.loc 1 58 23 is_stmt 0 view .LVU71
+ 236 0122 0123     		movs	r3, #1
+ 237 0124 304A     		ldr	r2, .L24+28
+ 238 0126 1370     		strb	r3, [r2]
+  59:Core/Src/main.c ****             }
+ 239              		.loc 1 59 17 is_stmt 1 view .LVU72
+  59:Core/Src/main.c ****             }
+ 240              		.loc 1 59 33 is_stmt 0 view .LVU73
+ 241 0128 2E4A     		ldr	r2, .L24+24
+ 242 012a 1370     		strb	r3, [r2]
+ 243 012c A6E7     		b	.L7
+ 244              	.L8:
+  80:Core/Src/main.c ****             }
+  81:Core/Src/main.c ****         } 
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 7
+
+
+  82:Core/Src/main.c ****         else if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN6) == 0) {
+ 245              		.loc 1 82 14 is_stmt 1 view .LVU74
+ 246              		.loc 1 82 17 is_stmt 0 view .LVU75
+ 247 012e 63B9     		cbnz	r3, .L9
+  83:Core/Src/main.c ****             if (mode1 == 1){
+ 248              		.loc 1 83 13 is_stmt 1 view .LVU76
+ 249              		.loc 1 83 23 is_stmt 0 view .LVU77
+ 250 0130 2A4B     		ldr	r3, .L24+16
+ 251 0132 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 252              		.loc 1 83 16 view .LVU78
+ 253 0134 012B     		cmp	r3, #1
+ 254 0136 38D0     		beq	.L22
+ 255              	.L12:
+  84:Core/Src/main.c ****                     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET); // 熄灭LED3蓝色
+  85:Core/Src/main.c ****                 }
+  86:Core/Src/main.c ****             if (mode2 == 1) {
+ 256              		.loc 1 86 13 is_stmt 1 view .LVU79
+ 257              		.loc 1 86 23 is_stmt 0 view .LVU80
+ 258 0138 2B4B     		ldr	r3, .L24+28
+ 259 013a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 260              		.loc 1 86 16 view .LVU81
+ 261 013c 012B     		cmp	r3, #1
+ 262 013e 3CD0     		beq	.L23
+ 263              	.L13:
+  87:Core/Src/main.c ****                     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN8_RESET); // 熄灭LED4
+  88:Core/Src/main.c ****                 }             
+  89:Core/Src/main.c ****             button3_pressed = 0; // 重置按钮状态
+ 264              		.loc 1 89 13 is_stmt 1 view .LVU82
+ 265              		.loc 1 89 29 is_stmt 0 view .LVU83
+ 266 0140 0023     		movs	r3, #0
+ 267 0142 2A4A     		ldr	r2, .L24+32
+ 268 0144 1370     		strb	r3, [r2]
+  90:Core/Src/main.c ****             mode3 = 0;
+ 269              		.loc 1 90 13 is_stmt 1 view .LVU84
+ 270              		.loc 1 90 19 is_stmt 0 view .LVU85
+ 271 0146 224A     		ldr	r2, .L24+4
+ 272 0148 1370     		strb	r3, [r2]
+ 273              	.L9:
+  91:Core/Src/main.c ****         }
+  92:Core/Src/main.c ****         // 适当延时以避免快速循环
+  93:Core/Src/main.c ****         delay(200);
+ 274              		.loc 1 93 9 is_stmt 1 view .LVU86
+ 275 014a C820     		movs	r0, #200
+ 276 014c FFF7FEFF 		bl	delay
+ 277              	.LVL5:
+  32:Core/Src/main.c ****         // 检查按钮1状态（PC12）
+ 278              		.loc 1 32 11 view .LVU87
+ 279              	.L14:
+  32:Core/Src/main.c ****         // 检查按钮1状态（PC12）
+ 280              		.loc 1 32 5 view .LVU88
+  34:Core/Src/main.c ****         button2_flag =! button2_pressed;
+ 281              		.loc 1 34 9 view .LVU89
+  34:Core/Src/main.c ****         button2_flag =! button2_pressed;
+ 282              		.loc 1 34 23 is_stmt 0 view .LVU90
+ 283 0150 234B     		ldr	r3, .L24+20
+ 284 0152 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 285 0154 B0FA80F3 		clz	r3, r0
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 8
+
+
+ 286 0158 5B09     		lsrs	r3, r3, #5
+  34:Core/Src/main.c ****         button2_flag =! button2_pressed;
+ 287              		.loc 1 34 22 view .LVU91
+ 288 015a 254A     		ldr	r2, .L24+36
+ 289 015c 1370     		strb	r3, [r2]
+  35:Core/Src/main.c ****         button3_flag =! button3_pressed;
+ 290              		.loc 1 35 9 is_stmt 1 view .LVU92
+  35:Core/Src/main.c ****         button3_flag =! button3_pressed;
+ 291              		.loc 1 35 23 is_stmt 0 view .LVU93
+ 292 015e 214B     		ldr	r3, .L24+24
+ 293 0160 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 294 0162 B3FA83F3 		clz	r3, r3
+ 295 0166 5B09     		lsrs	r3, r3, #5
+  35:Core/Src/main.c ****         button3_flag =! button3_pressed;
+ 296              		.loc 1 35 22 view .LVU94
+ 297 0168 224A     		ldr	r2, .L24+40
+ 298 016a 1370     		strb	r3, [r2]
+  36:Core/Src/main.c ****         led_1_state =! mode1;
+ 299              		.loc 1 36 9 is_stmt 1 view .LVU95
+  36:Core/Src/main.c ****         led_1_state =! mode1;
+ 300              		.loc 1 36 23 is_stmt 0 view .LVU96
+ 301 016c 1F4B     		ldr	r3, .L24+32
+ 302 016e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 303 0170 B3FA83F3 		clz	r3, r3
+ 304 0174 5B09     		lsrs	r3, r3, #5
+  36:Core/Src/main.c ****         led_1_state =! mode1;
+ 305              		.loc 1 36 22 view .LVU97
+ 306 0176 204A     		ldr	r2, .L24+44
+ 307 0178 1370     		strb	r3, [r2]
+  37:Core/Src/main.c ****         led_2_state =! mode2;
+ 308              		.loc 1 37 9 is_stmt 1 view .LVU98
+  37:Core/Src/main.c ****         led_2_state =! mode2;
+ 309              		.loc 1 37 22 is_stmt 0 view .LVU99
+ 310 017a 184B     		ldr	r3, .L24+16
+ 311 017c 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 312 017e B1FA81F3 		clz	r3, r1
+ 313 0182 5B09     		lsrs	r3, r3, #5
+  37:Core/Src/main.c ****         led_2_state =! mode2;
+ 314              		.loc 1 37 21 view .LVU100
+ 315 0184 1D4A     		ldr	r2, .L24+48
+ 316 0186 1370     		strb	r3, [r2]
+  38:Core/Src/main.c ****         led_3_state =! mode1 && !mode3;
+ 317              		.loc 1 38 9 is_stmt 1 view .LVU101
+  38:Core/Src/main.c ****         led_3_state =! mode1 && !mode3;
+ 318              		.loc 1 38 22 is_stmt 0 view .LVU102
+ 319 0188 174B     		ldr	r3, .L24+28
+ 320 018a 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 321 018c B2FA82F3 		clz	r3, r2
+ 322 0190 5B09     		lsrs	r3, r3, #5
+  38:Core/Src/main.c ****         led_3_state =! mode1 && !mode3;
+ 323              		.loc 1 38 21 view .LVU103
+ 324 0192 1B4C     		ldr	r4, .L24+52
+ 325 0194 2370     		strb	r3, [r4]
+  39:Core/Src/main.c ****         led_4_state =! mode2 && !mode3;
+ 326              		.loc 1 39 9 is_stmt 1 view .LVU104
+  39:Core/Src/main.c ****         led_4_state =! mode2 && !mode3;
+ 327              		.loc 1 39 30 is_stmt 0 view .LVU105
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 9
+
+
+ 328 0196 0029     		cmp	r1, #0
+ 329 0198 7FF438AF 		bne	.L15
+  39:Core/Src/main.c ****         led_4_state =! mode2 && !mode3;
+ 330              		.loc 1 39 33 discriminator 1 view .LVU106
+ 331 019c 0C4B     		ldr	r3, .L24+4
+ 332 019e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  39:Core/Src/main.c ****         led_4_state =! mode2 && !mode3;
+ 333              		.loc 1 39 30 discriminator 1 view .LVU107
+ 334 01a0 002B     		cmp	r3, #0
+ 335 01a2 7FF434AF 		bne	.L2
+  39:Core/Src/main.c ****         led_4_state =! mode2 && !mode3;
+ 336              		.loc 1 39 30 discriminator 3 view .LVU108
+ 337 01a6 0121     		movs	r1, #1
+ 338 01a8 31E7     		b	.L2
+ 339              	.L22:
+  84:Core/Src/main.c ****                 }
+ 340              		.loc 1 84 21 is_stmt 1 view .LVU109
+ 341 01aa 0B4A     		ldr	r2, .L24+12
+ 342 01ac D2F81834 		ldr	r3, [r2, #1048]
+ 343 01b0 43F40003 		orr	r3, r3, #8388608
+ 344 01b4 C2F81834 		str	r3, [r2, #1048]
+ 345 01b8 BEE7     		b	.L12
+ 346              	.L23:
+  87:Core/Src/main.c ****                 }             
+ 347              		.loc 1 87 21 view .LVU110
+ 348 01ba 074A     		ldr	r2, .L24+12
+ 349 01bc D2F81834 		ldr	r3, [r2, #1048]
+ 350 01c0 43F08073 		orr	r3, r3, #16777216
+ 351 01c4 C2F81834 		str	r3, [r2, #1048]
+ 352 01c8 BAE7     		b	.L13
+ 353              	.L25:
+ 354 01ca 00BF     		.align	2
+ 355              	.L24:
+ 356 01cc 00000000 		.word	led_3_state
+ 357 01d0 00000000 		.word	mode3
+ 358 01d4 00000000 		.word	led_4_state
+ 359 01d8 00000240 		.word	1073872896
+ 360 01dc 00000000 		.word	mode1
+ 361 01e0 00000000 		.word	button1_pressed
+ 362 01e4 00000000 		.word	button2_pressed
+ 363 01e8 00000000 		.word	mode2
+ 364 01ec 00000000 		.word	button3_pressed
+ 365 01f0 00000000 		.word	button1_flag
+ 366 01f4 00000000 		.word	button2_flag
+ 367 01f8 00000000 		.word	button3_flag
+ 368 01fc 00000000 		.word	led_1_state
+ 369 0200 00000000 		.word	led_2_state
+ 370              		.cfi_endproc
+ 371              	.LFE130:
+ 373              		.global	led_4_state
+ 374              		.section	.bss.led_4_state,"aw",%nobits
+ 377              	led_4_state:
+ 378 0000 00       		.space	1
+ 379              		.global	led_3_state
+ 380              		.section	.bss.led_3_state,"aw",%nobits
+ 383              	led_3_state:
+ 384 0000 00       		.space	1
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 10
+
+
+ 385              		.global	led_2_state
+ 386              		.section	.bss.led_2_state,"aw",%nobits
+ 389              	led_2_state:
+ 390 0000 00       		.space	1
+ 391              		.global	led_1_state
+ 392              		.section	.bss.led_1_state,"aw",%nobits
+ 395              	led_1_state:
+ 396 0000 00       		.space	1
+ 397              		.global	button3_flag
+ 398              		.section	.bss.button3_flag,"aw",%nobits
+ 401              	button3_flag:
+ 402 0000 00       		.space	1
+ 403              		.global	button2_flag
+ 404              		.section	.bss.button2_flag,"aw",%nobits
+ 407              	button2_flag:
+ 408 0000 00       		.space	1
+ 409              		.global	button1_flag
+ 410              		.section	.bss.button1_flag,"aw",%nobits
+ 413              	button1_flag:
+ 414 0000 00       		.space	1
+ 415              		.global	mode3
+ 416              		.section	.bss.mode3,"aw",%nobits
+ 419              	mode3:
+ 420 0000 00       		.space	1
+ 421              		.global	mode2
+ 422              		.section	.bss.mode2,"aw",%nobits
+ 425              	mode2:
+ 426 0000 00       		.space	1
+ 427              		.global	mode1
+ 428              		.section	.bss.mode1,"aw",%nobits
+ 431              	mode1:
+ 432 0000 00       		.space	1
+ 433              		.global	button3_pressed
+ 434              		.section	.bss.button3_pressed,"aw",%nobits
+ 437              	button3_pressed:
+ 438 0000 00       		.space	1
+ 439              		.global	button2_pressed
+ 440              		.section	.bss.button2_pressed,"aw",%nobits
+ 443              	button2_pressed:
+ 444 0000 00       		.space	1
+ 445              		.global	button1_pressed
+ 446              		.section	.bss.button1_pressed,"aw",%nobits
+ 449              	button1_pressed:
+ 450 0000 00       		.space	1
+ 451              		.text
+ 452              	.Letext0:
+ 453              		.file 2 "D:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 454              		.file 3 "D:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 455              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s 			page 11
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s:21     .text.main:00000000 $t
-C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s:27     .text.main:00000000 main
-C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s:165    .text.main:00000098 $d
-C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s:176    .bss.flag:00000000 flag
-C:\Users\LIUYIM~1\AppData\Local\Temp\ccsOImvk.s:177    .bss.flag:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:21     .text.main:00000000 $t
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:27     .text.main:00000000 main
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:356    .text.main:000001cc $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:383    .bss.led_3_state:00000000 led_3_state
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:419    .bss.mode3:00000000 mode3
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:377    .bss.led_4_state:00000000 led_4_state
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:431    .bss.mode1:00000000 mode1
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:449    .bss.button1_pressed:00000000 button1_pressed
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:443    .bss.button2_pressed:00000000 button2_pressed
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:425    .bss.mode2:00000000 mode2
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:437    .bss.button3_pressed:00000000 button3_pressed
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:413    .bss.button1_flag:00000000 button1_flag
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:407    .bss.button2_flag:00000000 button2_flag
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:401    .bss.button3_flag:00000000 button3_flag
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:395    .bss.led_1_state:00000000 led_1_state
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:389    .bss.led_2_state:00000000 led_2_state
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:378    .bss.led_4_state:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:384    .bss.led_3_state:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:390    .bss.led_2_state:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:396    .bss.led_1_state:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:402    .bss.button3_flag:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:408    .bss.button2_flag:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:414    .bss.button1_flag:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:420    .bss.mode3:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:426    .bss.mode2:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:432    .bss.mode1:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:438    .bss.button3_pressed:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:444    .bss.button2_pressed:00000000 $d
+C:\Users\LIUYIM~1\AppData\Local\Temp\ccGJMeCp.s:450    .bss.button1_pressed:00000000 $d
 
 UNDEFINED SYMBOLS
 GPIO_Ini_1
 GPIO_Ini_2
-LED_Off
-LED_On
+delay
