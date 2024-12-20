@@ -1,0 +1,1120 @@
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.shine,"ax",%progbits
+  21              		.align	1
+  22              		.global	shine
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	shine:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <init.h>
+   2:Core/Src/main.c **** #include <it_handlers.h>
+   3:Core/Src/main.c **** //btn port - PC0
+   4:Core/Src/main.c **** uint16_t flik_list[3] = {2500, 1000, 526};
+   5:Core/Src/main.c **** uint8_t led_en[6] = {0, 0, 0, 0, 0, 0};
+   6:Core/Src/main.c **** uint8_t led_state_flik[6] = {0, 0, 0, 0, 0, 0};
+   7:Core/Src/main.c **** uint32_t led_tick[6] = {0, 0, 0, 0, 0, 0};
+   8:Core/Src/main.c **** // uint32_t led1_tick = 0;
+   9:Core/Src/main.c **** // uint32_t led2_tick = 0;
+  10:Core/Src/main.c **** // uint32_t led3_tick = 0;
+  11:Core/Src/main.c **** uint8_t BtnCount, BtnCount2;
+  12:Core/Src/main.c **** uint8_t mode = 0;
+  13:Core/Src/main.c **** uint8_t shortState = 0;
+  14:Core/Src/main.c **** 
+  15:Core/Src/main.c **** void shine(){
+  29              		.loc 1 15 13 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  16:Core/Src/main.c ****     // if(led_en[0]) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  17:Core/Src/main.c ****     // else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+  18:Core/Src/main.c ****     // if(led_en[1]) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  19:Core/Src/main.c ****     // else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  20:Core/Src/main.c ****     // if(led_en[2]) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  21:Core/Src/main.c ****     // else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+  22:Core/Src/main.c ****     //PE2,4,5,6,3 PF8
+  23:Core/Src/main.c ****     if(led_en[0]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS2);
+  34              		.loc 1 23 5 view .LVU1
+  35              		.loc 1 23 14 is_stmt 0 view .LVU2
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 2
+
+
+  36 0000 2B4B     		ldr	r3, .L14
+  37 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  38              		.loc 1 23 7 view .LVU3
+  39 0004 002B     		cmp	r3, #0
+  40 0006 2FD0     		beq	.L2
+  41              		.loc 1 23 19 is_stmt 1 discriminator 1 view .LVU4
+  42 0008 2A4A     		ldr	r2, .L14+4
+  43 000a 9369     		ldr	r3, [r2, #24]
+  44 000c 43F00403 		orr	r3, r3, #4
+  45 0010 9361     		str	r3, [r2, #24]
+  46              	.L3:
+  24:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR2);
+  25:Core/Src/main.c ****     if(led_en[1]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS4);
+  47              		.loc 1 25 5 view .LVU5
+  48              		.loc 1 25 14 is_stmt 0 view .LVU6
+  49 0012 274B     		ldr	r3, .L14
+  50 0014 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+  51              		.loc 1 25 7 view .LVU7
+  52 0016 002B     		cmp	r3, #0
+  53 0018 2CD0     		beq	.L4
+  54              		.loc 1 25 19 is_stmt 1 discriminator 1 view .LVU8
+  55 001a 264A     		ldr	r2, .L14+4
+  56 001c 9369     		ldr	r3, [r2, #24]
+  57 001e 43F01003 		orr	r3, r3, #16
+  58 0022 9361     		str	r3, [r2, #24]
+  59              	.L5:
+  26:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR4);
+  27:Core/Src/main.c ****     if(led_en[2]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS5);
+  60              		.loc 1 27 5 view .LVU9
+  61              		.loc 1 27 14 is_stmt 0 view .LVU10
+  62 0024 224B     		ldr	r3, .L14
+  63 0026 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+  64              		.loc 1 27 7 view .LVU11
+  65 0028 002B     		cmp	r3, #0
+  66 002a 29D0     		beq	.L6
+  67              		.loc 1 27 19 is_stmt 1 discriminator 1 view .LVU12
+  68 002c 214A     		ldr	r2, .L14+4
+  69 002e 9369     		ldr	r3, [r2, #24]
+  70 0030 43F02003 		orr	r3, r3, #32
+  71 0034 9361     		str	r3, [r2, #24]
+  72              	.L7:
+  28:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR5);
+  29:Core/Src/main.c ****     if(led_en[3]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS6);
+  73              		.loc 1 29 5 view .LVU13
+  74              		.loc 1 29 14 is_stmt 0 view .LVU14
+  75 0036 1E4B     		ldr	r3, .L14
+  76 0038 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+  77              		.loc 1 29 7 view .LVU15
+  78 003a 3BB3     		cbz	r3, .L8
+  79              		.loc 1 29 19 is_stmt 1 discriminator 1 view .LVU16
+  80 003c 1D4A     		ldr	r2, .L14+4
+  81 003e 9369     		ldr	r3, [r2, #24]
+  82 0040 43F04003 		orr	r3, r3, #64
+  83 0044 9361     		str	r3, [r2, #24]
+  84              	.L9:
+  30:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR6);
+  31:Core/Src/main.c ****     if(led_en[4]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS3);
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 3
+
+
+  85              		.loc 1 31 5 view .LVU17
+  86              		.loc 1 31 14 is_stmt 0 view .LVU18
+  87 0046 1A4B     		ldr	r3, .L14
+  88 0048 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+  89              		.loc 1 31 7 view .LVU19
+  90 004a 2BB3     		cbz	r3, .L10
+  91              		.loc 1 31 19 is_stmt 1 discriminator 1 view .LVU20
+  92 004c 194A     		ldr	r2, .L14+4
+  93 004e 9369     		ldr	r3, [r2, #24]
+  94 0050 43F00803 		orr	r3, r3, #8
+  95 0054 9361     		str	r3, [r2, #24]
+  96              	.L11:
+  32:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR3);
+  33:Core/Src/main.c ****     if(led_en[5]) SET_BIT(GPIOF->BSRR, GPIO_BSRR_BS8);
+  97              		.loc 1 33 5 view .LVU21
+  98              		.loc 1 33 14 is_stmt 0 view .LVU22
+  99 0056 164B     		ldr	r3, .L14
+ 100 0058 5B79     		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 101              		.loc 1 33 7 view .LVU23
+ 102 005a 1BB3     		cbz	r3, .L12
+ 103              		.loc 1 33 19 is_stmt 1 discriminator 1 view .LVU24
+ 104 005c 164A     		ldr	r2, .L14+8
+ 105 005e 9369     		ldr	r3, [r2, #24]
+ 106 0060 43F48073 		orr	r3, r3, #256
+ 107 0064 9361     		str	r3, [r2, #24]
+ 108 0066 7047     		bx	lr
+ 109              	.L2:
+  24:Core/Src/main.c ****     if(led_en[1]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS4);
+ 110              		.loc 1 24 10 view .LVU25
+ 111 0068 124A     		ldr	r2, .L14+4
+ 112 006a 9369     		ldr	r3, [r2, #24]
+ 113 006c 43F48023 		orr	r3, r3, #262144
+ 114 0070 9361     		str	r3, [r2, #24]
+ 115 0072 CEE7     		b	.L3
+ 116              	.L4:
+  26:Core/Src/main.c ****     if(led_en[2]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS5);
+ 117              		.loc 1 26 10 view .LVU26
+ 118 0074 0F4A     		ldr	r2, .L14+4
+ 119 0076 9369     		ldr	r3, [r2, #24]
+ 120 0078 43F48013 		orr	r3, r3, #1048576
+ 121 007c 9361     		str	r3, [r2, #24]
+ 122 007e D1E7     		b	.L5
+ 123              	.L6:
+  28:Core/Src/main.c ****     if(led_en[3]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS6);
+ 124              		.loc 1 28 10 view .LVU27
+ 125 0080 0C4A     		ldr	r2, .L14+4
+ 126 0082 9369     		ldr	r3, [r2, #24]
+ 127 0084 43F40013 		orr	r3, r3, #2097152
+ 128 0088 9361     		str	r3, [r2, #24]
+ 129 008a D4E7     		b	.L7
+ 130              	.L8:
+  30:Core/Src/main.c ****     if(led_en[4]) SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS3);
+ 131              		.loc 1 30 10 view .LVU28
+ 132 008c 094A     		ldr	r2, .L14+4
+ 133 008e 9369     		ldr	r3, [r2, #24]
+ 134 0090 43F48003 		orr	r3, r3, #4194304
+ 135 0094 9361     		str	r3, [r2, #24]
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 4
+
+
+ 136 0096 D6E7     		b	.L9
+ 137              	.L10:
+  32:Core/Src/main.c ****     if(led_en[5]) SET_BIT(GPIOF->BSRR, GPIO_BSRR_BS8);
+ 138              		.loc 1 32 10 view .LVU29
+ 139 0098 064A     		ldr	r2, .L14+4
+ 140 009a 9369     		ldr	r3, [r2, #24]
+ 141 009c 43F40023 		orr	r3, r3, #524288
+ 142 00a0 9361     		str	r3, [r2, #24]
+ 143 00a2 D8E7     		b	.L11
+ 144              	.L12:
+  34:Core/Src/main.c ****     else SET_BIT(GPIOF->BSRR, GPIO_BSRR_BR8);    
+ 145              		.loc 1 34 10 view .LVU30
+ 146 00a4 044A     		ldr	r2, .L14+8
+ 147 00a6 9369     		ldr	r3, [r2, #24]
+ 148 00a8 43F08073 		orr	r3, r3, #16777216
+ 149 00ac 9361     		str	r3, [r2, #24]
+  35:Core/Src/main.c **** 
+  36:Core/Src/main.c **** }
+ 150              		.loc 1 36 1 is_stmt 0 view .LVU31
+ 151 00ae 7047     		bx	lr
+ 152              	.L15:
+ 153              		.align	2
+ 154              	.L14:
+ 155 00b0 00000000 		.word	led_en
+ 156 00b4 00100240 		.word	1073876992
+ 157 00b8 00140240 		.word	1073878016
+ 158              		.cfi_endproc
+ 159              	.LFE130:
+ 161              		.section	.text.flickers,"ax",%progbits
+ 162              		.align	1
+ 163              		.global	flickers
+ 164              		.syntax unified
+ 165              		.thumb
+ 166              		.thumb_func
+ 168              	flickers:
+ 169              	.LFB131:
+  37:Core/Src/main.c **** 
+  38:Core/Src/main.c **** void flickers(){
+ 170              		.loc 1 38 16 is_stmt 1 view -0
+ 171              		.cfi_startproc
+ 172              		@ args = 0, pretend = 0, frame = 0
+ 173              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174              		@ link register save eliminated.
+  39:Core/Src/main.c ****     // if(led_en[0]){
+  40:Core/Src/main.c ****     //     if (led1_tick >= flik_list[led_state_flik[0]] / 2){// Если прошло 1000 пре�
+  41:Core/Src/main.c ****     //        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14); // Включаем светодиод
+  42:Core/Src/main.c ****     //        if (led1_tick >= flik_list[led_state_flik[0]]){// Если прошло 2000 прер
+  43:Core/Src/main.c ****     //             led1_tick = 0; // Обнуляем переменную счётчика сис�
+  44:Core/Src/main.c ****     //         }
+  45:Core/Src/main.c ****     //     }
+  46:Core/Src/main.c ****     //     else{
+  47:Core/Src/main.c ****     //         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14); // Иначе выключаем светод�
+  48:Core/Src/main.c ****     //     }
+  49:Core/Src/main.c ****     // }
+  50:Core/Src/main.c ****     // else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+  51:Core/Src/main.c ****     //     //blue(PB7)
+  52:Core/Src/main.c ****     // if(led_en[1]){
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 5
+
+
+  53:Core/Src/main.c ****     //     if (led2_tick >= flik_list[led_state_flik[1]] / 2){// Если прошло 1000 пре�
+  54:Core/Src/main.c ****     //        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); // Включаем светодиод
+  55:Core/Src/main.c ****     //        if (led2_tick >= flik_list[led_state_flik[1]]){// Если прошло 2000 прер
+  56:Core/Src/main.c ****     //             led2_tick = 0; // Обнуляем переменную счётчика сис�
+  57:Core/Src/main.c ****     //         }
+  58:Core/Src/main.c ****     //     }
+  59:Core/Src/main.c ****     //     else{
+  60:Core/Src/main.c ****     //         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); // Иначе выключаем светоди
+  61:Core/Src/main.c ****     //     }
+  62:Core/Src/main.c ****     // }
+  63:Core/Src/main.c ****     // else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  64:Core/Src/main.c ****     // if(led_en[2]){
+  65:Core/Src/main.c ****     //     //green(PB0)
+  66:Core/Src/main.c ****     //     if (led3_tick >= flik_list[led_state_flik[2]] / 2){// Если прошло 1000 пре�
+  67:Core/Src/main.c ****     //        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0); // Включаем светодиод
+  68:Core/Src/main.c ****     //        if (led3_tick >= flik_list[led_state_flik[2]]){// Если прошло 2000 прер
+  69:Core/Src/main.c ****     //             led3_tick = 0; // Обнуляем переменную счётчика сис�
+  70:Core/Src/main.c ****     //         }
+  71:Core/Src/main.c ****     //     }
+  72:Core/Src/main.c ****     //     else{
+  73:Core/Src/main.c ****     //         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0); // Иначе выключаем светоди
+  74:Core/Src/main.c ****     //     }
+  75:Core/Src/main.c ****     // }
+  76:Core/Src/main.c ****     // else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+  77:Core/Src/main.c ****     //PE2
+  78:Core/Src/main.c ****     if(led_en[0]){
+ 175              		.loc 1 78 5 view .LVU33
+ 176              		.loc 1 78 14 is_stmt 0 view .LVU34
+ 177 0000 694B     		ldr	r3, .L35
+ 178 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 179              		.loc 1 78 7 view .LVU35
+ 180 0004 D3B1     		cbz	r3, .L17
+  79:Core/Src/main.c ****         if (led_tick[0] >= flik_list[led_state_flik[0]] / 2){// Если прошло 1000 прер
+ 181              		.loc 1 79 9 is_stmt 1 view .LVU36
+ 182              		.loc 1 79 21 is_stmt 0 view .LVU37
+ 183 0006 694B     		ldr	r3, .L35+4
+ 184 0008 1A68     		ldr	r2, [r3]
+ 185              		.loc 1 79 52 view .LVU38
+ 186 000a 694B     		ldr	r3, .L35+8
+ 187 000c 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 188              		.loc 1 79 37 view .LVU39
+ 189 000e 694B     		ldr	r3, .L35+12
+ 190 0010 33F81130 		ldrh	r3, [r3, r1, lsl #1]
+ 191              		.loc 1 79 12 view .LVU40
+ 192 0014 B2EB530F 		cmp	r2, r3, lsr #1
+ 193 0018 0AD3     		bcc	.L18
+  80:Core/Src/main.c ****            SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS2); // Включаем светодиод
+ 194              		.loc 1 80 12 is_stmt 1 view .LVU41
+ 195 001a 6748     		ldr	r0, .L35+16
+ 196 001c 8169     		ldr	r1, [r0, #24]
+ 197 001e 41F00401 		orr	r1, r1, #4
+ 198 0022 8161     		str	r1, [r0, #24]
+  81:Core/Src/main.c ****            if (led_tick[0] >= flik_list[led_state_flik[0]]){// Если прошло 2000 прер�
+ 199              		.loc 1 81 12 view .LVU42
+ 200              		.loc 1 81 15 is_stmt 0 view .LVU43
+ 201 0024 9A42     		cmp	r2, r3
+ 202 0026 0ED3     		bcc	.L19
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 6
+
+
+  82:Core/Src/main.c ****                 led_tick[0] = 0; // Обнуляем переменную счётчика сист
+ 203              		.loc 1 82 17 is_stmt 1 view .LVU44
+ 204              		.loc 1 82 29 is_stmt 0 view .LVU45
+ 205 0028 604B     		ldr	r3, .L35+4
+ 206 002a 0022     		movs	r2, #0
+ 207 002c 1A60     		str	r2, [r3]
+ 208 002e 0AE0     		b	.L19
+ 209              	.L18:
+  83:Core/Src/main.c ****             }
+  84:Core/Src/main.c ****         }
+  85:Core/Src/main.c ****         else{
+  86:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR2); // Иначе выключаем светодио�
+ 210              		.loc 1 86 13 is_stmt 1 view .LVU46
+ 211 0030 614A     		ldr	r2, .L35+16
+ 212 0032 9369     		ldr	r3, [r2, #24]
+ 213 0034 43F48023 		orr	r3, r3, #262144
+ 214 0038 9361     		str	r3, [r2, #24]
+ 215 003a 04E0     		b	.L19
+ 216              	.L17:
+  87:Core/Src/main.c ****         }
+  88:Core/Src/main.c ****     }
+  89:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR2);
+ 217              		.loc 1 89 10 view .LVU47
+ 218 003c 5E4A     		ldr	r2, .L35+16
+ 219 003e 9369     		ldr	r3, [r2, #24]
+ 220 0040 43F48023 		orr	r3, r3, #262144
+ 221 0044 9361     		str	r3, [r2, #24]
+ 222              	.L19:
+  90:Core/Src/main.c ****     //PE4
+  91:Core/Src/main.c ****     if(led_en[1]){
+ 223              		.loc 1 91 5 view .LVU48
+ 224              		.loc 1 91 14 is_stmt 0 view .LVU49
+ 225 0046 584B     		ldr	r3, .L35
+ 226 0048 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 227              		.loc 1 91 7 view .LVU50
+ 228 004a D3B1     		cbz	r3, .L20
+  92:Core/Src/main.c ****         if (led_tick[1] >= flik_list[led_state_flik[1]] / 2){
+ 229              		.loc 1 92 9 is_stmt 1 view .LVU51
+ 230              		.loc 1 92 21 is_stmt 0 view .LVU52
+ 231 004c 574B     		ldr	r3, .L35+4
+ 232 004e 5A68     		ldr	r2, [r3, #4]
+ 233              		.loc 1 92 52 view .LVU53
+ 234 0050 574B     		ldr	r3, .L35+8
+ 235 0052 5978     		ldrb	r1, [r3, #1]	@ zero_extendqisi2
+ 236              		.loc 1 92 37 view .LVU54
+ 237 0054 574B     		ldr	r3, .L35+12
+ 238 0056 33F81130 		ldrh	r3, [r3, r1, lsl #1]
+ 239              		.loc 1 92 12 view .LVU55
+ 240 005a B2EB530F 		cmp	r2, r3, lsr #1
+ 241 005e 0AD3     		bcc	.L21
+  93:Core/Src/main.c ****            SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS4); 
+ 242              		.loc 1 93 12 is_stmt 1 view .LVU56
+ 243 0060 5548     		ldr	r0, .L35+16
+ 244 0062 8169     		ldr	r1, [r0, #24]
+ 245 0064 41F01001 		orr	r1, r1, #16
+ 246 0068 8161     		str	r1, [r0, #24]
+  94:Core/Src/main.c ****            if (led_tick[1] >= flik_list[led_state_flik[1]]){
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 7
+
+
+ 247              		.loc 1 94 12 view .LVU57
+ 248              		.loc 1 94 15 is_stmt 0 view .LVU58
+ 249 006a 9A42     		cmp	r2, r3
+ 250 006c 0ED3     		bcc	.L22
+  95:Core/Src/main.c ****                 led_tick[1] = 0;
+ 251              		.loc 1 95 17 is_stmt 1 view .LVU59
+ 252              		.loc 1 95 29 is_stmt 0 view .LVU60
+ 253 006e 4F4B     		ldr	r3, .L35+4
+ 254 0070 0022     		movs	r2, #0
+ 255 0072 5A60     		str	r2, [r3, #4]
+ 256 0074 0AE0     		b	.L22
+ 257              	.L21:
+  96:Core/Src/main.c ****             }
+  97:Core/Src/main.c ****         }
+  98:Core/Src/main.c ****         else{
+  99:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR4); 
+ 258              		.loc 1 99 13 is_stmt 1 view .LVU61
+ 259 0076 504A     		ldr	r2, .L35+16
+ 260 0078 9369     		ldr	r3, [r2, #24]
+ 261 007a 43F48013 		orr	r3, r3, #1048576
+ 262 007e 9361     		str	r3, [r2, #24]
+ 263 0080 04E0     		b	.L22
+ 264              	.L20:
+ 100:Core/Src/main.c ****         }
+ 101:Core/Src/main.c ****     }
+ 102:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR4);
+ 265              		.loc 1 102 10 view .LVU62
+ 266 0082 4D4A     		ldr	r2, .L35+16
+ 267 0084 9369     		ldr	r3, [r2, #24]
+ 268 0086 43F48013 		orr	r3, r3, #1048576
+ 269 008a 9361     		str	r3, [r2, #24]
+ 270              	.L22:
+ 103:Core/Src/main.c ****     //PE5    //PE2,4,5,6,3 PF8
+ 104:Core/Src/main.c ****     if(led_en[2]){
+ 271              		.loc 1 104 5 view .LVU63
+ 272              		.loc 1 104 14 is_stmt 0 view .LVU64
+ 273 008c 464B     		ldr	r3, .L35
+ 274 008e 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 275              		.loc 1 104 7 view .LVU65
+ 276 0090 D3B1     		cbz	r3, .L23
+ 105:Core/Src/main.c ****         if (led_tick[2] >= flik_list[led_state_flik[2]] / 2){
+ 277              		.loc 1 105 9 is_stmt 1 view .LVU66
+ 278              		.loc 1 105 21 is_stmt 0 view .LVU67
+ 279 0092 464B     		ldr	r3, .L35+4
+ 280 0094 9A68     		ldr	r2, [r3, #8]
+ 281              		.loc 1 105 52 view .LVU68
+ 282 0096 464B     		ldr	r3, .L35+8
+ 283 0098 9978     		ldrb	r1, [r3, #2]	@ zero_extendqisi2
+ 284              		.loc 1 105 37 view .LVU69
+ 285 009a 464B     		ldr	r3, .L35+12
+ 286 009c 33F81130 		ldrh	r3, [r3, r1, lsl #1]
+ 287              		.loc 1 105 12 view .LVU70
+ 288 00a0 B2EB530F 		cmp	r2, r3, lsr #1
+ 289 00a4 0AD3     		bcc	.L24
+ 106:Core/Src/main.c ****            SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS5); 
+ 290              		.loc 1 106 12 is_stmt 1 view .LVU71
+ 291 00a6 4448     		ldr	r0, .L35+16
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 8
+
+
+ 292 00a8 8169     		ldr	r1, [r0, #24]
+ 293 00aa 41F02001 		orr	r1, r1, #32
+ 294 00ae 8161     		str	r1, [r0, #24]
+ 107:Core/Src/main.c ****            if (led_tick[2] >= flik_list[led_state_flik[2]]){
+ 295              		.loc 1 107 12 view .LVU72
+ 296              		.loc 1 107 15 is_stmt 0 view .LVU73
+ 297 00b0 9A42     		cmp	r2, r3
+ 298 00b2 0ED3     		bcc	.L25
+ 108:Core/Src/main.c ****                 led_tick[2] = 0; 
+ 299              		.loc 1 108 17 is_stmt 1 view .LVU74
+ 300              		.loc 1 108 29 is_stmt 0 view .LVU75
+ 301 00b4 3D4B     		ldr	r3, .L35+4
+ 302 00b6 0022     		movs	r2, #0
+ 303 00b8 9A60     		str	r2, [r3, #8]
+ 304 00ba 0AE0     		b	.L25
+ 305              	.L24:
+ 109:Core/Src/main.c ****             }
+ 110:Core/Src/main.c ****         }
+ 111:Core/Src/main.c ****         else{
+ 112:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR5); 
+ 306              		.loc 1 112 13 is_stmt 1 view .LVU76
+ 307 00bc 3E4A     		ldr	r2, .L35+16
+ 308 00be 9369     		ldr	r3, [r2, #24]
+ 309 00c0 43F40013 		orr	r3, r3, #2097152
+ 310 00c4 9361     		str	r3, [r2, #24]
+ 311 00c6 04E0     		b	.L25
+ 312              	.L23:
+ 113:Core/Src/main.c ****         }
+ 114:Core/Src/main.c ****     }
+ 115:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR5);
+ 313              		.loc 1 115 10 view .LVU77
+ 314 00c8 3B4A     		ldr	r2, .L35+16
+ 315 00ca 9369     		ldr	r3, [r2, #24]
+ 316 00cc 43F40013 		orr	r3, r3, #2097152
+ 317 00d0 9361     		str	r3, [r2, #24]
+ 318              	.L25:
+ 116:Core/Src/main.c ****     //PE6    //PE2,4,5,6,3 PF8
+ 117:Core/Src/main.c ****     if(led_en[3]){
+ 319              		.loc 1 117 5 view .LVU78
+ 320              		.loc 1 117 14 is_stmt 0 view .LVU79
+ 321 00d2 354B     		ldr	r3, .L35
+ 322 00d4 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 323              		.loc 1 117 7 view .LVU80
+ 324 00d6 D3B1     		cbz	r3, .L26
+ 118:Core/Src/main.c ****         if (led_tick[3] >= flik_list[led_state_flik[3]] / 2){
+ 325              		.loc 1 118 9 is_stmt 1 view .LVU81
+ 326              		.loc 1 118 21 is_stmt 0 view .LVU82
+ 327 00d8 344B     		ldr	r3, .L35+4
+ 328 00da DA68     		ldr	r2, [r3, #12]
+ 329              		.loc 1 118 52 view .LVU83
+ 330 00dc 344B     		ldr	r3, .L35+8
+ 331 00de D978     		ldrb	r1, [r3, #3]	@ zero_extendqisi2
+ 332              		.loc 1 118 37 view .LVU84
+ 333 00e0 344B     		ldr	r3, .L35+12
+ 334 00e2 33F81130 		ldrh	r3, [r3, r1, lsl #1]
+ 335              		.loc 1 118 12 view .LVU85
+ 336 00e6 B2EB530F 		cmp	r2, r3, lsr #1
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 9
+
+
+ 337 00ea 0AD3     		bcc	.L27
+ 119:Core/Src/main.c ****            SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS6); 
+ 338              		.loc 1 119 12 is_stmt 1 view .LVU86
+ 339 00ec 3248     		ldr	r0, .L35+16
+ 340 00ee 8169     		ldr	r1, [r0, #24]
+ 341 00f0 41F04001 		orr	r1, r1, #64
+ 342 00f4 8161     		str	r1, [r0, #24]
+ 120:Core/Src/main.c ****            if (led_tick[3] >= flik_list[led_state_flik[3]]){
+ 343              		.loc 1 120 12 view .LVU87
+ 344              		.loc 1 120 15 is_stmt 0 view .LVU88
+ 345 00f6 9A42     		cmp	r2, r3
+ 346 00f8 0ED3     		bcc	.L28
+ 121:Core/Src/main.c ****                 led_tick[3] = 0; 
+ 347              		.loc 1 121 17 is_stmt 1 view .LVU89
+ 348              		.loc 1 121 29 is_stmt 0 view .LVU90
+ 349 00fa 2C4B     		ldr	r3, .L35+4
+ 350 00fc 0022     		movs	r2, #0
+ 351 00fe DA60     		str	r2, [r3, #12]
+ 352 0100 0AE0     		b	.L28
+ 353              	.L27:
+ 122:Core/Src/main.c ****             }
+ 123:Core/Src/main.c ****         }
+ 124:Core/Src/main.c ****         else{
+ 125:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR6); 
+ 354              		.loc 1 125 13 is_stmt 1 view .LVU91
+ 355 0102 2D4A     		ldr	r2, .L35+16
+ 356 0104 9369     		ldr	r3, [r2, #24]
+ 357 0106 43F48003 		orr	r3, r3, #4194304
+ 358 010a 9361     		str	r3, [r2, #24]
+ 359 010c 04E0     		b	.L28
+ 360              	.L26:
+ 126:Core/Src/main.c ****         }
+ 127:Core/Src/main.c ****     }
+ 128:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR6);
+ 361              		.loc 1 128 10 view .LVU92
+ 362 010e 2A4A     		ldr	r2, .L35+16
+ 363 0110 9369     		ldr	r3, [r2, #24]
+ 364 0112 43F48003 		orr	r3, r3, #4194304
+ 365 0116 9361     		str	r3, [r2, #24]
+ 366              	.L28:
+ 129:Core/Src/main.c ****     //PE5    //PE2,4,5,6,3 PF8
+ 130:Core/Src/main.c ****     if(led_en[4]){
+ 367              		.loc 1 130 5 view .LVU93
+ 368              		.loc 1 130 14 is_stmt 0 view .LVU94
+ 369 0118 234B     		ldr	r3, .L35
+ 370 011a 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 371              		.loc 1 130 7 view .LVU95
+ 372 011c D3B1     		cbz	r3, .L29
+ 131:Core/Src/main.c ****         if (led_tick[4] >= flik_list[led_state_flik[4]] / 2){
+ 373              		.loc 1 131 9 is_stmt 1 view .LVU96
+ 374              		.loc 1 131 21 is_stmt 0 view .LVU97
+ 375 011e 234B     		ldr	r3, .L35+4
+ 376 0120 1A69     		ldr	r2, [r3, #16]
+ 377              		.loc 1 131 52 view .LVU98
+ 378 0122 234B     		ldr	r3, .L35+8
+ 379 0124 1979     		ldrb	r1, [r3, #4]	@ zero_extendqisi2
+ 380              		.loc 1 131 37 view .LVU99
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 10
+
+
+ 381 0126 234B     		ldr	r3, .L35+12
+ 382 0128 33F81130 		ldrh	r3, [r3, r1, lsl #1]
+ 383              		.loc 1 131 12 view .LVU100
+ 384 012c B2EB530F 		cmp	r2, r3, lsr #1
+ 385 0130 0AD3     		bcc	.L30
+ 132:Core/Src/main.c ****            SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS3); 
+ 386              		.loc 1 132 12 is_stmt 1 view .LVU101
+ 387 0132 2148     		ldr	r0, .L35+16
+ 388 0134 8169     		ldr	r1, [r0, #24]
+ 389 0136 41F00801 		orr	r1, r1, #8
+ 390 013a 8161     		str	r1, [r0, #24]
+ 133:Core/Src/main.c ****            if (led_tick[4] >= flik_list[led_state_flik[4]]){
+ 391              		.loc 1 133 12 view .LVU102
+ 392              		.loc 1 133 15 is_stmt 0 view .LVU103
+ 393 013c 9A42     		cmp	r2, r3
+ 394 013e 0ED3     		bcc	.L31
+ 134:Core/Src/main.c ****                 led_tick[4] = 0; 
+ 395              		.loc 1 134 17 is_stmt 1 view .LVU104
+ 396              		.loc 1 134 29 is_stmt 0 view .LVU105
+ 397 0140 1A4B     		ldr	r3, .L35+4
+ 398 0142 0022     		movs	r2, #0
+ 399 0144 1A61     		str	r2, [r3, #16]
+ 400 0146 0AE0     		b	.L31
+ 401              	.L30:
+ 135:Core/Src/main.c ****             }
+ 136:Core/Src/main.c ****         }
+ 137:Core/Src/main.c ****         else{
+ 138:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR3); 
+ 402              		.loc 1 138 13 is_stmt 1 view .LVU106
+ 403 0148 1B4A     		ldr	r2, .L35+16
+ 404 014a 9369     		ldr	r3, [r2, #24]
+ 405 014c 43F40023 		orr	r3, r3, #524288
+ 406 0150 9361     		str	r3, [r2, #24]
+ 407 0152 04E0     		b	.L31
+ 408              	.L29:
+ 139:Core/Src/main.c ****         }
+ 140:Core/Src/main.c ****     }
+ 141:Core/Src/main.c ****     else SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR3);
+ 409              		.loc 1 141 10 view .LVU107
+ 410 0154 184A     		ldr	r2, .L35+16
+ 411 0156 9369     		ldr	r3, [r2, #24]
+ 412 0158 43F40023 		orr	r3, r3, #524288
+ 413 015c 9361     		str	r3, [r2, #24]
+ 414              	.L31:
+ 142:Core/Src/main.c ****     //PF8    //PE2,4,5,6,3 PF8
+ 143:Core/Src/main.c ****     if(led_en[5]){
+ 415              		.loc 1 143 5 view .LVU108
+ 416              		.loc 1 143 14 is_stmt 0 view .LVU109
+ 417 015e 124B     		ldr	r3, .L35
+ 418 0160 5B79     		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 419              		.loc 1 143 7 view .LVU110
+ 420 0162 D3B1     		cbz	r3, .L32
+ 144:Core/Src/main.c ****         if (led_tick[5] >= flik_list[led_state_flik[5]] / 2){
+ 421              		.loc 1 144 9 is_stmt 1 view .LVU111
+ 422              		.loc 1 144 21 is_stmt 0 view .LVU112
+ 423 0164 114B     		ldr	r3, .L35+4
+ 424 0166 5A69     		ldr	r2, [r3, #20]
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 11
+
+
+ 425              		.loc 1 144 52 view .LVU113
+ 426 0168 114B     		ldr	r3, .L35+8
+ 427 016a 5979     		ldrb	r1, [r3, #5]	@ zero_extendqisi2
+ 428              		.loc 1 144 37 view .LVU114
+ 429 016c 114B     		ldr	r3, .L35+12
+ 430 016e 33F81130 		ldrh	r3, [r3, r1, lsl #1]
+ 431              		.loc 1 144 12 view .LVU115
+ 432 0172 B2EB530F 		cmp	r2, r3, lsr #1
+ 433 0176 0AD3     		bcc	.L33
+ 145:Core/Src/main.c ****            SET_BIT(GPIOF->BSRR, GPIO_BSRR_BS8); 
+ 434              		.loc 1 145 12 is_stmt 1 view .LVU116
+ 435 0178 1048     		ldr	r0, .L35+20
+ 436 017a 8169     		ldr	r1, [r0, #24]
+ 437 017c 41F48071 		orr	r1, r1, #256
+ 438 0180 8161     		str	r1, [r0, #24]
+ 146:Core/Src/main.c ****            if (led_tick[5] >= flik_list[led_state_flik[5]]){
+ 439              		.loc 1 146 12 view .LVU117
+ 440              		.loc 1 146 15 is_stmt 0 view .LVU118
+ 441 0182 9A42     		cmp	r2, r3
+ 442 0184 0ED3     		bcc	.L16
+ 147:Core/Src/main.c ****                 led_tick[5] = 0; 
+ 443              		.loc 1 147 17 is_stmt 1 view .LVU119
+ 444              		.loc 1 147 29 is_stmt 0 view .LVU120
+ 445 0186 094B     		ldr	r3, .L35+4
+ 446 0188 0022     		movs	r2, #0
+ 447 018a 5A61     		str	r2, [r3, #20]
+ 448 018c 7047     		bx	lr
+ 449              	.L33:
+ 148:Core/Src/main.c ****             }
+ 149:Core/Src/main.c ****         }
+ 150:Core/Src/main.c ****         else{
+ 151:Core/Src/main.c ****             SET_BIT(GPIOF->BSRR, GPIO_BSRR_BR8); 
+ 450              		.loc 1 151 13 is_stmt 1 view .LVU121
+ 451 018e 0B4A     		ldr	r2, .L35+20
+ 452 0190 9369     		ldr	r3, [r2, #24]
+ 453 0192 43F08073 		orr	r3, r3, #16777216
+ 454 0196 9361     		str	r3, [r2, #24]
+ 455 0198 7047     		bx	lr
+ 456              	.L32:
+ 152:Core/Src/main.c ****         }
+ 153:Core/Src/main.c ****     }
+ 154:Core/Src/main.c ****     else SET_BIT(GPIOF->BSRR, GPIO_BSRR_BR8);
+ 457              		.loc 1 154 10 view .LVU122
+ 458 019a 084A     		ldr	r2, .L35+20
+ 459 019c 9369     		ldr	r3, [r2, #24]
+ 460 019e 43F08073 		orr	r3, r3, #16777216
+ 461 01a2 9361     		str	r3, [r2, #24]
+ 462              	.L16:
+ 155:Core/Src/main.c ****     
+ 156:Core/Src/main.c ****     }
+ 463              		.loc 1 156 5 is_stmt 0 view .LVU123
+ 464 01a4 7047     		bx	lr
+ 465              	.L36:
+ 466 01a6 00BF     		.align	2
+ 467              	.L35:
+ 468 01a8 00000000 		.word	led_en
+ 469 01ac 00000000 		.word	led_tick
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 12
+
+
+ 470 01b0 00000000 		.word	led_state_flik
+ 471 01b4 00000000 		.word	flik_list
+ 472 01b8 00100240 		.word	1073876992
+ 473 01bc 00140240 		.word	1073878016
+ 474              		.cfi_endproc
+ 475              	.LFE131:
+ 477              		.section	.text.incFlikState,"ax",%progbits
+ 478              		.align	1
+ 479              		.global	incFlikState
+ 480              		.syntax unified
+ 481              		.thumb
+ 482              		.thumb_func
+ 484              	incFlikState:
+ 485              	.LVL0:
+ 486              	.LFB132:
+ 157:Core/Src/main.c ****     
+ 158:Core/Src/main.c **** 
+ 159:Core/Src/main.c **** void incFlikState(int i){
+ 487              		.loc 1 159 25 is_stmt 1 view -0
+ 488              		.cfi_startproc
+ 489              		@ args = 0, pretend = 0, frame = 0
+ 490              		@ frame_needed = 0, uses_anonymous_args = 0
+ 491              		@ link register save eliminated.
+ 160:Core/Src/main.c ****     led_state_flik[i]++;
+ 492              		.loc 1 160 5 view .LVU125
+ 493              		.loc 1 160 19 is_stmt 0 view .LVU126
+ 494 0000 054A     		ldr	r2, .L39
+ 495 0002 135C     		ldrb	r3, [r2, r0]	@ zero_extendqisi2
+ 496              		.loc 1 160 22 view .LVU127
+ 497 0004 0133     		adds	r3, r3, #1
+ 498 0006 DBB2     		uxtb	r3, r3
+ 499 0008 1354     		strb	r3, [r2, r0]
+ 161:Core/Src/main.c ****     if(led_state_flik[i] > 2) led_state_flik[i] = 0;
+ 500              		.loc 1 161 5 is_stmt 1 view .LVU128
+ 501              		.loc 1 161 7 is_stmt 0 view .LVU129
+ 502 000a 022B     		cmp	r3, #2
+ 503 000c 02D9     		bls	.L37
+ 504              		.loc 1 161 31 is_stmt 1 discriminator 1 view .LVU130
+ 505              		.loc 1 161 49 is_stmt 0 discriminator 1 view .LVU131
+ 506 000e 1346     		mov	r3, r2
+ 507 0010 0022     		movs	r2, #0
+ 508 0012 1A54     		strb	r2, [r3, r0]
+ 509              	.L37:
+ 162:Core/Src/main.c **** }
+ 510              		.loc 1 162 1 view .LVU132
+ 511 0014 7047     		bx	lr
+ 512              	.L40:
+ 513 0016 00BF     		.align	2
+ 514              	.L39:
+ 515 0018 00000000 		.word	led_state_flik
+ 516              		.cfi_endproc
+ 517              	.LFE132:
+ 519              		.section	.text.main,"ax",%progbits
+ 520              		.align	1
+ 521              		.global	main
+ 522              		.syntax unified
+ 523              		.thumb
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 13
+
+
+ 524              		.thumb_func
+ 526              	main:
+ 527              	.LFB133:
+ 163:Core/Src/main.c **** 
+ 164:Core/Src/main.c **** int main(void){
+ 528              		.loc 1 164 15 is_stmt 1 view -0
+ 529              		.cfi_startproc
+ 530              		@ Volatile: function does not return.
+ 531              		@ args = 0, pretend = 0, frame = 0
+ 532              		@ frame_needed = 0, uses_anonymous_args = 0
+ 533 0000 08B5     		push	{r3, lr}
+ 534              	.LCFI0:
+ 535              		.cfi_def_cfa_offset 8
+ 536              		.cfi_offset 3, -8
+ 537              		.cfi_offset 14, -4
+ 165:Core/Src/main.c ****     GPIO_Ini();     // Инициализация поротв GPIO
+ 538              		.loc 1 165 5 view .LVU134
+ 539 0002 FFF7FEFF 		bl	GPIO_Ini
+ 540              	.LVL1:
+ 166:Core/Src/main.c ****     RCC_Ini();      // Инициализация системы тактирования RCC
+ 541              		.loc 1 166 5 view .LVU135
+ 542 0006 FFF7FEFF 		bl	RCC_Ini
+ 543              	.LVL2:
+ 167:Core/Src/main.c ****     EXTI_ITR_Ini(); // Инициализация контроллера прерываний
+ 544              		.loc 1 167 5 view .LVU136
+ 545 000a FFF7FEFF 		bl	EXTI_ITR_Ini
+ 546              	.LVL3:
+ 168:Core/Src/main.c ****     SysTick_Init(); // Инициализация системного таймера
+ 547              		.loc 1 168 5 view .LVU137
+ 548 000e FFF7FEFF 		bl	SysTick_Init
+ 549              	.LVL4:
+ 550 0012 5FE0     		b	.L42
+ 551              	.L51:
+ 169:Core/Src/main.c ****     while (1){
+ 170:Core/Src/main.c ****         
+ 171:Core/Src/main.c ****        switch (BtnCount2){
+ 172:Core/Src/main.c ****             case 1: 
+ 173:Core/Src/main.c ****                 led_en[0] = 1;
+ 552              		.loc 1 173 17 view .LVU138
+ 553              		.loc 1 173 27 is_stmt 0 view .LVU139
+ 554 0014 3C4B     		ldr	r3, .L56
+ 555 0016 0122     		movs	r2, #1
+ 556 0018 1A70     		strb	r2, [r3]
+ 174:Core/Src/main.c ****                 if(shortState){ 
+ 557              		.loc 1 174 17 is_stmt 1 view .LVU140
+ 558              		.loc 1 174 20 is_stmt 0 view .LVU141
+ 559 001a 3C4B     		ldr	r3, .L56+4
+ 560 001c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 561              		.loc 1 174 19 view .LVU142
+ 562 001e 002B     		cmp	r3, #0
+ 563 0020 53D0     		beq	.L43
+ 175:Core/Src/main.c ****                     incFlikState(0);
+ 564              		.loc 1 175 21 is_stmt 1 view .LVU143
+ 565 0022 0020     		movs	r0, #0
+ 566 0024 FFF7FEFF 		bl	incFlikState
+ 567              	.LVL5:
+ 176:Core/Src/main.c ****                     shortState = 0; }
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 14
+
+
+ 568              		.loc 1 176 21 view .LVU144
+ 569              		.loc 1 176 32 is_stmt 0 view .LVU145
+ 570 0028 384B     		ldr	r3, .L56+4
+ 571 002a 0022     		movs	r2, #0
+ 572 002c 1A70     		strb	r2, [r3]
+ 573 002e 4CE0     		b	.L43
+ 574              	.L50:
+ 177:Core/Src/main.c ****             break;    
+ 178:Core/Src/main.c ****             case 2: 
+ 179:Core/Src/main.c ****                 led_en[1] = 1; 
+ 575              		.loc 1 179 17 is_stmt 1 view .LVU146
+ 576              		.loc 1 179 27 is_stmt 0 view .LVU147
+ 577 0030 354B     		ldr	r3, .L56
+ 578 0032 0122     		movs	r2, #1
+ 579 0034 5A70     		strb	r2, [r3, #1]
+ 180:Core/Src/main.c ****                 if(shortState){ 
+ 580              		.loc 1 180 17 is_stmt 1 view .LVU148
+ 581              		.loc 1 180 20 is_stmt 0 view .LVU149
+ 582 0036 354B     		ldr	r3, .L56+4
+ 583 0038 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 584              		.loc 1 180 19 view .LVU150
+ 585 003a 002B     		cmp	r3, #0
+ 586 003c 45D0     		beq	.L43
+ 181:Core/Src/main.c ****                     incFlikState(1);
+ 587              		.loc 1 181 21 is_stmt 1 view .LVU151
+ 588 003e 1046     		mov	r0, r2
+ 589 0040 FFF7FEFF 		bl	incFlikState
+ 590              	.LVL6:
+ 182:Core/Src/main.c ****                     shortState = 0; }
+ 591              		.loc 1 182 21 view .LVU152
+ 592              		.loc 1 182 32 is_stmt 0 view .LVU153
+ 593 0044 314B     		ldr	r3, .L56+4
+ 594 0046 0022     		movs	r2, #0
+ 595 0048 1A70     		strb	r2, [r3]
+ 596 004a 3EE0     		b	.L43
+ 597              	.L49:
+ 183:Core/Src/main.c ****             break;        
+ 184:Core/Src/main.c ****             case 3: 
+ 185:Core/Src/main.c ****                 led_en[2] = 1; 
+ 598              		.loc 1 185 17 is_stmt 1 view .LVU154
+ 599              		.loc 1 185 27 is_stmt 0 view .LVU155
+ 600 004c 2E4B     		ldr	r3, .L56
+ 601 004e 0122     		movs	r2, #1
+ 602 0050 9A70     		strb	r2, [r3, #2]
+ 186:Core/Src/main.c ****                 if(shortState){ 
+ 603              		.loc 1 186 17 is_stmt 1 view .LVU156
+ 604              		.loc 1 186 20 is_stmt 0 view .LVU157
+ 605 0052 2E4B     		ldr	r3, .L56+4
+ 606 0054 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 607              		.loc 1 186 19 view .LVU158
+ 608 0056 002B     		cmp	r3, #0
+ 609 0058 37D0     		beq	.L43
+ 187:Core/Src/main.c ****                     incFlikState(2);
+ 610              		.loc 1 187 21 is_stmt 1 view .LVU159
+ 611 005a 0220     		movs	r0, #2
+ 612 005c FFF7FEFF 		bl	incFlikState
+ 613              	.LVL7:
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 15
+
+
+ 188:Core/Src/main.c ****                     shortState = 0; }
+ 614              		.loc 1 188 21 view .LVU160
+ 615              		.loc 1 188 32 is_stmt 0 view .LVU161
+ 616 0060 2A4B     		ldr	r3, .L56+4
+ 617 0062 0022     		movs	r2, #0
+ 618 0064 1A70     		strb	r2, [r3]
+ 619 0066 30E0     		b	.L43
+ 620              	.L48:
+ 189:Core/Src/main.c ****             break;
+ 190:Core/Src/main.c ****             case 4: 
+ 191:Core/Src/main.c ****                 led_en[3] = 1; 
+ 621              		.loc 1 191 17 is_stmt 1 view .LVU162
+ 622              		.loc 1 191 27 is_stmt 0 view .LVU163
+ 623 0068 274B     		ldr	r3, .L56
+ 624 006a 0122     		movs	r2, #1
+ 625 006c DA70     		strb	r2, [r3, #3]
+ 192:Core/Src/main.c ****                 if(shortState){ 
+ 626              		.loc 1 192 17 is_stmt 1 view .LVU164
+ 627              		.loc 1 192 20 is_stmt 0 view .LVU165
+ 628 006e 274B     		ldr	r3, .L56+4
+ 629 0070 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 630              		.loc 1 192 19 view .LVU166
+ 631 0072 53B3     		cbz	r3, .L43
+ 193:Core/Src/main.c ****                     incFlikState(3);
+ 632              		.loc 1 193 21 is_stmt 1 view .LVU167
+ 633 0074 0320     		movs	r0, #3
+ 634 0076 FFF7FEFF 		bl	incFlikState
+ 635              	.LVL8:
+ 194:Core/Src/main.c ****                     shortState = 0; }
+ 636              		.loc 1 194 21 view .LVU168
+ 637              		.loc 1 194 32 is_stmt 0 view .LVU169
+ 638 007a 244B     		ldr	r3, .L56+4
+ 639 007c 0022     		movs	r2, #0
+ 640 007e 1A70     		strb	r2, [r3]
+ 641 0080 23E0     		b	.L43
+ 642              	.L47:
+ 195:Core/Src/main.c ****             break;
+ 196:Core/Src/main.c ****             case 5: 
+ 197:Core/Src/main.c ****                 led_en[4] = 1; 
+ 643              		.loc 1 197 17 is_stmt 1 view .LVU170
+ 644              		.loc 1 197 27 is_stmt 0 view .LVU171
+ 645 0082 214B     		ldr	r3, .L56
+ 646 0084 0122     		movs	r2, #1
+ 647 0086 1A71     		strb	r2, [r3, #4]
+ 198:Core/Src/main.c ****                 if(shortState){ 
+ 648              		.loc 1 198 17 is_stmt 1 view .LVU172
+ 649              		.loc 1 198 20 is_stmt 0 view .LVU173
+ 650 0088 204B     		ldr	r3, .L56+4
+ 651 008a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 652              		.loc 1 198 19 view .LVU174
+ 653 008c EBB1     		cbz	r3, .L43
+ 199:Core/Src/main.c ****                     incFlikState(4);
+ 654              		.loc 1 199 21 is_stmt 1 view .LVU175
+ 655 008e 0420     		movs	r0, #4
+ 656 0090 FFF7FEFF 		bl	incFlikState
+ 657              	.LVL9:
+ 200:Core/Src/main.c ****                     shortState = 0; }
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 16
+
+
+ 658              		.loc 1 200 21 view .LVU176
+ 659              		.loc 1 200 32 is_stmt 0 view .LVU177
+ 660 0094 1D4B     		ldr	r3, .L56+4
+ 661 0096 0022     		movs	r2, #0
+ 662 0098 1A70     		strb	r2, [r3]
+ 663 009a 16E0     		b	.L43
+ 664              	.L46:
+ 201:Core/Src/main.c ****             break;
+ 202:Core/Src/main.c ****             case 6: 
+ 203:Core/Src/main.c ****                 led_en[5] = 1; 
+ 665              		.loc 1 203 17 is_stmt 1 view .LVU178
+ 666              		.loc 1 203 27 is_stmt 0 view .LVU179
+ 667 009c 1A4B     		ldr	r3, .L56
+ 668 009e 0122     		movs	r2, #1
+ 669 00a0 5A71     		strb	r2, [r3, #5]
+ 204:Core/Src/main.c ****                 if(shortState){ 
+ 670              		.loc 1 204 17 is_stmt 1 view .LVU180
+ 671              		.loc 1 204 20 is_stmt 0 view .LVU181
+ 672 00a2 1A4B     		ldr	r3, .L56+4
+ 673 00a4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 674              		.loc 1 204 19 view .LVU182
+ 675 00a6 83B1     		cbz	r3, .L43
+ 205:Core/Src/main.c ****                     incFlikState(5);
+ 676              		.loc 1 205 21 is_stmt 1 view .LVU183
+ 677 00a8 0520     		movs	r0, #5
+ 678 00aa FFF7FEFF 		bl	incFlikState
+ 679              	.LVL10:
+ 206:Core/Src/main.c ****                     shortState = 0; }
+ 680              		.loc 1 206 21 view .LVU184
+ 681              		.loc 1 206 32 is_stmt 0 view .LVU185
+ 682 00ae 174B     		ldr	r3, .L56+4
+ 683 00b0 0022     		movs	r2, #0
+ 684 00b2 1A70     		strb	r2, [r3]
+ 685 00b4 09E0     		b	.L43
+ 686              	.L44:
+ 207:Core/Src/main.c ****             break;
+ 208:Core/Src/main.c ****             case 7:
+ 209:Core/Src/main.c ****                 led_en[0] = 0;
+ 687              		.loc 1 209 17 is_stmt 1 view .LVU186
+ 688              		.loc 1 209 27 is_stmt 0 view .LVU187
+ 689 00b6 144A     		ldr	r2, .L56
+ 690 00b8 0023     		movs	r3, #0
+ 691 00ba 1370     		strb	r3, [r2]
+ 210:Core/Src/main.c ****                 led_en[1] = 0;
+ 692              		.loc 1 210 17 is_stmt 1 view .LVU188
+ 693              		.loc 1 210 27 is_stmt 0 view .LVU189
+ 694 00bc 5370     		strb	r3, [r2, #1]
+ 211:Core/Src/main.c ****                 led_en[2] = 0;
+ 695              		.loc 1 211 17 is_stmt 1 view .LVU190
+ 696              		.loc 1 211 27 is_stmt 0 view .LVU191
+ 697 00be 9370     		strb	r3, [r2, #2]
+ 212:Core/Src/main.c ****                 led_en[3] = 0;
+ 698              		.loc 1 212 17 is_stmt 1 view .LVU192
+ 699              		.loc 1 212 27 is_stmt 0 view .LVU193
+ 700 00c0 D370     		strb	r3, [r2, #3]
+ 213:Core/Src/main.c ****                 led_en[4] = 0;
+ 701              		.loc 1 213 17 is_stmt 1 view .LVU194
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 17
+
+
+ 702              		.loc 1 213 27 is_stmt 0 view .LVU195
+ 703 00c2 1371     		strb	r3, [r2, #4]
+ 214:Core/Src/main.c ****                 led_en[5] = 0;
+ 704              		.loc 1 214 17 is_stmt 1 view .LVU196
+ 705              		.loc 1 214 27 is_stmt 0 view .LVU197
+ 706 00c4 5371     		strb	r3, [r2, #5]
+ 215:Core/Src/main.c ****                 BtnCount2 = 0;
+ 707              		.loc 1 215 17 is_stmt 1 view .LVU198
+ 708              		.loc 1 215 27 is_stmt 0 view .LVU199
+ 709 00c6 124A     		ldr	r2, .L56+8
+ 710 00c8 1370     		strb	r3, [r2]
+ 216:Core/Src/main.c ****             break;
+ 711              		.loc 1 216 13 is_stmt 1 view .LVU200
+ 712              	.L43:
+ 217:Core/Src/main.c ****             
+ 218:Core/Src/main.c ****         }
+ 219:Core/Src/main.c ****         if(mode) flickers(); 
+ 713              		.loc 1 219 9 view .LVU201
+ 714              		.loc 1 219 12 is_stmt 0 view .LVU202
+ 715 00ca 124B     		ldr	r3, .L56+12
+ 716 00cc 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 717              		.loc 1 219 11 view .LVU203
+ 718 00ce BBB1     		cbz	r3, .L52
+ 719              		.loc 1 219 18 is_stmt 1 discriminator 1 view .LVU204
+ 720 00d0 FFF7FEFF 		bl	flickers
+ 721              	.LVL11:
+ 722              	.L42:
+ 169:Core/Src/main.c ****         
+ 723              		.loc 1 169 5 view .LVU205
+ 171:Core/Src/main.c ****             case 1: 
+ 724              		.loc 1 171 8 view .LVU206
+ 725 00d4 0E4B     		ldr	r3, .L56+8
+ 726 00d6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 727 00d8 013B     		subs	r3, r3, #1
+ 728 00da 062B     		cmp	r3, #6
+ 729 00dc F5D8     		bhi	.L43
+ 730 00de 01A2     		adr	r2, .L45
+ 731 00e0 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 732              		.p2align 2
+ 733              	.L45:
+ 734 00e4 15000000 		.word	.L51+1
+ 735 00e8 31000000 		.word	.L50+1
+ 736 00ec 4D000000 		.word	.L49+1
+ 737 00f0 69000000 		.word	.L48+1
+ 738 00f4 83000000 		.word	.L47+1
+ 739 00f8 9D000000 		.word	.L46+1
+ 740 00fc B7000000 		.word	.L44+1
+ 741              		.p2align 1
+ 742              	.L52:
+ 220:Core/Src/main.c ****         else shine(); 
+ 743              		.loc 1 220 14 view .LVU207
+ 744 0100 FFF7FEFF 		bl	shine
+ 745              	.LVL12:
+ 746 0104 E6E7     		b	.L42
+ 747              	.L57:
+ 748 0106 00BF     		.align	2
+ 749              	.L56:
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 18
+
+
+ 750 0108 00000000 		.word	led_en
+ 751 010c 00000000 		.word	shortState
+ 752 0110 00000000 		.word	BtnCount2
+ 753 0114 00000000 		.word	mode
+ 754              		.cfi_endproc
+ 755              	.LFE133:
+ 757              		.global	shortState
+ 758              		.section	.bss.shortState,"aw",%nobits
+ 761              	shortState:
+ 762 0000 00       		.space	1
+ 763              		.global	mode
+ 764              		.section	.bss.mode,"aw",%nobits
+ 767              	mode:
+ 768 0000 00       		.space	1
+ 769              		.global	BtnCount2
+ 770              		.section	.bss.BtnCount2,"aw",%nobits
+ 773              	BtnCount2:
+ 774 0000 00       		.space	1
+ 775              		.global	BtnCount
+ 776              		.section	.bss.BtnCount,"aw",%nobits
+ 779              	BtnCount:
+ 780 0000 00       		.space	1
+ 781              		.global	led_tick
+ 782              		.section	.bss.led_tick,"aw",%nobits
+ 783              		.align	2
+ 786              	led_tick:
+ 787 0000 00000000 		.space	24
+ 787      00000000 
+ 787      00000000 
+ 787      00000000 
+ 787      00000000 
+ 788              		.global	led_state_flik
+ 789              		.section	.bss.led_state_flik,"aw",%nobits
+ 790              		.align	2
+ 793              	led_state_flik:
+ 794 0000 00000000 		.space	6
+ 794      0000
+ 795              		.global	led_en
+ 796              		.section	.bss.led_en,"aw",%nobits
+ 797              		.align	2
+ 800              	led_en:
+ 801 0000 00000000 		.space	6
+ 801      0000
+ 802              		.global	flik_list
+ 803              		.section	.data.flik_list,"aw"
+ 804              		.align	2
+ 807              	flik_list:
+ 808 0000 C409     		.short	2500
+ 809 0002 E803     		.short	1000
+ 810 0004 0E02     		.short	526
+ 811              		.text
+ 812              	.Letext0:
+ 813              		.file 2 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 814              		.file 3 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 815              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ 816              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:21     .text.shine:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:27     .text.shine:00000000 shine
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:155    .text.shine:000000b0 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:800    .bss.led_en:00000000 led_en
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:162    .text.flickers:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:168    .text.flickers:00000000 flickers
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:468    .text.flickers:000001a8 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:786    .bss.led_tick:00000000 led_tick
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:793    .bss.led_state_flik:00000000 led_state_flik
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:807    .data.flik_list:00000000 flik_list
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:478    .text.incFlikState:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:484    .text.incFlikState:00000000 incFlikState
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:515    .text.incFlikState:00000018 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:520    .text.main:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:526    .text.main:00000000 main
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:734    .text.main:000000e4 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:741    .text.main:00000100 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:750    .text.main:00000108 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:761    .bss.shortState:00000000 shortState
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:773    .bss.BtnCount2:00000000 BtnCount2
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:767    .bss.mode:00000000 mode
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:762    .bss.shortState:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:768    .bss.mode:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:774    .bss.BtnCount2:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:779    .bss.BtnCount:00000000 BtnCount
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:780    .bss.BtnCount:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:783    .bss.led_tick:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:790    .bss.led_state_flik:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:797    .bss.led_en:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccvSzcOx.s:804    .data.flik_list:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
+RCC_Ini
+EXTI_ITR_Ini
+SysTick_Init
