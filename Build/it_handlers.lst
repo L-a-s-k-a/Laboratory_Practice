@@ -1,0 +1,281 @@
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "it_handlers.h"
+   2:Core/Src/it_handlers.c **** // extern uint32_t led1_tick;
+   3:Core/Src/it_handlers.c **** // extern uint32_t led2_tick;
+   4:Core/Src/it_handlers.c **** // extern uint32_t led3_tick;
+   5:Core/Src/it_handlers.c **** extern uint32_t led_tick[6];
+   6:Core/Src/it_handlers.c **** uint16_t ExternInterruptTickCount;
+   7:Core/Src/it_handlers.c **** extern uint8_t shortState;
+   8:Core/Src/it_handlers.c **** extern uint8_t mode;
+   9:Core/Src/it_handlers.c **** void SysTick_Handler(void){ // Системный таймер 1кГц
+  29              		.loc 1 9 27 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  10:Core/Src/it_handlers.c ****     ExternInterruptTickCount++;
+  34              		.loc 1 10 5 view .LVU1
+  35              		.loc 1 10 29 is_stmt 0 view .LVU2
+  36 0000 0B4A     		ldr	r2, .L2
+  37 0002 1388     		ldrh	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1380     		strh	r3, [r2]	@ movhi
+  11:Core/Src/it_handlers.c ****     led_tick[0]++;
+  40              		.loc 1 11 5 is_stmt 1 view .LVU3
+  41              		.loc 1 11 13 is_stmt 0 view .LVU4
+  42 0008 0A4B     		ldr	r3, .L2+4
+  43 000a 1A68     		ldr	r2, [r3]
+  44              		.loc 1 11 16 view .LVU5
+  45 000c 0132     		adds	r2, r2, #1
+  46 000e 1A60     		str	r2, [r3]
+  12:Core/Src/it_handlers.c ****     led_tick[1]++;
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s 			page 2
+
+
+  47              		.loc 1 12 5 is_stmt 1 view .LVU6
+  48              		.loc 1 12 13 is_stmt 0 view .LVU7
+  49 0010 5A68     		ldr	r2, [r3, #4]
+  50              		.loc 1 12 16 view .LVU8
+  51 0012 0132     		adds	r2, r2, #1
+  52 0014 5A60     		str	r2, [r3, #4]
+  13:Core/Src/it_handlers.c ****     led_tick[2]++;
+  53              		.loc 1 13 5 is_stmt 1 view .LVU9
+  54              		.loc 1 13 13 is_stmt 0 view .LVU10
+  55 0016 9A68     		ldr	r2, [r3, #8]
+  56              		.loc 1 13 16 view .LVU11
+  57 0018 0132     		adds	r2, r2, #1
+  58 001a 9A60     		str	r2, [r3, #8]
+  14:Core/Src/it_handlers.c ****     led_tick[3]++;
+  59              		.loc 1 14 5 is_stmt 1 view .LVU12
+  60              		.loc 1 14 13 is_stmt 0 view .LVU13
+  61 001c DA68     		ldr	r2, [r3, #12]
+  62              		.loc 1 14 16 view .LVU14
+  63 001e 0132     		adds	r2, r2, #1
+  64 0020 DA60     		str	r2, [r3, #12]
+  15:Core/Src/it_handlers.c ****     led_tick[4]++;
+  65              		.loc 1 15 5 is_stmt 1 view .LVU15
+  66              		.loc 1 15 13 is_stmt 0 view .LVU16
+  67 0022 1A69     		ldr	r2, [r3, #16]
+  68              		.loc 1 15 16 view .LVU17
+  69 0024 0132     		adds	r2, r2, #1
+  70 0026 1A61     		str	r2, [r3, #16]
+  16:Core/Src/it_handlers.c ****     led_tick[5]++;
+  71              		.loc 1 16 5 is_stmt 1 view .LVU18
+  72              		.loc 1 16 13 is_stmt 0 view .LVU19
+  73 0028 5A69     		ldr	r2, [r3, #20]
+  74              		.loc 1 16 16 view .LVU20
+  75 002a 0132     		adds	r2, r2, #1
+  76 002c 5A61     		str	r2, [r3, #20]
+  17:Core/Src/it_handlers.c **** }
+  77              		.loc 1 17 1 view .LVU21
+  78 002e 7047     		bx	lr
+  79              	.L3:
+  80              		.align	2
+  81              	.L2:
+  82 0030 00000000 		.word	ExternInterruptTickCount
+  83 0034 00000000 		.word	led_tick
+  84              		.cfi_endproc
+  85              	.LFE130:
+  87              		.section	.text.EXTI0_IRQHandler,"ax",%progbits
+  88              		.align	1
+  89              		.global	EXTI0_IRQHandler
+  90              		.syntax unified
+  91              		.thumb
+  92              		.thumb_func
+  94              	EXTI0_IRQHandler:
+  95              	.LFB131:
+  18:Core/Src/it_handlers.c **** uint8_t btnState = 0;
+  19:Core/Src/it_handlers.c **** extern uint8_t BtnCount2;
+  20:Core/Src/it_handlers.c **** void EXTI0_IRQHandler(void){
+  96              		.loc 1 20 28 is_stmt 1 view -0
+  97              		.cfi_startproc
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s 			page 3
+
+
+  98              		@ args = 0, pretend = 0, frame = 0
+  99              		@ frame_needed = 0, uses_anonymous_args = 0
+ 100              		@ link register save eliminated.
+  21:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR0); // завершение прерывания
+ 101              		.loc 1 21 5 view .LVU23
+ 102 0000 194A     		ldr	r2, .L9
+ 103 0002 5369     		ldr	r3, [r2, #20]
+ 104 0004 43F00103 		orr	r3, r3, #1
+ 105 0008 5361     		str	r3, [r2, #20]
+  22:Core/Src/it_handlers.c ****     shortState = 0;
+ 106              		.loc 1 22 5 view .LVU24
+ 107              		.loc 1 22 16 is_stmt 0 view .LVU25
+ 108 000a 184B     		ldr	r3, .L9+4
+ 109 000c 0022     		movs	r2, #0
+ 110 000e 1A70     		strb	r2, [r3]
+  23:Core/Src/it_handlers.c ****     if (ExternInterruptTickCount >= DELAY_BUTTON_FILTER){ // Выполнится, когда пр�
+ 111              		.loc 1 23 5 is_stmt 1 view .LVU26
+ 112              		.loc 1 23 34 is_stmt 0 view .LVU27
+ 113 0010 174B     		ldr	r3, .L9+8
+ 114 0012 1B88     		ldrh	r3, [r3]
+ 115              		.loc 1 23 8 view .LVU28
+ 116 0014 632B     		cmp	r3, #99
+ 117 0016 25D9     		bls	.L4
+  24:Core/Src/it_handlers.c ****         if(btnState == 0){
+ 118              		.loc 1 24 9 is_stmt 1 view .LVU29
+ 119              		.loc 1 24 21 is_stmt 0 view .LVU30
+ 120 0018 164A     		ldr	r2, .L9+12
+ 121 001a 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 122              		.loc 1 24 11 view .LVU31
+ 123 001c 2AB9     		cbnz	r2, .L6
+  25:Core/Src/it_handlers.c ****             ExternInterruptTickCount = 0; // Обнуление счётчика таймерад
+ 124              		.loc 1 25 13 is_stmt 1 view .LVU32
+ 125              		.loc 1 25 38 is_stmt 0 view .LVU33
+ 126 001e 144B     		ldr	r3, .L9+8
+ 127 0020 1A80     		strh	r2, [r3]	@ movhi
+  26:Core/Src/it_handlers.c ****             btnState = 1;
+ 128              		.loc 1 26 13 is_stmt 1 view .LVU34
+ 129              		.loc 1 26 22 is_stmt 0 view .LVU35
+ 130 0022 144B     		ldr	r3, .L9+12
+ 131 0024 0122     		movs	r2, #1
+ 132 0026 1A70     		strb	r2, [r3]
+ 133 0028 7047     		bx	lr
+ 134              	.L6:
+  27:Core/Src/it_handlers.c ****         }
+  28:Core/Src/it_handlers.c ****         else{ //(btnState == 1){
+  29:Core/Src/it_handlers.c ****             btnState = 0;
+ 135              		.loc 1 29 13 is_stmt 1 view .LVU36
+ 136              		.loc 1 29 22 is_stmt 0 view .LVU37
+ 137 002a 124A     		ldr	r2, .L9+12
+ 138 002c 0021     		movs	r1, #0
+ 139 002e 1170     		strb	r1, [r2]
+  30:Core/Src/it_handlers.c ****             if(ExternInterruptTickCount > 2000){
+ 140              		.loc 1 30 13 is_stmt 1 view .LVU38
+ 141              		.loc 1 30 15 is_stmt 0 view .LVU39
+ 142 0030 B3F5FA6F 		cmp	r3, #2000
+ 143 0034 0FD9     		bls	.L7
+  31:Core/Src/it_handlers.c ****                 shortState = 1;
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s 			page 4
+
+
+ 144              		.loc 1 31 17 is_stmt 1 view .LVU40
+ 145              		.loc 1 31 28 is_stmt 0 view .LVU41
+ 146 0036 0D4A     		ldr	r2, .L9+4
+ 147 0038 0121     		movs	r1, #1
+ 148 003a 1170     		strb	r1, [r2]
+  32:Core/Src/it_handlers.c ****                 if(ExternInterruptTickCount > 4000){
+ 149              		.loc 1 32 17 is_stmt 1 view .LVU42
+ 150              		.loc 1 32 19 is_stmt 0 view .LVU43
+ 151 003c B3F57A6F 		cmp	r3, #4000
+ 152 0040 0DD9     		bls	.L8
+  33:Core/Src/it_handlers.c ****                     shortState = 0;
+ 153              		.loc 1 33 21 is_stmt 1 view .LVU44
+ 154              		.loc 1 33 32 is_stmt 0 view .LVU45
+ 155 0042 1346     		mov	r3, r2
+ 156 0044 0022     		movs	r2, #0
+ 157 0046 1A70     		strb	r2, [r3]
+  34:Core/Src/it_handlers.c ****                     mode = !mode;
+ 158              		.loc 1 34 21 is_stmt 1 view .LVU46
+ 159              		.loc 1 34 28 is_stmt 0 view .LVU47
+ 160 0048 0B4A     		ldr	r2, .L9+16
+ 161 004a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 162 004c B3FA83F3 		clz	r3, r3
+ 163 0050 5B09     		lsrs	r3, r3, #5
+ 164              		.loc 1 34 26 view .LVU48
+ 165 0052 1370     		strb	r3, [r2]
+ 166 0054 03E0     		b	.L8
+ 167              	.L7:
+  35:Core/Src/it_handlers.c ****                 } 
+  36:Core/Src/it_handlers.c ****             }
+  37:Core/Src/it_handlers.c ****             else BtnCount2++;
+ 168              		.loc 1 37 18 is_stmt 1 view .LVU49
+ 169              		.loc 1 37 27 is_stmt 0 view .LVU50
+ 170 0056 094A     		ldr	r2, .L9+20
+ 171 0058 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 172 005a 0133     		adds	r3, r3, #1
+ 173 005c 1370     		strb	r3, [r2]
+ 174              	.L8:
+  38:Core/Src/it_handlers.c ****             ExternInterruptTickCount = 0;
+ 175              		.loc 1 38 13 is_stmt 1 view .LVU51
+ 176              		.loc 1 38 38 is_stmt 0 view .LVU52
+ 177 005e 044B     		ldr	r3, .L9+8
+ 178 0060 0022     		movs	r2, #0
+ 179 0062 1A80     		strh	r2, [r3]	@ movhi
+ 180              	.L4:
+  39:Core/Src/it_handlers.c ****         }
+  40:Core/Src/it_handlers.c ****     }
+  41:Core/Src/it_handlers.c **** }
+ 181              		.loc 1 41 1 view .LVU53
+ 182 0064 7047     		bx	lr
+ 183              	.L10:
+ 184 0066 00BF     		.align	2
+ 185              	.L9:
+ 186 0068 003C0140 		.word	1073822720
+ 187 006c 00000000 		.word	shortState
+ 188 0070 00000000 		.word	ExternInterruptTickCount
+ 189 0074 00000000 		.word	btnState
+ 190 0078 00000000 		.word	mode
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s 			page 5
+
+
+ 191 007c 00000000 		.word	BtnCount2
+ 192              		.cfi_endproc
+ 193              	.LFE131:
+ 195              		.global	btnState
+ 196              		.section	.bss.btnState,"aw",%nobits
+ 199              	btnState:
+ 200 0000 00       		.space	1
+ 201              		.global	ExternInterruptTickCount
+ 202              		.section	.bss.ExternInterruptTickCount,"aw",%nobits
+ 203              		.align	1
+ 206              	ExternInterruptTickCount:
+ 207 0000 0000     		.space	2
+ 208              		.text
+ 209              	.Letext0:
+ 210              		.file 2 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 211              		.file 3 "C:/MK_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 212              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ARM GAS  C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:82     .text.SysTick_Handler:00000030 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:206    .bss.ExternInterruptTickCount:00000000 ExternInterruptTickCount
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:88     .text.EXTI0_IRQHandler:00000000 $t
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:94     .text.EXTI0_IRQHandler:00000000 EXTI0_IRQHandler
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:186    .text.EXTI0_IRQHandler:00000068 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:199    .bss.btnState:00000000 btnState
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:200    .bss.btnState:00000000 $d
+C:\Users\Shtefan\AppData\Local\Temp\ccxJznLP.s:203    .bss.ExternInterruptTickCount:00000000 $d
+
+UNDEFINED SYMBOLS
+led_tick
+shortState
+mode
+BtnCount2
