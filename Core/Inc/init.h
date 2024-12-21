@@ -1,5 +1,5 @@
-#include  "D:\yangtao-lab_1\Laboratory_Practice\CMSIS\Devices\Inc/stm32f4xx.h"
-#include  "D:\yangtao-lab_1\Laboratory_Practice\CMSIS\Devices\Inc/stm32f429xx.h"
+#include  "../../CMSIS\CMSIS\Devices\Inc/stm32f4xx.h"
+#include  "../../CMSIS\\CMSIS\Devices\Inc/stm32f429xx.h"
 //开启时钟 B,C
 #define RCC_GPIO_EN                 (*(uint32_t*)(0x40023800UL + 0x30UL)) 
 #define RCC_GPIOB_EN                0x02UL 
