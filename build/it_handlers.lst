@@ -1,0 +1,381 @@
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "it_handlers.h"
+   2:Core/Src/it_handlers.c **** 
+   3:Core/Src/it_handlers.c **** extern uint8_t current_led;
+   4:Core/Src/it_handlers.c **** extern uint8_t  work_mode;
+   5:Core/Src/it_handlers.c **** extern uint8_t blink_frequency;
+   6:Core/Src/it_handlers.c **** extern uint8_t button2_pressed; 
+   7:Core/Src/it_handlers.c **** extern uint32_t button2_timer;
+   8:Core/Src/it_handlers.c **** extern uint32_t systick_counter;
+   9:Core/Src/it_handlers.c **** uint16_t  DelayTickCount;
+  10:Core/Src/it_handlers.c **** extern const uint32_t led_pins[];
+  11:Core/Src/it_handlers.c **** extern const uint32_t blink_periods[];
+  12:Core/Src/it_handlers.c **** extern uint8_t flagbutton1;
+  13:Core/Src/it_handlers.c **** volatile uint8_t button2_handled = 0;
+  14:Core/Src/it_handlers.c **** 
+  15:Core/Src/it_handlers.c **** // SysTick 中断处理
+  16:Core/Src/it_handlers.c **** void SysTick_Handler(void) {
+  29              		.loc 1 16 28 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  17:Core/Src/it_handlers.c ****     systick_counter++; // 1ms 计时
+  34              		.loc 1 17 5 view .LVU1
+  35              		.loc 1 17 20 is_stmt 0 view .LVU2
+  36 0000 044A     		ldr	r2, .L2
+  37 0002 1368     		ldr	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1360     		str	r3, [r2]
+  18:Core/Src/it_handlers.c ****     DelayTickCount++;
+  40              		.loc 1 18 5 is_stmt 1 view .LVU3
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s 			page 2
+
+
+  41              		.loc 1 18 19 is_stmt 0 view .LVU4
+  42 0008 034A     		ldr	r2, .L2+4
+  43 000a 1388     		ldrh	r3, [r2]
+  44 000c 0133     		adds	r3, r3, #1
+  45 000e 1380     		strh	r3, [r2]	@ movhi
+  19:Core/Src/it_handlers.c **** }
+  46              		.loc 1 19 1 view .LVU5
+  47 0010 7047     		bx	lr
+  48              	.L3:
+  49 0012 00BF     		.align	2
+  50              	.L2:
+  51 0014 00000000 		.word	systick_counter
+  52 0018 00000000 		.word	DelayTickCount
+  53              		.cfi_endproc
+  54              	.LFE130:
+  56              		.section	.text.update_led_state,"ax",%progbits
+  57              		.align	1
+  58              		.global	update_led_state
+  59              		.syntax unified
+  60              		.thumb
+  61              		.thumb_func
+  63              	update_led_state:
+  64              	.LFB132:
+  20:Core/Src/it_handlers.c **** 
+  21:Core/Src/it_handlers.c **** 
+  22:Core/Src/it_handlers.c **** // 按钮1（PC13）中断处理
+  23:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void) {
+  24:Core/Src/it_handlers.c ****     flagbutton1=!flagbutton1;
+  25:Core/Src/it_handlers.c ****      if (EXTI->PR & EXTI_PR_PR13) {
+  26:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+  27:Core/Src/it_handlers.c ****      }
+  28:Core/Src/it_handlers.c ****        
+  29:Core/Src/it_handlers.c ****     current_led = (current_led + 1) % 6; // 切换到下一个 LED
+  30:Core/Src/it_handlers.c ****     User_Delay(DELAY_BUTTON_FILTER);
+  31:Core/Src/it_handlers.c ****     update_led_state();
+  32:Core/Src/it_handlers.c **** 
+  33:Core/Src/it_handlers.c ****     }
+  34:Core/Src/it_handlers.c **** 
+  35:Core/Src/it_handlers.c **** 
+  36:Core/Src/it_handlers.c **** void update_led_state(void) {
+  65              		.loc 1 36 29 is_stmt 1 view -0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+  37:Core/Src/it_handlers.c ****     // 关闭所有 LED
+  38:Core/Src/it_handlers.c ****     GPIOB->BSRR = LED1_PIN << 16 | LED2_PIN << 16 | LED3_PIN << 16 |
+  70              		.loc 1 38 5 view .LVU7
+  71              		.loc 1 38 17 is_stmt 0 view .LVU8
+  72 0000 124B     		ldr	r3, .L14
+  73 0002 134A     		ldr	r2, .L14+4
+  74 0004 9A61     		str	r2, [r3, #24]
+  39:Core/Src/it_handlers.c ****                   LED4_PIN << 16 | LED5_PIN << 16 | LED6_PIN << 16;
+  40:Core/Src/it_handlers.c **** 
+  41:Core/Src/it_handlers.c ****     // 点亮当前 LED
+  42:Core/Src/it_handlers.c ****     switch (current_led) {
+  75              		.loc 1 42 5 is_stmt 1 view .LVU9
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s 			page 3
+
+
+  76 0006 134B     		ldr	r3, .L14+8
+  77 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  78 000a 052B     		cmp	r3, #5
+  79 000c 1CD8     		bhi	.L4
+  80 000e DFE803F0 		tbb	[pc, r3]
+  81              	.L7:
+  82 0012 03       		.byte	(.L12-.L7)/2
+  83 0013 08       		.byte	(.L11-.L7)/2
+  84 0014 0C       		.byte	(.L10-.L7)/2
+  85 0015 10       		.byte	(.L9-.L7)/2
+  86 0016 14       		.byte	(.L8-.L7)/2
+  87 0017 18       		.byte	(.L6-.L7)/2
+  88              		.p2align 1
+  89              	.L12:
+  43:Core/Src/it_handlers.c ****         case 0: GPIOB->BSRR = LED1_PIN; break;
+  90              		.loc 1 43 17 view .LVU10
+  91              		.loc 1 43 29 is_stmt 0 view .LVU11
+  92 0018 0C4B     		ldr	r3, .L14
+  93 001a 4FF48042 		mov	r2, #16384
+  94 001e 9A61     		str	r2, [r3, #24]
+  95              		.loc 1 43 41 is_stmt 1 view .LVU12
+  96 0020 7047     		bx	lr
+  97              	.L11:
+  44:Core/Src/it_handlers.c ****         case 1: GPIOB->BSRR = LED2_PIN; break;
+  98              		.loc 1 44 17 view .LVU13
+  99              		.loc 1 44 29 is_stmt 0 view .LVU14
+ 100 0022 0A4B     		ldr	r3, .L14
+ 101 0024 8022     		movs	r2, #128
+ 102 0026 9A61     		str	r2, [r3, #24]
+ 103              		.loc 1 44 41 is_stmt 1 view .LVU15
+ 104 0028 7047     		bx	lr
+ 105              	.L10:
+  45:Core/Src/it_handlers.c ****         case 2: GPIOB->BSRR = LED3_PIN; break;
+ 106              		.loc 1 45 17 view .LVU16
+ 107              		.loc 1 45 29 is_stmt 0 view .LVU17
+ 108 002a 084B     		ldr	r3, .L14
+ 109 002c 0122     		movs	r2, #1
+ 110 002e 9A61     		str	r2, [r3, #24]
+ 111              		.loc 1 45 41 is_stmt 1 view .LVU18
+ 112 0030 7047     		bx	lr
+ 113              	.L9:
+  46:Core/Src/it_handlers.c ****         case 3: GPIOB->BSRR = LED4_PIN; break;
+ 114              		.loc 1 46 17 view .LVU19
+ 115              		.loc 1 46 29 is_stmt 0 view .LVU20
+ 116 0032 064B     		ldr	r3, .L14
+ 117 0034 0422     		movs	r2, #4
+ 118 0036 9A61     		str	r2, [r3, #24]
+ 119              		.loc 1 46 41 is_stmt 1 view .LVU21
+ 120 0038 7047     		bx	lr
+ 121              	.L8:
+  47:Core/Src/it_handlers.c ****         case 4: GPIOB->BSRR = LED5_PIN; break;
+ 122              		.loc 1 47 17 view .LVU22
+ 123              		.loc 1 47 29 is_stmt 0 view .LVU23
+ 124 003a 044B     		ldr	r3, .L14
+ 125 003c 4022     		movs	r2, #64
+ 126 003e 9A61     		str	r2, [r3, #24]
+ 127              		.loc 1 47 41 is_stmt 1 view .LVU24
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s 			page 4
+
+
+ 128 0040 7047     		bx	lr
+ 129              	.L6:
+  48:Core/Src/it_handlers.c ****         case 5: GPIOB->BSRR = LED6_PIN; break;
+ 130              		.loc 1 48 17 view .LVU25
+ 131              		.loc 1 48 29 is_stmt 0 view .LVU26
+ 132 0042 024B     		ldr	r3, .L14
+ 133 0044 0222     		movs	r2, #2
+ 134 0046 9A61     		str	r2, [r3, #24]
+ 135              		.loc 1 48 41 is_stmt 1 view .LVU27
+ 136              	.L4:
+  49:Core/Src/it_handlers.c ****     }
+  50:Core/Src/it_handlers.c **** }
+ 137              		.loc 1 50 1 is_stmt 0 view .LVU28
+ 138 0048 7047     		bx	lr
+ 139              	.L15:
+ 140 004a 00BF     		.align	2
+ 141              	.L14:
+ 142 004c 00040240 		.word	1073873920
+ 143 0050 0000C740 		.word	1086783488
+ 144 0054 00000000 		.word	current_led
+ 145              		.cfi_endproc
+ 146              	.LFE132:
+ 148              		.section	.text.User_Delay,"ax",%progbits
+ 149              		.align	1
+ 150              		.global	User_Delay
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 155              	User_Delay:
+ 156              	.LFB133:
+  51:Core/Src/it_handlers.c **** 
+  52:Core/Src/it_handlers.c **** 
+  53:Core/Src/it_handlers.c **** 
+  54:Core/Src/it_handlers.c **** void User_Delay(uint32_t delay){
+ 157              		.loc 1 54 32 is_stmt 1 view -0
+ 158              		.cfi_startproc
+ 159              		@ args = 0, pretend = 0, frame = 0
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161              		@ link register save eliminated.
+ 162              	.LVL0:
+ 163              	.L17:
+  55:Core/Src/it_handlers.c **** 
+  56:Core/Src/it_handlers.c ****     while(DelayTickCount < delay){} //Цикл, благодаря которому происхо�
+ 164              		.loc 1 56 35 discriminator 1 view .LVU30
+ 165              		.loc 1 56 26 discriminator 1 view .LVU31
+ 166 0000 034B     		ldr	r3, .L18
+ 167 0002 1B88     		ldrh	r3, [r3]
+ 168 0004 8342     		cmp	r3, r0
+ 169 0006 FBD3     		bcc	.L17
+  57:Core/Src/it_handlers.c ****     if(DelayTickCount >= delay) DelayTickCount = 0; //Обнуление переменной сч�
+ 170              		.loc 1 57 5 view .LVU32
+ 171              		.loc 1 57 33 discriminator 1 view .LVU33
+ 172              		.loc 1 57 48 is_stmt 0 discriminator 1 view .LVU34
+ 173 0008 014B     		ldr	r3, .L18
+ 174 000a 0022     		movs	r2, #0
+ 175 000c 1A80     		strh	r2, [r3]	@ movhi
+  58:Core/Src/it_handlers.c **** 
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s 			page 5
+
+
+  59:Core/Src/it_handlers.c **** }
+ 176              		.loc 1 59 1 view .LVU35
+ 177 000e 7047     		bx	lr
+ 178              	.L19:
+ 179              		.align	2
+ 180              	.L18:
+ 181 0010 00000000 		.word	DelayTickCount
+ 182              		.cfi_endproc
+ 183              	.LFE133:
+ 185              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ 186              		.align	1
+ 187              		.global	EXTI15_10_IRQHandler
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 192              	EXTI15_10_IRQHandler:
+ 193              	.LFB131:
+  23:Core/Src/it_handlers.c ****     flagbutton1=!flagbutton1;
+ 194              		.loc 1 23 33 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198 0000 08B5     		push	{r3, lr}
+ 199              	.LCFI0:
+ 200              		.cfi_def_cfa_offset 8
+ 201              		.cfi_offset 3, -8
+ 202              		.cfi_offset 14, -4
+  24:Core/Src/it_handlers.c ****      if (EXTI->PR & EXTI_PR_PR13) {
+ 203              		.loc 1 24 5 view .LVU37
+  24:Core/Src/it_handlers.c ****      if (EXTI->PR & EXTI_PR_PR13) {
+ 204              		.loc 1 24 17 is_stmt 0 view .LVU38
+ 205 0002 114A     		ldr	r2, .L23
+ 206 0004 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 207 0006 B3FA83F3 		clz	r3, r3
+ 208 000a 5B09     		lsrs	r3, r3, #5
+  24:Core/Src/it_handlers.c ****      if (EXTI->PR & EXTI_PR_PR13) {
+ 209              		.loc 1 24 16 view .LVU39
+ 210 000c 1370     		strb	r3, [r2]
+  25:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+ 211              		.loc 1 25 6 is_stmt 1 view .LVU40
+  25:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+ 212              		.loc 1 25 14 is_stmt 0 view .LVU41
+ 213 000e 0F4B     		ldr	r3, .L23+4
+ 214 0010 5B69     		ldr	r3, [r3, #20]
+  25:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+ 215              		.loc 1 25 9 view .LVU42
+ 216 0012 13F4005F 		tst	r3, #8192
+ 217 0016 04D0     		beq	.L21
+  26:Core/Src/it_handlers.c ****      }
+ 218              		.loc 1 26 9 is_stmt 1 view .LVU43
+ 219 0018 0C4A     		ldr	r2, .L23+4
+ 220 001a 5369     		ldr	r3, [r2, #20]
+ 221 001c 43F40053 		orr	r3, r3, #8192
+ 222 0020 5361     		str	r3, [r2, #20]
+ 223              	.L21:
+  29:Core/Src/it_handlers.c ****     User_Delay(DELAY_BUTTON_FILTER);
+ 224              		.loc 1 29 5 view .LVU44
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s 			page 6
+
+
+  29:Core/Src/it_handlers.c ****     User_Delay(DELAY_BUTTON_FILTER);
+ 225              		.loc 1 29 32 is_stmt 0 view .LVU45
+ 226 0022 0B49     		ldr	r1, .L23+8
+ 227 0024 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 228 0026 0132     		adds	r2, r2, #1
+  29:Core/Src/it_handlers.c ****     User_Delay(DELAY_BUTTON_FILTER);
+ 229              		.loc 1 29 37 view .LVU46
+ 230 0028 0A4B     		ldr	r3, .L23+12
+ 231 002a 83FB0203 		smull	r0, r3, r3, r2
+ 232 002e 03EB4303 		add	r3, r3, r3, lsl #1
+ 233 0032 5800     		lsls	r0, r3, #1
+ 234 0034 131A     		subs	r3, r2, r0
+  29:Core/Src/it_handlers.c ****     User_Delay(DELAY_BUTTON_FILTER);
+ 235              		.loc 1 29 17 view .LVU47
+ 236 0036 0B70     		strb	r3, [r1]
+  30:Core/Src/it_handlers.c ****     update_led_state();
+ 237              		.loc 1 30 5 is_stmt 1 view .LVU48
+ 238 0038 4FF4FA70 		mov	r0, #500
+ 239 003c FFF7FEFF 		bl	User_Delay
+ 240              	.LVL1:
+  31:Core/Src/it_handlers.c **** 
+ 241              		.loc 1 31 5 view .LVU49
+ 242 0040 FFF7FEFF 		bl	update_led_state
+ 243              	.LVL2:
+  33:Core/Src/it_handlers.c **** 
+ 244              		.loc 1 33 5 is_stmt 0 view .LVU50
+ 245 0044 08BD     		pop	{r3, pc}
+ 246              	.L24:
+ 247 0046 00BF     		.align	2
+ 248              	.L23:
+ 249 0048 00000000 		.word	flagbutton1
+ 250 004c 003C0140 		.word	1073822720
+ 251 0050 00000000 		.word	current_led
+ 252 0054 ABAAAA2A 		.word	715827883
+ 253              		.cfi_endproc
+ 254              	.LFE131:
+ 256              		.global	button2_handled
+ 257              		.section	.bss.button2_handled,"aw",%nobits
+ 260              	button2_handled:
+ 261 0000 00       		.space	1
+ 262              		.global	DelayTickCount
+ 263              		.section	.bss.DelayTickCount,"aw",%nobits
+ 264              		.align	1
+ 267              	DelayTickCount:
+ 268 0000 0000     		.space	2
+ 269              		.text
+ 270              	.Letext0:
+ 271              		.file 2 "D:/mk/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 272              		.file 3 "D:/mk/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 273              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:51     .text.SysTick_Handler:00000014 $d
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:267    .bss.DelayTickCount:00000000 DelayTickCount
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:57     .text.update_led_state:00000000 $t
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:63     .text.update_led_state:00000000 update_led_state
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:82     .text.update_led_state:00000012 $d
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:88     .text.update_led_state:00000018 $t
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:142    .text.update_led_state:0000004c $d
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:149    .text.User_Delay:00000000 $t
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:155    .text.User_Delay:00000000 User_Delay
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:181    .text.User_Delay:00000010 $d
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:186    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:192    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:249    .text.EXTI15_10_IRQHandler:00000048 $d
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:260    .bss.button2_handled:00000000 button2_handled
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:261    .bss.button2_handled:00000000 $d
+C:\Users\CHANGY~1\AppData\Local\Temp\ccoGVx7D.s:264    .bss.DelayTickCount:00000000 $d
+
+UNDEFINED SYMBOLS
+systick_counter
+current_led
+flagbutton1
