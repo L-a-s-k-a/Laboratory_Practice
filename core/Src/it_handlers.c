@@ -9,8 +9,8 @@ extern uint32_t systick_counter;
 uint16_t  DelayTickCount;
 extern const uint32_t led_pins[];
 extern const uint32_t blink_periods[];
-extern uint8_t flagbutton1;
-volatile uint8_t button2_handled = 0;
+
+
 
 // SysTick 中断处理
 void SysTick_Handler(void) {
@@ -21,7 +21,6 @@ void SysTick_Handler(void) {
 
 // 按钮1（PC13）中断处理
 void EXTI15_10_IRQHandler(void) {
-    flagbutton1=!flagbutton1;
      if (EXTI->PR & EXTI_PR_PR13) {
         SET_BIT(EXTI->PR, EXTI_PR_PR13); 
      }
