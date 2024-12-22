@@ -1,98 +1,130 @@
-#include "init.h"
-#include "stdint.h"
-#include <string.h>
+#include "main.h"
+#include "gpio.h"
 
-int turn;
-int count;
-int flag_button_1;
-int flag_button_2;
-#define DEBOUNCE_DELAY 50
-int last_button_press_time = 0;
-int last_button_press_time_0 = 0;
-int current_time;
-int time_count;
-#define LED_COUNT 6
-uint8_t current_led_position = 0;
-uint8_t all_leds_on = 1;
+volatile int enc, button, mas[6];
+volatile uint32_t counter_tim2, on_time, counter, counter_tim3;
+volatile uint8_t click_count, button_click_flag, current_state, current_led,
+	btn_flag;
 
-#define GPIO_LED_MASK_B (GPIO_BSRR_BR12 | GPIO_BSRR_BR13 | GPIO_BSRR_BR15) 
-#define GPIO_LED_MASK_D (GPIO_BSRR_BR3 | GPIO_BSRR_BR4| GPIO_BSRR_BR5) 
+void GPIO_init()
+{
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN;
 
-void update_leds() {
-    SET_BIT(GPIOB->BSRR, GPIO_LED_MASK_B);
-    SET_BIT(GPIOD->BSRR, GPIO_LED_MASK_D);
-    if (count == 0) {
-		SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR12 | GPIO_BSRR_BR13 | GPIO_BSRR_BR15);
-        SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR3 | GPIO_BSRR_BR4 | GPIO_BSRR_BR5);
-    }
-    else if (count == 6) {
-        if (all_leds_on) {
-			SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12 | GPIO_BSRR_BS13 | GPIO_BSRR_BS15);
-            SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS3 | GPIO_BSRR_BS4| GPIO_BSRR_BS5 );
-        } else {
-            SET_BIT(GPIOB->BSRR, GPIO_LED_MASK_B);
-            SET_BIT(GPIOD->BSRR, GPIO_LED_MASK_D);
-        }
-    }
-    else {
-        for (uint8_t i = 0; i < count; i++) {
-            uint8_t led_index = (current_led_position + i) % LED_COUNT;
-            switch (led_index) {
-                case 0: SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS3); break;
-                case 1: SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS4); break;
-                case 2: SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS5); break;
-                case 3: SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12); break;
-                case 4: SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS13); break;
-                case 5: SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15); break;
-            }
-        }
-    }
+	GPIOA->MODER |= (1 << (1 * 2)) | (1 << (2 * 2)) | (1 << (3 * 2)) | (1 << (4 * 2)) | (1 << (5 * 2)) | (1 << (6 * 2));
+	GPIOA->OTYPER &= ~((1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6));
+	GPIOA->OSPEEDR |= (3 << (1 * 2)) | (3 << (2 * 2)) | (3 << (3 * 2)) | (3 << (4 * 2)) | (3 << (5 * 2)) | (3 << (6 * 2));
+	GPIOA->PUPDR &= ~((3 << (1 * 2)) | (3 << (2 * 2)) | (3 << (3 * 2)) | (3 << (4 * 2)) | (3 << (5 * 2)) | (3 << (6 * 2)));
+
+	GPIOA->MODER &= ~(3 << (0 * 2));
+	GPIOA->PUPDR |= (1 << (0 * 2));
+	GPIOB->MODER &= ~(3 << (1 * 2));
+	GPIOB->PUPDR |= (1 << (1 * 2));
+
+	MODIFY_REG(GPIOA->MODER, (3 << (8 * 2)) | (3 << (9 * 2)),
+			   (2 << (8 * 2)) | (2 << (9 * 2)));
+	MODIFY_REG(GPIOA->AFR[1], (15 << (0 * 4)) | (15 << (1 * 4)),
+			   (1 << (0 * 4)) | (1 << (1 * 4)));
+
+	GPIOA->OSPEEDR |= (3 << (8 * 2)) | (3 << (9 * 2));
+	GPIOA->PUPDR &= ~((3 << (8 * 2)) | (3 << (9 * 2)));
+	GPIOA->OTYPER &= ~((1 << 8) | (1 << 9));
 }
-int main(void){
-	GPIO_Ini();
-	*(uint32_t *)(0x40020C00UL + 0x00UL) |= 0x800; // 5-ый пин в режим OUTPUT
-    *(uint32_t *)(0x40020C00UL + 0x04UL) |= 0x00; // Push-Pull
-    *(uint32_t *)(0x40020C00UL + 0x08UL) |= 0x400; // 5-ый пин MEDIUM скорость
-    *(uint32_t *)(0x40020C00UL + 0x0CUL) |= 0x00; // Отключение подтягивающих резисторов
-
-    while(1){
-
-		current_time = time_count++ / 3000;
-		if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0) {
-			flag_button_1 = !flag_button_1;
-		}
-		if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_9) != 0) {
-			flag_button_2 = !flag_button_2;
-		}
-		if (flag_button_1) {
-			if ((current_time - last_button_press_time) > DEBOUNCE_DELAY / 5) {
-				turn = !turn;
-
-				if (count == 6) {
-					all_leds_on = !all_leds_on;
-					update_leds();
-				} else if (turn == 1 || turn == 0) {
-					current_led_position = (current_led_position + 1)
-							% LED_COUNT;
-					update_leds();
-				}
-
-				last_button_press_time = current_time;
-			}
-			flag_button_1 = 0;
-		}
-
-		if (flag_button_2) {
-			if ((current_time - last_button_press_time_0) > DEBOUNCE_DELAY) {
-				count++;
-				if (count > 6) {
-					count = 0;
-				}
-				update_leds();
-				last_button_press_time_0 = current_time;
-			}
-			flag_button_2 = 0;
-		}
-    }
+void RCC_init()
+{
+	SET_BIT(RCC->CR, RCC_CR_HSION);
+	while (READ_BIT(RCC->CR, RCC_CR_HSIRDY) == 0)
+		;
+	MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, RCC_CR_HSITRIM_3);
+	SET_BIT(PWR->CR, PWR_CR_VOS);
+	CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
+	while (READ_BIT(RCC->CR, RCC_CR_PLLRDY))
+		;
+	CLEAR_REG(RCC->PLLCFGR);
+	SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSI);
+	MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, 8 << RCC_PLLCFGR_PLLM_Pos);
+	MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, 100 << RCC_PLLCFGR_PLLN_Pos);
+	CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP);
+	MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_Msk, 4 << RCC_PLLCFGR_PLLQ_Pos);
+	SET_BIT(RCC->CR, RCC_CR_PLLON);
+	while (READ_BIT(RCC->CR, RCC_CR_PLLRDY))
+		;
+	MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);
+	MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);
+	MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV2);
+	MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV1);
+	MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
+}
+void TIM1_init(void)
+{
+	SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN);
+	CLEAR_BIT(TIM1->CR1, TIM_CR1_CEN);
+	MODIFY_REG(TIM1->SMCR, TIM_SMCR_SMS, TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1);
+	MODIFY_REG(TIM1->CCMR1, TIM_CCMR1_CC1S, TIM_CCMR1_CC1S_0);
+	MODIFY_REG(TIM1->CCMR1, TIM_CCMR1_CC2S, TIM_CCMR1_CC2S_0);
+	CLEAR_BIT(TIM1->CCER, TIM_CCER_CC1P);
+	CLEAR_BIT(TIM1->CCER, TIM_CCER_CC2P);
+	MODIFY_REG(TIM1->CCMR1, TIM_CCMR1_IC1F, TIM_CCMR1_IC1F_3);
+	MODIFY_REG(TIM1->CCMR1, TIM_CCMR1_IC2F, TIM_CCMR1_IC2F_3);
+	MODIFY_REG(TIM1->CCMR1, TIM_CCMR1_IC1PSC, 0x0);
+	MODIFY_REG(TIM1->CCMR1, TIM_CCMR1_IC2PSC, 0x0);
+	TIM1->ARR = 32 - 1;
+	TIM1->CNT = 0;
+	TIM1->PSC = 0;
+	CLEAR_BIT(TIM1->CR1, TIM_CR1_ARPE);
+	SET_BIT(TIM1->CCER, TIM_CCER_CC1E);
+	SET_BIT(TIM1->CCER, TIM_CCER_CC2E);
+	SET_BIT(TIM1->CR1, TIM_CR1_CEN);
+}
+void TIM2_init()
+{
+	SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM2EN);
+	CLEAR_BIT(TIM2->CR1, TIM_CR1_CEN);
+	TIM2->PSC = 100 - 1;
+	TIM2->ARR = 1000 - 1;
+	CLEAR_BIT(TIM2->CR1, TIM_CR1_DIR);
+	CLEAR_BIT(TIM2->CR1, TIM_CR1_CKD);
+	CLEAR_BIT(TIM2->CR1, TIM_CR1_ARPE);
+	CLEAR_BIT(TIM2->SMCR, TIM_SMCR_SMS);
+	CLEAR_REG(TIM2->CR2);
+	MODIFY_REG(TIM2->CR2, TIM_CR2_MMS, 0x0);
+	CLEAR_BIT(TIM2->SMCR, TIM_SMCR_MSM);
+	SET_BIT(TIM2->DIER, TIM_DIER_UIE);
+	SET_BIT(TIM2->CR1, TIM_CR1_CEN);
+	NVIC_EnableIRQ(TIM2_IRQn);
+	NVIC_SetPriority(TIM2_IRQn, 1);
 }
 
+void TIM3_init()
+{
+	SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM3EN);
+	CLEAR_BIT(TIM3->CR1, TIM_CR1_CEN);
+	TIM3->PSC = 10 - 1;
+	TIM3->ARR = 100 - 1;
+	CLEAR_BIT(TIM3->CR1, TIM_CR1_DIR);
+	CLEAR_BIT(TIM3->CR1, TIM_CR1_CKD);
+	CLEAR_BIT(TIM3->CR1, TIM_CR1_ARPE);
+	CLEAR_BIT(TIM3->SMCR, TIM_SMCR_SMS);
+	CLEAR_REG(TIM3->CR2);
+	MODIFY_REG(TIM3->CR2, TIM_CR2_MMS, 0x0);
+	CLEAR_BIT(TIM3->SMCR, TIM_SMCR_MSM);
+	SET_BIT(TIM3->DIER, TIM_DIER_UIE);
+	SET_BIT(TIM3->CR1, TIM_CR1_CEN);
+
+	NVIC_EnableIRQ(TIM3_IRQn);
+	NVIC_SetPriority(TIM3_IRQn, 1);
+}
+
+int main(void)
+{
+	RCC_init();
+
+	GPIO_init();
+	TIM1_init();
+	TIM2_init();
+	TIM3_init();
+	while (1)
+	{
+		enc = TIM1->CNT;
+		button = GPIO_ReadPin(GPIOA, 10);
+	}
+}
