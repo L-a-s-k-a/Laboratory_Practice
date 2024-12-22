@@ -78,9 +78,9 @@ void EXTI_ITR_Ini(void){
     // MODIFY_REG(SYSCFG->EXTICR[1], SYSCFG_EXTICR2_EXTI6_Msk,SYSCFG_EXTICR2_EXTI6_PC);//EXTICR1控制EXTI0-3;EXTICR2控制EXTI4-7;
     MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk,SYSCFG_EXTICR4_EXTI13_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13
    
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR13|EXTI_IMR_MR6); //imr打开13线上的中断请求
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13|EXTI_RTSR_TR6); //设置上升沿触发
-    CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR13|EXTI_FTSR_TR6); //Настройка детектирования спадающего фронта 13 линии
+    SET_BIT(EXTI->IMR, EXTI_IMR_MR13); //imr打开13线上的中断请求|EXTI_IMR_MR6
+    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13); //设置上升沿触发|EXTI_RTSR_TR6
+    CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR13); //Настройка детектирования спадающего фронта 13 линии|EXTI_FTSR_TR6
     
     NVIC_SetPriority(EXTI15_10_IRQn,NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 2));
     // NVIC_SetPriority(EXTI9_5_IRQn,NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 2));

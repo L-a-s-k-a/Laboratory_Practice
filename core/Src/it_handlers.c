@@ -1,14 +1,8 @@
 #include "it_handlers.h"
 
 extern uint8_t current_led;
-extern uint8_t  work_mode;
-extern uint8_t blink_frequency;
-extern uint8_t button2_pressed; 
-extern uint32_t button2_timer;
 extern uint32_t systick_counter;
 uint16_t  DelayTickCount;
-extern const uint32_t led_pins[];
-extern const uint32_t blink_periods[];
 uint32_t ExternInterruptTickCount;
 
 
@@ -41,22 +35,22 @@ void update_led_state(void) {
 
     // 点亮当前 LED
     switch (current_led) {
-        case 0: GPIOB->BSRR = LED1_PIN; break;
-        case 1: GPIOB->BSRR = LED2_PIN; break;
-        case 2: GPIOB->BSRR = LED3_PIN; break;
-        case 3: GPIOB->BSRR = LED4_PIN; break;
-        case 4: GPIOB->BSRR = LED5_PIN; break;
-        case 5: GPIOB->BSRR = LED6_PIN; break;
+        case 0: SET_BIT(GPIOB->BSRR,LED1_PIN); break;
+        case 1: SET_BIT(GPIOB->BSRR,LED2_PIN); break;
+        case 2: SET_BIT(GPIOB->BSRR,LED3_PIN); break;
+        case 3: SET_BIT(GPIOB->BSRR,LED4_PIN); break;
+        case 4: SET_BIT(GPIOB->BSRR,LED5_PIN); break;
+        case 5: SET_BIT(GPIOB->BSRR,LED6_PIN); break;
     }
 }
 
 
 
-void User_Delay(uint32_t delay){
+// void User_Delay(uint32_t delay){
 
-    while(DelayTickCount < delay){} //Цикл, благодаря которому происходит задержка программы
-    if(DelayTickCount >= delay) DelayTickCount = 0; //Обнуление переменной счётчика, при достижении заданного пользователем значения
+//     while(DelayTickCount < delay){} //Цикл, благодаря которому происходит задержка программы
+//     if(DelayTickCount >= delay) DelayTickCount = 0; //Обнуление переменной счётчика, при достижении заданного пользователем значения
 
-}
+// }
 
 
