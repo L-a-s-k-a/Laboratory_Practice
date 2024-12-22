@@ -71,10 +71,6 @@ int main(void) {
             if (mode1 == 0) { // 打开模式                    
                     SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET); // 点亮LED3蓝色
                     // led_3_state = !led_3_state; // 更新LED状态
-                }
-            if (mode2 == 0) { // 打开模式                    
-                    SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN8_SET); // 点亮LED4
-                }                 
                 button3_pressed = 1; // 更新按钮状态为已按下
                 mode3 = 1;
             }
@@ -92,4 +88,3 @@ int main(void) {
         // 适当延时以避免快速循环
         delay(200);
     }
-}
