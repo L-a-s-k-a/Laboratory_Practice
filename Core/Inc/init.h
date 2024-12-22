@@ -1,28 +1,21 @@
 #include "../../CMSIS/Devices/stm32f4xx.h"
 #include "../../CMSIS/Devices/stm32f429xx.h"
 
-// LED引脚定义
-#define LED1_PIN        (1 << 0)    // PB0
-#define LED2_PIN        (1 << 7)    // PB7
-#define LED3_PIN        (1 << 14)   // PB14
-#define LED4_PIN        (1 << 15)   // PB15
+#define RCC_GPIO_EN             (*(uint32_t*)(0x40023800UL + 0x30UL))
+#define RCC_GPIOB_EN            0x02UL
+#define RCC_GPIOC_EN            0x04UL
 
-// 按钮引脚定义
-#define BUTTON1_PIN     (1 << 0)    // PA0
+#define GPIOB_MODER             (*(uint32_t*)(0x40020400UL + 0x00UL))
+#define GPIOB_BSRR              (*(uint32_t*)(0x40020400UL + 0x18UL))
+#define GPIOC_IDR               (*(uint32_t*)(0x40020800UL + 0x10UL))
 
-// GPIO寄存器地址
-#define GPIOB_MODER     (*((volatile uint32_t *)0x40020400)) // GPIOB模式寄存器
-#define GPIOB_ODR       (*((volatile uint32_t *)0x40020414)) // GPIOB输出数据寄存器
-#define GPIOA_IDR       (*((volatile uint32_t *)0x40020010)) // GPIOA输入数据寄存器
+#define GPIOB_MODE_PIN0_OUT     0x00000001UL // PB0
+#define GPIOB_MODE_PIN7_OUT     0x00000040UL // PB7
+#define GPIOB_MODE_PIN14_OUT    0x00004000UL // PB14
+#define GPIOB_MODE_PIN15_OUT    0x00008000UL // PB15 (外接LED)
 
-// LED控制宏定义
-#define LED1_ON()       (GPIOB_ODR |= LED1_PIN)
-#define LED1_OFF()      (GPIOB_ODR &= ~LED1_PIN)
-#define LED2_ON()       (GPIOB_ODR |= LED2_PIN)
-#define LED2_OFF()      (GPIOB_ODR &= ~LED2_PIN)
-#define LED3_ON()       (GPIOB_ODR |= LED3_PIN)
-#define LED3_OFF()      (GPIOB_ODR &= ~LED3_PIN)
-#define LED4_ON()       (GPIOB_ODR |= LED4_PIN)
-#define LED4_OFF()      (GPIOB_ODR &= ~LED4_PIN)
+#define READ_GPIO_C13           (GPIOC_IDR & 0x2000UL) // 读 GPIOC 的引脚 13
+#define SET_GPIO_B(pin)         (GPIOB_BSRR = (1 << (pin))) // 设置 GPIOB 的引脚
+#define RESET_GPIO_B(pin)       (GPIOB_BSRR = (1 << ((pin) + 16))) // 重置 GPIOB 的引脚
 
 void GPIO_Ini(void);

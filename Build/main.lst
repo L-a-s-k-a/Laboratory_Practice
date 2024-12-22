@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\admin\AppData\Local\Temp\ccnt8BKl.s 			page 1
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cckwGh4s.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,33 +27,259 @@ ARM GAS  C:\Users\admin\AppData\Local\Temp\ccnt8BKl.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void){
-  29              		.loc 1 1 15 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** int main(void) 
+   4:Core/Src/main.c **** {
+  29              		.loc 1 4 1 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){
-  36              		.loc 1 2 5 view .LVU1
-   3:Core/Src/main.c ****         
-   4:Core/Src/main.c ****     }
-  37              		.loc 1 4 5 view .LVU2
-   2:Core/Src/main.c ****     while(1){
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\admin\AppData\Local\Temp\ccnt8BKl.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 00B5     		push	{lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 4
+  36              		.cfi_offset 14, -4
+  37 0002 83B0     		sub	sp, sp, #12
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 16
+   5:Core/Src/main.c ****     GPIO_Ini();
+  40              		.loc 1 5 5 view .LVU1
+  41 0004 FFF7FEFF 		bl	GPIO_Ini
+  42              	.LVL0:
+   6:Core/Src/main.c ****     uint8_t ledIndex = 0; // 当前点亮的LED索引
+  43              		.loc 1 6 5 view .LVU2
+   7:Core/Src/main.c ****     uint8_t buttonPressCount = 0; // 按钮按下计数
+  44              		.loc 1 7 5 view .LVU3
+  45              		.loc 1 7 13 is_stmt 0 view .LVU4
+  46 0008 0021     		movs	r1, #0
+   6:Core/Src/main.c ****     uint8_t ledIndex = 0; // 当前点亮的LED索引
+  47              		.loc 1 6 13 view .LVU5
+  48 000a 0846     		mov	r0, r1
+  49 000c 1DE0     		b	.L3
+  50              	.LVL1:
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cckwGh4s.s 			page 2
+
+
+  51              	.L5:
+  52              	.LBB2:
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c ****     while(1)
+  10:Core/Src/main.c ****     {
+  11:Core/Src/main.c ****         if(READ_GPIO_C13 == 0) // 检测按钮是否按下
+  12:Core/Src/main.c ****         {
+  13:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单去抖动
+  53              		.loc 1 13 51 is_stmt 1 discriminator 3 view .LVU6
+  54 000e 019B     		ldr	r3, [sp, #4]
+  55 0010 0133     		adds	r3, r3, #1
+  56 0012 0193     		str	r3, [sp, #4]
+  57              	.L4:
+  58              		.loc 1 13 40 discriminator 1 view .LVU7
+  59 0014 019A     		ldr	r2, [sp, #4]
+  60 0016 2A4B     		ldr	r3, .L18
+  61 0018 9A42     		cmp	r2, r3
+  62 001a F8DD     		ble	.L5
+  63              	.L6:
+  64              	.LBE2:
+  14:Core/Src/main.c ****             while (READ_GPIO_C13 == 0); // 等待按钮释放
+  65              		.loc 1 14 34 discriminator 1 view .LVU8
+  66              		.loc 1 14 20 is_stmt 0 discriminator 1 view .LVU9
+  67 001c 294B     		ldr	r3, .L18+4
+  68 001e D3F81038 		ldr	r3, [r3, #2064]
+  69              		.loc 1 14 34 discriminator 1 view .LVU10
+  70 0022 13F4005F 		tst	r3, #8192
+  71 0026 F9D0     		beq	.L6
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c ****             buttonPressCount++; // 增加按钮按下计数
+  72              		.loc 1 16 13 is_stmt 1 view .LVU11
+  73              		.loc 1 16 29 is_stmt 0 view .LVU12
+  74 0028 0131     		adds	r1, r1, #1
+  75              	.LVL2:
+  76              		.loc 1 16 29 view .LVU13
+  77 002a C9B2     		uxtb	r1, r1
+  78              	.LVL3:
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c ****             if (buttonPressCount <= 4) {
+  79              		.loc 1 18 13 is_stmt 1 view .LVU14
+  80              		.loc 1 18 16 is_stmt 0 view .LVU15
+  81 002c 0429     		cmp	r1, #4
+  82 002e 1DD8     		bhi	.L7
+  19:Core/Src/main.c ****                 // 点亮下一个LED
+  20:Core/Src/main.c ****                 if (ledIndex < 4) {
+  83              		.loc 1 20 17 is_stmt 1 view .LVU16
+  84              		.loc 1 20 20 is_stmt 0 view .LVU17
+  85 0030 0328     		cmp	r0, #3
+  86 0032 0AD8     		bhi	.L3
+  21:Core/Src/main.c ****                     SET_GPIO_B(ledIndex == 0 ? 0 : (ledIndex == 1 ? 7 : (ledIndex == 2 ? 14 : 15)))
+  87              		.loc 1 21 21 is_stmt 1 view .LVU18
+  88 0034 0128     		cmp	r0, #1
+  89 0036 11D0     		beq	.L11
+  90 0038 0228     		cmp	r0, #2
+  91 003a 11D0     		beq	.L12
+  92 003c 98B9     		cbnz	r0, .L13
+  20:Core/Src/main.c ****                     SET_GPIO_B(ledIndex == 0 ? 0 : (ledIndex == 1 ? 7 : (ledIndex == 2 ? 14 : 15)))
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cckwGh4s.s 			page 3
+
+
+  93              		.loc 1 20 20 is_stmt 0 view .LVU19
+  94 003e 0122     		movs	r2, #1
+  95              	.L9:
+  96              		.loc 1 21 21 discriminator 12 view .LVU20
+  97 0040 204B     		ldr	r3, .L18+4
+  98 0042 C3F81824 		str	r2, [r3, #1048]
+  22:Core/Src/main.c ****                     ledIndex++;
+  99              		.loc 1 22 21 is_stmt 1 view .LVU21
+ 100              		.loc 1 22 29 is_stmt 0 view .LVU22
+ 101 0046 0130     		adds	r0, r0, #1
+ 102              	.LVL4:
+ 103              		.loc 1 22 29 view .LVU23
+ 104 0048 C0B2     		uxtb	r0, r0
+ 105              	.LVL5:
+ 106              	.L3:
+   9:Core/Src/main.c ****     {
+ 107              		.loc 1 9 5 is_stmt 1 view .LVU24
+  11:Core/Src/main.c ****         {
+ 108              		.loc 1 11 9 view .LVU25
+  11:Core/Src/main.c ****         {
+ 109              		.loc 1 11 12 is_stmt 0 view .LVU26
+ 110 004a 1E4B     		ldr	r3, .L18+4
+ 111 004c D3F81038 		ldr	r3, [r3, #2064]
+  11:Core/Src/main.c ****         {
+ 112              		.loc 1 11 11 view .LVU27
+ 113 0050 13F4005F 		tst	r3, #8192
+ 114 0054 F9D1     		bne	.L3
+  13:Core/Src/main.c ****             while (READ_GPIO_C13 == 0); // 等待按钮释放
+ 115              		.loc 1 13 13 is_stmt 1 view .LVU28
+ 116              	.LBB3:
+  13:Core/Src/main.c ****             while (READ_GPIO_C13 == 0); // 等待按钮释放
+ 117              		.loc 1 13 18 view .LVU29
+  13:Core/Src/main.c ****             while (READ_GPIO_C13 == 0); // 等待按钮释放
+ 118              		.loc 1 13 31 is_stmt 0 view .LVU30
+ 119 0056 0023     		movs	r3, #0
+ 120 0058 0193     		str	r3, [sp, #4]
+  13:Core/Src/main.c ****             while (READ_GPIO_C13 == 0); // 等待按钮释放
+ 121              		.loc 1 13 13 view .LVU31
+ 122 005a DBE7     		b	.L4
+ 123              	.L11:
+  13:Core/Src/main.c ****             while (READ_GPIO_C13 == 0); // 等待按钮释放
+ 124              		.loc 1 13 13 view .LVU32
+ 125              	.LBE3:
+  20:Core/Src/main.c ****                     SET_GPIO_B(ledIndex == 0 ? 0 : (ledIndex == 1 ? 7 : (ledIndex == 2 ? 14 : 15)))
+ 126              		.loc 1 20 20 view .LVU33
+ 127 005c 8022     		movs	r2, #128
+ 128 005e EFE7     		b	.L9
+ 129              	.L12:
+ 130 0060 4FF48042 		mov	r2, #16384
+ 131 0064 ECE7     		b	.L9
+ 132              	.L13:
+ 133 0066 4FF40042 		mov	r2, #32768
+ 134 006a E9E7     		b	.L9
+ 135              	.L7:
+  23:Core/Src/main.c ****                 }
+  24:Core/Src/main.c ****             } 
+  25:Core/Src/main.c ****             else if (buttonPressCount == 5) {
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cckwGh4s.s 			page 4
+
+
+ 136              		.loc 1 25 18 is_stmt 1 view .LVU34
+ 137              		.loc 1 25 21 is_stmt 0 view .LVU35
+ 138 006c 0529     		cmp	r1, #5
+ 139 006e 03D0     		beq	.L16
+  26:Core/Src/main.c ****                 // 熄灭所有LED并重置
+  27:Core/Src/main.c ****                 RESET_GPIO_B(0);   // PB0
+  28:Core/Src/main.c ****                 RESET_GPIO_B(7);   // PB7
+  29:Core/Src/main.c ****                 RESET_GPIO_B(14);  // PB14
+  30:Core/Src/main.c ****                 RESET_GPIO_B(15);  // PB15 (外接LED)
+  31:Core/Src/main.c ****                 ledIndex = 0; // 重置LED索引
+  32:Core/Src/main.c ****             } 
+  33:Core/Src/main.c ****             else if (buttonPressCount == 6) {
+ 140              		.loc 1 33 18 is_stmt 1 view .LVU36
+ 141              		.loc 1 33 21 is_stmt 0 view .LVU37
+ 142 0070 0629     		cmp	r1, #6
+ 143 0072 14D0     		beq	.L17
+  34:Core/Src/main.c ****                 // 点亮所有LED
+  35:Core/Src/main.c ****                 SET_GPIO_B(0);   // PB0
+  36:Core/Src/main.c ****                 SET_GPIO_B(7);   // PB7
+  37:Core/Src/main.c ****                 SET_GPIO_B(14);  // PB14
+  38:Core/Src/main.c ****                 SET_GPIO_B(15);  // PB15 (外接LED)
+  39:Core/Src/main.c ****             } 
+  40:Core/Src/main.c ****             else {
+  41:Core/Src/main.c ****                 // 超过六次按下，重置计数
+  42:Core/Src/main.c ****                 buttonPressCount = 0;
+ 144              		.loc 1 42 34 view .LVU38
+ 145 0074 0021     		movs	r1, #0
+ 146              	.LVL6:
+ 147              		.loc 1 42 34 view .LVU39
+ 148 0076 E8E7     		b	.L3
+ 149              	.LVL7:
+ 150              	.L16:
+  27:Core/Src/main.c ****                 RESET_GPIO_B(7);   // PB7
+ 151              		.loc 1 27 17 is_stmt 1 view .LVU40
+ 152 0078 124B     		ldr	r3, .L18+4
+ 153 007a 4FF48032 		mov	r2, #65536
+ 154 007e C3F81824 		str	r2, [r3, #1048]
+  28:Core/Src/main.c ****                 RESET_GPIO_B(14);  // PB14
+ 155              		.loc 1 28 17 view .LVU41
+ 156 0082 4FF40002 		mov	r2, #8388608
+ 157 0086 C3F81824 		str	r2, [r3, #1048]
+  29:Core/Src/main.c ****                 RESET_GPIO_B(15);  // PB15 (外接LED)
+ 158              		.loc 1 29 17 view .LVU42
+ 159 008a 4FF08042 		mov	r2, #1073741824
+ 160 008e C3F81824 		str	r2, [r3, #1048]
+  30:Core/Src/main.c ****                 ledIndex = 0; // 重置LED索引
+ 161              		.loc 1 30 17 view .LVU43
+ 162 0092 4FF00042 		mov	r2, #-2147483648
+ 163 0096 C3F81824 		str	r2, [r3, #1048]
+  31:Core/Src/main.c ****             } 
+ 164              		.loc 1 31 17 view .LVU44
+ 165              	.LVL8:
+  31:Core/Src/main.c ****             } 
+ 166              		.loc 1 31 26 is_stmt 0 view .LVU45
+ 167 009a 0020     		movs	r0, #0
+ 168 009c D5E7     		b	.L3
+ 169              	.LVL9:
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cckwGh4s.s 			page 5
+
+
+ 170              	.L17:
+  35:Core/Src/main.c ****                 SET_GPIO_B(7);   // PB7
+ 171              		.loc 1 35 17 is_stmt 1 view .LVU46
+ 172 009e 094B     		ldr	r3, .L18+4
+ 173 00a0 0122     		movs	r2, #1
+ 174 00a2 C3F81824 		str	r2, [r3, #1048]
+  36:Core/Src/main.c ****                 SET_GPIO_B(14);  // PB14
+ 175              		.loc 1 36 17 view .LVU47
+ 176 00a6 8022     		movs	r2, #128
+ 177 00a8 C3F81824 		str	r2, [r3, #1048]
+  37:Core/Src/main.c ****                 SET_GPIO_B(15);  // PB15 (外接LED)
+ 178              		.loc 1 37 17 view .LVU48
+ 179 00ac 4FF48042 		mov	r2, #16384
+ 180 00b0 C3F81824 		str	r2, [r3, #1048]
+  38:Core/Src/main.c ****             } 
+ 181              		.loc 1 38 17 view .LVU49
+ 182 00b4 4FF40042 		mov	r2, #32768
+ 183 00b8 C3F81824 		str	r2, [r3, #1048]
+ 184 00bc C5E7     		b	.L3
+ 185              	.L19:
+ 186 00be 00BF     		.align	2
+ 187              	.L18:
+ 188 00c0 9F860100 		.word	99999
+ 189 00c4 00000240 		.word	1073872896
+ 190              		.cfi_endproc
+ 191              	.LFE130:
+ 193              		.text
+ 194              	.Letext0:
+ 195              		.file 2 "E:/TPU_Work/one_chip_computer/first_homework/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1-win
+ 196              		.file 3 "E:/TPU_Work/one_chip_computer/first_homework/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1-win
+ 197              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cckwGh4s.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\admin\AppData\Local\Temp\ccnt8BKl.s:21     .text.main:00000000 $t
-C:\Users\admin\AppData\Local\Temp\ccnt8BKl.s:27     .text.main:00000000 main
+C:\Users\admin\AppData\Local\Temp\cckwGh4s.s:21     .text.main:00000000 $t
+C:\Users\admin\AppData\Local\Temp\cckwGh4s.s:27     .text.main:00000000 main
+C:\Users\admin\AppData\Local\Temp\cckwGh4s.s:188    .text.main:000000c0 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini
