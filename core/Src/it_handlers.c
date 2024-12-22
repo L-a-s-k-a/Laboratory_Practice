@@ -9,27 +9,29 @@ extern uint32_t systick_counter;
 uint16_t  DelayTickCount;
 extern const uint32_t led_pins[];
 extern const uint32_t blink_periods[];
-
+uint32_t ExternInterruptTickCount;
 
 
 // SysTick 中断处理
 void SysTick_Handler(void) {
     systick_counter++; // 1ms 计时
     DelayTickCount++;
+    ExternInterruptTickCount++;
 }
 
 
 // 按钮1（PC13）中断处理
 void EXTI15_10_IRQHandler(void) {
-     if (EXTI->PR & EXTI_PR_PR13) {
-        SET_BIT(EXTI->PR, EXTI_PR_PR13); 
-     }
-       
-    current_led = (current_led + 1) % 6; // 切换到下一个 LED
-    User_Delay(DELAY_BUTTON_FILTER);
-    update_led_state();
+     
+    SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+    if(ExternInterruptTickCount >= DELAY_BUTTON_FILTER){ 
+        current_led = (current_led + 1) % 6; // 切换到下一个 LED
+        update_led_state();
+        ExternInterruptTickCount = 0;
+    }   
+  
 
-    }
+}
 
 
 void update_led_state(void) {
