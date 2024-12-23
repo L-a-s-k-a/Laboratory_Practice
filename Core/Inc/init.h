@@ -11,6 +11,7 @@
 #define GPIOB_OSPEEDR (*(uint32_t*)(0x40020400UL + 0x08UL)) 
 #define GPIOB_PUPDR (*(uint32_t*)(0x40020400UL + 0x0CUL))
 #define GPIOB_BSRR (*(uint32_t*)(0x40020400UL + 0x18UL))
+#define GPIOB_ODR (*(uint32_t*)(0x40020400UL + 0x14UL))
 
 #define GPIOB_MODE_PIN0_OUT 0x0001UL 
 #define GPIOB_OTYPE_PIN0_PP 0x0000UL 
