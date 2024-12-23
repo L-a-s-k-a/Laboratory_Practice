@@ -1,5 +1,5 @@
-#include "../../CMSIS/Devices/stm32f4xx.h"
-#include "../../CMSIS/Devices/stm32f429xx.h"  
+#include "../../CMSIS/Devices/Inc/stm32f4xx.h"
+#include "../../CMSIS/Devices/Inc/stm32f429xx.h"  
 
 #define RCC_AHB1ENR (*(uint32_t*)(0x40023800UL + 0x30UL))
 
@@ -26,8 +26,7 @@
 #define SET_BIT_Self(REG, BIT) (REG |= BIT)
 
 void RCC_Init(void);
-void GPIO_Ini_Self(void);
-void GPIO_Ini_CMSIS(void);
-void ITR_init(void);
-void ITR_Ini(void); 
+void GPIO_Init_Self(void);
+void GPIO_Init_CMSIS(void);
+void ITR_Init(void); 
 void SysTick_Init(void); 

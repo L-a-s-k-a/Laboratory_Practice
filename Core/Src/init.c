@@ -1,6 +1,6 @@
 #include "../Inc/init.h"
 
-void GPIO_Ini_Self(void)
+void GPIO_Init_Self(void)
 {
     //set LED 1 (pin14)
     RCC_AHB1ENR |= RCC_GPIOB_EN | RCC_GPIOC_EN; //Включение тактирования портов GPIOB и GPIOC
@@ -16,7 +16,7 @@ void GPIO_Ini_Self(void)
     GPIOB_PUPDR |= GPIOB_PUPDR_PIN0_NOPUPD; //Отключение PU/PD резисторов для 0-го пина GPIOB
     GPIOB_BSRR |= GPIOB_BSRR_PIN0_RESET;//выключение светодиода 0-го пина GPIOB
 }
-void GPIO_Ini_CMSIS(void)
+void GPIO_Init_CMSIS(void)
 {
     //SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение тактирования портов GPIOB и GPIOC
     //set LED 3 (pin7)
@@ -76,12 +76,13 @@ void RCC_Init(void){
 }
 
 void ITR_init(void){ 
-    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG 
+    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG
+    NVIC_SetPriorityGrouping(0);//установка типа группировки без подприоритетов
     MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, SYSCFG_EXTICR4_EXTI13_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13 
     SET_BIT(EXTI->IMR, EXTI_IMR_MR13); //Настройка маскирования 13 линии 
     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13); //Настройка детектирования нарастающего фронта 13 линии 
     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13); //Настройка детектирования спадающего фронта 13 линии 
-    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка 0 приоритета прерывания для вектора EXTI15_10 
+    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0)); //Установка 2 приоритета прерывания для вектора EXTI15_10 
     NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10 
 } 
 

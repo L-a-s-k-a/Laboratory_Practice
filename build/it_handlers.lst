@@ -1,112 +1,222 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc3XYBk6.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s 			page 1
 
 
    1              		.cpu cortex-m4
    2              		.arch armv7e-m
-   3              		.fpu fpv4-sp-d16
-   4              		.eabi_attribute 27, 1
-   5              		.eabi_attribute 28, 1
-   6              		.eabi_attribute 20, 1
-   7              		.eabi_attribute 21, 1
-   8              		.eabi_attribute 23, 3
-   9              		.eabi_attribute 24, 1
-  10              		.eabi_attribute 25, 1
-  11              		.eabi_attribute 26, 1
-  12              		.eabi_attribute 30, 1
-  13              		.eabi_attribute 34, 1
-  14              		.eabi_attribute 18, 4
-  15              		.file	"it_handlers.c"
-  16              		.text
-  17              	.Ltext0:
-  18              		.cfi_sections	.debug_frame
-  19              		.file 1 "Core/Src/it_handlers.c"
-  20              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
-  21              		.align	1
-  22              		.global	EXTI15_10_IRQHandler
-  23              		.syntax unified
-  24              		.thumb
-  25              		.thumb_func
-  27              	EXTI15_10_IRQHandler:
-  28              	.LFB130:
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"it_handlers.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/it_handlers.c"
+  18              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+  19              		.align	1
+  20              		.global	EXTI15_10_IRQHandler
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	EXTI15_10_IRQHandler:
+  26              	.LFB130:
    1:Core/Src/it_handlers.c **** #include "it_handlers.h" 
-   2:Core/Src/it_handlers.c **** extern uint8_t LedState; //extern - обозначает, что переменная будет о
-   3:Core/Src/it_handlers.c **** uint8_t BtnCount; 
-   4:Core/Src/it_handlers.c **** 
-   5:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void){ 
-  29              		.loc 1 5 32 view -0
-  30              		.cfi_startproc
-  31              		@ args = 0, pretend = 0, frame = 0
-  32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33              		@ link register save eliminated.
-   6:Core/Src/it_handlers.c ****     BtnCount++; 
-  34              		.loc 1 6 5 view .LVU1
-  35              		.loc 1 6 13 is_stmt 0 view .LVU2
-  36 0000 0A4A     		ldr	r2, .L3
-  37 0002 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  38 0004 0133     		adds	r3, r3, #1
-  39 0006 DBB2     		uxtb	r3, r3
-  40 0008 1370     		strb	r3, [r2]
-   7:Core/Src/it_handlers.c ****     if(BtnCount >= 2){ 
-  41              		.loc 1 7 5 is_stmt 1 view .LVU3
-  42              		.loc 1 7 7 is_stmt 0 view .LVU4
-  43 000a 012B     		cmp	r3, #1
-  44 000c 08D9     		bls	.L2
-   8:Core/Src/it_handlers.c ****         LedState = !LedState; 
-  45              		.loc 1 8 9 is_stmt 1 view .LVU5
-  46              		.loc 1 8 20 is_stmt 0 view .LVU6
-  47 000e 084A     		ldr	r2, .L3+4
-  48 0010 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  49 0012 B3FA83F3 		clz	r3, r3
-  50 0016 5B09     		lsrs	r3, r3, #5
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc3XYBk6.s 			page 2
+   2:Core/Src/it_handlers.c **** 
+   3:Core/Src/it_handlers.c **** extern uint8_t LedState; //extern - обозначает, что переменная будет о
+   4:Core/Src/it_handlers.c **** uint8_t BtnCount; 
+   5:Core/Src/it_handlers.c **** 
+   6:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void){ 
+  27              		.loc 1 6 32 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+   7:Core/Src/it_handlers.c ****     BtnCount++; 
+  32              		.loc 1 7 5 view .LVU1
+  33              		.loc 1 7 13 is_stmt 0 view .LVU2
+  34 0000 0A4A     		ldr	r2, .L3
+  35 0002 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  36 0004 0133     		adds	r3, r3, #1
+  37 0006 DBB2     		uxtb	r3, r3
+  38 0008 1370     		strb	r3, [r2]
+   8:Core/Src/it_handlers.c ****     if(BtnCount >= 2){ 
+  39              		.loc 1 8 5 is_stmt 1 view .LVU3
+  40              		.loc 1 8 7 is_stmt 0 view .LVU4
+  41 000a 012B     		cmp	r3, #1
+  42 000c 08D9     		bls	.L2
+   9:Core/Src/it_handlers.c ****         LedState = !LedState; 
+  43              		.loc 1 9 9 is_stmt 1 view .LVU5
+  44              		.loc 1 9 20 is_stmt 0 view .LVU6
+  45 000e 084A     		ldr	r2, .L3+4
+  46 0010 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  47 0012 B3FA83F3 		clz	r3, r3
+  48 0016 5B09     		lsrs	r3, r3, #5
+  49              		.loc 1 9 18 view .LVU7
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s 			page 2
 
 
-  51              		.loc 1 8 18 view .LVU7
-  52 0018 1370     		strb	r3, [r2]
-   9:Core/Src/it_handlers.c ****         BtnCount = 0; 
-  53              		.loc 1 9 9 is_stmt 1 view .LVU8
-  54              		.loc 1 9 18 is_stmt 0 view .LVU9
-  55 001a 044B     		ldr	r3, .L3
-  56 001c 0022     		movs	r2, #0
-  57 001e 1A70     		strb	r2, [r3]
-  58              	.L2:
-  10:Core/Src/it_handlers.c ****     } 
-  11:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13); 
-  59              		.loc 1 11 5 is_stmt 1 view .LVU10
-  60 0020 044A     		ldr	r2, .L3+8
-  61 0022 5369     		ldr	r3, [r2, #20]
-  62 0024 43F40053 		orr	r3, r3, #8192
-  63 0028 5361     		str	r3, [r2, #20]
-  12:Core/Src/it_handlers.c **** }  ...
-  64              		.loc 1 12 1 is_stmt 0 view .LVU11
-  65 002a 7047     		bx	lr
-  66              	.L4:
-  67              		.align	2
-  68              	.L3:
-  69 002c 00000000 		.word	BtnCount
-  70 0030 00000000 		.word	LedState
-  71 0034 003C0140 		.word	1073822720
-  72              		.cfi_endproc
-  73              	.LFE130:
-  75              		.global	BtnCount
-  76              		.section	.bss.BtnCount,"aw",%nobits
-  79              	BtnCount:
-  80 0000 00       		.space	1
-  81              		.text
-  82              	.Letext0:
-  83              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
-  84              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
-  85              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc3XYBk6.s 			page 3
+  50 0018 1370     		strb	r3, [r2]
+  10:Core/Src/it_handlers.c ****         BtnCount = 0; 
+  51              		.loc 1 10 9 is_stmt 1 view .LVU8
+  52              		.loc 1 10 18 is_stmt 0 view .LVU9
+  53 001a 044B     		ldr	r3, .L3
+  54 001c 0022     		movs	r2, #0
+  55 001e 1A70     		strb	r2, [r3]
+  56              	.L2:
+  11:Core/Src/it_handlers.c ****     } 
+  12:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+  57              		.loc 1 12 5 is_stmt 1 view .LVU10
+  58 0020 044A     		ldr	r2, .L3+8
+  59 0022 5369     		ldr	r3, [r2, #20]
+  60 0024 43F40053 		orr	r3, r3, #8192
+  61 0028 5361     		str	r3, [r2, #20]
+  13:Core/Src/it_handlers.c **** }  
+  62              		.loc 1 13 1 is_stmt 0 view .LVU11
+  63 002a 7047     		bx	lr
+  64              	.L4:
+  65              		.align	2
+  66              	.L3:
+  67 002c 00000000 		.word	BtnCount
+  68 0030 00000000 		.word	LedState
+  69 0034 003C0140 		.word	1073822720
+  70              		.cfi_endproc
+  71              	.LFE130:
+  73              		.section	.text.SysTick_Handler,"ax",%progbits
+  74              		.align	1
+  75              		.global	SysTick_Handler
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  80              	SysTick_Handler:
+  81              	.LFB131:
+  14:Core/Src/it_handlers.c **** 
+  15:Core/Src/it_handlers.c **** extern uint16_t GlobalTickCount, DelayTickCount; 
+  16:Core/Src/it_handlers.c **** uint16_t ExternInterruptTickCount; 
+  17:Core/Src/it_handlers.c ****  
+  18:Core/Src/it_handlers.c **** void SysTick_Handler(void) 
+  19:Core/Src/it_handlers.c **** { 
+  82              		.loc 1 19 1 is_stmt 1 view -0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 0
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86              		@ link register save eliminated.
+  20:Core/Src/it_handlers.c ****     ExternInterruptTickCount++; 
+  87              		.loc 1 20 5 view .LVU13
+  88              		.loc 1 20 29 is_stmt 0 view .LVU14
+  89 0000 064A     		ldr	r2, .L6
+  90 0002 1388     		ldrh	r3, [r2]
+  91 0004 0133     		adds	r3, r3, #1
+  92 0006 1380     		strh	r3, [r2]	@ movhi
+  21:Core/Src/it_handlers.c ****     GlobalTickCount++; 
+  93              		.loc 1 21 5 is_stmt 1 view .LVU15
+  94              		.loc 1 21 20 is_stmt 0 view .LVU16
+  95 0008 054A     		ldr	r2, .L6+4
+  96 000a 1388     		ldrh	r3, [r2]
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s 			page 3
+
+
+  97 000c 0133     		adds	r3, r3, #1
+  98 000e 1380     		strh	r3, [r2]	@ movhi
+  22:Core/Src/it_handlers.c ****     DelayTickCount++;
+  99              		.loc 1 22 5 is_stmt 1 view .LVU17
+ 100              		.loc 1 22 19 is_stmt 0 view .LVU18
+ 101 0010 044A     		ldr	r2, .L6+8
+ 102 0012 1388     		ldrh	r3, [r2]
+ 103 0014 0133     		adds	r3, r3, #1
+ 104 0016 1380     		strh	r3, [r2]	@ movhi
+  23:Core/Src/it_handlers.c **** } 
+ 105              		.loc 1 23 1 view .LVU19
+ 106 0018 7047     		bx	lr
+ 107              	.L7:
+ 108 001a 00BF     		.align	2
+ 109              	.L6:
+ 110 001c 00000000 		.word	ExternInterruptTickCount
+ 111 0020 00000000 		.word	GlobalTickCount
+ 112 0024 00000000 		.word	DelayTickCount
+ 113              		.cfi_endproc
+ 114              	.LFE131:
+ 116              		.section	.text.User_Delay,"ax",%progbits
+ 117              		.align	1
+ 118              		.global	User_Delay
+ 119              		.syntax unified
+ 120              		.thumb
+ 121              		.thumb_func
+ 123              	User_Delay:
+ 124              	.LVL0:
+ 125              	.LFB132:
+  24:Core/Src/it_handlers.c **** 
+  25:Core/Src/it_handlers.c **** void User_Delay(uint32_t delay){  
+ 126              		.loc 1 25 32 is_stmt 1 view -0
+ 127              		.cfi_startproc
+ 128              		@ args = 0, pretend = 0, frame = 0
+ 129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 130              		@ link register save eliminated.
+  26:Core/Src/it_handlers.c ****     DelayTickCount = 0;
+ 131              		.loc 1 26 5 view .LVU21
+ 132              		.loc 1 26 20 is_stmt 0 view .LVU22
+ 133 0000 024B     		ldr	r3, .L10
+ 134 0002 0022     		movs	r2, #0
+ 135 0004 1A80     		strh	r2, [r3]	@ movhi
+  27:Core/Src/it_handlers.c ****     while(DelayTickCount < delay){} //Цикл, благодаря которому происхо�
+ 136              		.loc 1 27 5 is_stmt 1 view .LVU23
+ 137              	.L9:
+ 138              		.loc 1 27 35 discriminator 1 view .LVU24
+ 139              		.loc 1 27 26 discriminator 1 view .LVU25
+ 140 0006 0028     		cmp	r0, #0
+ 141 0008 FDD1     		bne	.L9
+  28:Core/Src/it_handlers.c ****     //if(DelayTickCount >= delay) DelayTickCount = 0; //Обнуление переменной с�
+  29:Core/Src/it_handlers.c **** } ...
+ 142              		.loc 1 29 1 is_stmt 0 view .LVU26
+ 143 000a 7047     		bx	lr
+ 144              	.L11:
+ 145              		.align	2
+ 146              	.L10:
+ 147 000c 00000000 		.word	DelayTickCount
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s 			page 4
+
+
+ 148              		.cfi_endproc
+ 149              	.LFE132:
+ 151              		.global	ExternInterruptTickCount
+ 152              		.section	.bss.ExternInterruptTickCount,"aw",%nobits
+ 153              		.align	1
+ 156              	ExternInterruptTickCount:
+ 157 0000 0000     		.space	2
+ 158              		.global	BtnCount
+ 159              		.section	.bss.BtnCount,"aw",%nobits
+ 162              	BtnCount:
+ 163 0000 00       		.space	1
+ 164              		.text
+ 165              	.Letext0:
+ 166              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 167              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 168              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 it_handlers.c
-C:\Users\rpong\AppData\Local\Temp\cc3XYBk6.s:21     .text.EXTI15_10_IRQHandler:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\cc3XYBk6.s:27     .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
-C:\Users\rpong\AppData\Local\Temp\cc3XYBk6.s:69     .text.EXTI15_10_IRQHandler:0000002c $d
-C:\Users\rpong\AppData\Local\Temp\cc3XYBk6.s:79     .bss.BtnCount:00000000 BtnCount
-C:\Users\rpong\AppData\Local\Temp\cc3XYBk6.s:80     .bss.BtnCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:19     .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:25     .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:67     .text.EXTI15_10_IRQHandler:0000002c $d
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:162    .bss.BtnCount:00000000 BtnCount
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:74     .text.SysTick_Handler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:80     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:110    .text.SysTick_Handler:0000001c $d
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:156    .bss.ExternInterruptTickCount:00000000 ExternInterruptTickCount
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:117    .text.User_Delay:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:123    .text.User_Delay:00000000 User_Delay
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:147    .text.User_Delay:0000000c $d
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:153    .bss.ExternInterruptTickCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccD0KHEZ.s:163    .bss.BtnCount:00000000 $d
 
 UNDEFINED SYMBOLS
 LedState
+GlobalTickCount
+DelayTickCount

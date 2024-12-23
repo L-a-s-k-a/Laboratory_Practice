@@ -12,16 +12,18 @@ void EXTI15_10_IRQHandler(void){
     SET_BIT(EXTI->PR, EXTI_PR_PR13); 
 }  
 
-extern uint16_t GlobalTickCount; 
-uint16_t ExternInterruptTickCount, DelayTickCount; 
+extern uint16_t GlobalTickCount, DelayTickCount; 
+uint16_t ExternInterruptTickCount; 
  
 void SysTick_Handler(void) 
 { 
     ExternInterruptTickCount++; 
     GlobalTickCount++; 
+    DelayTickCount++;
 } 
 
 void User_Delay(uint32_t delay){  
-while(DelayTickCount < delay){} //Цикл, благодаря которому происходит задержка программы 
-if(DelayTickCount >= delay) DelayTickCount = 0; //Обнуление переменной счётчика, при достижении заданного пользователем значения 
+    DelayTickCount = 0;
+    while(DelayTickCount < delay){} //Цикл, благодаря которому происходит задержка программы 
+    //if(DelayTickCount >= delay) DelayTickCount = 0; //Обнуление переменной счётчика, при достижении заданного пользователем значения 
 } 

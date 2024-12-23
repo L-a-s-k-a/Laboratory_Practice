@@ -4,18 +4,20 @@
 #define FLICKER_PERIOD 2000 //Период мерцания светодиода 
 #define FLICKER_SEMIPERIOD 1000 //Период мерцания светодиода 
  
-uint16_t GlobalTickCount; 
+uint16_t GlobalTickCount = 0, DelayTickCount = 0; 
 uint8_t LedState; 
  
 int main(void) 
-{ 
-   GPIO_Ini(); //Инициализация поротв GPIO 
-   RCC_Ini(); //Инициализация системы тактирования RCC 
-   ITR_Ini(); //Инициализация контроллера прерываний 
-   SysTick_Init(); //Инициализация системного таймера 
+{
     
-   while (1) 
-   { 
+    GPIO_Init_Self();
+    GPIO_Init_CMSIS();
+    RCC_Init(); // Инициализация тактирования системы 
+    ITR_init();// Инициализация прерываний  
+       
+    while (1) 
+    { 
+        /*
         if(LedState) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Если нажали один раз на кнопку светодиод включится 
         else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Если нажали ещё раз светодиод выключится 
  
@@ -28,12 +30,14 @@ int main(void)
         else{ 
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Иначе выключаем светодиод 
         } 
- 
-        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Включаем светодиод 
+        */
+        
+        /*SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Включаем светодиод 
         User_Delay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Выключаем светодиод 
         User_Delay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
-   } 
+        */
+    } 
 } 
 
 
