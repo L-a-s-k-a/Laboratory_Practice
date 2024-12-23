@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccyruloq.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -18,125 +18,261 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s 			page 1
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
   17              		.file 1 "Core/Src/main.c"
-  18              		.section	.text.main,"ax",%progbits
-  19              		.align	1
-  20              		.global	main
-  21              		.syntax unified
-  22              		.thumb
-  23              		.thumb_func
-  25              	main:
-  26              	.LFB130:
-   1:Core/Src/main.c **** #include <init.h> 
-   2:Core/Src/main.c **** #include <it_handlers.h> 
+  18              		.global	__aeabi_f2d
+  19              		.global	__aeabi_dadd
+  20              		.global	__aeabi_d2f
+  21              		.section	.text.main,"ax",%progbits
+  22              		.align	1
+  23              		.global	main
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	main:
+  29              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** #include "../Inc/it_handlers.h"
    3:Core/Src/main.c ****  
-   4:Core/Src/main.c **** #define FLICKER_PERIOD 2000 //Период мерцания светодиода 
-   5:Core/Src/main.c **** #define FLICKER_SEMIPERIOD 1000 //Период мерцания светодиода 
+   4:Core/Src/main.c **** #define FLICKER_PERIOD 400 //Период мерцания светодиода 
+   5:Core/Src/main.c **** #define FLICKER_SEMIPERIOD 200 //Период мерцания светодиода 
    6:Core/Src/main.c ****  
    7:Core/Src/main.c **** uint16_t GlobalTickCount = 0, DelayTickCount = 0; 
-   8:Core/Src/main.c **** uint8_t LedState; 
-   9:Core/Src/main.c ****  
-  10:Core/Src/main.c **** int main(void) 
-  11:Core/Src/main.c **** {
-  27              		.loc 1 11 1 view -0
-  28              		.cfi_startproc
-  29              		@ Volatile: function does not return.
-  30              		@ args = 0, pretend = 0, frame = 0
-  31              		@ frame_needed = 0, uses_anonymous_args = 0
-  32 0000 08B5     		push	{r3, lr}
-  33              	.LCFI0:
-  34              		.cfi_def_cfa_offset 8
-  35              		.cfi_offset 3, -8
-  36              		.cfi_offset 14, -4
-  12:Core/Src/main.c ****     
-  13:Core/Src/main.c ****     GPIO_Init_Self();
-  37              		.loc 1 13 5 view .LVU1
-  38 0002 FFF7FEFF 		bl	GPIO_Init_Self
-  39              	.LVL0:
-  14:Core/Src/main.c ****     GPIO_Init_CMSIS();
-  40              		.loc 1 14 5 view .LVU2
-  41 0006 FFF7FEFF 		bl	GPIO_Init_CMSIS
-  42              	.LVL1:
-  15:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
-  43              		.loc 1 15 5 view .LVU3
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s 			page 2
+   8:Core/Src/main.c **** float icount = 0.0;
+   9:Core/Src/main.c **** uint8_t LedState; 
+  10:Core/Src/main.c **** uint32_t t1, t2, t3, t4, t5, t6;
+  11:Core/Src/main.c ****  
+  12:Core/Src/main.c **** int main(void) 
+  13:Core/Src/main.c **** {
+  30              		.loc 1 13 1 view -0
+  31              		.cfi_startproc
+  32              		@ Volatile: function does not return.
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35 0000 08B5     		push	{r3, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 3, -8
+  39              		.cfi_offset 14, -4
+  14:Core/Src/main.c ****     
+  15:Core/Src/main.c ****     GPIO_Init_Self();
+  40              		.loc 1 15 5 view .LVU1
+  41 0002 FFF7FEFF 		bl	GPIO_Init_Self
+  42              	.LVL0:
+  16:Core/Src/main.c ****     GPIO_Init_CMSIS();
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccyruloq.s 			page 2
 
 
-  44 000a FFF7FEFF 		bl	RCC_Init
-  45              	.LVL2:
-  16:Core/Src/main.c ****     ITR_init();// Инициализация прерываний  
-  46              		.loc 1 16 5 view .LVU4
-  47 000e FFF7FEFF 		bl	ITR_init
-  48              	.LVL3:
-  49              	.L2:
-  17:Core/Src/main.c ****        
-  18:Core/Src/main.c ****     while (1) 
-  50              		.loc 1 18 5 view .LVU5
-  19:Core/Src/main.c ****     { 
-  20:Core/Src/main.c ****         /*
-  21:Core/Src/main.c ****         if(LedState) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Если нажали один раз �
-  22:Core/Src/main.c ****         else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Если нажали ещё раз свето�
-  23:Core/Src/main.c ****  
-  24:Core/Src/main.c ****         if(GlobalTickCount >= FLICKER_PERIOD / 2){ //Если прошло 1000 прерывани�
-  25:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Включаем светодиод 
-  26:Core/Src/main.c ****             if(GlobalTickCount >= FLICKER_PERIOD){ //Если прошло 2000 прерывани�
-  27:Core/Src/main.c ****                 GlobalTickCount = 0; //Обнуляем переменную счётчика си�
-  28:Core/Src/main.c ****             } 
-  29:Core/Src/main.c ****         } 
-  30:Core/Src/main.c ****         else{ 
-  31:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Иначе выключаем светодиод
-  32:Core/Src/main.c ****         } 
-  33:Core/Src/main.c ****         */
-  34:Core/Src/main.c ****         
-  35:Core/Src/main.c ****         /*SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Включаем светодиод 
-  36:Core/Src/main.c ****         User_Delay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
-  37:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Выключаем светодиод 
-  38:Core/Src/main.c ****         User_Delay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
-  39:Core/Src/main.c ****         */
-  40:Core/Src/main.c ****     } 
-  51              		.loc 1 40 5 view .LVU6
-  18:Core/Src/main.c ****     { 
-  52              		.loc 1 18 11 view .LVU7
-  53 0012 FEE7     		b	.L2
-  54              		.cfi_endproc
-  55              	.LFE130:
-  57              		.global	LedState
-  58              		.section	.bss.LedState,"aw",%nobits
-  61              	LedState:
-  62 0000 00       		.space	1
-  63              		.global	DelayTickCount
-  64              		.section	.bss.DelayTickCount,"aw",%nobits
-  65              		.align	1
-  68              	DelayTickCount:
-  69 0000 0000     		.space	2
-  70              		.global	GlobalTickCount
-  71              		.section	.bss.GlobalTickCount,"aw",%nobits
-  72              		.align	1
-  75              	GlobalTickCount:
-  76 0000 0000     		.space	2
-  77              		.text
-  78              	.Letext0:
-  79              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
-  80              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
-  81              		.file 4 "Core/Inc/init.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s 			page 3
+  43              		.loc 1 16 5 view .LVU2
+  44 0006 FFF7FEFF 		bl	GPIO_Init_CMSIS
+  45              	.LVL1:
+  17:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
+  46              		.loc 1 17 5 view .LVU3
+  47 000a FFF7FEFF 		bl	RCC_Init
+  48              	.LVL2:
+  18:Core/Src/main.c ****     ITR_init();// Инициализация прерываний  
+  49              		.loc 1 18 5 view .LVU4
+  50 000e FFF7FEFF 		bl	ITR_init
+  51              	.LVL3:
+  19:Core/Src/main.c ****     SysTick_Init();
+  52              		.loc 1 19 5 view .LVU5
+  53 0012 FFF7FEFF 		bl	SysTick_Init
+  54              	.LVL4:
+  55              	.L2:
+  20:Core/Src/main.c ****        
+  21:Core/Src/main.c ****     while (1) 
+  56              		.loc 1 21 5 view .LVU6
+  22:Core/Src/main.c ****     {
+  23:Core/Src/main.c ****         
+  24:Core/Src/main.c ****         t1 = READ_REG(SysTick->VAL);
+  57              		.loc 1 24 9 view .LVU7
+  58              		.loc 1 24 14 is_stmt 0 view .LVU8
+  59 0016 4FF0E023 		mov	r3, #-536813568
+  60 001a 9969     		ldr	r1, [r3, #24]
+  61              		.loc 1 24 12 view .LVU9
+  62 001c 144A     		ldr	r2, .L4+8
+  63 001e 1160     		str	r1, [r2]
+  25:Core/Src/main.c ****         t2 = READ_REG(SysTick->CTRL);
+  64              		.loc 1 25 9 is_stmt 1 view .LVU10
+  65              		.loc 1 25 14 is_stmt 0 view .LVU11
+  66 0020 1969     		ldr	r1, [r3, #16]
+  67              		.loc 1 25 12 view .LVU12
+  68 0022 144A     		ldr	r2, .L4+12
+  69 0024 1160     		str	r1, [r2]
+  26:Core/Src/main.c ****         t3 = READ_REG(SysTick->LOAD);
+  70              		.loc 1 26 9 is_stmt 1 view .LVU13
+  71              		.loc 1 26 14 is_stmt 0 view .LVU14
+  72 0026 5A69     		ldr	r2, [r3, #20]
+  73              		.loc 1 26 12 view .LVU15
+  74 0028 134B     		ldr	r3, .L4+16
+  75 002a 1A60     		str	r2, [r3]
+  27:Core/Src/main.c ****         icount = icount + 0.001;
+  76              		.loc 1 27 9 is_stmt 1 view .LVU16
+  77              		.loc 1 27 25 is_stmt 0 view .LVU17
+  78 002c 134C     		ldr	r4, .L4+20
+  79 002e 2068     		ldr	r0, [r4]	@ float
+  80 0030 FFF7FEFF 		bl	__aeabi_f2d
+  81              	.LVL5:
+  82 0034 0CA3     		adr	r3, .L4
+  83 0036 D3E90023 		ldrd	r2, [r3]
+  84 003a FFF7FEFF 		bl	__aeabi_dadd
+  85              	.LVL6:
+  86 003e FFF7FEFF 		bl	__aeabi_d2f
+  87              	.LVL7:
+  88              		.loc 1 27 16 view .LVU18
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccyruloq.s 			page 3
 
 
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s 			page 4
+  89 0042 2060     		str	r0, [r4]	@ float
+  28:Core/Src/main.c ****         //for (uint16_t i = 0; i < 10000; i++){}
+  29:Core/Src/main.c ****          
+  30:Core/Src/main.c **** 
+  31:Core/Src/main.c ****         
+  32:Core/Src/main.c ****         /*if(LedState) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Если нажали один раз
+  33:Core/Src/main.c ****         else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Если нажали ещё раз свето�
+  34:Core/Src/main.c ****         */
+  35:Core/Src/main.c ****  
+  36:Core/Src/main.c ****         /*if(GlobalTickCount >= FLICKER_PERIOD / 2){ //Если прошло 1000 прерыван�
+  37:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Включаем светодиод 
+  38:Core/Src/main.c ****             if(GlobalTickCount >= FLICKER_PERIOD){ //Если прошло 2000 прерывани�
+  39:Core/Src/main.c ****                 GlobalTickCount = 0; //Обнуляем переменную счётчика си�
+  40:Core/Src/main.c ****             } 
+  41:Core/Src/main.c ****         } 
+  42:Core/Src/main.c ****         else{ 
+  43:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Иначе выключаем светодиод
+  44:Core/Src/main.c ****         } */
+  45:Core/Src/main.c ****         
+  46:Core/Src/main.c ****         
+  47:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Включаем светодиод 
+  90              		.loc 1 47 9 is_stmt 1 view .LVU19
+  91 0044 0E4C     		ldr	r4, .L4+24
+  92 0046 A369     		ldr	r3, [r4, #24]
+  93 0048 43F08003 		orr	r3, r3, #128
+  94 004c A361     		str	r3, [r4, #24]
+  48:Core/Src/main.c ****         User_Delay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
+  95              		.loc 1 48 9 view .LVU20
+  96 004e C820     		movs	r0, #200
+  97 0050 FFF7FEFF 		bl	User_Delay
+  98              	.LVL8:
+  49:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Выключаем светодиод 
+  99              		.loc 1 49 9 view .LVU21
+ 100 0054 A369     		ldr	r3, [r4, #24]
+ 101 0056 43F40003 		orr	r3, r3, #8388608
+ 102 005a A361     		str	r3, [r4, #24]
+  50:Core/Src/main.c ****         User_Delay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
+ 103              		.loc 1 50 9 discriminator 1 view .LVU22
+ 104 005c C820     		movs	r0, #200
+ 105 005e FFF7FEFF 		bl	User_Delay
+ 106              	.LVL9:
+  21:Core/Src/main.c ****     {
+ 107              		.loc 1 21 11 view .LVU23
+ 108 0062 D8E7     		b	.L2
+ 109              	.L5:
+ 110 0064 AFF30080 		.align	3
+ 111              	.L4:
+ 112 0068 FCA9F1D2 		.word	-755914244
+ 113 006c 4D62503F 		.word	1062232653
+ 114 0070 00000000 		.word	t1
+ 115 0074 00000000 		.word	t2
+ 116 0078 00000000 		.word	t3
+ 117 007c 00000000 		.word	icount
+ 118 0080 00040240 		.word	1073873920
+ 119              		.cfi_endproc
+ 120              	.LFE130:
+ 122              		.global	t6
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccyruloq.s 			page 4
+
+
+ 123              		.section	.bss.t6,"aw",%nobits
+ 124              		.align	2
+ 127              	t6:
+ 128 0000 00000000 		.space	4
+ 129              		.global	t5
+ 130              		.section	.bss.t5,"aw",%nobits
+ 131              		.align	2
+ 134              	t5:
+ 135 0000 00000000 		.space	4
+ 136              		.global	t4
+ 137              		.section	.bss.t4,"aw",%nobits
+ 138              		.align	2
+ 141              	t4:
+ 142 0000 00000000 		.space	4
+ 143              		.global	t3
+ 144              		.section	.bss.t3,"aw",%nobits
+ 145              		.align	2
+ 148              	t3:
+ 149 0000 00000000 		.space	4
+ 150              		.global	t2
+ 151              		.section	.bss.t2,"aw",%nobits
+ 152              		.align	2
+ 155              	t2:
+ 156 0000 00000000 		.space	4
+ 157              		.global	t1
+ 158              		.section	.bss.t1,"aw",%nobits
+ 159              		.align	2
+ 162              	t1:
+ 163 0000 00000000 		.space	4
+ 164              		.global	LedState
+ 165              		.section	.bss.LedState,"aw",%nobits
+ 168              	LedState:
+ 169 0000 00       		.space	1
+ 170              		.global	icount
+ 171              		.section	.bss.icount,"aw",%nobits
+ 172              		.align	2
+ 175              	icount:
+ 176 0000 00000000 		.space	4
+ 177              		.global	DelayTickCount
+ 178              		.section	.bss.DelayTickCount,"aw",%nobits
+ 179              		.align	1
+ 182              	DelayTickCount:
+ 183 0000 0000     		.space	2
+ 184              		.global	GlobalTickCount
+ 185              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 186              		.align	1
+ 189              	GlobalTickCount:
+ 190 0000 0000     		.space	2
+ 191              		.text
+ 192              	.Letext0:
+ 193              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 194              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 195              		.file 4 "CMSIS/Devices/../include/core_cm4.h"
+ 196              		.file 5 "Core/Src/../Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ 197              		.file 6 "Core/Src/../Inc/it_handlers.h"
+ 198              		.file 7 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccyruloq.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s:19     .text.main:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s:25     .text.main:00000000 main
-C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s:61     .bss.LedState:00000000 LedState
-C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s:62     .bss.LedState:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s:68     .bss.DelayTickCount:00000000 DelayTickCount
-C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s:65     .bss.DelayTickCount:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s:75     .bss.GlobalTickCount:00000000 GlobalTickCount
-C:\Users\rpong\AppData\Local\Temp\cc95PGEc.s:72     .bss.GlobalTickCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:22     .text.main:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:28     .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:112    .text.main:00000068 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:162    .bss.t1:00000000 t1
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:155    .bss.t2:00000000 t2
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:148    .bss.t3:00000000 t3
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:175    .bss.icount:00000000 icount
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:127    .bss.t6:00000000 t6
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:124    .bss.t6:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:134    .bss.t5:00000000 t5
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:131    .bss.t5:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:141    .bss.t4:00000000 t4
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:138    .bss.t4:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:145    .bss.t3:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:152    .bss.t2:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:159    .bss.t1:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:168    .bss.LedState:00000000 LedState
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:169    .bss.LedState:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:172    .bss.icount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:182    .bss.DelayTickCount:00000000 DelayTickCount
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:179    .bss.DelayTickCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:189    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\rpong\AppData\Local\Temp\ccyruloq.s:186    .bss.GlobalTickCount:00000000 $d
 
 UNDEFINED SYMBOLS
+__aeabi_f2d
+__aeabi_dadd
+__aeabi_d2f
 GPIO_Init_Self
 GPIO_Init_CMSIS
 RCC_Init
 ITR_init
+SysTick_Init
+User_Delay
