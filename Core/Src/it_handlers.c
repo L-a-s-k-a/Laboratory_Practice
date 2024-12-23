@@ -22,13 +22,15 @@ void SysTick_Handler(void)
     ExternInterruptTickCount++; 
     GlobalTickCount++; 
     DelayTickCount++;
+    GlobalTickBut1++;
+    GlobalTickBut2++;
     for (uint8_t i = 0; i < 6, i++)
     {
         LedCount[i]++;
     }
 } 
 
-void User_Delay(uint32_t delay){  
+void mydelay(uint32_t delay){  
     delay = delay*10000;
     if(DelayTickCount >= delay) DelayTickCount = 0;
     while(DelayTickCount < delay){} //Цикл, благодаря которому происходит задержка программы 

@@ -3,27 +3,31 @@
  
 #define FLICKER_PERIOD 400 //Период мерцания светодиода 
 #define FLICKER_SEMIPERIOD 200 //Период мерцания светодиода 
- 
-uint16_t GlobalTickCount = 0, DelayTickCount = 0; 
-float icount = 0.0;
-uint8_t LedState; 
+#define WAIT_TIME 2000*10000 //Период мерцания светодиода 
+
+void FLedSetLoad();
+uint16_t GlobalTickCount = 0, DelayTickCount = 0;
+uint16_t GlobalTickBut1 = 0, GlobalTickBut2 = 0;
+
+//float icount = 0.0;
+//uint8_t LedState; 
 //uint32_t t1, t2, t3, t4, t5, t6;
- //freqAHB / ((SysTick_LOAD+1)*2*freq) (2 так как включение и выключение)
+
+
 uint32_t Ledfreq[3][3] = {{0.4, 1.3, 2},{0.6, 1.6, 2.2},{0.8, 1.9, 2.5}};
 uint32_t LedSetLoad[3][3];
-for (uint8_t i = 0; i < 3; i++){
-    for (uint8_t j = 0; j < 3; i++){
-        LedSetLoad[i][j] = (uint32_t)round(Ledfreq[i][j]);
-    }
-}
+FLedSetLoad();
 //const uint32_t LedSetLoad[3][3] = {{12500000, 38461538, 2500000},{16666667, 6250000, 4545455},{12500000, 52631579, 4000000}};
-
 uint32_t LedLoad[6] = {0, 0, 0, 0, 0, 0};
 uint32_t LedCount[6] = {0, 0, 0, 0, 0, 0};
 uint8_t Ledflag[2][6] = {{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0}};
 uint16_t Ledoffset[6] {0, 7, 8, 9, 10, 14};
+uint8_t CurrentLed = 0;
 uint8_t Numb = 0;
-uint8_t counter = 0;
+uint8_t counterbut1 = 0;
+uint8_t counterbut2 = 0;
+uint8_t flagbut1 = 0;
+uint8_t flagbut2 = 0;
 
 void Led_light();
 
@@ -58,7 +62,7 @@ int main(void)
                 }
             }
         }
-        Numb = counter%7;
+        Numb = counterbut1%7;
         if (Numb != 0)
         {
             Ledflag[1][Numb-1] = 1;
@@ -69,21 +73,43 @@ int main(void)
             {
                 Ledflag[1][i] = 0;
             }
-            counter = 0;
+            counterbut1 = 0;
         }
         Led_light();
+
+        
         //
-        /*
+        
         if(READ_BIT_Self(GPIOC_IDR, GPIOC_IDR_PIN0) != 0){
-            if(flag == 0){
-                flag = 1;
-                counter++;
+            if(flagbut1 == 0){
+                flagbut1 = 1;
+                counterbut1++;
+                mydelay(20);
             }           
         }
-        else if(flag == 1){
-            flag = 0;
+        else if(flagbut1 == 1){
+            flagbut1 = 0;
         }
-        */
+
+        if(READ_BIT_Self(GPIOC_IDR, GPIOC_IDR_PIN13) != 0){
+            if(flagbut2 == 0)
+            {
+                GlobalTickBut2 = 0;    ///////////////////////////////////
+                flagbut2 = 1;
+                mydelay(20);
+            }
+            if(GlobalTickBut2 >= WAIT_TIME){ //Если прошло 2 секунды 
+                counterbut2++;
+                LedLoad[CurrentLed] = LedSetLoad[counterbut2 / 3][counterbut2 % 3];
+            } 
+            else{ 
+                ////////////////////////////////////////////////// кратковременное
+            }      
+        }
+        else if(flagbut2 = 1){
+            flagbut2 = 0;
+        }
+        
 
         
         /*if(LedState) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Если нажали один раз на кнопку светодиод включится 
@@ -102,9 +128,9 @@ int main(void)
         
         
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Включаем светодиод 
-        User_Delay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
+        mydelay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Выключаем светодиод 
-        User_Delay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
+        mydelay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
         
     } 
 } 
@@ -123,4 +149,15 @@ void Led_light()
     }
     //MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
     MODIFY_REG(GPIOB_ODR,ODR_clear,ODR_set);
+}
+
+void FLedSetLoad()
+{
+    //Numtimes = freqAHB / ((SysTick_LOAD+1)*2*freq) (2 так как включение и выключение)
+    float Ntkoeff = 180000000/(18*2);
+    for (uint8_t i = 0; i < 3; i++){
+        for (uint8_t j = 0; j < 3; i++){
+            LedSetLoad[i][j] = (uint32_t)round(Ntkoeff/Ledfreq[i][j]);
+        }
+    }
 }
