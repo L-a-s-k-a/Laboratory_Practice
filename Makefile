@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = F429ZI_CMSIS
+TARGET = LABORATORY_PRACTICE
 
 
 ######################################
@@ -37,8 +37,8 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
-
-
+Core/Src/init.c \
+Core/Src/it_handlers.c \
 # ASM sources
 ASM_SOURCES =  \
 startup_stm32f429xx.s
