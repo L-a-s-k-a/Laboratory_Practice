@@ -18,6 +18,7 @@ void EXTI9_5_IRQHandler(void) //but1
     {
          flagbut1 = 0;
     }
+    /*
             
                 GlobalTickBut2 = 0;    ///////////////////////////////////
                 flagbut2 = 1;
@@ -33,6 +34,8 @@ void EXTI9_5_IRQHandler(void) //but1
     else if(flagbut2 = 1){
             flagbut2 = 0;
     }
+    */
+    SET_BIT(EXTI->PR, EXTI_PR_PR6); 
 
 }
 
