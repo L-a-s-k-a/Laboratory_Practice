@@ -4,7 +4,7 @@ extern uint8_t LedState; //extern - обозначает, что перемен�
 extern uint32_t LedCount[6];
 extern uint32_t GlobalTickBut1, GlobalTickBut2;
 uint32_t GlobalTickBut1Wait = 0, GlobalTickBut2Wait = 0;
-uint8_t flagbut1, flagbut2;
+extern uint8_t flagbut1, flagbut2;
 uint8_t BtnCount; 
 
 

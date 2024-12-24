@@ -89,7 +89,7 @@ void RCC_Init(void){
     MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS); 
 }
 
-void ITR_init(void){ 
+void ITR_Init(void){ 
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG
     NVIC_SetPriorityGrouping(0);//установка типа группировки без подприоритетов
     MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, SYSCFG_EXTICR4_EXTI13_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13 

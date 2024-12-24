@@ -10,7 +10,7 @@ uint16_t GlobalTickCount = 0, DelayTickCount = 0;
 uint16_t GlobalTickBut1 = 0, GlobalTickBut2 = 0;
 
 //float icount = 0.0;
-//uint8_t LedState; 
+uint8_t LedState; 
 //uint32_t t1, t2, t3, t4, t5, t6;
 
 
@@ -35,7 +35,7 @@ int main(void)
     GPIO_Init_Self();
     GPIO_Init_CMSIS();
     RCC_Init(); // Инициализация тактирования системы 
-    ITR_init();// Инициализация прерываний  
+    ITR_Init();// Инициализация прерываний  
     SysTick_Init();
     LedVal_Init();
     while (1) 
@@ -130,11 +130,12 @@ int main(void)
             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Иначе выключаем светодиод 
         } */
         
-        
+        /*
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); //Включаем светодиод 
         mydelay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); //Выключаем светодиод 
         mydelay(FLICKER_SEMIPERIOD); //Ожидаем 1 секунду 
+        */
         
     } 
 } 
