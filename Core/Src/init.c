@@ -73,7 +73,7 @@ void RCC_Init(void){
     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
     MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2); //Выставляем предделитель входной частоты PLL на 4
     MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7); //Настраиваем умножение частоты, полученной после деления (частоты VCO) на х180 
-    //CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); //Настраиваем предделитель получившейся частоты после умножения. Иными словами, получаем итоговую частоту PLL 
+    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); //Настраиваем предделитель получившейся частоты после умножения. Иными словами, получаем итоговую частоту PLL 
     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_0);
     SET_BIT(RCC->CR, RCC_CR_PLLON); //Запустим PLL 
     while(READ_BIT(RCC->CR, RCC_CR_PLLRDY)); //Ждём запуска PLL
@@ -112,7 +112,7 @@ void SysTick_Init(void){
     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); //предварительно выключим счётчик 
     SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk); //Разрешаем прерывание по системному таймеру 
     SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk); //Источник тактирования будет идти из AHB без деления 
-    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, 17 << SysTick_LOAD_RELOAD_Pos); //Будет тикать с частотой 100 МГц и вызывать прерывания 
-    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, 17 << SysTick_VAL_CURRENT_Pos); //Начнём считать со значения 17
+    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, SYSTLOAD << SysTick_LOAD_RELOAD_Pos); //Будет тикать с частотой 1 кГц и вызывать прерывания 
+    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, SYSTLOAD << SysTick_VAL_CURRENT_Pos); //Начнём считать со значения 17999
     SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); //Включим счётчик 
 } 

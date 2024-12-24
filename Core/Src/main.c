@@ -3,7 +3,6 @@
  
 #define FLICKER_PERIOD 400 //Период мерцания светодиода 
 #define FLICKER_SEMIPERIOD 200 //Период мерцания светодиода 
-#define WAIT_TIME 2000*10000 //Период мерцания светодиода 
 
 void LedVal_Init();
 uint16_t GlobalTickCount = 0, DelayTickCount = 0;
@@ -14,19 +13,19 @@ uint8_t LedState;
 //uint32_t t1, t2, t3, t4, t5, t6;
 
 
-uint32_t Ledfreq[3][3] = {{0.4, 1.3, 2},{0.6, 1.6, 2.2},{0.8, 1.9, 2.5}};
-//uint32_t LedSetLoad[3][3];;
-const uint32_t LedSetLoad[3][3] = {{12500000, 38461538, 2500000},{16666667, 6250000, 4545455},{12500000, 52631579, 4000000}}; //исправить
-uint32_t LedLoad[6] = {0, 0, 0, 0, 0, 0};
-uint32_t LedCount[6] = {0, 0, 0, 0, 0, 0};
-uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{1, 1, 1, 1, 1, 1}};
-uint16_t Ledoffset[6] = {0, 7, 8, 9, 10, 14};
-uint8_t CurrentLed = 0;
+//float Ledfreq[3][3]           = {{0.4, 1.3, 2},{0.6, 1.6, 2.2},{0.8, 1.9, 2.5}};
+//Numtimes = freqAHB / ((SysTick_LOAD+1)*2*freq) (2 так как включение и выключение)
+const uint16_t LedSetLoad[3][3] = {{1250, 384, 250},{833, 312, 227},{625, 263, 200}};
+uint16_t LedLoad[6] = {0, 0, 0, 0, 0, 0};
+uint16_t LedCount[6] = {0, 0, 0, 0, 0, 0};
+uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 0}};
+const uint8_t LedOffset[6] = {0U, 7U, 14U, 8U, 9U, 10U};
+uint8_t CurrentLed = 6;
 uint8_t Numb = 0;
 uint8_t counterbut1 = 0;
 uint8_t counterbut2 = 0;
-uint8_t flagbut1 = 0;
-uint8_t flagbut2 = 0;
+uint8_t flagbut1 = 0, flagbut2 = 0;
+uint8_t flagbut1long = 0, flagbut2long = 0;
 
 void Led_light();
 
@@ -59,11 +58,14 @@ int main(void)
                     Ledflag[2][i] = 1;
                 }
             }
+            
         }
-        Numb = counterbut1%7;
+        Numb = CurrentLed%7;
         if (Numb != 0)
         {
-            Ledflag[1][Numb-1] = 1;
+            for (uint8_t i = 0; i < Numb; i++){
+                Ledflag[1][i] = 1;
+            }
         }
         else
         {
@@ -71,7 +73,7 @@ int main(void)
             {
                 Ledflag[1][i] = 0;
             }
-            counterbut1 = 0;
+            CurrentLed = 0;
         }
         Led_light();
 
@@ -142,34 +144,25 @@ int main(void)
 
 void Led_light()
 {
-    uint32_t ODR_clear = 0;
-    uint32_t ODR_set = 0;
+    uint32_t ODR_clear = 0x0UL;
+    uint32_t ODR_set = 0x0UL;
     for (uint8_t i = 0; i < 6; i++){
         if ((Ledflag[1][i] == 1) && (Ledflag[2][i] == 1)){
-            ODR_set = ODR_set + (1<<(Ledoffset[i]));
+            ODR_set = ODR_set + (0x1UL<<(LedOffset[i]));
         }
         else{
-            ODR_clear = ODR_clear + (1<<(Ledoffset[i]));
+            ODR_clear = ODR_clear + (0x1UL<<(LedOffset[i]));
         }
     }
 
-    //MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
-    MODIFY_REG(GPIOB_ODR,ODR_clear,ODR_set);
+    MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
+    //MODIFY_REG(GPIOB_ODR,ODR_clear,ODR_set);
 }
 
 void LedVal_Init()
 {
-    //Numtimes = freqAHB / ((SysTick_LOAD+1)*2*freq) (2 так как включение и выключение)
-    /*
-    float Ntkoeff = 180000000/(18*2);
-    for (uint8_t i = 0; i < 3; i++){
-        for (uint8_t j = 0; j < 3; i++){
-            float a = round(Ntkoeff/Ledfreq[i][j])
-            LedSetLoad[i][j] = (uint32_t)(a);
-        }
-    }
-    */
     for (uint8_t i = 0; i < 6; i++){
         LedLoad[i] = LedSetLoad[0][0];
+        LedCount[i] = LedLoad[i];
     }
 }
