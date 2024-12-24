@@ -22,6 +22,7 @@
 
 #define GPIOC_IDR (*(uint32_t*)(0x40020800UL + 0x10UL))
 #define GPIOC_IDR_PIN0 0x000001UL
+#define GPIOC_IDR_PIN13 0x002000UL
 
 #define READ_BIT_Self(REG, BIT) (REG & BIT)
 #define SET_BIT_Self(REG, BIT) (REG |= BIT)
