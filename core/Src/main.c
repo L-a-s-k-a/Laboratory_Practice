@@ -13,11 +13,10 @@ const uint32_t led_pins[] = {GPIO_ODR_OD14, GPIO_ODR_OD7, GPIO_ODR_OD0, GPIO_ODR
 
 int main(void) {
     // 初始化 GPIO、EXTI 和 SysTick
-    GPIO_Ini(); //Инициализация поротв GPIOl
+    GPIO_Ini(); //Инициализация поротв GPIO
     RCC_Ini(); //Инициализация системы тактирования RCC
     EXTI_ITR_Ini(); //Инициализация контроллера прерываний
     SysTick_Init(); //Инициализация системного таймера
-
     while (1) {
      // 按钮 2 的状态轮询
         flagbutton1=READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0;
@@ -40,7 +39,6 @@ int main(void) {
             // 重置按钮状态
             button2_state = 0;
         }
-
         // LED 控制逻辑
         static uint32_t blink_counter = 0;
         if (work_mode == 0) { // 闪烁模式
@@ -49,7 +47,11 @@ int main(void) {
                 GPIOB->ODR ^= led_pins[current_led]; // 翻转当前 LED
             }
         } else { // 常亮模式
-            update_led_state(); // 点亮当前 LED
+        if (current_led==2)
+        {
+           continue;
+        }
+        update_led_state(); // 点亮当前 LED
         }
     }
 }
