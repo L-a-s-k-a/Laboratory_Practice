@@ -3,9 +3,10 @@
 extern uint8_t LedState; //extern - обозначает, что переменная будет объявленна в другом месте (в файле main.c)
 extern uint16_t LedCount[6];
 extern uint32_t GlobalTickBut1, GlobalTickBut2;
-uint32_t GlobalTickBut1Wait = 0, GlobalTickBut2Wait = 0;
+extern uint32_t GlobalTickBut1Wait, GlobalTickBut2Wait;
 extern uint8_t flagbut1, flagbut2;
 extern uint8_t flagbut1long, flagbut2long;
+extern uint8_t CurrentState;
 extern uint8_t CurrentLed;
 extern uint8_t counterbut1;
 extern uint8_t counterbut2;
@@ -33,26 +34,9 @@ void EXTI9_5_IRQHandler(void) //but1
         else if (flagbut1 == 1 && GlobalTickBut1Wait >= 30)
         {
             flagbut1 = 0;
-            CurrentLed++;
+            CurrentState++;
         }
     }
-    
-    /*   
-                GlobalTickBut2 = 0;    ///////////////////////////////////
-                flagbut2 = 1;
-                mydelay(20);
-            
-            if(GlobalTickBut2 >= 2000){ //Если прошло 2 секунды 
-                counterbut2++;
-            } 
-            else{ 
-                ////////////////////////////////////////////////// кратковременное
-            }      
-    
-    else if(flagbut2 = 1){
-            flagbut2 = 0;
-    }
-    */
     SET_BIT(EXTI->PR, EXTI_PR_PR6); 
 
 }
@@ -74,7 +58,11 @@ void EXTI15_10_IRQHandler(void){ //but2
         else if (flagbut2 == 1 && GlobalTickBut2Wait >= 30)
         {
             flagbut2 = 0;
-            //CurrentLed++;
+            CurrentLed++;
+            if (CurrentLed >= 6)
+            {
+                CurrentLed = 0;
+            }
         }
     }
     /*BtnCount++; 
