@@ -7,10 +7,12 @@ uint32_t GlobalTickBut1Wait = 0, GlobalTickBut2Wait = 0;
 //float Ledfreq[3][3]           = {{0.4, 1.3, 2},{0.6, 1.6, 2.2},{0.8, 1.9, 2.5}};
 //Numtimes = freqAHB / ((SysTick_LOAD+1)*2*freq) (2 так как включение и выключение)
 uint16_t LedSetLoad[3][3] = {{1250, 384, 250},{833, 312, 227},{625, 263, 200}};
+uint8_t LedCurrfreq[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
 uint16_t LedLoad[6] = {0, 0, 0, 0, 0, 0};
 uint16_t LedCount[6] = {0, 0, 0, 0, 0, 0};
 uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 0}};
 uint8_t Led1flag = 0;
+uint8_t Led2flag = 0;
 const uint8_t LedOffset[6] = {0U, 7U, 14U, 8U, 9U, 10U};
 uint8_t CurrentState = 6;
 uint8_t CurrentLed = 0;
@@ -47,6 +49,7 @@ int main(void)
                 }
                 //
                 Led1flag = Ledflag[1][0];
+                Led2flag = Ledflag[1][1];
             }
             
         }
@@ -66,19 +69,22 @@ int main(void)
             CurrentState = 0;
         }
         if(flagbut1long == 1){ 
-            if (counterbut1 >= 3)
+            if (LedCurrfreq[CurrentLed][0] >= 3)
             {
-                counterbut1 = 0;
+                LedCurrfreq[CurrentLed][0] = 0;
             }
-            LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
+            LedLoad[CurrentLed%6] = LedSetLoad[LedCurrfreq[CurrentLed][1]][LedCurrfreq[CurrentLed][0]];
+            //LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
             flagbut1long = 0;
         } 
-        if(flagbut2long == 1){ 
-            flagbut2long = 0;
-            if (counterbut2 >= 3)
+        if(flagbut2long == 1){     
+            if (LedCurrfreq[CurrentLed][1] >= 3)
             {
-                counterbut2 = 0;
+                LedCurrfreq[CurrentLed][1] = 0;
             }
+            LedLoad[CurrentLed%6] = LedSetLoad[LedCurrfreq[CurrentLed][1]][LedCurrfreq[CurrentLed][0]];
+            //LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
+            flagbut2long = 0;
         }
         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
             flagbut1 = 0;
@@ -102,14 +108,13 @@ void Led_light()
             ODR_clear = ODR_clear + (0x1UL<<(LedOffset[i]));
         }
     }
-
     MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
 }
 
 void LedVal_Init()
 {
     for (uint8_t i = 0; i < 6; i++){
-        LedLoad[i] = LedSetLoad[0][0];
+        LedLoad[i] = LedSetLoad[LedCurrfreq[i][0]][LedCurrfreq[i][1]];
         LedCount[i] = LedLoad[i];
     }
 }

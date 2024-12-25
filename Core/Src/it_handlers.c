@@ -7,8 +7,9 @@ extern uint8_t flagbut1, flagbut2;
 extern uint8_t flagbut1long, flagbut2long;
 extern uint8_t CurrentState;
 extern uint8_t CurrentLed;
-extern uint8_t counterbut1;
-extern uint8_t counterbut2;
+extern uint8_t LedCurrfreq[6][2];
+//extern uint8_t counterbut1;
+//extern uint8_t counterbut2;
 
 void EXTI9_5_IRQHandler(void) //but1
 {
@@ -23,7 +24,8 @@ void EXTI9_5_IRQHandler(void) //but1
         if (flagbut1 == 1 && GlobalTickBut1Wait >= 2000)
         {
             flagbut1long = 1;
-            counterbut1++;
+            LedCurrfreq[CurrentLed][0]++;
+            //counterbut1++;
             flagbut1 = 0;
         }
         else if (flagbut1 == 1 && GlobalTickBut1Wait >= 30)
@@ -47,7 +49,8 @@ void EXTI15_10_IRQHandler(void){ //but2
         if (flagbut2 == 1 && GlobalTickBut2Wait >= 2000)
         {
             flagbut2long = 1;
-            counterbut2++;
+            LedCurrfreq[CurrentLed][1]++;
+            //counterbut2++;
             flagbut2 = 0;
         }
         else if (flagbut2 == 1 && GlobalTickBut2Wait >= 30)

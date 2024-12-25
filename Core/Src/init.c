@@ -45,11 +45,11 @@ void GPIO_Init_CMSIS(void)
     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR10_0);//Отключение PU/PD резисторов для 10-го пина GPIOB
     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);//сброс BSRR, выключение светодиода 10-го пина GPIOB
 
-    /*
+    
     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER9_1); 
     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED9_Msk); //Настраиваем пин на максимальную скорость работы 
     MODIFY_REG(GPIOC->AFR[1], GPIO_AFRH_AFSEL9_Msk, 0x0); //Выбираем тип альтернативной функции – Выход MCO2
-    */
+    
 }
 
 void RCC_Init(void){
@@ -73,6 +73,7 @@ void RCC_Init(void){
     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
     MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2); //Выставляем предделитель входной частоты PLL на 4
     MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7); //Настраиваем умножение частоты, полученной после деления (частоты VCO) на х180 
+    //MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_0 | RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_6); //Настраиваем умножение частоты, полученной после деления (частоты VCO) на х90
     //SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_0); сам устанавливал частоту
     CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); //Настраиваем предделитель получившейся частоты после умножения. Иными словами, получаем итоговую частоту PLL 
     SET_BIT(RCC->CR, RCC_CR_PLLON); //Запустим PLL 
@@ -83,9 +84,10 @@ void RCC_Init(void){
     MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1); //Предделитель AHB без делителя
     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4); //Предделитель APВ1, делим на 4 
     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2); //Предделитель APВ2, делим на 2 
+    //MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_2); //Предделитель на выходе MCO2 (PC9) = 2
     MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk); //Предделитель на выходе MCO2 (PC9) = 5 
     //MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_1 | RCC_CFGR_MCO2PRE_2); //Предделитель на выходе MCO2 (PC9) = 4 
-    //CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2); //Настраиваем на выход MCO2 - System clock
+    CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2); //Настраиваем на выход MCO2 - System clock
     //количество циклов задержки памяти на 6 циклов CPU
     MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS); 
 }
@@ -93,7 +95,7 @@ void RCC_Init(void){
 void ITR_Init(void){ 
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG
     NVIC_SetPriorityGrouping(0);//установка типа группировки без подприоритетов
-    
+
     MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, SYSCFG_EXTICR4_EXTI13_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13 
     SET_BIT(EXTI->IMR, EXTI_IMR_MR13); //Настройка маскирования 13 линии 
     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13); //Настройка детектирования нарастающего фронта 13 линии 
