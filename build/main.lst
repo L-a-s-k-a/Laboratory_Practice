@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,238 +28,222 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
   26              	.LFB131:
    1:Core/Src/main.c **** #include "../Inc/init.h"
    2:Core/Src/main.c **** #include "../Inc/it_handlers.h"
-   3:Core/Src/main.c ****  
-   4:Core/Src/main.c **** #define FLICKER_PERIOD 400 //Период мерцания светодиода 
-   5:Core/Src/main.c **** #define FLICKER_SEMIPERIOD 200 //Период мерцания светодиода 
-   6:Core/Src/main.c **** 
-   7:Core/Src/main.c **** void LedVal_Init();
-   8:Core/Src/main.c **** uint16_t GlobalTickCount = 0, DelayTickCount = 0;
-   9:Core/Src/main.c **** uint16_t GlobalTickBut1 = 0, GlobalTickBut2 = 0;
-  10:Core/Src/main.c **** uint32_t GlobalTickBut1Wait = 0, GlobalTickBut2Wait = 0;
-  11:Core/Src/main.c **** 
-  12:Core/Src/main.c **** //float icount = 0.0;
-  13:Core/Src/main.c **** uint8_t LedState; 
-  14:Core/Src/main.c **** //uint32_t t1, t2, t3, t4, t5, t6;
-  15:Core/Src/main.c **** 
-  16:Core/Src/main.c **** 
-  17:Core/Src/main.c **** //float Ledfreq[3][3]           = {{0.4, 1.3, 2},{0.6, 1.6, 2.2},{0.8, 1.9, 2.5}};
-  18:Core/Src/main.c **** //Numtimes = freqAHB / ((SysTick_LOAD+1)*2*freq) (2 так как включение и выклю�
-  19:Core/Src/main.c **** uint16_t LedSetLoad[3][3] = {{1250, 384, 250},{833, 312, 227},{625, 263, 200}};
-  20:Core/Src/main.c **** uint16_t LedLoad[6] = {0, 0, 0, 0, 0, 0};
-  21:Core/Src/main.c **** uint16_t LedCount[6] = {0, 0, 0, 0, 0, 0};
-  22:Core/Src/main.c **** uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 0}};
-  23:Core/Src/main.c **** uint8_t Led1flag = 0;
-  24:Core/Src/main.c **** const uint8_t LedOffset[6] = {0U, 7U, 14U, 8U, 9U, 10U};
-  25:Core/Src/main.c **** uint8_t CurrentState = 6;
-  26:Core/Src/main.c **** uint8_t CurrentLed = 0;
-  27:Core/Src/main.c **** uint8_t Numb = 0;
-  28:Core/Src/main.c **** uint8_t counterbut1 = 0;
-  29:Core/Src/main.c **** uint8_t counterbut2 = 0;
-  30:Core/Src/main.c **** uint8_t flagbut1 = 0, flagbut2 = 0;
-  31:Core/Src/main.c **** uint8_t flagbut1long = 0, flagbut2long = 0;
-  32:Core/Src/main.c **** 
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 2
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** uint16_t DelayTickCount = 0;
+   6:Core/Src/main.c **** uint32_t GlobalTickBut1Wait = 0, GlobalTickBut2Wait = 0;
+   7:Core/Src/main.c **** //float Ledfreq[3][3]           = {{0.4, 1.3, 2},{0.6, 1.6, 2.2},{0.8, 1.9, 2.5}};
+   8:Core/Src/main.c **** //Numtimes = freqAHB / ((SysTick_LOAD+1)*2*freq) (2 так как включение и выклю�
+   9:Core/Src/main.c **** uint16_t LedSetLoad[3][3] = {{1250, 384, 250},{833, 312, 227},{625, 263, 200}};
+  10:Core/Src/main.c **** uint16_t LedLoad[6] = {0, 0, 0, 0, 0, 0};
+  11:Core/Src/main.c **** uint16_t LedCount[6] = {0, 0, 0, 0, 0, 0};
+  12:Core/Src/main.c **** uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 0}};
+  13:Core/Src/main.c **** uint8_t Led1flag = 0;
+  14:Core/Src/main.c **** const uint8_t LedOffset[6] = {0U, 7U, 14U, 8U, 9U, 10U};
+  15:Core/Src/main.c **** uint8_t CurrentState = 6;
+  16:Core/Src/main.c **** uint8_t CurrentLed = 0;
+  17:Core/Src/main.c **** uint8_t Numb = 0;
+  18:Core/Src/main.c **** uint8_t counterbut1 = 0;
+  19:Core/Src/main.c **** uint8_t counterbut2 = 0;
+  20:Core/Src/main.c **** uint8_t flagbut1 = 0, flagbut2 = 0;
+  21:Core/Src/main.c **** uint8_t flagbut1long = 0, flagbut2long = 0;
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c **** void LedVal_Init();
+  24:Core/Src/main.c **** void Led_light();
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c **** int main(void) 
+  27:Core/Src/main.c **** { 
+  28:Core/Src/main.c ****     GPIO_Init_Self();
+  29:Core/Src/main.c ****     GPIO_Init_CMSIS();
+  30:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
+  31:Core/Src/main.c ****     ITR_Init();// Инициализация прерываний  
+  32:Core/Src/main.c ****     SysTick_Init();
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 2
 
 
-  33:Core/Src/main.c **** void Led_light();
-  34:Core/Src/main.c **** 
-  35:Core/Src/main.c **** int main(void) 
-  36:Core/Src/main.c **** { 
-  37:Core/Src/main.c ****     GPIO_Init_Self();
-  38:Core/Src/main.c ****     GPIO_Init_CMSIS();
-  39:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
-  40:Core/Src/main.c ****     ITR_Init();// Инициализация прерываний  
-  41:Core/Src/main.c ****     SysTick_Init();
-  42:Core/Src/main.c ****     LedVal_Init();
-  43:Core/Src/main.c ****     while (1) 
-  44:Core/Src/main.c ****     {
-  45:Core/Src/main.c ****         /*
-  46:Core/Src/main.c ****         t1 = READ_REG(SysTick->VAL);
-  47:Core/Src/main.c ****         t2 = READ_REG(SysTick->CTRL);
-  48:Core/Src/main.c ****         t3 = READ_REG(SysTick->LOAD);
-  49:Core/Src/main.c ****         icount = icount + 0.001;
-  50:Core/Src/main.c ****         */
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
-  52:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
-  53:Core/Src/main.c ****             {
-  54:Core/Src/main.c ****                 LedCount[i] = 0;
-  55:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
-  56:Core/Src/main.c ****                 {         
-  57:Core/Src/main.c ****                     Ledflag[1][i] = 0;
-  58:Core/Src/main.c ****                 }
-  59:Core/Src/main.c ****                 else
-  60:Core/Src/main.c ****                 {
-  61:Core/Src/main.c ****                     Ledflag[1][i] = 1;
-  62:Core/Src/main.c ****                 }
-  63:Core/Src/main.c ****                 //
-  64:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+  33:Core/Src/main.c ****     LedVal_Init();
+  34:Core/Src/main.c ****     while (1) 
+  35:Core/Src/main.c ****     {
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+  37:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
+  38:Core/Src/main.c ****             {
+  39:Core/Src/main.c ****                 LedCount[i] = 0;
+  40:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
+  41:Core/Src/main.c ****                 {         
+  42:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+  43:Core/Src/main.c ****                 }
+  44:Core/Src/main.c ****                 else
+  45:Core/Src/main.c ****                 {
+  46:Core/Src/main.c ****                     Ledflag[1][i] = 1;
+  47:Core/Src/main.c ****                 }
+  48:Core/Src/main.c ****                 //
+  49:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+  50:Core/Src/main.c ****             }
+  51:Core/Src/main.c ****             
+  52:Core/Src/main.c ****         }
+  53:Core/Src/main.c ****         Numb = CurrentState%7;
+  54:Core/Src/main.c ****         if (Numb != 0)
+  55:Core/Src/main.c ****         {
+  56:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+  57:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+  58:Core/Src/main.c ****             }
+  59:Core/Src/main.c ****         }
+  60:Core/Src/main.c ****         else
+  61:Core/Src/main.c ****         {
+  62:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+  63:Core/Src/main.c ****             {
+  64:Core/Src/main.c ****                 Ledflag[0][i] = 0;
   65:Core/Src/main.c ****             }
-  66:Core/Src/main.c ****             
+  66:Core/Src/main.c ****             CurrentState = 0;
   67:Core/Src/main.c ****         }
-  68:Core/Src/main.c ****         Numb = CurrentState%7;
-  69:Core/Src/main.c ****         if (Numb != 0)
-  70:Core/Src/main.c ****         {
-  71:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
-  72:Core/Src/main.c ****                 Ledflag[0][i] = 1;
-  73:Core/Src/main.c ****             }
-  74:Core/Src/main.c ****         }
-  75:Core/Src/main.c ****         else
-  76:Core/Src/main.c ****         {
-  77:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
-  78:Core/Src/main.c ****             {
-  79:Core/Src/main.c ****                 Ledflag[0][i] = 0;
-  80:Core/Src/main.c ****             }
-  81:Core/Src/main.c ****             CurrentState = 0;
+  68:Core/Src/main.c ****         if(flagbut1long == 1){ 
+  69:Core/Src/main.c ****             if (counterbut1 >= 3)
+  70:Core/Src/main.c ****             {
+  71:Core/Src/main.c ****                 counterbut1 = 0;
+  72:Core/Src/main.c ****             }
+  73:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
+  74:Core/Src/main.c ****             flagbut1long = 0;
+  75:Core/Src/main.c ****         } 
+  76:Core/Src/main.c ****         if(flagbut2long == 1){ 
+  77:Core/Src/main.c ****             flagbut2long = 0;
+  78:Core/Src/main.c ****             if (counterbut2 >= 3)
+  79:Core/Src/main.c ****             {
+  80:Core/Src/main.c ****                 counterbut2 = 0;
+  81:Core/Src/main.c ****             }
   82:Core/Src/main.c ****         }
-  83:Core/Src/main.c ****         if(flagbut1long == 1){ 
-  84:Core/Src/main.c ****             if (counterbut1 >= 3)
-  85:Core/Src/main.c ****             {
-  86:Core/Src/main.c ****                 counterbut1 = 0;
-  87:Core/Src/main.c ****             }
-  88:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
-  89:Core/Src/main.c ****             flagbut1long = 0;
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 3
+  83:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+  84:Core/Src/main.c ****             flagbut1 = 0;
+  85:Core/Src/main.c ****         }  
+  86:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
+  87:Core/Src/main.c ****             flagbut2 = 0;
+  88:Core/Src/main.c ****         }  
+  89:Core/Src/main.c ****         Led_light();
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 3
 
 
-  90:Core/Src/main.c ****         } 
-  91:Core/Src/main.c ****         if(flagbut2long == 1){ 
-  92:Core/Src/main.c ****             flagbut2long = 0;
-  93:Core/Src/main.c ****             if (counterbut2 >= 3)
-  94:Core/Src/main.c ****             {
-  95:Core/Src/main.c ****                 counterbut2 = 0;
-  96:Core/Src/main.c ****             }
-  97:Core/Src/main.c ****         }
-  98:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
-  99:Core/Src/main.c ****             flagbut1 = 0;
- 100:Core/Src/main.c ****         }  
- 101:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
- 102:Core/Src/main.c ****             flagbut2 = 0;
- 103:Core/Src/main.c ****         }  
- 104:Core/Src/main.c ****         Led_light();
- 105:Core/Src/main.c ****     } 
- 106:Core/Src/main.c **** } 
- 107:Core/Src/main.c **** 
- 108:Core/Src/main.c **** void Led_light()
- 109:Core/Src/main.c **** {
-  27              		.loc 1 109 1 view -0
+  90:Core/Src/main.c ****     } 
+  91:Core/Src/main.c **** } 
+  92:Core/Src/main.c **** 
+  93:Core/Src/main.c **** void Led_light()
+  94:Core/Src/main.c **** {
+  27              		.loc 1 94 1 view -0
   28              		.cfi_startproc
   29              		@ args = 0, pretend = 0, frame = 0
   30              		@ frame_needed = 0, uses_anonymous_args = 0
   31              		@ link register save eliminated.
- 110:Core/Src/main.c ****     uint32_t ODR_clear = 0x0UL;
-  32              		.loc 1 110 5 view .LVU1
+  95:Core/Src/main.c ****     uint32_t ODR_clear = 0x0UL;
+  32              		.loc 1 95 5 view .LVU1
   33              	.LVL0:
- 111:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
-  34              		.loc 1 111 5 view .LVU2
- 112:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
-  35              		.loc 1 112 5 view .LVU3
+  96:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
+  34              		.loc 1 96 5 view .LVU2
+  97:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+  35              		.loc 1 97 5 view .LVU3
   36              	.LBB2:
-  37              		.loc 1 112 10 view .LVU4
-  38              		.loc 1 112 18 is_stmt 0 view .LVU5
+  37              		.loc 1 97 10 view .LVU4
+  38              		.loc 1 97 18 is_stmt 0 view .LVU5
   39 0000 0023     		movs	r3, #0
   40              	.LBE2:
- 111:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
-  41              		.loc 1 111 14 view .LVU6
+  96:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
+  41              		.loc 1 96 14 view .LVU6
   42 0002 9C46     		mov	ip, r3
- 110:Core/Src/main.c ****     uint32_t ODR_clear = 0x0UL;
-  43              		.loc 1 110 14 view .LVU7
+  95:Core/Src/main.c ****     uint32_t ODR_clear = 0x0UL;
+  43              		.loc 1 95 14 view .LVU7
   44 0004 1946     		mov	r1, r3
   45              	.LBB3:
-  46              		.loc 1 112 5 view .LVU8
+  46              		.loc 1 97 5 view .LVU8
   47 0006 06E0     		b	.L2
   48              	.LVL1:
   49              	.L3:
- 113:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
- 114:Core/Src/main.c ****             ODR_set = ODR_set + (0x1UL<<(LedOffset[i]));
- 115:Core/Src/main.c ****         }
- 116:Core/Src/main.c ****         else{
- 117:Core/Src/main.c ****             ODR_clear = ODR_clear + (0x1UL<<(LedOffset[i]));
-  50              		.loc 1 117 13 is_stmt 1 view .LVU9
-  51              		.loc 1 117 55 is_stmt 0 view .LVU10
+  98:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  99:Core/Src/main.c ****             ODR_set = ODR_set + (0x1UL<<(LedOffset[i]));
+ 100:Core/Src/main.c ****         }
+ 101:Core/Src/main.c ****         else{
+ 102:Core/Src/main.c ****             ODR_clear = ODR_clear + (0x1UL<<(LedOffset[i]));
+  50              		.loc 1 102 13 is_stmt 1 view .LVU9
+  51              		.loc 1 102 55 is_stmt 0 view .LVU10
   52 0008 1048     		ldr	r0, .L7
   53 000a 805C     		ldrb	r0, [r0, r2]	@ zero_extendqisi2
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 4
-
-
-  54              		.loc 1 117 43 view .LVU11
+  54              		.loc 1 102 43 view .LVU11
   55 000c 0122     		movs	r2, #1
   56 000e 8240     		lsls	r2, r2, r0
-  57              		.loc 1 117 23 view .LVU12
+  57              		.loc 1 102 23 view .LVU12
   58 0010 1144     		add	r1, r1, r2
   59              	.LVL2:
   60              	.L4:
- 112:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
-  61              		.loc 1 112 33 is_stmt 1 discriminator 2 view .LVU13
+  97:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+  61              		.loc 1 97 33 is_stmt 1 discriminator 2 view .LVU13
   62 0012 0133     		adds	r3, r3, #1
   63              	.LVL3:
- 112:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
-  64              		.loc 1 112 33 is_stmt 0 discriminator 2 view .LVU14
+  97:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+  64              		.loc 1 97 33 is_stmt 0 discriminator 2 view .LVU14
   65 0014 DBB2     		uxtb	r3, r3
   66              	.LVL4:
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 4
+
+
   67              	.L2:
- 112:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
-  68              		.loc 1 112 27 is_stmt 1 discriminator 1 view .LVU15
+  97:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+  68              		.loc 1 97 27 is_stmt 1 discriminator 1 view .LVU15
   69 0016 052B     		cmp	r3, #5
   70 0018 0FD8     		bhi	.L6
- 113:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
-  71              		.loc 1 113 9 view .LVU16
- 113:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
-  72              		.loc 1 113 24 is_stmt 0 view .LVU17
+  98:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  71              		.loc 1 98 9 view .LVU16
+  98:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  72              		.loc 1 98 24 is_stmt 0 view .LVU17
   73 001a 1A46     		mov	r2, r3
   74 001c 0C48     		ldr	r0, .L7+4
   75 001e C05C     		ldrb	r0, [r0, r3]	@ zero_extendqisi2
- 113:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
-  76              		.loc 1 113 12 view .LVU18
+  98:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  76              		.loc 1 98 12 view .LVU18
   77 0020 0128     		cmp	r0, #1
   78 0022 F1D1     		bne	.L3
- 113:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
-  79              		.loc 1 113 48 discriminator 1 view .LVU19
+  98:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  79              		.loc 1 98 48 discriminator 1 view .LVU19
   80 0024 0A48     		ldr	r0, .L7+4
   81 0026 1844     		add	r0, r0, r3
   82 0028 8079     		ldrb	r0, [r0, #6]	@ zero_extendqisi2
- 113:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
-  83              		.loc 1 113 34 discriminator 1 view .LVU20
+  98:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  83              		.loc 1 98 34 discriminator 1 view .LVU20
   84 002a 0128     		cmp	r0, #1
   85 002c ECD1     		bne	.L3
- 114:Core/Src/main.c ****         }
-  86              		.loc 1 114 13 is_stmt 1 view .LVU21
- 114:Core/Src/main.c ****         }
-  87              		.loc 1 114 51 is_stmt 0 view .LVU22
+  99:Core/Src/main.c ****         }
+  86              		.loc 1 99 13 is_stmt 1 view .LVU21
+  99:Core/Src/main.c ****         }
+  87              		.loc 1 99 51 is_stmt 0 view .LVU22
   88 002e 0748     		ldr	r0, .L7
   89 0030 C05C     		ldrb	r0, [r0, r3]	@ zero_extendqisi2
- 114:Core/Src/main.c ****         }
-  90              		.loc 1 114 39 view .LVU23
+  99:Core/Src/main.c ****         }
+  90              		.loc 1 99 39 view .LVU23
   91 0032 0122     		movs	r2, #1
   92 0034 8240     		lsls	r2, r2, r0
- 114:Core/Src/main.c ****         }
-  93              		.loc 1 114 21 view .LVU24
+  99:Core/Src/main.c ****         }
+  93              		.loc 1 99 21 view .LVU24
   94 0036 9444     		add	ip, ip, r2
   95              	.LVL5:
- 114:Core/Src/main.c ****         }
-  96              		.loc 1 114 21 view .LVU25
+  99:Core/Src/main.c ****         }
+  96              		.loc 1 99 21 view .LVU25
   97 0038 EBE7     		b	.L4
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 5
-
-
   98              	.L6:
- 114:Core/Src/main.c ****         }
-  99              		.loc 1 114 21 view .LVU26
+  99:Core/Src/main.c ****         }
+  99              		.loc 1 99 21 view .LVU26
  100              	.LBE3:
- 118:Core/Src/main.c ****         }
- 119:Core/Src/main.c ****     }
- 120:Core/Src/main.c **** 
- 121:Core/Src/main.c ****     MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
- 101              		.loc 1 121 5 is_stmt 1 view .LVU27
+ 103:Core/Src/main.c ****         }
+ 104:Core/Src/main.c ****     }
+ 105:Core/Src/main.c **** 
+ 106:Core/Src/main.c ****     MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
+ 101              		.loc 1 106 5 is_stmt 1 view .LVU27
  102 003a 064A     		ldr	r2, .L7+8
  103 003c 5369     		ldr	r3, [r2, #20]
  104              	.LVL6:
- 105              		.loc 1 121 5 is_stmt 0 view .LVU28
+ 105              		.loc 1 106 5 is_stmt 0 view .LVU28
  106 003e 23EA0103 		bic	r3, r3, r1
  107 0042 43EA0C03 		orr	r3, r3, ip
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 5
+
+
  108 0046 5361     		str	r3, [r2, #20]
- 122:Core/Src/main.c ****     //MODIFY_REG(GPIOB_ODR,ODR_clear,ODR_set);
- 123:Core/Src/main.c **** }
- 109              		.loc 1 123 1 view .LVU29
+ 107:Core/Src/main.c **** }
+ 109              		.loc 1 107 1 view .LVU29
  110 0048 7047     		bx	lr
  111              	.L8:
  112 004a 00BF     		.align	2
@@ -277,58 +261,58 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  125              		.thumb_func
  127              	LedVal_Init:
  128              	.LFB132:
- 124:Core/Src/main.c **** 
- 125:Core/Src/main.c **** void LedVal_Init()
- 126:Core/Src/main.c **** {
- 129              		.loc 1 126 1 is_stmt 1 view -0
+ 108:Core/Src/main.c **** 
+ 109:Core/Src/main.c **** void LedVal_Init()
+ 110:Core/Src/main.c **** {
+ 129              		.loc 1 110 1 is_stmt 1 view -0
  130              		.cfi_startproc
  131              		@ args = 0, pretend = 0, frame = 0
  132              		@ frame_needed = 0, uses_anonymous_args = 0
  133              		@ link register save eliminated.
- 127:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
- 134              		.loc 1 127 5 view .LVU31
+ 111:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+ 134              		.loc 1 111 5 view .LVU31
  135              	.LBB4:
- 136              		.loc 1 127 10 view .LVU32
+ 136              		.loc 1 111 10 view .LVU32
  137              	.LVL7:
- 138              		.loc 1 127 18 is_stmt 0 view .LVU33
+ 138              		.loc 1 111 18 is_stmt 0 view .LVU33
  139 0000 0023     		movs	r3, #0
- 140              		.loc 1 127 5 view .LVU34
+ 140              		.loc 1 111 5 view .LVU34
  141 0002 09E0     		b	.L10
  142              	.LVL8:
  143              	.L11:
- 128:Core/Src/main.c ****         LedLoad[i] = LedSetLoad[0][0];
- 144              		.loc 1 128 9 is_stmt 1 view .LVU35
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 6
-
-
- 145              		.loc 1 128 35 is_stmt 0 view .LVU36
+ 112:Core/Src/main.c ****         LedLoad[i] = LedSetLoad[0][0];
+ 144              		.loc 1 112 9 is_stmt 1 view .LVU35
+ 145              		.loc 1 112 35 is_stmt 0 view .LVU36
  146 0004 064A     		ldr	r2, .L12
  147 0006 1288     		ldrh	r2, [r2]
- 148              		.loc 1 128 20 view .LVU37
+ 148              		.loc 1 112 20 view .LVU37
  149 0008 0649     		ldr	r1, .L12+4
  150 000a 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
- 129:Core/Src/main.c ****         LedCount[i] = LedLoad[i];
- 151              		.loc 1 129 9 is_stmt 1 view .LVU38
- 152              		.loc 1 129 21 is_stmt 0 view .LVU39
+ 113:Core/Src/main.c ****         LedCount[i] = LedLoad[i];
+ 151              		.loc 1 113 9 is_stmt 1 view .LVU38
+ 152              		.loc 1 113 21 is_stmt 0 view .LVU39
  153 000e 0649     		ldr	r1, .L12+8
  154 0010 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
- 127:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
- 155              		.loc 1 127 33 is_stmt 1 discriminator 3 view .LVU40
+ 111:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+ 155              		.loc 1 111 33 is_stmt 1 discriminator 3 view .LVU40
  156 0014 0133     		adds	r3, r3, #1
  157              	.LVL9:
- 127:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
- 158              		.loc 1 127 33 is_stmt 0 discriminator 3 view .LVU41
+ 111:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 6
+
+
+ 158              		.loc 1 111 33 is_stmt 0 discriminator 3 view .LVU41
  159 0016 DBB2     		uxtb	r3, r3
  160              	.LVL10:
  161              	.L10:
- 127:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
- 162              		.loc 1 127 27 is_stmt 1 discriminator 1 view .LVU42
+ 111:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+ 162              		.loc 1 111 27 is_stmt 1 discriminator 1 view .LVU42
  163 0018 052B     		cmp	r3, #5
  164 001a F3D9     		bls	.L11
  165              	.LBE4:
- 130:Core/Src/main.c ****     }
- 131:Core/Src/main.c **** }...
- 166              		.loc 1 131 1 is_stmt 0 view .LVU43
+ 114:Core/Src/main.c ****     }
+ 115:Core/Src/main.c **** }...
+ 166              		.loc 1 115 1 is_stmt 0 view .LVU43
  167 001c 7047     		bx	lr
  168              	.L13:
  169 001e 00BF     		.align	2
@@ -346,8 +330,8 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  182              		.thumb_func
  184              	main:
  185              	.LFB130:
-  36:Core/Src/main.c **** { 
- 186              		.loc 1 36 1 is_stmt 1 view -0
+  27:Core/Src/main.c **** { 
+ 186              		.loc 1 27 1 is_stmt 1 view -0
  187              		.cfi_startproc
  188              		@ args = 0, pretend = 0, frame = 0
  189              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -356,108 +340,108 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  192              		.cfi_def_cfa_offset 8
  193              		.cfi_offset 3, -8
  194              		.cfi_offset 14, -4
-  37:Core/Src/main.c ****     GPIO_Init_Self();
- 195              		.loc 1 37 5 view .LVU45
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 7
-
-
+  28:Core/Src/main.c ****     GPIO_Init_Self();
+ 195              		.loc 1 28 5 view .LVU45
  196 0002 FFF7FEFF 		bl	GPIO_Init_Self
  197              	.LVL11:
-  38:Core/Src/main.c ****     GPIO_Init_CMSIS();
- 198              		.loc 1 38 5 view .LVU46
+  29:Core/Src/main.c ****     GPIO_Init_CMSIS();
+ 198              		.loc 1 29 5 view .LVU46
  199 0006 FFF7FEFF 		bl	GPIO_Init_CMSIS
  200              	.LVL12:
-  39:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
- 201              		.loc 1 39 5 view .LVU47
+  30:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
+ 201              		.loc 1 30 5 view .LVU47
  202 000a FFF7FEFF 		bl	RCC_Init
  203              	.LVL13:
-  40:Core/Src/main.c ****     ITR_Init();// Инициализация прерываний  
- 204              		.loc 1 40 5 view .LVU48
+  31:Core/Src/main.c ****     ITR_Init();// Инициализация прерываний  
+ 204              		.loc 1 31 5 view .LVU48
  205 000e FFF7FEFF 		bl	ITR_Init
  206              	.LVL14:
-  41:Core/Src/main.c ****     SysTick_Init();
- 207              		.loc 1 41 5 view .LVU49
+  32:Core/Src/main.c ****     SysTick_Init();
+ 207              		.loc 1 32 5 view .LVU49
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 7
+
+
  208 0012 FFF7FEFF 		bl	SysTick_Init
  209              	.LVL15:
-  42:Core/Src/main.c ****     LedVal_Init();
- 210              		.loc 1 42 5 view .LVU50
+  33:Core/Src/main.c ****     LedVal_Init();
+ 210              		.loc 1 33 5 view .LVU50
  211 0016 FFF7FEFF 		bl	LedVal_Init
  212              	.LVL16:
  213 001a 62E0     		b	.L30
  214              	.LVL17:
  215              	.L34:
  216              	.LBB5:
-  57:Core/Src/main.c ****                     Ledflag[1][i] = 0;
- 217              		.loc 1 57 21 view .LVU51
-  57:Core/Src/main.c ****                     Ledflag[1][i] = 0;
- 218              		.loc 1 57 35 is_stmt 0 view .LVU52
+  42:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+ 217              		.loc 1 42 21 view .LVU51
+  42:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+ 218              		.loc 1 42 35 is_stmt 0 view .LVU52
  219 001c 534A     		ldr	r2, .L39
  220 001e 1A44     		add	r2, r2, r3
  221 0020 9171     		strb	r1, [r2, #6]
  222              	.L18:
-  64:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
- 223              		.loc 1 64 17 is_stmt 1 view .LVU53
-  64:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
- 224              		.loc 1 64 38 is_stmt 0 view .LVU54
+  49:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+ 223              		.loc 1 49 17 is_stmt 1 view .LVU53
+  49:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+ 224              		.loc 1 49 38 is_stmt 0 view .LVU54
  225 0022 524A     		ldr	r2, .L39
  226 0024 9179     		ldrb	r1, [r2, #6]	@ zero_extendqisi2
-  64:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
- 227              		.loc 1 64 26 view .LVU55
+  49:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+ 227              		.loc 1 49 26 view .LVU55
  228 0026 524A     		ldr	r2, .L39+4
  229 0028 1170     		strb	r1, [r2]
  230              	.L16:
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
- 231              		.loc 1 51 37 is_stmt 1 discriminator 2 view .LVU56
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 231              		.loc 1 36 37 is_stmt 1 discriminator 2 view .LVU56
  232 002a 0133     		adds	r3, r3, #1
  233              	.LVL18:
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
- 234              		.loc 1 51 37 is_stmt 0 discriminator 2 view .LVU57
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 234              		.loc 1 36 37 is_stmt 0 discriminator 2 view .LVU57
  235 002c DBB2     		uxtb	r3, r3
  236              	.LVL19:
  237              	.L15:
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
- 238              		.loc 1 51 31 is_stmt 1 discriminator 1 view .LVU58
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 238              		.loc 1 36 31 is_stmt 1 discriminator 1 view .LVU58
  239 002e 052B     		cmp	r3, #5
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 8
-
-
  240 0030 15D8     		bhi	.L33
-  52:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
- 241              		.loc 1 52 13 view .LVU59
-  52:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
- 242              		.loc 1 52 25 is_stmt 0 view .LVU60
+  37:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
+ 241              		.loc 1 37 13 view .LVU59
+  37:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
+ 242              		.loc 1 37 25 is_stmt 0 view .LVU60
  243 0032 504A     		ldr	r2, .L39+8
  244 0034 32F81310 		ldrh	r1, [r2, r3, lsl #1]
-  52:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
- 245              		.loc 1 52 39 view .LVU61
+  37:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
+ 245              		.loc 1 37 39 view .LVU61
  246 0038 4F4A     		ldr	r2, .L39+12
  247 003a 32F81320 		ldrh	r2, [r2, r3, lsl #1]
-  52:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
- 248              		.loc 1 52 16 view .LVU62
+  37:Core/Src/main.c ****             if (LedCount[i] >= LedLoad[i])
+ 248              		.loc 1 37 16 view .LVU62
  249 003e 9142     		cmp	r1, r2
  250 0040 F3D3     		bcc	.L16
-  54:Core/Src/main.c ****                 LedCount[i] = 0;
- 251              		.loc 1 54 17 is_stmt 1 view .LVU63
-  54:Core/Src/main.c ****                 LedCount[i] = 0;
- 252              		.loc 1 54 29 is_stmt 0 view .LVU64
+  39:Core/Src/main.c ****                 LedCount[i] = 0;
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 8
+
+
+ 251              		.loc 1 39 17 is_stmt 1 view .LVU63
+  39:Core/Src/main.c ****                 LedCount[i] = 0;
+ 252              		.loc 1 39 29 is_stmt 0 view .LVU64
  253 0042 4C4A     		ldr	r2, .L39+8
  254 0044 0021     		movs	r1, #0
  255 0046 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
-  55:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
- 256              		.loc 1 55 17 is_stmt 1 view .LVU65
-  55:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
- 257              		.loc 1 55 31 is_stmt 0 view .LVU66
+  40:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
+ 256              		.loc 1 40 17 is_stmt 1 view .LVU65
+  40:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
+ 257              		.loc 1 40 31 is_stmt 0 view .LVU66
  258 004a 484A     		ldr	r2, .L39
  259 004c 1A44     		add	r2, r2, r3
  260 004e 9279     		ldrb	r2, [r2, #6]	@ zero_extendqisi2
-  55:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
- 261              		.loc 1 55 20 view .LVU67
+  40:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
+ 261              		.loc 1 40 20 view .LVU67
  262 0050 012A     		cmp	r2, #1
  263 0052 E3D0     		beq	.L34
-  61:Core/Src/main.c ****                     Ledflag[1][i] = 1;
- 264              		.loc 1 61 21 is_stmt 1 view .LVU68
-  61:Core/Src/main.c ****                     Ledflag[1][i] = 1;
- 265              		.loc 1 61 35 is_stmt 0 view .LVU69
+  46:Core/Src/main.c ****                     Ledflag[1][i] = 1;
+ 264              		.loc 1 46 21 is_stmt 1 view .LVU68
+  46:Core/Src/main.c ****                     Ledflag[1][i] = 1;
+ 265              		.loc 1 46 35 is_stmt 0 view .LVU69
  266 0054 454A     		ldr	r2, .L39
  267 0056 1A44     		add	r2, r2, r3
  268 0058 0121     		movs	r1, #1
@@ -465,231 +449,231 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  270 005c E1E7     		b	.L18
  271              	.L33:
  272              	.LBE5:
-  68:Core/Src/main.c ****         Numb = CurrentState%7;
- 273              		.loc 1 68 9 is_stmt 1 view .LVU70
-  68:Core/Src/main.c ****         Numb = CurrentState%7;
- 274              		.loc 1 68 14 is_stmt 0 view .LVU71
+  53:Core/Src/main.c ****         Numb = CurrentState%7;
+ 273              		.loc 1 53 9 is_stmt 1 view .LVU70
+  53:Core/Src/main.c ****         Numb = CurrentState%7;
+ 274              		.loc 1 53 14 is_stmt 0 view .LVU71
  275 005e 474B     		ldr	r3, .L39+16
  276              	.LVL20:
-  68:Core/Src/main.c ****         Numb = CurrentState%7;
- 277              		.loc 1 68 14 view .LVU72
+  53:Core/Src/main.c ****         Numb = CurrentState%7;
+ 277              		.loc 1 53 14 view .LVU72
  278 0060 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  279 0062 474A     		ldr	r2, .L39+20
  280 0064 A2FB0312 		umull	r1, r2, r2, r3
  281 0068 991A     		subs	r1, r3, r2
  282 006a 02EB5102 		add	r2, r2, r1, lsr #1
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 9
-
-
  283 006e 9208     		lsrs	r2, r2, #2
  284 0070 C2EBC202 		rsb	r2, r2, r2, lsl #3
  285 0074 9B1A     		subs	r3, r3, r2
  286 0076 DBB2     		uxtb	r3, r3
  287 0078 424A     		ldr	r2, .L39+24
  288 007a 1370     		strb	r3, [r2]
-  69:Core/Src/main.c ****         if (Numb != 0)
- 289              		.loc 1 69 9 is_stmt 1 view .LVU73
-  69:Core/Src/main.c ****         if (Numb != 0)
- 290              		.loc 1 69 12 is_stmt 0 view .LVU74
+  54:Core/Src/main.c ****         if (Numb != 0)
+ 289              		.loc 1 54 9 is_stmt 1 view .LVU73
+  54:Core/Src/main.c ****         if (Numb != 0)
+ 290              		.loc 1 54 12 is_stmt 0 view .LVU74
  291 007c 3BB9     		cbnz	r3, .L31
  292              	.L21:
  293              	.LVL21:
  294              	.LBB6:
-  77:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
- 295              		.loc 1 77 35 is_stmt 1 discriminator 1 view .LVU75
+  62:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 295              		.loc 1 62 35 is_stmt 1 discriminator 1 view .LVU75
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 9
+
+
  296 007e 052B     		cmp	r3, #5
  297 0080 0ED8     		bhi	.L35
-  79:Core/Src/main.c ****                 Ledflag[0][i] = 0;
- 298              		.loc 1 79 17 view .LVU76
-  79:Core/Src/main.c ****                 Ledflag[0][i] = 0;
- 299              		.loc 1 79 31 is_stmt 0 view .LVU77
+  64:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 298              		.loc 1 64 17 view .LVU76
+  64:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 299              		.loc 1 64 31 is_stmt 0 view .LVU77
  300 0082 3A4A     		ldr	r2, .L39
  301 0084 0021     		movs	r1, #0
  302 0086 D154     		strb	r1, [r2, r3]
-  77:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
- 303              		.loc 1 77 41 is_stmt 1 discriminator 3 view .LVU78
+  62:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 303              		.loc 1 62 41 is_stmt 1 discriminator 3 view .LVU78
  304 0088 0133     		adds	r3, r3, #1
  305              	.LVL22:
-  77:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
- 306              		.loc 1 77 41 is_stmt 0 discriminator 3 view .LVU79
+  62:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 306              		.loc 1 62 41 is_stmt 0 discriminator 3 view .LVU79
  307 008a DBB2     		uxtb	r3, r3
  308              	.LVL23:
-  77:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
- 309              		.loc 1 77 41 discriminator 3 view .LVU80
+  62:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 309              		.loc 1 62 41 discriminator 3 view .LVU80
  310 008c F7E7     		b	.L21
  311              	.LVL24:
  312              	.L31:
-  77:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
- 313              		.loc 1 77 41 discriminator 3 view .LVU81
+  62:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 313              		.loc 1 62 41 discriminator 3 view .LVU81
  314              	.LBE6:
  315              	.LBB7:
-  71:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
- 316              		.loc 1 71 26 view .LVU82
+  56:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 316              		.loc 1 56 26 view .LVU82
  317 008e 0022     		movs	r2, #0
  318              	.L20:
  319              	.LVL25:
-  71:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
- 320              		.loc 1 71 35 is_stmt 1 discriminator 1 view .LVU83
+  56:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 320              		.loc 1 56 35 is_stmt 1 discriminator 1 view .LVU83
  321 0090 9342     		cmp	r3, r2
  322 0092 08D9     		bls	.L23
-  72:Core/Src/main.c ****                 Ledflag[0][i] = 1;
- 323              		.loc 1 72 17 view .LVU84
-  72:Core/Src/main.c ****                 Ledflag[0][i] = 1;
- 324              		.loc 1 72 31 is_stmt 0 view .LVU85
+  57:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 323              		.loc 1 57 17 view .LVU84
+  57:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 324              		.loc 1 57 31 is_stmt 0 view .LVU85
  325 0094 3549     		ldr	r1, .L39
  326 0096 0120     		movs	r0, #1
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 10
-
-
  327 0098 8854     		strb	r0, [r1, r2]
-  71:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
- 328              		.loc 1 71 44 is_stmt 1 discriminator 3 view .LVU86
+  56:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 328              		.loc 1 56 44 is_stmt 1 discriminator 3 view .LVU86
  329 009a 0244     		add	r2, r2, r0
  330              	.LVL26:
-  71:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
- 331              		.loc 1 71 44 is_stmt 0 discriminator 3 view .LVU87
+  56:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 331              		.loc 1 56 44 is_stmt 0 discriminator 3 view .LVU87
  332 009c D2B2     		uxtb	r2, r2
  333              	.LVL27:
-  71:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
- 334              		.loc 1 71 44 discriminator 3 view .LVU88
+  56:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 334              		.loc 1 56 44 discriminator 3 view .LVU88
  335 009e F7E7     		b	.L20
  336              	.LVL28:
  337              	.L35:
-  71:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
- 338              		.loc 1 71 44 discriminator 3 view .LVU89
+  56:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 338              		.loc 1 56 44 discriminator 3 view .LVU89
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 10
+
+
  339              	.LBE7:
-  81:Core/Src/main.c ****             CurrentState = 0;
- 340              		.loc 1 81 13 is_stmt 1 view .LVU90
-  81:Core/Src/main.c ****             CurrentState = 0;
- 341              		.loc 1 81 26 is_stmt 0 view .LVU91
+  66:Core/Src/main.c ****             CurrentState = 0;
+ 340              		.loc 1 66 13 is_stmt 1 view .LVU90
+  66:Core/Src/main.c ****             CurrentState = 0;
+ 341              		.loc 1 66 26 is_stmt 0 view .LVU91
  342 00a0 364B     		ldr	r3, .L39+16
  343              	.LVL29:
-  81:Core/Src/main.c ****             CurrentState = 0;
- 344              		.loc 1 81 26 view .LVU92
+  66:Core/Src/main.c ****             CurrentState = 0;
+ 344              		.loc 1 66 26 view .LVU92
  345 00a2 0022     		movs	r2, #0
  346 00a4 1A70     		strb	r2, [r3]
  347              	.LVL30:
  348              	.L23:
-  83:Core/Src/main.c ****         if(flagbut1long == 1){ 
- 349              		.loc 1 83 9 is_stmt 1 view .LVU93
-  83:Core/Src/main.c ****         if(flagbut1long == 1){ 
- 350              		.loc 1 83 25 is_stmt 0 view .LVU94
+  68:Core/Src/main.c ****         if(flagbut1long == 1){ 
+ 349              		.loc 1 68 9 is_stmt 1 view .LVU93
+  68:Core/Src/main.c ****         if(flagbut1long == 1){ 
+ 350              		.loc 1 68 25 is_stmt 0 view .LVU94
  351 00a6 384B     		ldr	r3, .L39+28
  352 00a8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  83:Core/Src/main.c ****         if(flagbut1long == 1){ 
- 353              		.loc 1 83 11 view .LVU95
+  68:Core/Src/main.c ****         if(flagbut1long == 1){ 
+ 353              		.loc 1 68 11 view .LVU95
  354 00aa 012B     		cmp	r3, #1
  355 00ac 1BD0     		beq	.L36
  356              	.L25:
-  91:Core/Src/main.c ****         if(flagbut2long == 1){ 
- 357              		.loc 1 91 9 is_stmt 1 view .LVU96
-  91:Core/Src/main.c ****         if(flagbut2long == 1){ 
- 358              		.loc 1 91 25 is_stmt 0 view .LVU97
+  76:Core/Src/main.c ****         if(flagbut2long == 1){ 
+ 357              		.loc 1 76 9 is_stmt 1 view .LVU96
+  76:Core/Src/main.c ****         if(flagbut2long == 1){ 
+ 358              		.loc 1 76 25 is_stmt 0 view .LVU97
  359 00ae 374B     		ldr	r3, .L39+32
  360 00b0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  91:Core/Src/main.c ****         if(flagbut2long == 1){ 
- 361              		.loc 1 91 11 view .LVU98
+  76:Core/Src/main.c ****         if(flagbut2long == 1){ 
+ 361              		.loc 1 76 11 view .LVU98
  362 00b2 012B     		cmp	r3, #1
  363 00b4 42D0     		beq	.L37
  364              	.L27:
-  98:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
- 365              		.loc 1 98 9 is_stmt 1 view .LVU99
-  98:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
- 366              		.loc 1 98 21 is_stmt 0 view .LVU100
+  83:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 365              		.loc 1 83 9 is_stmt 1 view .LVU99
+  83:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 366              		.loc 1 83 21 is_stmt 0 view .LVU100
  367 00b6 364B     		ldr	r3, .L39+36
  368 00b8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 11
-
-
-  98:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
- 369              		.loc 1 98 11 view .LVU101
+  83:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 369              		.loc 1 83 11 view .LVU101
  370 00ba 012B     		cmp	r3, #1
  371 00bc 48D0     		beq	.L38
  372              	.L28:
- 101:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
- 373              		.loc 1 101 9 is_stmt 1 view .LVU102
- 101:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
- 374              		.loc 1 101 21 is_stmt 0 view .LVU103
+  86:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
+ 373              		.loc 1 86 9 is_stmt 1 view .LVU102
+  86:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
+ 374              		.loc 1 86 21 is_stmt 0 view .LVU103
  375 00be 354B     		ldr	r3, .L39+40
  376 00c0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 101:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
- 377              		.loc 1 101 11 view .LVU104
+  86:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
+ 377              		.loc 1 86 11 view .LVU104
  378 00c2 012B     		cmp	r3, #1
  379 00c4 0BD1     		bne	.L29
- 101:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
- 380              		.loc 1 101 29 discriminator 1 view .LVU105
+  86:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 11
+
+
+ 380              		.loc 1 86 29 discriminator 1 view .LVU105
  381 00c6 344B     		ldr	r3, .L39+44
  382 00c8 1B69     		ldr	r3, [r3, #16]
- 101:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
- 383              		.loc 1 101 26 discriminator 1 view .LVU106
+  86:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
+ 383              		.loc 1 86 26 discriminator 1 view .LVU106
  384 00ca 13F4005F 		tst	r3, #8192
  385 00ce 06D1     		bne	.L29
- 101:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
- 386              		.loc 1 101 92 discriminator 2 view .LVU107
+  86:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
+ 386              		.loc 1 86 92 discriminator 2 view .LVU107
  387 00d0 324B     		ldr	r3, .L39+48
  388 00d2 1B68     		ldr	r3, [r3]
- 101:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
- 389              		.loc 1 101 70 discriminator 2 view .LVU108
+  86:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) == 0 && GlobalTickBut2Wait >= 50){ 
+ 389              		.loc 1 86 70 discriminator 2 view .LVU108
  390 00d4 312B     		cmp	r3, #49
  391 00d6 02D9     		bls	.L29
- 102:Core/Src/main.c ****             flagbut2 = 0;
- 392              		.loc 1 102 13 is_stmt 1 view .LVU109
- 102:Core/Src/main.c ****             flagbut2 = 0;
- 393              		.loc 1 102 22 is_stmt 0 view .LVU110
+  87:Core/Src/main.c ****             flagbut2 = 0;
+ 392              		.loc 1 87 13 is_stmt 1 view .LVU109
+  87:Core/Src/main.c ****             flagbut2 = 0;
+ 393              		.loc 1 87 22 is_stmt 0 view .LVU110
  394 00d8 2E4B     		ldr	r3, .L39+40
  395 00da 0022     		movs	r2, #0
  396 00dc 1A70     		strb	r2, [r3]
  397              	.L29:
- 104:Core/Src/main.c ****         Led_light();
- 398              		.loc 1 104 9 is_stmt 1 view .LVU111
+  89:Core/Src/main.c ****         Led_light();
+ 398              		.loc 1 89 9 is_stmt 1 view .LVU111
  399 00de FFF7FEFF 		bl	Led_light
  400              	.LVL31:
-  43:Core/Src/main.c ****     while (1) 
- 401              		.loc 1 43 11 view .LVU112
+  34:Core/Src/main.c ****     while (1) 
+ 401              		.loc 1 34 11 view .LVU112
  402              	.L30:
-  43:Core/Src/main.c ****     while (1) 
- 403              		.loc 1 43 5 view .LVU113
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
- 404              		.loc 1 51 9 view .LVU114
+  34:Core/Src/main.c ****     while (1) 
+ 403              		.loc 1 34 5 view .LVU113
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 404              		.loc 1 36 9 view .LVU114
  405              	.LBB8:
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
- 406              		.loc 1 51 14 view .LVU115
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
- 407              		.loc 1 51 22 is_stmt 0 view .LVU116
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 406              		.loc 1 36 14 view .LVU115
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 407              		.loc 1 36 22 is_stmt 0 view .LVU116
  408 00e2 0023     		movs	r3, #0
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 12
-
-
- 409              		.loc 1 51 9 view .LVU117
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 409              		.loc 1 36 9 view .LVU117
  410 00e4 A3E7     		b	.L15
  411              	.LVL32:
  412              	.L36:
-  51:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
- 413              		.loc 1 51 9 view .LVU118
+  36:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 413              		.loc 1 36 9 view .LVU118
  414              	.LBE8:
-  84:Core/Src/main.c ****             if (counterbut1 >= 3)
- 415              		.loc 1 84 13 is_stmt 1 view .LVU119
-  84:Core/Src/main.c ****             if (counterbut1 >= 3)
- 416              		.loc 1 84 29 is_stmt 0 view .LVU120
+  69:Core/Src/main.c ****             if (counterbut1 >= 3)
+ 415              		.loc 1 69 13 is_stmt 1 view .LVU119
+  69:Core/Src/main.c ****             if (counterbut1 >= 3)
+ 416              		.loc 1 69 29 is_stmt 0 view .LVU120
  417 00e6 2E4B     		ldr	r3, .L39+52
  418 00e8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  84:Core/Src/main.c ****             if (counterbut1 >= 3)
- 419              		.loc 1 84 16 view .LVU121
+  69:Core/Src/main.c ****             if (counterbut1 >= 3)
+ 419              		.loc 1 69 16 view .LVU121
  420 00ea 022B     		cmp	r3, #2
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 12
+
+
  421 00ec 02D9     		bls	.L26
-  86:Core/Src/main.c ****                 counterbut1 = 0;
- 422              		.loc 1 86 17 is_stmt 1 view .LVU122
-  86:Core/Src/main.c ****                 counterbut1 = 0;
- 423              		.loc 1 86 29 is_stmt 0 view .LVU123
+  71:Core/Src/main.c ****                 counterbut1 = 0;
+ 422              		.loc 1 71 17 is_stmt 1 view .LVU122
+  71:Core/Src/main.c ****                 counterbut1 = 0;
+ 423              		.loc 1 71 29 is_stmt 0 view .LVU123
  424 00ee 2C4B     		ldr	r3, .L39+52
  425 00f0 0022     		movs	r2, #0
  426 00f2 1A70     		strb	r2, [r3]
  427              	.L26:
-  88:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
- 428              		.loc 1 88 13 is_stmt 1 view .LVU124
-  88:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
- 429              		.loc 1 88 73 is_stmt 0 view .LVU125
+  73:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
+ 428              		.loc 1 73 13 is_stmt 1 view .LVU124
+  73:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
+ 429              		.loc 1 73 73 is_stmt 0 view .LVU125
  430 00f4 2A4B     		ldr	r3, .L39+52
  431 00f6 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
  432 00f8 2A4B     		ldr	r3, .L39+56
@@ -697,8 +681,8 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  434 00fe 00F0FE01 		and	r1, r0, #254
  435 0102 01EB5001 		add	r1, r1, r0, lsr #1
  436 0106 511A     		subs	r1, r2, r1
-  88:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
- 437              		.loc 1 88 31 view .LVU126
+  73:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
+ 437              		.loc 1 73 31 view .LVU126
  438 0108 274A     		ldr	r2, .L39+60
  439 010a 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
  440 010c A3FB0203 		umull	r0, r3, r3, r2
@@ -707,80 +691,77 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  443 0116 5800     		lsls	r0, r3, #1
  444 0118 121A     		subs	r2, r2, r0
  445 011a D2B2     		uxtb	r2, r2
-  88:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
- 446              		.loc 1 88 60 view .LVU127
+  73:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
+ 446              		.loc 1 73 60 view .LVU127
  447 011c 234B     		ldr	r3, .L39+64
  448 011e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  449 0120 03EB4303 		add	r3, r3, r3, lsl #1
  450 0124 53FA81F3 		uxtab	r3, r3, r1
  451 0128 2149     		ldr	r1, .L39+68
  452 012a 31F81310 		ldrh	r1, [r1, r3, lsl #1]
-  88:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
- 453              		.loc 1 88 35 view .LVU128
+  73:Core/Src/main.c ****             LedLoad[CurrentLed%6] = LedSetLoad[counterbut2][counterbut1 % 3];
+ 453              		.loc 1 73 35 view .LVU128
  454 012e 124B     		ldr	r3, .L39+12
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 13
-
-
  455 0130 23F81210 		strh	r1, [r3, r2, lsl #1]	@ movhi
-  89:Core/Src/main.c ****             flagbut1long = 0;
- 456              		.loc 1 89 13 is_stmt 1 view .LVU129
-  89:Core/Src/main.c ****             flagbut1long = 0;
- 457              		.loc 1 89 26 is_stmt 0 view .LVU130
+  74:Core/Src/main.c ****             flagbut1long = 0;
+ 456              		.loc 1 74 13 is_stmt 1 view .LVU129
+  74:Core/Src/main.c ****             flagbut1long = 0;
+ 457              		.loc 1 74 26 is_stmt 0 view .LVU130
  458 0134 144B     		ldr	r3, .L39+28
  459 0136 0022     		movs	r2, #0
  460 0138 1A70     		strb	r2, [r3]
  461 013a B8E7     		b	.L25
  462              	.L37:
-  92:Core/Src/main.c ****             flagbut2long = 0;
- 463              		.loc 1 92 13 is_stmt 1 view .LVU131
-  92:Core/Src/main.c ****             flagbut2long = 0;
- 464              		.loc 1 92 26 is_stmt 0 view .LVU132
+  77:Core/Src/main.c ****             flagbut2long = 0;
+ 463              		.loc 1 77 13 is_stmt 1 view .LVU131
+  77:Core/Src/main.c ****             flagbut2long = 0;
+ 464              		.loc 1 77 26 is_stmt 0 view .LVU132
  465 013c 134B     		ldr	r3, .L39+32
  466 013e 0022     		movs	r2, #0
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 13
+
+
  467 0140 1A70     		strb	r2, [r3]
-  93:Core/Src/main.c ****             if (counterbut2 >= 3)
- 468              		.loc 1 93 13 is_stmt 1 view .LVU133
-  93:Core/Src/main.c ****             if (counterbut2 >= 3)
- 469              		.loc 1 93 29 is_stmt 0 view .LVU134
+  78:Core/Src/main.c ****             if (counterbut2 >= 3)
+ 468              		.loc 1 78 13 is_stmt 1 view .LVU133
+  78:Core/Src/main.c ****             if (counterbut2 >= 3)
+ 469              		.loc 1 78 29 is_stmt 0 view .LVU134
  470 0142 1A4B     		ldr	r3, .L39+64
  471 0144 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  93:Core/Src/main.c ****             if (counterbut2 >= 3)
- 472              		.loc 1 93 16 view .LVU135
+  78:Core/Src/main.c ****             if (counterbut2 >= 3)
+ 472              		.loc 1 78 16 view .LVU135
  473 0146 022B     		cmp	r3, #2
  474 0148 B5D9     		bls	.L27
-  95:Core/Src/main.c ****                 counterbut2 = 0;
- 475              		.loc 1 95 17 is_stmt 1 view .LVU136
-  95:Core/Src/main.c ****                 counterbut2 = 0;
- 476              		.loc 1 95 29 is_stmt 0 view .LVU137
+  80:Core/Src/main.c ****                 counterbut2 = 0;
+ 475              		.loc 1 80 17 is_stmt 1 view .LVU136
+  80:Core/Src/main.c ****                 counterbut2 = 0;
+ 476              		.loc 1 80 29 is_stmt 0 view .LVU137
  477 014a 184B     		ldr	r3, .L39+64
  478 014c 1A70     		strb	r2, [r3]
  479 014e B2E7     		b	.L27
  480              	.L38:
-  98:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
- 481              		.loc 1 98 29 discriminator 1 view .LVU138
+  83:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 481              		.loc 1 83 29 discriminator 1 view .LVU138
  482 0150 114B     		ldr	r3, .L39+44
  483 0152 1B69     		ldr	r3, [r3, #16]
-  98:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
- 484              		.loc 1 98 26 discriminator 1 view .LVU139
+  83:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 484              		.loc 1 83 26 discriminator 1 view .LVU139
  485 0154 13F0400F 		tst	r3, #64
  486 0158 B1D1     		bne	.L28
-  98:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
- 487              		.loc 1 98 92 discriminator 2 view .LVU140
+  83:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 487              		.loc 1 83 92 discriminator 2 view .LVU140
  488 015a 164B     		ldr	r3, .L39+72
  489 015c 1B68     		ldr	r3, [r3]
-  98:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
- 490              		.loc 1 98 70 discriminator 2 view .LVU141
+  83:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 490              		.loc 1 83 70 discriminator 2 view .LVU141
  491 015e 312B     		cmp	r3, #49
  492 0160 ADD9     		bls	.L28
-  99:Core/Src/main.c ****             flagbut1 = 0;
- 493              		.loc 1 99 13 is_stmt 1 view .LVU142
-  99:Core/Src/main.c ****             flagbut1 = 0;
- 494              		.loc 1 99 22 is_stmt 0 view .LVU143
+  84:Core/Src/main.c ****             flagbut1 = 0;
+ 493              		.loc 1 84 13 is_stmt 1 view .LVU142
+  84:Core/Src/main.c ****             flagbut1 = 0;
+ 494              		.loc 1 84 22 is_stmt 0 view .LVU143
  495 0162 0B4B     		ldr	r3, .L39+36
  496 0164 0022     		movs	r2, #0
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 14
-
-
  497 0166 1A70     		strb	r2, [r3]
  498 0168 A9E7     		b	.L28
  499              	.L40:
@@ -797,6 +778,9 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  510 018c 00000000 		.word	flagbut2long
  511 0190 00000000 		.word	flagbut1
  512 0194 00000000 		.word	flagbut2
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 14
+
+
  513 0198 00080240 		.word	1073874944
  514 019c 00000000 		.word	GlobalTickBut2Wait
  515 01a0 00000000 		.word	counterbut1
@@ -838,9 +822,6 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  566              		.global	CurrentLed
  567              		.section	.bss.CurrentLed,"aw",%nobits
  570              	CurrentLed:
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 15
-
-
  571 0000 00       		.space	1
  572              		.global	CurrentState
  573              		.section	.data.CurrentState,"aw"
@@ -857,6 +838,9 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  589              	Led1flag:
  590 0000 00       		.space	1
  591              		.global	Ledflag
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 15
+
+
  592              		.section	.data.Ledflag,"aw"
  593              		.align	2
  596              	Ledflag:
@@ -891,112 +875,79 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 1
  625 000c 7102     		.short	625
  626 000e 0701     		.short	263
  627 0010 C800     		.short	200
- 628              		.global	LedState
- 629              		.section	.bss.LedState,"aw",%nobits
- 632              	LedState:
- 633 0000 00       		.space	1
- 634              		.global	GlobalTickBut2Wait
- 635              		.section	.bss.GlobalTickBut2Wait,"aw",%nobits
- 636              		.align	2
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 16
-
-
- 639              	GlobalTickBut2Wait:
- 640 0000 00000000 		.space	4
- 641              		.global	GlobalTickBut1Wait
- 642              		.section	.bss.GlobalTickBut1Wait,"aw",%nobits
- 643              		.align	2
- 646              	GlobalTickBut1Wait:
- 647 0000 00000000 		.space	4
- 648              		.global	GlobalTickBut2
- 649              		.section	.bss.GlobalTickBut2,"aw",%nobits
- 650              		.align	1
- 653              	GlobalTickBut2:
- 654 0000 0000     		.space	2
- 655              		.global	GlobalTickBut1
- 656              		.section	.bss.GlobalTickBut1,"aw",%nobits
- 657              		.align	1
- 660              	GlobalTickBut1:
- 661 0000 0000     		.space	2
- 662              		.global	DelayTickCount
- 663              		.section	.bss.DelayTickCount,"aw",%nobits
- 664              		.align	1
- 667              	DelayTickCount:
- 668 0000 0000     		.space	2
- 669              		.global	GlobalTickCount
- 670              		.section	.bss.GlobalTickCount,"aw",%nobits
- 671              		.align	1
- 674              	GlobalTickCount:
- 675 0000 0000     		.space	2
- 676              		.text
- 677              	.Letext0:
- 678              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
- 679              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 680              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
- 681              		.file 5 "Core/Src/../Inc/init.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 17
+ 628              		.global	GlobalTickBut2Wait
+ 629              		.section	.bss.GlobalTickBut2Wait,"aw",%nobits
+ 630              		.align	2
+ 633              	GlobalTickBut2Wait:
+ 634 0000 00000000 		.space	4
+ 635              		.global	GlobalTickBut1Wait
+ 636              		.section	.bss.GlobalTickBut1Wait,"aw",%nobits
+ 637              		.align	2
+ 640              	GlobalTickBut1Wait:
+ 641 0000 00000000 		.space	4
+ 642              		.global	DelayTickCount
+ 643              		.section	.bss.DelayTickCount,"aw",%nobits
+ 644              		.align	1
+ 647              	DelayTickCount:
+ 648 0000 0000     		.space	2
+ 649              		.text
+ 650              	.Letext0:
+ 651              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 652              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 653              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ 654              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s 			page 16
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:19     .text.Led_light:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:25     .text.Led_light:00000000 Led_light
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:114    .text.Led_light:0000004c $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:583    .rodata.LedOffset:00000000 LedOffset
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:596    .data.Ledflag:00000000 Ledflag
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:121    .text.LedVal_Init:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:127    .text.LedVal_Init:00000000 LedVal_Init
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:171    .text.LedVal_Init:00000020 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:618    .data.LedSetLoad:00000000 LedSetLoad
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:611    .bss.LedLoad:00000000 LedLoad
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:604    .bss.LedCount:00000000 LedCount
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:178    .text.main:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:184    .text.main:00000000 main
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:502    .text.main:0000016c $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:589    .bss.Led1flag:00000000 Led1flag
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:576    .data.CurrentState:00000000 CurrentState
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:564    .bss.Numb:00000000 Numb
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:534    .bss.flagbut1long:00000000 flagbut1long
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:528    .bss.flagbut2long:00000000 flagbut2long
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:546    .bss.flagbut1:00000000 flagbut1
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:540    .bss.flagbut2:00000000 flagbut2
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:639    .bss.GlobalTickBut2Wait:00000000 GlobalTickBut2Wait
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:558    .bss.counterbut1:00000000 counterbut1
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:570    .bss.CurrentLed:00000000 CurrentLed
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:552    .bss.counterbut2:00000000 counterbut2
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:646    .bss.GlobalTickBut1Wait:00000000 GlobalTickBut1Wait
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:529    .bss.flagbut2long:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:535    .bss.flagbut1long:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:541    .bss.flagbut2:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:547    .bss.flagbut1:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:553    .bss.counterbut2:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:559    .bss.counterbut1:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:565    .bss.Numb:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:571    .bss.CurrentLed:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:580    .rodata.LedOffset:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:590    .bss.Led1flag:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:593    .data.Ledflag:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:601    .bss.LedCount:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:608    .bss.LedLoad:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:615    .data.LedSetLoad:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:632    .bss.LedState:00000000 LedState
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:633    .bss.LedState:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:636    .bss.GlobalTickBut2Wait:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:643    .bss.GlobalTickBut1Wait:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:653    .bss.GlobalTickBut2:00000000 GlobalTickBut2
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:650    .bss.GlobalTickBut2:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:660    .bss.GlobalTickBut1:00000000 GlobalTickBut1
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:657    .bss.GlobalTickBut1:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:667    .bss.DelayTickCount:00000000 DelayTickCount
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:664    .bss.DelayTickCount:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:674    .bss.GlobalTickCount:00000000 GlobalTickCount
-C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s:671    .bss.GlobalTickCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:19     .text.Led_light:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:25     .text.Led_light:00000000 Led_light
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:114    .text.Led_light:0000004c $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:583    .rodata.LedOffset:00000000 LedOffset
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:596    .data.Ledflag:00000000 Ledflag
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:121    .text.LedVal_Init:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:127    .text.LedVal_Init:00000000 LedVal_Init
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:171    .text.LedVal_Init:00000020 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:618    .data.LedSetLoad:00000000 LedSetLoad
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:611    .bss.LedLoad:00000000 LedLoad
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:604    .bss.LedCount:00000000 LedCount
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:178    .text.main:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:184    .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:502    .text.main:0000016c $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:589    .bss.Led1flag:00000000 Led1flag
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:576    .data.CurrentState:00000000 CurrentState
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:564    .bss.Numb:00000000 Numb
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:534    .bss.flagbut1long:00000000 flagbut1long
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:528    .bss.flagbut2long:00000000 flagbut2long
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:546    .bss.flagbut1:00000000 flagbut1
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:540    .bss.flagbut2:00000000 flagbut2
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:633    .bss.GlobalTickBut2Wait:00000000 GlobalTickBut2Wait
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:558    .bss.counterbut1:00000000 counterbut1
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:570    .bss.CurrentLed:00000000 CurrentLed
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:552    .bss.counterbut2:00000000 counterbut2
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:640    .bss.GlobalTickBut1Wait:00000000 GlobalTickBut1Wait
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:529    .bss.flagbut2long:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:535    .bss.flagbut1long:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:541    .bss.flagbut2:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:547    .bss.flagbut1:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:553    .bss.counterbut2:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:559    .bss.counterbut1:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:565    .bss.Numb:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:571    .bss.CurrentLed:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:580    .rodata.LedOffset:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:590    .bss.Led1flag:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:593    .data.Ledflag:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:601    .bss.LedCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:608    .bss.LedLoad:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:615    .data.LedSetLoad:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:630    .bss.GlobalTickBut2Wait:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:637    .bss.GlobalTickBut1Wait:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:647    .bss.DelayTickCount:00000000 DelayTickCount
+C:\Users\rpong\AppData\Local\Temp\ccaKiweW.s:644    .bss.DelayTickCount:00000000 $d
 
 UNDEFINED SYMBOLS
 GPIO_Init_Self
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQTFnon.s 			page 18
-
-
 GPIO_Init_CMSIS
 RCC_Init
 ITR_Init

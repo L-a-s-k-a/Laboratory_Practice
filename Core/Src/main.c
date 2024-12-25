@@ -1,19 +1,9 @@
 #include "../Inc/init.h"
 #include "../Inc/it_handlers.h"
- 
-#define FLICKER_PERIOD 400 //Период мерцания светодиода 
-#define FLICKER_SEMIPERIOD 200 //Период мерцания светодиода 
 
-void LedVal_Init();
-uint16_t GlobalTickCount = 0, DelayTickCount = 0;
-uint16_t GlobalTickBut1 = 0, GlobalTickBut2 = 0;
+
+uint16_t DelayTickCount = 0;
 uint32_t GlobalTickBut1Wait = 0, GlobalTickBut2Wait = 0;
-
-//float icount = 0.0;
-uint8_t LedState; 
-//uint32_t t1, t2, t3, t4, t5, t6;
-
-
 //float Ledfreq[3][3]           = {{0.4, 1.3, 2},{0.6, 1.6, 2.2},{0.8, 1.9, 2.5}};
 //Numtimes = freqAHB / ((SysTick_LOAD+1)*2*freq) (2 так как включение и выключение)
 uint16_t LedSetLoad[3][3] = {{1250, 384, 250},{833, 312, 227},{625, 263, 200}};
@@ -30,6 +20,7 @@ uint8_t counterbut2 = 0;
 uint8_t flagbut1 = 0, flagbut2 = 0;
 uint8_t flagbut1long = 0, flagbut2long = 0;
 
+void LedVal_Init();
 void Led_light();
 
 int main(void) 
@@ -42,12 +33,6 @@ int main(void)
     LedVal_Init();
     while (1) 
     {
-        /*
-        t1 = READ_REG(SysTick->VAL);
-        t2 = READ_REG(SysTick->CTRL);
-        t3 = READ_REG(SysTick->LOAD);
-        icount = icount + 0.001;
-        */
         for (uint8_t i = 0; i < 6; i++){
             if (LedCount[i] >= LedLoad[i])
             {
@@ -119,7 +104,6 @@ void Led_light()
     }
 
     MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
-    //MODIFY_REG(GPIOB_ODR,ODR_clear,ODR_set);
 }
 
 void LedVal_Init()

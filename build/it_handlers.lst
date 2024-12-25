@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,164 +28,159 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 1
   26              	.LFB130:
    1:Core/Src/it_handlers.c **** #include "it_handlers.h" 
    2:Core/Src/it_handlers.c **** 
-   3:Core/Src/it_handlers.c **** extern uint8_t LedState; //extern - обозначает, что переменная будет о
+   3:Core/Src/it_handlers.c **** extern uint16_t DelayTickCount;
    4:Core/Src/it_handlers.c **** extern uint16_t LedCount[6];
-   5:Core/Src/it_handlers.c **** extern uint32_t GlobalTickBut1, GlobalTickBut2;
-   6:Core/Src/it_handlers.c **** extern uint32_t GlobalTickBut1Wait, GlobalTickBut2Wait;
-   7:Core/Src/it_handlers.c **** extern uint8_t flagbut1, flagbut2;
-   8:Core/Src/it_handlers.c **** extern uint8_t flagbut1long, flagbut2long;
-   9:Core/Src/it_handlers.c **** extern uint8_t CurrentState;
-  10:Core/Src/it_handlers.c **** extern uint8_t CurrentLed;
-  11:Core/Src/it_handlers.c **** extern uint8_t counterbut1;
-  12:Core/Src/it_handlers.c **** extern uint8_t counterbut2;
-  13:Core/Src/it_handlers.c **** 
-  14:Core/Src/it_handlers.c **** uint8_t BtnCount; 
-  15:Core/Src/it_handlers.c **** 
-  16:Core/Src/it_handlers.c **** 
-  17:Core/Src/it_handlers.c **** 
-  18:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void) //but1
-  19:Core/Src/it_handlers.c **** {
-  27              		.loc 1 19 1 view -0
+   5:Core/Src/it_handlers.c **** extern uint32_t GlobalTickBut1Wait, GlobalTickBut2Wait;
+   6:Core/Src/it_handlers.c **** extern uint8_t flagbut1, flagbut2;
+   7:Core/Src/it_handlers.c **** extern uint8_t flagbut1long, flagbut2long;
+   8:Core/Src/it_handlers.c **** extern uint8_t CurrentState;
+   9:Core/Src/it_handlers.c **** extern uint8_t CurrentLed;
+  10:Core/Src/it_handlers.c **** extern uint8_t counterbut1;
+  11:Core/Src/it_handlers.c **** extern uint8_t counterbut2;
+  12:Core/Src/it_handlers.c **** 
+  13:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void) //but1
+  14:Core/Src/it_handlers.c **** {
+  27              		.loc 1 14 1 view -0
   28              		.cfi_startproc
   29              		@ args = 0, pretend = 0, frame = 0
   30              		@ frame_needed = 0, uses_anonymous_args = 0
   31              		@ link register save eliminated.
-  20:Core/Src/it_handlers.c ****     if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) != 0)
-  32              		.loc 1 20 5 view .LVU1
-  33              		.loc 1 20 8 is_stmt 0 view .LVU2
+  15:Core/Src/it_handlers.c ****     if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) != 0)
+  32              		.loc 1 15 5 view .LVU1
+  33              		.loc 1 15 8 is_stmt 0 view .LVU2
   34 0000 1B4B     		ldr	r3, .L7
   35 0002 1B69     		ldr	r3, [r3, #16]
-  36              		.loc 1 20 7 view .LVU3
+  36              		.loc 1 15 7 view .LVU3
   37 0004 13F0400F 		tst	r3, #64
   38 0008 09D0     		beq	.L2
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 2
-
-
-  21:Core/Src/it_handlers.c ****     {
-  22:Core/Src/it_handlers.c ****         if(flagbut1 == 0){
-  39              		.loc 1 22 9 is_stmt 1 view .LVU4
-  40              		.loc 1 22 21 is_stmt 0 view .LVU5
+  16:Core/Src/it_handlers.c ****     {
+  17:Core/Src/it_handlers.c ****         if(flagbut1 == 0){
+  39              		.loc 1 17 9 is_stmt 1 view .LVU4
+  40              		.loc 1 17 21 is_stmt 0 view .LVU5
   41 000a 1A4B     		ldr	r3, .L7+4
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 2
+
+
   42 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  43              		.loc 1 22 11 view .LVU6
+  43              		.loc 1 17 11 view .LVU6
   44 000e 63B9     		cbnz	r3, .L3
-  23:Core/Src/it_handlers.c ****             flagbut1 = 1;
-  45              		.loc 1 23 13 is_stmt 1 view .LVU7
-  46              		.loc 1 23 22 is_stmt 0 view .LVU8
+  18:Core/Src/it_handlers.c ****             flagbut1 = 1;
+  45              		.loc 1 18 13 is_stmt 1 view .LVU7
+  46              		.loc 1 18 22 is_stmt 0 view .LVU8
   47 0010 184B     		ldr	r3, .L7+4
   48 0012 0122     		movs	r2, #1
   49 0014 1A70     		strb	r2, [r3]
-  24:Core/Src/it_handlers.c ****             GlobalTickBut1Wait = 0;
-  50              		.loc 1 24 13 is_stmt 1 view .LVU9
-  51              		.loc 1 24 32 is_stmt 0 view .LVU10
+  19:Core/Src/it_handlers.c ****             GlobalTickBut1Wait = 0;
+  50              		.loc 1 19 13 is_stmt 1 view .LVU9
+  51              		.loc 1 19 32 is_stmt 0 view .LVU10
   52 0016 184B     		ldr	r3, .L7+8
   53 0018 0022     		movs	r2, #0
   54 001a 1A60     		str	r2, [r3]
   55 001c 05E0     		b	.L3
   56              	.L2:
-  25:Core/Src/it_handlers.c ****         }
-  26:Core/Src/it_handlers.c ****     }
-  27:Core/Src/it_handlers.c ****     else{
-  28:Core/Src/it_handlers.c ****         if (flagbut1 == 1 && GlobalTickBut1Wait >= 2000)
-  57              		.loc 1 28 9 is_stmt 1 view .LVU11
-  58              		.loc 1 28 22 is_stmt 0 view .LVU12
+  20:Core/Src/it_handlers.c ****         }
+  21:Core/Src/it_handlers.c ****     }
+  22:Core/Src/it_handlers.c ****     else{
+  23:Core/Src/it_handlers.c ****         if (flagbut1 == 1 && GlobalTickBut1Wait >= 2000)
+  57              		.loc 1 23 9 is_stmt 1 view .LVU11
+  58              		.loc 1 23 22 is_stmt 0 view .LVU12
   59 001e 154B     		ldr	r3, .L7+4
   60 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  61              		.loc 1 28 12 view .LVU13
+  61              		.loc 1 23 12 view .LVU13
   62 0022 012B     		cmp	r3, #1
   63 0024 07D0     		beq	.L5
   64              	.L4:
-  29:Core/Src/it_handlers.c ****         {
-  30:Core/Src/it_handlers.c ****             flagbut1long = 1;
-  31:Core/Src/it_handlers.c ****             counterbut1++;
-  32:Core/Src/it_handlers.c ****             flagbut1 = 0;
-  33:Core/Src/it_handlers.c ****         }
-  34:Core/Src/it_handlers.c ****         else if (flagbut1 == 1 && GlobalTickBut1Wait >= 30)
-  65              		.loc 1 34 14 is_stmt 1 view .LVU14
-  66              		.loc 1 34 17 is_stmt 0 view .LVU15
+  24:Core/Src/it_handlers.c ****         {
+  25:Core/Src/it_handlers.c ****             flagbut1long = 1;
+  26:Core/Src/it_handlers.c ****             counterbut1++;
+  27:Core/Src/it_handlers.c ****             flagbut1 = 0;
+  28:Core/Src/it_handlers.c ****         }
+  29:Core/Src/it_handlers.c ****         else if (flagbut1 == 1 && GlobalTickBut1Wait >= 30)
+  65              		.loc 1 29 14 is_stmt 1 view .LVU14
+  66              		.loc 1 29 17 is_stmt 0 view .LVU15
   67 0026 012B     		cmp	r3, #1
   68 0028 15D0     		beq	.L6
   69              	.L3:
-  35:Core/Src/it_handlers.c ****         {
-  36:Core/Src/it_handlers.c ****             flagbut1 = 0;
-  37:Core/Src/it_handlers.c ****             CurrentState++;
-  38:Core/Src/it_handlers.c ****         }
-  39:Core/Src/it_handlers.c ****     }
-  40:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR6); 
-  70              		.loc 1 40 5 is_stmt 1 view .LVU16
+  30:Core/Src/it_handlers.c ****         {
+  31:Core/Src/it_handlers.c ****             flagbut1 = 0;
+  32:Core/Src/it_handlers.c ****             CurrentState++;
+  33:Core/Src/it_handlers.c ****         }
+  34:Core/Src/it_handlers.c ****     }
+  35:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR6); 
+  70              		.loc 1 35 5 is_stmt 1 view .LVU16
   71 002a 144A     		ldr	r2, .L7+12
   72 002c 5369     		ldr	r3, [r2, #20]
   73 002e 43F04003 		orr	r3, r3, #64
   74 0032 5361     		str	r3, [r2, #20]
-  41:Core/Src/it_handlers.c **** 
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 3
-
-
-  42:Core/Src/it_handlers.c **** }
-  75              		.loc 1 42 1 is_stmt 0 view .LVU17
+  36:Core/Src/it_handlers.c **** 
+  37:Core/Src/it_handlers.c **** }
+  75              		.loc 1 37 1 is_stmt 0 view .LVU17
   76 0034 7047     		bx	lr
   77              	.L5:
-  28:Core/Src/it_handlers.c ****         {
-  78              		.loc 1 28 49 discriminator 1 view .LVU18
+  23:Core/Src/it_handlers.c ****         {
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 3
+
+
+  78              		.loc 1 23 49 discriminator 1 view .LVU18
   79 0036 104A     		ldr	r2, .L7+8
   80 0038 1268     		ldr	r2, [r2]
-  28:Core/Src/it_handlers.c ****         {
-  81              		.loc 1 28 27 discriminator 1 view .LVU19
+  23:Core/Src/it_handlers.c ****         {
+  81              		.loc 1 23 27 discriminator 1 view .LVU19
   82 003a B2F5FA6F 		cmp	r2, #2000
   83 003e F2D3     		bcc	.L4
-  30:Core/Src/it_handlers.c ****             counterbut1++;
-  84              		.loc 1 30 13 is_stmt 1 view .LVU20
-  30:Core/Src/it_handlers.c ****             counterbut1++;
-  85              		.loc 1 30 26 is_stmt 0 view .LVU21
+  25:Core/Src/it_handlers.c ****             counterbut1++;
+  84              		.loc 1 25 13 is_stmt 1 view .LVU20
+  25:Core/Src/it_handlers.c ****             counterbut1++;
+  85              		.loc 1 25 26 is_stmt 0 view .LVU21
   86 0040 0F4B     		ldr	r3, .L7+16
   87 0042 0122     		movs	r2, #1
   88 0044 1A70     		strb	r2, [r3]
-  31:Core/Src/it_handlers.c ****             flagbut1 = 0;
-  89              		.loc 1 31 13 is_stmt 1 view .LVU22
-  31:Core/Src/it_handlers.c ****             flagbut1 = 0;
-  90              		.loc 1 31 24 is_stmt 0 view .LVU23
+  26:Core/Src/it_handlers.c ****             flagbut1 = 0;
+  89              		.loc 1 26 13 is_stmt 1 view .LVU22
+  26:Core/Src/it_handlers.c ****             flagbut1 = 0;
+  90              		.loc 1 26 24 is_stmt 0 view .LVU23
   91 0046 0F4A     		ldr	r2, .L7+20
   92 0048 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
   93 004a 0133     		adds	r3, r3, #1
   94 004c 1370     		strb	r3, [r2]
-  32:Core/Src/it_handlers.c ****         }
-  95              		.loc 1 32 13 is_stmt 1 view .LVU24
-  32:Core/Src/it_handlers.c ****         }
-  96              		.loc 1 32 22 is_stmt 0 view .LVU25
+  27:Core/Src/it_handlers.c ****         }
+  95              		.loc 1 27 13 is_stmt 1 view .LVU24
+  27:Core/Src/it_handlers.c ****         }
+  96              		.loc 1 27 22 is_stmt 0 view .LVU25
   97 004e 094B     		ldr	r3, .L7+4
   98 0050 0022     		movs	r2, #0
   99 0052 1A70     		strb	r2, [r3]
  100 0054 E9E7     		b	.L3
  101              	.L6:
-  34:Core/Src/it_handlers.c ****         {
- 102              		.loc 1 34 54 discriminator 1 view .LVU26
+  29:Core/Src/it_handlers.c ****         {
+ 102              		.loc 1 29 54 discriminator 1 view .LVU26
  103 0056 084B     		ldr	r3, .L7+8
  104 0058 1B68     		ldr	r3, [r3]
-  34:Core/Src/it_handlers.c ****         {
- 105              		.loc 1 34 32 discriminator 1 view .LVU27
+  29:Core/Src/it_handlers.c ****         {
+ 105              		.loc 1 29 32 discriminator 1 view .LVU27
  106 005a 1D2B     		cmp	r3, #29
  107 005c E5D9     		bls	.L3
-  36:Core/Src/it_handlers.c ****             CurrentState++;
- 108              		.loc 1 36 13 is_stmt 1 view .LVU28
-  36:Core/Src/it_handlers.c ****             CurrentState++;
- 109              		.loc 1 36 22 is_stmt 0 view .LVU29
+  31:Core/Src/it_handlers.c ****             CurrentState++;
+ 108              		.loc 1 31 13 is_stmt 1 view .LVU28
+  31:Core/Src/it_handlers.c ****             CurrentState++;
+ 109              		.loc 1 31 22 is_stmt 0 view .LVU29
  110 005e 054B     		ldr	r3, .L7+4
  111 0060 0022     		movs	r2, #0
  112 0062 1A70     		strb	r2, [r3]
-  37:Core/Src/it_handlers.c ****         }
- 113              		.loc 1 37 13 is_stmt 1 view .LVU30
-  37:Core/Src/it_handlers.c ****         }
- 114              		.loc 1 37 25 is_stmt 0 view .LVU31
+  32:Core/Src/it_handlers.c ****         }
+ 113              		.loc 1 32 13 is_stmt 1 view .LVU30
+  32:Core/Src/it_handlers.c ****         }
+ 114              		.loc 1 32 25 is_stmt 0 view .LVU31
  115 0064 084A     		ldr	r2, .L7+24
  116 0066 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 4
-
-
  117 0068 0133     		adds	r3, r3, #1
  118 006a 1370     		strb	r3, [r2]
  119 006c DDE7     		b	.L3
  120              	.L8:
  121 006e 00BF     		.align	2
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 4
+
+
  122              	.L7:
  123 0070 00080240 		.word	1073874944
  124 0074 00000000 		.word	flagbut1
@@ -204,164 +199,156 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 1
  138              		.thumb_func
  140              	EXTI15_10_IRQHandler:
  141              	.LFB131:
-  43:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void){ //but2
- 142              		.loc 1 43 32 is_stmt 1 view -0
+  38:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void){ //but2
+ 142              		.loc 1 38 32 is_stmt 1 view -0
  143              		.cfi_startproc
  144              		@ args = 0, pretend = 0, frame = 0
  145              		@ frame_needed = 0, uses_anonymous_args = 0
  146              		@ link register save eliminated.
-  44:Core/Src/it_handlers.c ****     if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) != 0)
- 147              		.loc 1 44 5 view .LVU33
- 148              		.loc 1 44 8 is_stmt 0 view .LVU34
+  39:Core/Src/it_handlers.c ****     if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) != 0)
+ 147              		.loc 1 39 5 view .LVU33
+ 148              		.loc 1 39 8 is_stmt 0 view .LVU34
  149 0000 1E4B     		ldr	r3, .L15
  150 0002 1B69     		ldr	r3, [r3, #16]
- 151              		.loc 1 44 7 view .LVU35
+ 151              		.loc 1 39 7 view .LVU35
  152 0004 13F4005F 		tst	r3, #8192
  153 0008 09D0     		beq	.L10
-  45:Core/Src/it_handlers.c ****     {
-  46:Core/Src/it_handlers.c ****         if(flagbut2 == 0){
- 154              		.loc 1 46 9 is_stmt 1 view .LVU36
- 155              		.loc 1 46 21 is_stmt 0 view .LVU37
+  40:Core/Src/it_handlers.c ****     {
+  41:Core/Src/it_handlers.c ****         if(flagbut2 == 0){
+ 154              		.loc 1 41 9 is_stmt 1 view .LVU36
+ 155              		.loc 1 41 21 is_stmt 0 view .LVU37
  156 000a 1D4B     		ldr	r3, .L15+4
  157 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 158              		.loc 1 46 11 view .LVU38
+ 158              		.loc 1 41 11 view .LVU38
  159 000e 63B9     		cbnz	r3, .L11
-  47:Core/Src/it_handlers.c ****             flagbut2 = 1;
- 160              		.loc 1 47 13 is_stmt 1 view .LVU39
- 161              		.loc 1 47 22 is_stmt 0 view .LVU40
+  42:Core/Src/it_handlers.c ****             flagbut2 = 1;
+ 160              		.loc 1 42 13 is_stmt 1 view .LVU39
+ 161              		.loc 1 42 22 is_stmt 0 view .LVU40
  162 0010 1B4B     		ldr	r3, .L15+4
  163 0012 0122     		movs	r2, #1
  164 0014 1A70     		strb	r2, [r3]
-  48:Core/Src/it_handlers.c ****             GlobalTickBut2Wait = 0;
- 165              		.loc 1 48 13 is_stmt 1 view .LVU41
- 166              		.loc 1 48 32 is_stmt 0 view .LVU42
+  43:Core/Src/it_handlers.c ****             GlobalTickBut2Wait = 0;
+ 165              		.loc 1 43 13 is_stmt 1 view .LVU41
+ 166              		.loc 1 43 32 is_stmt 0 view .LVU42
  167 0016 1B4B     		ldr	r3, .L15+8
  168 0018 0022     		movs	r2, #0
  169 001a 1A60     		str	r2, [r3]
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 5
-
-
  170 001c 05E0     		b	.L11
  171              	.L10:
-  49:Core/Src/it_handlers.c ****         }
-  50:Core/Src/it_handlers.c ****     }
-  51:Core/Src/it_handlers.c ****     else{
-  52:Core/Src/it_handlers.c ****         if (flagbut2 == 1 && GlobalTickBut2Wait >= 2000)
- 172              		.loc 1 52 9 is_stmt 1 view .LVU43
- 173              		.loc 1 52 22 is_stmt 0 view .LVU44
+  44:Core/Src/it_handlers.c ****         }
+  45:Core/Src/it_handlers.c ****     }
+  46:Core/Src/it_handlers.c ****     else{
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 5
+
+
+  47:Core/Src/it_handlers.c ****         if (flagbut2 == 1 && GlobalTickBut2Wait >= 2000)
+ 172              		.loc 1 47 9 is_stmt 1 view .LVU43
+ 173              		.loc 1 47 22 is_stmt 0 view .LVU44
  174 001e 184B     		ldr	r3, .L15+4
  175 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 176              		.loc 1 52 12 view .LVU45
+ 176              		.loc 1 47 12 view .LVU45
  177 0022 012B     		cmp	r3, #1
  178 0024 07D0     		beq	.L13
  179              	.L12:
-  53:Core/Src/it_handlers.c ****         {
-  54:Core/Src/it_handlers.c ****             flagbut2long = 1;
-  55:Core/Src/it_handlers.c ****             counterbut2++;
-  56:Core/Src/it_handlers.c ****             flagbut2 = 0;
-  57:Core/Src/it_handlers.c ****         }
-  58:Core/Src/it_handlers.c ****         else if (flagbut2 == 1 && GlobalTickBut2Wait >= 30)
- 180              		.loc 1 58 14 is_stmt 1 view .LVU46
- 181              		.loc 1 58 17 is_stmt 0 view .LVU47
+  48:Core/Src/it_handlers.c ****         {
+  49:Core/Src/it_handlers.c ****             flagbut2long = 1;
+  50:Core/Src/it_handlers.c ****             counterbut2++;
+  51:Core/Src/it_handlers.c ****             flagbut2 = 0;
+  52:Core/Src/it_handlers.c ****         }
+  53:Core/Src/it_handlers.c ****         else if (flagbut2 == 1 && GlobalTickBut2Wait >= 30)
+ 180              		.loc 1 53 14 is_stmt 1 view .LVU46
+ 181              		.loc 1 53 17 is_stmt 0 view .LVU47
  182 0026 012B     		cmp	r3, #1
  183 0028 15D0     		beq	.L14
  184              	.L11:
-  59:Core/Src/it_handlers.c ****         {
-  60:Core/Src/it_handlers.c ****             flagbut2 = 0;
-  61:Core/Src/it_handlers.c ****             CurrentLed++;
-  62:Core/Src/it_handlers.c ****             if (CurrentLed >= 6)
-  63:Core/Src/it_handlers.c ****             {
-  64:Core/Src/it_handlers.c ****                 CurrentLed = 0;
-  65:Core/Src/it_handlers.c ****             }
-  66:Core/Src/it_handlers.c ****         }
-  67:Core/Src/it_handlers.c ****     }
-  68:Core/Src/it_handlers.c ****     /*BtnCount++; 
-  69:Core/Src/it_handlers.c ****     if(BtnCount >= 2){ 
-  70:Core/Src/it_handlers.c ****         LedState = !LedState; 
-  71:Core/Src/it_handlers.c ****         BtnCount = 0; 
-  72:Core/Src/it_handlers.c ****     }*/
-  73:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13); 
- 185              		.loc 1 73 5 is_stmt 1 view .LVU48
+  54:Core/Src/it_handlers.c ****         {
+  55:Core/Src/it_handlers.c ****             flagbut2 = 0;
+  56:Core/Src/it_handlers.c ****             CurrentLed++;
+  57:Core/Src/it_handlers.c ****             if (CurrentLed >= 6)
+  58:Core/Src/it_handlers.c ****             {
+  59:Core/Src/it_handlers.c ****                 CurrentLed = 0;
+  60:Core/Src/it_handlers.c ****             }
+  61:Core/Src/it_handlers.c ****         }
+  62:Core/Src/it_handlers.c ****     }
+  63:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+ 185              		.loc 1 63 5 is_stmt 1 view .LVU48
  186 002a 174A     		ldr	r2, .L15+12
  187 002c 5369     		ldr	r3, [r2, #20]
  188 002e 43F40053 		orr	r3, r3, #8192
  189 0032 5361     		str	r3, [r2, #20]
-  74:Core/Src/it_handlers.c **** }
- 190              		.loc 1 74 1 is_stmt 0 view .LVU49
+  64:Core/Src/it_handlers.c **** }
+ 190              		.loc 1 64 1 is_stmt 0 view .LVU49
  191 0034 7047     		bx	lr
  192              	.L13:
-  52:Core/Src/it_handlers.c ****         {
- 193              		.loc 1 52 49 discriminator 1 view .LVU50
+  47:Core/Src/it_handlers.c ****         {
+ 193              		.loc 1 47 49 discriminator 1 view .LVU50
  194 0036 134A     		ldr	r2, .L15+8
  195 0038 1268     		ldr	r2, [r2]
-  52:Core/Src/it_handlers.c ****         {
- 196              		.loc 1 52 27 discriminator 1 view .LVU51
+  47:Core/Src/it_handlers.c ****         {
+ 196              		.loc 1 47 27 discriminator 1 view .LVU51
  197 003a B2F5FA6F 		cmp	r2, #2000
  198 003e F2D3     		bcc	.L12
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 6
-
-
-  54:Core/Src/it_handlers.c ****             counterbut2++;
- 199              		.loc 1 54 13 is_stmt 1 view .LVU52
-  54:Core/Src/it_handlers.c ****             counterbut2++;
- 200              		.loc 1 54 26 is_stmt 0 view .LVU53
+  49:Core/Src/it_handlers.c ****             counterbut2++;
+ 199              		.loc 1 49 13 is_stmt 1 view .LVU52
+  49:Core/Src/it_handlers.c ****             counterbut2++;
+ 200              		.loc 1 49 26 is_stmt 0 view .LVU53
  201 0040 124B     		ldr	r3, .L15+16
  202 0042 0122     		movs	r2, #1
  203 0044 1A70     		strb	r2, [r3]
-  55:Core/Src/it_handlers.c ****             flagbut2 = 0;
- 204              		.loc 1 55 13 is_stmt 1 view .LVU54
-  55:Core/Src/it_handlers.c ****             flagbut2 = 0;
- 205              		.loc 1 55 24 is_stmt 0 view .LVU55
+  50:Core/Src/it_handlers.c ****             flagbut2 = 0;
+ 204              		.loc 1 50 13 is_stmt 1 view .LVU54
+  50:Core/Src/it_handlers.c ****             flagbut2 = 0;
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 6
+
+
+ 205              		.loc 1 50 24 is_stmt 0 view .LVU55
  206 0046 124A     		ldr	r2, .L15+20
  207 0048 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
  208 004a 0133     		adds	r3, r3, #1
  209 004c 1370     		strb	r3, [r2]
-  56:Core/Src/it_handlers.c ****         }
- 210              		.loc 1 56 13 is_stmt 1 view .LVU56
-  56:Core/Src/it_handlers.c ****         }
- 211              		.loc 1 56 22 is_stmt 0 view .LVU57
+  51:Core/Src/it_handlers.c ****         }
+ 210              		.loc 1 51 13 is_stmt 1 view .LVU56
+  51:Core/Src/it_handlers.c ****         }
+ 211              		.loc 1 51 22 is_stmt 0 view .LVU57
  212 004e 0C4B     		ldr	r3, .L15+4
  213 0050 0022     		movs	r2, #0
  214 0052 1A70     		strb	r2, [r3]
  215 0054 E9E7     		b	.L11
  216              	.L14:
-  58:Core/Src/it_handlers.c ****         {
- 217              		.loc 1 58 54 discriminator 1 view .LVU58
+  53:Core/Src/it_handlers.c ****         {
+ 217              		.loc 1 53 54 discriminator 1 view .LVU58
  218 0056 0B4B     		ldr	r3, .L15+8
  219 0058 1B68     		ldr	r3, [r3]
-  58:Core/Src/it_handlers.c ****         {
- 220              		.loc 1 58 32 discriminator 1 view .LVU59
+  53:Core/Src/it_handlers.c ****         {
+ 220              		.loc 1 53 32 discriminator 1 view .LVU59
  221 005a 1D2B     		cmp	r3, #29
  222 005c E5D9     		bls	.L11
-  60:Core/Src/it_handlers.c ****             CurrentLed++;
- 223              		.loc 1 60 13 is_stmt 1 view .LVU60
-  60:Core/Src/it_handlers.c ****             CurrentLed++;
- 224              		.loc 1 60 22 is_stmt 0 view .LVU61
+  55:Core/Src/it_handlers.c ****             CurrentLed++;
+ 223              		.loc 1 55 13 is_stmt 1 view .LVU60
+  55:Core/Src/it_handlers.c ****             CurrentLed++;
+ 224              		.loc 1 55 22 is_stmt 0 view .LVU61
  225 005e 084B     		ldr	r3, .L15+4
  226 0060 0022     		movs	r2, #0
  227 0062 1A70     		strb	r2, [r3]
-  61:Core/Src/it_handlers.c ****             if (CurrentLed >= 6)
- 228              		.loc 1 61 13 is_stmt 1 view .LVU62
-  61:Core/Src/it_handlers.c ****             if (CurrentLed >= 6)
- 229              		.loc 1 61 23 is_stmt 0 view .LVU63
+  56:Core/Src/it_handlers.c ****             if (CurrentLed >= 6)
+ 228              		.loc 1 56 13 is_stmt 1 view .LVU62
+  56:Core/Src/it_handlers.c ****             if (CurrentLed >= 6)
+ 229              		.loc 1 56 23 is_stmt 0 view .LVU63
  230 0064 0B4A     		ldr	r2, .L15+24
  231 0066 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
  232 0068 0133     		adds	r3, r3, #1
  233 006a DBB2     		uxtb	r3, r3
  234 006c 1370     		strb	r3, [r2]
-  62:Core/Src/it_handlers.c ****             {
- 235              		.loc 1 62 13 is_stmt 1 view .LVU64
-  62:Core/Src/it_handlers.c ****             {
- 236              		.loc 1 62 16 is_stmt 0 view .LVU65
+  57:Core/Src/it_handlers.c ****             {
+ 235              		.loc 1 57 13 is_stmt 1 view .LVU64
+  57:Core/Src/it_handlers.c ****             {
+ 236              		.loc 1 57 16 is_stmt 0 view .LVU65
  237 006e 052B     		cmp	r3, #5
  238 0070 DBD9     		bls	.L11
-  64:Core/Src/it_handlers.c ****             }
- 239              		.loc 1 64 17 is_stmt 1 view .LVU66
-  64:Core/Src/it_handlers.c ****             }
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 7
-
-
- 240              		.loc 1 64 28 is_stmt 0 view .LVU67
+  59:Core/Src/it_handlers.c ****             }
+ 239              		.loc 1 59 17 is_stmt 1 view .LVU66
+  59:Core/Src/it_handlers.c ****             }
+ 240              		.loc 1 59 28 is_stmt 0 view .LVU67
  241 0072 1346     		mov	r3, r2
  242 0074 0022     		movs	r2, #0
  243 0076 1A70     		strb	r2, [r3]
@@ -371,6 +358,9 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 1
  247              	.L15:
  248 007c 00080240 		.word	1073874944
  249 0080 00000000 		.word	flagbut2
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 7
+
+
  250 0084 00000000 		.word	GlobalTickBut2Wait
  251 0088 003C0140 		.word	1073822720
  252 008c 00000000 		.word	flagbut2long
@@ -386,230 +376,181 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 1
  263              		.thumb_func
  265              	SysTick_Handler:
  266              	.LFB132:
-  75:Core/Src/it_handlers.c **** 
-  76:Core/Src/it_handlers.c **** 
-  77:Core/Src/it_handlers.c **** 
-  78:Core/Src/it_handlers.c **** 
-  79:Core/Src/it_handlers.c **** extern uint16_t GlobalTickCount, DelayTickCount; 
-  80:Core/Src/it_handlers.c **** uint16_t ExternInterruptTickCount; 
-  81:Core/Src/it_handlers.c ****  
-  82:Core/Src/it_handlers.c **** void SysTick_Handler(void) 
-  83:Core/Src/it_handlers.c **** {  
- 267              		.loc 1 83 1 is_stmt 1 view -0
+  65:Core/Src/it_handlers.c ****  
+  66:Core/Src/it_handlers.c **** void SysTick_Handler(void) 
+  67:Core/Src/it_handlers.c **** {  
+ 267              		.loc 1 67 1 is_stmt 1 view -0
  268              		.cfi_startproc
  269              		@ args = 0, pretend = 0, frame = 0
  270              		@ frame_needed = 0, uses_anonymous_args = 0
  271              		@ link register save eliminated.
-  84:Core/Src/it_handlers.c ****     GlobalTickCount++; 
- 272              		.loc 1 84 5 view .LVU69
- 273              		.loc 1 84 20 is_stmt 0 view .LVU70
- 274 0000 174A     		ldr	r2, .L24
+  68:Core/Src/it_handlers.c ****     DelayTickCount++;
+ 272              		.loc 1 68 5 view .LVU69
+ 273              		.loc 1 68 19 is_stmt 0 view .LVU70
+ 274 0000 114A     		ldr	r2, .L24
  275 0002 1388     		ldrh	r3, [r2]
  276 0004 0133     		adds	r3, r3, #1
  277 0006 1380     		strh	r3, [r2]	@ movhi
-  85:Core/Src/it_handlers.c **** 
-  86:Core/Src/it_handlers.c ****     DelayTickCount++;
- 278              		.loc 1 86 5 is_stmt 1 view .LVU71
- 279              		.loc 1 86 19 is_stmt 0 view .LVU72
- 280 0008 164A     		ldr	r2, .L24+4
- 281 000a 1388     		ldrh	r3, [r2]
- 282 000c 0133     		adds	r3, r3, #1
- 283 000e 1380     		strh	r3, [r2]	@ movhi
-  87:Core/Src/it_handlers.c ****     GlobalTickBut1++;
- 284              		.loc 1 87 5 is_stmt 1 view .LVU73
- 285              		.loc 1 87 19 is_stmt 0 view .LVU74
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 8
+  69:Core/Src/it_handlers.c ****     if(flagbut1 == 1){
+ 278              		.loc 1 69 5 is_stmt 1 view .LVU71
+ 279              		.loc 1 69 17 is_stmt 0 view .LVU72
+ 280 0008 104B     		ldr	r3, .L24+4
+ 281 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 282              		.loc 1 69 7 view .LVU73
+ 283 000c 012B     		cmp	r3, #1
+ 284 000e 05D0     		beq	.L22
+ 285              	.L18:
+  70:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
+  71:Core/Src/it_handlers.c ****     }
+  72:Core/Src/it_handlers.c ****     if(flagbut2 == 1){
+ 286              		.loc 1 72 5 is_stmt 1 view .LVU74
+ 287              		.loc 1 72 17 is_stmt 0 view .LVU75
+ 288 0010 0F4B     		ldr	r3, .L24+8
+ 289 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 290              		.loc 1 72 7 view .LVU76
+ 291 0014 012B     		cmp	r3, #1
+ 292 0016 06D0     		beq	.L23
+ 293              	.L19:
+  67:Core/Src/it_handlers.c ****     DelayTickCount++;
+ 294              		.loc 1 67 1 view .LVU77
+ 295 0018 0023     		movs	r3, #0
+ 296 001a 11E0     		b	.L20
+ 297              	.L22:
+  70:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
+ 298              		.loc 1 70 9 is_stmt 1 view .LVU78
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 8
 
 
- 286 0010 154A     		ldr	r2, .L24+8
- 287 0012 1368     		ldr	r3, [r2]
- 288 0014 0133     		adds	r3, r3, #1
- 289 0016 1360     		str	r3, [r2]
-  88:Core/Src/it_handlers.c ****     GlobalTickBut2++;
- 290              		.loc 1 88 5 is_stmt 1 view .LVU75
- 291              		.loc 1 88 19 is_stmt 0 view .LVU76
- 292 0018 144A     		ldr	r2, .L24+12
- 293 001a 1368     		ldr	r3, [r2]
- 294 001c 0133     		adds	r3, r3, #1
- 295 001e 1360     		str	r3, [r2]
-  89:Core/Src/it_handlers.c ****     if(flagbut1 == 1){
- 296              		.loc 1 89 5 is_stmt 1 view .LVU77
- 297              		.loc 1 89 17 is_stmt 0 view .LVU78
- 298 0020 134B     		ldr	r3, .L24+16
- 299 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 300              		.loc 1 89 7 view .LVU79
- 301 0024 012B     		cmp	r3, #1
- 302 0026 05D0     		beq	.L22
- 303              	.L18:
-  90:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
-  91:Core/Src/it_handlers.c ****     }
-  92:Core/Src/it_handlers.c ****     if(flagbut2 == 1){
- 304              		.loc 1 92 5 is_stmt 1 view .LVU80
- 305              		.loc 1 92 17 is_stmt 0 view .LVU81
- 306 0028 124B     		ldr	r3, .L24+20
- 307 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 308              		.loc 1 92 7 view .LVU82
- 309 002c 012B     		cmp	r3, #1
- 310 002e 06D0     		beq	.L23
- 311              	.L19:
-  83:Core/Src/it_handlers.c ****     GlobalTickCount++; 
- 312              		.loc 1 83 1 view .LVU83
- 313 0030 0023     		movs	r3, #0
- 314 0032 11E0     		b	.L20
- 315              	.L22:
-  90:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
- 316              		.loc 1 90 9 is_stmt 1 view .LVU84
-  90:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
- 317              		.loc 1 90 27 is_stmt 0 view .LVU85
- 318 0034 104A     		ldr	r2, .L24+24
- 319 0036 1368     		ldr	r3, [r2]
- 320 0038 0133     		adds	r3, r3, #1
- 321 003a 1360     		str	r3, [r2]
- 322 003c F4E7     		b	.L18
- 323              	.L23:
-  93:Core/Src/it_handlers.c ****         GlobalTickBut2Wait++;
- 324              		.loc 1 93 9 is_stmt 1 view .LVU86
- 325              		.loc 1 93 27 is_stmt 0 view .LVU87
- 326 003e 0F4A     		ldr	r2, .L24+28
- 327 0040 1368     		ldr	r3, [r2]
- 328 0042 0133     		adds	r3, r3, #1
- 329 0044 1360     		str	r3, [r2]
- 330 0046 F3E7     		b	.L19
- 331              	.LVL0:
- 332              	.L21:
- 333              	.LBB2:
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 9
+  70:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
+ 299              		.loc 1 70 27 is_stmt 0 view .LVU79
+ 300 001c 0D4A     		ldr	r2, .L24+12
+ 301 001e 1368     		ldr	r3, [r2]
+ 302 0020 0133     		adds	r3, r3, #1
+ 303 0022 1360     		str	r3, [r2]
+ 304 0024 F4E7     		b	.L18
+ 305              	.L23:
+  73:Core/Src/it_handlers.c ****         GlobalTickBut2Wait++;
+ 306              		.loc 1 73 9 is_stmt 1 view .LVU80
+ 307              		.loc 1 73 27 is_stmt 0 view .LVU81
+ 308 0026 0C4A     		ldr	r2, .L24+16
+ 309 0028 1368     		ldr	r3, [r2]
+ 310 002a 0133     		adds	r3, r3, #1
+ 311 002c 1360     		str	r3, [r2]
+ 312 002e F3E7     		b	.L19
+ 313              	.LVL0:
+ 314              	.L21:
+ 315              	.LBB2:
+  74:Core/Src/it_handlers.c ****     }
+  75:Core/Src/it_handlers.c ****     for (uint8_t i = 0; i < 6; i++)
+  76:Core/Src/it_handlers.c ****     {
+  77:Core/Src/it_handlers.c ****         LedCount[i]++;
+ 316              		.loc 1 77 9 is_stmt 1 view .LVU82
+ 317              		.loc 1 77 17 is_stmt 0 view .LVU83
+ 318 0030 0A49     		ldr	r1, .L24+20
+ 319 0032 31F81320 		ldrh	r2, [r1, r3, lsl #1]
+ 320              		.loc 1 77 20 view .LVU84
+ 321 0036 0132     		adds	r2, r2, #1
+ 322 0038 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
+  75:Core/Src/it_handlers.c ****     {
+ 323              		.loc 1 75 33 is_stmt 1 discriminator 3 view .LVU85
+ 324 003c 0133     		adds	r3, r3, #1
+ 325              	.LVL1:
+  75:Core/Src/it_handlers.c ****     {
+ 326              		.loc 1 75 33 is_stmt 0 discriminator 3 view .LVU86
+ 327 003e DBB2     		uxtb	r3, r3
+ 328              	.LVL2:
+ 329              	.L20:
+  75:Core/Src/it_handlers.c ****     {
+ 330              		.loc 1 75 27 is_stmt 1 discriminator 1 view .LVU87
+ 331 0040 052B     		cmp	r3, #5
+ 332 0042 F5D9     		bls	.L21
+ 333              	.LBE2:
+  78:Core/Src/it_handlers.c ****     }
+  79:Core/Src/it_handlers.c **** } 
+ 334              		.loc 1 79 1 is_stmt 0 view .LVU88
+ 335 0044 7047     		bx	lr
+ 336              	.L25:
+ 337 0046 00BF     		.align	2
+ 338              	.L24:
+ 339 0048 00000000 		.word	DelayTickCount
+ 340 004c 00000000 		.word	flagbut1
+ 341 0050 00000000 		.word	flagbut2
+ 342 0054 00000000 		.word	GlobalTickBut1Wait
+ 343 0058 00000000 		.word	GlobalTickBut2Wait
+ 344 005c 00000000 		.word	LedCount
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 9
 
 
-  94:Core/Src/it_handlers.c ****     }
-  95:Core/Src/it_handlers.c ****     for (uint8_t i = 0; i < 6; i++)
-  96:Core/Src/it_handlers.c ****     {
-  97:Core/Src/it_handlers.c ****         LedCount[i]++;
- 334              		.loc 1 97 9 is_stmt 1 view .LVU88
- 335              		.loc 1 97 17 is_stmt 0 view .LVU89
- 336 0048 0D49     		ldr	r1, .L24+32
- 337 004a 31F81320 		ldrh	r2, [r1, r3, lsl #1]
- 338              		.loc 1 97 20 view .LVU90
- 339 004e 0132     		adds	r2, r2, #1
- 340 0050 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
-  95:Core/Src/it_handlers.c ****     {
- 341              		.loc 1 95 33 is_stmt 1 discriminator 3 view .LVU91
- 342 0054 0133     		adds	r3, r3, #1
- 343              	.LVL1:
-  95:Core/Src/it_handlers.c ****     {
- 344              		.loc 1 95 33 is_stmt 0 discriminator 3 view .LVU92
- 345 0056 DBB2     		uxtb	r3, r3
- 346              	.LVL2:
- 347              	.L20:
-  95:Core/Src/it_handlers.c ****     {
- 348              		.loc 1 95 27 is_stmt 1 discriminator 1 view .LVU93
- 349 0058 052B     		cmp	r3, #5
- 350 005a F5D9     		bls	.L21
- 351              	.LBE2:
-  98:Core/Src/it_handlers.c ****     }
-  99:Core/Src/it_handlers.c **** } 
- 352              		.loc 1 99 1 is_stmt 0 view .LVU94
- 353 005c 7047     		bx	lr
- 354              	.L25:
- 355 005e 00BF     		.align	2
- 356              	.L24:
- 357 0060 00000000 		.word	GlobalTickCount
- 358 0064 00000000 		.word	DelayTickCount
- 359 0068 00000000 		.word	GlobalTickBut1
- 360 006c 00000000 		.word	GlobalTickBut2
- 361 0070 00000000 		.word	flagbut1
- 362 0074 00000000 		.word	flagbut2
- 363 0078 00000000 		.word	GlobalTickBut1Wait
- 364 007c 00000000 		.word	GlobalTickBut2Wait
- 365 0080 00000000 		.word	LedCount
- 366              		.cfi_endproc
- 367              	.LFE132:
- 369              		.section	.text.mydelay,"ax",%progbits
- 370              		.align	1
- 371              		.global	mydelay
- 372              		.syntax unified
- 373              		.thumb
- 374              		.thumb_func
- 376              	mydelay:
- 377              	.LVL3:
- 378              	.LFB133:
- 100:Core/Src/it_handlers.c **** 
- 101:Core/Src/it_handlers.c **** void mydelay(uint32_t delay){  
- 379              		.loc 1 101 29 is_stmt 1 view -0
- 380              		.cfi_startproc
- 381              		@ args = 0, pretend = 0, frame = 0
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 10
-
-
- 382              		@ frame_needed = 0, uses_anonymous_args = 0
- 383              		@ link register save eliminated.
- 102:Core/Src/it_handlers.c ****     delay = delay;
- 384              		.loc 1 102 5 view .LVU96
- 103:Core/Src/it_handlers.c ****     if(DelayTickCount >= delay) DelayTickCount = 0;
- 385              		.loc 1 103 5 view .LVU97
- 386              		.loc 1 103 23 is_stmt 0 view .LVU98
- 387 0000 054B     		ldr	r3, .L29
- 388 0002 1B88     		ldrh	r3, [r3]
- 389              		.loc 1 103 7 view .LVU99
- 390 0004 8342     		cmp	r3, r0
- 391 0006 02D3     		bcc	.L28
- 392              		.loc 1 103 33 is_stmt 1 discriminator 1 view .LVU100
- 393              		.loc 1 103 48 is_stmt 0 discriminator 1 view .LVU101
- 394 0008 034B     		ldr	r3, .L29
- 395 000a 0022     		movs	r2, #0
- 396 000c 1A80     		strh	r2, [r3]	@ movhi
- 397              	.L28:
- 104:Core/Src/it_handlers.c ****     while(DelayTickCount < delay){} //Цикл, благодаря которому происхо�
- 398              		.loc 1 104 35 is_stmt 1 discriminator 1 view .LVU102
- 399              		.loc 1 104 26 discriminator 1 view .LVU103
- 400 000e 024B     		ldr	r3, .L29
- 401 0010 1B88     		ldrh	r3, [r3]
- 402 0012 8342     		cmp	r3, r0
- 403 0014 FBD3     		bcc	.L28
- 105:Core/Src/it_handlers.c **** } ...
- 404              		.loc 1 105 1 is_stmt 0 view .LVU104
- 405 0016 7047     		bx	lr
- 406              	.L30:
- 407              		.align	2
- 408              	.L29:
- 409 0018 00000000 		.word	DelayTickCount
- 410              		.cfi_endproc
- 411              	.LFE133:
- 413              		.global	ExternInterruptTickCount
- 414              		.section	.bss.ExternInterruptTickCount,"aw",%nobits
- 415              		.align	1
- 418              	ExternInterruptTickCount:
- 419 0000 0000     		.space	2
- 420              		.global	BtnCount
- 421              		.section	.bss.BtnCount,"aw",%nobits
- 424              	BtnCount:
- 425 0000 00       		.space	1
- 426              		.text
- 427              	.Letext0:
- 428              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
- 429              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 430              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s 			page 11
+ 345              		.cfi_endproc
+ 346              	.LFE132:
+ 348              		.section	.text.mydelay,"ax",%progbits
+ 349              		.align	1
+ 350              		.global	mydelay
+ 351              		.syntax unified
+ 352              		.thumb
+ 353              		.thumb_func
+ 355              	mydelay:
+ 356              	.LVL3:
+ 357              	.LFB133:
+  80:Core/Src/it_handlers.c **** 
+  81:Core/Src/it_handlers.c **** void mydelay(uint32_t delay){  
+ 358              		.loc 1 81 29 is_stmt 1 view -0
+ 359              		.cfi_startproc
+ 360              		@ args = 0, pretend = 0, frame = 0
+ 361              		@ frame_needed = 0, uses_anonymous_args = 0
+ 362              		@ link register save eliminated.
+  82:Core/Src/it_handlers.c ****     if(DelayTickCount >= delay) DelayTickCount = 0;
+ 363              		.loc 1 82 5 view .LVU90
+ 364              		.loc 1 82 23 is_stmt 0 view .LVU91
+ 365 0000 054B     		ldr	r3, .L29
+ 366 0002 1B88     		ldrh	r3, [r3]
+ 367              		.loc 1 82 7 view .LVU92
+ 368 0004 8342     		cmp	r3, r0
+ 369 0006 02D3     		bcc	.L28
+ 370              		.loc 1 82 33 is_stmt 1 discriminator 1 view .LVU93
+ 371              		.loc 1 82 48 is_stmt 0 discriminator 1 view .LVU94
+ 372 0008 034B     		ldr	r3, .L29
+ 373 000a 0022     		movs	r2, #0
+ 374 000c 1A80     		strh	r2, [r3]	@ movhi
+ 375              	.L28:
+  83:Core/Src/it_handlers.c ****     while(DelayTickCount < delay){} //Цикл, благодаря которому происхо�
+ 376              		.loc 1 83 35 is_stmt 1 discriminator 1 view .LVU95
+ 377              		.loc 1 83 26 discriminator 1 view .LVU96
+ 378 000e 024B     		ldr	r3, .L29
+ 379 0010 1B88     		ldrh	r3, [r3]
+ 380 0012 8342     		cmp	r3, r0
+ 381 0014 FBD3     		bcc	.L28
+  84:Core/Src/it_handlers.c **** } ...
+ 382              		.loc 1 84 1 is_stmt 0 view .LVU97
+ 383 0016 7047     		bx	lr
+ 384              	.L30:
+ 385              		.align	2
+ 386              	.L29:
+ 387 0018 00000000 		.word	DelayTickCount
+ 388              		.cfi_endproc
+ 389              	.LFE133:
+ 391              		.text
+ 392              	.Letext0:
+ 393              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 394              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 395              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 it_handlers.c
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:19     .text.EXTI9_5_IRQHandler:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:25     .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:123    .text.EXTI9_5_IRQHandler:00000070 $d
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:134    .text.EXTI15_10_IRQHandler:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:140    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:248    .text.EXTI15_10_IRQHandler:0000007c $d
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:259    .text.SysTick_Handler:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:265    .text.SysTick_Handler:00000000 SysTick_Handler
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:357    .text.SysTick_Handler:00000060 $d
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:370    .text.mydelay:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:376    .text.mydelay:00000000 mydelay
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:409    .text.mydelay:00000018 $d
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:418    .bss.ExternInterruptTickCount:00000000 ExternInterruptTickCount
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:415    .bss.ExternInterruptTickCount:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:424    .bss.BtnCount:00000000 BtnCount
-C:\Users\rpong\AppData\Local\Temp\ccvJQcqX.s:425    .bss.BtnCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:19     .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:25     .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:123    .text.EXTI9_5_IRQHandler:00000070 $d
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:134    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:140    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:248    .text.EXTI15_10_IRQHandler:0000007c $d
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:259    .text.SysTick_Handler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:265    .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:339    .text.SysTick_Handler:00000048 $d
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:349    .text.mydelay:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:355    .text.mydelay:00000000 mydelay
+C:\Users\rpong\AppData\Local\Temp\cc2LvVpb.s:387    .text.mydelay:00000018 $d
 
 UNDEFINED SYMBOLS
 flagbut1
@@ -622,8 +563,5 @@ GlobalTickBut2Wait
 flagbut2long
 counterbut2
 CurrentLed
-GlobalTickCount
 DelayTickCount
-GlobalTickBut1
-GlobalTickBut2
 LedCount
