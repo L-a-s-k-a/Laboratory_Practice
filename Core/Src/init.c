@@ -5,10 +5,10 @@
 
 void SysTick_Init(void){
     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); //关闭计数器
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk); //TICKINT=1,计数器到0后使能systick中断
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk); //选择时钟为AHB.置位0为AHB/8,置位1为AHB
-    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk,179999 << SysTick_LOAD_RELOAD_Pos); //load寄存器记录从开始计数到 0 的值。AHB总线180Mhz设置180000-1为1毫秒 180000000为1秒
-    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk,179999 << SysTick_VAL_CURRENT_Pos); //val寄存器允许您跟踪当前计数器值,向这些位写入任何值都会将该字段清除为 0，并且还将清除 STK_CTRL 寄存器中的 COUNTFLAG 位。
+    SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk); 
+    SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk);
+    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk,179999 << SysTick_LOAD_RELOAD_Pos); 
+    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk,179999 << SysTick_VAL_CURRENT_Pos); 
     SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); 
     }
 
@@ -50,12 +50,12 @@ void RCC_Ini(void){
     MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2);//输入分频器先除于4得到输入pll频率为2mhz
     MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 |
     RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7);//通过设置 PLLN 位来调整 VCO 乘法器,结果为180
-    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); //通过清零 PLLP 位来调整 VCO 输出频率预分频器,如果清零，则预分频器将设置为 2。即经过乘法后输出时除于2,我们调整乘法后所得频率的预分频器。换句话说，我们得到了最终的PLL频率
+    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); 
     SET_BIT(RCC->CR, RCC_CR_PLLON); //启动pll
     while(READ_BIT(RCC->CR, RCC_CR_PLLRDY)); 
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL); //将 PLL 模块的输出设置为控制器时钟频率。
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1); //设置AHB总线分频器。RCC_CFGR_HPRE_DIV1关闭分频器.AHB 总线的时钟频率为 180 MHz
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4);//APB1分频器，文档说该总线的时钟不应该超过 45 MHz。由于分频后获得的频率AHB，即180 MHz预分频器需要设置为4
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1); 
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4);
     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2);
     MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
 }

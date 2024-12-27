@@ -13,6 +13,7 @@ uint8_t button2_state = 0; // 0=未按下，1=按下中，2=长按
 
 
 
+
 uint32_t systick_counter = 0; // 计数器
 const uint32_t blink_periods[] = {5000, 1250, 769}; // 对应 0.2Hz、0.8Hz、1.3Hz 1/0.2=5c 
 const uint32_t led_pins[] = {GPIO_ODR_OD14, GPIO_ODR_OD7, GPIO_ODR_OD0, GPIO_ODR_OD2, GPIO_ODR_OD6, GPIO_ODR_OD1};
