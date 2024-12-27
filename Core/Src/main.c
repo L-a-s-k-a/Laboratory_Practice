@@ -1,65 +1,66 @@
-#include "main.h"
-
-int led_state = 0;       // 当前点亮的 LED 数
-int button1_pressed = 0; // 按钮 1 状态
-int button2_pressed = 0; // 按钮 2 状态
-int button3_pressed = 0; // 按钮 3 状态
-int swap_flag = 0;       // 按钮 1 和按钮 2 功能交换标志
-
-void GPIO_Init(void) {
-    // 1. 使能 GPIO 时钟
-    RCC_AHB1ENR |= RCC_GPIOA_EN | RCC_GPIOB_EN | RCC_GPIOC_EN | RCC_GPIOF_EN;
-
-    // 2. 配置 LED 引脚为输出模式
-    GPIOB_MODER |= (1 << (0 * 2)) | (1 << (7 * 2)) | (1 << (14 * 2));  // PB0, PB7, PB14
-    GPIOA_MODER |= (1 << (3 * 2));                                    // PA3
-    GPIOC_MODER |= (1 << (0 * 2)) | (1 << (3 * 2));                   // PC0, PC3
-
-    // 3. 配置按钮引脚为输入模式，开启上拉电阻
-    GPIOF_PUPDR |= (1 << (3 * 2)) | (1 << (5 * 2));  // PF3, PF5
-}
-
-void Delay(volatile uint32_t time) {
-    while (time--);
-}
-
-void LED_Control(int state, int on) {
-    if (state == 0) { if (on) LED1_ON; else LED1_OFF; }
-    else if (state == 1) { if (on) LED2_ON; else LED2_OFF; }
-    else if (state == 2) { if (on) LED3_ON; else LED3_OFF; }
-    else if (state == 3) { if (on) EXT_LED1_ON; else EXT_LED1_OFF; }
-    else if (state == 4) { if (on) EXT_LED2_ON; else EXT_LED2_OFF; }
-    else if (state == 5) { if (on) EXT_LED3_ON; else EXT_LED3_OFF; }
-}
+#include "init.h"
 
 int main(void) {
+    uint8_t led_state = 0;        // LED 状态
+    uint8_t button1_press_count = 0; // 按钮1按下次数
+    uint8_t button1_state = 0;    // 按钮1当前状态
+    uint8_t button2_state = 0;    // 按钮2当前状态
+    uint8_t port_mode = 0;        // 按钮1的 LED 独立控制模式
+
     GPIO_Init();
 
     while (1) {
-        // 按钮 1：依次点亮 LED
-        if (BUTTON1_PRESSED) {
-            if (!button1_pressed) {
-                button1_pressed = 1;
-                if (led_state < 6) LED_Control(led_state++, 1);
-            }
-        } else button1_pressed = 0;
+        // 检测按钮1（PC8）
+        if ((GPIOC_IDR & GPIOC_IDR_PIN8) == 0 && button1_state == 0) {
+            delay(20000); // 防抖延迟
+            if ((GPIOC_IDR & GPIOC_IDR_PIN8) == 0) {
+                button1_press_count++;
+                button1_state = 1;
 
-        // 按钮 2：依次熄灭 LED
-        if (BUTTON2_PRESSED) {
-            if (!button2_pressed) {
-                button2_pressed = 1;
-                if (led_state > 0) LED_Control(--led_state, 0);
-            }
-        } else button2_pressed = 0;
+                // 每第 5 次按下切换模式
+                if (button1_press_count % 5 == 0) {
+                    port_mode ^= 1; // 切换模式
+                }
 
-        // 按钮 3：交换按钮 1 和按钮 2 的功能
-        if (BUTTON3_PRESSED) {
-            if (!button3_pressed) {
-                button3_pressed = 1;
-                swap_flag = !swap_flag;
+                // 根据模式控制 LED1 独立开关
+                if (port_mode == 1) {
+                    GPIOC_BSRR ^= GPIOC_BSRR_LED1_ON | GPIOC_BSRR_LED1_OFF; // 切换 LED1 状态
+                }
             }
-        } else button3_pressed = 0;
+        } else if ((GPIOC_IDR & GPIOC_IDR_PIN8) != 0) {
+            button1_state = 0; // 按钮释放
+        }
 
-        Delay(100000);
+        // 检测按钮2（PC9）
+        if ((GPIOC_IDR & GPIOC_IDR_PIN9) == 0 && button2_state == 0) {
+            delay(20000); // 防抖延迟
+            if ((GPIOC_IDR & GPIOC_IDR_PIN9) == 0) {
+                button2_state = 1;
+
+                // 顺序控制 LED3 和 LED4
+                led_state = (led_state + 1) % 4; // 循环状态
+                GPIOC_BSRR |= GPIOC_BSRR_LED1_OFF | GPIOC_BSRR_LED2_OFF |
+                              GPIOC_BSRR_LED3_OFF | GPIOC_BSRR_LED4_OFF; // 熄灭所有灯
+
+                switch (led_state) {
+                    case 0:
+                        GPIOC_BSRR |= GPIOC_BSRR_LED3_ON;
+                        break;
+                    case 1:
+                        GPIOC_BSRR |= GPIOC_BSRR_LED4_ON;
+                        break;
+                    case 2:
+                        GPIOC_BSRR |= GPIOC_BSRR_LED1_ON;
+                        break;
+                    case 3:
+                        GPIOC_BSRR |= GPIOC_BSRR_LED2_ON;
+                        break;
+                }
+            }
+        } else if ((GPIOC_IDR & GPIOC_IDR_PIN9) != 0) {
+            button2_state = 0; // 按钮释放
+        }
+
+        delay(200000); // 循环延迟
     }
 }

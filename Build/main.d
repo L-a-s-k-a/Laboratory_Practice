@@ -1,2 +1,2 @@
-Build/main.o: Core/Src/main.c Core/Inc/main.h
-Core/Inc/main.h:
+Build/main.o: Core/Src/main.c Core/Inc/init.h
+Core/Inc/init.h:
