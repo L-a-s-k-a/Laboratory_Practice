@@ -1,87 +1,42 @@
-#include "it_handlers.h" 
+#include "it_handlers.h"
 
-extern uint16_t DelayTickCount;
-extern uint16_t LedCount[6];
-extern uint32_t GlobalTickBut1Wait, GlobalTickBut2Wait;
-extern uint8_t flagbut1, flagbut2;
-extern uint8_t flagbut1long, flagbut2long;
-extern uint8_t CurrentState;
-extern uint8_t CurrentLed;
-extern uint8_t LedCurrfreq[6][2];
-//extern uint8_t counterbut1;
-//extern uint8_t counterbut2;
+extern uint8_t current_led;
 
-void EXTI9_5_IRQHandler(void) //but1
-{
-    if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) != 0)
-    {
-        if(flagbut1 == 0){
-            flagbut1 = 1;
-            GlobalTickBut1Wait = 0;
-        }
-    }
-    else{
-        if (flagbut1 == 1 && GlobalTickBut1Wait >= 2000)
-        {
-            flagbut1long = 1;
-            LedCurrfreq[CurrentLed][0]++;
-            //counterbut1++;
-            flagbut1 = 0;
-        }
-        else if (flagbut1 == 1 && GlobalTickBut1Wait >= 30)
-        {
-            flagbut1 = 0;
-            CurrentState++;
-        }
-    }
-    SET_BIT(EXTI->PR, EXTI_PR_PR6); 
+extern uint32_t systick_counter;
+uint16_t  DelayTickCount;
 
-}
-void EXTI15_10_IRQHandler(void){ //but2
-    if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) != 0)
-    {
-        if(flagbut2 == 0){
-            flagbut2 = 1;
-            GlobalTickBut2Wait = 0;
-        }
-    }
-    else{
-        if (flagbut2 == 1 && GlobalTickBut2Wait >= 2000)
-        {
-            flagbut2long = 1;
-            LedCurrfreq[CurrentLed][1]++;
-            //counterbut2++;
-            flagbut2 = 0;
-        }
-        else if (flagbut2 == 1 && GlobalTickBut2Wait >= 30)
-        {
-            flagbut2 = 0;
-            CurrentLed++;
-            if (CurrentLed >= 6)
-            {
-                CurrentLed = 0;
-            }
-        }
-    }
-    SET_BIT(EXTI->PR, EXTI_PR_PR13); 
-}
+uint32_t ExternInterruptTickCount;
 
-void SysTick_Handler(void) 
-{  
+// SysTick 中断处理
+void SysTick_Handler(void) {
+    systick_counter++; // 1ms 计时
     DelayTickCount++;
-    if(flagbut1 == 1){
-        GlobalTickBut1Wait++;
-    }
-    if(flagbut2 == 1){
-        GlobalTickBut2Wait++;
-    }
-    for (uint8_t i = 0; i < 6; i++)
-    {
-        LedCount[i]++;
-    }
-} 
+    ExternInterruptTickCount++;
+}
+// 按钮1（PC13）中断处理
+void EXTI15_10_IRQHandler(void) {
+     
+    SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+    if(ExternInterruptTickCount >= DELAY_BUTTON_FILTER){ 
+        current_led = (current_led + 1) % 6; // 切换到下一个 LED
+        update_led_state();
+        ExternInterruptTickCount = 0;
+    }   
+  
+}
+void update_led_state(void) {
+    // 关闭所有 LED
+    GPIOB->BSRR = LED1_PIN << 16 | LED2_PIN << 16 | LED3_PIN << 16 |
+                  LED4_PIN << 16 | LED5_PIN << 16 | LED6_PIN << 16;
 
-void mydelay(uint32_t delay){  
-    if(DelayTickCount >= delay) DelayTickCount = 0;
-    while(DelayTickCount < delay){} //Цикл, благодаря которому происходит задержка программы 
-} 
+    // 点亮当前 LED
+    switch (current_led) {
+          case 0: SET_BIT(GPIOB->BSRR,LED1_PIN); break;
+        case 1: SET_BIT(GPIOB->BSRR,LED2_PIN); break;
+        case 2: SET_BIT(GPIOB->BSRR,LED3_PIN); break;
+        case 3: SET_BIT(GPIOB->BSRR,LED4_PIN); break;
+        case 4: SET_BIT(GPIOB->BSRR,LED5_PIN); break;
+        case 5: SET_BIT(GPIOB->BSRR,LED6_PIN); break;
+    }
+}
+
