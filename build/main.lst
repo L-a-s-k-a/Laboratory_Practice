@@ -1,0 +1,786 @@
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.update_leds,"ax",%progbits
+  21              		.align	1
+  22              		.global	update_leds
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	update_leds:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** #include "stdint.h"
+   3:Core/Src/main.c **** #include <string.h>
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** int turn;
+   6:Core/Src/main.c **** int count;
+   7:Core/Src/main.c **** int flag_button_1;
+   8:Core/Src/main.c **** int flag_button_2;
+   9:Core/Src/main.c **** #define DEBOUNCE_DELAY 50
+  10:Core/Src/main.c **** int last_button_press_time = 0;
+  11:Core/Src/main.c **** int last_button_press_time_0 = 0;
+  12:Core/Src/main.c **** int current_time;
+  13:Core/Src/main.c **** int time_count;
+  14:Core/Src/main.c **** #define LED_COUNT 6
+  15:Core/Src/main.c **** uint8_t current_led_position = 0;
+  16:Core/Src/main.c **** uint8_t all_leds_on = 1;
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** #define GPIO_LED_MASK_B (GPIO_BSRR_BR12 | GPIO_BSRR_BR13 | GPIO_BSRR_BR15)
+  19:Core/Src/main.c **** #define GPIO_LED_MASK_D (GPIO_BSRR_BR3 | GPIO_BSRR_BR4 | GPIO_BSRR_BR5)
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c **** void update_leds()
+  22:Core/Src/main.c **** {
+  29              		.loc 1 22 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34 0000 10B4     		push	{r4}
+  35              		.cfi_def_cfa_offset 4
+  36              		.cfi_offset 4, -4
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 2
+
+
+  23:Core/Src/main.c **** 	SET_BIT(GPIOB->BSRR, GPIO_LED_MASK_B);
+  37              		.loc 1 23 2 view .LVU1
+  38 0002 404A     		ldr	r2, .L19
+  39 0004 9369     		ldr	r3, [r2, #24]
+  40 0006 43F03043 		orr	r3, r3, #-1342177280
+  41 000a 9361     		str	r3, [r2, #24]
+  24:Core/Src/main.c **** 	SET_BIT(GPIOD->BSRR, GPIO_LED_MASK_D);
+  42              		.loc 1 24 2 view .LVU2
+  43 000c 02F50062 		add	r2, r2, #2048
+  44 0010 9369     		ldr	r3, [r2, #24]
+  45 0012 43F46013 		orr	r3, r3, #3670016
+  46 0016 9361     		str	r3, [r2, #24]
+  25:Core/Src/main.c **** 	if (count == 0)
+  47              		.loc 1 25 2 view .LVU3
+  48              		.loc 1 25 12 is_stmt 0 view .LVU4
+  49 0018 3B4B     		ldr	r3, .L19+4
+  50 001a 1C68     		ldr	r4, [r3]
+  51              		.loc 1 25 5 view .LVU5
+  52 001c 74B9     		cbnz	r4, .L2
+  26:Core/Src/main.c **** 	{
+  27:Core/Src/main.c **** 		SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR12 | GPIO_BSRR_BR13 | GPIO_BSRR_BR15);
+  53              		.loc 1 27 3 is_stmt 1 view .LVU6
+  54 001e A2F50062 		sub	r2, r2, #2048
+  55 0022 9369     		ldr	r3, [r2, #24]
+  56 0024 43F03043 		orr	r3, r3, #-1342177280
+  57 0028 9361     		str	r3, [r2, #24]
+  28:Core/Src/main.c **** 		SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR3 | GPIO_BSRR_BR4 | GPIO_BSRR_BR5);
+  58              		.loc 1 28 3 view .LVU7
+  59 002a 02F50062 		add	r2, r2, #2048
+  60 002e 9369     		ldr	r3, [r2, #24]
+  61 0030 43F46013 		orr	r3, r3, #3670016
+  62 0034 9361     		str	r3, [r2, #24]
+  63              	.L1:
+  29:Core/Src/main.c **** 	}
+  30:Core/Src/main.c **** 	else if (count == 6)
+  31:Core/Src/main.c **** 	{
+  32:Core/Src/main.c **** 		if (all_leds_on)
+  33:Core/Src/main.c **** 		{
+  34:Core/Src/main.c **** 			SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12 | GPIO_BSRR_BS13 | GPIO_BSRR_BS15);
+  35:Core/Src/main.c **** 			SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS3 | GPIO_BSRR_BS4 | GPIO_BSRR_BS5);
+  36:Core/Src/main.c **** 		}
+  37:Core/Src/main.c **** 		else
+  38:Core/Src/main.c **** 		{
+  39:Core/Src/main.c **** 			SET_BIT(GPIOB->BSRR, GPIO_LED_MASK_B);
+  40:Core/Src/main.c **** 			SET_BIT(GPIOD->BSRR, GPIO_LED_MASK_D);
+  41:Core/Src/main.c **** 		}
+  42:Core/Src/main.c **** 	}
+  43:Core/Src/main.c **** 	else
+  44:Core/Src/main.c **** 	{
+  45:Core/Src/main.c **** 		for (uint8_t i = 0; i < count; i++)
+  46:Core/Src/main.c **** 		{
+  47:Core/Src/main.c **** 			uint8_t led_index = (current_led_position + i) % LED_COUNT;
+  48:Core/Src/main.c **** 			switch (led_index)
+  49:Core/Src/main.c **** 			{
+  50:Core/Src/main.c **** 			case 0:
+  51:Core/Src/main.c **** 				SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS3);
+  52:Core/Src/main.c **** 				break;
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 3
+
+
+  53:Core/Src/main.c **** 			case 1:
+  54:Core/Src/main.c **** 				SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS4);
+  55:Core/Src/main.c **** 				break;
+  56:Core/Src/main.c **** 			case 2:
+  57:Core/Src/main.c **** 				SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS5);
+  58:Core/Src/main.c **** 				break;
+  59:Core/Src/main.c **** 			case 3:
+  60:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS12);
+  61:Core/Src/main.c **** 				break;
+  62:Core/Src/main.c **** 			case 4:
+  63:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS13);
+  64:Core/Src/main.c **** 				break;
+  65:Core/Src/main.c **** 			case 5:
+  66:Core/Src/main.c **** 				SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15);
+  67:Core/Src/main.c **** 				break;
+  68:Core/Src/main.c **** 			}
+  69:Core/Src/main.c **** 		}
+  70:Core/Src/main.c **** 	}
+  71:Core/Src/main.c **** }
+  64              		.loc 1 71 1 is_stmt 0 view .LVU8
+  65 0036 5DF8044B 		ldr	r4, [sp], #4
+  66              		.cfi_remember_state
+  67              		.cfi_restore 4
+  68              		.cfi_def_cfa_offset 0
+  69 003a 7047     		bx	lr
+  70              	.L2:
+  71              		.cfi_restore_state
+  30:Core/Src/main.c **** 	{
+  72              		.loc 1 30 7 is_stmt 1 view .LVU9
+  30:Core/Src/main.c **** 	{
+  73              		.loc 1 30 10 is_stmt 0 view .LVU10
+  74 003c 062C     		cmp	r4, #6
+  75 003e 01D0     		beq	.L18
+  76              	.LBB2:
+  45:Core/Src/main.c **** 		{
+  77              		.loc 1 45 16 view .LVU11
+  78 0040 0022     		movs	r2, #0
+  79 0042 21E0     		b	.L4
+  80              	.L18:
+  81              	.LBE2:
+  32:Core/Src/main.c **** 		{
+  82              		.loc 1 32 3 is_stmt 1 view .LVU12
+  32:Core/Src/main.c **** 		{
+  83              		.loc 1 32 7 is_stmt 0 view .LVU13
+  84 0044 314B     		ldr	r3, .L19+8
+  85 0046 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  32:Core/Src/main.c **** 		{
+  86              		.loc 1 32 6 view .LVU14
+  87 0048 5BB1     		cbz	r3, .L5
+  34:Core/Src/main.c **** 			SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS3 | GPIO_BSRR_BS4 | GPIO_BSRR_BS5);
+  88              		.loc 1 34 4 is_stmt 1 view .LVU15
+  89 004a 2E4A     		ldr	r2, .L19
+  90 004c 9369     		ldr	r3, [r2, #24]
+  91 004e 43F43043 		orr	r3, r3, #45056
+  92 0052 9361     		str	r3, [r2, #24]
+  35:Core/Src/main.c **** 		}
+  93              		.loc 1 35 4 view .LVU16
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 4
+
+
+  94 0054 02F50062 		add	r2, r2, #2048
+  95 0058 9369     		ldr	r3, [r2, #24]
+  96 005a 43F03803 		orr	r3, r3, #56
+  97 005e 9361     		str	r3, [r2, #24]
+  98 0060 E9E7     		b	.L1
+  99              	.L5:
+  39:Core/Src/main.c **** 			SET_BIT(GPIOD->BSRR, GPIO_LED_MASK_D);
+ 100              		.loc 1 39 4 view .LVU17
+ 101 0062 284A     		ldr	r2, .L19
+ 102 0064 9369     		ldr	r3, [r2, #24]
+ 103 0066 43F03043 		orr	r3, r3, #-1342177280
+ 104 006a 9361     		str	r3, [r2, #24]
+  40:Core/Src/main.c **** 		}
+ 105              		.loc 1 40 4 view .LVU18
+ 106 006c 02F50062 		add	r2, r2, #2048
+ 107 0070 9369     		ldr	r3, [r2, #24]
+ 108 0072 43F46013 		orr	r3, r3, #3670016
+ 109 0076 9361     		str	r3, [r2, #24]
+ 110 0078 DDE7     		b	.L1
+ 111              	.LVL0:
+ 112              	.L13:
+ 113              	.LBB5:
+ 114              	.LBB3:
+  51:Core/Src/main.c **** 				break;
+ 115              		.loc 1 51 5 view .LVU19
+ 116 007a 2549     		ldr	r1, .L19+12
+ 117 007c 8B69     		ldr	r3, [r1, #24]
+ 118              	.LVL1:
+  51:Core/Src/main.c **** 				break;
+ 119              		.loc 1 51 5 is_stmt 0 view .LVU20
+ 120 007e 43F00803 		orr	r3, r3, #8
+ 121 0082 8B61     		str	r3, [r1, #24]
+ 122              	.LVL2:
+  52:Core/Src/main.c **** 			case 1:
+ 123              		.loc 1 52 5 is_stmt 1 view .LVU21
+ 124              	.L6:
+ 125              	.LBE3:
+  45:Core/Src/main.c **** 		{
+ 126              		.loc 1 45 35 discriminator 2 view .LVU22
+ 127 0084 0132     		adds	r2, r2, #1
+ 128              	.LVL3:
+  45:Core/Src/main.c **** 		{
+ 129              		.loc 1 45 35 is_stmt 0 discriminator 2 view .LVU23
+ 130 0086 D2B2     		uxtb	r2, r2
+ 131              	.LVL4:
+ 132              	.L4:
+  45:Core/Src/main.c **** 		{
+ 133              		.loc 1 45 25 is_stmt 1 discriminator 1 view .LVU24
+ 134 0088 9442     		cmp	r4, r2
+ 135 008a D4DD     		ble	.L1
+ 136              	.LBB4:
+  47:Core/Src/main.c **** 			switch (led_index)
+ 137              		.loc 1 47 4 view .LVU25
+  47:Core/Src/main.c **** 			switch (led_index)
+ 138              		.loc 1 47 46 is_stmt 0 view .LVU26
+ 139 008c 214B     		ldr	r3, .L19+16
+ 140 008e 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 5
+
+
+ 141 0090 1144     		add	r1, r1, r2
+  47:Core/Src/main.c **** 			switch (led_index)
+ 142              		.loc 1 47 51 view .LVU27
+ 143 0092 214B     		ldr	r3, .L19+20
+ 144 0094 83FB0103 		smull	r0, r3, r3, r1
+ 145 0098 A3EBE173 		sub	r3, r3, r1, asr #31
+ 146 009c 03EB4303 		add	r3, r3, r3, lsl #1
+ 147 00a0 5800     		lsls	r0, r3, #1
+ 148 00a2 0B1A     		subs	r3, r1, r0
+ 149              	.LVL5:
+  48:Core/Src/main.c **** 			{
+ 150              		.loc 1 48 4 is_stmt 1 view .LVU28
+ 151 00a4 DBB2     		uxtb	r3, r3
+  48:Core/Src/main.c **** 			{
+ 152              		.loc 1 48 4 is_stmt 0 view .LVU29
+ 153 00a6 052B     		cmp	r3, #5
+ 154 00a8 ECD8     		bhi	.L6
+ 155 00aa 01A1     		adr	r1, .L8
+ 156 00ac 51F823F0 		ldr	pc, [r1, r3, lsl #2]
+ 157              		.p2align 2
+ 158              	.L8:
+ 159 00b0 7B000000 		.word	.L13+1
+ 160 00b4 C9000000 		.word	.L12+1
+ 161 00b8 D5000000 		.word	.L11+1
+ 162 00bc E1000000 		.word	.L10+1
+ 163 00c0 ED000000 		.word	.L9+1
+ 164 00c4 F9000000 		.word	.L7+1
+ 165              		.p2align 1
+ 166              	.L12:
+  54:Core/Src/main.c **** 				break;
+ 167              		.loc 1 54 5 is_stmt 1 view .LVU30
+ 168 00c8 1149     		ldr	r1, .L19+12
+ 169 00ca 8B69     		ldr	r3, [r1, #24]
+ 170              	.LVL6:
+  54:Core/Src/main.c **** 				break;
+ 171              		.loc 1 54 5 is_stmt 0 view .LVU31
+ 172 00cc 43F01003 		orr	r3, r3, #16
+ 173 00d0 8B61     		str	r3, [r1, #24]
+ 174              	.LVL7:
+  55:Core/Src/main.c **** 			case 2:
+ 175              		.loc 1 55 5 is_stmt 1 view .LVU32
+ 176 00d2 D7E7     		b	.L6
+ 177              	.LVL8:
+ 178              	.L11:
+  57:Core/Src/main.c **** 				break;
+ 179              		.loc 1 57 5 view .LVU33
+ 180 00d4 0E49     		ldr	r1, .L19+12
+ 181 00d6 8B69     		ldr	r3, [r1, #24]
+ 182              	.LVL9:
+  57:Core/Src/main.c **** 				break;
+ 183              		.loc 1 57 5 is_stmt 0 view .LVU34
+ 184 00d8 43F02003 		orr	r3, r3, #32
+ 185 00dc 8B61     		str	r3, [r1, #24]
+ 186              	.LVL10:
+  58:Core/Src/main.c **** 			case 3:
+ 187              		.loc 1 58 5 is_stmt 1 view .LVU35
+ 188 00de D1E7     		b	.L6
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 6
+
+
+ 189              	.LVL11:
+ 190              	.L10:
+  60:Core/Src/main.c **** 				break;
+ 191              		.loc 1 60 5 view .LVU36
+ 192 00e0 0849     		ldr	r1, .L19
+ 193 00e2 8B69     		ldr	r3, [r1, #24]
+ 194              	.LVL12:
+  60:Core/Src/main.c **** 				break;
+ 195              		.loc 1 60 5 is_stmt 0 view .LVU37
+ 196 00e4 43F48053 		orr	r3, r3, #4096
+ 197 00e8 8B61     		str	r3, [r1, #24]
+ 198              	.LVL13:
+  61:Core/Src/main.c **** 			case 4:
+ 199              		.loc 1 61 5 is_stmt 1 view .LVU38
+ 200 00ea CBE7     		b	.L6
+ 201              	.LVL14:
+ 202              	.L9:
+  63:Core/Src/main.c **** 				break;
+ 203              		.loc 1 63 5 view .LVU39
+ 204 00ec 0549     		ldr	r1, .L19
+ 205 00ee 8B69     		ldr	r3, [r1, #24]
+ 206              	.LVL15:
+  63:Core/Src/main.c **** 				break;
+ 207              		.loc 1 63 5 is_stmt 0 view .LVU40
+ 208 00f0 43F40053 		orr	r3, r3, #8192
+ 209 00f4 8B61     		str	r3, [r1, #24]
+ 210              	.LVL16:
+  64:Core/Src/main.c **** 			case 5:
+ 211              		.loc 1 64 5 is_stmt 1 view .LVU41
+ 212 00f6 C5E7     		b	.L6
+ 213              	.LVL17:
+ 214              	.L7:
+  66:Core/Src/main.c **** 				break;
+ 215              		.loc 1 66 5 view .LVU42
+ 216 00f8 0249     		ldr	r1, .L19
+ 217 00fa 8B69     		ldr	r3, [r1, #24]
+ 218              	.LVL18:
+  66:Core/Src/main.c **** 				break;
+ 219              		.loc 1 66 5 is_stmt 0 view .LVU43
+ 220 00fc 43F40043 		orr	r3, r3, #32768
+ 221 0100 8B61     		str	r3, [r1, #24]
+ 222              	.LVL19:
+  67:Core/Src/main.c **** 			}
+ 223              		.loc 1 67 5 is_stmt 1 view .LVU44
+ 224 0102 BFE7     		b	.L6
+ 225              	.L20:
+ 226              		.align	2
+ 227              	.L19:
+ 228 0104 00040240 		.word	1073873920
+ 229 0108 00000000 		.word	count
+ 230 010c 00000000 		.word	all_leds_on
+ 231 0110 000C0240 		.word	1073875968
+ 232 0114 00000000 		.word	current_led_position
+ 233 0118 ABAAAA2A 		.word	715827883
+ 234              	.LBE4:
+ 235              	.LBE5:
+ 236              		.cfi_endproc
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 7
+
+
+ 237              	.LFE130:
+ 239              		.section	.text.main,"ax",%progbits
+ 240              		.align	1
+ 241              		.global	main
+ 242              		.syntax unified
+ 243              		.thumb
+ 244              		.thumb_func
+ 246              	main:
+ 247              	.LFB131:
+  72:Core/Src/main.c **** int main(void)
+  73:Core/Src/main.c **** {
+ 248              		.loc 1 73 1 view -0
+ 249              		.cfi_startproc
+ 250              		@ Volatile: function does not return.
+ 251              		@ args = 0, pretend = 0, frame = 0
+ 252              		@ frame_needed = 0, uses_anonymous_args = 0
+ 253 0000 08B5     		push	{r3, lr}
+ 254              		.cfi_def_cfa_offset 8
+ 255              		.cfi_offset 3, -8
+ 256              		.cfi_offset 14, -4
+  74:Core/Src/main.c **** 	GPIO_Ini();
+ 257              		.loc 1 74 2 view .LVU46
+ 258 0002 FFF7FEFF 		bl	GPIO_Ini
+ 259              	.LVL20:
+  75:Core/Src/main.c **** 	*(uint32_t *)(0x40020C00UL + 0x00UL) |= 0x800; // 5-ый пин в режим OUTPUT
+ 260              		.loc 1 75 2 view .LVU47
+ 261 0006 3F4B     		ldr	r3, .L35
+ 262 0008 D3F8002C 		ldr	r2, [r3, #3072]
+ 263              		.loc 1 75 39 is_stmt 0 view .LVU48
+ 264 000c 42F40062 		orr	r2, r2, #2048
+ 265 0010 C3F8002C 		str	r2, [r3, #3072]
+  76:Core/Src/main.c **** 	*(uint32_t *)(0x40020C00UL + 0x04UL) |= 0x00;  // Push-Pull
+ 266              		.loc 1 76 2 is_stmt 1 view .LVU49
+  77:Core/Src/main.c **** 	*(uint32_t *)(0x40020C00UL + 0x08UL) |= 0x400; // 5-ый пин MEDIUM скорость
+ 267              		.loc 1 77 2 view .LVU50
+ 268 0014 D3F8082C 		ldr	r2, [r3, #3080]
+ 269              		.loc 1 77 39 is_stmt 0 view .LVU51
+ 270 0018 42F48062 		orr	r2, r2, #1024
+ 271 001c C3F8082C 		str	r2, [r3, #3080]
+  78:Core/Src/main.c **** 	*(uint32_t *)(0x40020C00UL + 0x0CUL) |= 0x00;  // Отключение подтягивающих 
+ 272              		.loc 1 78 2 is_stmt 1 view .LVU52
+ 273 0020 12E0     		b	.L28
+ 274              	.L34:
+  79:Core/Src/main.c **** 
+  80:Core/Src/main.c **** 	while (1)
+  81:Core/Src/main.c **** 	{
+  82:Core/Src/main.c **** 
+  83:Core/Src/main.c **** 		current_time = time_count++ / 3000;
+  84:Core/Src/main.c **** 		if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0)
+  85:Core/Src/main.c **** 		{
+  86:Core/Src/main.c **** 			flag_button_1 = !flag_button_1;
+  87:Core/Src/main.c **** 		}
+  88:Core/Src/main.c **** 		if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_9) != 0)
+  89:Core/Src/main.c **** 		{
+  90:Core/Src/main.c **** 			flag_button_2 = !flag_button_2;
+  91:Core/Src/main.c **** 		}
+  92:Core/Src/main.c **** 		if (flag_button_1)
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 8
+
+
+  93:Core/Src/main.c **** 		{
+  94:Core/Src/main.c **** 			if ((current_time - last_button_press_time) > DEBOUNCE_DELAY / 5)
+  95:Core/Src/main.c **** 			{
+  96:Core/Src/main.c **** 				turn = !turn;
+  97:Core/Src/main.c **** 
+  98:Core/Src/main.c **** 				if (count == 6)
+  99:Core/Src/main.c **** 				{
+ 100:Core/Src/main.c **** 					all_leds_on = !all_leds_on;
+ 275              		.loc 1 100 6 view .LVU53
+ 276              		.loc 1 100 20 is_stmt 0 view .LVU54
+ 277 0022 394A     		ldr	r2, .L35+4
+ 278 0024 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 279 0026 B3FA83F3 		clz	r3, r3
+ 280 002a 5B09     		lsrs	r3, r3, #5
+ 281              		.loc 1 100 18 view .LVU55
+ 282 002c 1370     		strb	r3, [r2]
+ 101:Core/Src/main.c **** 					update_leds();
+ 283              		.loc 1 101 6 is_stmt 1 view .LVU56
+ 284 002e FFF7FEFF 		bl	update_leds
+ 285              	.LVL21:
+ 286              	.L27:
+ 102:Core/Src/main.c **** 				}
+ 103:Core/Src/main.c **** 				else if (turn == 1 || turn == 0)
+ 104:Core/Src/main.c **** 				{
+ 105:Core/Src/main.c **** 					current_led_position = (current_led_position + 1) % LED_COUNT;
+ 106:Core/Src/main.c **** 					update_leds();
+ 107:Core/Src/main.c **** 				}
+ 108:Core/Src/main.c **** 
+ 109:Core/Src/main.c **** 				last_button_press_time = current_time;
+ 287              		.loc 1 109 5 view .LVU57
+ 288              		.loc 1 109 28 is_stmt 0 view .LVU58
+ 289 0032 364B     		ldr	r3, .L35+8
+ 290 0034 1A68     		ldr	r2, [r3]
+ 291 0036 364B     		ldr	r3, .L35+12
+ 292 0038 1A60     		str	r2, [r3]
+ 293              	.L25:
+ 110:Core/Src/main.c **** 			}
+ 111:Core/Src/main.c **** 			flag_button_1 = 0;
+ 294              		.loc 1 111 4 is_stmt 1 view .LVU59
+ 295              		.loc 1 111 18 is_stmt 0 view .LVU60
+ 296 003a 364B     		ldr	r3, .L35+16
+ 297 003c 0022     		movs	r2, #0
+ 298 003e 1A60     		str	r2, [r3]
+ 299              	.L24:
+ 112:Core/Src/main.c **** 		}
+ 113:Core/Src/main.c **** 
+ 114:Core/Src/main.c **** 		if (flag_button_2)
+ 300              		.loc 1 114 3 is_stmt 1 view .LVU61
+ 301              		.loc 1 114 7 is_stmt 0 view .LVU62
+ 302 0040 354B     		ldr	r3, .L35+20
+ 303 0042 1B68     		ldr	r3, [r3]
+ 304              		.loc 1 114 6 view .LVU63
+ 305 0044 002B     		cmp	r3, #0
+ 306 0046 42D1     		bne	.L33
+ 307              	.L28:
+  80:Core/Src/main.c **** 	{
+ 308              		.loc 1 80 2 is_stmt 1 view .LVU64
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 9
+
+
+  83:Core/Src/main.c **** 		if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0)
+ 309              		.loc 1 83 3 view .LVU65
+  83:Core/Src/main.c **** 		if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0)
+ 310              		.loc 1 83 28 is_stmt 0 view .LVU66
+ 311 0048 344A     		ldr	r2, .L35+24
+ 312 004a 1368     		ldr	r3, [r2]
+ 313 004c 591C     		adds	r1, r3, #1
+ 314 004e 1160     		str	r1, [r2]
+  83:Core/Src/main.c **** 		if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0)
+ 315              		.loc 1 83 31 view .LVU67
+ 316 0050 334A     		ldr	r2, .L35+28
+ 317 0052 82FB0312 		smull	r1, r2, r2, r3
+ 318 0056 DB17     		asrs	r3, r3, #31
+ 319 0058 C3EBA213 		rsb	r3, r3, r2, asr #6
+  83:Core/Src/main.c **** 		if (READ_BIT(GPIOB->IDR, GPIO_IDR_IDR_8) != 0)
+ 320              		.loc 1 83 16 view .LVU68
+ 321 005c 2B4A     		ldr	r2, .L35+8
+ 322 005e 1360     		str	r3, [r2]
+  84:Core/Src/main.c **** 		{
+ 323              		.loc 1 84 3 is_stmt 1 view .LVU69
+  84:Core/Src/main.c **** 		{
+ 324              		.loc 1 84 7 is_stmt 0 view .LVU70
+ 325 0060 304A     		ldr	r2, .L35+32
+ 326 0062 1269     		ldr	r2, [r2, #16]
+  84:Core/Src/main.c **** 		{
+ 327              		.loc 1 84 6 view .LVU71
+ 328 0064 12F4807F 		tst	r2, #256
+ 329 0068 05D0     		beq	.L22
+  86:Core/Src/main.c **** 		}
+ 330              		.loc 1 86 4 is_stmt 1 view .LVU72
+  86:Core/Src/main.c **** 		}
+ 331              		.loc 1 86 20 is_stmt 0 view .LVU73
+ 332 006a 2A49     		ldr	r1, .L35+16
+ 333 006c 0A68     		ldr	r2, [r1]
+ 334 006e B2FA82F2 		clz	r2, r2
+ 335 0072 5209     		lsrs	r2, r2, #5
+  86:Core/Src/main.c **** 		}
+ 336              		.loc 1 86 18 view .LVU74
+ 337 0074 0A60     		str	r2, [r1]
+ 338              	.L22:
+  88:Core/Src/main.c **** 		{
+ 339              		.loc 1 88 3 is_stmt 1 view .LVU75
+  88:Core/Src/main.c **** 		{
+ 340              		.loc 1 88 7 is_stmt 0 view .LVU76
+ 341 0076 2B4A     		ldr	r2, .L35+32
+ 342 0078 1269     		ldr	r2, [r2, #16]
+  88:Core/Src/main.c **** 		{
+ 343              		.loc 1 88 6 view .LVU77
+ 344 007a 12F4007F 		tst	r2, #512
+ 345 007e 05D0     		beq	.L23
+  90:Core/Src/main.c **** 		}
+ 346              		.loc 1 90 4 is_stmt 1 view .LVU78
+  90:Core/Src/main.c **** 		}
+ 347              		.loc 1 90 20 is_stmt 0 view .LVU79
+ 348 0080 2549     		ldr	r1, .L35+20
+ 349 0082 0A68     		ldr	r2, [r1]
+ 350 0084 B2FA82F2 		clz	r2, r2
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 10
+
+
+ 351 0088 5209     		lsrs	r2, r2, #5
+  90:Core/Src/main.c **** 		}
+ 352              		.loc 1 90 18 view .LVU80
+ 353 008a 0A60     		str	r2, [r1]
+ 354              	.L23:
+  92:Core/Src/main.c **** 		{
+ 355              		.loc 1 92 3 is_stmt 1 view .LVU81
+  92:Core/Src/main.c **** 		{
+ 356              		.loc 1 92 7 is_stmt 0 view .LVU82
+ 357 008c 214A     		ldr	r2, .L35+16
+ 358 008e 1268     		ldr	r2, [r2]
+  92:Core/Src/main.c **** 		{
+ 359              		.loc 1 92 6 view .LVU83
+ 360 0090 002A     		cmp	r2, #0
+ 361 0092 D5D0     		beq	.L24
+  94:Core/Src/main.c **** 			{
+ 362              		.loc 1 94 4 is_stmt 1 view .LVU84
+  94:Core/Src/main.c **** 			{
+ 363              		.loc 1 94 22 is_stmt 0 view .LVU85
+ 364 0094 1E4A     		ldr	r2, .L35+12
+ 365 0096 1268     		ldr	r2, [r2]
+ 366 0098 9B1A     		subs	r3, r3, r2
+  94:Core/Src/main.c **** 			{
+ 367              		.loc 1 94 7 view .LVU86
+ 368 009a 0A2B     		cmp	r3, #10
+ 369 009c CDDD     		ble	.L25
+  96:Core/Src/main.c **** 
+ 370              		.loc 1 96 5 is_stmt 1 view .LVU87
+  96:Core/Src/main.c **** 
+ 371              		.loc 1 96 12 is_stmt 0 view .LVU88
+ 372 009e 224A     		ldr	r2, .L35+36
+ 373 00a0 1368     		ldr	r3, [r2]
+ 374 00a2 B3FA83F3 		clz	r3, r3
+ 375 00a6 5B09     		lsrs	r3, r3, #5
+  96:Core/Src/main.c **** 
+ 376              		.loc 1 96 10 view .LVU89
+ 377 00a8 1360     		str	r3, [r2]
+  98:Core/Src/main.c **** 				{
+ 378              		.loc 1 98 5 is_stmt 1 view .LVU90
+  98:Core/Src/main.c **** 				{
+ 379              		.loc 1 98 15 is_stmt 0 view .LVU91
+ 380 00aa 204B     		ldr	r3, .L35+40
+ 381 00ac 1B68     		ldr	r3, [r3]
+  98:Core/Src/main.c **** 				{
+ 382              		.loc 1 98 8 view .LVU92
+ 383 00ae 062B     		cmp	r3, #6
+ 384 00b0 B7D0     		beq	.L34
+ 103:Core/Src/main.c **** 				{
+ 385              		.loc 1 103 10 is_stmt 1 view .LVU93
+ 105:Core/Src/main.c **** 					update_leds();
+ 386              		.loc 1 105 6 view .LVU94
+ 105:Core/Src/main.c **** 					update_leds();
+ 387              		.loc 1 105 51 is_stmt 0 view .LVU95
+ 388 00b2 1F49     		ldr	r1, .L35+44
+ 389 00b4 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 390 00b6 0132     		adds	r2, r2, #1
+ 105:Core/Src/main.c **** 					update_leds();
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 11
+
+
+ 391              		.loc 1 105 56 view .LVU96
+ 392 00b8 1E4B     		ldr	r3, .L35+48
+ 393 00ba 83FB0203 		smull	r0, r3, r3, r2
+ 394 00be 03EB4303 		add	r3, r3, r3, lsl #1
+ 395 00c2 5800     		lsls	r0, r3, #1
+ 396 00c4 131A     		subs	r3, r2, r0
+ 105:Core/Src/main.c **** 					update_leds();
+ 397              		.loc 1 105 27 view .LVU97
+ 398 00c6 0B70     		strb	r3, [r1]
+ 106:Core/Src/main.c **** 				}
+ 399              		.loc 1 106 6 is_stmt 1 view .LVU98
+ 400 00c8 FFF7FEFF 		bl	update_leds
+ 401              	.LVL22:
+ 402 00cc B1E7     		b	.L27
+ 403              	.L33:
+ 115:Core/Src/main.c **** 		{
+ 116:Core/Src/main.c **** 			if ((current_time - last_button_press_time_0) > DEBOUNCE_DELAY)
+ 404              		.loc 1 116 4 view .LVU99
+ 405              		.loc 1 116 22 is_stmt 0 view .LVU100
+ 406 00ce 0F4B     		ldr	r3, .L35+8
+ 407 00d0 1B68     		ldr	r3, [r3]
+ 408 00d2 194A     		ldr	r2, .L35+52
+ 409 00d4 1268     		ldr	r2, [r2]
+ 410 00d6 9B1A     		subs	r3, r3, r2
+ 411              		.loc 1 116 7 view .LVU101
+ 412 00d8 322B     		cmp	r3, #50
+ 413 00da 0EDD     		ble	.L29
+ 117:Core/Src/main.c **** 			{
+ 118:Core/Src/main.c **** 				count++;
+ 414              		.loc 1 118 5 is_stmt 1 view .LVU102
+ 415              		.loc 1 118 10 is_stmt 0 view .LVU103
+ 416 00dc 134A     		ldr	r2, .L35+40
+ 417 00de 1368     		ldr	r3, [r2]
+ 418 00e0 0133     		adds	r3, r3, #1
+ 419 00e2 1360     		str	r3, [r2]
+ 119:Core/Src/main.c **** 				if (count > 6)
+ 420              		.loc 1 119 5 is_stmt 1 view .LVU104
+ 421              		.loc 1 119 8 is_stmt 0 view .LVU105
+ 422 00e4 062B     		cmp	r3, #6
+ 423 00e6 02DD     		ble	.L30
+ 120:Core/Src/main.c **** 				{
+ 121:Core/Src/main.c **** 					count = 0;
+ 424              		.loc 1 121 6 is_stmt 1 view .LVU106
+ 425              		.loc 1 121 12 is_stmt 0 view .LVU107
+ 426 00e8 1346     		mov	r3, r2
+ 427 00ea 0022     		movs	r2, #0
+ 428 00ec 1A60     		str	r2, [r3]
+ 429              	.L30:
+ 122:Core/Src/main.c **** 				}
+ 123:Core/Src/main.c **** 				update_leds();
+ 430              		.loc 1 123 5 is_stmt 1 view .LVU108
+ 431 00ee FFF7FEFF 		bl	update_leds
+ 432              	.LVL23:
+ 124:Core/Src/main.c **** 				last_button_press_time_0 = current_time;
+ 433              		.loc 1 124 5 view .LVU109
+ 434              		.loc 1 124 30 is_stmt 0 view .LVU110
+ 435 00f2 064B     		ldr	r3, .L35+8
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 12
+
+
+ 436 00f4 1A68     		ldr	r2, [r3]
+ 437 00f6 104B     		ldr	r3, .L35+52
+ 438 00f8 1A60     		str	r2, [r3]
+ 439              	.L29:
+ 125:Core/Src/main.c **** 			}
+ 126:Core/Src/main.c **** 			flag_button_2 = 0;
+ 440              		.loc 1 126 4 is_stmt 1 view .LVU111
+ 441              		.loc 1 126 18 is_stmt 0 view .LVU112
+ 442 00fa 074B     		ldr	r3, .L35+20
+ 443 00fc 0022     		movs	r2, #0
+ 444 00fe 1A60     		str	r2, [r3]
+ 445 0100 A2E7     		b	.L28
+ 446              	.L36:
+ 447 0102 00BF     		.align	2
+ 448              	.L35:
+ 449 0104 00000240 		.word	1073872896
+ 450 0108 00000000 		.word	all_leds_on
+ 451 010c 00000000 		.word	current_time
+ 452 0110 00000000 		.word	last_button_press_time
+ 453 0114 00000000 		.word	flag_button_1
+ 454 0118 00000000 		.word	flag_button_2
+ 455 011c 00000000 		.word	time_count
+ 456 0120 F1197605 		.word	91625969
+ 457 0124 00040240 		.word	1073873920
+ 458 0128 00000000 		.word	turn
+ 459 012c 00000000 		.word	count
+ 460 0130 00000000 		.word	current_led_position
+ 461 0134 ABAAAA2A 		.word	715827883
+ 462 0138 00000000 		.word	last_button_press_time_0
+ 463              		.cfi_endproc
+ 464              	.LFE131:
+ 466              		.global	all_leds_on
+ 467              		.section	.data.all_leds_on,"aw"
+ 470              	all_leds_on:
+ 471 0000 01       		.byte	1
+ 472              		.global	current_led_position
+ 473              		.section	.bss.current_led_position,"aw",%nobits
+ 476              	current_led_position:
+ 477 0000 00       		.space	1
+ 478              		.global	time_count
+ 479              		.section	.bss.time_count,"aw",%nobits
+ 480              		.align	2
+ 483              	time_count:
+ 484 0000 00000000 		.space	4
+ 485              		.global	current_time
+ 486              		.section	.bss.current_time,"aw",%nobits
+ 487              		.align	2
+ 490              	current_time:
+ 491 0000 00000000 		.space	4
+ 492              		.global	last_button_press_time_0
+ 493              		.section	.bss.last_button_press_time_0,"aw",%nobits
+ 494              		.align	2
+ 497              	last_button_press_time_0:
+ 498 0000 00000000 		.space	4
+ 499              		.global	last_button_press_time
+ 500              		.section	.bss.last_button_press_time,"aw",%nobits
+ 501              		.align	2
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 13
+
+
+ 504              	last_button_press_time:
+ 505 0000 00000000 		.space	4
+ 506              		.global	flag_button_2
+ 507              		.section	.bss.flag_button_2,"aw",%nobits
+ 508              		.align	2
+ 511              	flag_button_2:
+ 512 0000 00000000 		.space	4
+ 513              		.global	flag_button_1
+ 514              		.section	.bss.flag_button_1,"aw",%nobits
+ 515              		.align	2
+ 518              	flag_button_1:
+ 519 0000 00000000 		.space	4
+ 520              		.global	count
+ 521              		.section	.bss.count,"aw",%nobits
+ 522              		.align	2
+ 525              	count:
+ 526 0000 00000000 		.space	4
+ 527              		.global	turn
+ 528              		.section	.bss.turn,"aw",%nobits
+ 529              		.align	2
+ 532              	turn:
+ 533 0000 00000000 		.space	4
+ 534              		.text
+ 535              	.Letext0:
+ 536              		.file 2 "C:/LB_Np/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_
+ 537              		.file 3 "C:/LB_Np/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 538              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f411xe.h"
+ 539              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:21     .text.update_leds:00000000 $t
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:27     .text.update_leds:00000000 update_leds
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:159    .text.update_leds:000000b0 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:165    .text.update_leds:000000c8 $t
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:228    .text.update_leds:00000104 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:525    .bss.count:00000000 count
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:470    .data.all_leds_on:00000000 all_leds_on
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:476    .bss.current_led_position:00000000 current_led_position
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:240    .text.main:00000000 $t
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:246    .text.main:00000000 main
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:449    .text.main:00000104 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:490    .bss.current_time:00000000 current_time
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:504    .bss.last_button_press_time:00000000 last_button_press_time
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:518    .bss.flag_button_1:00000000 flag_button_1
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:511    .bss.flag_button_2:00000000 flag_button_2
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:483    .bss.time_count:00000000 time_count
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:532    .bss.turn:00000000 turn
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:497    .bss.last_button_press_time_0:00000000 last_button_press_time_0
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:477    .bss.current_led_position:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:480    .bss.time_count:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:487    .bss.current_time:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:494    .bss.last_button_press_time_0:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:501    .bss.last_button_press_time:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:508    .bss.flag_button_2:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:515    .bss.flag_button_1:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:522    .bss.count:00000000 $d
+C:\Users\vvman\AppData\Local\Temp\ccWsSuYC.s:529    .bss.turn:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
