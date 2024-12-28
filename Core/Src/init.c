@@ -1,140 +1,137 @@
 #include "init.h"
 
-void RCC_Ini(void)
+//===== 1) System Clock 配置 =====
+// 下面是一个典型的 180MHz 配置示例(PLL), 具体数值请结合实际情况或CubeMX生成
+void SystemClock_Config(void)
 {
-    // [1] 清理 RCC 寄存器 (内部HSI,PLL等复位)
-    MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
-    CLEAR_REG(RCC->CFGR);
-    while(READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
-    CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
-    while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON);
-    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET);
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
+    // 这里给出一个简化的示例，实际项目中常用 CubeMX 配置或手动完善
+    // 启用HSE / 配置PLL / 切换系统时钟到PLL / 设置总线分频 等等
+    // 为示例起见，这里可能只是默认HSI或做最小配置
 
-    // [2] 启用外部时钟HSE
-    SET_BIT(RCC->CR, RCC_CR_HSEON);
-    while(READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
-    SET_BIT(RCC->CR, RCC_CR_CSSON);
-
-    // [3] 配置PLL => 得到180MHz
-    CLEAR_REG(RCC->PLLCFGR);
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
-    // 将 HSE(8MHz或16MHz) 先分频到2MHz，再×180，再除2 => 180MHz
-    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2); 
-    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk,
-               RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 |
-               RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7 );
-    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk);
-    SET_BIT(RCC->CR, RCC_CR_PLLON);
-    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
-
-    // [4] 选择PLL做System Clock & 配置分频
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE,  RCC_CFGR_HPRE_DIV1);
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4);
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2);
-
-    // [5] Flash 等待周期设置
-    MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
-}
-
-void GPIO_Ini(void)
-{
-    // 打开GPIOB、GPIOC时钟
-    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
-
-    // [LED引脚: PB0,1,2,6,7,14 => output]
-    // 这里示例直接把 PB0/1/2/6/7/14 都设为推挽输出
-    SET_BIT(GPIOB->MODER, 
-            GPIO_MODER_MODE0_0  | GPIO_MODER_MODE1_0  |
-            GPIO_MODER_MODE2_0  | GPIO_MODER_MODE6_0  |
-            GPIO_MODER_MODE7_0  | GPIO_MODER_MODE14_0);
-    CLEAR_BIT(GPIOB->OTYPER, 
-            GPIO_OTYPER_OT0  | GPIO_OTYPER_OT1  |
-            GPIO_OTYPER_OT2  | GPIO_OTYPER_OT6  |
-            GPIO_OTYPER_OT7  | GPIO_OTYPER_OT14);
-    // 速度设中等
-    SET_BIT(GPIOB->OSPEEDR,
-            GPIO_OSPEEDER_OSPEEDR0_0  | GPIO_OSPEEDER_OSPEEDR1_0  |
-            GPIO_OSPEEDER_OSPEEDR2_0  | GPIO_OSPEEDER_OSPEEDR6_0  |
-            GPIO_OSPEEDER_OSPEEDR7_0  | GPIO_OSPEEDER_OSPEEDR14_0);
-    // 无上下拉
-    CLEAR_BIT(GPIOB->PUPDR,
-            GPIO_PUPDR_PUPDR0  | GPIO_PUPDR_PUPDR1  |
-            GPIO_PUPDR_PUPDR2  | GPIO_PUPDR_PUPDR6  |
-            GPIO_PUPDR_PUPDR7  | GPIO_PUPDR_PUPDR14 );
-
-    // [按键: PC13, PC6, PC7 => Input 下拉]
-    // 说明：板载按键通常接PC13。外部按键接PC6,7。
-    //       使用下拉方式(PULL-DOWN)，按下时电平为高
-    CLEAR_BIT(GPIOC->MODER, 
-              GPIO_MODER_MODE13 | GPIO_MODER_MODE6 | GPIO_MODER_MODE7);
-    SET_BIT(GPIOC->PUPDR, 
-            GPIO_PUPDR_PUPD13_1 | GPIO_PUPDR_PUPD6_1 | GPIO_PUPDR_PUPD7_1);
-}
-
-void EXTI_ITR_Ini(void)
-{
-    // 使能 SYSCFG 时钟
-    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
-
-    // ---------------- 按键1: PC13 => EXTI13 ----------------
-    MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, 
-               SYSCFG_EXTICR4_EXTI13_PC);  // 这里库里有现成宏
-    SET_BIT(EXTI->IMR,  EXTI_IMR_MR13);
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13);  
-    CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR13);
-
-    // ---------------- 按键2: PC6 => EXTI6 ----------------
-    // 对应 SYSCFG->EXTICR[1] (EXTICR2)，bits [27..24]
-    // 先清除 0xF << 24，再写入 2 << 24 (表示 PC=2)
-    MODIFY_REG(SYSCFG->EXTICR[1],
-               (0xFU << 24),   // 要清除的掩码
-               (2U << 24));    // 要设置的值 (PC=2)
+    // [伪代码/占位] 仅保证能够正常跑
+    RCC->CR |= RCC_CR_HSION;                  // 打开HSI
+    while ((RCC->CR & RCC_CR_HSIRDY) == 0);   // 等待HSI就绪
     
-    SET_BIT(EXTI->IMR,  EXTI_IMR_MR6);
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR6);
-    CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR6);
-
-    // ---------------- 按键3: PC7 => EXTI7 ----------------
-    // 同样在 SYSCFG->EXTICR[1]，bits [31..28]
-    MODIFY_REG(SYSCFG->EXTICR[1],
-               (0xFU << 28),
-               (2U << 28));  // PC=2
-
-    SET_BIT(EXTI->IMR,  EXTI_IMR_MR7);
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR7);
-    CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR7);
-
-    // ---------------- NVIC 优先级 + 使能中断 ----------------
-    // EXTI9_5 用于 PC6/7， EXTI15_10 用于 PC13
-    NVIC_SetPriority(EXTI9_5_IRQn, 
-                     NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0));
-    NVIC_EnableIRQ(EXTI9_5_IRQn);
-
-    NVIC_SetPriority(EXTI15_10_IRQn, 
-                     NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 1));
-    NVIC_EnableIRQ(EXTI15_10_IRQn);
+    // 让 SystemCoreClock = 16MHz (假设)
+    // 如果你需要更高主频，请参考参考手册配置PLL
+    // ...
+    SystemCoreClock = 16000000U; // 用于 SysTick 计算
 }
 
-void SysTick_Init(void)
+//===== 2) GPIO 初始化 =====
+void GPIO_Init_All(void)
 {
-    // 关闭 SysTick
-    CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);
+    // 1. 使能各 GPIO 时钟
+    //    - 我们用到 GPIOB (6个LED), GPIOC (3个按键)
+    RCC->AHB1ENR |= (1 << 1); // Enable GPIOB
+    RCC->AHB1ENR |= (1 << 2); // Enable GPIOC
 
-    // 使能中断
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk);
+    //---------- 配置 6 个 LED 引脚 (PB0, PB1, PB2, PB6, PB7, PB14) 为输出 ----------
+    // 每个引脚 2 位 (MODER寄存器)
+    // 00: Input, 01: Output, 10: AF, 11: Analog
+    // 这里直接用 "位操作" 或 "MODIFY_REG" 宏均可
 
-    // 使用 CPU (AHB) 时钟
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk);
+    // PB0 => bit 0*2 = 0..1
+    // PB1 => bit 1*2 = 2..3
+    // PB2 => bit 2*2 = 4..5
+    // PB6 => bit 6*2 = 12..13
+    // PB7 => bit 7*2 = 14..15
+    // PB14 => bit 14*2 = 28..29
+    // 先清零，再置对应位为 01 (Output)
+    
+    // 清零
+    GPIOB->MODER &= ~(
+        (3 << (0*2))  | (3 << (1*2))  | (3 << (2*2))  |
+        (3 << (6*2))  | (3 << (7*2))  | (3 << (14*2))
+    );
+    // 置 01
+    GPIOB->MODER |= (
+        (1 << (0*2))  | (1 << (1*2))  | (1 << (2*2))  |
+        (1 << (6*2))  | (1 << (7*2))  | (1 << (14*2))
+    );
 
-    // 1ms的节拍 => CPU=180MHz => 180000=>1ms
-    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, (180000 - 1));
-    // 清零计数器
-    WRITE_REG(SysTick->VAL, 0U);
+    // 默认先关闭所有 LED (取决于你的硬件，假设输出=0是灭)
+    GPIOB->BSRR = (
+        (1 << (0+16)) | (1 << (1+16)) | (1 << (2+16)) |
+        (1 << (6+16)) | (1 << (7+16)) | (1 << (14+16))
+    );
 
-    // 开启 SysTick
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);
+    //---------- 配置 3 个按键 (PC13, PC6, PC7) 为输入(下拉) ----------
+    // 先清零
+    GPIOC->MODER &= ~(
+        (3 << (13*2)) | (3 << (6*2)) | (3 << (7*2))
+    );
+    // 不设置为上拉/下拉模式时，需要靠外部电路下拉。
+    // 如果需要软件下拉，可写:
+    //   GPIOC->PUPDR &= ~(...);
+    //   GPIOC->PUPDR |= (1 << (13*2)) ... (下拉)
+    // 这里假设你板子硬件已做好了下拉，所以可不额外配置PUPDR
+
+    // 好，GPIO 就绪
+}
+
+//===== 3) EXTI 初始化 =====
+// PC13 => EXTI13, PC6 => EXTI6, PC7 => EXTI7
+// 因为 PC6、PC7 都在 EXTI9_5 中断向量里，PC13 在 EXTI15_10
+void EXTI_Init_All(void)
+{
+    // 1. 使能 SYSCFG 时钟 (EXTI 配置需要)
+    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+
+    //--------- PC13 => EXTI13 ----------
+    SYSCFG->EXTICR[3] &= ~(0xF << (4*(13-12))); //清零
+    SYSCFG->EXTICR[3] |=  (0x2 << (4*(13-12))); // PC = 2, 写到EXTICR[3]对应bits
+    // 使能中断, 下降沿/上升沿 (你说按下是高电平，可根据需要选择上升沿)
+    // 如果默认下拉，按下变高，则用上升沿
+    EXTI->IMR  |=  (1 << 13);
+    EXTI->RTSR |=  (1 << 13);  // 上升沿
+    //EXTI->FTSR |=  (1 << 13); // 如果要检测松开，可用下降沿
+
+    // 启用 EXTI15_10_IRQn
+    NVIC_EnableIRQ(EXTI15_10_IRQn);
+    NVIC_SetPriority(EXTI15_10_IRQn, 2);
+
+    //--------- PC6 => EXTI6 ----------
+    // PC6 对应 EXTICR[1] 的 4*(6-4) = 8..11 位
+    SYSCFG->EXTICR[1] &= ~(0xF << (4*(6-4)));
+    SYSCFG->EXTICR[1] |=  (0x2 << (4*(6-4)));  // PC = 2
+    EXTI->IMR  |=  (1 << 6);
+    EXTI->RTSR |=  (1 << 6);
+
+    //--------- PC7 => EXTI7 ----------
+    // PC7 对应 EXTICR[1] 的 4*(7-4) = 12..15 位
+    SYSCFG->EXTICR[1] &= ~(0xF << (4*(7-4)));
+    SYSCFG->EXTICR[1] |=  (0x2 << (4*(7-4)));  // PC = 2
+    EXTI->IMR  |=  (1 << 7);
+    EXTI->RTSR |=  (1 << 7);
+
+    // PC6、PC7 都属于 EXTI9_5 的中断向量
+    NVIC_EnableIRQ(EXTI9_5_IRQn);
+    NVIC_SetPriority(EXTI9_5_IRQn, 2);
+}
+
+//===== 4) SysTick 初始化 =====
+void SysTick_Init(uint32_t ticks)
+{
+    // SysTick 配置，让它每 `ticks` 个 CPU Cycle 触发一次中断
+    // 常见是 1ms = SystemCoreClock/1000
+    SysTick->LOAD  = ticks - 1;
+    SysTick->VAL   = 0; 
+    SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk
+                   | SysTick_CTRL_TICKINT_Msk
+                   | SysTick_CTRL_ENABLE_Msk;
+}
+
+void User_Delay(volatile uint32_t ms)
+{
+    // 简单 busy-wait
+    // 如果 SysTick 频率 1ms 一次，则：
+    for(uint32_t i=0; i<ms; i++)
+    {
+        // 这里可以插入 nop 或判断 SysTick 标志
+        for(volatile uint32_t j=0; j<2000; j++) 
+        {
+            __NOP();
+        }
+    }
 }

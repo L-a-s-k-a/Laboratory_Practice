@@ -1,169 +1,201 @@
+#include "stm32f4xx.h"
 #include "init.h"
-#include "it_handlers.h"
-#include <stdbool.h>
+#include <stdint.h>
 
-// ------------------- 全局变量 -------------------
-// 1ms 计数
-volatile uint32_t g_systickCount = 0;
+//-------------------------- 全局变量定义 --------------------------//
+volatile uint32_t GlobalTickCount = 0;         // SysTick 累计
+volatile uint32_t ExternInterruptTickCount = 0; // 用于简单防抖
 
-// 当前工作模式：1=模式1(对灯)，2=模式2(单独闪烁)
-volatile uint8_t  g_workMode = 1;  
+volatile uint8_t  CurrentMode = 1;  // 默认上电后 => 模式1
 
-// 模式1频率索引(0..2) => 0=>0.5Hz,1=>1.7Hz,2=>2.2Hz
-volatile uint8_t  g_mode1FreqIndex = 0;
+//-------------------------------------------------
+// 模式1 (对灯) 相关
+//-------------------------------------------------
+#define NUM_MODE1_FREQ 3
+// 0.5Hz => 2000ms, 1.7Hz => ~588ms, 2.2Hz => ~455ms
+static const uint32_t Mode1Periods[NUM_MODE1_FREQ] = {2000, 588, 455};
+volatile uint8_t  M1FreqIndex = 0;            // 对灯频率档 (0..2)
+volatile uint8_t  M1Step = 0;                 // 0..2 => (3&4),(2&5),(1&6)
+volatile uint32_t M1NextToggleTime = 0;       // 下次切换时刻
 
-// 模式2下，每个LED的频率索引(0..2=已激活，或可用-1表示未激活)
-volatile uint8_t  g_currentLedIndex[6] = {255,255,255,255,255,255}; 
-// 也可用 -1 表示“尚未激活过”，此处 255 仅是演示
+//-------------------------------------------------
+// 模式2 (多灯独立闪烁) 相关
+//-------------------------------------------------
+#define NUM_MODE2_FREQ 3
+// 0.3Hz => 3333ms, 0.8Hz => 1250ms, 1.4Hz => 714ms
+static const uint32_t Mode2Periods[NUM_MODE2_FREQ] = {3333, 1250, 714};
 
-// 模式2下，当前选中的LED编号(0..5)
-volatile uint8_t  g_selectedLed = 0;
+// 每个 LED 是否激活闪烁
+volatile uint8_t  LedActive[6] = {0,0,0,0,0,0};  
+// 每个 LED 的频率档位
+volatile uint8_t  LedFreqIndex[6] = {0,0,0,0,0,0};
+// 记录下次该 LED 进行「翻转」的时刻
+static uint32_t   LedNextToggleTime[6] = {0,0,0,0,0,0};
+// 当前 LED 的开/关状态 (0=灭,1=亮)
+static uint8_t    LedState[6] = {0,0,0,0,0,0};
 
+// 当前选中的 LED (0..5 => 对应“1~6号灯”)
+volatile uint8_t  M2SelectedLed = 0; 
 
-// ------------------- 对灯切换/独立闪烁用的一些参数 -------------------
+//-------------------------------------------------
+// LED 与引脚的对应关系 (0..5)
+// 0->PB0, 1->PB1, 2->PB2, 3->PB6, 4->PB7, 5->PB14
+//-------------------------------------------------
+static const uint8_t LED_PIN[6] = {0,1,2,6,7,14};
 
-// 模式1的三档周期(毫秒)
-// 例如 0.5Hz => 2000ms 切换下一对
-//      1.7Hz => ~588ms
-//      2.2Hz => ~455ms (四舍五入)
-static const uint16_t mode1_periods[3] = {2000, 588, 455};
+//----------------- 函数声明 -----------------//
+static void SetLed(uint8_t ledIndex, uint8_t on);
+void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex);
+void Mode2_DeactivateAll(void);
 
-// 当前对灯编号(0..2 => 分别表示(3&4),(2&5),(1&6))
-static uint8_t   currentPairIndex = 0;
-static uint32_t  lastMode1SwitchTime = 0;
-
-// 模式2的三档半周期(或整周期) => 为了闪烁，每过此ms就 toggle
-// 频率0.3Hz => 周期=3333ms => toggle一次=3333ms
-// 频率0.8Hz => 周期=1250ms
-// 频率1.4Hz => 周期= ~714ms
-// 也可根据需要用半周期或其他写法
-static const uint16_t mode2_periods[3] = {3333, 1250, 714};
-
-// 记录每个LED的“上次toggle时刻”
-static uint32_t lastToggleTime[6] = {0,0,0,0,0,0};
-
-// ------------------- 函数声明 -------------------
-static void mode1_process(void);
-static void mode2_process(void);
-
+//-------------------------------------------------
+// main()
+//-------------------------------------------------
 int main(void)
 {
-    // 1. 硬件初始化
-    RCC_Ini();
-    GPIO_Ini();
-    EXTI_ITR_Ini();
-    SysTick_Init();
+    // 1. 初始化系统时钟
+    SystemClock_Config();
 
-    // 开机默认是模式1, freq=最慢(0.5Hz)
-    g_mode1FreqIndex = 0; 
-    // 确保“对灯”从 (3&4) 开始
-    currentPairIndex = 0;
-    lastMode1SwitchTime = g_systickCount;
+    // 2. 初始化 SysTick => 1ms一次中断 (假设16MHz, 则 SysTick->LOAD=16000-1)
+    SysTick_Init(SystemCoreClock / 1000);
 
-    // 主循环
-    while (1)
+    // 3. 初始化所有 GPIO
+    GPIO_Init_All();
+
+    // 4. 初始化 EXTI (3 个按键)
+    EXTI_Init_All();
+
+    // 5. 上电默认模式 1, 对灯频率设为最慢(0.5Hz => M1FreqIndex=0)
+    M1FreqIndex = 0;
+    M1Step = 0;
+    M1NextToggleTime = 0; // 立即在主循环里进行第一次切换
+
+    while(1)
     {
-        if (g_workMode == 1)
+        if(CurrentMode == 1)
         {
-            mode1_process();
-        }
-        else
-        {
-            mode2_process();
-        }
-    }
-    // 不会到达这里
-    // return 0;
-}
-
-// ------------------- 模式1逻辑：对灯切换 -------------------
-static void mode1_process(void)
-{
-    // 计算本模式下的切换周期
-    uint16_t period = mode1_periods[g_mode1FreqIndex];
-
-    // 判断是否到切换时间
-    uint32_t now = g_systickCount;
-    if ((now - lastMode1SwitchTime) >= period)
-    {
-        lastMode1SwitchTime = now;
-
-        // 切换到下一对
-        currentPairIndex = (currentPairIndex + 1) % 3;
-    }
-
-    // 根据 currentPairIndex 点亮相应对灯，其余熄灭
-    // 三对: pair0=(3,4), pair1=(2,5), pair2=(1,6)
-    // LED编号与IO对应关系，请您根据实际修改
-    // 假设: LED#1=>PB14, #2=>PB7, #3=>PB0, #4=>PB2, #5=>PB6, #6=>PB1
-    // 则 (3,4) => PB0 & PB2, (2,5) => PB7 & PB6, (1,6)=>PB14 & PB1
-    // 这里可以直接写“把所有LED关掉，然后打开需要的那两个”
-
-    // 先关全部
-    GPIOB->BSRR = ( LED1_PIN | LED2_PIN | LED3_PIN |
-                    LED4_PIN | LED5_PIN | LED6_PIN ) << 16;
-
-    switch (currentPairIndex)
-    {
-    case 0: // (3&4)
-        // 对应 LED3_PIN, LED4_PIN
-        GPIOB->BSRR = LED3_PIN | LED4_PIN;
-        break;
-    case 1: // (2&5)
-        GPIOB->BSRR = LED2_PIN | LED5_PIN;
-        break;
-    case 2: // (1&6)
-        GPIOB->BSRR = LED1_PIN | LED6_PIN;
-        break;
-    default:
-        break;
-    }
-}
-
-// ------------------- 模式2逻辑：多LED独立闪烁 -------------------
-static void mode2_process(void)
-{
-    uint32_t now = g_systickCount;
-
-    // 依次检查6个LED
-    for (uint8_t i = 0; i < 6; i++)
-    {
-        // 查看该LED的freqIndex(0..2=>有效, 255或-1=>未激活)
-        if (g_currentLedIndex[i] <= 2)
-        {
-            // 该LED已被激活
-            uint16_t period = mode2_periods[g_currentLedIndex[i]];
-            // 若到期 => toggle
-            if ((now - lastToggleTime[i]) >= period)
+            //--------- 模式1：对灯循环 ---------
+            // 如果到了切换时间
+            if(GlobalTickCount >= M1NextToggleTime)
             {
-                lastToggleTime[i] = now;
-                // 翻转: 使用 ODR 方式
-                // LED i => PB? => 需与您实际硬件对应
-                // 下例假设 i=0=>PB14, i=1=>PB7, i=2=>PB0, ...
-                // 为简化，这里直接示例：通过 ODR ^=
-                // 您也可用 BSRR 方式
+                // 更新下次切换时刻
+                M1NextToggleTime = GlobalTickCount + Mode1Periods[M1FreqIndex];
 
-                uint32_t odrMask = 0;
-                switch(i)
+                // M1Step 依次在 0..2 之间循环
+                M1Step = (M1Step + 1) % 3;
+                
+                // 先关掉所有 LED
+                for(uint8_t i=0; i<6; i++)
                 {
-                case 0: odrMask = GPIO_ODR_OD14; break;
-                case 1: odrMask = GPIO_ODR_OD7;  break;
-                case 2: odrMask = GPIO_ODR_OD0;  break;
-                case 3: odrMask = GPIO_ODR_OD2;  break;
-                case 4: odrMask = GPIO_ODR_OD6;  break;
-                case 5: odrMask = GPIO_ODR_OD1;  break;
-                default: break;
+                    SetLed(i, 0);
                 }
-                GPIOB->ODR ^= odrMask; 
+
+                // 根据 M1Step 开对应对儿
+                // 题目给的三对是 (3&4), (2&5), (1&6)
+                // 但要注意：你文档里写的“(3&4)”指第三第四颗LED，
+                // 这里在数组里：LED2是PB2, LED3是PB6, LED4是PB7, LED5是PB14... 
+                // 有些混淆。此处的写法仅示例，可根据你实际 "编号" 对应关系做调整。
+                // 我这里假设：LED0=第1个灯, LED1=第2个灯, LED2=第3个灯, LED3=第4个灯, LED4=第5个灯, LED5=第6个灯
+                // 那么 "对" (3&4) => LED2,LED3; (2&5) => LED1,LED4; (1&6) => LED0,LED5
+                switch(M1Step)
+                {
+                    case 0: // (3&4)
+                        SetLed(2, 1); 
+                        SetLed(3, 1);
+                        break;
+                    case 1: // (2&5)
+                        SetLed(1, 1);
+                        SetLed(4, 1);
+                        break;
+                    case 2: // (1&6)
+                        SetLed(0, 1);
+                        SetLed(5, 1);
+                        break;
+                }
             }
         }
         else
         {
-            // 未激活 => 保持熄灭
-            // 如果您想让未激活LED始终熄灭，可在此手动清零
-            // 但只要前面没设置，应该已经是灭的状态
-        }
-    }
+            //--------- 模式2：多LED独立闪烁 ---------
+            // 逐个LED检查是否激活
+            for(uint8_t i=0; i<6; i++)
+            {
+                if(LedActive[i] == 1)
+                {
+                    // 看是否到了该翻转的时刻
+                    uint32_t period = Mode2Periods[ LedFreqIndex[i] ];
+                    if(GlobalTickCount >= LedNextToggleTime[i])
+                    {
+                        // 翻转
+                        if(LedState[i] == 0)
+                        {
+                            SetLed(i, 1);
+                            LedState[i] = 1;
+                        }
+                        else
+                        {
+                            SetLed(i, 0);
+                            LedState[i] = 0;
+                        }
 
-    // 其余逻辑：若需要在模式2下也轮询某种操作，可写在此
+                        // 下次翻转时刻
+                        LedNextToggleTime[i] = GlobalTickCount + period/2;
+                    }
+                }
+            }
+        }
+
+        // ...可在此做其它任务
+    }
+}
+
+//-------------------------------------------------
+// 设置某个 LED 亮或灭
+// ledIndex: 0..5
+// on: 0=灭, 1=亮
+//-------------------------------------------------
+static void SetLed(uint8_t ledIndex, uint8_t on)
+{
+    // PBx 引脚输出 1 => 实际上是“拉高”或“点亮”?
+    // 需根据你板子的 LED 接法决定。这里假设 "1=亮, 0=灭"。
+    uint16_t pinMask = 1 << LED_PIN[ledIndex];
+    if(on)
+    {
+        // 置1
+        GPIOB->BSRR = pinMask;  
+    }
+    else
+    {
+        // 复位
+        GPIOB->BSRR = (pinMask << 16);
+    }
+}
+
+//-------------------------------------------------
+// 供 EXTI 中断调用：激活某个 LED 的闪烁 (模式2)
+// freqIndex=0 => 0.3Hz, 1=>0.8Hz, 2=>1.4Hz
+//-------------------------------------------------
+void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex)
+{
+    LedActive[ledIndex] = 1;
+    LedFreqIndex[ledIndex] = freqIndex;
+    // 初始化翻转状态 => 先熄灭
+    LedState[ledIndex] = 0;
+    SetLed(ledIndex, 0);
+    // 马上安排一次翻转 (让它 period/2 后亮起来)
+    uint32_t period = Mode2Periods[freqIndex];
+    LedNextToggleTime[ledIndex] = GlobalTickCount + period/2;
+}
+
+//-------------------------------------------------
+// 供 EXTI/切模式时调用：取消所有 LED 闪烁并全灭
+//-------------------------------------------------
+void Mode2_DeactivateAll(void)
+{
+    for(uint8_t i=0; i<6; i++)
+    {
+        LedActive[i] = 0;
+        LedState[i] = 0;
+        SetLed(i, 0);
+    }
 }

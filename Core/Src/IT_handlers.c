@@ -1,107 +1,132 @@
-#include "it_handlers.h"
+#include "stm32f4xx.h"
+#include "init.h"
+#include <stdint.h>
 
-// 参考示例中的全局变量命名方式
-extern volatile uint32_t g_systickCount; // 1ms全局计数
-// 下文我们在 main.c 里定义
+//-------------------------------------------------------------------
+// 声明在 main.c 中定义的全局变量 (extern)
+//-------------------------------------------------------------------
+extern volatile uint8_t  CurrentMode;      // 1 or 2
+extern volatile uint32_t GlobalTickCount;
+extern volatile uint32_t ExternInterruptTickCount;
 
-static uint32_t btn1_lastPress = 0;  // PC13
-static uint32_t btn2_lastPress = 0;  // PC6
-static uint32_t btn3_lastPress = 0;  // PC7
+extern volatile uint8_t  M1FreqIndex;      // 0..2 => 对应模式1的三档频率
+extern volatile uint8_t  M2SelectedLed;    // 模式2下当前操作的LED (0..5)
+extern volatile uint8_t  LedActive[6];     // 该 LED 是否处于闪烁激活状态
+extern volatile uint8_t  LedFreqIndex[6];  // 该 LED 频率档位(0..2)
+extern void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex);
+extern void Mode2_DeactivateAll(void);     // 进入模式2时，先全灭
 
+//-------------------------------------------------------------------
+// SysTick Handler
+//-------------------------------------------------------------------
 void SysTick_Handler(void)
 {
-    g_systickCount++; 
+    // 每次进来 1ms (假设你SysTick_Init配置1ms)
+    GlobalTickCount++;
+    ExternInterruptTickCount++;
 }
 
-// -------------------- PC13 => EXTI15_10_IRQHandler --------------------
+//-------------------------------------------------------------------
+// EXTI15_10_IRQHandler => 这里处理 PC13 (line13)
+//-------------------------------------------------------------------
 void EXTI15_10_IRQHandler(void)
 {
-    // 检查是否是 line13 触发
-    if (READ_BIT(EXTI->PR, EXTI_PR_PR13) != 0)
+    // 判断是不是 line13 触发
+    if((EXTI->PR & (1 << 13)) != 0)
     {
-        // 清除中断标志
-        SET_BIT(EXTI->PR, EXTI_PR_PR13);
+        // 清中断挂起标志
+        EXTI->PR |= (1 << 13);
 
-        // 消抖判断
-        if ( (g_systickCount - btn1_lastPress) >= DELAY_BUTTON_FILTER )
+        // 防抖
+        if(ExternInterruptTickCount > 50) // 设个 50ms 的简单防抖
         {
-            btn1_lastPress = g_systickCount;
-            // 按键1功能：切换模式1 <-> 模式2
-            extern volatile uint8_t g_workMode;
-            g_workMode = (g_workMode == 1) ? 2 : 1;
-
-            // 如果刚切到模式2 => 熄灭全部LED
-            // 如果刚切到模式1 => 可以考虑恢复对灯逻辑(但通常自动进行)
-            if (g_workMode == 2)
+            // 切换模式
+            if(CurrentMode == 1)
             {
-                // 关灯
-                GPIOB->BSRR = ( LED1_PIN|LED2_PIN|LED3_PIN|
-                                LED4_PIN|LED5_PIN|LED6_PIN ) << 16;
+                // 切到模式2
+                CurrentMode = 2;
+                // 进入模式2时，先全灭
+                Mode2_DeactivateAll();
             }
+            else
+            {
+                // 切到模式1
+                CurrentMode = 1;
+                // （可选）切回模式1时，立即让对灯重新开始
+            }
+
+            ExternInterruptTickCount = 0;
         }
     }
 }
 
-// -------------------- PC6, PC7 => EXTI9_5_IRQHandler --------------------
+//-------------------------------------------------------------------
+// EXTI9_5_IRQHandler => 这里同时处理 PC6 (line6), PC7 (line7)
+//-------------------------------------------------------------------
 void EXTI9_5_IRQHandler(void)
 {
-    // 先检测 PC6 => EXTI6 (按键2)
-    if (READ_BIT(EXTI->PR, EXTI_PR_PR6) != 0)
+    //==== 处理 PC6 (line6) => 按键2 ====
+    if((EXTI->PR & (1 << 6)) != 0)
     {
-        SET_BIT(EXTI->PR, EXTI_PR_PR6);
+        EXTI->PR |= (1 << 6); // 清中断标志
 
-        if ( (g_systickCount - btn2_lastPress) >= DELAY_BUTTON_FILTER )
+        if(ExternInterruptTickCount > 50) // 简单防抖
         {
-            btn2_lastPress = g_systickCount;
-            
-            extern volatile uint8_t g_workMode; 
-            if (g_workMode == 1)
+            if(CurrentMode == 1)
             {
-                // 模式1 => 切换 对灯 频率
-                extern volatile uint8_t g_mode1FreqIndex; 
-                g_mode1FreqIndex = (g_mode1FreqIndex + 1) % 3; 
+                // 模式1: 切换对灯频率档 (0.5Hz / 1.7Hz / 2.2Hz)
+                M1FreqIndex++;
+                if(M1FreqIndex >= 3) M1FreqIndex = 0;
             }
             else
             {
-                // 模式2 => 切换“当前LED”的频率
-                extern volatile uint8_t g_currentLedIndex[6];
-                extern volatile uint8_t g_selectedLed; 
-                // 对 g_selectedLed 对应的 freqIndex 自增
-                // 如果原先 -1 表示未激活，也可以先令其=0再切换；
-                // 这里简化：假设一旦被选中过，就必有 freqIndex>=0
-                g_currentLedIndex[g_selectedLed] 
-                    = (g_currentLedIndex[g_selectedLed] + 1) % 3;
+                // 模式2: 切换 “当前 LED” 的频率
+                if(LedActive[M2SelectedLed] == 1)
+                {
+                    // 该LED已激活，修改其档位
+                    LedFreqIndex[M2SelectedLed]++;
+                    if(LedFreqIndex[M2SelectedLed] >= 3) 
+                        LedFreqIndex[M2SelectedLed] = 0;
+                }
+                else
+                {
+                    // 如果该 LED 尚未激活，理论上按键2 不做事；
+                    // 或你想按键2 一按就激活? 这要看需求定义。
+                    // 此处暂不做激活动作。
+                }
             }
+
+            ExternInterruptTickCount = 0;
         }
     }
 
-    // 再检测 PC7 => EXTI7 (按键3)
-    if (READ_BIT(EXTI->PR, EXTI_PR_PR7) != 0)
+    //==== 处理 PC7 (line7) => 按键3 ====
+    if((EXTI->PR & (1 << 7)) != 0)
     {
-        SET_BIT(EXTI->PR, EXTI_PR_PR7);
+        EXTI->PR |= (1 << 7); // 清中断标志
 
-        if ( (g_systickCount - btn3_lastPress) >= DELAY_BUTTON_FILTER )
+        if(ExternInterruptTickCount > 50)
         {
-            btn3_lastPress = g_systickCount;
-
-            extern volatile uint8_t g_workMode; 
-            if (g_workMode == 2)
+            if(CurrentMode == 1)
             {
-                // 模式2 => 选择下一个LED
-                extern volatile uint8_t g_selectedLed;
-                extern volatile uint8_t g_currentLedIndex[6];
-
-                g_selectedLed = (g_selectedLed + 1) % 6;
-                // 若该LED还没被激活过(可用-1表示)，则设为 freqIndex=0(0.3Hz)
-                if (g_currentLedIndex[g_selectedLed] > 2)
-                {
-                    g_currentLedIndex[g_selectedLed] = 0;
-                }
+                // 模式1: 不做任何事情
             }
             else
             {
-                // 模式1 => 按键3不做功能
+                // 模式2: 切换“当前操作LED” (0..5)
+                M2SelectedLed++;
+                if(M2SelectedLed >= 6) 
+                    M2SelectedLed = 0;
+
+                // 若该 LED 还未激活，则给它默认 0.3Hz 并启动闪烁
+                if(LedActive[M2SelectedLed] == 0)
+                {
+                    Mode2_SetLedActive(M2SelectedLed, 0); 
+                    // freqIndex=0 => 0.3Hz
+                }
             }
+
+            ExternInterruptTickCount = 0;
         }
     }
 }
