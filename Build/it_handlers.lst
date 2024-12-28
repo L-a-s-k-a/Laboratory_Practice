@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 1
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 1
   33              		@ link register save eliminated.
   24:Core/Src/it_handlers.c ****     // 每次进来 1ms (假设你SysTick_Init配置1ms)
   25:Core/Src/it_handlers.c ****     GlobalTickCount++;
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 2
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 2
 
 
   34              		.loc 1 25 5 view .LVU1
@@ -107,93 +107,86 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 1
   71              		.cfi_def_cfa_offset 8
   72              		.cfi_offset 3, -8
   73              		.cfi_offset 14, -4
-  34:Core/Src/it_handlers.c ****     // 判断是不是 line13 触发
-  35:Core/Src/it_handlers.c ****     if((EXTI->PR & (1 << 13)) != 0)
+  34:Core/Src/it_handlers.c ****     // 处理 PC13 => line13
+  35:Core/Src/it_handlers.c ****     if (EXTI->PR & (1 << 13))
   74              		.loc 1 35 5 view .LVU7
   75              		.loc 1 35 13 is_stmt 0 view .LVU8
   76 0002 104B     		ldr	r3, .L10
   77 0004 5B69     		ldr	r3, [r3, #20]
-  78              		.loc 1 35 7 view .LVU9
+  78              		.loc 1 35 8 view .LVU9
   79 0006 13F4005F 		tst	r3, #8192
   80 000a 13D0     		beq	.L4
   36:Core/Src/it_handlers.c ****     {
-  37:Core/Src/it_handlers.c ****         // 清中断挂起标志
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 3
+  37:Core/Src/it_handlers.c ****         EXTI->PR |= (1 << 13); // 清除中断标志
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 3
 
 
-  38:Core/Src/it_handlers.c ****         EXTI->PR |= (1 << 13);
-  81              		.loc 1 38 9 is_stmt 1 view .LVU10
-  82              		.loc 1 38 13 is_stmt 0 view .LVU11
+  81              		.loc 1 37 9 is_stmt 1 view .LVU10
+  82              		.loc 1 37 13 is_stmt 0 view .LVU11
   83 000c 0D4A     		ldr	r2, .L10
   84 000e 5369     		ldr	r3, [r2, #20]
-  85              		.loc 1 38 18 view .LVU12
+  85              		.loc 1 37 18 view .LVU12
   86 0010 43F40053 		orr	r3, r3, #8192
   87 0014 5361     		str	r3, [r2, #20]
-  39:Core/Src/it_handlers.c **** 
-  40:Core/Src/it_handlers.c ****         // 防抖
-  41:Core/Src/it_handlers.c ****         if(ExternInterruptTickCount > 50) // 设个 50ms 的简单防抖
-  88              		.loc 1 41 9 is_stmt 1 view .LVU13
-  89              		.loc 1 41 37 is_stmt 0 view .LVU14
+  38:Core/Src/it_handlers.c ****         if(ExternInterruptTickCount > 50) // 防抖
+  88              		.loc 1 38 9 is_stmt 1 view .LVU13
+  89              		.loc 1 38 37 is_stmt 0 view .LVU14
   90 0016 0C4B     		ldr	r3, .L10+4
   91 0018 1B68     		ldr	r3, [r3]
-  92              		.loc 1 41 11 view .LVU15
+  92              		.loc 1 38 11 view .LVU15
   93 001a 322B     		cmp	r3, #50
   94 001c 0AD9     		bls	.L4
-  42:Core/Src/it_handlers.c ****         {
-  43:Core/Src/it_handlers.c ****             // 切换模式
-  44:Core/Src/it_handlers.c ****             if(CurrentMode == 1)
-  95              		.loc 1 44 13 is_stmt 1 view .LVU16
-  96              		.loc 1 44 28 is_stmt 0 view .LVU17
+  39:Core/Src/it_handlers.c ****         {
+  40:Core/Src/it_handlers.c ****             // 切换模式
+  41:Core/Src/it_handlers.c ****             if(CurrentMode == 1)
+  95              		.loc 1 41 13 is_stmt 1 view .LVU16
+  96              		.loc 1 41 28 is_stmt 0 view .LVU17
   97 001e 0B4B     		ldr	r3, .L10+8
   98 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
   99 0022 DBB2     		uxtb	r3, r3
- 100              		.loc 1 44 15 view .LVU18
+ 100              		.loc 1 41 15 view .LVU18
  101 0024 012B     		cmp	r3, #1
  102 0026 06D0     		beq	.L9
-  45:Core/Src/it_handlers.c ****             {
-  46:Core/Src/it_handlers.c ****                 // 切到模式2
-  47:Core/Src/it_handlers.c ****                 CurrentMode = 2;
-  48:Core/Src/it_handlers.c ****                 // 进入模式2时，先全灭
-  49:Core/Src/it_handlers.c ****                 Mode2_DeactivateAll();
-  50:Core/Src/it_handlers.c ****             }
-  51:Core/Src/it_handlers.c ****             else
-  52:Core/Src/it_handlers.c ****             {
-  53:Core/Src/it_handlers.c ****                 // 切到模式1
-  54:Core/Src/it_handlers.c ****                 CurrentMode = 1;
- 103              		.loc 1 54 17 is_stmt 1 view .LVU19
- 104              		.loc 1 54 29 is_stmt 0 view .LVU20
+  42:Core/Src/it_handlers.c ****             {
+  43:Core/Src/it_handlers.c ****                 CurrentMode = 2;
+  44:Core/Src/it_handlers.c ****                 Mode2_DeactivateAll(); 
+  45:Core/Src/it_handlers.c ****             }
+  46:Core/Src/it_handlers.c ****             else
+  47:Core/Src/it_handlers.c ****             {
+  48:Core/Src/it_handlers.c ****                 CurrentMode = 1;
+ 103              		.loc 1 48 17 is_stmt 1 view .LVU19
+ 104              		.loc 1 48 29 is_stmt 0 view .LVU20
  105 0028 084B     		ldr	r3, .L10+8
  106 002a 0122     		movs	r2, #1
  107 002c 1A70     		strb	r2, [r3]
  108              	.L7:
-  55:Core/Src/it_handlers.c ****                 // （可选）切回模式1时，立即让对灯重新开始
-  56:Core/Src/it_handlers.c ****             }
-  57:Core/Src/it_handlers.c **** 
-  58:Core/Src/it_handlers.c ****             ExternInterruptTickCount = 0;
- 109              		.loc 1 58 13 is_stmt 1 view .LVU21
- 110              		.loc 1 58 38 is_stmt 0 view .LVU22
+  49:Core/Src/it_handlers.c ****                 // (可在此让模式1恢复初始状态)
+  50:Core/Src/it_handlers.c ****             }
+  51:Core/Src/it_handlers.c ****             ExternInterruptTickCount = 0;
+ 109              		.loc 1 51 13 is_stmt 1 view .LVU21
+ 110              		.loc 1 51 38 is_stmt 0 view .LVU22
  111 002e 064B     		ldr	r3, .L10+4
  112 0030 0022     		movs	r2, #0
  113 0032 1A60     		str	r2, [r3]
  114              	.L4:
-  59:Core/Src/it_handlers.c ****         }
-  60:Core/Src/it_handlers.c ****     }
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 4
-
-
-  61:Core/Src/it_handlers.c **** }
- 115              		.loc 1 61 1 view .LVU23
+  52:Core/Src/it_handlers.c ****         }
+  53:Core/Src/it_handlers.c ****     }
+  54:Core/Src/it_handlers.c **** }
+ 115              		.loc 1 54 1 view .LVU23
  116 0034 08BD     		pop	{r3, pc}
  117              	.L9:
-  47:Core/Src/it_handlers.c ****                 // 进入模式2时，先全灭
- 118              		.loc 1 47 17 is_stmt 1 view .LVU24
-  47:Core/Src/it_handlers.c ****                 // 进入模式2时，先全灭
- 119              		.loc 1 47 29 is_stmt 0 view .LVU25
+  43:Core/Src/it_handlers.c ****                 Mode2_DeactivateAll(); 
+ 118              		.loc 1 43 17 is_stmt 1 view .LVU24
+  43:Core/Src/it_handlers.c ****                 Mode2_DeactivateAll(); 
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 4
+
+
+ 119              		.loc 1 43 29 is_stmt 0 view .LVU25
  120 0036 054B     		ldr	r3, .L10+8
  121 0038 0222     		movs	r2, #2
  122 003a 1A70     		strb	r2, [r3]
-  49:Core/Src/it_handlers.c ****             }
- 123              		.loc 1 49 17 is_stmt 1 view .LVU26
+  44:Core/Src/it_handlers.c ****             }
+ 123              		.loc 1 44 17 is_stmt 1 view .LVU26
  124 003c FFF7FEFF 		bl	Mode2_DeactivateAll
  125              	.LVL0:
  126 0040 F5E7     		b	.L7
@@ -213,13 +206,13 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 1
  141              		.thumb_func
  143              	EXTI9_5_IRQHandler:
  144              	.LFB132:
-  62:Core/Src/it_handlers.c **** 
-  63:Core/Src/it_handlers.c **** //-------------------------------------------------------------------
-  64:Core/Src/it_handlers.c **** // EXTI9_5_IRQHandler => 这里同时处理 PC6 (line6), PC7 (line7)
-  65:Core/Src/it_handlers.c **** //-------------------------------------------------------------------
-  66:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void)
-  67:Core/Src/it_handlers.c **** {
- 145              		.loc 1 67 1 view -0
+  55:Core/Src/it_handlers.c **** 
+  56:Core/Src/it_handlers.c **** //-------------------------------------------------------------------
+  57:Core/Src/it_handlers.c **** // EXTI9_5_IRQHandler => 这里同时处理 PC6 (line6), PC7 (line7)
+  58:Core/Src/it_handlers.c **** //-------------------------------------------------------------------
+  59:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void)
+  60:Core/Src/it_handlers.c **** {
+ 145              		.loc 1 60 1 view -0
  146              		.cfi_startproc
  147              		@ args = 0, pretend = 0, frame = 0
  148              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -228,308 +221,281 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 1
  151              		.cfi_def_cfa_offset 8
  152              		.cfi_offset 3, -8
  153              		.cfi_offset 14, -4
-  68:Core/Src/it_handlers.c ****     //==== 处理 PC6 (line6) => 按键2 ====
-  69:Core/Src/it_handlers.c ****     if((EXTI->PR & (1 << 6)) != 0)
- 154              		.loc 1 69 5 view .LVU28
- 155              		.loc 1 69 13 is_stmt 0 view .LVU29
- 156 0002 374B     		ldr	r3, .L23
+  61:Core/Src/it_handlers.c ****     //=== PC8 => 按钮2 ===
+  62:Core/Src/it_handlers.c ****     if (EXTI->PR & (1 << 8))
+ 154              		.loc 1 62 5 view .LVU28
+ 155              		.loc 1 62 13 is_stmt 0 view .LVU29
+ 156 0002 354B     		ldr	r3, .L22
  157 0004 5B69     		ldr	r3, [r3, #20]
- 158              		.loc 1 69 7 view .LVU30
- 159 0006 13F0400F 		tst	r3, #64
- 160 000a 18D0     		beq	.L13
-  70:Core/Src/it_handlers.c ****     {
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 5
-
-
-  71:Core/Src/it_handlers.c ****         EXTI->PR |= (1 << 6); // 清中断标志
- 161              		.loc 1 71 9 is_stmt 1 view .LVU31
- 162              		.loc 1 71 13 is_stmt 0 view .LVU32
- 163 000c 344A     		ldr	r2, .L23
+ 158              		.loc 1 62 8 view .LVU30
+ 159 0006 13F4807F 		tst	r3, #256
+ 160 000a 36D0     		beq	.L13
+  63:Core/Src/it_handlers.c ****     {
+  64:Core/Src/it_handlers.c ****         EXTI->PR |= (1 << 8); 
+ 161              		.loc 1 64 9 is_stmt 1 view .LVU31
+ 162              		.loc 1 64 13 is_stmt 0 view .LVU32
+ 163 000c 324A     		ldr	r2, .L22
  164 000e 5369     		ldr	r3, [r2, #20]
- 165              		.loc 1 71 18 view .LVU33
- 166 0010 43F04003 		orr	r3, r3, #64
+ 165              		.loc 1 64 18 view .LVU33
+ 166 0010 43F48073 		orr	r3, r3, #256
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 5
+
+
  167 0014 5361     		str	r3, [r2, #20]
-  72:Core/Src/it_handlers.c **** 
-  73:Core/Src/it_handlers.c ****         if(ExternInterruptTickCount > 50) // 简单防抖
- 168              		.loc 1 73 9 is_stmt 1 view .LVU34
- 169              		.loc 1 73 37 is_stmt 0 view .LVU35
- 170 0016 334B     		ldr	r3, .L23+4
+  65:Core/Src/it_handlers.c ****         if(ExternInterruptTickCount > 50)
+ 168              		.loc 1 65 9 is_stmt 1 view .LVU34
+ 169              		.loc 1 65 37 is_stmt 0 view .LVU35
+ 170 0016 314B     		ldr	r3, .L22+4
  171 0018 1B68     		ldr	r3, [r3]
- 172              		.loc 1 73 11 view .LVU36
+ 172              		.loc 1 65 11 view .LVU36
  173 001a 322B     		cmp	r3, #50
- 174 001c 0FD9     		bls	.L13
-  74:Core/Src/it_handlers.c ****         {
-  75:Core/Src/it_handlers.c ****             if(CurrentMode == 1)
- 175              		.loc 1 75 13 is_stmt 1 view .LVU37
- 176              		.loc 1 75 28 is_stmt 0 view .LVU38
- 177 001e 324B     		ldr	r3, .L23+8
+ 174 001c 2DD9     		bls	.L13
+  66:Core/Src/it_handlers.c ****         {
+  67:Core/Src/it_handlers.c ****             if(CurrentMode == 1)
+ 175              		.loc 1 67 13 is_stmt 1 view .LVU37
+ 176              		.loc 1 67 28 is_stmt 0 view .LVU38
+ 177 001e 304B     		ldr	r3, .L22+8
  178 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  179 0022 DBB2     		uxtb	r3, r3
- 180              		.loc 1 75 15 view .LVU39
+ 180              		.loc 1 67 15 view .LVU39
  181 0024 012B     		cmp	r3, #1
- 182 0026 33D0     		beq	.L20
-  76:Core/Src/it_handlers.c ****             {
-  77:Core/Src/it_handlers.c ****                 // 模式1: 切换对灯频率档 (0.5Hz / 1.7Hz / 2.2Hz)
-  78:Core/Src/it_handlers.c ****                 M1FreqIndex++;
-  79:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
-  80:Core/Src/it_handlers.c ****             }
-  81:Core/Src/it_handlers.c ****             else
-  82:Core/Src/it_handlers.c ****             {
-  83:Core/Src/it_handlers.c ****                 // 模式2: 切换 “当前 LED” 的频率
-  84:Core/Src/it_handlers.c ****                 if(LedActive[M2SelectedLed] == 1)
- 183              		.loc 1 84 17 is_stmt 1 view .LVU40
- 184              		.loc 1 84 29 is_stmt 0 view .LVU41
- 185 0028 304B     		ldr	r3, .L23+12
+ 182 0026 19D0     		beq	.L20
+  68:Core/Src/it_handlers.c ****             {
+  69:Core/Src/it_handlers.c ****                 // 模式1 => 切换对灯频率
+  70:Core/Src/it_handlers.c ****                 M1FreqIndex++;
+  71:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
+  72:Core/Src/it_handlers.c ****             }
+  73:Core/Src/it_handlers.c ****             else
+  74:Core/Src/it_handlers.c ****             {
+  75:Core/Src/it_handlers.c ****                 // 模式2 => 切换“当前LED”频率
+  76:Core/Src/it_handlers.c ****                 if(LedActive[M2SelectedLed])
+ 183              		.loc 1 76 17 is_stmt 1 view .LVU40
+ 184              		.loc 1 76 29 is_stmt 0 view .LVU41
+ 185 0028 2E4B     		ldr	r3, .L22+12
  186 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  187 002c DBB2     		uxtb	r3, r3
- 188 002e 304A     		ldr	r2, .L23+16
+ 188 002e 2E4A     		ldr	r2, .L22+16
  189 0030 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
- 190 0032 DBB2     		uxtb	r3, r3
- 191              		.loc 1 84 19 view .LVU42
- 192 0034 012B     		cmp	r3, #1
- 193 0036 38D0     		beq	.L21
- 194              	.L15:
-  85:Core/Src/it_handlers.c ****                 {
-  86:Core/Src/it_handlers.c ****                     // 该LED已激活，修改其档位
-  87:Core/Src/it_handlers.c ****                     LedFreqIndex[M2SelectedLed]++;
-  88:Core/Src/it_handlers.c ****                     if(LedFreqIndex[M2SelectedLed] >= 3) 
-  89:Core/Src/it_handlers.c ****                         LedFreqIndex[M2SelectedLed] = 0;
-  90:Core/Src/it_handlers.c ****                 }
-  91:Core/Src/it_handlers.c ****                 else
-  92:Core/Src/it_handlers.c ****                 {
-  93:Core/Src/it_handlers.c ****                     // 如果该 LED 尚未激活，理论上按键2 不做事；
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 6
+ 190              		.loc 1 76 19 view .LVU42
+ 191 0032 FBB1     		cbz	r3, .L15
+  77:Core/Src/it_handlers.c ****                 {
+  78:Core/Src/it_handlers.c ****                     LedFreqIndex[M2SelectedLed]++;
+ 192              		.loc 1 78 21 is_stmt 1 view .LVU43
+ 193              		.loc 1 78 33 is_stmt 0 view .LVU44
+ 194 0034 2B48     		ldr	r0, .L22+12
+ 195 0036 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+ 196 0038 D2B2     		uxtb	r2, r2
+ 197 003a 2C49     		ldr	r1, .L22+20
+ 198 003c 8B5C     		ldrb	r3, [r1, r2]	@ zero_extendqisi2
+ 199              		.loc 1 78 48 view .LVU45
+ 200 003e 0133     		adds	r3, r3, #1
+ 201 0040 DBB2     		uxtb	r3, r3
+ 202 0042 8B54     		strb	r3, [r1, r2]
+  79:Core/Src/it_handlers.c ****                     if(LedFreqIndex[M2SelectedLed] >= 3)
+ 203              		.loc 1 79 21 is_stmt 1 view .LVU46
+ 204              		.loc 1 79 36 is_stmt 0 view .LVU47
+ 205 0044 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 206 0046 DBB2     		uxtb	r3, r3
+ 207 0048 CB5C     		ldrb	r3, [r1, r3]	@ zero_extendqisi2
+ 208 004a DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 6
 
 
-  94:Core/Src/it_handlers.c ****                     // 或你想按键2 一按就激活? 这要看需求定义。
-  95:Core/Src/it_handlers.c ****                     // 此处暂不做激活动作。
-  96:Core/Src/it_handlers.c ****                 }
- 195              		.loc 1 96 17 is_stmt 1 view .LVU43
-  97:Core/Src/it_handlers.c ****             }
-  98:Core/Src/it_handlers.c **** 
-  99:Core/Src/it_handlers.c ****             ExternInterruptTickCount = 0;
- 196              		.loc 1 99 13 view .LVU44
- 197              		.loc 1 99 38 is_stmt 0 view .LVU45
- 198 0038 2A4B     		ldr	r3, .L23+4
- 199 003a 0022     		movs	r2, #0
- 200 003c 1A60     		str	r2, [r3]
- 201              	.L13:
- 100:Core/Src/it_handlers.c ****         }
- 101:Core/Src/it_handlers.c ****     }
+ 209              		.loc 1 79 23 view .LVU48
+ 210 004c 022B     		cmp	r3, #2
+ 211 004e 11D9     		bls	.L15
+  80:Core/Src/it_handlers.c ****                         LedFreqIndex[M2SelectedLed] = 0;
+ 212              		.loc 1 80 25 is_stmt 1 view .LVU49
+ 213              		.loc 1 80 37 is_stmt 0 view .LVU50
+ 214 0050 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 215 0052 DBB2     		uxtb	r3, r3
+ 216              		.loc 1 80 53 view .LVU51
+ 217 0054 0A46     		mov	r2, r1
+ 218 0056 0021     		movs	r1, #0
+ 219 0058 D154     		strb	r1, [r2, r3]
+ 220 005a 0BE0     		b	.L15
+ 221              	.L20:
+  70:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
+ 222              		.loc 1 70 17 is_stmt 1 view .LVU52
+  70:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
+ 223              		.loc 1 70 28 is_stmt 0 view .LVU53
+ 224 005c 244A     		ldr	r2, .L22+24
+ 225 005e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 226 0060 0133     		adds	r3, r3, #1
+ 227 0062 DBB2     		uxtb	r3, r3
+ 228 0064 1370     		strb	r3, [r2]
+  71:Core/Src/it_handlers.c ****             }
+ 229              		.loc 1 71 17 is_stmt 1 view .LVU54
+  71:Core/Src/it_handlers.c ****             }
+ 230              		.loc 1 71 32 is_stmt 0 view .LVU55
+ 231 0066 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 232 0068 DBB2     		uxtb	r3, r3
+  71:Core/Src/it_handlers.c ****             }
+ 233              		.loc 1 71 19 view .LVU56
+ 234 006a 022B     		cmp	r3, #2
+ 235 006c 02D9     		bls	.L15
+  71:Core/Src/it_handlers.c ****             }
+ 236              		.loc 1 71 38 is_stmt 1 discriminator 1 view .LVU57
+  71:Core/Src/it_handlers.c ****             }
+ 237              		.loc 1 71 50 is_stmt 0 discriminator 1 view .LVU58
+ 238 006e 1346     		mov	r3, r2
+ 239 0070 0022     		movs	r2, #0
+ 240 0072 1A70     		strb	r2, [r3]
+ 241              	.L15:
+  81:Core/Src/it_handlers.c ****                 }
+  82:Core/Src/it_handlers.c ****             }
+  83:Core/Src/it_handlers.c ****             ExternInterruptTickCount = 0;
+ 242              		.loc 1 83 13 is_stmt 1 view .LVU59
+ 243              		.loc 1 83 38 is_stmt 0 view .LVU60
+ 244 0074 194B     		ldr	r3, .L22+4
+ 245 0076 0022     		movs	r2, #0
+ 246 0078 1A60     		str	r2, [r3]
+ 247              	.L13:
+  84:Core/Src/it_handlers.c ****         }
+  85:Core/Src/it_handlers.c ****     }
+  86:Core/Src/it_handlers.c **** 
+  87:Core/Src/it_handlers.c ****     //=== PC9 => 按钮3 ===
+  88:Core/Src/it_handlers.c ****     if (EXTI->PR & (1 << 9))
+ 248              		.loc 1 88 5 is_stmt 1 view .LVU61
+ 249              		.loc 1 88 13 is_stmt 0 view .LVU62
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 7
+
+
+ 250 007a 174B     		ldr	r3, .L22
+ 251 007c 5B69     		ldr	r3, [r3, #20]
+ 252              		.loc 1 88 8 view .LVU63
+ 253 007e 13F4007F 		tst	r3, #512
+ 254 0082 22D0     		beq	.L12
+  89:Core/Src/it_handlers.c ****     {
+  90:Core/Src/it_handlers.c ****         EXTI->PR |= (1 << 9);
+ 255              		.loc 1 90 9 is_stmt 1 view .LVU64
+ 256              		.loc 1 90 13 is_stmt 0 view .LVU65
+ 257 0084 144A     		ldr	r2, .L22
+ 258 0086 5369     		ldr	r3, [r2, #20]
+ 259              		.loc 1 90 18 view .LVU66
+ 260 0088 43F40073 		orr	r3, r3, #512
+ 261 008c 5361     		str	r3, [r2, #20]
+  91:Core/Src/it_handlers.c ****         if(ExternInterruptTickCount > 50)
+ 262              		.loc 1 91 9 is_stmt 1 view .LVU67
+ 263              		.loc 1 91 37 is_stmt 0 view .LVU68
+ 264 008e 134B     		ldr	r3, .L22+4
+ 265 0090 1B68     		ldr	r3, [r3]
+ 266              		.loc 1 91 11 view .LVU69
+ 267 0092 322B     		cmp	r3, #50
+ 268 0094 19D9     		bls	.L12
+  92:Core/Src/it_handlers.c ****         {
+  93:Core/Src/it_handlers.c ****             if(CurrentMode == 1)
+ 269              		.loc 1 93 13 is_stmt 1 view .LVU70
+ 270              		.loc 1 93 28 is_stmt 0 view .LVU71
+ 271 0096 124B     		ldr	r3, .L22+8
+ 272 0098 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 273 009a DBB2     		uxtb	r3, r3
+ 274              		.loc 1 93 15 view .LVU72
+ 275 009c 012B     		cmp	r3, #1
+ 276 009e 11D0     		beq	.L17
+  94:Core/Src/it_handlers.c ****             {
+  95:Core/Src/it_handlers.c ****                 // 模式1 => 不做操作(或你想加别的)
+  96:Core/Src/it_handlers.c ****             }
+  97:Core/Src/it_handlers.c ****             else
+  98:Core/Src/it_handlers.c ****             {
+  99:Core/Src/it_handlers.c ****                 // 模式2 => 切换当前操作的LED编号
+ 100:Core/Src/it_handlers.c ****                 M2SelectedLed++;
+ 277              		.loc 1 100 17 is_stmt 1 view .LVU73
+ 278              		.loc 1 100 30 is_stmt 0 view .LVU74
+ 279 00a0 104A     		ldr	r2, .L22+12
+ 280 00a2 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 281 00a4 0133     		adds	r3, r3, #1
+ 282 00a6 DBB2     		uxtb	r3, r3
+ 283 00a8 1370     		strb	r3, [r2]
+ 101:Core/Src/it_handlers.c ****                 if(M2SelectedLed >= 6) M2SelectedLed = 0;
+ 284              		.loc 1 101 17 is_stmt 1 view .LVU75
+ 285              		.loc 1 101 34 is_stmt 0 view .LVU76
+ 286 00aa 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 287 00ac DBB2     		uxtb	r3, r3
+ 288              		.loc 1 101 19 view .LVU77
+ 289 00ae 052B     		cmp	r3, #5
+ 290 00b0 02D9     		bls	.L18
+ 291              		.loc 1 101 40 is_stmt 1 discriminator 1 view .LVU78
+ 292              		.loc 1 101 54 is_stmt 0 discriminator 1 view .LVU79
+ 293 00b2 1346     		mov	r3, r2
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 8
+
+
+ 294 00b4 0022     		movs	r2, #0
+ 295 00b6 1A70     		strb	r2, [r3]
+ 296              	.L18:
  102:Core/Src/it_handlers.c **** 
- 103:Core/Src/it_handlers.c ****     //==== 处理 PC7 (line7) => 按键3 ====
- 104:Core/Src/it_handlers.c ****     if((EXTI->PR & (1 << 7)) != 0)
- 202              		.loc 1 104 5 is_stmt 1 view .LVU46
- 203              		.loc 1 104 13 is_stmt 0 view .LVU47
- 204 003e 284B     		ldr	r3, .L23
- 205 0040 5B69     		ldr	r3, [r3, #20]
- 206              		.loc 1 104 7 view .LVU48
- 207 0042 13F0800F 		tst	r3, #128
- 208 0046 22D0     		beq	.L12
- 105:Core/Src/it_handlers.c ****     {
- 106:Core/Src/it_handlers.c ****         EXTI->PR |= (1 << 7); // 清中断标志
- 209              		.loc 1 106 9 is_stmt 1 view .LVU49
- 210              		.loc 1 106 13 is_stmt 0 view .LVU50
- 211 0048 254A     		ldr	r2, .L23
- 212 004a 5369     		ldr	r3, [r2, #20]
- 213              		.loc 1 106 18 view .LVU51
- 214 004c 43F08003 		orr	r3, r3, #128
- 215 0050 5361     		str	r3, [r2, #20]
- 107:Core/Src/it_handlers.c **** 
- 108:Core/Src/it_handlers.c ****         if(ExternInterruptTickCount > 50)
- 216              		.loc 1 108 9 is_stmt 1 view .LVU52
- 217              		.loc 1 108 37 is_stmt 0 view .LVU53
- 218 0052 244B     		ldr	r3, .L23+4
- 219 0054 1B68     		ldr	r3, [r3]
- 220              		.loc 1 108 11 view .LVU54
- 221 0056 322B     		cmp	r3, #50
- 222 0058 19D9     		bls	.L12
- 109:Core/Src/it_handlers.c ****         {
- 110:Core/Src/it_handlers.c ****             if(CurrentMode == 1)
- 223              		.loc 1 110 13 is_stmt 1 view .LVU55
- 224              		.loc 1 110 28 is_stmt 0 view .LVU56
- 225 005a 234B     		ldr	r3, .L23+8
- 226 005c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 227 005e DBB2     		uxtb	r3, r3
- 228              		.loc 1 110 15 view .LVU57
- 229 0060 012B     		cmp	r3, #1
- 230 0062 11D0     		beq	.L17
- 111:Core/Src/it_handlers.c ****             {
- 112:Core/Src/it_handlers.c ****                 // 模式1: 不做任何事情
- 113:Core/Src/it_handlers.c ****             }
- 114:Core/Src/it_handlers.c ****             else
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 7
+ 103:Core/Src/it_handlers.c ****                 // 若未激活 => 激活(默认频率0 => 0.3Hz)
+ 104:Core/Src/it_handlers.c ****                 if(LedActive[M2SelectedLed] == 0)
+ 297              		.loc 1 104 17 is_stmt 1 view .LVU80
+ 298              		.loc 1 104 29 is_stmt 0 view .LVU81
+ 299 00b8 0A4B     		ldr	r3, .L22+12
+ 300 00ba 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 301 00bc DBB2     		uxtb	r3, r3
+ 302 00be 0A4A     		ldr	r2, .L22+16
+ 303 00c0 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 304              		.loc 1 104 19 view .LVU82
+ 305 00c2 1BB1     		cbz	r3, .L21
+ 306              	.L17:
+ 105:Core/Src/it_handlers.c ****                 {
+ 106:Core/Src/it_handlers.c ****                     Mode2_SetLedActive(M2SelectedLed, 0);
+ 107:Core/Src/it_handlers.c ****                 }
+ 108:Core/Src/it_handlers.c ****             }
+ 109:Core/Src/it_handlers.c ****             ExternInterruptTickCount = 0;
+ 307              		.loc 1 109 13 is_stmt 1 view .LVU83
+ 308              		.loc 1 109 38 is_stmt 0 view .LVU84
+ 309 00c4 054B     		ldr	r3, .L22+4
+ 310 00c6 0022     		movs	r2, #0
+ 311 00c8 1A60     		str	r2, [r3]
+ 312              	.L12:
+ 110:Core/Src/it_handlers.c ****         }
+ 111:Core/Src/it_handlers.c ****     }
+ 112:Core/Src/it_handlers.c **** }
+ 313              		.loc 1 112 1 view .LVU85
+ 314 00ca 08BD     		pop	{r3, pc}
+ 315              	.L21:
+ 106:Core/Src/it_handlers.c ****                 }
+ 316              		.loc 1 106 21 is_stmt 1 view .LVU86
+ 317 00cc 054B     		ldr	r3, .L22+12
+ 318 00ce 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 319 00d0 0021     		movs	r1, #0
+ 320 00d2 FFF7FEFF 		bl	Mode2_SetLedActive
+ 321              	.LVL1:
+ 322 00d6 F5E7     		b	.L17
+ 323              	.L23:
+ 324              		.align	2
+ 325              	.L22:
+ 326 00d8 003C0140 		.word	1073822720
+ 327 00dc 00000000 		.word	ExternInterruptTickCount
+ 328 00e0 00000000 		.word	CurrentMode
+ 329 00e4 00000000 		.word	M2SelectedLed
+ 330 00e8 00000000 		.word	LedActive
+ 331 00ec 00000000 		.word	LedFreqIndex
+ 332 00f0 00000000 		.word	M1FreqIndex
+ 333              		.cfi_endproc
+ 334              	.LFE132:
+ 336              		.text
+ 337              	.Letext0:
+ 338              		.file 2 "F:/STM32Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 339              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 9
 
 
- 115:Core/Src/it_handlers.c ****             {
- 116:Core/Src/it_handlers.c ****                 // 模式2: 切换“当前操作LED” (0..5)
- 117:Core/Src/it_handlers.c ****                 M2SelectedLed++;
- 231              		.loc 1 117 17 is_stmt 1 view .LVU58
- 232              		.loc 1 117 30 is_stmt 0 view .LVU59
- 233 0064 214A     		ldr	r2, .L23+12
- 234 0066 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 235 0068 0133     		adds	r3, r3, #1
- 236 006a DBB2     		uxtb	r3, r3
- 237 006c 1370     		strb	r3, [r2]
- 118:Core/Src/it_handlers.c ****                 if(M2SelectedLed >= 6) 
- 238              		.loc 1 118 17 is_stmt 1 view .LVU60
- 239              		.loc 1 118 34 is_stmt 0 view .LVU61
- 240 006e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 241 0070 DBB2     		uxtb	r3, r3
- 242              		.loc 1 118 19 view .LVU62
- 243 0072 052B     		cmp	r3, #5
- 244 0074 02D9     		bls	.L18
- 119:Core/Src/it_handlers.c ****                     M2SelectedLed = 0;
- 245              		.loc 1 119 21 is_stmt 1 view .LVU63
- 246              		.loc 1 119 35 is_stmt 0 view .LVU64
- 247 0076 1346     		mov	r3, r2
- 248 0078 0022     		movs	r2, #0
- 249 007a 1A70     		strb	r2, [r3]
- 250              	.L18:
- 120:Core/Src/it_handlers.c **** 
- 121:Core/Src/it_handlers.c ****                 // 若该 LED 还未激活，则给它默认 0.3Hz 并启动闪烁
- 122:Core/Src/it_handlers.c ****                 if(LedActive[M2SelectedLed] == 0)
- 251              		.loc 1 122 17 is_stmt 1 view .LVU65
- 252              		.loc 1 122 29 is_stmt 0 view .LVU66
- 253 007c 1B4B     		ldr	r3, .L23+12
- 254 007e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 255 0080 DBB2     		uxtb	r3, r3
- 256 0082 1B4A     		ldr	r2, .L23+16
- 257 0084 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
- 258              		.loc 1 122 19 view .LVU67
- 259 0086 23B3     		cbz	r3, .L22
- 260              	.L17:
- 123:Core/Src/it_handlers.c ****                 {
- 124:Core/Src/it_handlers.c ****                     Mode2_SetLedActive(M2SelectedLed, 0); 
- 125:Core/Src/it_handlers.c ****                     // freqIndex=0 => 0.3Hz
- 126:Core/Src/it_handlers.c ****                 }
- 127:Core/Src/it_handlers.c ****             }
- 128:Core/Src/it_handlers.c **** 
- 129:Core/Src/it_handlers.c ****             ExternInterruptTickCount = 0;
- 261              		.loc 1 129 13 is_stmt 1 view .LVU68
- 262              		.loc 1 129 38 is_stmt 0 view .LVU69
- 263 0088 164B     		ldr	r3, .L23+4
- 264 008a 0022     		movs	r2, #0
- 265 008c 1A60     		str	r2, [r3]
- 266              	.L12:
- 130:Core/Src/it_handlers.c ****         }
- 131:Core/Src/it_handlers.c ****     }
- 132:Core/Src/it_handlers.c **** }...
- 267              		.loc 1 132 1 view .LVU70
- 268 008e 08BD     		pop	{r3, pc}
- 269              	.L20:
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 8
-
-
-  78:Core/Src/it_handlers.c ****                 M1FreqIndex++;
- 270              		.loc 1 78 17 is_stmt 1 view .LVU71
-  78:Core/Src/it_handlers.c ****                 M1FreqIndex++;
- 271              		.loc 1 78 28 is_stmt 0 view .LVU72
- 272 0090 184A     		ldr	r2, .L23+20
- 273 0092 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 274 0094 0133     		adds	r3, r3, #1
- 275 0096 DBB2     		uxtb	r3, r3
- 276 0098 1370     		strb	r3, [r2]
-  79:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
- 277              		.loc 1 79 17 is_stmt 1 view .LVU73
-  79:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
- 278              		.loc 1 79 32 is_stmt 0 view .LVU74
- 279 009a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 280 009c DBB2     		uxtb	r3, r3
-  79:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
- 281              		.loc 1 79 19 view .LVU75
- 282 009e 022B     		cmp	r3, #2
- 283 00a0 CAD9     		bls	.L15
-  79:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
- 284              		.loc 1 79 38 is_stmt 1 discriminator 1 view .LVU76
-  79:Core/Src/it_handlers.c ****                 if(M1FreqIndex >= 3) M1FreqIndex = 0;
- 285              		.loc 1 79 50 is_stmt 0 discriminator 1 view .LVU77
- 286 00a2 1346     		mov	r3, r2
- 287 00a4 0022     		movs	r2, #0
- 288 00a6 1A70     		strb	r2, [r3]
- 289 00a8 C6E7     		b	.L15
- 290              	.L21:
-  87:Core/Src/it_handlers.c ****                     LedFreqIndex[M2SelectedLed]++;
- 291              		.loc 1 87 21 is_stmt 1 view .LVU78
-  87:Core/Src/it_handlers.c ****                     LedFreqIndex[M2SelectedLed]++;
- 292              		.loc 1 87 33 is_stmt 0 view .LVU79
- 293 00aa 1048     		ldr	r0, .L23+12
- 294 00ac 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
- 295 00ae D2B2     		uxtb	r2, r2
- 296 00b0 1149     		ldr	r1, .L23+24
- 297 00b2 8B5C     		ldrb	r3, [r1, r2]	@ zero_extendqisi2
-  87:Core/Src/it_handlers.c ****                     LedFreqIndex[M2SelectedLed]++;
- 298              		.loc 1 87 48 view .LVU80
- 299 00b4 0133     		adds	r3, r3, #1
- 300 00b6 DBB2     		uxtb	r3, r3
- 301 00b8 8B54     		strb	r3, [r1, r2]
-  88:Core/Src/it_handlers.c ****                     if(LedFreqIndex[M2SelectedLed] >= 3) 
- 302              		.loc 1 88 21 is_stmt 1 view .LVU81
-  88:Core/Src/it_handlers.c ****                     if(LedFreqIndex[M2SelectedLed] >= 3) 
- 303              		.loc 1 88 36 is_stmt 0 view .LVU82
- 304 00ba 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
- 305 00bc DBB2     		uxtb	r3, r3
- 306 00be CB5C     		ldrb	r3, [r1, r3]	@ zero_extendqisi2
- 307 00c0 DBB2     		uxtb	r3, r3
-  88:Core/Src/it_handlers.c ****                     if(LedFreqIndex[M2SelectedLed] >= 3) 
- 308              		.loc 1 88 23 view .LVU83
- 309 00c2 022B     		cmp	r3, #2
- 310 00c4 B8D9     		bls	.L15
-  89:Core/Src/it_handlers.c ****                         LedFreqIndex[M2SelectedLed] = 0;
- 311              		.loc 1 89 25 is_stmt 1 view .LVU84
-  89:Core/Src/it_handlers.c ****                         LedFreqIndex[M2SelectedLed] = 0;
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 9
-
-
- 312              		.loc 1 89 37 is_stmt 0 view .LVU85
- 313 00c6 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
- 314 00c8 DBB2     		uxtb	r3, r3
-  89:Core/Src/it_handlers.c ****                         LedFreqIndex[M2SelectedLed] = 0;
- 315              		.loc 1 89 53 view .LVU86
- 316 00ca 0A46     		mov	r2, r1
- 317 00cc 0021     		movs	r1, #0
- 318 00ce D154     		strb	r1, [r2, r3]
- 319 00d0 B2E7     		b	.L15
- 320              	.L22:
- 124:Core/Src/it_handlers.c ****                     Mode2_SetLedActive(M2SelectedLed, 0); 
- 321              		.loc 1 124 21 is_stmt 1 view .LVU87
- 322 00d2 064B     		ldr	r3, .L23+12
- 323 00d4 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
- 324 00d6 0021     		movs	r1, #0
- 325 00d8 FFF7FEFF 		bl	Mode2_SetLedActive
- 326              	.LVL1:
- 327 00dc D4E7     		b	.L17
- 328              	.L24:
- 329 00de 00BF     		.align	2
- 330              	.L23:
- 331 00e0 003C0140 		.word	1073822720
- 332 00e4 00000000 		.word	ExternInterruptTickCount
- 333 00e8 00000000 		.word	CurrentMode
- 334 00ec 00000000 		.word	M2SelectedLed
- 335 00f0 00000000 		.word	LedActive
- 336 00f4 00000000 		.word	M1FreqIndex
- 337 00f8 00000000 		.word	LedFreqIndex
- 338              		.cfi_endproc
- 339              	.LFE132:
- 341              		.text
- 342              	.Letext0:
- 343              		.file 2 "F:/STM32Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
- 344              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
- 345              		.file 4 "CMSIS/Devices/stm32f429xx.h"
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccxwHDl5.s 			page 10
+ 340              		.file 4 "CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc1mTMZP.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 it_handlers.c
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:21     .text.SysTick_Handler:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:51     .text.SysTick_Handler:00000014 $d
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:57     .text.EXTI15_10_IRQHandler:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:63     .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:130    .text.EXTI15_10_IRQHandler:00000044 $d
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:137    .text.EXTI9_5_IRQHandler:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:143    .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
-C:\Users\��\AppData\Local\Temp\ccxwHDl5.s:331    .text.EXTI9_5_IRQHandler:000000e0 $d
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:51     .text.SysTick_Handler:00000014 $d
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:57     .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:63     .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:130    .text.EXTI15_10_IRQHandler:00000044 $d
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:137    .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:143    .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\��\AppData\Local\Temp\cc1mTMZP.s:326    .text.EXTI9_5_IRQHandler:000000d8 $d
 
 UNDEFINED SYMBOLS
 GlobalTickCount
@@ -539,5 +505,5 @@ CurrentMode
 Mode2_SetLedActive
 M2SelectedLed
 LedActive
-M1FreqIndex
 LedFreqIndex
+M1FreqIndex

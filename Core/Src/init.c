@@ -75,37 +75,30 @@ void GPIO_Init_All(void)
 // 因为 PC6、PC7 都在 EXTI9_5 中断向量里，PC13 在 EXTI15_10
 void EXTI_Init_All(void)
 {
-    // 1. 使能 SYSCFG 时钟 (EXTI 配置需要)
+    // 1. SYSCFG 时钟
     RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 
-    //--------- PC13 => EXTI13 ----------
-    SYSCFG->EXTICR[3] &= ~(0xF << (4*(13-12))); //清零
-    SYSCFG->EXTICR[3] |=  (0x2 << (4*(13-12))); // PC = 2, 写到EXTICR[3]对应bits
-    // 使能中断, 下降沿/上升沿 (你说按下是高电平，可根据需要选择上升沿)
-    // 如果默认下拉，按下变高，则用上升沿
+    //------ PC13 => EXTI13 => 用于切换模式 ------
+    SYSCFG->EXTICR[3] &= ~(0xF << (4*(13-12)));
+    SYSCFG->EXTICR[3] |=  (0x2 << (4*(13-12))); // PC=2
     EXTI->IMR  |=  (1 << 13);
-    EXTI->RTSR |=  (1 << 13);  // 上升沿
-    //EXTI->FTSR |=  (1 << 13); // 如果要检测松开，可用下降沿
+    EXTI->RTSR |=  (1 << 13);  // 上升沿(按下=高)
 
-    // 启用 EXTI15_10_IRQn
     NVIC_EnableIRQ(EXTI15_10_IRQn);
     NVIC_SetPriority(EXTI15_10_IRQn, 2);
 
-    //--------- PC6 => EXTI6 ----------
-    // PC6 对应 EXTICR[1] 的 4*(6-4) = 8..11 位
-    SYSCFG->EXTICR[1] &= ~(0xF << (4*(6-4)));
-    SYSCFG->EXTICR[1] |=  (0x2 << (4*(6-4)));  // PC = 2
-    EXTI->IMR  |=  (1 << 6);
-    EXTI->RTSR |=  (1 << 6);
+    //------ PC8 => EXTI8 => 按钮2 ------
+    SYSCFG->EXTICR[2] &= ~(0xF << (4*(8-8)));
+    SYSCFG->EXTICR[2] |=  (0x2 << (4*(8-8))); // PC=2
+    EXTI->IMR  |=  (1 << 8);
+    EXTI->RTSR |= (1 << 8);
 
-    //--------- PC7 => EXTI7 ----------
-    // PC7 对应 EXTICR[1] 的 4*(7-4) = 12..15 位
-    SYSCFG->EXTICR[1] &= ~(0xF << (4*(7-4)));
-    SYSCFG->EXTICR[1] |=  (0x2 << (4*(7-4)));  // PC = 2
-    EXTI->IMR  |=  (1 << 7);
-    EXTI->RTSR |=  (1 << 7);
+    //------ PC9 => EXTI9 => 按钮3 ------
+    SYSCFG->EXTICR[2] &= ~(0xF << (4*(9-8)));
+    SYSCFG->EXTICR[2] |=  (0x2 << (4*(9-8))); // PC=2
+    EXTI->IMR  |=  (1 << 9);
+    EXTI->RTSR |= (1 << 9);
 
-    // PC6、PC7 都属于 EXTI9_5 的中断向量
     NVIC_EnableIRQ(EXTI9_5_IRQn);
     NVIC_SetPriority(EXTI9_5_IRQn, 2);
 }

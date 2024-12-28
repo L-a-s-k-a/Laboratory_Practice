@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -32,219 +32,222 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
    2:Core/Src/main.c **** #include "init.h"
    3:Core/Src/main.c **** #include <stdint.h>
    4:Core/Src/main.c **** 
-   5:Core/Src/main.c **** //-------------------------- 全局变量定义 --------------------------//
-   6:Core/Src/main.c **** volatile uint32_t GlobalTickCount = 0;         // SysTick 累计
-   7:Core/Src/main.c **** volatile uint32_t ExternInterruptTickCount = 0; // 用于简单防抖
-   8:Core/Src/main.c **** 
-   9:Core/Src/main.c **** volatile uint8_t  CurrentMode = 1;  // 默认上电后 => 模式1
-  10:Core/Src/main.c **** 
-  11:Core/Src/main.c **** //-------------------------------------------------
-  12:Core/Src/main.c **** // 模式1 (对灯) 相关
-  13:Core/Src/main.c **** //-------------------------------------------------
-  14:Core/Src/main.c **** #define NUM_MODE1_FREQ 3
-  15:Core/Src/main.c **** // 0.5Hz => 2000ms, 1.7Hz => ~588ms, 2.2Hz => ~455ms
-  16:Core/Src/main.c **** static const uint32_t Mode1Periods[NUM_MODE1_FREQ] = {2000, 588, 455};
-  17:Core/Src/main.c **** volatile uint8_t  M1FreqIndex = 0;            // 对灯频率档 (0..2)
-  18:Core/Src/main.c **** volatile uint8_t  M1Step = 0;                 // 0..2 => (3&4),(2&5),(1&6)
-  19:Core/Src/main.c **** volatile uint32_t M1NextToggleTime = 0;       // 下次切换时刻
-  20:Core/Src/main.c **** 
-  21:Core/Src/main.c **** //-------------------------------------------------
-  22:Core/Src/main.c **** // 模式2 (多灯独立闪烁) 相关
-  23:Core/Src/main.c **** //-------------------------------------------------
-  24:Core/Src/main.c **** #define NUM_MODE2_FREQ 3
-  25:Core/Src/main.c **** // 0.3Hz => 3333ms, 0.8Hz => 1250ms, 1.4Hz => 714ms
-  26:Core/Src/main.c **** static const uint32_t Mode2Periods[NUM_MODE2_FREQ] = {3333, 1250, 714};
-  27:Core/Src/main.c **** 
-  28:Core/Src/main.c **** // 每个 LED 是否激活闪烁
-  29:Core/Src/main.c **** volatile uint8_t  LedActive[6] = {0,0,0,0,0,0};  
-  30:Core/Src/main.c **** // 每个 LED 的频率档位
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 2
+   5:Core/Src/main.c **** // 手动定义并初始化
+   6:Core/Src/main.c **** uint32_t SystemCoreClock = 16000000U;
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** //-------------------------- 全局变量定义 --------------------------//
+   9:Core/Src/main.c **** volatile uint32_t GlobalTickCount = 0;         // SysTick 累计
+  10:Core/Src/main.c **** volatile uint32_t ExternInterruptTickCount = 0; // 用于简单防抖
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c **** volatile uint8_t  CurrentMode = 1;  // 默认上电后 => 模式1
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c **** //-------------------------------------------------
+  15:Core/Src/main.c **** // 模式1 (对灯) 相关
+  16:Core/Src/main.c **** //-------------------------------------------------
+  17:Core/Src/main.c **** #define NUM_MODE1_FREQ 3
+  18:Core/Src/main.c **** // 0.5Hz => 2000ms, 1.7Hz => ~588ms, 2.2Hz => ~455ms
+  19:Core/Src/main.c **** static const uint32_t Mode1Periods[NUM_MODE1_FREQ] = {2000, 588, 455};
+  20:Core/Src/main.c **** volatile uint8_t  M1FreqIndex = 0;            // 对灯频率档 (0..2)
+  21:Core/Src/main.c **** volatile uint8_t  M1Step = 0;                 // 0..2 => (3&4),(2&5),(1&6)
+  22:Core/Src/main.c **** volatile uint32_t M1NextToggleTime = 0;       // 下次切换时刻
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c **** //-------------------------------------------------
+  25:Core/Src/main.c **** // 模式2 (多灯独立闪烁) 相关
+  26:Core/Src/main.c **** //-------------------------------------------------
+  27:Core/Src/main.c **** #define NUM_MODE2_FREQ 3
+  28:Core/Src/main.c **** // 0.3Hz => 3333ms, 0.8Hz => 1250ms, 1.4Hz => 714ms
+  29:Core/Src/main.c **** static const uint32_t Mode2Periods[NUM_MODE2_FREQ] = {3333, 1250, 714};
+  30:Core/Src/main.c **** 
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 2
 
 
-  31:Core/Src/main.c **** volatile uint8_t  LedFreqIndex[6] = {0,0,0,0,0,0};
-  32:Core/Src/main.c **** // 记录下次该 LED 进行「翻转」的时刻
-  33:Core/Src/main.c **** static uint32_t   LedNextToggleTime[6] = {0,0,0,0,0,0};
-  34:Core/Src/main.c **** // 当前 LED 的开/关状态 (0=灭,1=亮)
-  35:Core/Src/main.c **** static uint8_t    LedState[6] = {0,0,0,0,0,0};
-  36:Core/Src/main.c **** 
-  37:Core/Src/main.c **** // 当前选中的 LED (0..5 => 对应“1~6号灯”)
-  38:Core/Src/main.c **** volatile uint8_t  M2SelectedLed = 0; 
+  31:Core/Src/main.c **** // 每个 LED 是否激活闪烁
+  32:Core/Src/main.c **** volatile uint8_t  LedActive[6] = {0,0,0,0,0,0};  
+  33:Core/Src/main.c **** // 每个 LED 的频率档位
+  34:Core/Src/main.c **** volatile uint8_t  LedFreqIndex[6] = {0,0,0,0,0,0};
+  35:Core/Src/main.c **** // 记录下次该 LED 进行「翻转」的时刻
+  36:Core/Src/main.c **** static uint32_t   LedNextToggleTime[6] = {0,0,0,0,0,0};
+  37:Core/Src/main.c **** // 当前 LED 的开/关状态 (0=灭,1=亮)
+  38:Core/Src/main.c **** static uint8_t    LedState[6] = {0,0,0,0,0,0};
   39:Core/Src/main.c **** 
-  40:Core/Src/main.c **** //-------------------------------------------------
-  41:Core/Src/main.c **** // LED 与引脚的对应关系 (0..5)
-  42:Core/Src/main.c **** // 0->PB0, 1->PB1, 2->PB2, 3->PB6, 4->PB7, 5->PB14
+  40:Core/Src/main.c **** // 当前选中的 LED (0..5 => 对应“1~6号灯”)
+  41:Core/Src/main.c **** volatile uint8_t  M2SelectedLed = 0; 
+  42:Core/Src/main.c **** 
   43:Core/Src/main.c **** //-------------------------------------------------
-  44:Core/Src/main.c **** static const uint8_t LED_PIN[6] = {0,1,2,6,7,14};
-  45:Core/Src/main.c **** 
-  46:Core/Src/main.c **** //----------------- 函数声明 -----------------//
-  47:Core/Src/main.c **** static void SetLed(uint8_t ledIndex, uint8_t on);
-  48:Core/Src/main.c **** void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex);
-  49:Core/Src/main.c **** void Mode2_DeactivateAll(void);
-  50:Core/Src/main.c **** 
-  51:Core/Src/main.c **** //-------------------------------------------------
-  52:Core/Src/main.c **** // main()
-  53:Core/Src/main.c **** //-------------------------------------------------
-  54:Core/Src/main.c **** int main(void)
-  55:Core/Src/main.c **** {
-  56:Core/Src/main.c ****     // 1. 初始化系统时钟
-  57:Core/Src/main.c ****     SystemClock_Config();
-  58:Core/Src/main.c **** 
-  59:Core/Src/main.c ****     // 2. 初始化 SysTick => 1ms一次中断 (假设16MHz, 则 SysTick->LOAD=16000-1)
-  60:Core/Src/main.c ****     SysTick_Init(SystemCoreClock / 1000);
+  44:Core/Src/main.c **** // LED 与引脚的对应关系 (0..5)
+  45:Core/Src/main.c **** // 0->PB0, 1->PB1, 2->PB2, 3->PB6, 4->PB7, 5->PB14
+  46:Core/Src/main.c **** //-------------------------------------------------
+  47:Core/Src/main.c **** static const uint8_t LED_PIN[6] = {0,1,2,6,7,14};
+  48:Core/Src/main.c **** 
+  49:Core/Src/main.c **** //----------------- 函数声明 -----------------//
+  50:Core/Src/main.c **** static void SetLed(uint8_t ledIndex, uint8_t on);
+  51:Core/Src/main.c **** void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex);
+  52:Core/Src/main.c **** void Mode2_DeactivateAll(void);
+  53:Core/Src/main.c **** 
+  54:Core/Src/main.c **** //-------------------------------------------------
+  55:Core/Src/main.c **** // main()
+  56:Core/Src/main.c **** //-------------------------------------------------
+  57:Core/Src/main.c **** int main(void)
+  58:Core/Src/main.c **** {
+  59:Core/Src/main.c ****     // 1. 初始化系统时钟
+  60:Core/Src/main.c ****     SystemClock_Config();
   61:Core/Src/main.c **** 
-  62:Core/Src/main.c ****     // 3. 初始化所有 GPIO
-  63:Core/Src/main.c ****     GPIO_Init_All();
+  62:Core/Src/main.c ****     // 2. 初始化 SysTick => 1ms一次中断 (假设16MHz, 则 SysTick->LOAD=16000-1)
+  63:Core/Src/main.c ****     SysTick_Init(SystemCoreClock / 1000);
   64:Core/Src/main.c **** 
-  65:Core/Src/main.c ****     // 4. 初始化 EXTI (3 个按键)
-  66:Core/Src/main.c ****     EXTI_Init_All();
+  65:Core/Src/main.c ****     // 3. 初始化所有 GPIO
+  66:Core/Src/main.c ****     GPIO_Init_All();
   67:Core/Src/main.c **** 
-  68:Core/Src/main.c ****     // 5. 上电默认模式 1, 对灯频率设为最慢(0.5Hz => M1FreqIndex=0)
-  69:Core/Src/main.c ****     M1FreqIndex = 0;
-  70:Core/Src/main.c ****     M1Step = 0;
-  71:Core/Src/main.c ****     M1NextToggleTime = 0; // 立即在主循环里进行第一次切换
-  72:Core/Src/main.c **** 
-  73:Core/Src/main.c ****     while(1)
-  74:Core/Src/main.c ****     {
-  75:Core/Src/main.c ****         if(CurrentMode == 1)
-  76:Core/Src/main.c ****         {
-  77:Core/Src/main.c ****             //--------- 模式1：对灯循环 ---------
-  78:Core/Src/main.c ****             // 如果到了切换时间
-  79:Core/Src/main.c ****             if(GlobalTickCount >= M1NextToggleTime)
-  80:Core/Src/main.c ****             {
-  81:Core/Src/main.c ****                 // 更新下次切换时刻
-  82:Core/Src/main.c ****                 M1NextToggleTime = GlobalTickCount + Mode1Periods[M1FreqIndex];
-  83:Core/Src/main.c **** 
-  84:Core/Src/main.c ****                 // M1Step 依次在 0..2 之间循环
-  85:Core/Src/main.c ****                 M1Step = (M1Step + 1) % 3;
-  86:Core/Src/main.c ****                 
-  87:Core/Src/main.c ****                 // 先关掉所有 LED
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 3
+  68:Core/Src/main.c ****     // 4. 初始化 EXTI (3 个按键)
+  69:Core/Src/main.c ****     EXTI_Init_All();
+  70:Core/Src/main.c **** 
+  71:Core/Src/main.c ****     // 5. 上电默认模式 1, 对灯频率设为最慢(0.5Hz => M1FreqIndex=0)
+  72:Core/Src/main.c ****     M1FreqIndex = 0;
+  73:Core/Src/main.c ****     M1Step = 0;
+  74:Core/Src/main.c ****     M1NextToggleTime = 0; // 立即在主循环里进行第一次切换
+  75:Core/Src/main.c **** 
+  76:Core/Src/main.c ****     while(1)
+  77:Core/Src/main.c ****     {
+  78:Core/Src/main.c ****         if(CurrentMode == 1)
+  79:Core/Src/main.c ****         {
+  80:Core/Src/main.c ****             //--------- 模式1：对灯循环 ---------
+  81:Core/Src/main.c ****             // 如果到了切换时间
+  82:Core/Src/main.c ****             if(GlobalTickCount >= M1NextToggleTime)
+  83:Core/Src/main.c ****             {
+  84:Core/Src/main.c ****                 // 更新下次切换时刻
+  85:Core/Src/main.c ****                 M1NextToggleTime = GlobalTickCount + Mode1Periods[M1FreqIndex];
+  86:Core/Src/main.c **** 
+  87:Core/Src/main.c ****                 // M1Step 依次在 0..2 之间循环
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 3
 
 
-  88:Core/Src/main.c ****                 for(uint8_t i=0; i<6; i++)
-  89:Core/Src/main.c ****                 {
-  90:Core/Src/main.c ****                     SetLed(i, 0);
-  91:Core/Src/main.c ****                 }
-  92:Core/Src/main.c **** 
-  93:Core/Src/main.c ****                 // 根据 M1Step 开对应对儿
-  94:Core/Src/main.c ****                 // 题目给的三对是 (3&4), (2&5), (1&6)
-  95:Core/Src/main.c ****                 // 但要注意：你文档里写的“(3&4)”指第三第四颗LED，
-  96:Core/Src/main.c ****                 // 这里在数组里：LED2是PB2, LED3是PB6, LED4是PB7, LED5是PB14... 
-  97:Core/Src/main.c ****                 // 有些混淆。此处的写法仅示例，可根据你实际 "编号" 对应关�
-  98:Core/Src/main.c ****                 // 我这里假设：LED0=第1个灯, LED1=第2个灯, LED2=第3个灯, LED3=第4�
-  99:Core/Src/main.c ****                 // 那么 "对" (3&4) => LED2,LED3; (2&5) => LED1,LED4; (1&6) => LED0,LED5
- 100:Core/Src/main.c ****                 switch(M1Step)
- 101:Core/Src/main.c ****                 {
- 102:Core/Src/main.c ****                     case 0: // (3&4)
- 103:Core/Src/main.c ****                         SetLed(2, 1); 
- 104:Core/Src/main.c ****                         SetLed(3, 1);
- 105:Core/Src/main.c ****                         break;
- 106:Core/Src/main.c ****                     case 1: // (2&5)
- 107:Core/Src/main.c ****                         SetLed(1, 1);
- 108:Core/Src/main.c ****                         SetLed(4, 1);
- 109:Core/Src/main.c ****                         break;
- 110:Core/Src/main.c ****                     case 2: // (1&6)
- 111:Core/Src/main.c ****                         SetLed(0, 1);
- 112:Core/Src/main.c ****                         SetLed(5, 1);
- 113:Core/Src/main.c ****                         break;
- 114:Core/Src/main.c ****                 }
- 115:Core/Src/main.c ****             }
- 116:Core/Src/main.c ****         }
- 117:Core/Src/main.c ****         else
- 118:Core/Src/main.c ****         {
- 119:Core/Src/main.c ****             //--------- 模式2：多LED独立闪烁 ---------
- 120:Core/Src/main.c ****             // 逐个LED检查是否激活
- 121:Core/Src/main.c ****             for(uint8_t i=0; i<6; i++)
- 122:Core/Src/main.c ****             {
- 123:Core/Src/main.c ****                 if(LedActive[i] == 1)
- 124:Core/Src/main.c ****                 {
- 125:Core/Src/main.c ****                     // 看是否到了该翻转的时刻
- 126:Core/Src/main.c ****                     uint32_t period = Mode2Periods[ LedFreqIndex[i] ];
- 127:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
- 128:Core/Src/main.c ****                     {
- 129:Core/Src/main.c ****                         // 翻转
- 130:Core/Src/main.c ****                         if(LedState[i] == 0)
- 131:Core/Src/main.c ****                         {
- 132:Core/Src/main.c ****                             SetLed(i, 1);
- 133:Core/Src/main.c ****                             LedState[i] = 1;
- 134:Core/Src/main.c ****                         }
- 135:Core/Src/main.c ****                         else
- 136:Core/Src/main.c ****                         {
- 137:Core/Src/main.c ****                             SetLed(i, 0);
- 138:Core/Src/main.c ****                             LedState[i] = 0;
- 139:Core/Src/main.c ****                         }
- 140:Core/Src/main.c **** 
- 141:Core/Src/main.c ****                         // 下次翻转时刻
- 142:Core/Src/main.c ****                         LedNextToggleTime[i] = GlobalTickCount + period/2;
- 143:Core/Src/main.c ****                     }
- 144:Core/Src/main.c ****                 }
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 4
+  88:Core/Src/main.c ****                 M1Step = (M1Step + 1) % 3;
+  89:Core/Src/main.c ****                 
+  90:Core/Src/main.c ****                 // 先关掉所有 LED
+  91:Core/Src/main.c ****                 for(uint8_t i=0; i<6; i++)
+  92:Core/Src/main.c ****                 {
+  93:Core/Src/main.c ****                     SetLed(i, 0);
+  94:Core/Src/main.c ****                 }
+  95:Core/Src/main.c **** 
+  96:Core/Src/main.c ****                 // 根据 M1Step 开对应对儿
+  97:Core/Src/main.c ****                 // 题目给的三对是 (3&4), (2&5), (1&6)
+  98:Core/Src/main.c ****                 // 但要注意：你文档里写的“(3&4)”指第三第四颗LED，
+  99:Core/Src/main.c ****                 // 这里在数组里：LED2是PB2, LED3是PB6, LED4是PB7, LED5是PB14... 
+ 100:Core/Src/main.c ****                 // 有些混淆。此处的写法仅示例，可根据你实际 "编号" 对应关�
+ 101:Core/Src/main.c ****                 // 我这里假设：LED0=第1个灯, LED1=第2个灯, LED2=第3个灯, LED3=第4�
+ 102:Core/Src/main.c ****                 // 那么 "对" (3&4) => LED2,LED3; (2&5) => LED1,LED4; (1&6) => LED0,LED5
+ 103:Core/Src/main.c ****                 switch(M1Step)
+ 104:Core/Src/main.c ****                 {
+ 105:Core/Src/main.c ****                     case 0: // (3&4)
+ 106:Core/Src/main.c ****                         SetLed(2, 1); 
+ 107:Core/Src/main.c ****                         SetLed(3, 1);
+ 108:Core/Src/main.c ****                         break;
+ 109:Core/Src/main.c ****                     case 1: // (2&5)
+ 110:Core/Src/main.c ****                         SetLed(1, 1);
+ 111:Core/Src/main.c ****                         SetLed(4, 1);
+ 112:Core/Src/main.c ****                         break;
+ 113:Core/Src/main.c ****                     case 2: // (1&6)
+ 114:Core/Src/main.c ****                         SetLed(0, 1);
+ 115:Core/Src/main.c ****                         SetLed(5, 1);
+ 116:Core/Src/main.c ****                         break;
+ 117:Core/Src/main.c ****                 }
+ 118:Core/Src/main.c ****             }
+ 119:Core/Src/main.c ****         }
+ 120:Core/Src/main.c ****         else
+ 121:Core/Src/main.c ****         {
+ 122:Core/Src/main.c ****             //--------- 模式2：多LED独立闪烁 ---------
+ 123:Core/Src/main.c ****             // 逐个LED检查是否激活
+ 124:Core/Src/main.c ****             for(uint8_t i=0; i<6; i++)
+ 125:Core/Src/main.c ****             {
+ 126:Core/Src/main.c ****                 if(LedActive[i] == 1)
+ 127:Core/Src/main.c ****                 {
+ 128:Core/Src/main.c ****                     // 看是否到了该翻转的时刻
+ 129:Core/Src/main.c ****                     uint32_t period = Mode2Periods[ LedFreqIndex[i] ];
+ 130:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
+ 131:Core/Src/main.c ****                     {
+ 132:Core/Src/main.c ****                         // 翻转
+ 133:Core/Src/main.c ****                         if(LedState[i] == 0)
+ 134:Core/Src/main.c ****                         {
+ 135:Core/Src/main.c ****                             SetLed(i, 1);
+ 136:Core/Src/main.c ****                             LedState[i] = 1;
+ 137:Core/Src/main.c ****                         }
+ 138:Core/Src/main.c ****                         else
+ 139:Core/Src/main.c ****                         {
+ 140:Core/Src/main.c ****                             SetLed(i, 0);
+ 141:Core/Src/main.c ****                             LedState[i] = 0;
+ 142:Core/Src/main.c ****                         }
+ 143:Core/Src/main.c **** 
+ 144:Core/Src/main.c ****                         // 下次翻转时刻
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 4
 
 
- 145:Core/Src/main.c ****             }
- 146:Core/Src/main.c ****         }
- 147:Core/Src/main.c **** 
- 148:Core/Src/main.c ****         // ...可在此做其它任务
- 149:Core/Src/main.c ****     }
- 150:Core/Src/main.c **** }
- 151:Core/Src/main.c **** 
- 152:Core/Src/main.c **** //-------------------------------------------------
- 153:Core/Src/main.c **** // 设置某个 LED 亮或灭
- 154:Core/Src/main.c **** // ledIndex: 0..5
- 155:Core/Src/main.c **** // on: 0=灭, 1=亮
- 156:Core/Src/main.c **** //-------------------------------------------------
- 157:Core/Src/main.c **** static void SetLed(uint8_t ledIndex, uint8_t on)
- 158:Core/Src/main.c **** {
-  29              		.loc 1 158 1 view -0
+ 145:Core/Src/main.c ****                         LedNextToggleTime[i] = GlobalTickCount + period/2;
+ 146:Core/Src/main.c ****                     }
+ 147:Core/Src/main.c ****                 }
+ 148:Core/Src/main.c ****             }
+ 149:Core/Src/main.c ****         }
+ 150:Core/Src/main.c **** 
+ 151:Core/Src/main.c ****         // ...可在此做其它任务
+ 152:Core/Src/main.c ****     }
+ 153:Core/Src/main.c **** }
+ 154:Core/Src/main.c **** 
+ 155:Core/Src/main.c **** //-------------------------------------------------
+ 156:Core/Src/main.c **** // 设置某个 LED 亮或灭
+ 157:Core/Src/main.c **** // ledIndex: 0..5
+ 158:Core/Src/main.c **** // on: 0=灭, 1=亮
+ 159:Core/Src/main.c **** //-------------------------------------------------
+ 160:Core/Src/main.c **** static void SetLed(uint8_t ledIndex, uint8_t on)
+ 161:Core/Src/main.c **** {
+  29              		.loc 1 161 1 view -0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
   33              		@ link register save eliminated.
- 159:Core/Src/main.c ****     // PBx 引脚输出 1 => 实际上是“拉高”或“点亮”?
- 160:Core/Src/main.c ****     // 需根据你板子的 LED 接法决定。这里假设 "1=亮, 0=灭"。
- 161:Core/Src/main.c ****     uint16_t pinMask = 1 << LED_PIN[ledIndex];
-  34              		.loc 1 161 5 view .LVU1
-  35              		.loc 1 161 36 is_stmt 0 view .LVU2
+ 162:Core/Src/main.c ****     // PBx 引脚输出 1 => 实际上是“拉高”或“点亮”?
+ 163:Core/Src/main.c ****     // 需根据你板子的 LED 接法决定。这里假设 "1=亮, 0=灭"。
+ 164:Core/Src/main.c ****     uint16_t pinMask = 1 << LED_PIN[ledIndex];
+  34              		.loc 1 164 5 view .LVU1
+  35              		.loc 1 164 36 is_stmt 0 view .LVU2
   36 0000 064B     		ldr	r3, .L4
   37 0002 1A5C     		ldrb	r2, [r3, r0]	@ zero_extendqisi2
-  38              		.loc 1 161 26 view .LVU3
+  38              		.loc 1 164 26 view .LVU3
   39 0004 0123     		movs	r3, #1
   40 0006 9340     		lsls	r3, r3, r2
   41              	.LVL1:
- 162:Core/Src/main.c ****     if(on)
-  42              		.loc 1 162 5 is_stmt 1 view .LVU4
-  43              		.loc 1 162 7 is_stmt 0 view .LVU5
+ 165:Core/Src/main.c ****     if(on)
+  42              		.loc 1 165 5 is_stmt 1 view .LVU4
+  43              		.loc 1 165 7 is_stmt 0 view .LVU5
   44 0008 19B1     		cbz	r1, .L2
- 163:Core/Src/main.c ****     {
- 164:Core/Src/main.c ****         // 置1
- 165:Core/Src/main.c ****         GPIOB->BSRR = pinMask;  
-  45              		.loc 1 165 9 is_stmt 1 view .LVU6
-  46              		.loc 1 165 21 is_stmt 0 view .LVU7
+ 166:Core/Src/main.c ****     {
+ 167:Core/Src/main.c ****         // 置1
+ 168:Core/Src/main.c ****         GPIOB->BSRR = pinMask;  
+  45              		.loc 1 168 9 is_stmt 1 view .LVU6
+  46              		.loc 1 168 21 is_stmt 0 view .LVU7
   47 000a 9BB2     		uxth	r3, r3
-  48              		.loc 1 165 21 view .LVU8
+  48              		.loc 1 168 21 view .LVU8
   49 000c 044A     		ldr	r2, .L4+4
   50 000e 9361     		str	r3, [r2, #24]
   51 0010 7047     		bx	lr
   52              	.L2:
- 166:Core/Src/main.c ****     }
- 167:Core/Src/main.c ****     else
- 168:Core/Src/main.c ****     {
- 169:Core/Src/main.c ****         // 复位
- 170:Core/Src/main.c ****         GPIOB->BSRR = (pinMask << 16);
-  53              		.loc 1 170 9 is_stmt 1 view .LVU9
+ 169:Core/Src/main.c ****     }
+ 170:Core/Src/main.c ****     else
+ 171:Core/Src/main.c ****     {
+ 172:Core/Src/main.c ****         // 复位
+ 173:Core/Src/main.c ****         GPIOB->BSRR = (pinMask << 16);
+  53              		.loc 1 173 9 is_stmt 1 view .LVU9
   54 0012 1B04     		lsls	r3, r3, #16
   55              	.LVL2:
-  56              		.loc 1 170 21 is_stmt 0 view .LVU10
+  56              		.loc 1 173 21 is_stmt 0 view .LVU10
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 5
+
+
   57 0014 024A     		ldr	r2, .L4+4
   58              	.LVL3:
-  59              		.loc 1 170 21 view .LVU11
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 5
-
-
+  59              		.loc 1 173 21 view .LVU11
   60 0016 9361     		str	r3, [r2, #24]
- 171:Core/Src/main.c ****     }
- 172:Core/Src/main.c **** }
-  61              		.loc 1 172 1 view .LVU12
+ 174:Core/Src/main.c ****     }
+ 175:Core/Src/main.c **** }
+  61              		.loc 1 175 1 view .LVU12
   62 0018 7047     		bx	lr
   63              	.L5:
   64 001a 00BF     		.align	2
@@ -261,8 +264,8 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
   76              		.thumb_func
   78              	main:
   79              	.LFB130:
-  55:Core/Src/main.c ****     // 1. 初始化系统时钟
-  80              		.loc 1 55 1 is_stmt 1 view -0
+  58:Core/Src/main.c ****     // 1. 初始化系统时钟
+  80              		.loc 1 58 1 is_stmt 1 view -0
   81              		.cfi_startproc
   82              		@ args = 0, pretend = 0, frame = 0
   83              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -273,12 +276,12 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
   88              		.cfi_offset 5, -12
   89              		.cfi_offset 6, -8
   90              		.cfi_offset 14, -4
-  57:Core/Src/main.c **** 
-  91              		.loc 1 57 5 view .LVU14
+  60:Core/Src/main.c **** 
+  91              		.loc 1 60 5 view .LVU14
   92 0002 FFF7FEFF 		bl	SystemClock_Config
   93              	.LVL4:
-  60:Core/Src/main.c **** 
-  94              		.loc 1 60 5 view .LVU15
+  63:Core/Src/main.c **** 
+  94              		.loc 1 63 5 view .LVU15
   95 0006 494B     		ldr	r3, .L20
   96 0008 1868     		ldr	r0, [r3]
   97 000a 494B     		ldr	r3, .L20+4
@@ -286,62 +289,62 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
   99 0010 8009     		lsrs	r0, r0, #6
  100 0012 FFF7FEFF 		bl	SysTick_Init
  101              	.LVL5:
-  63:Core/Src/main.c **** 
- 102              		.loc 1 63 5 view .LVU16
+  66:Core/Src/main.c **** 
+ 102              		.loc 1 66 5 view .LVU16
  103 0016 FFF7FEFF 		bl	GPIO_Init_All
  104              	.LVL6:
-  66:Core/Src/main.c **** 
- 105              		.loc 1 66 5 view .LVU17
+  69:Core/Src/main.c **** 
+ 105              		.loc 1 69 5 view .LVU17
  106 001a FFF7FEFF 		bl	EXTI_Init_All
  107              	.LVL7:
-  69:Core/Src/main.c ****     M1Step = 0;
- 108              		.loc 1 69 5 view .LVU18
-  69:Core/Src/main.c ****     M1Step = 0;
- 109              		.loc 1 69 17 is_stmt 0 view .LVU19
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 6
+  72:Core/Src/main.c ****     M1Step = 0;
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 6
 
 
+ 108              		.loc 1 72 5 view .LVU18
+  72:Core/Src/main.c ****     M1Step = 0;
+ 109              		.loc 1 72 17 is_stmt 0 view .LVU19
  110 001e 0023     		movs	r3, #0
  111 0020 444A     		ldr	r2, .L20+8
  112 0022 1370     		strb	r3, [r2]
-  70:Core/Src/main.c ****     M1NextToggleTime = 0; // 立即在主循环里进行第一次切换
- 113              		.loc 1 70 5 is_stmt 1 view .LVU20
-  70:Core/Src/main.c ****     M1NextToggleTime = 0; // 立即在主循环里进行第一次切换
- 114              		.loc 1 70 12 is_stmt 0 view .LVU21
+  73:Core/Src/main.c ****     M1NextToggleTime = 0; // 立即在主循环里进行第一次切换
+ 113              		.loc 1 73 5 is_stmt 1 view .LVU20
+  73:Core/Src/main.c ****     M1NextToggleTime = 0; // 立即在主循环里进行第一次切换
+ 114              		.loc 1 73 12 is_stmt 0 view .LVU21
  115 0024 444A     		ldr	r2, .L20+12
  116 0026 1370     		strb	r3, [r2]
-  71:Core/Src/main.c **** 
- 117              		.loc 1 71 5 is_stmt 1 view .LVU22
-  71:Core/Src/main.c **** 
- 118              		.loc 1 71 22 is_stmt 0 view .LVU23
+  74:Core/Src/main.c **** 
+ 117              		.loc 1 74 5 is_stmt 1 view .LVU22
+  74:Core/Src/main.c **** 
+ 118              		.loc 1 74 22 is_stmt 0 view .LVU23
  119 0028 444A     		ldr	r2, .L20+16
  120 002a 1360     		str	r3, [r2]
  121 002c 17E0     		b	.L7
  122              	.LVL8:
  123              	.L11:
  124              	.LBB2:
-  90:Core/Src/main.c ****                 }
- 125              		.loc 1 90 21 is_stmt 1 view .LVU24
+  93:Core/Src/main.c ****                 }
+ 125              		.loc 1 93 21 is_stmt 1 view .LVU24
  126 002e 0021     		movs	r1, #0
  127 0030 2046     		mov	r0, r4
  128 0032 FFF7FEFF 		bl	SetLed
  129              	.LVL9:
-  88:Core/Src/main.c ****                 {
- 130              		.loc 1 88 40 discriminator 3 view .LVU25
+  91:Core/Src/main.c ****                 {
+ 130              		.loc 1 91 40 discriminator 3 view .LVU25
  131 0036 0134     		adds	r4, r4, #1
  132              	.LVL10:
-  88:Core/Src/main.c ****                 {
- 133              		.loc 1 88 40 is_stmt 0 discriminator 3 view .LVU26
+  91:Core/Src/main.c ****                 {
+ 133              		.loc 1 91 40 is_stmt 0 discriminator 3 view .LVU26
  134 0038 E4B2     		uxtb	r4, r4
  135              	.LVL11:
  136              	.L10:
-  88:Core/Src/main.c ****                 {
- 137              		.loc 1 88 35 is_stmt 1 discriminator 1 view .LVU27
+  91:Core/Src/main.c ****                 {
+ 137              		.loc 1 91 35 is_stmt 1 discriminator 1 view .LVU27
  138 003a 052C     		cmp	r4, #5
  139 003c F7D9     		bls	.L11
  140              	.LBE2:
- 100:Core/Src/main.c ****                 {
- 141              		.loc 1 100 17 view .LVU28
+ 103:Core/Src/main.c ****                 {
+ 141              		.loc 1 103 17 view .LVU28
  142 003e 3E4B     		ldr	r3, .L20+12
  143 0040 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  144 0042 DBB2     		uxtb	r3, r3
@@ -350,259 +353,259 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
  147 0048 022B     		cmp	r3, #2
  148 004a 33D0     		beq	.L13
  149 004c 3BB9     		cbnz	r3, .L7
- 103:Core/Src/main.c ****                         SetLed(3, 1);
- 150              		.loc 1 103 25 view .LVU29
+ 106:Core/Src/main.c ****                         SetLed(3, 1);
+ 150              		.loc 1 106 25 view .LVU29
  151 004e 0121     		movs	r1, #1
  152 0050 0220     		movs	r0, #2
  153 0052 FFF7FEFF 		bl	SetLed
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 7
+
+
  154              	.LVL12:
- 104:Core/Src/main.c ****                         break;
- 155              		.loc 1 104 25 view .LVU30
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 7
-
-
+ 107:Core/Src/main.c ****                         break;
+ 155              		.loc 1 107 25 view .LVU30
  156 0056 0121     		movs	r1, #1
  157 0058 0320     		movs	r0, #3
  158 005a FFF7FEFF 		bl	SetLed
  159              	.LVL13:
- 105:Core/Src/main.c ****                     case 1: // (2&5)
- 160              		.loc 1 105 25 view .LVU31
+ 108:Core/Src/main.c ****                     case 1: // (2&5)
+ 160              		.loc 1 108 25 view .LVU31
  161              	.L7:
-  73:Core/Src/main.c ****     {
- 162              		.loc 1 73 5 view .LVU32
-  75:Core/Src/main.c ****         {
- 163              		.loc 1 75 9 view .LVU33
-  75:Core/Src/main.c ****         {
- 164              		.loc 1 75 24 is_stmt 0 view .LVU34
+  76:Core/Src/main.c ****     {
+ 162              		.loc 1 76 5 view .LVU32
+  78:Core/Src/main.c ****         {
+ 163              		.loc 1 78 9 view .LVU33
+  78:Core/Src/main.c ****         {
+ 164              		.loc 1 78 24 is_stmt 0 view .LVU34
  165 005e 384B     		ldr	r3, .L20+20
  166 0060 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  167 0062 DBB2     		uxtb	r3, r3
-  75:Core/Src/main.c ****         {
- 168              		.loc 1 75 11 view .LVU35
+  78:Core/Src/main.c ****         {
+ 168              		.loc 1 78 11 view .LVU35
  169 0064 012B     		cmp	r3, #1
  170 0066 5ED1     		bne	.L18
-  79:Core/Src/main.c ****             {
- 171              		.loc 1 79 13 is_stmt 1 view .LVU36
-  79:Core/Src/main.c ****             {
- 172              		.loc 1 79 32 is_stmt 0 view .LVU37
+  82:Core/Src/main.c ****             {
+ 171              		.loc 1 82 13 is_stmt 1 view .LVU36
+  82:Core/Src/main.c ****             {
+ 172              		.loc 1 82 32 is_stmt 0 view .LVU37
  173 0068 364B     		ldr	r3, .L20+24
  174 006a 1A68     		ldr	r2, [r3]
  175 006c 334B     		ldr	r3, .L20+16
  176 006e 1B68     		ldr	r3, [r3]
-  79:Core/Src/main.c ****             {
- 177              		.loc 1 79 15 view .LVU38
+  82:Core/Src/main.c ****             {
+ 177              		.loc 1 82 15 view .LVU38
  178 0070 9A42     		cmp	r2, r3
  179 0072 F4D3     		bcc	.L7
-  82:Core/Src/main.c **** 
- 180              		.loc 1 82 17 is_stmt 1 view .LVU39
-  82:Core/Src/main.c **** 
- 181              		.loc 1 82 66 is_stmt 0 view .LVU40
+  85:Core/Src/main.c **** 
+ 180              		.loc 1 85 17 is_stmt 1 view .LVU39
+  85:Core/Src/main.c **** 
+ 181              		.loc 1 85 66 is_stmt 0 view .LVU40
  182 0074 2F4B     		ldr	r3, .L20+8
  183 0076 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
  184 0078 334B     		ldr	r3, .L20+28
  185 007a 53F82230 		ldr	r3, [r3, r2, lsl #2]
-  82:Core/Src/main.c **** 
- 186              		.loc 1 82 52 view .LVU41
+  85:Core/Src/main.c **** 
+ 186              		.loc 1 85 52 view .LVU41
  187 007e 314A     		ldr	r2, .L20+24
  188 0080 1268     		ldr	r2, [r2]
  189 0082 1344     		add	r3, r3, r2
-  82:Core/Src/main.c **** 
- 190              		.loc 1 82 34 view .LVU42
+  85:Core/Src/main.c **** 
+ 190              		.loc 1 85 34 view .LVU42
  191 0084 2D4A     		ldr	r2, .L20+16
  192 0086 1360     		str	r3, [r2]
-  85:Core/Src/main.c ****                 
- 193              		.loc 1 85 17 is_stmt 1 view .LVU43
-  85:Core/Src/main.c ****                 
- 194              		.loc 1 85 34 is_stmt 0 view .LVU44
+  88:Core/Src/main.c ****                 
+ 193              		.loc 1 88 17 is_stmt 1 view .LVU43
+  88:Core/Src/main.c ****                 
+ 194              		.loc 1 88 34 is_stmt 0 view .LVU44
  195 0088 2B49     		ldr	r1, .L20+12
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 8
+
+
  196 008a 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
  197 008c 0132     		adds	r2, r2, #1
-  85:Core/Src/main.c ****                 
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 8
-
-
- 198              		.loc 1 85 39 view .LVU45
+  88:Core/Src/main.c ****                 
+ 198              		.loc 1 88 39 view .LVU45
  199 008e 2F4B     		ldr	r3, .L20+32
  200 0090 83FB0203 		smull	r0, r3, r3, r2
  201 0094 03EB4303 		add	r3, r3, r3, lsl #1
  202 0098 D31A     		subs	r3, r2, r3
-  85:Core/Src/main.c ****                 
- 203              		.loc 1 85 24 view .LVU46
+  88:Core/Src/main.c ****                 
+ 203              		.loc 1 88 24 view .LVU46
  204 009a DBB2     		uxtb	r3, r3
  205 009c 0B70     		strb	r3, [r1]
-  88:Core/Src/main.c ****                 {
- 206              		.loc 1 88 17 is_stmt 1 view .LVU47
+  91:Core/Src/main.c ****                 {
+ 206              		.loc 1 91 17 is_stmt 1 view .LVU47
  207              	.LBB3:
-  88:Core/Src/main.c ****                 {
- 208              		.loc 1 88 21 view .LVU48
+  91:Core/Src/main.c ****                 {
+ 208              		.loc 1 91 21 view .LVU48
  209              	.LVL14:
-  88:Core/Src/main.c ****                 {
- 210              		.loc 1 88 29 is_stmt 0 view .LVU49
+  91:Core/Src/main.c ****                 {
+ 210              		.loc 1 91 29 is_stmt 0 view .LVU49
  211 009e 0024     		movs	r4, #0
-  88:Core/Src/main.c ****                 {
- 212              		.loc 1 88 17 view .LVU50
+  91:Core/Src/main.c ****                 {
+ 212              		.loc 1 91 17 view .LVU50
  213 00a0 CBE7     		b	.L10
  214              	.LVL15:
  215              	.L12:
-  88:Core/Src/main.c ****                 {
- 216              		.loc 1 88 17 view .LVU51
+  91:Core/Src/main.c ****                 {
+ 216              		.loc 1 91 17 view .LVU51
  217              	.LBE3:
- 107:Core/Src/main.c ****                         SetLed(4, 1);
- 218              		.loc 1 107 25 is_stmt 1 view .LVU52
+ 110:Core/Src/main.c ****                         SetLed(4, 1);
+ 218              		.loc 1 110 25 is_stmt 1 view .LVU52
  219 00a2 0121     		movs	r1, #1
  220 00a4 0846     		mov	r0, r1
  221 00a6 FFF7FEFF 		bl	SetLed
  222              	.LVL16:
- 108:Core/Src/main.c ****                         break;
- 223              		.loc 1 108 25 view .LVU53
+ 111:Core/Src/main.c ****                         break;
+ 223              		.loc 1 111 25 view .LVU53
  224 00aa 0121     		movs	r1, #1
  225 00ac 0420     		movs	r0, #4
  226 00ae FFF7FEFF 		bl	SetLed
  227              	.LVL17:
- 109:Core/Src/main.c ****                     case 2: // (1&6)
- 228              		.loc 1 109 25 view .LVU54
+ 112:Core/Src/main.c ****                     case 2: // (1&6)
+ 228              		.loc 1 112 25 view .LVU54
  229 00b2 D4E7     		b	.L7
  230              	.L13:
- 111:Core/Src/main.c ****                         SetLed(5, 1);
- 231              		.loc 1 111 25 view .LVU55
+ 114:Core/Src/main.c ****                         SetLed(5, 1);
+ 231              		.loc 1 114 25 view .LVU55
  232 00b4 0121     		movs	r1, #1
  233 00b6 0020     		movs	r0, #0
  234 00b8 FFF7FEFF 		bl	SetLed
  235              	.LVL18:
- 112:Core/Src/main.c ****                         break;
- 236              		.loc 1 112 25 view .LVU56
+ 115:Core/Src/main.c ****                         break;
+ 236              		.loc 1 115 25 view .LVU56
  237 00bc 0121     		movs	r1, #1
  238 00be 0520     		movs	r0, #5
  239 00c0 FFF7FEFF 		bl	SetLed
  240              	.LVL19:
- 113:Core/Src/main.c ****                 }
- 241              		.loc 1 113 25 view .LVU57
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 9
+
+
+ 116:Core/Src/main.c ****                 }
+ 241              		.loc 1 116 25 view .LVU57
  242 00c4 CBE7     		b	.L7
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 9
-
-
  243              	.LVL20:
  244              	.L15:
  245              	.LBB4:
  246              	.LBB5:
- 137:Core/Src/main.c ****                             LedState[i] = 0;
- 247              		.loc 1 137 29 view .LVU58
+ 140:Core/Src/main.c ****                             LedState[i] = 0;
+ 247              		.loc 1 140 29 view .LVU58
  248 00c6 0021     		movs	r1, #0
  249 00c8 2046     		mov	r0, r4
  250 00ca FFF7FEFF 		bl	SetLed
  251              	.LVL21:
- 138:Core/Src/main.c ****                         }
- 252              		.loc 1 138 29 view .LVU59
- 138:Core/Src/main.c ****                         }
- 253              		.loc 1 138 41 is_stmt 0 view .LVU60
+ 141:Core/Src/main.c ****                         }
+ 252              		.loc 1 141 29 view .LVU59
+ 141:Core/Src/main.c ****                         }
+ 253              		.loc 1 141 41 is_stmt 0 view .LVU60
  254 00ce 204B     		ldr	r3, .L20+36
  255 00d0 0022     		movs	r2, #0
  256 00d2 1A55     		strb	r2, [r3, r4]
  257              	.L16:
- 142:Core/Src/main.c ****                     }
- 258              		.loc 1 142 25 is_stmt 1 view .LVU61
- 142:Core/Src/main.c ****                     }
- 259              		.loc 1 142 64 is_stmt 0 view .LVU62
+ 145:Core/Src/main.c ****                     }
+ 258              		.loc 1 145 25 is_stmt 1 view .LVU61
+ 145:Core/Src/main.c ****                     }
+ 259              		.loc 1 145 64 is_stmt 0 view .LVU62
  260 00d4 1B4B     		ldr	r3, .L20+24
  261 00d6 1B68     		ldr	r3, [r3]
  262 00d8 03EB5603 		add	r3, r3, r6, lsr #1
- 142:Core/Src/main.c ****                     }
- 263              		.loc 1 142 46 view .LVU63
+ 145:Core/Src/main.c ****                     }
+ 263              		.loc 1 145 46 view .LVU63
  264 00dc 1D4A     		ldr	r2, .L20+40
  265 00de 42F82530 		str	r3, [r2, r5, lsl #2]
  266              	.LVL22:
  267              	.L14:
- 142:Core/Src/main.c ****                     }
- 268              		.loc 1 142 46 view .LVU64
+ 145:Core/Src/main.c ****                     }
+ 268              		.loc 1 145 46 view .LVU64
  269              	.LBE5:
- 121:Core/Src/main.c ****             {
- 270              		.loc 1 121 36 is_stmt 1 discriminator 2 view .LVU65
+ 124:Core/Src/main.c ****             {
+ 270              		.loc 1 124 36 is_stmt 1 discriminator 2 view .LVU65
  271 00e2 0134     		adds	r4, r4, #1
  272              	.LVL23:
- 121:Core/Src/main.c ****             {
- 273              		.loc 1 121 36 is_stmt 0 discriminator 2 view .LVU66
+ 124:Core/Src/main.c ****             {
+ 273              		.loc 1 124 36 is_stmt 0 discriminator 2 view .LVU66
  274 00e4 E4B2     		uxtb	r4, r4
  275              	.LVL24:
  276              	.L8:
- 121:Core/Src/main.c ****             {
- 277              		.loc 1 121 31 is_stmt 1 discriminator 1 view .LVU67
+ 124:Core/Src/main.c ****             {
+ 277              		.loc 1 124 31 is_stmt 1 discriminator 1 view .LVU67
  278 00e6 052C     		cmp	r4, #5
  279 00e8 B9D8     		bhi	.L7
- 123:Core/Src/main.c ****                 {
- 280              		.loc 1 123 17 view .LVU68
- 123:Core/Src/main.c ****                 {
- 281              		.loc 1 123 29 is_stmt 0 view .LVU69
+ 126:Core/Src/main.c ****                 {
+ 280              		.loc 1 126 17 view .LVU68
+ 126:Core/Src/main.c ****                 {
+ 281              		.loc 1 126 29 is_stmt 0 view .LVU69
  282 00ea 2546     		mov	r5, r4
  283 00ec 1A4B     		ldr	r3, .L20+44
  284 00ee 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 10
+
+
  285 00f0 DBB2     		uxtb	r3, r3
- 123:Core/Src/main.c ****                 {
- 286              		.loc 1 123 19 view .LVU70
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 10
-
-
+ 126:Core/Src/main.c ****                 {
+ 286              		.loc 1 126 19 view .LVU70
  287 00f2 012B     		cmp	r3, #1
  288 00f4 F5D1     		bne	.L14
  289              	.LBB6:
- 126:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
- 290              		.loc 1 126 21 is_stmt 1 view .LVU71
- 126:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
- 291              		.loc 1 126 65 is_stmt 0 view .LVU72
+ 129:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
+ 290              		.loc 1 129 21 is_stmt 1 view .LVU71
+ 129:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
+ 291              		.loc 1 129 65 is_stmt 0 view .LVU72
  292 00f6 194B     		ldr	r3, .L20+48
  293 00f8 1A5D     		ldrb	r2, [r3, r4]	@ zero_extendqisi2
- 126:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
- 294              		.loc 1 126 30 view .LVU73
+ 129:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
+ 294              		.loc 1 129 30 view .LVU73
  295 00fa 194B     		ldr	r3, .L20+52
  296 00fc 53F82260 		ldr	r6, [r3, r2, lsl #2]
  297              	.LVL25:
- 127:Core/Src/main.c ****                     {
- 298              		.loc 1 127 21 is_stmt 1 view .LVU74
- 127:Core/Src/main.c ****                     {
- 299              		.loc 1 127 60 is_stmt 0 view .LVU75
+ 130:Core/Src/main.c ****                     {
+ 298              		.loc 1 130 21 is_stmt 1 view .LVU74
+ 130:Core/Src/main.c ****                     {
+ 299              		.loc 1 130 60 is_stmt 0 view .LVU75
  300 0100 144B     		ldr	r3, .L20+40
  301 0102 53F82420 		ldr	r2, [r3, r4, lsl #2]
- 127:Core/Src/main.c ****                     {
- 302              		.loc 1 127 40 view .LVU76
+ 130:Core/Src/main.c ****                     {
+ 302              		.loc 1 130 40 view .LVU76
  303 0106 0F4B     		ldr	r3, .L20+24
  304 0108 1B68     		ldr	r3, [r3]
- 127:Core/Src/main.c ****                     {
- 305              		.loc 1 127 23 view .LVU77
+ 130:Core/Src/main.c ****                     {
+ 305              		.loc 1 130 23 view .LVU77
  306 010a 9A42     		cmp	r2, r3
  307 010c E9D8     		bhi	.L14
- 130:Core/Src/main.c ****                         {
- 308              		.loc 1 130 25 is_stmt 1 view .LVU78
- 130:Core/Src/main.c ****                         {
- 309              		.loc 1 130 36 is_stmt 0 view .LVU79
+ 133:Core/Src/main.c ****                         {
+ 308              		.loc 1 133 25 is_stmt 1 view .LVU78
+ 133:Core/Src/main.c ****                         {
+ 309              		.loc 1 133 36 is_stmt 0 view .LVU79
  310 010e 104B     		ldr	r3, .L20+36
  311 0110 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
- 130:Core/Src/main.c ****                         {
- 312              		.loc 1 130 27 view .LVU80
+ 133:Core/Src/main.c ****                         {
+ 312              		.loc 1 133 27 view .LVU80
  313 0112 002B     		cmp	r3, #0
  314 0114 D7D1     		bne	.L15
- 132:Core/Src/main.c ****                             LedState[i] = 1;
- 315              		.loc 1 132 29 is_stmt 1 view .LVU81
+ 135:Core/Src/main.c ****                             LedState[i] = 1;
+ 315              		.loc 1 135 29 is_stmt 1 view .LVU81
  316 0116 0121     		movs	r1, #1
  317 0118 2046     		mov	r0, r4
  318 011a FFF7FEFF 		bl	SetLed
  319              	.LVL26:
- 133:Core/Src/main.c ****                         }
- 320              		.loc 1 133 29 view .LVU82
- 133:Core/Src/main.c ****                         }
- 321              		.loc 1 133 41 is_stmt 0 view .LVU83
+ 136:Core/Src/main.c ****                         }
+ 320              		.loc 1 136 29 view .LVU82
+ 136:Core/Src/main.c ****                         }
+ 321              		.loc 1 136 41 is_stmt 0 view .LVU83
  322 011e 0C4B     		ldr	r3, .L20+36
  323 0120 0122     		movs	r2, #1
  324 0122 1A55     		strb	r2, [r3, r4]
  325 0124 D6E7     		b	.L16
  326              	.LVL27:
  327              	.L18:
- 133:Core/Src/main.c ****                         }
- 328              		.loc 1 133 41 view .LVU84
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 11
+
+
+ 136:Core/Src/main.c ****                         }
+ 328              		.loc 1 136 41 view .LVU84
  329              	.LBE6:
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 11
-
-
- 121:Core/Src/main.c ****             {
- 330              		.loc 1 121 25 view .LVU85
+ 124:Core/Src/main.c ****             {
+ 330              		.loc 1 124 25 view .LVU85
  331 0126 0024     		movs	r4, #0
  332 0128 DDE7     		b	.L8
  333              	.L21:
@@ -634,18 +637,18 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
  361              	Mode2_SetLedActive:
  362              	.LVL28:
  363              	.LFB132:
- 173:Core/Src/main.c **** 
- 174:Core/Src/main.c **** //-------------------------------------------------
- 175:Core/Src/main.c **** // 供 EXTI 中断调用：激活某个 LED 的闪烁 (模式2)
- 176:Core/Src/main.c **** // freqIndex=0 => 0.3Hz, 1=>0.8Hz, 2=>1.4Hz
+ 176:Core/Src/main.c **** 
  177:Core/Src/main.c **** //-------------------------------------------------
- 178:Core/Src/main.c **** void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex)
- 179:Core/Src/main.c **** {
- 364              		.loc 1 179 1 is_stmt 1 view -0
+ 178:Core/Src/main.c **** // 供 EXTI 中断调用：激活某个 LED 的闪烁 (模式2)
+ 179:Core/Src/main.c **** // freqIndex=0 => 0.3Hz, 1=>0.8Hz, 2=>1.4Hz
+ 180:Core/Src/main.c **** //-------------------------------------------------
+ 181:Core/Src/main.c **** void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex)
+ 182:Core/Src/main.c **** {
+ 364              		.loc 1 182 1 is_stmt 1 view -0
  365              		.cfi_startproc
  366              		@ args = 0, pretend = 0, frame = 0
  367              		@ frame_needed = 0, uses_anonymous_args = 0
- 368              		.loc 1 179 1 is_stmt 0 view .LVU87
+ 368              		.loc 1 182 1 is_stmt 0 view .LVU87
  369 0000 38B5     		push	{r3, r4, r5, lr}
  370              	.LCFI1:
  371              		.cfi_def_cfa_offset 16
@@ -655,59 +658,59 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
  375              		.cfi_offset 14, -4
  376 0002 0446     		mov	r4, r0
  377 0004 0D46     		mov	r5, r1
- 180:Core/Src/main.c ****     LedActive[ledIndex] = 1;
- 378              		.loc 1 180 5 is_stmt 1 view .LVU88
- 379              		.loc 1 180 25 is_stmt 0 view .LVU89
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 12
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 12
 
 
+ 183:Core/Src/main.c ****     LedActive[ledIndex] = 1;
+ 378              		.loc 1 183 5 is_stmt 1 view .LVU88
+ 379              		.loc 1 183 25 is_stmt 0 view .LVU89
  380 0006 0A4B     		ldr	r3, .L24
  381 0008 0122     		movs	r2, #1
  382 000a 1A54     		strb	r2, [r3, r0]
- 181:Core/Src/main.c ****     LedFreqIndex[ledIndex] = freqIndex;
- 383              		.loc 1 181 5 is_stmt 1 view .LVU90
- 384              		.loc 1 181 28 is_stmt 0 view .LVU91
+ 184:Core/Src/main.c ****     LedFreqIndex[ledIndex] = freqIndex;
+ 383              		.loc 1 184 5 is_stmt 1 view .LVU90
+ 384              		.loc 1 184 28 is_stmt 0 view .LVU91
  385 000c 094B     		ldr	r3, .L24+4
  386 000e 1954     		strb	r1, [r3, r0]
- 182:Core/Src/main.c ****     // 初始化翻转状态 => 先熄灭
- 183:Core/Src/main.c ****     LedState[ledIndex] = 0;
- 387              		.loc 1 183 5 is_stmt 1 view .LVU92
- 388              		.loc 1 183 24 is_stmt 0 view .LVU93
+ 185:Core/Src/main.c ****     // 初始化翻转状态 => 先熄灭
+ 186:Core/Src/main.c ****     LedState[ledIndex] = 0;
+ 387              		.loc 1 186 5 is_stmt 1 view .LVU92
+ 388              		.loc 1 186 24 is_stmt 0 view .LVU93
  389 0010 0021     		movs	r1, #0
  390              	.LVL29:
- 391              		.loc 1 183 24 view .LVU94
+ 391              		.loc 1 186 24 view .LVU94
  392 0012 094B     		ldr	r3, .L24+8
  393              	.LVL30:
- 394              		.loc 1 183 24 view .LVU95
+ 394              		.loc 1 186 24 view .LVU95
  395 0014 1954     		strb	r1, [r3, r0]
- 184:Core/Src/main.c ****     SetLed(ledIndex, 0);
- 396              		.loc 1 184 5 is_stmt 1 view .LVU96
+ 187:Core/Src/main.c ****     SetLed(ledIndex, 0);
+ 396              		.loc 1 187 5 is_stmt 1 view .LVU96
  397 0016 FFF7FEFF 		bl	SetLed
  398              	.LVL31:
- 185:Core/Src/main.c ****     // 马上安排一次翻转 (让它 period/2 后亮起来)
- 186:Core/Src/main.c ****     uint32_t period = Mode2Periods[freqIndex];
- 399              		.loc 1 186 5 view .LVU97
- 400              		.loc 1 186 14 is_stmt 0 view .LVU98
+ 188:Core/Src/main.c ****     // 马上安排一次翻转 (让它 period/2 后亮起来)
+ 189:Core/Src/main.c ****     uint32_t period = Mode2Periods[freqIndex];
+ 399              		.loc 1 189 5 view .LVU97
+ 400              		.loc 1 189 14 is_stmt 0 view .LVU98
  401 001a 084B     		ldr	r3, .L24+12
  402 001c 53F82520 		ldr	r2, [r3, r5, lsl #2]
  403              	.LVL32:
- 187:Core/Src/main.c ****     LedNextToggleTime[ledIndex] = GlobalTickCount + period/2;
- 404              		.loc 1 187 5 is_stmt 1 view .LVU99
- 405              		.loc 1 187 51 is_stmt 0 view .LVU100
+ 190:Core/Src/main.c ****     LedNextToggleTime[ledIndex] = GlobalTickCount + period/2;
+ 404              		.loc 1 190 5 is_stmt 1 view .LVU99
+ 405              		.loc 1 190 51 is_stmt 0 view .LVU100
  406 0020 074B     		ldr	r3, .L24+16
  407 0022 1B68     		ldr	r3, [r3]
  408 0024 03EB5203 		add	r3, r3, r2, lsr #1
- 409              		.loc 1 187 33 view .LVU101
+ 409              		.loc 1 190 33 view .LVU101
  410 0028 064A     		ldr	r2, .L24+20
  411              	.LVL33:
- 412              		.loc 1 187 33 view .LVU102
+ 412              		.loc 1 190 33 view .LVU102
  413 002a 42F82430 		str	r3, [r2, r4, lsl #2]
- 188:Core/Src/main.c **** }
- 414              		.loc 1 188 1 view .LVU103
+ 191:Core/Src/main.c **** }
+ 414              		.loc 1 191 1 view .LVU103
  415 002e 38BD     		pop	{r3, r4, r5, pc}
  416              	.LVL34:
  417              	.L25:
- 418              		.loc 1 188 1 view .LVU104
+ 418              		.loc 1 191 1 view .LVU104
  419              		.align	2
  420              	.L24:
  421 0030 00000000 		.word	LedActive
@@ -715,12 +718,12 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
  423 0038 00000000 		.word	LedState
  424 003c 00000000 		.word	Mode2Periods
  425 0040 00000000 		.word	GlobalTickCount
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 13
+
+
  426 0044 00000000 		.word	LedNextToggleTime
  427              		.cfi_endproc
  428              	.LFE132:
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 13
-
-
  430              		.section	.text.Mode2_DeactivateAll,"ax",%progbits
  431              		.align	1
  432              		.global	Mode2_DeactivateAll
@@ -729,13 +732,13 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
  435              		.thumb_func
  437              	Mode2_DeactivateAll:
  438              	.LFB133:
- 189:Core/Src/main.c **** 
- 190:Core/Src/main.c **** //-------------------------------------------------
- 191:Core/Src/main.c **** // 供 EXTI/切模式时调用：取消所有 LED 闪烁并全灭
- 192:Core/Src/main.c **** //-------------------------------------------------
- 193:Core/Src/main.c **** void Mode2_DeactivateAll(void)
- 194:Core/Src/main.c **** {
- 439              		.loc 1 194 1 is_stmt 1 view -0
+ 192:Core/Src/main.c **** 
+ 193:Core/Src/main.c **** //-------------------------------------------------
+ 194:Core/Src/main.c **** // 供 EXTI/切模式时调用：取消所有 LED 闪烁并全灭
+ 195:Core/Src/main.c **** //-------------------------------------------------
+ 196:Core/Src/main.c **** void Mode2_DeactivateAll(void)
+ 197:Core/Src/main.c **** {
+ 439              		.loc 1 197 1 is_stmt 1 view -0
  440              		.cfi_startproc
  441              		@ args = 0, pretend = 0, frame = 0
  442              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -744,58 +747,58 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
  445              		.cfi_def_cfa_offset 8
  446              		.cfi_offset 4, -8
  447              		.cfi_offset 14, -4
- 195:Core/Src/main.c ****     for(uint8_t i=0; i<6; i++)
- 448              		.loc 1 195 5 view .LVU106
+ 198:Core/Src/main.c ****     for(uint8_t i=0; i<6; i++)
+ 448              		.loc 1 198 5 view .LVU106
  449              	.LBB7:
- 450              		.loc 1 195 9 view .LVU107
+ 450              		.loc 1 198 9 view .LVU107
  451              	.LVL35:
- 452              		.loc 1 195 17 is_stmt 0 view .LVU108
+ 452              		.loc 1 198 17 is_stmt 0 view .LVU108
  453 0002 0024     		movs	r4, #0
- 454              		.loc 1 195 5 view .LVU109
+ 454              		.loc 1 198 5 view .LVU109
  455 0004 09E0     		b	.L27
  456              	.LVL36:
  457              	.L28:
- 196:Core/Src/main.c ****     {
- 197:Core/Src/main.c ****         LedActive[i] = 0;
- 458              		.loc 1 197 9 is_stmt 1 view .LVU110
- 459              		.loc 1 197 22 is_stmt 0 view .LVU111
+ 199:Core/Src/main.c ****     {
+ 200:Core/Src/main.c ****         LedActive[i] = 0;
+ 458              		.loc 1 200 9 is_stmt 1 view .LVU110
+ 459              		.loc 1 200 22 is_stmt 0 view .LVU111
  460 0006 0021     		movs	r1, #0
  461 0008 054B     		ldr	r3, .L30
  462 000a 1955     		strb	r1, [r3, r4]
- 198:Core/Src/main.c ****         LedState[i] = 0;
- 463              		.loc 1 198 9 is_stmt 1 view .LVU112
- 464              		.loc 1 198 21 is_stmt 0 view .LVU113
+ 201:Core/Src/main.c ****         LedState[i] = 0;
+ 463              		.loc 1 201 9 is_stmt 1 view .LVU112
+ 464              		.loc 1 201 21 is_stmt 0 view .LVU113
  465 000c 054B     		ldr	r3, .L30+4
  466 000e 1955     		strb	r1, [r3, r4]
- 199:Core/Src/main.c ****         SetLed(i, 0);
- 467              		.loc 1 199 9 is_stmt 1 view .LVU114
+ 202:Core/Src/main.c ****         SetLed(i, 0);
+ 467              		.loc 1 202 9 is_stmt 1 view .LVU114
  468 0010 2046     		mov	r0, r4
  469 0012 FFF7FEFF 		bl	SetLed
  470              	.LVL37:
- 195:Core/Src/main.c ****     {
- 471              		.loc 1 195 28 discriminator 3 view .LVU115
+ 198:Core/Src/main.c ****     {
+ 471              		.loc 1 198 28 discriminator 3 view .LVU115
  472 0016 0134     		adds	r4, r4, #1
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 14
+
+
  473              	.LVL38:
- 195:Core/Src/main.c ****     {
- 474              		.loc 1 195 28 is_stmt 0 discriminator 3 view .LVU116
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 14
-
-
+ 198:Core/Src/main.c ****     {
+ 474              		.loc 1 198 28 is_stmt 0 discriminator 3 view .LVU116
  475 0018 E4B2     		uxtb	r4, r4
  476              	.LVL39:
  477              	.L27:
- 195:Core/Src/main.c ****     {
- 478              		.loc 1 195 23 is_stmt 1 discriminator 1 view .LVU117
+ 198:Core/Src/main.c ****     {
+ 478              		.loc 1 198 23 is_stmt 1 discriminator 1 view .LVU117
  479 001a 052C     		cmp	r4, #5
  480 001c F3D9     		bls	.L28
  481              	.LBE7:
- 200:Core/Src/main.c ****     }
- 201:Core/Src/main.c **** }...
- 482              		.loc 1 201 1 is_stmt 0 view .LVU118
+ 203:Core/Src/main.c ****     }
+ 204:Core/Src/main.c **** }...
+ 482              		.loc 1 204 1 is_stmt 0 view .LVU118
  483 001e 10BD     		pop	{r4, pc}
  484              	.LVL40:
  485              	.L31:
- 486              		.loc 1 201 1 view .LVU119
+ 486              		.loc 1 204 1 view .LVU119
  487              		.align	2
  488              	.L30:
  489 0020 00000000 		.word	LedActive
@@ -835,12 +838,12 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
  527              		.align	2
  530              	LedActive:
  531 0000 00000000 		.space	6
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 15
+
+
  531      0000
  532              		.section	.rodata.Mode2Periods,"a"
  533              		.align	2
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 15
-
-
  536              	Mode2Periods:
  537 0000 050D0000 		.word	3333
  538 0004 E2040000 		.word	1250
@@ -878,61 +881,67 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 1
  582              		.align	2
  585              	GlobalTickCount:
  586 0000 00000000 		.space	4
- 587              		.text
- 588              	.Letext0:
- 589              		.file 2 "F:/STM32Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
- 590              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
- 591              		.file 4 "CMSIS/Devices/stm32f429xx.h"
- 592              		.file 5 "CMSIS/Devices/system_stm32f4xx.h"
- 593              		.file 6 "Core/Inc/init.h"
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccfQkr4J.s 			page 16
+ 587              		.global	SystemCoreClock
+ 588              		.section	.data.SystemCoreClock,"aw"
+ 589              		.align	2
+ 592              	SystemCoreClock:
+ 593 0000 0024F400 		.word	16000000
+ 594              		.text
+ 595              	.Letext0:
+ 596              		.file 2 "F:/STM32Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 597              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ 598              		.file 4 "CMSIS/Devices/stm32f429xx.h"
+ 599              		.file 5 "CMSIS/Devices/system_stm32f4xx.h"
+ 600              		.file 6 "Core/Inc/init.h"
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccr2jK9N.s 			page 16
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:21     .text.SetLed:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:26     .text.SetLed:00000000 SetLed
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:66     .text.SetLed:0000001c $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:498    .rodata.LED_PIN:00000000 LED_PIN
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:72     .text.main:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:78     .text.main:00000000 main
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:336    .text.main:0000012c $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:557    .bss.M1FreqIndex:00000000 M1FreqIndex
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:551    .bss.M1Step:00000000 M1Step
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:545    .bss.M1NextToggleTime:00000000 M1NextToggleTime
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:571    .data.CurrentMode:00000000 CurrentMode
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:585    .bss.GlobalTickCount:00000000 GlobalTickCount
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:563    .rodata.Mode1Periods:00000000 Mode1Periods
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:510    .bss.LedState:00000000 LedState
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:516    .bss.LedNextToggleTime:00000000 LedNextToggleTime
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:530    .bss.LedActive:00000000 LedActive
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:523    .bss.LedFreqIndex:00000000 LedFreqIndex
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:536    .rodata.Mode2Periods:00000000 Mode2Periods
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:355    .text.Mode2_SetLedActive:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:361    .text.Mode2_SetLedActive:00000000 Mode2_SetLedActive
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:421    .text.Mode2_SetLedActive:00000030 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:431    .text.Mode2_DeactivateAll:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:437    .text.Mode2_DeactivateAll:00000000 Mode2_DeactivateAll
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:489    .text.Mode2_DeactivateAll:00000020 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:495    .rodata.LED_PIN:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:504    .bss.M2SelectedLed:00000000 M2SelectedLed
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:505    .bss.M2SelectedLed:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:507    .bss.LedState:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:513    .bss.LedNextToggleTime:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:520    .bss.LedFreqIndex:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:527    .bss.LedActive:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:533    .rodata.Mode2Periods:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:542    .bss.M1NextToggleTime:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:552    .bss.M1Step:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:558    .bss.M1FreqIndex:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:560    .rodata.Mode1Periods:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:578    .bss.ExternInterruptTickCount:00000000 ExternInterruptTickCount
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:575    .bss.ExternInterruptTickCount:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccfQkr4J.s:582    .bss.GlobalTickCount:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:21     .text.SetLed:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:26     .text.SetLed:00000000 SetLed
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:66     .text.SetLed:0000001c $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:498    .rodata.LED_PIN:00000000 LED_PIN
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:72     .text.main:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:78     .text.main:00000000 main
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:336    .text.main:0000012c $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:592    .data.SystemCoreClock:00000000 SystemCoreClock
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:557    .bss.M1FreqIndex:00000000 M1FreqIndex
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:551    .bss.M1Step:00000000 M1Step
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:545    .bss.M1NextToggleTime:00000000 M1NextToggleTime
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:571    .data.CurrentMode:00000000 CurrentMode
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:585    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:563    .rodata.Mode1Periods:00000000 Mode1Periods
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:510    .bss.LedState:00000000 LedState
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:516    .bss.LedNextToggleTime:00000000 LedNextToggleTime
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:530    .bss.LedActive:00000000 LedActive
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:523    .bss.LedFreqIndex:00000000 LedFreqIndex
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:536    .rodata.Mode2Periods:00000000 Mode2Periods
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:355    .text.Mode2_SetLedActive:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:361    .text.Mode2_SetLedActive:00000000 Mode2_SetLedActive
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:421    .text.Mode2_SetLedActive:00000030 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:431    .text.Mode2_DeactivateAll:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:437    .text.Mode2_DeactivateAll:00000000 Mode2_DeactivateAll
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:489    .text.Mode2_DeactivateAll:00000020 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:495    .rodata.LED_PIN:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:504    .bss.M2SelectedLed:00000000 M2SelectedLed
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:505    .bss.M2SelectedLed:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:507    .bss.LedState:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:513    .bss.LedNextToggleTime:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:520    .bss.LedFreqIndex:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:527    .bss.LedActive:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:533    .rodata.Mode2Periods:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:542    .bss.M1NextToggleTime:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:552    .bss.M1Step:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:558    .bss.M1FreqIndex:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:560    .rodata.Mode1Periods:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:578    .bss.ExternInterruptTickCount:00000000 ExternInterruptTickCount
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:575    .bss.ExternInterruptTickCount:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:582    .bss.GlobalTickCount:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccr2jK9N.s:589    .data.SystemCoreClock:00000000 $d
 
 UNDEFINED SYMBOLS
 SystemClock_Config
 SysTick_Init
 GPIO_Init_All
 EXTI_Init_All
-SystemCoreClock

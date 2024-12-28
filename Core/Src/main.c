@@ -2,6 +2,9 @@
 #include "init.h"
 #include <stdint.h>
 
+// 手动定义并初始化
+uint32_t SystemCoreClock = 16000000U;
+
 //-------------------------- 全局变量定义 --------------------------//
 volatile uint32_t GlobalTickCount = 0;         // SysTick 累计
 volatile uint32_t ExternInterruptTickCount = 0; // 用于简单防抖
