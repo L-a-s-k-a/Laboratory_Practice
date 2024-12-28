@@ -79,6 +79,9 @@ Discarded input sections
  .text          0x00000000        0x0 Build/main.o
  .data          0x00000000        0x0 Build/main.o
  .bss           0x00000000        0x0 Build/main.o
+ .text          0x00000000        0x0 Build/init.o
+ .data          0x00000000        0x0 Build/init.o
+ .bss           0x00000000        0x0 Build/init.o
  .text          0x00000000       0x14 Build/startup_stm32f429xx.o
  .data          0x00000000        0x0 Build/startup_stm32f429xx.o
  .bss           0x00000000        0x0 Build/startup_stm32f429xx.o
@@ -410,6 +413,7 @@ LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm
 LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
 LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o
 LOAD Build/main.o
+LOAD Build/init.o
 LOAD Build/startup_stm32f429xx.o
 LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a
 LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a
@@ -435,7 +439,7 @@ LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm
                 0x08000000                g_pfnVectors
                 0x080001ac                        . = ALIGN (0x4)
 
-.text           0x080001ac      0x230
+.text           0x080001ac      0x340
                 0x080001ac                        . = ALIGN (0x4)
  *(.text)
  *(.text*)
@@ -443,193 +447,205 @@ LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm
                 0x080001ac       0x24 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
  .text.frame_dummy
                 0x080001d0       0x1c D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
- .text.main     0x080001ec      0x140 Build/main.o
-                0x080001ec                main
+ .text.delay    0x080001ec        0xe Build/main.o
+                0x080001ec                delay
+ *fill*         0x080001fa        0x2 
+ .text.main     0x080001fc      0x168 Build/main.o
+                0x080001fc                main
+ .text.GPIO_Ini
+                0x08000364       0xd8 Build/init.o
+                0x08000364                GPIO_Ini
  .text.Reset_Handler
-                0x0800032c       0x4c Build/startup_stm32f429xx.o
-                0x0800032c                Reset_Handler
+                0x0800043c       0x4c Build/startup_stm32f429xx.o
+                0x0800043c                Reset_Handler
  .text.Default_Handler
-                0x08000378        0x2 Build/startup_stm32f429xx.o
-                0x08000378                RTC_Alarm_IRQHandler
-                0x08000378                HASH_RNG_IRQHandler
-                0x08000378                EXTI2_IRQHandler
-                0x08000378                TIM8_CC_IRQHandler
-                0x08000378                DebugMon_Handler
-                0x08000378                UART8_IRQHandler
-                0x08000378                SPI4_IRQHandler
-                0x08000378                TIM1_CC_IRQHandler
-                0x08000378                DMA2_Stream5_IRQHandler
-                0x08000378                HardFault_Handler
-                0x08000378                DMA1_Stream5_IRQHandler
-                0x08000378                SysTick_Handler
-                0x08000378                PVD_IRQHandler
-                0x08000378                SDIO_IRQHandler
-                0x08000378                TAMP_STAMP_IRQHandler
-                0x08000378                PendSV_Handler
-                0x08000378                NMI_Handler
-                0x08000378                CAN2_RX1_IRQHandler
-                0x08000378                EXTI3_IRQHandler
-                0x08000378                TIM8_TRG_COM_TIM14_IRQHandler
-                0x08000378                TIM1_UP_TIM10_IRQHandler
-                0x08000378                TIM8_UP_TIM13_IRQHandler
-                0x08000378                I2C3_ER_IRQHandler
-                0x08000378                EXTI0_IRQHandler
-                0x08000378                I2C2_EV_IRQHandler
-                0x08000378                DMA1_Stream2_IRQHandler
-                0x08000378                CAN1_RX0_IRQHandler
-                0x08000378                FPU_IRQHandler
-                0x08000378                OTG_HS_WKUP_IRQHandler
-                0x08000378                UsageFault_Handler
-                0x08000378                LTDC_ER_IRQHandler
-                0x08000378                CAN2_SCE_IRQHandler
-                0x08000378                DMA2_Stream2_IRQHandler
-                0x08000378                SPI1_IRQHandler
-                0x08000378                TIM6_DAC_IRQHandler
-                0x08000378                TIM1_BRK_TIM9_IRQHandler
-                0x08000378                DCMI_IRQHandler
-                0x08000378                CAN2_RX0_IRQHandler
-                0x08000378                DMA2_Stream3_IRQHandler
-                0x08000378                USART6_IRQHandler
-                0x08000378                USART3_IRQHandler
-                0x08000378                CAN1_RX1_IRQHandler
-                0x08000378                UART5_IRQHandler
-                0x08000378                DMA2_Stream0_IRQHandler
-                0x08000378                TIM4_IRQHandler
-                0x08000378                I2C1_EV_IRQHandler
-                0x08000378                DMA1_Stream6_IRQHandler
-                0x08000378                DMA1_Stream1_IRQHandler
-                0x08000378                UART4_IRQHandler
-                0x08000378                TIM3_IRQHandler
-                0x08000378                RCC_IRQHandler
-                0x08000378                TIM8_BRK_TIM12_IRQHandler
-                0x08000378                Default_Handler
-                0x08000378                EXTI15_10_IRQHandler
-                0x08000378                ADC_IRQHandler
-                0x08000378                DMA1_Stream7_IRQHandler
-                0x08000378                SPI5_IRQHandler
-                0x08000378                TIM7_IRQHandler
-                0x08000378                CAN2_TX_IRQHandler
-                0x08000378                TIM5_IRQHandler
-                0x08000378                DMA2_Stream7_IRQHandler
-                0x08000378                I2C3_EV_IRQHandler
-                0x08000378                EXTI9_5_IRQHandler
-                0x08000378                RTC_WKUP_IRQHandler
-                0x08000378                LTDC_IRQHandler
-                0x08000378                ETH_WKUP_IRQHandler
-                0x08000378                SPI2_IRQHandler
-                0x08000378                OTG_HS_EP1_IN_IRQHandler
-                0x08000378                MemManage_Handler
-                0x08000378                DMA1_Stream0_IRQHandler
-                0x08000378                CAN1_TX_IRQHandler
-                0x08000378                SVC_Handler
-                0x08000378                EXTI4_IRQHandler
-                0x08000378                ETH_IRQHandler
-                0x08000378                OTG_HS_EP1_OUT_IRQHandler
-                0x08000378                WWDG_IRQHandler
-                0x08000378                SPI6_IRQHandler
-                0x08000378                TIM2_IRQHandler
-                0x08000378                OTG_FS_WKUP_IRQHandler
-                0x08000378                TIM1_TRG_COM_TIM11_IRQHandler
-                0x08000378                OTG_HS_IRQHandler
-                0x08000378                DMA2D_IRQHandler
-                0x08000378                EXTI1_IRQHandler
-                0x08000378                UART7_IRQHandler
-                0x08000378                USART2_IRQHandler
-                0x08000378                I2C2_ER_IRQHandler
-                0x08000378                DMA2_Stream1_IRQHandler
-                0x08000378                CAN1_SCE_IRQHandler
-                0x08000378                FLASH_IRQHandler
-                0x08000378                DMA2_Stream4_IRQHandler
-                0x08000378                BusFault_Handler
-                0x08000378                USART1_IRQHandler
-                0x08000378                OTG_FS_IRQHandler
-                0x08000378                SPI3_IRQHandler
-                0x08000378                DMA1_Stream4_IRQHandler
-                0x08000378                I2C1_ER_IRQHandler
-                0x08000378                FMC_IRQHandler
-                0x08000378                DMA2_Stream6_IRQHandler
-                0x08000378                SAI1_IRQHandler
-                0x08000378                DMA1_Stream3_IRQHandler
- *fill*         0x0800037a        0x2 
+                0x08000488        0x2 Build/startup_stm32f429xx.o
+                0x08000488                RTC_Alarm_IRQHandler
+                0x08000488                HASH_RNG_IRQHandler
+                0x08000488                EXTI2_IRQHandler
+                0x08000488                TIM8_CC_IRQHandler
+                0x08000488                DebugMon_Handler
+                0x08000488                UART8_IRQHandler
+                0x08000488                SPI4_IRQHandler
+                0x08000488                TIM1_CC_IRQHandler
+                0x08000488                DMA2_Stream5_IRQHandler
+                0x08000488                HardFault_Handler
+                0x08000488                DMA1_Stream5_IRQHandler
+                0x08000488                SysTick_Handler
+                0x08000488                PVD_IRQHandler
+                0x08000488                SDIO_IRQHandler
+                0x08000488                TAMP_STAMP_IRQHandler
+                0x08000488                PendSV_Handler
+                0x08000488                NMI_Handler
+                0x08000488                CAN2_RX1_IRQHandler
+                0x08000488                EXTI3_IRQHandler
+                0x08000488                TIM8_TRG_COM_TIM14_IRQHandler
+                0x08000488                TIM1_UP_TIM10_IRQHandler
+                0x08000488                TIM8_UP_TIM13_IRQHandler
+                0x08000488                I2C3_ER_IRQHandler
+                0x08000488                EXTI0_IRQHandler
+                0x08000488                I2C2_EV_IRQHandler
+                0x08000488                DMA1_Stream2_IRQHandler
+                0x08000488                CAN1_RX0_IRQHandler
+                0x08000488                FPU_IRQHandler
+                0x08000488                OTG_HS_WKUP_IRQHandler
+                0x08000488                UsageFault_Handler
+                0x08000488                LTDC_ER_IRQHandler
+                0x08000488                CAN2_SCE_IRQHandler
+                0x08000488                DMA2_Stream2_IRQHandler
+                0x08000488                SPI1_IRQHandler
+                0x08000488                TIM6_DAC_IRQHandler
+                0x08000488                TIM1_BRK_TIM9_IRQHandler
+                0x08000488                DCMI_IRQHandler
+                0x08000488                CAN2_RX0_IRQHandler
+                0x08000488                DMA2_Stream3_IRQHandler
+                0x08000488                USART6_IRQHandler
+                0x08000488                USART3_IRQHandler
+                0x08000488                CAN1_RX1_IRQHandler
+                0x08000488                UART5_IRQHandler
+                0x08000488                DMA2_Stream0_IRQHandler
+                0x08000488                TIM4_IRQHandler
+                0x08000488                I2C1_EV_IRQHandler
+                0x08000488                DMA1_Stream6_IRQHandler
+                0x08000488                DMA1_Stream1_IRQHandler
+                0x08000488                UART4_IRQHandler
+                0x08000488                TIM3_IRQHandler
+                0x08000488                RCC_IRQHandler
+                0x08000488                TIM8_BRK_TIM12_IRQHandler
+                0x08000488                Default_Handler
+                0x08000488                EXTI15_10_IRQHandler
+                0x08000488                ADC_IRQHandler
+                0x08000488                DMA1_Stream7_IRQHandler
+                0x08000488                SPI5_IRQHandler
+                0x08000488                TIM7_IRQHandler
+                0x08000488                CAN2_TX_IRQHandler
+                0x08000488                TIM5_IRQHandler
+                0x08000488                DMA2_Stream7_IRQHandler
+                0x08000488                I2C3_EV_IRQHandler
+                0x08000488                EXTI9_5_IRQHandler
+                0x08000488                RTC_WKUP_IRQHandler
+                0x08000488                LTDC_IRQHandler
+                0x08000488                ETH_WKUP_IRQHandler
+                0x08000488                SPI2_IRQHandler
+                0x08000488                OTG_HS_EP1_IN_IRQHandler
+                0x08000488                MemManage_Handler
+                0x08000488                DMA1_Stream0_IRQHandler
+                0x08000488                CAN1_TX_IRQHandler
+                0x08000488                SVC_Handler
+                0x08000488                EXTI4_IRQHandler
+                0x08000488                ETH_IRQHandler
+                0x08000488                OTG_HS_EP1_OUT_IRQHandler
+                0x08000488                WWDG_IRQHandler
+                0x08000488                SPI6_IRQHandler
+                0x08000488                TIM2_IRQHandler
+                0x08000488                OTG_FS_WKUP_IRQHandler
+                0x08000488                TIM1_TRG_COM_TIM11_IRQHandler
+                0x08000488                OTG_HS_IRQHandler
+                0x08000488                DMA2D_IRQHandler
+                0x08000488                EXTI1_IRQHandler
+                0x08000488                UART7_IRQHandler
+                0x08000488                USART2_IRQHandler
+                0x08000488                I2C2_ER_IRQHandler
+                0x08000488                DMA2_Stream1_IRQHandler
+                0x08000488                CAN1_SCE_IRQHandler
+                0x08000488                FLASH_IRQHandler
+                0x08000488                DMA2_Stream4_IRQHandler
+                0x08000488                BusFault_Handler
+                0x08000488                USART1_IRQHandler
+                0x08000488                OTG_FS_IRQHandler
+                0x08000488                SPI3_IRQHandler
+                0x08000488                DMA1_Stream4_IRQHandler
+                0x08000488                I2C1_ER_IRQHandler
+                0x08000488                FMC_IRQHandler
+                0x08000488                DMA2_Stream6_IRQHandler
+                0x08000488                SAI1_IRQHandler
+                0x08000488                DMA1_Stream3_IRQHandler
+ *fill*         0x0800048a        0x2 
  .text.__libc_init_array
-                0x0800037c       0x48 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
-                0x0800037c                __libc_init_array
+                0x0800048c       0x48 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
+                0x0800048c                __libc_init_array
  *(.glue_7)
- .glue_7        0x080003c4        0x0 linker stubs
+ .glue_7        0x080004d4        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x080003c4        0x0 linker stubs
+ .glue_7t       0x080004d4        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x080003c4        0x0 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .eh_frame      0x080004d4        0x0 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
  *(.init)
- .init          0x080003c4        0x4 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crti.o
-                0x080003c4                _init
- .init          0x080003c8        0x8 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
+ .init          0x080004d4        0x4 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crti.o
+                0x080004d4                _init
+ .init          0x080004d8        0x8 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
  *(.fini)
- .fini          0x080003d0        0x4 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crti.o
-                0x080003d0                _fini
- .fini          0x080003d4        0x8 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
-                0x080003dc                        . = ALIGN (0x4)
-                0x080003dc                        _etext = .
+ .fini          0x080004e0        0x4 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crti.o
+                0x080004e0                _fini
+ .fini          0x080004e4        0x8 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
+                0x080004ec                        . = ALIGN (0x4)
+                0x080004ec                        _etext = .
 
-.vfp11_veneer   0x080003dc        0x0
- .vfp11_veneer  0x080003dc        0x0 linker stubs
+.vfp11_veneer   0x080004ec        0x0
+ .vfp11_veneer  0x080004ec        0x0 linker stubs
 
-.v4_bx          0x080003dc        0x0
- .v4_bx         0x080003dc        0x0 linker stubs
+.v4_bx          0x080004ec        0x0
+ .v4_bx         0x080004ec        0x0 linker stubs
 
-.iplt           0x080003dc        0x0
- .iplt          0x080003dc        0x0 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+.iplt           0x080004ec        0x0
+ .iplt          0x080004ec        0x0 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.rel.dyn        0x080003dc        0x0
- .rel.iplt      0x080003dc        0x0 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
-
-.rodata         0x080003dc        0x0
-                0x080003dc                        . = ALIGN (0x4)
+.rodata         0x080004ec       0x14
+                0x080004ec                        . = ALIGN (0x4)
  *(.rodata)
+ .rodata        0x080004ec        0x6 Build/main.o
+ *fill*         0x080004f2        0x2 
+ .rodata        0x080004f4        0x6 Build/init.o
  *(.rodata*)
-                0x080003dc                        . = ALIGN (0x4)
+ *fill*         0x080004fa        0x2 
+ .rodata.GPIO_Ini.str1.4
+                0x080004fc        0x4 Build/init.o
+                0x08000500                        . = ALIGN (0x4)
+
+.rel.dyn        0x08000500        0x0
+ .rel.iplt      0x08000500        0x0 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x080003dc        0x0
-                0x080003dc                        __exidx_start = .
+.ARM            0x08000500        0x0
+                0x08000500                        __exidx_start = .
  *(.ARM.exidx*)
-                0x080003dc                        __exidx_end = .
+                0x08000500                        __exidx_end = .
 
-.preinit_array  0x080003dc        0x0
-                0x080003dc                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x08000500        0x0
+                0x08000500                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x080003dc                        PROVIDE (__preinit_array_end = .)
+                0x08000500                        PROVIDE (__preinit_array_end = .)
 
-.init_array     0x080003dc        0x4
-                0x080003dc                        PROVIDE (__init_array_start = .)
+.init_array     0x08000500        0x4
+                0x08000500                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x080003dc        0x4 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x080003e0                        PROVIDE (__init_array_end = .)
+ .init_array    0x08000500        0x4 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x08000504                        PROVIDE (__init_array_end = .)
 
-.fini_array     0x080003e0        0x4
-                0x080003e0                        PROVIDE (__fini_array_start = .)
+.fini_array     0x08000504        0x4
+                0x08000504                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x080003e0        0x4 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x080003e4                        PROVIDE (__fini_array_end = .)
-                0x080003e4                        _sidata = LOADADDR (.data)
+ .fini_array    0x08000504        0x4 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x08000508                        PROVIDE (__fini_array_end = .)
+                0x08000508                        _sidata = LOADADDR (.data)
 
-.data           0x20000000        0x0 load address 0x080003e4
+.data           0x20000000        0x0 load address 0x08000508
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
  *(.data*)
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _edata = .
-                0x080003e4                        _siccmram = LOADADDR (.ccmram)
+                0x08000508                        _siccmram = LOADADDR (.ccmram)
 
-.igot.plt       0x20000000        0x0 load address 0x080003e4
+.igot.plt       0x20000000        0x0 load address 0x08000508
  .igot.plt      0x20000000        0x0 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.ccmram         0x10000000        0x0 load address 0x080003e4
+.ccmram         0x10000000        0x0 load address 0x08000508
                 0x10000000                        . = ALIGN (0x4)
                 0x10000000                        _sccmram = .
  *(.ccmram)
@@ -638,7 +654,7 @@ LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm
                 0x10000000                        _eccmram = .
                 0x10000000                        . = ALIGN (0x4)
 
-.bss            0x20000000       0x1c
+.bss            0x20000000       0x20
                 0x20000000                        _sbss = .
                 0x20000000                        __bss_start__ = _sbss
  *(.bss)
@@ -647,15 +663,21 @@ LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm
                 0x20000000        0x1 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
  *fill*         0x20000001        0x3 
  .bss.object.0  0x20000004       0x18 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .bss.flag3     0x2000001c        0x1 Build/main.o
+                0x2000001c                flag3
+ .bss.flag2     0x2000001d        0x1 Build/main.o
+                0x2000001d                flag2
+ .bss.flag1     0x2000001e        0x1 Build/main.o
+                0x2000001e                flag1
  *(COMMON)
-                0x2000001c                        . = ALIGN (0x4)
-                0x2000001c                        _ebss = .
-                0x2000001c                        __bss_end__ = _ebss
+                0x20000020                        . = ALIGN (0x4)
+ *fill*         0x2000001f        0x1 
+                0x20000020                        _ebss = .
+                0x20000020                        __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x2000001c      0x604
+                0x20000020      0x600
                 0x20000020                        . = ALIGN (0x8)
- *fill*         0x2000001c        0x4 
                 0x20000020                        PROVIDE (end = .)
                 [!provide]                        PROVIDE (_end = .)
                 0x20000220                        . = (. + _Min_Heap_Size)
@@ -679,11 +701,13 @@ LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm
  .ARM.attributes
                 0x00000056       0x34 Build/main.o
  .ARM.attributes
-                0x0000008a       0x21 Build/startup_stm32f429xx.o
+                0x0000008a       0x34 Build/init.o
  .ARM.attributes
-                0x000000ab       0x34 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
+                0x000000be       0x21 Build/startup_stm32f429xx.o
  .ARM.attributes
-                0x000000df       0x22 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
+                0x000000df       0x34 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
+ .ARM.attributes
+                0x00000113       0x22 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
 OUTPUT(Build/LABORATORY_PRACTICE.elf elf32-littlearm)
 LOAD linker stubs
 LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc.a
@@ -694,40 +718,50 @@ LOAD D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm
  .comment       0x00000000       0x39 D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
                                  0x3a (size before relaxing)
  .comment       0x00000039       0x3a Build/main.o
+ .comment       0x00000039       0x3a Build/init.o
  .comment       0x00000039       0x3a D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
 
-.debug_info     0x00000000      0x1b6
- .debug_info    0x00000000      0x186 Build/main.o
- .debug_info    0x00000186       0x30 Build/startup_stm32f429xx.o
+.debug_info     0x00000000      0x38f
+ .debug_info    0x00000000      0x22d Build/main.o
+ .debug_info    0x0000022d      0x132 Build/init.o
+ .debug_info    0x0000035f       0x30 Build/startup_stm32f429xx.o
 
-.debug_abbrev   0x00000000       0xe6
- .debug_abbrev  0x00000000       0xc9 Build/main.o
- .debug_abbrev  0x000000c9       0x1d Build/startup_stm32f429xx.o
+.debug_abbrev   0x00000000      0x1ea
+ .debug_abbrev  0x00000000      0x124 Build/main.o
+ .debug_abbrev  0x00000124       0xa9 Build/init.o
+ .debug_abbrev  0x000001cd       0x1d Build/startup_stm32f429xx.o
 
-.debug_loc      0x00000000      0x147
- .debug_loc     0x00000000      0x147 Build/main.o
+.debug_loc      0x00000000      0x183
+ .debug_loc     0x00000000      0x105 Build/main.o
+ .debug_loc     0x00000105       0x7e Build/init.o
 
-.debug_aranges  0x00000000       0x48
+.debug_aranges  0x00000000       0x70
  .debug_aranges
-                0x00000000       0x20 Build/main.o
+                0x00000000       0x28 Build/main.o
  .debug_aranges
-                0x00000020       0x28 Build/startup_stm32f429xx.o
+                0x00000028       0x20 Build/init.o
+ .debug_aranges
+                0x00000048       0x28 Build/startup_stm32f429xx.o
 
-.debug_ranges   0x00000000       0x30
- .debug_ranges  0x00000000       0x10 Build/main.o
- .debug_ranges  0x00000010       0x20 Build/startup_stm32f429xx.o
+.debug_ranges   0x00000000       0x48
+ .debug_ranges  0x00000000       0x18 Build/main.o
+ .debug_ranges  0x00000018       0x10 Build/init.o
+ .debug_ranges  0x00000028       0x20 Build/startup_stm32f429xx.o
 
-.debug_line     0x00000000      0x309
- .debug_line    0x00000000      0x297 Build/main.o
- .debug_line    0x00000297       0x72 Build/startup_stm32f429xx.o
+.debug_line     0x00000000      0x4d0
+ .debug_line    0x00000000      0x2a3 Build/main.o
+ .debug_line    0x000002a3      0x1bb Build/init.o
+ .debug_line    0x0000045e       0x72 Build/startup_stm32f429xx.o
 
-.debug_str      0x00000000      0x1cf
- .debug_str     0x00000000      0x1cf Build/main.o
-                                0x1e2 (size before relaxing)
- .debug_str     0x000001cf       0x66 Build/startup_stm32f429xx.o
+.debug_str      0x00000000      0x1f0
+ .debug_str     0x00000000      0x1f0 Build/main.o
+                                0x1e5 (size before relaxing)
+ .debug_str     0x000001f0      0x1a5 Build/init.o
+ .debug_str     0x000001f0       0x66 Build/startup_stm32f429xx.o
 
-.debug_frame    0x00000000       0x30
- .debug_frame   0x00000000       0x30 Build/main.o
+.debug_frame    0x00000000       0x70
+ .debug_frame   0x00000000       0x40 Build/main.o
+ .debug_frame   0x00000040       0x30 Build/init.o
 
 Cross Reference Table
 
@@ -774,7 +808,8 @@ EXTI9_5_IRQHandler                                Build/startup_stm32f429xx.o
 FLASH_IRQHandler                                  Build/startup_stm32f429xx.o
 FMC_IRQHandler                                    Build/startup_stm32f429xx.o
 FPU_IRQHandler                                    Build/startup_stm32f429xx.o
-GPIO_Init                                         Build/main.o
+GPIO_Ini                                          Build/init.o
+                                                  Build/main.o
 HASH_RNG_IRQHandler                               Build/startup_stm32f429xx.o
 HardFault_Handler                                 Build/startup_stm32f429xx.o
 I2C1_ER_IRQHandler                                Build/startup_stm32f429xx.o
@@ -996,6 +1031,9 @@ errno                                             D:/huanjingbianliang/xpack-arm
 exit                                              D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-exit.o)
                                                   D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o
 fflush                                            D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-fflush.o)
+flag1                                             Build/main.o
+flag2                                             Build/main.o
+flag3                                             Build/main.o
 g_pfnVectors                                      Build/startup_stm32f429xx.o
 hardware_init_hook                                D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o
 main                                              Build/main.o

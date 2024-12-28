@@ -1,66 +1,77 @@
 #include "init.h"
 
-int main(void) {
-    uint8_t led_state = 0;        // LED 状态
-    uint8_t button1_press_count = 0; // 按钮1按下次数
-    uint8_t button1_state = 0;    // 按钮1当前状态
-    uint8_t button2_state = 0;    // 按钮2当前状态
-    uint8_t port_mode = 0;        // 按钮1的 LED 独立控制模式
+#define DEBOUNCE_DELAY 20000 // 防抖延迟
 
-    GPIO_Init();
+void delay(uint32_t s) {
+    while (s--) {
+        __NOP(); // 空循环
+    }
+}
+uint8_t flag1=0;
+uint8_t flag2=0;
+uint8_t flag3=0;
+int main(void) {
+    GPIO_Ini(); // 初始化 GPIO
+    uint8_t leds[] = {BOARD_LED1_PIN, BOARD_LED2_PIN, BOARD_LED3_PIN, CN8_LED4_PIN, CN8_LED5_PIN, CN8_LED6_PIN};
+    uint8_t led_state = 0;   // 当前点亮的 LED
+    uint8_t swap = 0;        // 功能交换标志
+    uint8_t button1_function = 1; // 按钮1功能（点亮）
+    uint8_t button2_function = 0; // 按钮2功能（熄灭）
 
     while (1) {
-        // 检测按钮1（PC8）
-        if ((GPIOC_IDR & GPIOC_IDR_PIN8) == 0 && button1_state == 0) {
-            delay(20000); // 防抖延迟
-            if ((GPIOC_IDR & GPIOC_IDR_PIN8) == 0) {
-                button1_press_count++;
-                button1_state = 1;
-
-                // 每第 5 次按下切换模式
-                if (button1_press_count % 5 == 0) {
-                    port_mode ^= 1; // 切换模式
-                }
-
-                // 根据模式控制 LED1 独立开关
-                if (port_mode == 1) {
-                    GPIOC_BSRR ^= GPIOC_BSRR_LED1_ON | GPIOC_BSRR_LED1_OFF; // 切换 LED1 状态
-                }
-            }
-        } else if ((GPIOC_IDR & GPIOC_IDR_PIN8) != 0) {
-            button1_state = 0; // 按钮释放
-        }
-
-        // 检测按钮2（PC9）
-        if ((GPIOC_IDR & GPIOC_IDR_PIN9) == 0 && button2_state == 0) {
-            delay(20000); // 防抖延迟
-            if ((GPIOC_IDR & GPIOC_IDR_PIN9) == 0) {
-                button2_state = 1;
-
-                // 顺序控制 LED3 和 LED4
-                led_state = (led_state + 1) % 4; // 循环状态
-                GPIOC_BSRR |= GPIOC_BSRR_LED1_OFF | GPIOC_BSRR_LED2_OFF |
-                              GPIOC_BSRR_LED3_OFF | GPIOC_BSRR_LED4_OFF; // 熄灭所有灯
-
-                switch (led_state) {
-                    case 0:
-                        GPIOC_BSRR |= GPIOC_BSRR_LED3_ON;
-                        break;
-                    case 1:
-                        GPIOC_BSRR |= GPIOC_BSRR_LED4_ON;
-                        break;
-                    case 2:
-                        GPIOC_BSRR |= GPIOC_BSRR_LED1_ON;
-                        break;
-                    case 3:
-                        GPIOC_BSRR |= GPIOC_BSRR_LED2_ON;
-                        break;
+        flag1=(READ_BIT(GPIOC_IDR, (1 << BUTTON1_PIN)) != 0);
+        flag2=(READ_BIT(GPIOC_IDR, (1 << BUTTON2_PIN)) != 0);
+        flag3=(READ_BIT(GPIOC_IDR, (1 << BUTTON3_PIN)) != 0);
+        // 检测按钮1
+        if ((READ_BIT(GPIOC_IDR, (1 << BUTTON1_PIN)) != 0)) {
+            delay(DEBOUNCE_DELAY);
+            if (READ_BIT(GPIOC_IDR, (1 << BUTTON1_PIN)) != 0) {
+                if (button1_function) { // 点亮模式
+                    if (led_state < 6) {
+                         delay(DEBOUNCE_DELAY);
+                        SET_BIT(GPIOB_BSRR, (1 << leds[led_state])); // 点亮 LED
+                        led_state++;
+                    }
+                } else { // 熄灭模式
+                    if (led_state > 0) {
+                        led_state--;
+                         delay(DEBOUNCE_DELAY);
+                        SET_BIT(GPIOB_BSRR, (1 << (leds[led_state] + 16))); // 熄灭 LED
+                    }
                 }
             }
-        } else if ((GPIOC_IDR & GPIOC_IDR_PIN9) != 0) {
-            button2_state = 0; // 按钮释放
         }
 
-        delay(200000); // 循环延迟
+        // 检测按钮2
+        if ((READ_BIT(GPIOC_IDR, (1 << BUTTON2_PIN)) != 0)) {
+            delay(DEBOUNCE_DELAY);
+            if (READ_BIT(GPIOC_IDR, (1 << BUTTON2_PIN)) != 0) {
+                if (button2_function) { // 点亮模式
+                    if (led_state < 6) {
+                         delay(DEBOUNCE_DELAY);
+                        SET_BIT(GPIOB_BSRR, (1 << leds[led_state])); // 点亮 LED
+                        led_state++;
+                    }
+                } else { // 熄灭模式
+                    if (led_state > 0) {
+                        led_state--;
+                         delay(DEBOUNCE_DELAY);
+                        SET_BIT(GPIOB_BSRR, (1 << (leds[led_state] + 16))); // 熄灭 LED
+                    }
+                }
+            }
+        }
+
+        // 检测按钮3
+        if ((READ_BIT(GPIOC_IDR, (1 << BUTTON3_PIN)) != 0)) {
+            delay(DEBOUNCE_DELAY);
+            if (READ_BIT(GPIOC_IDR, (1 << BUTTON3_PIN)) != 0) {
+                // 交换功能
+                button1_function ^= 1;
+                button2_function ^= 1;
+            }
+        }
+
+        // delay(20000); // 延时，防止循环过快
     }
 }

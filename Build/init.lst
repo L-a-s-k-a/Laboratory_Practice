@@ -1,0 +1,231 @@
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.rodata.GPIO_Ini.str1.4,"aMS",%progbits,1
+  21              		.align	2
+  22              	.LC1:
+  23 0000 060B0C00 		.ascii	"\006\013\014\000"
+  24              		.section	.text.GPIO_Ini,"ax",%progbits
+  25              		.align	1
+  26              		.global	GPIO_Ini
+  27              		.syntax unified
+  28              		.thumb
+  29              		.thumb_func
+  31              	GPIO_Ini:
+  32              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void GPIO_Ini(void) {
+  33              		.loc 1 3 21 view -0
+  34              		.cfi_startproc
+  35              		@ args = 0, pretend = 0, frame = 16
+  36              		@ frame_needed = 0, uses_anonymous_args = 0
+  37 0000 10B5     		push	{r4, lr}
+  38              	.LCFI0:
+  39              		.cfi_def_cfa_offset 8
+  40              		.cfi_offset 4, -8
+  41              		.cfi_offset 14, -4
+  42 0002 84B0     		sub	sp, sp, #16
+  43              	.LCFI1:
+  44              		.cfi_def_cfa_offset 24
+   4:Core/Src/init.c ****     // 开启 GPIO B, C, D 时钟
+   5:Core/Src/init.c ****     SET_BIT(RCC_GPIO_EN, RCC_GPIOB_EN | RCC_GPIOC_EN | RCC_GPIOD_EN);
+  45              		.loc 1 5 5 view .LVU1
+  46 0004 304A     		ldr	r2, .L7
+  47 0006 D2F83038 		ldr	r3, [r2, #2096]
+  48 000a 43F00E03 		orr	r3, r3, #14
+  49 000e C2F83038 		str	r3, [r2, #2096]
+   6:Core/Src/init.c **** 
+   7:Core/Src/init.c ****     // 初始化板载 LED 引脚
+   8:Core/Src/init.c ****     uint8_t board_leds[] = {BOARD_LED1_PIN, BOARD_LED2_PIN, BOARD_LED3_PIN,CN8_LED4_PIN, CN8_LED5_P
+  50              		.loc 1 8 5 view .LVU2
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s 			page 2
+
+
+  51              		.loc 1 8 13 is_stmt 0 view .LVU3
+  52 0012 2E4B     		ldr	r3, .L7+4
+  53 0014 93E80300 		ldm	r3, {r0, r1}
+  54 0018 0290     		str	r0, [sp, #8]
+  55 001a ADF80C10 		strh	r1, [sp, #12]	@ movhi
+   9:Core/Src/init.c ****     for (int i = 0; i < 6; i++) {
+  56              		.loc 1 9 5 is_stmt 1 view .LVU4
+  57              	.LBB2:
+  58              		.loc 1 9 10 view .LVU5
+  59              	.LVL0:
+  60              		.loc 1 9 14 is_stmt 0 view .LVU6
+  61 001e 4FF0000C 		mov	ip, #0
+  62              		.loc 1 9 5 view .LVU7
+  63 0022 31E0     		b	.L2
+  64              	.LVL1:
+  65              	.L3:
+  10:Core/Src/init.c ****         SET_BIT(GPIOB_MODER, (1 << (board_leds[i] * 2)));  // 输出模式
+  66              		.loc 1 10 9 is_stmt 1 view .LVU8
+  67 0024 2A4B     		ldr	r3, .L7+8
+  68 0026 0CF11002 		add	r2, ip, #16
+  69 002a 0DEB0200 		add	r0, sp, r2
+  70 002e 10F8081C 		ldrb	r1, [r0, #-8]	@ zero_extendqisi2
+  71 0032 4900     		lsls	r1, r1, #1
+  72 0034 0122     		movs	r2, #1
+  73 0036 02FA01F1 		lsl	r1, r2, r1
+  74 003a D3F80044 		ldr	r4, [r3, #1024]
+  75 003e 2143     		orrs	r1, r1, r4
+  76 0040 C3F80014 		str	r1, [r3, #1024]
+  11:Core/Src/init.c ****         CLEAR_BIT(GPIOB_OTYPER, (1 << board_leds[i]));     // 推挽输出
+  77              		.loc 1 11 9 view .LVU9
+  78 0044 D3F80414 		ldr	r1, [r3, #1028]
+  79 0048 10F808EC 		ldrb	lr, [r0, #-8]	@ zero_extendqisi2
+  80 004c 02FA0EFE 		lsl	lr, r2, lr
+  81 0050 21EA0E01 		bic	r1, r1, lr
+  82 0054 C3F80414 		str	r1, [r3, #1028]
+  12:Core/Src/init.c ****         SET_BIT(GPIOB_OSPEEDR, (1 << (board_leds[i] * 2))); // 中等速度
+  83              		.loc 1 12 9 view .LVU10
+  84 0058 D3F80814 		ldr	r1, [r3, #1032]
+  85 005c 10F808EC 		ldrb	lr, [r0, #-8]	@ zero_extendqisi2
+  86 0060 0EFA02FE 		lsl	lr, lr, r2
+  87 0064 02FA0EF2 		lsl	r2, r2, lr
+  88 0068 1143     		orrs	r1, r1, r2
+  89 006a C3F80814 		str	r1, [r3, #1032]
+  13:Core/Src/init.c ****         CLEAR_BIT(GPIOB_PUPDR, (3 << (board_leds[i] * 2))); // 无上下拉
+  90              		.loc 1 13 9 view .LVU11
+  91 006e D3F80C24 		ldr	r2, [r3, #1036]
+  92 0072 10F8080C 		ldrb	r0, [r0, #-8]	@ zero_extendqisi2
+  93 0076 4000     		lsls	r0, r0, #1
+  94 0078 0321     		movs	r1, #3
+  95 007a 8140     		lsls	r1, r1, r0
+  96 007c 22EA0102 		bic	r2, r2, r1
+  97 0080 C3F80C24 		str	r2, [r3, #1036]
+   9:Core/Src/init.c ****         SET_BIT(GPIOB_MODER, (1 << (board_leds[i] * 2)));  // 输出模式
+  98              		.loc 1 9 29 discriminator 3 view .LVU12
+  99 0084 0CF1010C 		add	ip, ip, #1
+ 100              	.LVL2:
+ 101              	.L2:
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s 			page 3
+
+
+   9:Core/Src/init.c ****         SET_BIT(GPIOB_MODER, (1 << (board_leds[i] * 2)));  // 输出模式
+ 102              		.loc 1 9 23 discriminator 1 view .LVU13
+ 103 0088 BCF1050F 		cmp	ip, #5
+ 104 008c CADD     		ble	.L3
+ 105              	.LBE2:
+  14:Core/Src/init.c ****     }
+  15:Core/Src/init.c **** 
+  16:Core/Src/init.c **** 
+  17:Core/Src/init.c **** 
+  18:Core/Src/init.c **** 
+  19:Core/Src/init.c ****     // // 初始化 CN8 LED 引脚
+  20:Core/Src/init.c ****     // uint8_t cn8_leds[] = {CN8_LED4_PIN, CN8_LED5_PIN, CN8_LED6_PIN};
+  21:Core/Src/init.c ****     // for (int i = 0; i < 3; i++) {
+  22:Core/Src/init.c ****     //     SET_BIT(GPIOC_MODER, (1 << (cn8_leds[i] * 2)));  // 输出模式
+  23:Core/Src/init.c ****     //     CLEAR_BIT(GPIOC_OTYPER, (1 << cn8_leds[i]));     // 推挽输出
+  24:Core/Src/init.c ****     //     SET_BIT(GPIOC_OSPEEDR, (1 << (cn8_leds[i] * 2))); // 中等速度
+  25:Core/Src/init.c ****     //     CLEAR_BIT(GPIOC_PUPDR, (3 << (cn8_leds[i] * 2))); // 无上下拉
+  26:Core/Src/init.c ****     // }
+  27:Core/Src/init.c **** 
+  28:Core/Src/init.c ****     // 初始化 CN8 按钮引脚
+  29:Core/Src/init.c ****     uint8_t buttons[] = {6,BUTTON1_PIN, BUTTON3_PIN};
+ 106              		.loc 1 29 5 view .LVU14
+ 107              		.loc 1 29 13 is_stmt 0 view .LVU15
+ 108 008e 114B     		ldr	r3, .L7+12
+ 109 0090 1B68     		ldr	r3, [r3]
+ 110 0092 ADF80430 		strh	r3, [sp, #4]	@ movhi
+ 111 0096 1B0C     		lsrs	r3, r3, #16
+ 112 0098 8DF80630 		strb	r3, [sp, #6]
+  30:Core/Src/init.c ****     for (int i = 0; i < 2; i++) {
+ 113              		.loc 1 30 5 is_stmt 1 view .LVU16
+ 114              	.LBB3:
+ 115              		.loc 1 30 10 view .LVU17
+ 116              	.LVL3:
+ 117              		.loc 1 30 14 is_stmt 0 view .LVU18
+ 118 009c 0023     		movs	r3, #0
+ 119              		.loc 1 30 5 view .LVU19
+ 120 009e 0FE0     		b	.L4
+ 121              	.LVL4:
+ 122              	.L5:
+  31:Core/Src/init.c ****         SET_BIT(GPIOC_MODER, (0 << (buttons[i] * 2)));  // 输入模式
+ 123              		.loc 1 31 9 is_stmt 1 view .LVU20
+  32:Core/Src/init.c ****         CLEAR_BIT(GPIOC_PUPDR, (3 << (buttons[i] * 2))); // 无上下拉
+ 124              		.loc 1 32 9 view .LVU21
+ 125 00a0 0B4C     		ldr	r4, .L7+8
+ 126 00a2 D4F80C28 		ldr	r2, [r4, #2060]
+ 127 00a6 03F11001 		add	r1, r3, #16
+ 128 00aa 6944     		add	r1, sp, r1
+ 129 00ac 11F80C0C 		ldrb	r0, [r1, #-12]	@ zero_extendqisi2
+ 130 00b0 4000     		lsls	r0, r0, #1
+ 131 00b2 0321     		movs	r1, #3
+ 132 00b4 8140     		lsls	r1, r1, r0
+ 133 00b6 22EA0102 		bic	r2, r2, r1
+ 134 00ba C4F80C28 		str	r2, [r4, #2060]
+  30:Core/Src/init.c ****     for (int i = 0; i < 2; i++) {
+ 135              		.loc 1 30 29 discriminator 3 view .LVU22
+ 136 00be 0133     		adds	r3, r3, #1
+ 137              	.LVL5:
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s 			page 4
+
+
+ 138              	.L4:
+  30:Core/Src/init.c ****     for (int i = 0; i < 2; i++) {
+ 139              		.loc 1 30 23 discriminator 1 view .LVU23
+ 140 00c0 012B     		cmp	r3, #1
+ 141 00c2 EDDD     		ble	.L5
+ 142              	.LBE3:
+  33:Core/Src/init.c ****     }
+  34:Core/Src/init.c ****     // // 按钮2特殊情况在 GPIOD
+  35:Core/Src/init.c ****     // SET_BIT(GPIOD_MODER, (0 << (BUTTON2_PIN * 2)));  // 输入模式
+  36:Core/Src/init.c ****     // CLEAR_BIT(GPIOD_PUPDR, (3 << (BUTTON2_PIN * 2))); // 无上下拉
+  37:Core/Src/init.c **** }
+ 143              		.loc 1 37 1 is_stmt 0 view .LVU24
+ 144 00c4 04B0     		add	sp, sp, #16
+ 145              	.LCFI2:
+ 146              		.cfi_def_cfa_offset 8
+ 147              		@ sp needed
+ 148 00c6 10BD     		pop	{r4, pc}
+ 149              	.L8:
+ 150              		.align	2
+ 151              	.L7:
+ 152 00c8 00300240 		.word	1073885184
+ 153 00cc 00000000 		.word	.LANCHOR0
+ 154 00d0 00000240 		.word	1073872896
+ 155 00d4 00000000 		.word	.LC1
+ 156              		.cfi_endproc
+ 157              	.LFE130:
+ 159              		.section	.rodata
+ 160              		.align	2
+ 161              		.set	.LANCHOR0,. + 0
+ 162              	.LC0:
+ 163 0000 00070E08 		.ascii	"\000\007\016\010\011\012"
+ 163      090A
+ 164              		.text
+ 165              	.Letext0:
+ 166              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 167              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s:21     .rodata.GPIO_Ini.str1.4:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s:25     .text.GPIO_Ini:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s:31     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s:152    .text.GPIO_Ini:000000c8 $d
+C:\Users\Sunne\AppData\Local\Temp\cctOhyoQ.s:160    .rodata:00000000 $d
+
+NO UNDEFINED SYMBOLS
