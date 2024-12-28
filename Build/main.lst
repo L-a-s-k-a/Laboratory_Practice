@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 1
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc6AaKAG.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -30,18 +30,24 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 1
   28              	.LFB130:
    1:Core/Src/main.c **** #include <init.h>
    2:Core/Src/main.c **** #include <it_handlers.h>
-   3:Core/Src/main.c **** const uint32_t blink_periods[] = {5000, 1250, 769}; // 对应 0.2Hz、0.8Hz、1.3Hz 1/0.2=5c 闪烁
-   4:Core/Src/main.c **** volatile uint8_t current_led = 0; // 当前点亮的LED索引
-   5:Core/Src/main.c **** volatile uint8_t work_mode = 1; // 闪烁模式：1=闪烁，0=常亮
-   6:Core/Src/main.c **** uint8_t blink_frequency = 0; // 闪烁频率索引（0=0.2Hz, 1=0.8Hz, 2=1.3Hz）
-   7:Core/Src/main.c **** volatile uint32_t button2_timer = 0; // 按钮2按住计时
+   3:Core/Src/main.c **** const uint32_t blink_periods[] = {5000, 1250, 769}; 
+   4:Core/Src/main.c **** volatile uint8_t current_led = 0; 
+   5:Core/Src/main.c **** volatile uint8_t work_mode = 1; 
+   6:Core/Src/main.c **** uint8_t blink_frequency = 0; 
+   7:Core/Src/main.c **** volatile uint32_t button2_timer = 0; 
    8:Core/Src/main.c **** volatile uint32_t systick_counter = 0; // SysTick计数器
    9:Core/Src/main.c **** uint8_t flagbutton1,flagbutton2;
-  10:Core/Src/main.c **** uint8_t button2_state = 0; // 按钮状态：0=未按下，1=按下中，2=长按已处理
+  10:Core/Src/main.c **** uint8_t button2_state = 0; 
   11:Core/Src/main.c **** const uint32_t led_pins[] = {GPIO_ODR_OD14, GPIO_ODR_OD7, GPIO_ODR_OD0, GPIO_ODR_OD2, GPIO_ODR_OD6,
-  12:Core/Src/main.c **** 
-  13:Core/Src/main.c **** int main(void) {
-  29              		.loc 1 13 16 view -0
+  12:Core/Src/main.c **** // 按钮状态：0=未按下，1=按下中，2=长按已处理
+  13:Core/Src/main.c **** // 按钮2按住计时
+  14:Core/Src/main.c **** // 闪烁频率索引（0=0.2Hz, 1=0.8Hz, 2=1.3Hz）
+  15:Core/Src/main.c **** // 闪烁模式：1=闪烁，0=常亮
+  16:Core/Src/main.c **** // 当前点亮的LED索引
+  17:Core/Src/main.c **** // 当前点亮的LED索引
+  18:Core/Src/main.c **** // 对应 0.2Hz、0.8Hz、1.3Hz 1/0.2=5c 闪烁频率定义 (单位：毫秒)
+  19:Core/Src/main.c **** int main(void) {
+  29              		.loc 1 19 16 view -0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -50,257 +56,257 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 1
   35              		.cfi_def_cfa_offset 8
   36              		.cfi_offset 3, -8
   37              		.cfi_offset 14, -4
-  14:Core/Src/main.c ****     // 初始化 GPIO、EXTI 和 SysTick
-  15:Core/Src/main.c ****     GPIO_Ini(); //Инициализация поротв GPIO
-  38              		.loc 1 15 5 view .LVU1
+  20:Core/Src/main.c ****     //GPIO、EXTI  SysTick  初始化 
+  21:Core/Src/main.c ****     GPIO_Ini(); //初始化 GPIO 网关
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc6AaKAG.s 			page 2
+
+
+  38              		.loc 1 21 5 view .LVU1
   39 0002 FFF7FEFF 		bl	GPIO_Ini
   40              	.LVL0:
-  16:Core/Src/main.c ****     RCC_Ini(); //Инициализация системы тактирования RCC
-  41              		.loc 1 16 5 view .LVU2
+  22:Core/Src/main.c ****     RCC_Ini(); //初始化 RCC 时钟系统
+  41              		.loc 1 22 5 view .LVU2
   42 0006 FFF7FEFF 		bl	RCC_Ini
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 2
-
-
   43              	.LVL1:
-  17:Core/Src/main.c ****     EXTI_ITR_Ini(); //Инициализация контроллера прерываний
-  44              		.loc 1 17 5 view .LVU3
+  23:Core/Src/main.c ****     EXTI_ITR_Ini(); //初始化中断控制器
+  44              		.loc 1 23 5 view .LVU3
   45 000a FFF7FEFF 		bl	EXTI_ITR_Ini
   46              	.LVL2:
-  18:Core/Src/main.c ****     SysTick_Init(); //Инициализация системного таймера
-  47              		.loc 1 18 5 view .LVU4
+  24:Core/Src/main.c ****     SysTick_Init(); //初始化系统计时器
+  47              		.loc 1 24 5 view .LVU4
   48 000e FFF7FEFF 		bl	SysTick_Init
   49              	.LVL3:
   50 0012 49E0     		b	.L2
   51              	.L4:
   52              	.LBB2:
-  19:Core/Src/main.c ****     while (1) {
-  20:Core/Src/main.c ****      // 按钮 2 的状态轮询
-  21:Core/Src/main.c ****         flagbutton1=READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0;
-  22:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
-  23:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
-  24:Core/Src/main.c ****             if (button2_state == 0) { // 首次检测到按下
-  25:Core/Src/main.c ****                 button2_state = 1;  // 切换到按下中状态
-  26:Core/Src/main.c ****                 button2_timer = systick_counter; // 记录按下的时刻
-  27:Core/Src/main.c ****             } else if (button2_state == 1) { // 按下中
-  53              		.loc 1 27 20 view .LVU5
-  54              		.loc 1 27 23 is_stmt 0 view .LVU6
+  25:Core/Src/main.c ****     while (1) {
+  26:Core/Src/main.c ****      // 按钮 2 的状态轮询
+  27:Core/Src/main.c ****         flagbutton1=READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0;
+  28:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+  29:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
+  30:Core/Src/main.c ****             if (button2_state == 0) { // 首次检测到按下
+  31:Core/Src/main.c ****                 button2_state = 1;  // 切换到按下中状态
+  32:Core/Src/main.c ****                 button2_timer = systick_counter; // 记录按下的时刻
+  33:Core/Src/main.c ****             } else if (button2_state == 1) { // 按下中
+  53              		.loc 1 33 20 view .LVU5
+  54              		.loc 1 33 23 is_stmt 0 view .LVU6
   55 0014 012B     		cmp	r3, #1
   56 0016 17D1     		bne	.L5
   57              	.LBB3:
-  28:Core/Src/main.c ****                 uint32_t press_duration = systick_counter - button2_timer;
-  58              		.loc 1 28 17 is_stmt 1 view .LVU7
-  59              		.loc 1 28 59 is_stmt 0 view .LVU8
+  34:Core/Src/main.c ****                 uint32_t press_duration = systick_counter - button2_timer;
+  58              		.loc 1 34 17 is_stmt 1 view .LVU7
+  59              		.loc 1 34 59 is_stmt 0 view .LVU8
   60 0018 314B     		ldr	r3, .L11
   61 001a 1B68     		ldr	r3, [r3]
   62 001c 314A     		ldr	r2, .L11+4
   63 001e 1268     		ldr	r2, [r2]
-  64              		.loc 1 28 26 view .LVU9
+  64              		.loc 1 34 26 view .LVU9
   65 0020 9B1A     		subs	r3, r3, r2
   66              	.LVL4:
-  29:Core/Src/main.c ****                 if (press_duration >= 2000) { // 检测到长按
-  67              		.loc 1 29 17 is_stmt 1 view .LVU10
-  68              		.loc 1 29 20 is_stmt 0 view .LVU11
+  35:Core/Src/main.c ****                 if (press_duration >= 2000) { // 检测长按
+  67              		.loc 1 35 17 is_stmt 1 view .LVU10
+  68              		.loc 1 35 20 is_stmt 0 view .LVU11
   69 0022 B3F5FA6F 		cmp	r3, #2000
   70 0026 0FD3     		bcc	.L5
-  30:Core/Src/main.c ****                     work_mode ^= 1;        // 切换工作模式
-  71              		.loc 1 30 21 is_stmt 1 view .LVU12
-  72              		.loc 1 30 31 is_stmt 0 view .LVU13
+  36:Core/Src/main.c ****                     work_mode ^= 1;        // 切换工作模式
+  71              		.loc 1 36 21 is_stmt 1 view .LVU12
+  72              		.loc 1 36 31 is_stmt 0 view .LVU13
   73 0028 2F4A     		ldr	r2, .L11+8
   74 002a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
   75              	.LVL5:
-  76              		.loc 1 30 31 view .LVU14
+  76              		.loc 1 36 31 view .LVU14
   77 002c 83F00103 		eor	r3, r3, #1
   78 0030 1370     		strb	r3, [r2]
-  31:Core/Src/main.c ****                     button2_state = 2;     // 标记为长按已处理
-  79              		.loc 1 31 21 is_stmt 1 view .LVU15
-  80              		.loc 1 31 35 is_stmt 0 view .LVU16
+  37:Core/Src/main.c ****                     button2_state = 2;     // 标记为长按已处理
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc6AaKAG.s 			page 3
+
+
+  79              		.loc 1 37 21 is_stmt 1 view .LVU15
+  80              		.loc 1 37 35 is_stmt 0 view .LVU16
   81 0032 2E4B     		ldr	r3, .L11+12
   82 0034 0222     		movs	r2, #2
   83 0036 1A70     		strb	r2, [r3]
   84 0038 06E0     		b	.L5
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 3
-
-
   85              	.LVL6:
   86              	.L3:
-  87              		.loc 1 31 35 view .LVU17
+  87              		.loc 1 37 35 view .LVU17
   88              	.LBE3:
-  32:Core/Src/main.c ****                 }
-  33:Core/Src/main.c ****             }
-  34:Core/Src/main.c ****         } else { // 按钮释放
-  35:Core/Src/main.c ****             if (button2_state == 1) { // 按下后释放，未达到长按时间
-  89              		.loc 1 35 13 is_stmt 1 view .LVU18
-  90              		.loc 1 35 31 is_stmt 0 view .LVU19
+  38:Core/Src/main.c ****                 }
+  39:Core/Src/main.c ****             }
+  40:Core/Src/main.c ****         } else { // 按钮释放
+  41:Core/Src/main.c ****             if (button2_state == 1) { // 按下后释放，未达到长按时间
+  89              		.loc 1 41 13 is_stmt 1 view .LVU18
+  90              		.loc 1 41 31 is_stmt 0 view .LVU19
   91 003a 2C4B     		ldr	r3, .L11+12
   92 003c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  93              		.loc 1 35 16 view .LVU20
+  93              		.loc 1 41 16 view .LVU20
   94 003e 012B     		cmp	r3, #1
   95 0040 1FD0     		beq	.L10
   96              	.L6:
-  36:Core/Src/main.c ****                 blink_frequency = (blink_frequency + 1) % 3; // 切换频率
-  37:Core/Src/main.c ****             }
-  38:Core/Src/main.c ****             // 重置按钮状态
-  39:Core/Src/main.c ****             button2_state = 0;
-  97              		.loc 1 39 13 is_stmt 1 view .LVU21
-  98              		.loc 1 39 27 is_stmt 0 view .LVU22
+  42:Core/Src/main.c ****                 blink_frequency = (blink_frequency + 1) % 3; // 切换频率
+  43:Core/Src/main.c ****             }
+  44:Core/Src/main.c ****             // 重置按钮状态
+  45:Core/Src/main.c ****             button2_state = 0;
+  97              		.loc 1 45 13 is_stmt 1 view .LVU21
+  98              		.loc 1 45 27 is_stmt 0 view .LVU22
   99 0042 2A4B     		ldr	r3, .L11+12
  100 0044 0022     		movs	r2, #0
  101 0046 1A70     		strb	r2, [r3]
  102              	.L5:
-  40:Core/Src/main.c ****         }
-  41:Core/Src/main.c ****           // LED 控制逻辑
-  42:Core/Src/main.c ****         static uint32_t blink_counter = 0;
- 103              		.loc 1 42 9 is_stmt 1 view .LVU23
-  43:Core/Src/main.c ****         if (work_mode == 0) { // 闪烁模式
- 104              		.loc 1 43 9 view .LVU24
- 105              		.loc 1 43 23 is_stmt 0 view .LVU25
+  46:Core/Src/main.c ****         }
+  47:Core/Src/main.c ****           // LED 控制逻辑
+  48:Core/Src/main.c ****         static uint32_t blink_counter = 0;
+ 103              		.loc 1 48 9 is_stmt 1 view .LVU23
+  49:Core/Src/main.c ****         if (work_mode == 0) { // 闪烁模式
+ 104              		.loc 1 49 9 view .LVU24
+ 105              		.loc 1 49 23 is_stmt 0 view .LVU25
  106 0048 274B     		ldr	r3, .L11+8
  107 004a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 108              		.loc 1 43 12 view .LVU26
+ 108              		.loc 1 49 12 view .LVU26
  109 004c 2BBB     		cbnz	r3, .L7
-  44:Core/Src/main.c ****             if (systick_counter - blink_counter >= blink_periods[blink_frequency]) {
- 110              		.loc 1 44 13 is_stmt 1 view .LVU27
- 111              		.loc 1 44 33 is_stmt 0 view .LVU28
+  50:Core/Src/main.c ****             if (systick_counter - blink_counter >= blink_periods[blink_frequency]) {
+ 110              		.loc 1 50 13 is_stmt 1 view .LVU27
+ 111              		.loc 1 50 33 is_stmt 0 view .LVU28
  112 004e 244B     		ldr	r3, .L11
  113 0050 1B68     		ldr	r3, [r3]
  114 0052 274A     		ldr	r2, .L11+16
  115 0054 1268     		ldr	r2, [r2]
  116 0056 9B1A     		subs	r3, r3, r2
- 117              		.loc 1 44 65 view .LVU29
+ 117              		.loc 1 50 65 view .LVU29
  118 0058 264A     		ldr	r2, .L11+20
  119 005a 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
  120 005c 264A     		ldr	r2, .L11+24
  121 005e 52F82120 		ldr	r2, [r2, r1, lsl #2]
- 122              		.loc 1 44 16 view .LVU30
+ 122              		.loc 1 50 16 view .LVU30
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc6AaKAG.s 			page 4
+
+
  123 0062 9342     		cmp	r3, r2
  124 0064 20D3     		bcc	.L2
-  45:Core/Src/main.c ****                 blink_counter = systick_counter;
- 125              		.loc 1 45 17 is_stmt 1 view .LVU31
- 126              		.loc 1 45 31 is_stmt 0 view .LVU32
+  51:Core/Src/main.c ****                 blink_counter = systick_counter;
+ 125              		.loc 1 51 17 is_stmt 1 view .LVU31
+ 126              		.loc 1 51 31 is_stmt 0 view .LVU32
  127 0066 1E4B     		ldr	r3, .L11
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 4
-
-
  128 0068 1A68     		ldr	r2, [r3]
  129 006a 214B     		ldr	r3, .L11+16
  130 006c 1A60     		str	r2, [r3]
-  46:Core/Src/main.c ****                 GPIOB->ODR ^= led_pins[current_led]; // 翻转当前 LED
- 131              		.loc 1 46 17 is_stmt 1 view .LVU33
- 132              		.loc 1 46 39 is_stmt 0 view .LVU34
+  52:Core/Src/main.c ****                 GPIOB->ODR ^= led_pins[current_led]; // 翻转当前 LED
+ 131              		.loc 1 52 17 is_stmt 1 view .LVU33
+ 132              		.loc 1 52 39 is_stmt 0 view .LVU34
  133 006e 234B     		ldr	r3, .L11+28
  134 0070 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
  135 0072 234B     		ldr	r3, .L11+32
  136 0074 53F82210 		ldr	r1, [r3, r2, lsl #2]
- 137              		.loc 1 46 22 view .LVU35
+ 137              		.loc 1 52 22 view .LVU35
  138 0078 224A     		ldr	r2, .L11+36
  139 007a 5369     		ldr	r3, [r2, #20]
- 140              		.loc 1 46 28 view .LVU36
+ 140              		.loc 1 52 28 view .LVU36
  141 007c 4B40     		eors	r3, r3, r1
  142 007e 5361     		str	r3, [r2, #20]
  143 0080 12E0     		b	.L2
  144              	.L10:
-  36:Core/Src/main.c ****             }
- 145              		.loc 1 36 17 is_stmt 1 view .LVU37
-  36:Core/Src/main.c ****             }
- 146              		.loc 1 36 52 is_stmt 0 view .LVU38
+  42:Core/Src/main.c ****             }
+ 145              		.loc 1 42 17 is_stmt 1 view .LVU37
+  42:Core/Src/main.c ****             }
+ 146              		.loc 1 42 52 is_stmt 0 view .LVU38
  147 0082 1C49     		ldr	r1, .L11+20
  148 0084 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
  149 0086 0132     		adds	r2, r2, #1
-  36:Core/Src/main.c ****             }
- 150              		.loc 1 36 57 view .LVU39
+  42:Core/Src/main.c ****             }
+ 150              		.loc 1 42 57 view .LVU39
  151 0088 03F15533 		add	r3, r3, #1431655765
  152 008c 83FB0203 		smull	r0, r3, r3, r2
  153 0090 03EB4303 		add	r3, r3, r3, lsl #1
  154 0094 D31A     		subs	r3, r2, r3
-  36:Core/Src/main.c ****             }
- 155              		.loc 1 36 33 view .LVU40
+  42:Core/Src/main.c ****             }
+ 155              		.loc 1 42 33 view .LVU40
  156 0096 0B70     		strb	r3, [r1]
  157 0098 D3E7     		b	.L6
  158              	.L7:
-  47:Core/Src/main.c ****             }
-  48:Core/Src/main.c ****         } else { // 常亮模式
-  49:Core/Src/main.c ****         if (current_led==2)
- 159              		.loc 1 49 9 is_stmt 1 view .LVU41
- 160              		.loc 1 49 24 is_stmt 0 view .LVU42
+  53:Core/Src/main.c ****             }
+  54:Core/Src/main.c ****         } else { // 常亮模式
+  55:Core/Src/main.c ****         if (current_led==2)
+ 159              		.loc 1 55 9 is_stmt 1 view .LVU41
+ 160              		.loc 1 55 24 is_stmt 0 view .LVU42
  161 009a 184B     		ldr	r3, .L11+28
  162 009c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  163 009e DBB2     		uxtb	r3, r3
- 164              		.loc 1 49 12 view .LVU43
+ 164              		.loc 1 55 12 view .LVU43
  165 00a0 022B     		cmp	r3, #2
  166 00a2 01D0     		beq	.L2
-  50:Core/Src/main.c ****         {
-  51:Core/Src/main.c ****            continue;
-  52:Core/Src/main.c ****         }
-  53:Core/Src/main.c ****         update_led_state(); // 点亮当前 LED
- 167              		.loc 1 53 9 is_stmt 1 view .LVU44
+  56:Core/Src/main.c ****         {
+  57:Core/Src/main.c ****            continue;
+  58:Core/Src/main.c ****         }
+  59:Core/Src/main.c ****         update_led_state(); // 点亮当前 LED
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc6AaKAG.s 			page 5
+
+
+ 167              		.loc 1 59 9 is_stmt 1 view .LVU44
  168 00a4 FFF7FEFF 		bl	update_led_state
  169              	.LVL7:
  170              	.L2:
  171              	.LBE2:
-  19:Core/Src/main.c ****      // 按钮 2 的状态轮询
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 5
-
-
- 172              		.loc 1 19 5 view .LVU45
+  25:Core/Src/main.c ****      // 按钮 2 的状态轮询
+ 172              		.loc 1 25 5 view .LVU45
  173              	.LBB4:
-  21:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
- 174              		.loc 1 21 9 view .LVU46
-  21:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
- 175              		.loc 1 21 21 is_stmt 0 view .LVU47
+  27:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 174              		.loc 1 27 9 view .LVU46
+  27:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 175              		.loc 1 27 21 is_stmt 0 view .LVU47
  176 00a8 174B     		ldr	r3, .L11+40
  177 00aa 1A69     		ldr	r2, [r3, #16]
-  21:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
- 178              		.loc 1 21 56 view .LVU48
+  27:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 178              		.loc 1 27 56 view .LVU48
  179 00ac C2F34032 		ubfx	r2, r2, #13, #1
-  21:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
- 180              		.loc 1 21 20 view .LVU49
+  27:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 180              		.loc 1 27 20 view .LVU49
  181 00b0 1649     		ldr	r1, .L11+44
  182 00b2 0A70     		strb	r2, [r1]
-  22:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
- 183              		.loc 1 22 9 is_stmt 1 view .LVU50
-  22:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
- 184              		.loc 1 22 21 is_stmt 0 view .LVU51
+  28:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
+ 183              		.loc 1 28 9 is_stmt 1 view .LVU50
+  28:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
+ 184              		.loc 1 28 21 is_stmt 0 view .LVU51
  185 00b4 1A69     		ldr	r2, [r3, #16]
-  22:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
- 186              		.loc 1 22 55 view .LVU52
+  28:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
+ 186              		.loc 1 28 55 view .LVU52
  187 00b6 C2F38012 		ubfx	r2, r2, #6, #1
-  22:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
- 188              		.loc 1 22 20 view .LVU53
+  28:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
+ 188              		.loc 1 28 20 view .LVU53
  189 00ba 1549     		ldr	r1, .L11+48
  190 00bc 0A70     		strb	r2, [r1]
-  23:Core/Src/main.c ****             if (button2_state == 0) { // 首次检测到按下
- 191              		.loc 1 23 9 is_stmt 1 view .LVU54
-  23:Core/Src/main.c ****             if (button2_state == 0) { // 首次检测到按下
- 192              		.loc 1 23 13 is_stmt 0 view .LVU55
+  29:Core/Src/main.c ****             if (button2_state == 0) { // 首次检测到按下
+ 191              		.loc 1 29 9 is_stmt 1 view .LVU54
+  29:Core/Src/main.c ****             if (button2_state == 0) { // 首次检测到按下
+ 192              		.loc 1 29 13 is_stmt 0 view .LVU55
  193 00be 1B69     		ldr	r3, [r3, #16]
-  23:Core/Src/main.c ****             if (button2_state == 0) { // 首次检测到按下
- 194              		.loc 1 23 12 view .LVU56
+  29:Core/Src/main.c ****             if (button2_state == 0) { // 首次检测到按下
+ 194              		.loc 1 29 12 view .LVU56
  195 00c0 13F0400F 		tst	r3, #64
  196 00c4 B9D0     		beq	.L3
-  24:Core/Src/main.c ****                 button2_state = 1;  // 切换到按下中状态
- 197              		.loc 1 24 13 is_stmt 1 view .LVU57
-  24:Core/Src/main.c ****                 button2_state = 1;  // 切换到按下中状态
- 198              		.loc 1 24 31 is_stmt 0 view .LVU58
+  30:Core/Src/main.c ****                 button2_state = 1;  // 切换到按下中状态
+ 197              		.loc 1 30 13 is_stmt 1 view .LVU57
+  30:Core/Src/main.c ****                 button2_state = 1;  // 切换到按下中状态
+ 198              		.loc 1 30 31 is_stmt 0 view .LVU58
  199 00c6 094B     		ldr	r3, .L11+12
  200 00c8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  24:Core/Src/main.c ****                 button2_state = 1;  // 切换到按下中状态
- 201              		.loc 1 24 16 view .LVU59
+  30:Core/Src/main.c ****                 button2_state = 1;  // 切换到按下中状态
+ 201              		.loc 1 30 16 view .LVU59
  202 00ca 002B     		cmp	r3, #0
  203 00cc A2D1     		bne	.L4
-  25:Core/Src/main.c ****                 button2_timer = systick_counter; // 记录按下的时刻
- 204              		.loc 1 25 17 is_stmt 1 view .LVU60
-  25:Core/Src/main.c ****                 button2_timer = systick_counter; // 记录按下的时刻
- 205              		.loc 1 25 31 is_stmt 0 view .LVU61
+  31:Core/Src/main.c ****                 button2_timer = systick_counter; // 记录按下的时刻
+ 204              		.loc 1 31 17 is_stmt 1 view .LVU60
+  31:Core/Src/main.c ****                 button2_timer = systick_counter; // 记录按下的时刻
+ 205              		.loc 1 31 31 is_stmt 0 view .LVU61
  206 00ce 074B     		ldr	r3, .L11+12
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc6AaKAG.s 			page 6
+
+
  207 00d0 0122     		movs	r2, #1
  208 00d2 1A70     		strb	r2, [r3]
-  26:Core/Src/main.c ****             } else if (button2_state == 1) { // 按下中
- 209              		.loc 1 26 17 is_stmt 1 view .LVU62
-  26:Core/Src/main.c ****             } else if (button2_state == 1) { // 按下中
- 210              		.loc 1 26 31 is_stmt 0 view .LVU63
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 6
-
-
+  32:Core/Src/main.c ****             } else if (button2_state == 1) { // 按下中
+ 209              		.loc 1 32 17 is_stmt 1 view .LVU62
+  32:Core/Src/main.c ****             } else if (button2_state == 1) { // 按下中
+ 210              		.loc 1 32 31 is_stmt 0 view .LVU63
  211 00d4 024B     		ldr	r3, .L11
  212 00d6 1A68     		ldr	r2, [r3]
  213 00d8 024B     		ldr	r3, .L11+4
@@ -352,15 +358,15 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 1
  270              	flagbutton1:
  271 0000 00       		.space	1
  272              		.global	systick_counter
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc6AaKAG.s 			page 7
+
+
  273              		.section	.bss.systick_counter,"aw",%nobits
  274              		.align	2
  277              	systick_counter:
  278 0000 00000000 		.space	4
  279              		.global	button2_timer
  280              		.section	.bss.button2_timer,"aw",%nobits
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 7
-
-
  281              		.align	2
  284              	button2_timer:
  285 0000 00000000 		.space	4
@@ -389,35 +395,35 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 1
  316              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
  317              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
  318              		.file 5 "Core/Inc/init.h"
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s 			page 8
+ARM GAS  C:\Users\��\AppData\Local\Temp\cc6AaKAG.s 			page 8
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:21     .text.main:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:27     .text.main:00000000 main
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:219    .text.main:000000e0 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:277    .bss.systick_counter:00000000 systick_counter
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:284    .bss.button2_timer:00000000 button2_timer
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:296    .data.work_mode:00000000 work_mode
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:258    .bss.button2_state:00000000 button2_state
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:240    .bss.blink_counter.0:00000000 blink_counter.0
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:290    .bss.blink_frequency:00000000 blink_frequency
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:309    .rodata.blink_periods:00000000 blink_periods
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:302    .bss.current_led:00000000 current_led
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:247    .rodata.led_pins:00000000 led_pins
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:270    .bss.flagbutton1:00000000 flagbutton1
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:264    .bss.flagbutton2:00000000 flagbutton2
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:237    .bss.blink_counter.0:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:244    .rodata.led_pins:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:259    .bss.button2_state:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:265    .bss.flagbutton2:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:271    .bss.flagbutton1:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:274    .bss.systick_counter:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:281    .bss.button2_timer:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:291    .bss.blink_frequency:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:303    .bss.current_led:00000000 $d
-C:\Users\��\AppData\Local\Temp\ccC7Qn3a.s:306    .rodata.blink_periods:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:21     .text.main:00000000 $t
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:27     .text.main:00000000 main
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:219    .text.main:000000e0 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:277    .bss.systick_counter:00000000 systick_counter
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:284    .bss.button2_timer:00000000 button2_timer
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:296    .data.work_mode:00000000 work_mode
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:258    .bss.button2_state:00000000 button2_state
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:240    .bss.blink_counter.0:00000000 blink_counter.0
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:290    .bss.blink_frequency:00000000 blink_frequency
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:309    .rodata.blink_periods:00000000 blink_periods
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:302    .bss.current_led:00000000 current_led
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:247    .rodata.led_pins:00000000 led_pins
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:270    .bss.flagbutton1:00000000 flagbutton1
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:264    .bss.flagbutton2:00000000 flagbutton2
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:237    .bss.blink_counter.0:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:244    .rodata.led_pins:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:259    .bss.button2_state:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:265    .bss.flagbutton2:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:271    .bss.flagbutton1:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:274    .bss.systick_counter:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:281    .bss.button2_timer:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:291    .bss.blink_frequency:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:303    .bss.current_led:00000000 $d
+C:\Users\��\AppData\Local\Temp\cc6AaKAG.s:306    .rodata.blink_periods:00000000 $d
 
 UNDEFINED SYMBOLS
 GPIO_Ini
