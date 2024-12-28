@@ -1,4 +1,4 @@
-build/main.o: Core/Src/main.c Core/Inc/init.h \
+build/init.o: Core/Src/init.c Core/Inc/init.h \
  Core/Inc/../../CMSIS/Devices/stm32f4xx.h \
  Core/Inc/../../CMSIS/Devices/stm32f429xx.h \
  Core/Inc/../../CMSIS/Devices/../include/core_cm4.h \

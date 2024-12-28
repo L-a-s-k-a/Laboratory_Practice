@@ -1,4 +1,5 @@
 #include "init.h"
+
 void GPIO_Ini_Self_Def(void)
 {
     SET_BIT_SELF(RCC_AHB1ENR,RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); /*|按位取或,a|=b代表a=a|b*/
@@ -19,6 +20,7 @@ void GPIO_Ini_CMSIS(void)
     CLEAR_BIT(GPIOB->OTYPER,GPIO_OTYPER_OT14); /*重置pb14 OTYPER为0(Output push-pull)？？*/
     SET_BIT(GPIOB->OSPEEDR,GPIO_OSPEEDER_OSPEEDR14_0);
     SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR14);
+
     /*---SET PB0 FOR GREEN LED*/
     SET_BIT(GPIOB->MODER,GPIO_MODER_MODE0_0); /*设置pb0 MODER0为01(General purpose output mode)*/
     SET_BIT(GPIOB->OSPEEDR,GPIO_OSPEEDER_OSPEEDR0_0); /*设置pb0 设置端⼝引脚的速度为01(中速)*/

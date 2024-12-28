@@ -1,0 +1,173 @@
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Ini_Self_Def,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini_Self_Def
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini_Self_Def:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void GPIO_Ini_Self_Def(void)
+   4:Core/Src/init.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****     SET_BIT_SELF(RCC_AHB1ENR,RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); /*|按位取或,a|=b代表
+  34              		.loc 1 5 5 view .LVU1
+  35 0000 0F4A     		ldr	r2, .L2
+  36 0002 D2F83038 		ldr	r3, [r2, #2096]
+  37 0006 43F00603 		orr	r3, r3, #6
+  38 000a C2F83038 		str	r3, [r2, #2096]
+   6:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_MODER, GPIO_PIN_7_OUT); /*设置pb0=7 MODER0为01(General purpose output mod
+  39              		.loc 1 6 5 view .LVU2
+  40 000e 0D4B     		ldr	r3, .L2+4
+  41 0010 D3F80024 		ldr	r2, [r3, #1024]
+  42 0014 42F48042 		orr	r2, r2, #16384
+  43 0018 C3F80024 		str	r2, [r3, #1024]
+   7:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_OSPEEDR, GPIO_PIN_7_MED);
+  44              		.loc 1 7 5 view .LVU3
+  45 001c D3F80824 		ldr	r2, [r3, #1032]
+  46 0020 42F48042 		orr	r2, r2, #16384
+  47 0024 C3F80824 		str	r2, [r3, #1032]
+   8:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_BSRR, GPIO_PIN_7_RESET);
+  48              		.loc 1 8 5 view .LVU4
+  49 0028 D3F81824 		ldr	r2, [r3, #1048]
+  50 002c 42F40002 		orr	r2, r2, #8388608
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 2
+
+
+  51 0030 C3F81824 		str	r2, [r3, #1048]
+   9:Core/Src/init.c ****      // 配置 PC13 和 PC6 为输入模式
+  10:Core/Src/init.c ****     GPIOC->MODER &= ~(GPIO_MODER_MODE13);
+  52              		.loc 1 10 5 view .LVU5
+  53              		.loc 1 10 10 is_stmt 0 view .LVU6
+  54 0034 044A     		ldr	r2, .L2+8
+  55 0036 1368     		ldr	r3, [r2]
+  56              		.loc 1 10 18 view .LVU7
+  57 0038 23F04063 		bic	r3, r3, #201326592
+  58 003c 1360     		str	r3, [r2]
+  11:Core/Src/init.c ****     // // 配置为上拉模式
+  12:Core/Src/init.c ****     // GPIOC->PUPDR |= (GPIO_PUPDR_PUPD13_0 | GPIO_PUPDR_PUPD6_0);
+  13:Core/Src/init.c **** 
+  14:Core/Src/init.c **** }
+  59              		.loc 1 14 1 view .LVU8
+  60 003e 7047     		bx	lr
+  61              	.L3:
+  62              		.align	2
+  63              	.L2:
+  64 0040 00300240 		.word	1073885184
+  65 0044 00000240 		.word	1073872896
+  66 0048 00080240 		.word	1073874944
+  67              		.cfi_endproc
+  68              	.LFE130:
+  70              		.section	.text.GPIO_Ini_CMSIS,"ax",%progbits
+  71              		.align	1
+  72              		.global	GPIO_Ini_CMSIS
+  73              		.syntax unified
+  74              		.thumb
+  75              		.thumb_func
+  77              	GPIO_Ini_CMSIS:
+  78              	.LFB131:
+  15:Core/Src/init.c **** 
+  16:Core/Src/init.c **** void GPIO_Ini_CMSIS(void)
+  17:Core/Src/init.c **** {
+  79              		.loc 1 17 1 is_stmt 1 view -0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  83              		@ link register save eliminated.
+  18:Core/Src/init.c ****     /*使用gpiob点亮pb14红色led */
+  19:Core/Src/init.c ****     SET_BIT(GPIOB->MODER,GPIO_MODER_MODE14_0);
+  84              		.loc 1 19 5 view .LVU10
+  85 0000 0E4B     		ldr	r3, .L5
+  86 0002 1A68     		ldr	r2, [r3]
+  87 0004 42F08052 		orr	r2, r2, #268435456
+  88 0008 1A60     		str	r2, [r3]
+  20:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER,GPIO_OTYPER_OT14); /*重置pb14 OTYPER为0(Output push-pull)？？*/
+  89              		.loc 1 20 5 view .LVU11
+  90 000a 5A68     		ldr	r2, [r3, #4]
+  91 000c 22F48042 		bic	r2, r2, #16384
+  92 0010 5A60     		str	r2, [r3, #4]
+  21:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR,GPIO_OSPEEDER_OSPEEDR14_0);
+  93              		.loc 1 21 5 view .LVU12
+  94 0012 9A68     		ldr	r2, [r3, #8]
+  95 0014 42F08052 		orr	r2, r2, #268435456
+  96 0018 9A60     		str	r2, [r3, #8]
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 3
+
+
+  22:Core/Src/init.c ****     SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR14);
+  97              		.loc 1 22 5 view .LVU13
+  98 001a 9A69     		ldr	r2, [r3, #24]
+  99 001c 42F08042 		orr	r2, r2, #1073741824
+ 100 0020 9A61     		str	r2, [r3, #24]
+  23:Core/Src/init.c **** 
+  24:Core/Src/init.c ****     /*---SET PB0 FOR GREEN LED*/
+  25:Core/Src/init.c ****     SET_BIT(GPIOB->MODER,GPIO_MODER_MODE0_0); /*设置pb0 MODER0为01(General purpose output mode)*
+ 101              		.loc 1 25 5 view .LVU14
+ 102 0022 1A68     		ldr	r2, [r3]
+ 103 0024 42F00102 		orr	r2, r2, #1
+ 104 0028 1A60     		str	r2, [r3]
+  26:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR,GPIO_OSPEEDER_OSPEEDR0_0); /*设置pb0 设置端⼝引脚的速度为01(
+ 105              		.loc 1 26 5 view .LVU15
+ 106 002a 9A68     		ldr	r2, [r3, #8]
+ 107 002c 42F00102 		orr	r2, r2, #1
+ 108 0030 9A60     		str	r2, [r3, #8]
+  27:Core/Src/init.c ****     SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR0); /*设置pb0 bsrr寄存器复位br0 （置位bs0）*/
+ 109              		.loc 1 27 5 view .LVU16
+ 110 0032 9A69     		ldr	r2, [r3, #24]
+ 111 0034 42F48032 		orr	r2, r2, #65536
+ 112 0038 9A61     		str	r2, [r3, #24]
+  28:Core/Src/init.c ****    
+  29:Core/Src/init.c **** }...
+ 113              		.loc 1 29 1 is_stmt 0 view .LVU17
+ 114 003a 7047     		bx	lr
+ 115              	.L6:
+ 116              		.align	2
+ 117              	.L5:
+ 118 003c 00040240 		.word	1073873920
+ 119              		.cfi_endproc
+ 120              	.LFE131:
+ 122              		.text
+ 123              	.Letext0:
+ 124              		.file 2 "F:/STM32Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 125              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ 126              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:21     .text.GPIO_Ini_Self_Def:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:27     .text.GPIO_Ini_Self_Def:00000000 GPIO_Ini_Self_Def
+C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:64     .text.GPIO_Ini_Self_Def:00000040 $d
+C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:71     .text.GPIO_Ini_CMSIS:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:77     .text.GPIO_Ini_CMSIS:00000000 GPIO_Ini_CMSIS
+C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:118    .text.GPIO_Ini_CMSIS:0000003c $d
+
+NO UNDEFINED SYMBOLS

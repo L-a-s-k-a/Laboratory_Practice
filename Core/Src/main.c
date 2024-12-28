@@ -1,9 +1,9 @@
-#include <stdint.h> 
 #include "init.h"
 
 void delay(volatile uint32_t s) {
     while (s--);
 }
+
 uint8_t led_count = 1;         // 按钮2操作时点亮的LED数量
 uint8_t current_led = 0;       // 当前点亮的LED索引
 uint32_t led_states[] = {LED1_ON, LED2_ON, LED3_ON};
@@ -14,9 +14,12 @@ uint8_t button2_flag;
 int main() {
     GPIO_Ini_Self_Def();
     GPIO_Ini_CMSIS();
-   uint8_t button1_pressed = 0;
-   uint8_t button2_pressed = 0;
-      while (1) {
+
+    uint8_t button1_pressed = 0;
+    uint8_t button2_pressed = 0;
+    
+
+    while (1) {
         // 按钮1逻辑
         button1_flag=!button1_pressed;
         button2_flag=!button2_pressed;
@@ -37,7 +40,8 @@ int main() {
         } else {
             button1_pressed = 0;
         }
-             // 按钮2逻辑
+
+        // 按钮2逻辑
         if (!(READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) != 0)) {
             if (!button2_pressed) {
                 button2_pressed = 1;
@@ -57,7 +61,7 @@ void update_leds(uint8_t led_index, uint8_t count) {
     // 关闭所有LED
     GPIOB->BSRR = (LED1_ON | LED2_ON | LED3_ON) << 16;
 
-  if (count == 3) {
+    if (count == 3) {
         // 如果LED数量为3，根据 toggle_state 控制所有灯
         if (toggle_state) {
             GPIOB->BSRR = LED1_ON | LED2_ON | LED3_ON;  // 打开所有灯
