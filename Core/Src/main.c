@@ -29,14 +29,14 @@ int main(void) {
         flagbutton1=READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0;
         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 按钮按下
-            if (button2_state == 0) { // 首次检测到按下
-                button2_state = 1;  // 切换到按下中状态
-                button2_timer = systick_counter; // 记录按下的时刻
-            } else if (button2_state == 1) { // 按下中
+            if (button2_state == 0) { // 首次按下
+                button2_state = 1;  // 切换到按下中
+                button2_timer = systick_counter; // 记录按下时刻
+            } else if (button2_state == 1) { // 按下中...
                 uint32_t press_duration = systick_counter - button2_timer;
                 if (press_duration >= 2000) { // 检测长按
                     work_mode ^= 1;        // 切换工作模式
-                    button2_state = 2;     // 标记为长按已处理
+                    button2_state = 2;     // 长按已处理
                 }
             }
         } 
