@@ -44,7 +44,7 @@ volatile uint8_t  M2SelectedLed = 0;
 // LED 与引脚的对应关系 (0..5)
 // 0->PB0, 1->PB1, 2->PB2, 3->PB6, 4->PB7, 5->PB14
 //-------------------------------------------------
-static const uint8_t LED_PIN[6] = {0,1,2,6,7,14};
+static const uint8_t LED_PIN[6] = {0,7,14,6,2,1};
 
 //----------------- 函数声明 -----------------//
 static void SetLed(uint8_t ledIndex, uint8_t on);
