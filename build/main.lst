@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\HP\AppData\Local\Temp\cctYXMyf.s 			page 1
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,110 +20,581 @@ ARM GAS  C:\Users\HP\AppData\Local\Temp\cctYXMyf.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.main,"ax",%progbits
+  20              		.section	.text.delay,"ax",%progbits
   21              		.align	1
-  22              		.global	main
-  23              		.syntax unified
-  24              		.thumb
-  25              		.thumb_func
-  27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** #include <init.h>
-   2:Core/Src/main.c **** 
-   3:Core/Src/main.c **** int main(void)
-   4:Core/Src/main.c **** {
-  29              		.loc 1 4 1 view -0
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	delay:
+  27              	.LVL0:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** #include "init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** static void delay (unsigned int time) {
+  29              		.loc 1 4 39 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-   5:Core/Src/main.c ****     *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x06; // Включение тактирования п
-  35              		.loc 1 5 5 view .LVU1
-  36 0000 144A     		ldr	r2, .L6
-  37 0002 D2F83038 		ldr	r3, [r2, #2096]
-  38              		.loc 1 5 42 is_stmt 0 view .LVU2
-  39 0006 43F00603 		orr	r3, r3, #6
-  40 000a C2F83038 		str	r3, [r2, #2096]
-   6:Core/Src/main.c **** 
-   7:Core/Src/main.c ****     *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000; // Настройка работы 7-го пи�
-  41              		.loc 1 7 5 is_stmt 1 view .LVU3
-  42 000e 124B     		ldr	r3, .L6+4
-  43 0010 D3F80024 		ldr	r2, [r3, #1024]
-  44              		.loc 1 7 42 is_stmt 0 view .LVU4
-  45 0014 42F48042 		orr	r2, r2, #16384
-  46 0018 C3F80024 		str	r2, [r3, #1024]
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/main.c ****     for (unsigned int i = 0; i < time; i++)
+  34              		.loc 1 5 5 view .LVU1
+  35              	.LBB2:
+  36              		.loc 1 5 10 view .LVU2
+  37              		.loc 1 5 23 is_stmt 0 view .LVU3
+  38 0000 0022     		movs	r2, #0
+  39              	.LVL1:
+  40              		.loc 1 5 32 is_stmt 1 discriminator 1 view .LVU4
+  41 0002 8242     		cmp	r2, r0
+  42 0004 10D2     		bcs	.L9
+  43              	.LBE2:
+   4:Core/Src/main.c ****     for (unsigned int i = 0; i < time; i++)
+  44              		.loc 1 4 39 is_stmt 0 view .LVU5
+  45 0006 82B0     		sub	sp, sp, #8
+  46              	.LCFI0:
+  47              		.cfi_def_cfa_offset 8
+  48 0008 09E0     		b	.L5
+  49              	.L4:
+  50              	.LBB5:
+  51              	.LBB3:
+   6:Core/Src/main.c ****         for (volatile unsigned int j = 0; j < 2000; j++);
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 2
+
+
+  52              		.loc 1 6 54 is_stmt 1 discriminator 3 view .LVU6
+  53 000a 019B     		ldr	r3, [sp, #4]
+  54 000c 0133     		adds	r3, r3, #1
+  55 000e 0193     		str	r3, [sp, #4]
+  56              	.L3:
+  57              		.loc 1 6 45 discriminator 1 view .LVU7
+  58 0010 019B     		ldr	r3, [sp, #4]
+  59 0012 B3F5FA6F 		cmp	r3, #2000
+  60 0016 F8D3     		bcc	.L4
+  61              	.LBE3:
+   5:Core/Src/main.c ****     for (unsigned int i = 0; i < time; i++)
+  62              		.loc 1 5 41 discriminator 2 view .LVU8
+  63 0018 0132     		adds	r2, r2, #1
+  64              	.LVL2:
+   5:Core/Src/main.c ****     for (unsigned int i = 0; i < time; i++)
+  65              		.loc 1 5 32 discriminator 1 view .LVU9
+  66 001a 8242     		cmp	r2, r0
+  67 001c 02D2     		bcs	.L10
+  68              	.L5:
+  69              		.loc 1 6 9 view .LVU10
+  70              	.LBB4:
+  71              		.loc 1 6 14 view .LVU11
+  72              		.loc 1 6 36 is_stmt 0 view .LVU12
+  73 001e 0023     		movs	r3, #0
+  74 0020 0193     		str	r3, [sp, #4]
+  75              		.loc 1 6 9 view .LVU13
+  76 0022 F5E7     		b	.L3
+  77              	.L10:
+  78              		.loc 1 6 9 view .LVU14
+  79              	.LBE4:
+  80              	.LBE5:
+   7:Core/Src/main.c **** }
+  81              		.loc 1 7 1 view .LVU15
+  82 0024 02B0     		add	sp, sp, #8
+  83              	.LCFI1:
+  84              		.cfi_def_cfa_offset 0
+  85              		@ sp needed
+  86 0026 7047     		bx	lr
+  87              	.L9:
+  88              		.loc 1 7 1 view .LVU16
+  89 0028 7047     		bx	lr
+  90              		.cfi_endproc
+  91              	.LFE130:
+  93              		.section	.text.main,"ax",%progbits
+  94              		.align	1
+  95              		.global	main
+  96              		.syntax unified
+  97              		.thumb
+  98              		.thumb_func
+ 100              	main:
+ 101              	.LFB131:
    8:Core/Src/main.c **** 
-   9:Core/Src/main.c ****     *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00;   // Настройка на PushPull работ�
-  47              		.loc 1 9 5 is_stmt 1 view .LVU5
-  10:Core/Src/main.c ****     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000; // Настройка скорости
-  48              		.loc 1 10 5 view .LVU6
-ARM GAS  C:\Users\HP\AppData\Local\Temp\cctYXMyf.s 			page 2
+   9:Core/Src/main.c **** uint8_t buttonState = 1;
+  10:Core/Src/main.c **** uint8_t lastButtonState = 0;
+  11:Core/Src/main.c **** volatile uint8_t counter = 0;
+  12:Core/Src/main.c **** uint8_t led1_state = 0;
+  13:Core/Src/main.c **** uint8_t led2_state = 0;
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 3
 
 
-  49 001c D3F80824 		ldr	r2, [r3, #1032]
-  50              		.loc 1 10 42 is_stmt 0 view .LVU7
-  51 0020 42F48042 		orr	r2, r2, #16384
-  52 0024 C3F80824 		str	r2, [r3, #1032]
-  11:Core/Src/main.c **** 
-  12:Core/Src/main.c ****     *(uint32_t *)(0x40020400UL + 0x0CUL) |= 0x00; // Отключение PU/PD резисторо�
-  53              		.loc 1 12 5 is_stmt 1 view .LVU8
-  54 0028 06E0     		b	.L2
-  55              	.L5:
-  13:Core/Src/main.c **** 
-  14:Core/Src/main.c ****     while (1)
-  15:Core/Src/main.c ****     {
-  16:Core/Src/main.c ****         if ((*(uint32_t *)(0x40020800UL + 0x10UL) & (0x2000)) != 0)
-  17:Core/Src/main.c ****         {
-  18:Core/Src/main.c ****             *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80; // Установка единицы в 7
-  56              		.loc 1 18 13 view .LVU9
-  57 002a 0B4A     		ldr	r2, .L6+4
-  58 002c D2F81834 		ldr	r3, [r2, #1048]
-  59              		.loc 1 18 50 is_stmt 0 view .LVU10
-  60 0030 43F08003 		orr	r3, r3, #128
-  61 0034 C2F81834 		str	r3, [r2, #1048]
-  62              	.L2:
-  14:Core/Src/main.c ****     {
-  63              		.loc 1 14 5 is_stmt 1 view .LVU11
-  16:Core/Src/main.c ****         {
-  64              		.loc 1 16 9 view .LVU12
-  16:Core/Src/main.c ****         {
-  65              		.loc 1 16 14 is_stmt 0 view .LVU13
-  66 0038 074B     		ldr	r3, .L6+4
-  67 003a D3F81038 		ldr	r3, [r3, #2064]
-  16:Core/Src/main.c ****         {
-  68              		.loc 1 16 12 view .LVU14
-  69 003e 13F4005F 		tst	r3, #8192
-  70 0042 F2D1     		bne	.L5
-  19:Core/Src/main.c ****         }
-  20:Core/Src/main.c ****         else
-  21:Core/Src/main.c ****         {
-  22:Core/Src/main.c ****             *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000; // Установка единицы 
-  71              		.loc 1 22 13 is_stmt 1 view .LVU15
-  72 0044 044A     		ldr	r2, .L6+4
-  73 0046 D2F81834 		ldr	r3, [r2, #1048]
-  74              		.loc 1 22 50 is_stmt 0 view .LVU16
-  75 004a 43F40003 		orr	r3, r3, #8388608
-  76 004e C2F81834 		str	r3, [r2, #1048]
-  77 0052 F1E7     		b	.L2
-  78              	.L7:
-  79              		.align	2
-  80              	.L6:
-  81 0054 00300240 		.word	1073885184
-  82 0058 00000240 		.word	1073872896
-  83              		.cfi_endproc
-  84              	.LFE0:
-  86              		.text
-  87              	.Letext0:
-  88              		.file 2 "C:/Toools/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
-  89              		.file 3 "C:/Toools/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
-ARM GAS  C:\Users\HP\AppData\Local\Temp\cctYXMyf.s 			page 3
+  14:Core/Src/main.c **** uint8_t led3_state = 0;
+  15:Core/Src/main.c **** uint8_t led4_state = 0;
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** int main(void){
+ 102              		.loc 1 18 15 is_stmt 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ Volatile: function does not return.
+ 105              		@ args = 0, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107 0000 08B5     		push	{r3, lr}
+ 108              	.LCFI2:
+ 109              		.cfi_def_cfa_offset 8
+ 110              		.cfi_offset 3, -8
+ 111              		.cfi_offset 14, -4
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c ****     GPIO_Ini();
+ 112              		.loc 1 20 5 view .LVU18
+ 113 0002 FFF7FEFF 		bl	GPIO_Ini
+ 114              	.LVL3:
+ 115              	.L18:
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c ****     while(1){
+ 116              		.loc 1 23 5 view .LVU19
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c ****             buttonState = (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) ? 1 : 0;
+ 117              		.loc 1 25 13 view .LVU20
+ 118              		.loc 1 25 28 is_stmt 0 view .LVU21
+ 119 0006 564B     		ldr	r3, .L27
+ 120 0008 1B69     		ldr	r3, [r3, #16]
+ 121              		.loc 1 25 71 view .LVU22
+ 122 000a C3F34033 		ubfx	r3, r3, #13, #1
+ 123              		.loc 1 25 25 view .LVU23
+ 124 000e 554A     		ldr	r2, .L27+4
+ 125 0010 1370     		strb	r3, [r2]
+  26:Core/Src/main.c ****             
+  27:Core/Src/main.c ****             if(lastButtonState == 1 && buttonState == 0){
+ 126              		.loc 1 27 13 is_stmt 1 view .LVU24
+ 127              		.loc 1 27 32 is_stmt 0 view .LVU25
+ 128 0012 554A     		ldr	r2, .L27+8
+ 129 0014 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 130              		.loc 1 27 15 view .LVU26
+ 131 0016 012A     		cmp	r2, #1
+ 132 0018 3ED0     		beq	.L21
+ 133              	.L12:
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c ****                 counter++;
+  30:Core/Src/main.c ****                 if (counter == 7){
+  31:Core/Src/main.c ****                     counter = 1; 
+  32:Core/Src/main.c ****                 }
+  33:Core/Src/main.c ****             }
+  34:Core/Src/main.c **** 
+  35:Core/Src/main.c ****             lastButtonState = buttonState;
+ 134              		.loc 1 35 13 is_stmt 1 view .LVU27
+ 135              		.loc 1 35 29 is_stmt 0 view .LVU28
+ 136 001a 534A     		ldr	r2, .L27+8
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 4
+
+
+ 137 001c 1370     		strb	r3, [r2]
+  36:Core/Src/main.c **** 
+  37:Core/Src/main.c ****             delay(10);
+ 138              		.loc 1 37 13 is_stmt 1 view .LVU29
+ 139 001e 0A20     		movs	r0, #10
+ 140 0020 FFF7FEFF 		bl	delay
+ 141              	.LVL4:
+  38:Core/Src/main.c **** 
+  39:Core/Src/main.c ****             if(counter == 1){
+ 142              		.loc 1 39 13 view .LVU30
+ 143              		.loc 1 39 24 is_stmt 0 view .LVU31
+ 144 0024 514B     		ldr	r3, .L27+12
+ 145 0026 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 146 0028 DBB2     		uxtb	r3, r3
+ 147              		.loc 1 39 15 view .LVU32
+ 148 002a 012B     		cmp	r3, #1
+ 149 002c 43D0     		beq	.L22
+ 150              	.L13:
+  40:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  41:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  42:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+  43:Core/Src/main.c ****                 SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
+  44:Core/Src/main.c **** 
+  45:Core/Src/main.c ****                 led1_state = 1;
+  46:Core/Src/main.c ****                 led2_state = 0;
+  47:Core/Src/main.c ****                 led3_state = 0;
+  48:Core/Src/main.c ****                 led4_state = 0;
+  49:Core/Src/main.c **** 
+  50:Core/Src/main.c **** 
+  51:Core/Src/main.c ****             }
+  52:Core/Src/main.c ****             if (counter == 2){
+ 151              		.loc 1 52 13 is_stmt 1 view .LVU33
+ 152              		.loc 1 52 25 is_stmt 0 view .LVU34
+ 153 002e 4F4B     		ldr	r3, .L27+12
+ 154 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 155 0032 DBB2     		uxtb	r3, r3
+ 156              		.loc 1 52 16 view .LVU35
+ 157 0034 022B     		cmp	r3, #2
+ 158 0036 5BD0     		beq	.L23
+ 159              	.L14:
+  53:Core/Src/main.c **** 
+  54:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  55:Core/Src/main.c ****                 led2_state = 1;
+  56:Core/Src/main.c ****             }
+  57:Core/Src/main.c **** 
+  58:Core/Src/main.c ****             if (counter == 3){
+ 160              		.loc 1 58 13 is_stmt 1 view .LVU36
+ 161              		.loc 1 58 25 is_stmt 0 view .LVU37
+ 162 0038 4C4B     		ldr	r3, .L27+12
+ 163 003a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 164 003c DBB2     		uxtb	r3, r3
+ 165              		.loc 1 58 16 view .LVU38
+ 166 003e 032B     		cmp	r3, #3
+ 167 0040 5FD0     		beq	.L24
+ 168              	.L15:
+  59:Core/Src/main.c **** 
+  60:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 5
+
+
+  61:Core/Src/main.c ****                 led3_state = 1;
+  62:Core/Src/main.c ****             }
+  63:Core/Src/main.c ****             if (counter == 4){
+ 169              		.loc 1 63 13 is_stmt 1 view .LVU39
+ 170              		.loc 1 63 25 is_stmt 0 view .LVU40
+ 171 0042 4A4B     		ldr	r3, .L27+12
+ 172 0044 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 173 0046 DBB2     		uxtb	r3, r3
+ 174              		.loc 1 63 16 view .LVU41
+ 175 0048 042B     		cmp	r3, #4
+ 176 004a 63D0     		beq	.L25
+ 177              	.L16:
+  64:Core/Src/main.c **** 
+  65:Core/Src/main.c ****                 SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS8);
+  66:Core/Src/main.c ****                 led4_state = 1;
+  67:Core/Src/main.c ****             }
+  68:Core/Src/main.c **** 
+  69:Core/Src/main.c ****             if (counter == 5){
+ 178              		.loc 1 69 13 is_stmt 1 view .LVU42
+ 179              		.loc 1 69 25 is_stmt 0 view .LVU43
+ 180 004c 474B     		ldr	r3, .L27+12
+ 181 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 182 0050 DBB2     		uxtb	r3, r3
+ 183              		.loc 1 69 16 view .LVU44
+ 184 0052 052B     		cmp	r3, #5
+ 185 0054 67D0     		beq	.L26
+ 186              	.L17:
+  70:Core/Src/main.c **** 
+  71:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+  72:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  73:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+  74:Core/Src/main.c ****                 SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
+  75:Core/Src/main.c **** 
+  76:Core/Src/main.c ****                 led1_state = 0;
+  77:Core/Src/main.c ****                 led2_state = 0;
+  78:Core/Src/main.c ****                 led3_state = 0;
+  79:Core/Src/main.c ****                 led4_state = 0;
+  80:Core/Src/main.c ****             }
+  81:Core/Src/main.c ****             if (counter == 6){
+ 187              		.loc 1 81 13 is_stmt 1 view .LVU45
+ 188              		.loc 1 81 25 is_stmt 0 view .LVU46
+ 189 0056 454B     		ldr	r3, .L27+12
+ 190 0058 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 191 005a DBB2     		uxtb	r3, r3
+ 192              		.loc 1 81 16 view .LVU47
+ 193 005c 062B     		cmp	r3, #6
+ 194 005e D2D1     		bne	.L18
+  82:Core/Src/main.c **** 
+  83:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+ 195              		.loc 1 83 17 is_stmt 1 view .LVU48
+ 196 0060 434B     		ldr	r3, .L27+16
+ 197 0062 9A69     		ldr	r2, [r3, #24]
+ 198 0064 42F00102 		orr	r2, r2, #1
+ 199 0068 9A61     		str	r2, [r3, #24]
+  84:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+ 200              		.loc 1 84 17 view .LVU49
+ 201 006a 9A69     		ldr	r2, [r3, #24]
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 6
+
+
+ 202 006c 42F08002 		orr	r2, r2, #128
+ 203 0070 9A61     		str	r2, [r3, #24]
+  85:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 204              		.loc 1 85 17 view .LVU50
+ 205 0072 9A69     		ldr	r2, [r3, #24]
+ 206 0074 42F48042 		orr	r2, r2, #16384
+ 207 0078 9A61     		str	r2, [r3, #24]
+  86:Core/Src/main.c ****                 SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS8);
+ 208              		.loc 1 86 17 view .LVU51
+ 209 007a 394A     		ldr	r2, .L27
+ 210 007c 9369     		ldr	r3, [r2, #24]
+ 211 007e 43F48073 		orr	r3, r3, #256
+ 212 0082 9361     		str	r3, [r2, #24]
+  87:Core/Src/main.c ****                 led1_state = 1;
+ 213              		.loc 1 87 17 view .LVU52
+ 214              		.loc 1 87 28 is_stmt 0 view .LVU53
+ 215 0084 0123     		movs	r3, #1
+ 216 0086 3B4A     		ldr	r2, .L27+20
+ 217 0088 1370     		strb	r3, [r2]
+  88:Core/Src/main.c ****                 led2_state = 1;
+ 218              		.loc 1 88 17 is_stmt 1 view .LVU54
+ 219              		.loc 1 88 28 is_stmt 0 view .LVU55
+ 220 008a 3B4A     		ldr	r2, .L27+24
+ 221 008c 1370     		strb	r3, [r2]
+  89:Core/Src/main.c ****                 led3_state = 1;
+ 222              		.loc 1 89 17 is_stmt 1 view .LVU56
+ 223              		.loc 1 89 28 is_stmt 0 view .LVU57
+ 224 008e 3B4A     		ldr	r2, .L27+28
+ 225 0090 1370     		strb	r3, [r2]
+  90:Core/Src/main.c ****                 led4_state = 1;
+ 226              		.loc 1 90 17 is_stmt 1 view .LVU58
+ 227              		.loc 1 90 28 is_stmt 0 view .LVU59
+ 228 0092 3B4A     		ldr	r2, .L27+32
+ 229 0094 1370     		strb	r3, [r2]
+ 230 0096 B6E7     		b	.L18
+ 231              	.L21:
+  27:Core/Src/main.c **** 
+ 232              		.loc 1 27 37 discriminator 1 view .LVU60
+ 233 0098 002B     		cmp	r3, #0
+ 234 009a BED1     		bne	.L12
+  29:Core/Src/main.c ****                 if (counter == 7){
+ 235              		.loc 1 29 17 is_stmt 1 view .LVU61
+  29:Core/Src/main.c ****                 if (counter == 7){
+ 236              		.loc 1 29 24 is_stmt 0 view .LVU62
+ 237 009c 3349     		ldr	r1, .L27+12
+ 238 009e 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 239 00a0 0132     		adds	r2, r2, #1
+ 240 00a2 D2B2     		uxtb	r2, r2
+ 241 00a4 0A70     		strb	r2, [r1]
+  30:Core/Src/main.c ****                     counter = 1; 
+ 242              		.loc 1 30 17 is_stmt 1 view .LVU63
+  30:Core/Src/main.c ****                     counter = 1; 
+ 243              		.loc 1 30 29 is_stmt 0 view .LVU64
+ 244 00a6 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 245 00a8 D2B2     		uxtb	r2, r2
+  30:Core/Src/main.c ****                     counter = 1; 
+ 246              		.loc 1 30 20 view .LVU65
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 7
+
+
+ 247 00aa 072A     		cmp	r2, #7
+ 248 00ac B5D1     		bne	.L12
+  31:Core/Src/main.c ****                 }
+ 249              		.loc 1 31 21 is_stmt 1 view .LVU66
+  31:Core/Src/main.c ****                 }
+ 250              		.loc 1 31 29 is_stmt 0 view .LVU67
+ 251 00ae 0A46     		mov	r2, r1
+ 252 00b0 0121     		movs	r1, #1
+ 253 00b2 1170     		strb	r1, [r2]
+ 254 00b4 B1E7     		b	.L12
+ 255              	.L22:
+  40:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 256              		.loc 1 40 17 is_stmt 1 view .LVU68
+ 257 00b6 2E4B     		ldr	r3, .L27+16
+ 258 00b8 9A69     		ldr	r2, [r3, #24]
+ 259 00ba 42F00102 		orr	r2, r2, #1
+ 260 00be 9A61     		str	r2, [r3, #24]
+  41:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 261              		.loc 1 41 17 view .LVU69
+ 262 00c0 9A69     		ldr	r2, [r3, #24]
+ 263 00c2 42F40002 		orr	r2, r2, #8388608
+ 264 00c6 9A61     		str	r2, [r3, #24]
+  42:Core/Src/main.c ****                 SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
+ 265              		.loc 1 42 17 view .LVU70
+ 266 00c8 9A69     		ldr	r2, [r3, #24]
+ 267 00ca 42F08042 		orr	r2, r2, #1073741824
+ 268 00ce 9A61     		str	r2, [r3, #24]
+  43:Core/Src/main.c **** 
+ 269              		.loc 1 43 17 view .LVU71
+ 270 00d0 234A     		ldr	r2, .L27
+ 271 00d2 9369     		ldr	r3, [r2, #24]
+ 272 00d4 43F08073 		orr	r3, r3, #16777216
+ 273 00d8 9361     		str	r3, [r2, #24]
+  45:Core/Src/main.c ****                 led2_state = 0;
+ 274              		.loc 1 45 17 view .LVU72
+  45:Core/Src/main.c ****                 led2_state = 0;
+ 275              		.loc 1 45 28 is_stmt 0 view .LVU73
+ 276 00da 264B     		ldr	r3, .L27+20
+ 277 00dc 0122     		movs	r2, #1
+ 278 00de 1A70     		strb	r2, [r3]
+  46:Core/Src/main.c ****                 led3_state = 0;
+ 279              		.loc 1 46 17 is_stmt 1 view .LVU74
+  46:Core/Src/main.c ****                 led3_state = 0;
+ 280              		.loc 1 46 28 is_stmt 0 view .LVU75
+ 281 00e0 0023     		movs	r3, #0
+ 282 00e2 254A     		ldr	r2, .L27+24
+ 283 00e4 1370     		strb	r3, [r2]
+  47:Core/Src/main.c ****                 led4_state = 0;
+ 284              		.loc 1 47 17 is_stmt 1 view .LVU76
+  47:Core/Src/main.c ****                 led4_state = 0;
+ 285              		.loc 1 47 28 is_stmt 0 view .LVU77
+ 286 00e6 254A     		ldr	r2, .L27+28
+ 287 00e8 1370     		strb	r3, [r2]
+  48:Core/Src/main.c **** 
+ 288              		.loc 1 48 17 is_stmt 1 view .LVU78
+  48:Core/Src/main.c **** 
+ 289              		.loc 1 48 28 is_stmt 0 view .LVU79
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 8
+
+
+ 290 00ea 254A     		ldr	r2, .L27+32
+ 291 00ec 1370     		strb	r3, [r2]
+ 292 00ee 9EE7     		b	.L13
+ 293              	.L23:
+  54:Core/Src/main.c ****                 led2_state = 1;
+ 294              		.loc 1 54 17 is_stmt 1 view .LVU80
+ 295 00f0 1F4A     		ldr	r2, .L27+16
+ 296 00f2 9369     		ldr	r3, [r2, #24]
+ 297 00f4 43F08003 		orr	r3, r3, #128
+ 298 00f8 9361     		str	r3, [r2, #24]
+  55:Core/Src/main.c ****             }
+ 299              		.loc 1 55 17 view .LVU81
+  55:Core/Src/main.c ****             }
+ 300              		.loc 1 55 28 is_stmt 0 view .LVU82
+ 301 00fa 1F4B     		ldr	r3, .L27+24
+ 302 00fc 0122     		movs	r2, #1
+ 303 00fe 1A70     		strb	r2, [r3]
+ 304 0100 9AE7     		b	.L14
+ 305              	.L24:
+  60:Core/Src/main.c ****                 led3_state = 1;
+ 306              		.loc 1 60 17 is_stmt 1 view .LVU83
+ 307 0102 1B4A     		ldr	r2, .L27+16
+ 308 0104 9369     		ldr	r3, [r2, #24]
+ 309 0106 43F48043 		orr	r3, r3, #16384
+ 310 010a 9361     		str	r3, [r2, #24]
+  61:Core/Src/main.c ****             }
+ 311              		.loc 1 61 17 view .LVU84
+  61:Core/Src/main.c ****             }
+ 312              		.loc 1 61 28 is_stmt 0 view .LVU85
+ 313 010c 1B4B     		ldr	r3, .L27+28
+ 314 010e 0122     		movs	r2, #1
+ 315 0110 1A70     		strb	r2, [r3]
+ 316 0112 96E7     		b	.L15
+ 317              	.L25:
+  65:Core/Src/main.c ****                 led4_state = 1;
+ 318              		.loc 1 65 17 is_stmt 1 view .LVU86
+ 319 0114 124A     		ldr	r2, .L27
+ 320 0116 9369     		ldr	r3, [r2, #24]
+ 321 0118 43F48073 		orr	r3, r3, #256
+ 322 011c 9361     		str	r3, [r2, #24]
+  66:Core/Src/main.c ****             }
+ 323              		.loc 1 66 17 view .LVU87
+  66:Core/Src/main.c ****             }
+ 324              		.loc 1 66 28 is_stmt 0 view .LVU88
+ 325 011e 184B     		ldr	r3, .L27+32
+ 326 0120 0122     		movs	r2, #1
+ 327 0122 1A70     		strb	r2, [r3]
+ 328 0124 92E7     		b	.L16
+ 329              	.L26:
+  71:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 330              		.loc 1 71 17 is_stmt 1 view .LVU89
+ 331 0126 124B     		ldr	r3, .L27+16
+ 332 0128 9A69     		ldr	r2, [r3, #24]
+ 333 012a 42F48032 		orr	r2, r2, #65536
+ 334 012e 9A61     		str	r2, [r3, #24]
+  72:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 335              		.loc 1 72 17 view .LVU90
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 9
+
+
+ 336 0130 9A69     		ldr	r2, [r3, #24]
+ 337 0132 42F40002 		orr	r2, r2, #8388608
+ 338 0136 9A61     		str	r2, [r3, #24]
+  73:Core/Src/main.c ****                 SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
+ 339              		.loc 1 73 17 view .LVU91
+ 340 0138 9A69     		ldr	r2, [r3, #24]
+ 341 013a 42F08042 		orr	r2, r2, #1073741824
+ 342 013e 9A61     		str	r2, [r3, #24]
+  74:Core/Src/main.c **** 
+ 343              		.loc 1 74 17 view .LVU92
+ 344 0140 074A     		ldr	r2, .L27
+ 345 0142 9369     		ldr	r3, [r2, #24]
+ 346 0144 43F08073 		orr	r3, r3, #16777216
+ 347 0148 9361     		str	r3, [r2, #24]
+  76:Core/Src/main.c ****                 led2_state = 0;
+ 348              		.loc 1 76 17 view .LVU93
+  76:Core/Src/main.c ****                 led2_state = 0;
+ 349              		.loc 1 76 28 is_stmt 0 view .LVU94
+ 350 014a 0023     		movs	r3, #0
+ 351 014c 094A     		ldr	r2, .L27+20
+ 352 014e 1370     		strb	r3, [r2]
+  77:Core/Src/main.c ****                 led3_state = 0;
+ 353              		.loc 1 77 17 is_stmt 1 view .LVU95
+  77:Core/Src/main.c ****                 led3_state = 0;
+ 354              		.loc 1 77 28 is_stmt 0 view .LVU96
+ 355 0150 094A     		ldr	r2, .L27+24
+ 356 0152 1370     		strb	r3, [r2]
+  78:Core/Src/main.c ****                 led4_state = 0;
+ 357              		.loc 1 78 17 is_stmt 1 view .LVU97
+  78:Core/Src/main.c ****                 led4_state = 0;
+ 358              		.loc 1 78 28 is_stmt 0 view .LVU98
+ 359 0154 094A     		ldr	r2, .L27+28
+ 360 0156 1370     		strb	r3, [r2]
+  79:Core/Src/main.c ****             }
+ 361              		.loc 1 79 17 is_stmt 1 view .LVU99
+  79:Core/Src/main.c ****             }
+ 362              		.loc 1 79 28 is_stmt 0 view .LVU100
+ 363 0158 094A     		ldr	r2, .L27+32
+ 364 015a 1370     		strb	r3, [r2]
+ 365 015c 7BE7     		b	.L17
+ 366              	.L28:
+ 367 015e 00BF     		.align	2
+ 368              	.L27:
+ 369 0160 00080240 		.word	1073874944
+ 370 0164 00000000 		.word	buttonState
+ 371 0168 00000000 		.word	lastButtonState
+ 372 016c 00000000 		.word	counter
+ 373 0170 00040240 		.word	1073873920
+ 374 0174 00000000 		.word	led1_state
+ 375 0178 00000000 		.word	led2_state
+ 376 017c 00000000 		.word	led3_state
+ 377 0180 00000000 		.word	led4_state
+ 378              		.cfi_endproc
+ 379              	.LFE131:
+ 381              		.global	led4_state
+ 382              		.section	.bss.led4_state,"aw",%nobits
+ 385              	led4_state:
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 10
+
+
+ 386 0000 00       		.space	1
+ 387              		.global	led3_state
+ 388              		.section	.bss.led3_state,"aw",%nobits
+ 391              	led3_state:
+ 392 0000 00       		.space	1
+ 393              		.global	led2_state
+ 394              		.section	.bss.led2_state,"aw",%nobits
+ 397              	led2_state:
+ 398 0000 00       		.space	1
+ 399              		.global	led1_state
+ 400              		.section	.bss.led1_state,"aw",%nobits
+ 403              	led1_state:
+ 404 0000 00       		.space	1
+ 405              		.global	counter
+ 406              		.section	.bss.counter,"aw",%nobits
+ 409              	counter:
+ 410 0000 00       		.space	1
+ 411              		.global	lastButtonState
+ 412              		.section	.bss.lastButtonState,"aw",%nobits
+ 415              	lastButtonState:
+ 416 0000 00       		.space	1
+ 417              		.global	buttonState
+ 418              		.section	.data.buttonState,"aw"
+ 421              	buttonState:
+ 422 0000 01       		.byte	1
+ 423              		.text
+ 424              	.Letext0:
+ 425              		.file 2 "C:/Toools/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 426              		.file 3 "C:/Toools/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 427              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 428              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s 			page 11
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\HP\AppData\Local\Temp\cctYXMyf.s:21     .text.main:00000000 $t
-C:\Users\HP\AppData\Local\Temp\cctYXMyf.s:27     .text.main:00000000 main
-C:\Users\HP\AppData\Local\Temp\cctYXMyf.s:81     .text.main:00000054 $d
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:21     .text.delay:00000000 $t
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:26     .text.delay:00000000 delay
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:94     .text.main:00000000 $t
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:100    .text.main:00000000 main
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:369    .text.main:00000160 $d
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:421    .data.buttonState:00000000 buttonState
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:415    .bss.lastButtonState:00000000 lastButtonState
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:409    .bss.counter:00000000 counter
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:403    .bss.led1_state:00000000 led1_state
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:397    .bss.led2_state:00000000 led2_state
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:391    .bss.led3_state:00000000 led3_state
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:385    .bss.led4_state:00000000 led4_state
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:386    .bss.led4_state:00000000 $d
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:392    .bss.led3_state:00000000 $d
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:398    .bss.led2_state:00000000 $d
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:404    .bss.led1_state:00000000 $d
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:410    .bss.counter:00000000 $d
+C:\Users\HP\AppData\Local\Temp\ccO0wNNd.s:416    .bss.lastButtonState:00000000 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini

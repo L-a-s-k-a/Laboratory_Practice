@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\HP\AppData\Local\Temp\ccaO2HLw.s 			page 1
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccYdRnSe.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,11 +20,160 @@ ARM GAS  C:\Users\HP\AppData\Local\Temp\ccaO2HLw.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/init.c"
-  20              	.Letext0:
-ARM GAS  C:\Users\HP\AppData\Local\Temp\ccaO2HLw.s 			page 2
+  20              		.section	.text.GPIO_Ini,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** 
+   4:Core/Src/init.c **** void GPIO_Ini(void){
+  29              		.loc 1 4 20 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****  RCC-> AHB1ENR |= RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIOBEN;
+  34              		.loc 1 5 2 view .LVU1
+  35              		.loc 1 5 5 is_stmt 0 view .LVU2
+  36 0000 274A     		ldr	r2, .L2
+  37 0002 136B     		ldr	r3, [r2, #48]
+  38              		.loc 1 5 16 view .LVU3
+  39 0004 43F00603 		orr	r3, r3, #6
+  40 0008 1363     		str	r3, [r2, #48]
+   6:Core/Src/init.c **** 
+   7:Core/Src/init.c ****     // THE LED SETTINGS
+   8:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);
+  41              		.loc 1 8 5 is_stmt 1 view .LVU4
+  42 000a 264B     		ldr	r3, .L2+4
+  43 000c 1A68     		ldr	r2, [r3]
+  44 000e 42F00102 		orr	r2, r2, #1
+  45 0012 1A60     		str	r2, [r3]
+   9:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);
+  46              		.loc 1 9 5 view .LVU5
+  47 0014 1A68     		ldr	r2, [r3]
+  48 0016 42F48042 		orr	r2, r2, #16384
+  49 001a 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccYdRnSe.s 			page 2
+
+
+  10:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
+  50              		.loc 1 10 5 view .LVU6
+  51 001c 1A68     		ldr	r2, [r3]
+  52 001e 42F08052 		orr	r2, r2, #268435456
+  53 0022 1A60     		str	r2, [r3]
+  11:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODE8_0);
+  54              		.loc 1 11 5 view .LVU7
+  55 0024 204A     		ldr	r2, .L2+8
+  56 0026 1168     		ldr	r1, [r2]
+  57 0028 41F48031 		orr	r1, r1, #65536
+  58 002c 1160     		str	r1, [r2]
+  12:Core/Src/init.c **** 
+  13:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);
+  59              		.loc 1 13 5 view .LVU8
+  60 002e 5968     		ldr	r1, [r3, #4]
+  61 0030 21F00101 		bic	r1, r1, #1
+  62 0034 5960     		str	r1, [r3, #4]
+  14:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7);
+  63              		.loc 1 14 5 view .LVU9
+  64 0036 5968     		ldr	r1, [r3, #4]
+  65 0038 21F08001 		bic	r1, r1, #128
+  66 003c 5960     		str	r1, [r3, #4]
+  15:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
+  67              		.loc 1 15 5 view .LVU10
+  68 003e 5968     		ldr	r1, [r3, #4]
+  69 0040 21F48041 		bic	r1, r1, #16384
+  70 0044 5960     		str	r1, [r3, #4]
+  16:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_8);
+  71              		.loc 1 16 5 view .LVU11
+  72 0046 5168     		ldr	r1, [r2, #4]
+  73 0048 21F48071 		bic	r1, r1, #256
+  74 004c 5160     		str	r1, [r2, #4]
+  17:Core/Src/init.c **** 
+  18:Core/Src/init.c **** 
+  19:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
+  75              		.loc 1 19 5 view .LVU12
+  76 004e 9968     		ldr	r1, [r3, #8]
+  77 0050 41F00101 		orr	r1, r1, #1
+  78 0054 9960     		str	r1, [r3, #8]
+  20:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
+  79              		.loc 1 20 5 view .LVU13
+  80 0056 9968     		ldr	r1, [r3, #8]
+  81 0058 41F48041 		orr	r1, r1, #16384
+  82 005c 9960     		str	r1, [r3, #8]
+  21:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
+  83              		.loc 1 21 5 view .LVU14
+  84 005e 9968     		ldr	r1, [r3, #8]
+  85 0060 41F08051 		orr	r1, r1, #268435456
+  86 0064 9960     		str	r1, [r3, #8]
+  22:Core/Src/init.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR8_0);
+  87              		.loc 1 22 5 view .LVU15
+  88 0066 9168     		ldr	r1, [r2, #8]
+  89 0068 41F48031 		orr	r1, r1, #65536
+  90 006c 9160     		str	r1, [r2, #8]
+  23:Core/Src/init.c **** 
+  24:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
+  91              		.loc 1 24 5 view .LVU16
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccYdRnSe.s 			page 3
+
+
+  92 006e D968     		ldr	r1, [r3, #12]
+  93 0070 21F00101 		bic	r1, r1, #1
+  94 0074 D960     		str	r1, [r3, #12]
+  25:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
+  95              		.loc 1 25 5 view .LVU17
+  96 0076 D968     		ldr	r1, [r3, #12]
+  97 0078 21F48041 		bic	r1, r1, #16384
+  98 007c D960     		str	r1, [r3, #12]
+  26:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
+  99              		.loc 1 26 5 view .LVU18
+ 100 007e D968     		ldr	r1, [r3, #12]
+ 101 0080 21F08051 		bic	r1, r1, #268435456
+ 102 0084 D960     		str	r1, [r3, #12]
+  27:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR8_0);
+ 103              		.loc 1 27 5 view .LVU19
+ 104 0086 D368     		ldr	r3, [r2, #12]
+ 105 0088 23F48033 		bic	r3, r3, #65536
+ 106 008c D360     		str	r3, [r2, #12]
+  28:Core/Src/init.c **** 
+  29:Core/Src/init.c ****     // THE BUTTON SETTINGS PC13
+  30:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE13);
+ 107              		.loc 1 30 5 view .LVU20
+ 108 008e 1368     		ldr	r3, [r2]
+ 109 0090 23F04063 		bic	r3, r3, #201326592
+ 110 0094 1360     		str	r3, [r2]
+  31:Core/Src/init.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1);
+ 111              		.loc 1 31 5 view .LVU21
+ 112 0096 D368     		ldr	r3, [r2, #12]
+ 113 0098 43F00063 		orr	r3, r3, #134217728
+ 114 009c D360     		str	r3, [r2, #12]
+  32:Core/Src/init.c **** }
+ 115              		.loc 1 32 1 is_stmt 0 view .LVU22
+ 116 009e 7047     		bx	lr
+ 117              	.L3:
+ 118              		.align	2
+ 119              	.L2:
+ 120 00a0 00380240 		.word	1073887232
+ 121 00a4 00040240 		.word	1073873920
+ 122 00a8 00080240 		.word	1073874944
+ 123              		.cfi_endproc
+ 124              	.LFE130:
+ 126              		.text
+ 127              	.Letext0:
+ 128              		.file 2 "C:/Toools/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 129              		.file 3 "C:/Toools/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 130              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\HP\AppData\Local\Temp\ccYdRnSe.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
+C:\Users\HP\AppData\Local\Temp\ccYdRnSe.s:21     .text.GPIO_Ini:00000000 $t
+C:\Users\HP\AppData\Local\Temp\ccYdRnSe.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\HP\AppData\Local\Temp\ccYdRnSe.s:120    .text.GPIO_Ini:000000a0 $d
 
 NO UNDEFINED SYMBOLS
