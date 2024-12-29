@@ -17,14 +17,15 @@ static uint8_t isButtonPressed(uint8_t pin)
     // 按下=0 (因为内部上拉)
     return ( (GPIOC->IDR & (1 << pin)) == 0 );
 }
-
+// 模式变量
+    uint8_t mode = 1;  // 默认模式1
+    
 int main(void)
 {
     // 初始化时钟、GPIO等
     GPIO_Init();
     
-    // 模式变量
-    uint8_t mode = 1;  // 默认模式1
+    
     
     while(1)
     {
