@@ -14,9 +14,7 @@ static void turnOffLed(uint8_t pin)
 
 static uint8_t isButtonPressed(uint8_t pin)
 {
-    // 如果按键按下是 0 电平，则可以用下面逻辑：
-    // return ( (GPIOC->IDR & (1 << pin)) == 0 );
-    // 若按下时是高电平，就要改成 != 0
+    // 按下=0 (因为内部上拉)
     return ( (GPIOC->IDR & (1 << pin)) == 0 );
 }
 
@@ -30,7 +28,7 @@ int main(void)
     
     while(1)
     {
-        // ========= 1. 检测模式切换按键 =========
+        // ========== 1. 检测模式切换按键 (PC12) ==========
         if(isButtonPressed(BTN_MODE_PIN))
         {
             // 简易防抖：等待松开
@@ -46,7 +44,7 @@ int main(void)
             }
         }
         
-        // ========= 2. 根据mode点亮相应的模式指示灯 =========
+        // ========== 2. 根据mode点亮相应的模式指示灯 ==========
         // 先全灭
         turnOffLed(LED_MODE1_PIN);
         turnOffLed(LED_MODE2_PIN);
@@ -57,15 +55,13 @@ int main(void)
         else if(mode == 2) turnOnLed(LED_MODE2_PIN);
         else if(mode == 3) turnOnLed(LED_MODE3_PIN);
         
-        
-        // ========= 3. 处理三个“颜色控制”按键 =========
-        // 先把三色LED全灭，后面根据哪个按键按下再亮起
-        // （若想允许同时按多键同时亮多色，可根据需求修改逻辑）
+        // ========== 3. 处理三个“颜色控制”按键 (PC8/9/10) ==========
+        // 先把三色LED全灭
         turnOffLed(LED_GREEN_PIN);
         turnOffLed(LED_BLUE_PIN);
         turnOffLed(LED_RED_PIN);
         
-        // Button1
+        // Button1 => PC8
         if(isButtonPressed(BTN1_PIN))
         {
             switch(mode)
@@ -76,7 +72,7 @@ int main(void)
             }
         }
         
-        // Button2
+        // Button2 => PC9
         if(isButtonPressed(BTN2_PIN))
         {
             switch(mode)
@@ -87,7 +83,7 @@ int main(void)
             }
         }
         
-        // Button3
+        // Button3 => PC10
         if(isButtonPressed(BTN3_PIN))
         {
             switch(mode)

@@ -18,10 +18,11 @@
 #define LED_MODE3_PIN   6   // PB6
 
 /***** 按键引脚 *****/
-#define BTN_MODE_PIN    13  // PC13 (板载，模式切换)
-#define BTN1_PIN        8   // PC8  (外接)
-#define BTN2_PIN        9   // PC9  (外接)
-#define BTN3_PIN        10  // PC10 (外接)
+/* 将原来的 PC13(板载) 换成 PC12(外接) 作为模式切换按键 */
+#define BTN_MODE_PIN    12  // PC12 (外接按钮：按下接地)
+#define BTN1_PIN        8   // PC8  (外接按钮1：按下接地)
+#define BTN2_PIN        9   // PC9  (外接按钮2：按下接地)
+#define BTN3_PIN        10  // PC10 (外接按钮3：按下接地)
 
 /***** 函数声明 *****/
 void GPIO_Init(void);
