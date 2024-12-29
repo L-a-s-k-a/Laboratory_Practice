@@ -1,35 +1,29 @@
 #include "init.h"
 
 //===== 1) System Clock 配置 =====
-// 下面是一个典型的 180MHz 配置示例(PLL), 具体数值请结合实际情况或CubeMX生成
 void SystemClock_Config(void)
 {
-    // 这里给出一个简化的示例，实际项目中常用 CubeMX 配置或手动完善
-    // 启用HSE / 配置PLL / 切换系统时钟到PLL / 设置总线分频 等等
-    // 为示例起见，这里可能只是默认HSI或做最小配置
-
-    // [伪代码/占位] 仅保证能够正常跑
+    
+    // [占位] 仅保证能够正常跑
     RCC->CR |= RCC_CR_HSION;                  // 打开HSI
     while ((RCC->CR & RCC_CR_HSIRDY) == 0);   // 等待HSI就绪
     
-    // 让 SystemCoreClock = 16MHz (假设)
-    // 如果你需要更高主频，请参考参考手册配置PLL
-    // ...
+    
     SystemCoreClock = 16000000U; // 用于 SysTick 计算
 }
 
-//===== 2) GPIO 初始化 =====
+// 2.GPIO 初始化 
 void GPIO_Init_All(void)
 {
     // 1. 使能各 GPIO 时钟
     //    - 我们用到 GPIOB (6个LED), GPIOC (3个按键)
-    RCC->AHB1ENR |= (1 << 1); // Enable GPIOB
-    RCC->AHB1ENR |= (1 << 2); // Enable GPIOC
+    RCC->AHB1ENR |= (1 << 1); 
+    RCC->AHB1ENR |= (1 << 2); 
 
-    //---------- 配置 6 个 LED 引脚 (PB0, PB1, PB2, PB6, PB7, PB14) 为输出 ----------
+    // 配置 6 个 LED 引脚 (PB0, PB1, PB2, PB6, PB7, PB14) 为输出 
     // 每个引脚 2 位 (MODER寄存器)
     // 00: Input, 01: Output, 10: AF, 11: Analog
-    // 这里直接用 "位操作" 或 "MODIFY_REG" 宏均可
+    // 这里直接用 MODIFY_REG" 
 
     // PB0 => bit 0*2 = 0..1
     // PB1 => bit 1*2 = 2..3
@@ -50,7 +44,7 @@ void GPIO_Init_All(void)
         (1 << (6*2))  | (1 << (7*2))  | (1 << (14*2))
     );
 
-    // 默认先关闭所有 LED (取决于你的硬件，假设输出=0是灭)
+    // 默认先关闭所有 LED (取决于硬件，输出=0)
     GPIOB->BSRR = (
         (1 << (0+16)) | (1 << (1+16)) | (1 << (2+16)) |
         (1 << (6+16)) | (1 << (7+16)) | (1 << (14+16))
@@ -58,17 +52,15 @@ void GPIO_Init_All(void)
 
     //---------- 配置 3 个按键 (PC13, PC8, PC9) ----------
 {
-// 1) PC13：如果它硬件上已拉好且能正常工作，可保持原状；
-//    假设它是外部下拉 + 上升沿，就不用内部上下拉。
-//    这里只演示 PC8, PC9
 
+//    这里只演示 PC8, PC9
 // PC8, PC9 => 输入模式
 GPIOC->MODER &= ~(
     (3 << (8*2)) |   // PC8
     (3 << (9*2))     // PC9
 );
 
-// 启用上拉(01)（若你需要按下=GND）
+// 启用上拉(01)（按下=GND）
 GPIOC->PUPDR &= ~(
     (3 << (8*2)) |
     (3 << (9*2))
@@ -80,9 +72,8 @@ GPIOC->PUPDR |= (
 }
 }
 
-//===== 3) EXTI 初始化 =====
-// PC13 => EXTI13, PC6 => EXTI6, PC7 => EXTI7
-// 因为 PC6、PC7 都在 EXTI9_5 中断向量里，PC13 在 EXTI15_10
+// 3. EXTI 初始化 
+
 void EXTI_Init_All(void)
 {
     // 1. SYSCFG 时钟

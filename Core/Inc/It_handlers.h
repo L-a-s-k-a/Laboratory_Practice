@@ -8,7 +8,7 @@
 
 // 声明中断服务函数
 void SysTick_Handler(void);
-void EXTI9_5_IRQHandler(void);   // 用于PC6/PC7
+void EXTI9_5_IRQHandler(void);   // 用于PC8/PC9
 void EXTI15_10_IRQHandler(void); // 用于PC13
 
 #endif // IT_HANDLERS_H

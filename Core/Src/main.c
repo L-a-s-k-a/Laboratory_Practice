@@ -53,11 +53,7 @@ static uint8_t    LedState[6] = {0,0,0,0,0,0};
 volatile uint8_t  M2SelectedLed = 0; 
 
 //-------------------------------------------------
-// LED 与引脚的对应关系 (0..5)
-// 这里数组 LED_PIN[i] 给出第 i 盏灯的物理 PBx 引脚编号
-// 例：LED_PIN[0] = 0 => PB0, LED_PIN[1] = 7 => PB7, ...
-// 这就让我们在 SetLed 函数里用到正确的位掩码 (1<<pin)
-//-------------------------------------------------
+
 static const uint8_t LED_PIN[6] = {0,7,14,6,2,1};
 
 //----------------- 函数声明 -----------------//
@@ -67,19 +63,16 @@ static void SetLed(uint8_t ledIndex, uint8_t on);
 void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex);
 // 模式2下，取消所有 LED 闪烁并全部熄灭
 void Mode2_DeactivateAll(void);
-
-//-------------------------------------------------
 // main() - 主函数
-//-------------------------------------------------
 int main(void)
 {
-    // 1. 初始化系统时钟（如设置 HSI=16MHz 或使用 PLL 等）
+    // 1. 初始化系统时钟
     SystemClock_Config();
 
-    // 2. 初始化 SysTick，以便 1ms 触发一次中断 (这里假设16MHz)
+    // 2. 初始化 SysTick
     SysTick_Init(SystemCoreClock / 1000);
 
-    // 3. 初始化所有 GPIO（包括 LED 引脚为输出、按键引脚为输入等）
+    // 3. 初始化所有 GPIO
     GPIO_Init_All();
 
     // 4. 初始化 EXTI（配置外部中断，用于检测按键）
@@ -170,7 +163,7 @@ int main(void)
             }
         }
 
-        // 这里可以加入其它需要在主循环里执行的任务
+        
     }
 }
 
