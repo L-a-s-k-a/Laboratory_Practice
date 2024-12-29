@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 1
+ARM GAS  C:\Users\��\AppData\Local\Temp\cceuIqt4.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,154 +20,306 @@ ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/init.c"
-  20              		.section	.text.GPIO_Ini_Self_Def,"ax",%progbits
+  20              		.section	.text.GPIO_Init,"ax",%progbits
   21              		.align	1
-  22              		.global	GPIO_Ini_Self_Def
+  22              		.global	GPIO_Init
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	GPIO_Ini_Self_Def:
+  27              	GPIO_Init:
   28              	.LFB130:
    1:Core/Src/init.c **** #include "init.h"
    2:Core/Src/init.c **** 
-   3:Core/Src/init.c **** void GPIO_Ini_Self_Def(void)
+   3:Core/Src/init.c **** void GPIO_Init(void)
    4:Core/Src/init.c **** {
   29              		.loc 1 4 1 view -0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
   33              		@ link register save eliminated.
-   5:Core/Src/init.c ****     SET_BIT_SELF(RCC_AHB1ENR,RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); /*|按位取或,a|=b代表
-  34              		.loc 1 5 5 view .LVU1
-  35 0000 0F4A     		ldr	r2, .L2
-  36 0002 D2F83038 		ldr	r3, [r2, #2096]
-  37 0006 43F00603 		orr	r3, r3, #6
-  38 000a C2F83038 		str	r3, [r2, #2096]
-   6:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_MODER, GPIO_PIN_7_OUT); /*设置pb0=7 MODER0为01(General purpose output mod
-  39              		.loc 1 6 5 view .LVU2
-  40 000e 0D4B     		ldr	r3, .L2+4
-  41 0010 D3F80024 		ldr	r2, [r3, #1024]
-  42 0014 42F48042 		orr	r2, r2, #16384
-  43 0018 C3F80024 		str	r2, [r3, #1024]
-   7:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_OSPEEDR, GPIO_PIN_7_MED);
-  44              		.loc 1 7 5 view .LVU3
-  45 001c D3F80824 		ldr	r2, [r3, #1032]
-  46 0020 42F48042 		orr	r2, r2, #16384
-  47 0024 C3F80824 		str	r2, [r3, #1032]
-   8:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_BSRR, GPIO_PIN_7_RESET);
-  48              		.loc 1 8 5 view .LVU4
-  49 0028 D3F81824 		ldr	r2, [r3, #1048]
-  50 002c 42F40002 		orr	r2, r2, #8388608
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 2
+   5:Core/Src/init.c ****     // 1. 使能 GPIOB、GPIOC 时钟
+   6:Core/Src/init.c ****     RCC->AHB1ENR |= (RCC_AHB1ENR_GPIOB_EN | RCC_AHB1ENR_GPIOC_EN);
+  34              		.loc 1 6 5 view .LVU1
+  35              		.loc 1 6 8 is_stmt 0 view .LVU2
+  36 0000 164A     		ldr	r2, .L2
+  37 0002 136B     		ldr	r3, [r2, #48]
+  38              		.loc 1 6 18 view .LVU3
+  39 0004 43F00603 		orr	r3, r3, #6
+  40 0008 1363     		str	r3, [r2, #48]
+   7:Core/Src/init.c ****     
+   8:Core/Src/init.c ****     // 2. 配置 GPIOB 的 PB0/1/2/6/7/14 为通用输出模式 (MODER=01)
+   9:Core/Src/init.c ****     //    先把相应位清零，然后再置1。
+  10:Core/Src/init.c ****     //    每个引脚占 2 bit，比如 PB0 对应 MODER0[1:0], PB1 对应MODER1[1:0], 以此类�
+  11:Core/Src/init.c ****     
+  12:Core/Src/init.c ****     // 清零 PB0/1/2/6/7/14
+  13:Core/Src/init.c ****     GPIOB->MODER &= ~(
+  41              		.loc 1 13 5 is_stmt 1 view .LVU4
+  42              		.loc 1 13 10 is_stmt 0 view .LVU5
+  43 000a 154B     		ldr	r3, .L2+4
+  44 000c 1A68     		ldr	r2, [r3]
+  45              		.loc 1 13 18 view .LVU6
+ARM GAS  C:\Users\��\AppData\Local\Temp\cceuIqt4.s 			page 2
 
 
-  51 0030 C3F81824 		str	r2, [r3, #1048]
-   9:Core/Src/init.c ****      // 配置 PC13 和 PC6 为输入模式
-  10:Core/Src/init.c ****     GPIOC->MODER &= ~(GPIO_MODER_MODE13);
-  52              		.loc 1 10 5 view .LVU5
-  53              		.loc 1 10 10 is_stmt 0 view .LVU6
-  54 0034 044A     		ldr	r2, .L2+8
-  55 0036 1368     		ldr	r3, [r2]
-  56              		.loc 1 10 18 view .LVU7
-  57 0038 23F04063 		bic	r3, r3, #201326592
-  58 003c 1360     		str	r3, [r2]
-  11:Core/Src/init.c ****     // // 配置为上拉模式
-  12:Core/Src/init.c ****     // GPIOC->PUPDR |= (GPIO_PUPDR_PUPD13_0 | GPIO_PUPDR_PUPD6_0);
-  13:Core/Src/init.c **** 
-  14:Core/Src/init.c **** }
-  59              		.loc 1 14 1 view .LVU8
-  60 003e 7047     		bx	lr
-  61              	.L3:
-  62              		.align	2
-  63              	.L2:
-  64 0040 00300240 		.word	1073885184
-  65 0044 00000240 		.word	1073872896
-  66 0048 00080240 		.word	1073874944
-  67              		.cfi_endproc
-  68              	.LFE130:
-  70              		.section	.text.GPIO_Ini_CMSIS,"ax",%progbits
-  71              		.align	1
-  72              		.global	GPIO_Ini_CMSIS
-  73              		.syntax unified
-  74              		.thumb
-  75              		.thumb_func
-  77              	GPIO_Ini_CMSIS:
-  78              	.LFB131:
-  15:Core/Src/init.c **** 
-  16:Core/Src/init.c **** void GPIO_Ini_CMSIS(void)
-  17:Core/Src/init.c **** {
-  79              		.loc 1 17 1 is_stmt 1 view -0
-  80              		.cfi_startproc
-  81              		@ args = 0, pretend = 0, frame = 0
-  82              		@ frame_needed = 0, uses_anonymous_args = 0
-  83              		@ link register save eliminated.
-  18:Core/Src/init.c ****     /*使用gpiob点亮pb14红色led */
-  19:Core/Src/init.c ****     SET_BIT(GPIOB->MODER,GPIO_MODER_MODE14_0);
-  84              		.loc 1 19 5 view .LVU10
-  85 0000 0E4B     		ldr	r3, .L5
-  86 0002 1A68     		ldr	r2, [r3]
-  87 0004 42F08052 		orr	r2, r2, #268435456
-  88 0008 1A60     		str	r2, [r3]
-  20:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER,GPIO_OTYPER_OT14); /*重置pb14 OTYPER为0(Output push-pull)？？*/
-  89              		.loc 1 20 5 view .LVU11
-  90 000a 5A68     		ldr	r2, [r3, #4]
-  91 000c 22F48042 		bic	r2, r2, #16384
-  92 0010 5A60     		str	r2, [r3, #4]
-  21:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR,GPIO_OSPEEDER_OSPEEDR14_0);
-  93              		.loc 1 21 5 view .LVU12
-  94 0012 9A68     		ldr	r2, [r3, #8]
-  95 0014 42F08052 		orr	r2, r2, #268435456
-  96 0018 9A60     		str	r2, [r3, #8]
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 3
+  46 000e 1549     		ldr	r1, .L2+8
+  47 0010 0A40     		ands	r2, r2, r1
+  48 0012 1A60     		str	r2, [r3]
+  14:Core/Src/init.c ****         (3 << (LED_GREEN_PIN * 2)) |
+  15:Core/Src/init.c ****         (3 << (LED_MODE1_PIN  * 2)) |
+  16:Core/Src/init.c ****         (3 << (LED_MODE2_PIN  * 2)) |
+  17:Core/Src/init.c ****         (3 << (LED_MODE3_PIN  * 2)) |
+  18:Core/Src/init.c ****         (3 << (LED_BLUE_PIN   * 2)) |
+  19:Core/Src/init.c ****         (3 << (LED_RED_PIN    * 2))
+  20:Core/Src/init.c ****     );
+  21:Core/Src/init.c ****     // 置为 01 (通用输出)
+  22:Core/Src/init.c ****     GPIOB->MODER |= (
+  49              		.loc 1 22 5 is_stmt 1 view .LVU7
+  50              		.loc 1 22 10 is_stmt 0 view .LVU8
+  51 0014 1A68     		ldr	r2, [r3]
+  52              		.loc 1 22 18 view .LVU9
+  53 0016 1448     		ldr	r0, .L2+12
+  54 0018 0243     		orrs	r2, r2, r0
+  55 001a 1A60     		str	r2, [r3]
+  23:Core/Src/init.c ****         (1 << (LED_GREEN_PIN * 2)) |
+  24:Core/Src/init.c ****         (1 << (LED_MODE1_PIN  * 2)) |
+  25:Core/Src/init.c ****         (1 << (LED_MODE2_PIN  * 2)) |
+  26:Core/Src/init.c ****         (1 << (LED_MODE3_PIN  * 2)) |
+  27:Core/Src/init.c ****         (1 << (LED_BLUE_PIN   * 2)) |
+  28:Core/Src/init.c ****         (1 << (LED_RED_PIN    * 2))
+  29:Core/Src/init.c ****     );
+  30:Core/Src/init.c ****     
+  31:Core/Src/init.c ****     // 输出模式一般使用 Push-Pull(OTYPER=0), 不需要额外设置时可默认0
+  32:Core/Src/init.c ****     GPIOB->OTYPER &= ~(
+  56              		.loc 1 32 5 is_stmt 1 view .LVU10
+  57              		.loc 1 32 10 is_stmt 0 view .LVU11
+  58 001c 5A68     		ldr	r2, [r3, #4]
+  59              		.loc 1 32 19 view .LVU12
+  60 001e 22F48142 		bic	r2, r2, #16512
+  61 0022 22F04702 		bic	r2, r2, #71
+  62 0026 5A60     		str	r2, [r3, #4]
+  33:Core/Src/init.c ****         (1 << LED_GREEN_PIN) |
+  34:Core/Src/init.c ****         (1 << LED_MODE1_PIN) |
+  35:Core/Src/init.c ****         (1 << LED_MODE2_PIN) |
+  36:Core/Src/init.c ****         (1 << LED_MODE3_PIN) |
+  37:Core/Src/init.c ****         (1 << LED_BLUE_PIN)  |
+  38:Core/Src/init.c ****         (1 << LED_RED_PIN)
+  39:Core/Src/init.c ****     );
+  40:Core/Src/init.c ****     
+  41:Core/Src/init.c ****     // 速度可设置为中速或低速，这里示例设为中速(01)
+  42:Core/Src/init.c ****     // 以 PB0 为例，对应 OSPEEDR0[1:0] = 01
+  43:Core/Src/init.c ****     GPIOB->OSPEEDR &= ~(
+  63              		.loc 1 43 5 is_stmt 1 view .LVU13
+  64              		.loc 1 43 10 is_stmt 0 view .LVU14
+  65 0028 9A68     		ldr	r2, [r3, #8]
+  66              		.loc 1 43 20 view .LVU15
+  67 002a 0A40     		ands	r2, r2, r1
+  68 002c 9A60     		str	r2, [r3, #8]
+  44:Core/Src/init.c ****         (3 << (LED_GREEN_PIN * 2)) |
+  45:Core/Src/init.c ****         (3 << (LED_MODE1_PIN  * 2)) |
+  46:Core/Src/init.c ****         (3 << (LED_MODE2_PIN  * 2)) |
+  47:Core/Src/init.c ****         (3 << (LED_MODE3_PIN  * 2)) |
+ARM GAS  C:\Users\��\AppData\Local\Temp\cceuIqt4.s 			page 3
 
 
-  22:Core/Src/init.c ****     SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR14);
-  97              		.loc 1 22 5 view .LVU13
-  98 001a 9A69     		ldr	r2, [r3, #24]
-  99 001c 42F08042 		orr	r2, r2, #1073741824
- 100 0020 9A61     		str	r2, [r3, #24]
-  23:Core/Src/init.c **** 
-  24:Core/Src/init.c ****     /*---SET PB0 FOR GREEN LED*/
-  25:Core/Src/init.c ****     SET_BIT(GPIOB->MODER,GPIO_MODER_MODE0_0); /*设置pb0 MODER0为01(General purpose output mode)*
- 101              		.loc 1 25 5 view .LVU14
- 102 0022 1A68     		ldr	r2, [r3]
- 103 0024 42F00102 		orr	r2, r2, #1
- 104 0028 1A60     		str	r2, [r3]
-  26:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR,GPIO_OSPEEDER_OSPEEDR0_0); /*设置pb0 设置端⼝引脚的速度为01(
- 105              		.loc 1 26 5 view .LVU15
- 106 002a 9A68     		ldr	r2, [r3, #8]
- 107 002c 42F00102 		orr	r2, r2, #1
- 108 0030 9A60     		str	r2, [r3, #8]
-  27:Core/Src/init.c ****     SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR0); /*设置pb0 bsrr寄存器复位br0 （置位bs0）*/
- 109              		.loc 1 27 5 view .LVU16
- 110 0032 9A69     		ldr	r2, [r3, #24]
- 111 0034 42F48032 		orr	r2, r2, #65536
- 112 0038 9A61     		str	r2, [r3, #24]
-  28:Core/Src/init.c ****    
-  29:Core/Src/init.c **** }...
- 113              		.loc 1 29 1 is_stmt 0 view .LVU17
- 114 003a 7047     		bx	lr
- 115              	.L6:
- 116              		.align	2
- 117              	.L5:
- 118 003c 00040240 		.word	1073873920
- 119              		.cfi_endproc
- 120              	.LFE131:
- 122              		.text
- 123              	.Letext0:
- 124              		.file 2 "F:/STM32Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
- 125              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
- 126              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
-ARM GAS  C:\Users\��\AppData\Local\Temp\ccV2U3z0.s 			page 4
+  48:Core/Src/init.c ****         (3 << (LED_BLUE_PIN   * 2)) |
+  49:Core/Src/init.c ****         (3 << (LED_RED_PIN    * 2))
+  50:Core/Src/init.c ****     );
+  51:Core/Src/init.c ****     GPIOB->OSPEEDR |= (
+  69              		.loc 1 51 5 is_stmt 1 view .LVU16
+  70              		.loc 1 51 10 is_stmt 0 view .LVU17
+  71 002e 9A68     		ldr	r2, [r3, #8]
+  72              		.loc 1 51 20 view .LVU18
+  73 0030 0243     		orrs	r2, r2, r0
+  74 0032 9A60     		str	r2, [r3, #8]
+  52:Core/Src/init.c ****         (1 << (LED_GREEN_PIN * 2)) |
+  53:Core/Src/init.c ****         (1 << (LED_MODE1_PIN  * 2)) |
+  54:Core/Src/init.c ****         (1 << (LED_MODE2_PIN  * 2)) |
+  55:Core/Src/init.c ****         (1 << (LED_MODE3_PIN  * 2)) |
+  56:Core/Src/init.c ****         (1 << (LED_BLUE_PIN   * 2)) |
+  57:Core/Src/init.c ****         (1 << (LED_RED_PIN    * 2))
+  58:Core/Src/init.c ****     );
+  59:Core/Src/init.c ****     
+  60:Core/Src/init.c ****     // 无需上下拉
+  61:Core/Src/init.c ****     GPIOB->PUPDR &= ~(
+  75              		.loc 1 61 5 is_stmt 1 view .LVU19
+  76              		.loc 1 61 10 is_stmt 0 view .LVU20
+  77 0034 DA68     		ldr	r2, [r3, #12]
+  78              		.loc 1 61 18 view .LVU21
+  79 0036 0A40     		ands	r2, r2, r1
+  80 0038 DA60     		str	r2, [r3, #12]
+  62:Core/Src/init.c ****         (3 << (LED_GREEN_PIN * 2)) |
+  63:Core/Src/init.c ****         (3 << (LED_MODE1_PIN  * 2)) |
+  64:Core/Src/init.c ****         (3 << (LED_MODE2_PIN  * 2)) |
+  65:Core/Src/init.c ****         (3 << (LED_MODE3_PIN  * 2)) |
+  66:Core/Src/init.c ****         (3 << (LED_BLUE_PIN   * 2)) |
+  67:Core/Src/init.c ****         (3 << (LED_RED_PIN    * 2))
+  68:Core/Src/init.c ****     );
+  69:Core/Src/init.c ****     
+  70:Core/Src/init.c ****     // 3. 配置 GPIOC 的 PC13/8/9/10 为输入模式 (MODER=00)
+  71:Core/Src/init.c ****     GPIOC->MODER &= ~(
+  81              		.loc 1 71 5 is_stmt 1 view .LVU22
+  82              		.loc 1 71 10 is_stmt 0 view .LVU23
+  83 003a 0C49     		ldr	r1, .L2+16
+  84 003c 0A68     		ldr	r2, [r1]
+  85              		.loc 1 71 18 view .LVU24
+  86 003e 22F04362 		bic	r2, r2, #204472320
+  87 0042 22F47022 		bic	r2, r2, #983040
+  88 0046 0A60     		str	r2, [r1]
+  72:Core/Src/init.c ****         (3 << (BTN_MODE_PIN * 2)) |
+  73:Core/Src/init.c ****         (3 << (BTN1_PIN * 2)) |
+  74:Core/Src/init.c ****         (3 << (BTN2_PIN * 2)) |
+  75:Core/Src/init.c ****         (3 << (BTN3_PIN * 2))
+  76:Core/Src/init.c ****     );
+  77:Core/Src/init.c ****     
+  78:Core/Src/init.c ****     // 如果按键需要上拉/下拉，则在 PUPDR 设置
+  79:Core/Src/init.c ****     // 例如，如果外部线路是“按下接地”，则可以内部上拉：
+  80:Core/Src/init.c ****     GPIOC->PUPDR &= ~(
+  89              		.loc 1 80 5 is_stmt 1 view .LVU25
+  90              		.loc 1 80 10 is_stmt 0 view .LVU26
+  91 0048 CA68     		ldr	r2, [r1, #12]
+  92              		.loc 1 80 18 view .LVU27
+ARM GAS  C:\Users\��\AppData\Local\Temp\cceuIqt4.s 			page 4
+
+
+  93 004a 22F04362 		bic	r2, r2, #204472320
+  94 004e 22F47022 		bic	r2, r2, #983040
+  95 0052 CA60     		str	r2, [r1, #12]
+  81:Core/Src/init.c ****         (3 << (BTN_MODE_PIN * 2)) |
+  82:Core/Src/init.c ****         (3 << (BTN1_PIN * 2)) |
+  83:Core/Src/init.c ****         (3 << (BTN2_PIN * 2)) |
+  84:Core/Src/init.c ****         (3 << (BTN3_PIN * 2))
+  85:Core/Src/init.c ****     );
+  86:Core/Src/init.c ****     // 如果要内部上拉:
+  87:Core/Src/init.c ****     // GPIOC->PUPDR |= (
+  88:Core/Src/init.c ****     //    (1 << (BTN_MODE_PIN * 2)) | 
+  89:Core/Src/init.c ****     //    (1 << (BTN1_PIN * 2)) |
+  90:Core/Src/init.c ****     //    (1 << (BTN2_PIN * 2)) |
+  91:Core/Src/init.c ****     //    (1 << (BTN3_PIN * 2))
+  92:Core/Src/init.c ****     // );
+  93:Core/Src/init.c ****     
+  94:Core/Src/init.c ****     // 初始时，先将所有LED都熄灭
+  95:Core/Src/init.c ****     // 可以通过 BSRR 的复位段（高16位）来清零
+  96:Core/Src/init.c ****     GPIOB->BSRR = (
+  96              		.loc 1 96 5 is_stmt 1 view .LVU28
+  97              		.loc 1 96 17 is_stmt 0 view .LVU29
+  98 0054 064A     		ldr	r2, .L2+20
+  99 0056 9A61     		str	r2, [r3, #24]
+  97:Core/Src/init.c ****         (1 << (LED_GREEN_PIN + 16)) |
+  98:Core/Src/init.c ****         (1 << (LED_BLUE_PIN  + 16)) |
+  99:Core/Src/init.c ****         (1 << (LED_RED_PIN   + 16)) |
+ 100:Core/Src/init.c ****         (1 << (LED_MODE1_PIN + 16)) |
+ 101:Core/Src/init.c ****         (1 << (LED_MODE2_PIN + 16)) |
+ 102:Core/Src/init.c ****         (1 << (LED_MODE3_PIN + 16))
+ 103:Core/Src/init.c ****     );
+ 104:Core/Src/init.c **** }
+ 100              		.loc 1 104 1 view .LVU30
+ 101 0058 7047     		bx	lr
+ 102              	.L3:
+ 103 005a 00BF     		.align	2
+ 104              	.L2:
+ 105 005c 00380240 		.word	1073887232
+ 106 0060 00040240 		.word	1073873920
+ 107 0064 C00FFFCF 		.word	-805367872
+ 108 0068 15500010 		.word	268455957
+ 109 006c 00080240 		.word	1073874944
+ 110 0070 0000C740 		.word	1086783488
+ 111              		.cfi_endproc
+ 112              	.LFE130:
+ 114              		.section	.text.delay_ms,"ax",%progbits
+ 115              		.align	1
+ 116              		.global	delay_ms
+ 117              		.syntax unified
+ 118              		.thumb
+ 119              		.thumb_func
+ 121              	delay_ms:
+ 122              	.LVL0:
+ 123              	.LFB131:
+ 105:Core/Src/init.c **** 
+ 106:Core/Src/init.c **** /**
+ 107:Core/Src/init.c ****  * 简易延时函数(软件方式)，仅作演示
+ 108:Core/Src/init.c ****  * 实际中可用SysTick或硬件定时器
+ARM GAS  C:\Users\��\AppData\Local\Temp\cceuIqt4.s 			page 5
+
+
+ 109:Core/Src/init.c ****  */
+ 110:Core/Src/init.c **** void delay_ms(volatile uint32_t ms)
+ 111:Core/Src/init.c **** {
+ 124              		.loc 1 111 1 is_stmt 1 view -0
+ 125              		.cfi_startproc
+ 126              		@ args = 0, pretend = 0, frame = 16
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128              		@ link register save eliminated.
+ 129              		.loc 1 111 1 is_stmt 0 view .LVU32
+ 130 0000 84B0     		sub	sp, sp, #16
+ 131              	.LCFI0:
+ 132              		.cfi_def_cfa_offset 16
+ 133 0002 0190     		str	r0, [sp, #4]
+ 112:Core/Src/init.c ****     for(; ms>0; ms--){
+ 134              		.loc 1 112 5 is_stmt 1 view .LVU33
+ 135 0004 0AE0     		b	.L5
+ 136              	.L7:
+ 137              	.LBB2:
+ 113:Core/Src/init.c ****         // 这段循环的具体常数需根据编译器和主频微调
+ 114:Core/Src/init.c ****         // 只为示意，不做精准延时
+ 115:Core/Src/init.c ****         for(volatile uint32_t i=0; i<18000; i++);
+ 138              		.loc 1 115 46 discriminator 3 view .LVU34
+ 139 0006 039B     		ldr	r3, [sp, #12]
+ 140 0008 0133     		adds	r3, r3, #1
+ 141 000a 0393     		str	r3, [sp, #12]
+ 142              	.L6:
+ 143              		.loc 1 115 37 discriminator 1 view .LVU35
+ 144 000c 039A     		ldr	r2, [sp, #12]
+ 145 000e 44F24F63 		movw	r3, #17999
+ 146 0012 9A42     		cmp	r2, r3
+ 147 0014 F7D9     		bls	.L7
+ 148              	.LBE2:
+ 112:Core/Src/init.c ****     for(; ms>0; ms--){
+ 149              		.loc 1 112 19 view .LVU36
+ 150 0016 019B     		ldr	r3, [sp, #4]
+ 151 0018 013B     		subs	r3, r3, #1
+ 152 001a 0193     		str	r3, [sp, #4]
+ 153              	.L5:
+ 112:Core/Src/init.c ****     for(; ms>0; ms--){
+ 154              		.loc 1 112 13 discriminator 1 view .LVU37
+ 155 001c 019B     		ldr	r3, [sp, #4]
+ 156 001e 13B1     		cbz	r3, .L10
+ 157              		.loc 1 115 9 view .LVU38
+ 158              	.LBB3:
+ 159              		.loc 1 115 13 view .LVU39
+ 160              		.loc 1 115 31 is_stmt 0 view .LVU40
+ 161 0020 0023     		movs	r3, #0
+ 162 0022 0393     		str	r3, [sp, #12]
+ 163              		.loc 1 115 9 view .LVU41
+ 164 0024 F2E7     		b	.L6
+ 165              	.L10:
+ 166              	.LBE3:
+ 116:Core/Src/init.c ****     }
+ 117:Core/Src/init.c **** }...
+ 167              		.loc 1 117 1 view .LVU42
+ 168 0026 04B0     		add	sp, sp, #16
+ 169              	.LCFI1:
+ARM GAS  C:\Users\��\AppData\Local\Temp\cceuIqt4.s 			page 6
+
+
+ 170              		.cfi_def_cfa_offset 0
+ 171              		@ sp needed
+ 172 0028 7047     		bx	lr
+ 173              		.cfi_endproc
+ 174              	.LFE131:
+ 176              		.text
+ 177              	.Letext0:
+ 178              		.file 2 "F:/STM32Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 179              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ 180              		.file 4 "CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\��\AppData\Local\Temp\cceuIqt4.s 			page 7
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
-C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:21     .text.GPIO_Ini_Self_Def:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:27     .text.GPIO_Ini_Self_Def:00000000 GPIO_Ini_Self_Def
-C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:64     .text.GPIO_Ini_Self_Def:00000040 $d
-C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:71     .text.GPIO_Ini_CMSIS:00000000 $t
-C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:77     .text.GPIO_Ini_CMSIS:00000000 GPIO_Ini_CMSIS
-C:\Users\��\AppData\Local\Temp\ccV2U3z0.s:118    .text.GPIO_Ini_CMSIS:0000003c $d
+C:\Users\��\AppData\Local\Temp\cceuIqt4.s:21     .text.GPIO_Init:00000000 $t
+C:\Users\��\AppData\Local\Temp\cceuIqt4.s:27     .text.GPIO_Init:00000000 GPIO_Init
+C:\Users\��\AppData\Local\Temp\cceuIqt4.s:105    .text.GPIO_Init:0000005c $d
+C:\Users\��\AppData\Local\Temp\cceuIqt4.s:115    .text.delay_ms:00000000 $t
+C:\Users\��\AppData\Local\Temp\cceuIqt4.s:121    .text.delay_ms:00000000 delay_ms
 
 NO UNDEFINED SYMBOLS

@@ -1,43 +1,30 @@
-#include<stdint.h>
-#include "../../CMSIS/Devices/stm32f4xx.h"
-#include "../../CMSIS/Devices/stm32f429xx.h"
+#ifndef __INIT_H
+#define __INIT_H
 
+#include "stm32f4xx.h"  // 这是常见的CMSIS设备头文件，里边会有对GPIOx的结构体定义等
 
-#define RCC_AHB1ENR                *(uint32_t *)(0x40023800UL + 0x30UL) /*RCC地址偏移量加AHB1总线(启动GPIO时钟)地址偏移量*/
+/***** 宏定义：GPIOx 时钟使能位 (以F429为例) *****/
+#define RCC_AHB1ENR_GPIOB_EN   (1 << 1)   // RCC_AHB1ENR中使能GPIOB
+#define RCC_AHB1ENR_GPIOC_EN   (1 << 2)   // RCC_AHB1ENR中使能GPIOC
 
-#define RCC_AHB1ENR_GPIOBEN        0X02 /*地址偏移量*/
-#define RCC_AHB1ENR_GPIOCEN        0X04
+/***** 板载RGB LED引脚(PB0/7/14) *****/
+#define LED_GREEN_PIN   0   // PB0
+#define LED_BLUE_PIN    7   // PB7
+#define LED_RED_PIN     14  // PB14
 
-#define GPIOB_MODER                *(uint32_t *)(0x40020400UL + 0x00UL)  /*GPIOB地址偏移量加MODER地址偏移量*/
-#define GPIOB_OSPEEDR              *(uint32_t *)(0x40020400UL + 0x08UL)
-#define GPIOB_BSRR                 *(uint32_t *)(0x40020400UL + 0x18UL)
+/***** 模式指示LED (PB1, PB2, PB6) *****/
+#define LED_MODE1_PIN   1   // PB1
+#define LED_MODE2_PIN   2   // PB2
+#define LED_MODE3_PIN   6   // PB6
 
-#define GPIO_PIN_7_OUT            0x4000UL  
-#define GPIO_PIN_7_MED            0x4000UL 
-#define GPIO_PIN_7_SET            0x80UL /*蓝色led */
-#define GPIO_PIN_1_SET            0x00004000 /*红色led */
-#define GPIO_PIN_2_SET            0x00000001 /*绿色led */
-#define GPIO_PIN_7_RESET          0x800000UL 
+/***** 按键引脚 *****/
+#define BTN_MODE_PIN    13  // PC13 (板载，模式切换)
+#define BTN1_PIN        8   // PC8  (外接)
+#define BTN2_PIN        9   // PC9  (外接)
+#define BTN3_PIN        10  // PC10 (外接)
 
-#define LED2_ON            0x80UL /*蓝色led */
-#define LED1_ON            0x00004000 /*红色led */
-#define LED3_ON            0x00000001 /*绿色led */
-#define LED1_OFF        (0x80UL << 16)     // Pb7
-#define LED2_OFF        (0x00004000UL << 16) // Pb14
-#define LED3_OFF        (0x00000001UL << 16) // Pb0
+/***** 函数声明 *****/
+void GPIO_Init(void);
+void delay_ms(volatile uint32_t ms);
 
-
-#define BUTTON1_PIN        (1U << 13) // PC13
-#define BUTTON2_PIN        (1U << 6)  // PC6
-#define LED_PORT           GPIOB
-#define BUTTON_PORT        GPIOC
-
-#define GPIOC_IDR                  *(uint32_t *)(0x40020800UL + 0x10UL)  /*GPIOC地址偏移量加GPIOx_IDR地址偏移量*/
-#define GPIO_PIN_6               0x00000040UL 
-#define GPIO_PIN_13               0x2000UL 
-
-#define READ_BIT_SELF(REG,BIT) ((REG) & (BIT))
-#define SET_BIT_SELF(REG,BIT) ((REG) |= (BIT))
-
-void GPIO_Ini_Self_Def(void);
-void GPIO_Ini_CMSIS(void);
+#endif
