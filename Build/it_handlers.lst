@@ -1,0 +1,204 @@
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "it_handlers.h"
+   2:Core/Src/it_handlers.c **** 
+   3:Core/Src/it_handlers.c **** extern uint8_t current_mode;
+   4:Core/Src/it_handlers.c **** extern uint8_t current_led;
+   5:Core/Src/it_handlers.c **** extern uint8_t current_frequency;
+   6:Core/Src/it_handlers.c **** extern volatile uint32_t systick_counter;
+   7:Core/Src/it_handlers.c **** 
+   8:Core/Src/it_handlers.c **** void SysTick_Handler(void) {
+  29              		.loc 1 8 28 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   9:Core/Src/it_handlers.c ****     systick_counter++;
+  34              		.loc 1 9 5 view .LVU1
+  35              		.loc 1 9 20 is_stmt 0 view .LVU2
+  36 0000 024A     		ldr	r2, .L2
+  37 0002 1368     		ldr	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1360     		str	r3, [r2]
+  10:Core/Src/it_handlers.c **** }
+  40              		.loc 1 10 1 view .LVU3
+  41 0008 7047     		bx	lr
+  42              	.L3:
+  43 000a 00BF     		.align	2
+  44              	.L2:
+  45 000c 00000000 		.word	systick_counter
+  46              		.cfi_endproc
+  47              	.LFE130:
+  49              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 2
+
+
+  50              		.align	1
+  51              		.global	EXTI9_5_IRQHandler
+  52              		.syntax unified
+  53              		.thumb
+  54              		.thumb_func
+  56              	EXTI9_5_IRQHandler:
+  57              	.LFB131:
+  11:Core/Src/it_handlers.c **** 
+  12:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void) {
+  58              		.loc 1 12 31 is_stmt 1 view -0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+  13:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR8)) {
+  63              		.loc 1 13 5 view .LVU5
+  64              		.loc 1 13 9 is_stmt 0 view .LVU6
+  65 0000 1C4B     		ldr	r3, .L8
+  66 0002 5B69     		ldr	r3, [r3, #20]
+  67              		.loc 1 13 8 view .LVU7
+  68 0004 13F4807F 		tst	r3, #256
+  69 0008 0AD0     		beq	.L5
+  14:Core/Src/it_handlers.c ****         current_mode = (current_mode % 2) + 1;
+  70              		.loc 1 14 9 is_stmt 1 view .LVU8
+  71              		.loc 1 14 38 is_stmt 0 view .LVU9
+  72 000a 1B4A     		ldr	r2, .L8+4
+  73 000c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  74 000e 03F00103 		and	r3, r3, #1
+  75              		.loc 1 14 43 view .LVU10
+  76 0012 0133     		adds	r3, r3, #1
+  77              		.loc 1 14 22 view .LVU11
+  78 0014 1370     		strb	r3, [r2]
+  15:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR8);
+  79              		.loc 1 15 9 is_stmt 1 view .LVU12
+  80 0016 174A     		ldr	r2, .L8
+  81 0018 5369     		ldr	r3, [r2, #20]
+  82 001a 43F48073 		orr	r3, r3, #256
+  83 001e 5361     		str	r3, [r2, #20]
+  84              	.L5:
+  16:Core/Src/it_handlers.c ****     }
+  17:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR9)) {
+  85              		.loc 1 17 5 view .LVU13
+  86              		.loc 1 17 9 is_stmt 0 view .LVU14
+  87 0020 144B     		ldr	r3, .L8
+  88 0022 5B69     		ldr	r3, [r3, #20]
+  89              		.loc 1 17 8 view .LVU15
+  90 0024 13F4007F 		tst	r3, #512
+  91 0028 0ED0     		beq	.L6
+  18:Core/Src/it_handlers.c ****         current_frequency = (current_frequency + 1) % 3;
+  92              		.loc 1 18 9 is_stmt 1 view .LVU16
+  93              		.loc 1 18 48 is_stmt 0 view .LVU17
+  94 002a 1449     		ldr	r1, .L8+8
+  95 002c 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+  96 002e 0132     		adds	r2, r2, #1
+  97              		.loc 1 18 53 view .LVU18
+  98 0030 134B     		ldr	r3, .L8+12
+  99 0032 83FB0203 		smull	r0, r3, r3, r2
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 3
+
+
+ 100 0036 03EB4303 		add	r3, r3, r3, lsl #1
+ 101 003a D31A     		subs	r3, r2, r3
+ 102              		.loc 1 18 27 view .LVU19
+ 103 003c 0B70     		strb	r3, [r1]
+  19:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR9);
+ 104              		.loc 1 19 9 is_stmt 1 view .LVU20
+ 105 003e 0D4A     		ldr	r2, .L8
+ 106 0040 5369     		ldr	r3, [r2, #20]
+ 107 0042 43F40073 		orr	r3, r3, #512
+ 108 0046 5361     		str	r3, [r2, #20]
+ 109              	.L6:
+  20:Core/Src/it_handlers.c ****     }
+  21:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR10)) {
+ 110              		.loc 1 21 5 view .LVU21
+ 111              		.loc 1 21 9 is_stmt 0 view .LVU22
+ 112 0048 0A4B     		ldr	r3, .L8
+ 113 004a 5B69     		ldr	r3, [r3, #20]
+ 114              		.loc 1 21 8 view .LVU23
+ 115 004c 13F4806F 		tst	r3, #1024
+ 116 0050 0FD0     		beq	.L4
+  22:Core/Src/it_handlers.c ****         current_led = (current_led + 1) % 6;
+ 117              		.loc 1 22 9 is_stmt 1 view .LVU24
+ 118              		.loc 1 22 36 is_stmt 0 view .LVU25
+ 119 0052 0C49     		ldr	r1, .L8+16
+ 120 0054 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 121 0056 0132     		adds	r2, r2, #1
+ 122              		.loc 1 22 41 view .LVU26
+ 123 0058 0B4B     		ldr	r3, .L8+20
+ 124 005a 83FB0203 		smull	r0, r3, r3, r2
+ 125 005e 03EB4303 		add	r3, r3, r3, lsl #1
+ 126 0062 5800     		lsls	r0, r3, #1
+ 127 0064 131A     		subs	r3, r2, r0
+ 128              		.loc 1 22 21 view .LVU27
+ 129 0066 0B70     		strb	r3, [r1]
+  23:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR10);
+ 130              		.loc 1 23 9 is_stmt 1 view .LVU28
+ 131 0068 024A     		ldr	r2, .L8
+ 132 006a 5369     		ldr	r3, [r2, #20]
+ 133 006c 43F48063 		orr	r3, r3, #1024
+ 134 0070 5361     		str	r3, [r2, #20]
+ 135              	.L4:
+  24:Core/Src/it_handlers.c ****     }
+  25:Core/Src/it_handlers.c **** }
+ 136              		.loc 1 25 1 is_stmt 0 view .LVU29
+ 137 0072 7047     		bx	lr
+ 138              	.L9:
+ 139              		.align	2
+ 140              	.L8:
+ 141 0074 003C0140 		.word	1073822720
+ 142 0078 00000000 		.word	current_mode
+ 143 007c 00000000 		.word	current_frequency
+ 144 0080 56555555 		.word	1431655766
+ 145 0084 00000000 		.word	current_led
+ 146 0088 ABAAAA2A 		.word	715827883
+ 147              		.cfi_endproc
+ 148              	.LFE131:
+ 150              		.text
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 4
+
+
+ 151              	.Letext0:
+ 152              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 153              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 154              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:45     .text.SysTick_Handler:0000000c $d
+C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:50     .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:56     .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:141    .text.EXTI9_5_IRQHandler:00000074 $d
+
+UNDEFINED SYMBOLS
+systick_counter
+current_mode
+current_frequency
+current_led

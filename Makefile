@@ -30,6 +30,7 @@ BUILD_DIR = Build
 C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/init.c \
+Core/Src/it_handlers.c \
 
 
 # ASM sources
@@ -85,7 +86,8 @@ AS_INCLUDES =
 C_INCLUDES =  \
 -ICore/Inc \
 -ICMSIS/Include \
--ICMSIS/Devices/Inc
+-ICMSIS/Devices/Inc \
+-ICMSIS/Devices \
 
 
 # compile gcc flags

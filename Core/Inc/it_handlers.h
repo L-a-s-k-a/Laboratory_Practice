@@ -1,5 +1,9 @@
-#include "init.h"
-#define DELAY_BUTTON_FILTER 200
+#ifndef IT_HANDLERS_H
+#define IT_HANDLERS_H
 
-void EXTI15_10_IRQHandler(void);
+#include "init.h"
+
+void EXTI9_5_IRQHandler(void);
 void SysTick_Handler(void);
+
+#endif
