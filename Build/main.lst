@@ -1,0 +1,571 @@
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.turnOnLed,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	turnOnLed:
+  27              	.LVL0:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** static void turnOnLed(uint8_t pin)
+   4:Core/Src/main.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/main.c ****     // 通过BSRR的置位段(低16位)写1即可
+   6:Core/Src/main.c ****     GPIOB->BSRR = (1 << pin);
+  34              		.loc 1 6 5 view .LVU1
+  35              		.loc 1 6 22 is_stmt 0 view .LVU2
+  36 0000 0123     		movs	r3, #1
+  37 0002 8340     		lsls	r3, r3, r0
+  38              		.loc 1 6 17 view .LVU3
+  39 0004 014A     		ldr	r2, .L2
+  40 0006 9361     		str	r3, [r2, #24]
+   7:Core/Src/main.c **** }
+  41              		.loc 1 7 1 view .LVU4
+  42 0008 7047     		bx	lr
+  43              	.L3:
+  44 000a 00BF     		.align	2
+  45              	.L2:
+  46 000c 00040240 		.word	1073873920
+  47              		.cfi_endproc
+  48              	.LFE130:
+  50              		.section	.text.turnOffLed,"ax",%progbits
+  51              		.align	1
+  52              		.syntax unified
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 2
+
+
+  53              		.thumb
+  54              		.thumb_func
+  56              	turnOffLed:
+  57              	.LVL1:
+  58              	.LFB131:
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** static void turnOffLed(uint8_t pin)
+  10:Core/Src/main.c **** {
+  59              		.loc 1 10 1 is_stmt 1 view -0
+  60              		.cfi_startproc
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+  63              		@ link register save eliminated.
+  11:Core/Src/main.c ****     // 通过BSRR的复位段(高16位)写1即可
+  12:Core/Src/main.c ****     GPIOB->BSRR = (1 << (pin + 16));
+  64              		.loc 1 12 5 view .LVU6
+  65              		.loc 1 12 30 is_stmt 0 view .LVU7
+  66 0000 1030     		adds	r0, r0, #16
+  67              	.LVL2:
+  68              		.loc 1 12 22 view .LVU8
+  69 0002 0123     		movs	r3, #1
+  70 0004 8340     		lsls	r3, r3, r0
+  71              		.loc 1 12 17 view .LVU9
+  72 0006 014A     		ldr	r2, .L5
+  73 0008 9361     		str	r3, [r2, #24]
+  13:Core/Src/main.c **** }
+  74              		.loc 1 13 1 view .LVU10
+  75 000a 7047     		bx	lr
+  76              	.L6:
+  77              		.align	2
+  78              	.L5:
+  79 000c 00040240 		.word	1073873920
+  80              		.cfi_endproc
+  81              	.LFE131:
+  83              		.section	.text.isButtonPressed,"ax",%progbits
+  84              		.align	1
+  85              		.syntax unified
+  86              		.thumb
+  87              		.thumb_func
+  89              	isButtonPressed:
+  90              	.LVL3:
+  91              	.LFB132:
+  14:Core/Src/main.c **** 
+  15:Core/Src/main.c **** static uint8_t isButtonPressed(uint8_t pin)
+  16:Core/Src/main.c **** {
+  92              		.loc 1 16 1 is_stmt 1 view -0
+  93              		.cfi_startproc
+  94              		@ args = 0, pretend = 0, frame = 0
+  95              		@ frame_needed = 0, uses_anonymous_args = 0
+  96              		@ link register save eliminated.
+  17:Core/Src/main.c ****     // 按下=0 (因为内部上拉)
+  18:Core/Src/main.c ****     return ( (GPIOC->IDR & (1 << pin)) == 0 );
+  97              		.loc 1 18 5 view .LVU12
+  98              		.loc 1 18 20 is_stmt 0 view .LVU13
+  99 0000 044B     		ldr	r3, .L8
+ 100 0002 1A69     		ldr	r2, [r3, #16]
+ 101              		.loc 1 18 31 view .LVU14
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 3
+
+
+ 102 0004 0123     		movs	r3, #1
+ 103 0006 8340     		lsls	r3, r3, r0
+ 104              		.loc 1 18 40 view .LVU15
+ 105 0008 1A42     		tst	r2, r3
+  19:Core/Src/main.c **** }
+ 106              		.loc 1 19 1 view .LVU16
+ 107 000a 0CBF     		ite	eq
+ 108 000c 0120     		moveq	r0, #1
+ 109              	.LVL4:
+ 110              		.loc 1 19 1 view .LVU17
+ 111 000e 0020     		movne	r0, #0
+ 112 0010 7047     		bx	lr
+ 113              	.L9:
+ 114 0012 00BF     		.align	2
+ 115              	.L8:
+ 116 0014 00080240 		.word	1073874944
+ 117              		.cfi_endproc
+ 118              	.LFE132:
+ 120              		.section	.text.main,"ax",%progbits
+ 121              		.align	1
+ 122              		.global	main
+ 123              		.syntax unified
+ 124              		.thumb
+ 125              		.thumb_func
+ 127              	main:
+ 128              	.LFB133:
+  20:Core/Src/main.c **** // 模式变量
+  21:Core/Src/main.c ****     uint8_t mode = 1;  // 默认模式1
+  22:Core/Src/main.c ****     
+  23:Core/Src/main.c **** int main(void)
+  24:Core/Src/main.c **** {
+ 129              		.loc 1 24 1 is_stmt 1 view -0
+ 130              		.cfi_startproc
+ 131              		@ Volatile: function does not return.
+ 132              		@ args = 0, pretend = 0, frame = 0
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134 0000 08B5     		push	{r3, lr}
+ 135              	.LCFI0:
+ 136              		.cfi_def_cfa_offset 8
+ 137              		.cfi_offset 3, -8
+ 138              		.cfi_offset 14, -4
+  25:Core/Src/main.c ****     // 初始化时钟、GPIO等
+  26:Core/Src/main.c ****     GPIO_Init();
+ 139              		.loc 1 26 5 view .LVU19
+ 140 0002 FFF7FEFF 		bl	GPIO_Init
+ 141              	.LVL5:
+ 142 0006 40E0     		b	.L25
+ 143              	.L27:
+  27:Core/Src/main.c ****     
+  28:Core/Src/main.c ****     
+  29:Core/Src/main.c ****     
+  30:Core/Src/main.c ****     while(1)
+  31:Core/Src/main.c ****     {
+  32:Core/Src/main.c ****         // ========== 1. 检测模式切换按键 (PC12) ==========
+  33:Core/Src/main.c ****         if(isButtonPressed(BTN_MODE_PIN))
+  34:Core/Src/main.c ****         {
+  35:Core/Src/main.c ****             // 简易防抖：等待松开
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 4
+
+
+  36:Core/Src/main.c ****             delay_ms(20);
+ 144              		.loc 1 36 13 view .LVU20
+ 145 0008 1420     		movs	r0, #20
+ 146 000a FFF7FEFF 		bl	delay_ms
+ 147              	.LVL6:
+  37:Core/Src/main.c ****             if(isButtonPressed(BTN_MODE_PIN))
+ 148              		.loc 1 37 13 view .LVU21
+ 149              		.loc 1 37 16 is_stmt 0 view .LVU22
+ 150 000e 0C20     		movs	r0, #12
+ 151 0010 FFF7FEFF 		bl	isButtonPressed
+ 152              	.LVL7:
+ 153              		.loc 1 37 15 discriminator 1 view .LVU23
+ 154 0014 0028     		cmp	r0, #0
+ 155 0016 3DD0     		beq	.L11
+ 156              	.L12:
+  38:Core/Src/main.c ****             {
+  39:Core/Src/main.c ****                 // 等按键松开再说
+  40:Core/Src/main.c ****                 while(isButtonPressed(BTN_MODE_PIN)) { /*空等*/ }
+ 157              		.loc 1 40 67 is_stmt 1 discriminator 1 view .LVU24
+ 158              		.loc 1 40 23 discriminator 1 view .LVU25
+ 159 0018 0C20     		movs	r0, #12
+ 160 001a FFF7FEFF 		bl	isButtonPressed
+ 161              	.LVL8:
+ 162 001e 0028     		cmp	r0, #0
+ 163 0020 FAD1     		bne	.L12
+  41:Core/Src/main.c ****                 
+  42:Core/Src/main.c ****                 // 切换模式
+  43:Core/Src/main.c ****                 mode++;
+ 164              		.loc 1 43 17 view .LVU26
+ 165              		.loc 1 43 21 is_stmt 0 view .LVU27
+ 166 0022 404A     		ldr	r2, .L32
+ 167 0024 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 168 0026 0133     		adds	r3, r3, #1
+ 169 0028 DBB2     		uxtb	r3, r3
+ 170 002a 1370     		strb	r3, [r2]
+  44:Core/Src/main.c ****                 if(mode > 3) mode = 1;
+ 171              		.loc 1 44 17 is_stmt 1 view .LVU28
+ 172              		.loc 1 44 19 is_stmt 0 view .LVU29
+ 173 002c 032B     		cmp	r3, #3
+ 174 002e 31D9     		bls	.L11
+ 175              		.loc 1 44 30 is_stmt 1 discriminator 1 view .LVU30
+ 176              		.loc 1 44 35 is_stmt 0 discriminator 1 view .LVU31
+ 177 0030 1346     		mov	r3, r2
+ 178 0032 0122     		movs	r2, #1
+ 179 0034 1A70     		strb	r2, [r3]
+ 180 0036 2DE0     		b	.L11
+ 181              	.L28:
+  45:Core/Src/main.c ****             }
+  46:Core/Src/main.c ****         }
+  47:Core/Src/main.c ****         
+  48:Core/Src/main.c ****         // ========== 2. 根据mode点亮相应的模式指示灯 ==========
+  49:Core/Src/main.c ****         // 先全灭
+  50:Core/Src/main.c ****         turnOffLed(LED_MODE1_PIN);
+  51:Core/Src/main.c ****         turnOffLed(LED_MODE2_PIN);
+  52:Core/Src/main.c ****         turnOffLed(LED_MODE3_PIN);
+  53:Core/Src/main.c ****         
+  54:Core/Src/main.c ****         // 再亮当前
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 5
+
+
+  55:Core/Src/main.c ****         if(mode == 1) turnOnLed(LED_MODE1_PIN);
+ 182              		.loc 1 55 23 is_stmt 1 discriminator 1 view .LVU32
+ 183 0038 0120     		movs	r0, #1
+ 184 003a FFF7FEFF 		bl	turnOnLed
+ 185              	.LVL9:
+ 186 003e 3AE0     		b	.L14
+ 187              	.L29:
+  56:Core/Src/main.c ****         else if(mode == 2) turnOnLed(LED_MODE2_PIN);
+ 188              		.loc 1 56 28 discriminator 1 view .LVU33
+ 189 0040 0220     		movs	r0, #2
+ 190 0042 FFF7FEFF 		bl	turnOnLed
+ 191              	.LVL10:
+ 192 0046 36E0     		b	.L14
+ 193              	.L30:
+  57:Core/Src/main.c ****         else if(mode == 3) turnOnLed(LED_MODE3_PIN);
+ 194              		.loc 1 57 28 discriminator 1 view .LVU34
+ 195 0048 0620     		movs	r0, #6
+ 196 004a FFF7FEFF 		bl	turnOnLed
+ 197              	.LVL11:
+ 198 004e 32E0     		b	.L14
+ 199              	.L17:
+  58:Core/Src/main.c ****         
+  59:Core/Src/main.c ****         // ========== 3. 处理三个“颜色控制”按键 (PC8/9/10) ==========
+  60:Core/Src/main.c ****         // 先把三色LED全灭
+  61:Core/Src/main.c ****         turnOffLed(LED_GREEN_PIN);
+  62:Core/Src/main.c ****         turnOffLed(LED_BLUE_PIN);
+  63:Core/Src/main.c ****         turnOffLed(LED_RED_PIN);
+  64:Core/Src/main.c ****         
+  65:Core/Src/main.c ****         // Button1 => PC8
+  66:Core/Src/main.c ****         if(isButtonPressed(BTN1_PIN))
+  67:Core/Src/main.c ****         {
+  68:Core/Src/main.c ****             switch(mode)
+  69:Core/Src/main.c ****             {
+  70:Core/Src/main.c ****                 case 1: turnOnLed(LED_GREEN_PIN); break;
+  71:Core/Src/main.c ****                 case 2: turnOnLed(LED_RED_PIN);   break;
+ 200              		.loc 1 71 25 view .LVU35
+ 201 0050 0E20     		movs	r0, #14
+ 202 0052 FFF7FEFF 		bl	turnOnLed
+ 203              	.LVL12:
+ 204              		.loc 1 71 51 discriminator 1 view .LVU36
+ 205              		.loc 1 71 51 is_stmt 0 view .LVU37
+ 206 0056 46E0     		b	.L16
+ 207              	.L18:
+  72:Core/Src/main.c ****                 case 3: turnOnLed(LED_BLUE_PIN);  break;
+ 208              		.loc 1 72 25 is_stmt 1 view .LVU38
+ 209 0058 0720     		movs	r0, #7
+ 210 005a FFF7FEFF 		bl	turnOnLed
+ 211              	.LVL13:
+ 212              		.loc 1 72 51 discriminator 1 view .LVU39
+ 213              		.loc 1 72 51 is_stmt 0 view .LVU40
+ 214 005e 42E0     		b	.L16
+ 215              	.L31:
+  73:Core/Src/main.c ****             }
+  74:Core/Src/main.c ****         }
+  75:Core/Src/main.c ****         
+  76:Core/Src/main.c ****         // Button2 => PC9
+  77:Core/Src/main.c ****         if(isButtonPressed(BTN2_PIN))
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 6
+
+
+  78:Core/Src/main.c ****         {
+  79:Core/Src/main.c ****             switch(mode)
+  80:Core/Src/main.c ****             {
+  81:Core/Src/main.c ****                 case 1: turnOnLed(LED_BLUE_PIN);  break;
+ 216              		.loc 1 81 25 is_stmt 1 view .LVU41
+ 217 0060 0720     		movs	r0, #7
+ 218 0062 FFF7FEFF 		bl	turnOnLed
+ 219              	.LVL14:
+ 220              		.loc 1 81 51 discriminator 1 view .LVU42
+ 221              	.L19:
+  82:Core/Src/main.c ****                 case 2: turnOnLed(LED_GREEN_PIN); break;
+  83:Core/Src/main.c ****                 case 3: turnOnLed(LED_RED_PIN);   break;
+  84:Core/Src/main.c ****             }
+  85:Core/Src/main.c ****         }
+  86:Core/Src/main.c ****         
+  87:Core/Src/main.c ****         // Button3 => PC10
+  88:Core/Src/main.c ****         if(isButtonPressed(BTN3_PIN))
+ 222              		.loc 1 88 9 view .LVU43
+ 223              		.loc 1 88 12 is_stmt 0 view .LVU44
+ 224 0066 0A20     		movs	r0, #10
+ 225 0068 FFF7FEFF 		bl	isButtonPressed
+ 226              	.LVL15:
+ 227              		.loc 1 88 11 discriminator 1 view .LVU45
+ 228 006c 50B1     		cbz	r0, .L22
+  89:Core/Src/main.c ****         {
+  90:Core/Src/main.c ****             switch(mode)
+ 229              		.loc 1 90 13 is_stmt 1 view .LVU46
+ 230 006e 2D4B     		ldr	r3, .L32
+ 231 0070 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 232 0072 022B     		cmp	r3, #2
+ 233 0074 4DD0     		beq	.L23
+ 234 0076 032B     		cmp	r3, #3
+ 235 0078 4FD0     		beq	.L24
+ 236 007a 012B     		cmp	r3, #1
+ 237 007c 02D1     		bne	.L22
+  91:Core/Src/main.c ****             {
+  92:Core/Src/main.c ****                 case 1: turnOnLed(LED_RED_PIN);    break;
+ 238              		.loc 1 92 25 view .LVU47
+ 239 007e 0E20     		movs	r0, #14
+ 240 0080 FFF7FEFF 		bl	turnOnLed
+ 241              	.LVL16:
+ 242              		.loc 1 92 52 discriminator 1 view .LVU48
+ 243              	.L22:
+  93:Core/Src/main.c ****                 case 2: turnOnLed(LED_BLUE_PIN);   break;
+  94:Core/Src/main.c ****                 case 3: turnOnLed(LED_GREEN_PIN);  break;
+  95:Core/Src/main.c ****             }
+  96:Core/Src/main.c ****         }
+  97:Core/Src/main.c ****         
+  98:Core/Src/main.c ****         // 做一点延时，以免轮询过快
+  99:Core/Src/main.c ****         delay_ms(10);
+ 244              		.loc 1 99 9 view .LVU49
+ 245 0084 0A20     		movs	r0, #10
+ 246 0086 FFF7FEFF 		bl	delay_ms
+ 247              	.LVL17:
+  30:Core/Src/main.c ****     {
+ 248              		.loc 1 30 10 view .LVU50
+ 249              	.L25:
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 7
+
+
+  30:Core/Src/main.c ****     {
+ 250              		.loc 1 30 5 view .LVU51
+  33:Core/Src/main.c ****         {
+ 251              		.loc 1 33 9 view .LVU52
+  33:Core/Src/main.c ****         {
+ 252              		.loc 1 33 12 is_stmt 0 view .LVU53
+ 253 008a 0C20     		movs	r0, #12
+ 254 008c FFF7FEFF 		bl	isButtonPressed
+ 255              	.LVL18:
+  33:Core/Src/main.c ****         {
+ 256              		.loc 1 33 11 discriminator 1 view .LVU54
+ 257 0090 0028     		cmp	r0, #0
+ 258 0092 B9D1     		bne	.L27
+ 259              	.L11:
+  50:Core/Src/main.c ****         turnOffLed(LED_MODE2_PIN);
+ 260              		.loc 1 50 9 is_stmt 1 view .LVU55
+ 261 0094 0120     		movs	r0, #1
+ 262 0096 FFF7FEFF 		bl	turnOffLed
+ 263              	.LVL19:
+  51:Core/Src/main.c ****         turnOffLed(LED_MODE3_PIN);
+ 264              		.loc 1 51 9 view .LVU56
+ 265 009a 0220     		movs	r0, #2
+ 266 009c FFF7FEFF 		bl	turnOffLed
+ 267              	.LVL20:
+  52:Core/Src/main.c ****         
+ 268              		.loc 1 52 9 view .LVU57
+ 269 00a0 0620     		movs	r0, #6
+ 270 00a2 FFF7FEFF 		bl	turnOffLed
+ 271              	.LVL21:
+  55:Core/Src/main.c ****         else if(mode == 2) turnOnLed(LED_MODE2_PIN);
+ 272              		.loc 1 55 9 view .LVU58
+  55:Core/Src/main.c ****         else if(mode == 2) turnOnLed(LED_MODE2_PIN);
+ 273              		.loc 1 55 17 is_stmt 0 view .LVU59
+ 274 00a6 1F4B     		ldr	r3, .L32
+ 275 00a8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  55:Core/Src/main.c ****         else if(mode == 2) turnOnLed(LED_MODE2_PIN);
+ 276              		.loc 1 55 11 view .LVU60
+ 277 00aa 012B     		cmp	r3, #1
+ 278 00ac C4D0     		beq	.L28
+  56:Core/Src/main.c ****         else if(mode == 3) turnOnLed(LED_MODE3_PIN);
+ 279              		.loc 1 56 14 is_stmt 1 view .LVU61
+  56:Core/Src/main.c ****         else if(mode == 3) turnOnLed(LED_MODE3_PIN);
+ 280              		.loc 1 56 16 is_stmt 0 view .LVU62
+ 281 00ae 022B     		cmp	r3, #2
+ 282 00b0 C6D0     		beq	.L29
+  57:Core/Src/main.c ****         
+ 283              		.loc 1 57 14 is_stmt 1 view .LVU63
+  57:Core/Src/main.c ****         
+ 284              		.loc 1 57 16 is_stmt 0 view .LVU64
+ 285 00b2 032B     		cmp	r3, #3
+ 286 00b4 C8D0     		beq	.L30
+ 287              	.L14:
+  61:Core/Src/main.c ****         turnOffLed(LED_BLUE_PIN);
+ 288              		.loc 1 61 9 is_stmt 1 view .LVU65
+ 289 00b6 0020     		movs	r0, #0
+ 290 00b8 FFF7FEFF 		bl	turnOffLed
+ 291              	.LVL22:
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 8
+
+
+  62:Core/Src/main.c ****         turnOffLed(LED_RED_PIN);
+ 292              		.loc 1 62 9 view .LVU66
+ 293 00bc 0720     		movs	r0, #7
+ 294 00be FFF7FEFF 		bl	turnOffLed
+ 295              	.LVL23:
+  63:Core/Src/main.c ****         
+ 296              		.loc 1 63 9 view .LVU67
+ 297 00c2 0E20     		movs	r0, #14
+ 298 00c4 FFF7FEFF 		bl	turnOffLed
+ 299              	.LVL24:
+  66:Core/Src/main.c ****         {
+ 300              		.loc 1 66 9 view .LVU68
+  66:Core/Src/main.c ****         {
+ 301              		.loc 1 66 12 is_stmt 0 view .LVU69
+ 302 00c8 0820     		movs	r0, #8
+ 303 00ca FFF7FEFF 		bl	isButtonPressed
+ 304              	.LVL25:
+  66:Core/Src/main.c ****         {
+ 305              		.loc 1 66 11 discriminator 1 view .LVU70
+ 306 00ce 50B1     		cbz	r0, .L16
+  68:Core/Src/main.c ****             {
+ 307              		.loc 1 68 13 is_stmt 1 view .LVU71
+ 308 00d0 144B     		ldr	r3, .L32
+ 309 00d2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 310 00d4 022B     		cmp	r3, #2
+ 311 00d6 BBD0     		beq	.L17
+ 312 00d8 032B     		cmp	r3, #3
+ 313 00da BDD0     		beq	.L18
+ 314 00dc 012B     		cmp	r3, #1
+ 315 00de 02D1     		bne	.L16
+  70:Core/Src/main.c ****                 case 2: turnOnLed(LED_RED_PIN);   break;
+ 316              		.loc 1 70 25 view .LVU72
+ 317 00e0 0020     		movs	r0, #0
+ 318 00e2 FFF7FEFF 		bl	turnOnLed
+ 319              	.LVL26:
+  70:Core/Src/main.c ****                 case 2: turnOnLed(LED_RED_PIN);   break;
+ 320              		.loc 1 70 51 discriminator 1 view .LVU73
+ 321              	.L16:
+  77:Core/Src/main.c ****         {
+ 322              		.loc 1 77 9 view .LVU74
+  77:Core/Src/main.c ****         {
+ 323              		.loc 1 77 12 is_stmt 0 view .LVU75
+ 324 00e6 0920     		movs	r0, #9
+ 325 00e8 FFF7FEFF 		bl	isButtonPressed
+ 326              	.LVL27:
+  77:Core/Src/main.c ****         {
+ 327              		.loc 1 77 11 discriminator 1 view .LVU76
+ 328 00ec 0028     		cmp	r0, #0
+ 329 00ee BAD0     		beq	.L19
+  79:Core/Src/main.c ****             {
+ 330              		.loc 1 79 13 is_stmt 1 view .LVU77
+ 331 00f0 0C4B     		ldr	r3, .L32
+ 332 00f2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 333 00f4 022B     		cmp	r3, #2
+ 334 00f6 04D0     		beq	.L20
+ 335 00f8 032B     		cmp	r3, #3
+ 336 00fa 06D0     		beq	.L21
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 9
+
+
+ 337 00fc 012B     		cmp	r3, #1
+ 338 00fe B2D1     		bne	.L19
+ 339 0100 AEE7     		b	.L31
+ 340              	.L20:
+  82:Core/Src/main.c ****                 case 3: turnOnLed(LED_RED_PIN);   break;
+ 341              		.loc 1 82 25 view .LVU78
+ 342 0102 0020     		movs	r0, #0
+ 343 0104 FFF7FEFF 		bl	turnOnLed
+ 344              	.LVL28:
+  82:Core/Src/main.c ****                 case 3: turnOnLed(LED_RED_PIN);   break;
+ 345              		.loc 1 82 51 discriminator 1 view .LVU79
+  82:Core/Src/main.c ****                 case 3: turnOnLed(LED_RED_PIN);   break;
+ 346              		.loc 1 82 51 is_stmt 0 view .LVU80
+ 347 0108 ADE7     		b	.L19
+ 348              	.L21:
+  83:Core/Src/main.c ****             }
+ 349              		.loc 1 83 25 is_stmt 1 view .LVU81
+ 350 010a 0E20     		movs	r0, #14
+ 351 010c FFF7FEFF 		bl	turnOnLed
+ 352              	.LVL29:
+  83:Core/Src/main.c ****             }
+ 353              		.loc 1 83 51 discriminator 1 view .LVU82
+  83:Core/Src/main.c ****             }
+ 354              		.loc 1 83 51 is_stmt 0 view .LVU83
+ 355 0110 A9E7     		b	.L19
+ 356              	.L23:
+  93:Core/Src/main.c ****                 case 3: turnOnLed(LED_GREEN_PIN);  break;
+ 357              		.loc 1 93 25 is_stmt 1 view .LVU84
+ 358 0112 0720     		movs	r0, #7
+ 359 0114 FFF7FEFF 		bl	turnOnLed
+ 360              	.LVL30:
+  93:Core/Src/main.c ****                 case 3: turnOnLed(LED_GREEN_PIN);  break;
+ 361              		.loc 1 93 52 discriminator 1 view .LVU85
+  93:Core/Src/main.c ****                 case 3: turnOnLed(LED_GREEN_PIN);  break;
+ 362              		.loc 1 93 52 is_stmt 0 view .LVU86
+ 363 0118 B4E7     		b	.L22
+ 364              	.L24:
+  94:Core/Src/main.c ****             }
+ 365              		.loc 1 94 25 is_stmt 1 view .LVU87
+ 366 011a 0020     		movs	r0, #0
+ 367 011c FFF7FEFF 		bl	turnOnLed
+ 368              	.LVL31:
+  94:Core/Src/main.c ****             }
+ 369              		.loc 1 94 52 discriminator 1 view .LVU88
+  94:Core/Src/main.c ****             }
+ 370              		.loc 1 94 52 is_stmt 0 view .LVU89
+ 371 0120 B0E7     		b	.L22
+ 372              	.L33:
+ 373 0122 00BF     		.align	2
+ 374              	.L32:
+ 375 0124 00000000 		.word	mode
+ 376              		.cfi_endproc
+ 377              	.LFE133:
+ 379              		.global	mode
+ 380              		.section	.data.mode,"aw"
+ 383              	mode:
+ 384 0000 01       		.byte	1
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 10
+
+
+ 385              		.text
+ 386              	.Letext0:
+ 387              		.file 2 "F:/STM32Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 388              		.file 3 "F:/STM32Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ 389              		.file 4 "CMSIS/Devices/stm32f429xx.h"
+ 390              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccEHRy7L.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:21     .text.turnOnLed:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:26     .text.turnOnLed:00000000 turnOnLed
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:46     .text.turnOnLed:0000000c $d
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:51     .text.turnOffLed:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:56     .text.turnOffLed:00000000 turnOffLed
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:79     .text.turnOffLed:0000000c $d
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:84     .text.isButtonPressed:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:89     .text.isButtonPressed:00000000 isButtonPressed
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:116    .text.isButtonPressed:00000014 $d
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:121    .text.main:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:127    .text.main:00000000 main
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:375    .text.main:00000124 $d
+C:\Users\��\AppData\Local\Temp\ccEHRy7L.s:383    .data.mode:00000000 mode
+
+UNDEFINED SYMBOLS
+GPIO_Init
+delay_ms

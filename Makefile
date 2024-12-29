@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = F429ZI_CMSIS
+TARGET = Fanyuteng_lab1
 
 
 ######################################
@@ -37,7 +37,7 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
-
+Core/Src/init.c \
 
 # ASM sources
 ASM_SOURCES =  \
