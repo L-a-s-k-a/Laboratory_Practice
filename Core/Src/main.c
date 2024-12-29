@@ -29,7 +29,7 @@ int main(void)
     
     while(1)
     {
-        // ========== 1. 检测模式切换按键 (PC12) ==========
+        //  1. 检测模式切换按键 (PC12)
         if(isButtonPressed(BTN_MODE_PIN))
         {
             // 简易防抖：等待松开
@@ -45,7 +45,7 @@ int main(void)
             }
         }
         
-        // ========== 2. 根据mode点亮相应的模式指示灯 ==========
+        //  2. 根据mode点亮相应的模式指示灯 
         // 先全灭
         turnOffLed(LED_MODE1_PIN);
         turnOffLed(LED_MODE2_PIN);
@@ -56,7 +56,7 @@ int main(void)
         else if(mode == 2) turnOnLed(LED_MODE2_PIN);
         else if(mode == 3) turnOnLed(LED_MODE3_PIN);
         
-        // ========== 3. 处理三个“颜色控制”按键 (PC8/9/10) ==========
+        //  3. 处理三个“颜色控制”按键 (PC8/9/10) 
         // 先把三色LED全灭
         turnOffLed(LED_GREEN_PIN);
         turnOffLed(LED_BLUE_PIN);
