@@ -73,6 +73,17 @@ Discarded input sections
  .text          0x00000000        0x0 Build/main.o
  .data          0x00000000        0x0 Build/main.o
  .bss           0x00000000        0x0 Build/main.o
+ .data.blink_frequency_options
+                0x00000000        0xc Build/main.o
+ .data.period   0x00000000        0xc Build/main.o
+ .text          0x00000000        0x0 Build/init.o
+ .data          0x00000000        0x0 Build/init.o
+ .bss           0x00000000        0x0 Build/init.o
+ .text.User_Delay
+                0x00000000       0x2a Build/init.o
+ .text          0x00000000        0x0 Build/it_handlers.o
+ .data          0x00000000        0x0 Build/it_handlers.o
+ .bss           0x00000000        0x0 Build/it_handlers.o
  .text          0x00000000       0x14 Build/startup_stm32f429xx.o
  .data          0x00000000        0x0 Build/startup_stm32f429xx.o
  .bss           0x00000000        0x0 Build/startup_stm32f429xx.o
@@ -354,6 +365,8 @@ LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/
 LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crt0.o
 LOAD Build/main.o
+LOAD Build/init.o
+LOAD Build/it_handlers.o
 LOAD Build/startup_stm32f429xx.o
 LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a
 LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a
@@ -379,7 +392,7 @@ LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/
                 0x08000000                g_pfnVectors
                 0x080001ac                        . = ALIGN (0x4)
 
-.text           0x080001ac      0x558
+.text           0x080001ac      0x604
                 0x080001ac                        . = ALIGN (0x4)
  *(.text)
  *(.text*)
@@ -391,231 +404,242 @@ LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/
                 0x080001ec       0x28 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
  .text.frame_dummy
                 0x08000214       0x24 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
- .text.NVIC_EncodePriority
-                0x08000238       0x3e Build/main.o
- *fill*         0x08000276        0x2 
+ .text.SetLed   0x08000238       0x24 Build/main.o
+ .text.main     0x0800025c      0x15c Build/main.o
+                0x0800025c                main
+ .text.Mode2_SetLedActive
+                0x080003b8       0x48 Build/main.o
+                0x080003b8                Mode2_SetLedActive
+ .text.Mode2_DeactivateAll
+                0x08000400       0x28 Build/main.o
+                0x08000400                Mode2_DeactivateAll
+ .text.SystemClock_Config
+                0x08000428       0x28 Build/init.o
+                0x08000428                SystemClock_Config
+ .text.GPIO_Init_All
+                0x08000450       0x64 Build/init.o
+                0x08000450                GPIO_Init_All
+ .text.EXTI_Init_All
+                0x080004b4       0xc0 Build/init.o
+                0x080004b4                EXTI_Init_All
  .text.SysTick_Init
-                0x08000278       0x40 Build/main.o
-                0x08000278                SysTick_Init
- .text.GPIO_Ini
-                0x080002b8       0x54 Build/main.o
-                0x080002b8                GPIO_Ini
- .text.EXTI_ITR_Ini
-                0x0800030c       0x68 Build/main.o
-                0x0800030c                EXTI_ITR_Ini
- .text.RCC_Ini  0x08000374       0xf8 Build/main.o
-                0x08000374                RCC_Ini
- .text.update_led_state
-                0x0800046c       0x6c Build/main.o
-                0x0800046c                update_led_state
+                0x08000574       0x12 Build/init.o
+                0x08000574                SysTick_Init
+ *fill*         0x08000586        0x2 
  .text.SysTick_Handler
-                0x080004d8       0x28 Build/main.o
-                0x080004d8                SysTick_Handler
+                0x08000588       0x1c Build/it_handlers.o
+                0x08000588                SysTick_Handler
  .text.EXTI15_10_IRQHandler
-                0x08000500       0x48 Build/main.o
-                0x08000500                EXTI15_10_IRQHandler
- .text.main     0x08000548      0x10c Build/main.o
-                0x08000548                main
+                0x080005a4       0x50 Build/it_handlers.o
+                0x080005a4                EXTI15_10_IRQHandler
+ .text.EXTI9_5_IRQHandler
+                0x080005f4       0x98 Build/it_handlers.o
+                0x080005f4                EXTI9_5_IRQHandler
+ .text.EXTI3_IRQHandler
+                0x0800068c       0x74 Build/it_handlers.o
+                0x0800068c                EXTI3_IRQHandler
  .text.Reset_Handler
-                0x08000654       0x4c Build/startup_stm32f429xx.o
-                0x08000654                Reset_Handler
+                0x08000700       0x4c Build/startup_stm32f429xx.o
+                0x08000700                Reset_Handler
  .text.Default_Handler
-                0x080006a0        0x2 Build/startup_stm32f429xx.o
-                0x080006a0                RTC_Alarm_IRQHandler
-                0x080006a0                HASH_RNG_IRQHandler
-                0x080006a0                EXTI2_IRQHandler
-                0x080006a0                TIM8_CC_IRQHandler
-                0x080006a0                DebugMon_Handler
-                0x080006a0                UART8_IRQHandler
-                0x080006a0                SPI4_IRQHandler
-                0x080006a0                TIM1_CC_IRQHandler
-                0x080006a0                DMA2_Stream5_IRQHandler
-                0x080006a0                HardFault_Handler
-                0x080006a0                DMA1_Stream5_IRQHandler
-                0x080006a0                PVD_IRQHandler
-                0x080006a0                SDIO_IRQHandler
-                0x080006a0                TAMP_STAMP_IRQHandler
-                0x080006a0                PendSV_Handler
-                0x080006a0                NMI_Handler
-                0x080006a0                CAN2_RX1_IRQHandler
-                0x080006a0                EXTI3_IRQHandler
-                0x080006a0                TIM8_TRG_COM_TIM14_IRQHandler
-                0x080006a0                TIM1_UP_TIM10_IRQHandler
-                0x080006a0                TIM8_UP_TIM13_IRQHandler
-                0x080006a0                I2C3_ER_IRQHandler
-                0x080006a0                EXTI0_IRQHandler
-                0x080006a0                I2C2_EV_IRQHandler
-                0x080006a0                DMA1_Stream2_IRQHandler
-                0x080006a0                CAN1_RX0_IRQHandler
-                0x080006a0                FPU_IRQHandler
-                0x080006a0                OTG_HS_WKUP_IRQHandler
-                0x080006a0                UsageFault_Handler
-                0x080006a0                LTDC_ER_IRQHandler
-                0x080006a0                CAN2_SCE_IRQHandler
-                0x080006a0                DMA2_Stream2_IRQHandler
-                0x080006a0                SPI1_IRQHandler
-                0x080006a0                TIM6_DAC_IRQHandler
-                0x080006a0                TIM1_BRK_TIM9_IRQHandler
-                0x080006a0                DCMI_IRQHandler
-                0x080006a0                CAN2_RX0_IRQHandler
-                0x080006a0                DMA2_Stream3_IRQHandler
-                0x080006a0                USART6_IRQHandler
-                0x080006a0                USART3_IRQHandler
-                0x080006a0                CAN1_RX1_IRQHandler
-                0x080006a0                UART5_IRQHandler
-                0x080006a0                DMA2_Stream0_IRQHandler
-                0x080006a0                TIM4_IRQHandler
-                0x080006a0                I2C1_EV_IRQHandler
-                0x080006a0                DMA1_Stream6_IRQHandler
-                0x080006a0                DMA1_Stream1_IRQHandler
-                0x080006a0                UART4_IRQHandler
-                0x080006a0                TIM3_IRQHandler
-                0x080006a0                RCC_IRQHandler
-                0x080006a0                TIM8_BRK_TIM12_IRQHandler
-                0x080006a0                Default_Handler
-                0x080006a0                ADC_IRQHandler
-                0x080006a0                DMA1_Stream7_IRQHandler
-                0x080006a0                SPI5_IRQHandler
-                0x080006a0                TIM7_IRQHandler
-                0x080006a0                CAN2_TX_IRQHandler
-                0x080006a0                TIM5_IRQHandler
-                0x080006a0                DMA2_Stream7_IRQHandler
-                0x080006a0                I2C3_EV_IRQHandler
-                0x080006a0                EXTI9_5_IRQHandler
-                0x080006a0                RTC_WKUP_IRQHandler
-                0x080006a0                LTDC_IRQHandler
-                0x080006a0                ETH_WKUP_IRQHandler
-                0x080006a0                SPI2_IRQHandler
-                0x080006a0                OTG_HS_EP1_IN_IRQHandler
-                0x080006a0                MemManage_Handler
-                0x080006a0                DMA1_Stream0_IRQHandler
-                0x080006a0                CAN1_TX_IRQHandler
-                0x080006a0                SVC_Handler
-                0x080006a0                EXTI4_IRQHandler
-                0x080006a0                ETH_IRQHandler
-                0x080006a0                OTG_HS_EP1_OUT_IRQHandler
-                0x080006a0                WWDG_IRQHandler
-                0x080006a0                SPI6_IRQHandler
-                0x080006a0                TIM2_IRQHandler
-                0x080006a0                OTG_FS_WKUP_IRQHandler
-                0x080006a0                TIM1_TRG_COM_TIM11_IRQHandler
-                0x080006a0                OTG_HS_IRQHandler
-                0x080006a0                DMA2D_IRQHandler
-                0x080006a0                EXTI1_IRQHandler
-                0x080006a0                UART7_IRQHandler
-                0x080006a0                USART2_IRQHandler
-                0x080006a0                I2C2_ER_IRQHandler
-                0x080006a0                DMA2_Stream1_IRQHandler
-                0x080006a0                CAN1_SCE_IRQHandler
-                0x080006a0                FLASH_IRQHandler
-                0x080006a0                DMA2_Stream4_IRQHandler
-                0x080006a0                BusFault_Handler
-                0x080006a0                USART1_IRQHandler
-                0x080006a0                OTG_FS_IRQHandler
-                0x080006a0                SPI3_IRQHandler
-                0x080006a0                DMA1_Stream4_IRQHandler
-                0x080006a0                I2C1_ER_IRQHandler
-                0x080006a0                FMC_IRQHandler
-                0x080006a0                DMA2_Stream6_IRQHandler
-                0x080006a0                SAI1_IRQHandler
-                0x080006a0                DMA1_Stream3_IRQHandler
- *fill*         0x080006a2        0x2 
+                0x0800074c        0x2 Build/startup_stm32f429xx.o
+                0x0800074c                RTC_Alarm_IRQHandler
+                0x0800074c                HASH_RNG_IRQHandler
+                0x0800074c                EXTI2_IRQHandler
+                0x0800074c                TIM8_CC_IRQHandler
+                0x0800074c                DebugMon_Handler
+                0x0800074c                UART8_IRQHandler
+                0x0800074c                SPI4_IRQHandler
+                0x0800074c                TIM1_CC_IRQHandler
+                0x0800074c                DMA2_Stream5_IRQHandler
+                0x0800074c                HardFault_Handler
+                0x0800074c                DMA1_Stream5_IRQHandler
+                0x0800074c                PVD_IRQHandler
+                0x0800074c                SDIO_IRQHandler
+                0x0800074c                TAMP_STAMP_IRQHandler
+                0x0800074c                PendSV_Handler
+                0x0800074c                NMI_Handler
+                0x0800074c                CAN2_RX1_IRQHandler
+                0x0800074c                TIM8_TRG_COM_TIM14_IRQHandler
+                0x0800074c                TIM1_UP_TIM10_IRQHandler
+                0x0800074c                TIM8_UP_TIM13_IRQHandler
+                0x0800074c                I2C3_ER_IRQHandler
+                0x0800074c                EXTI0_IRQHandler
+                0x0800074c                I2C2_EV_IRQHandler
+                0x0800074c                DMA1_Stream2_IRQHandler
+                0x0800074c                CAN1_RX0_IRQHandler
+                0x0800074c                FPU_IRQHandler
+                0x0800074c                OTG_HS_WKUP_IRQHandler
+                0x0800074c                UsageFault_Handler
+                0x0800074c                LTDC_ER_IRQHandler
+                0x0800074c                CAN2_SCE_IRQHandler
+                0x0800074c                DMA2_Stream2_IRQHandler
+                0x0800074c                SPI1_IRQHandler
+                0x0800074c                TIM6_DAC_IRQHandler
+                0x0800074c                TIM1_BRK_TIM9_IRQHandler
+                0x0800074c                DCMI_IRQHandler
+                0x0800074c                CAN2_RX0_IRQHandler
+                0x0800074c                DMA2_Stream3_IRQHandler
+                0x0800074c                USART6_IRQHandler
+                0x0800074c                USART3_IRQHandler
+                0x0800074c                CAN1_RX1_IRQHandler
+                0x0800074c                UART5_IRQHandler
+                0x0800074c                DMA2_Stream0_IRQHandler
+                0x0800074c                TIM4_IRQHandler
+                0x0800074c                I2C1_EV_IRQHandler
+                0x0800074c                DMA1_Stream6_IRQHandler
+                0x0800074c                DMA1_Stream1_IRQHandler
+                0x0800074c                UART4_IRQHandler
+                0x0800074c                TIM3_IRQHandler
+                0x0800074c                RCC_IRQHandler
+                0x0800074c                TIM8_BRK_TIM12_IRQHandler
+                0x0800074c                Default_Handler
+                0x0800074c                ADC_IRQHandler
+                0x0800074c                DMA1_Stream7_IRQHandler
+                0x0800074c                SPI5_IRQHandler
+                0x0800074c                TIM7_IRQHandler
+                0x0800074c                CAN2_TX_IRQHandler
+                0x0800074c                TIM5_IRQHandler
+                0x0800074c                DMA2_Stream7_IRQHandler
+                0x0800074c                I2C3_EV_IRQHandler
+                0x0800074c                RTC_WKUP_IRQHandler
+                0x0800074c                LTDC_IRQHandler
+                0x0800074c                ETH_WKUP_IRQHandler
+                0x0800074c                SPI2_IRQHandler
+                0x0800074c                OTG_HS_EP1_IN_IRQHandler
+                0x0800074c                MemManage_Handler
+                0x0800074c                DMA1_Stream0_IRQHandler
+                0x0800074c                CAN1_TX_IRQHandler
+                0x0800074c                SVC_Handler
+                0x0800074c                EXTI4_IRQHandler
+                0x0800074c                ETH_IRQHandler
+                0x0800074c                OTG_HS_EP1_OUT_IRQHandler
+                0x0800074c                WWDG_IRQHandler
+                0x0800074c                SPI6_IRQHandler
+                0x0800074c                TIM2_IRQHandler
+                0x0800074c                OTG_FS_WKUP_IRQHandler
+                0x0800074c                TIM1_TRG_COM_TIM11_IRQHandler
+                0x0800074c                OTG_HS_IRQHandler
+                0x0800074c                DMA2D_IRQHandler
+                0x0800074c                EXTI1_IRQHandler
+                0x0800074c                UART7_IRQHandler
+                0x0800074c                USART2_IRQHandler
+                0x0800074c                I2C2_ER_IRQHandler
+                0x0800074c                DMA2_Stream1_IRQHandler
+                0x0800074c                CAN1_SCE_IRQHandler
+                0x0800074c                FLASH_IRQHandler
+                0x0800074c                DMA2_Stream4_IRQHandler
+                0x0800074c                BusFault_Handler
+                0x0800074c                USART1_IRQHandler
+                0x0800074c                OTG_FS_IRQHandler
+                0x0800074c                SPI3_IRQHandler
+                0x0800074c                DMA1_Stream4_IRQHandler
+                0x0800074c                I2C1_ER_IRQHandler
+                0x0800074c                FMC_IRQHandler
+                0x0800074c                DMA2_Stream6_IRQHandler
+                0x0800074c                SAI1_IRQHandler
+                0x0800074c                DMA1_Stream3_IRQHandler
+ *fill*         0x0800074e        0x2 
  .text.__libc_init_array
-                0x080006a4       0x48 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
-                0x080006a4                __libc_init_array
+                0x08000750       0x48 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
+                0x08000750                __libc_init_array
  *(.glue_7)
- .glue_7        0x080006ec        0x0 linker stubs
+ .glue_7        0x08000798        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x080006ec        0x0 linker stubs
+ .glue_7t       0x08000798        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x080006ec        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .eh_frame      0x08000798        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
  *(.init)
- .init          0x080006ec        0x4 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crti.o
-                0x080006ec                _init
- .init          0x080006f0        0x8 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtn.o
+ .init          0x08000798        0x4 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crti.o
+                0x08000798                _init
+ .init          0x0800079c        0x8 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtn.o
  *(.fini)
- .fini          0x080006f8        0x4 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crti.o
-                0x080006f8                _fini
- .fini          0x080006fc        0x8 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtn.o
-                0x08000704                        . = ALIGN (0x4)
-                0x08000704                        _etext = .
+ .fini          0x080007a4        0x4 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crti.o
+                0x080007a4                _fini
+ .fini          0x080007a8        0x8 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtn.o
+                0x080007b0                        . = ALIGN (0x4)
+                0x080007b0                        _etext = .
 
-.vfp11_veneer   0x08000704        0x0
- .vfp11_veneer  0x08000704        0x0 linker stubs
+.vfp11_veneer   0x080007b0        0x0
+ .vfp11_veneer  0x080007b0        0x0 linker stubs
 
-.v4_bx          0x08000704        0x0
- .v4_bx         0x08000704        0x0 linker stubs
+.v4_bx          0x080007b0        0x0
+ .v4_bx         0x080007b0        0x0 linker stubs
 
-.iplt           0x08000704        0x0
- .iplt          0x08000704        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+.iplt           0x080007b0        0x0
+ .iplt          0x080007b0        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.rodata         0x08000704       0x24
-                0x08000704                        . = ALIGN (0x4)
+.rodata         0x080007b0       0x20
+                0x080007b0                        . = ALIGN (0x4)
  *(.rodata)
  *(.rodata*)
- .rodata.led_pins
-                0x08000704       0x18 Build/main.o
-                0x08000704                led_pins
- .rodata.blink_periods
-                0x0800071c        0xc Build/main.o
-                0x0800071c                blink_periods
-                0x08000728                        . = ALIGN (0x4)
+ .rodata.LED_PIN
+                0x080007b0        0x6 Build/main.o
+ *fill*         0x080007b6        0x2 
+ .rodata.Mode2Periods
+                0x080007b8        0xc Build/main.o
+ .rodata.Mode1Periods
+                0x080007c4        0xc Build/main.o
+                0x080007d0                        . = ALIGN (0x4)
 
-.rel.dyn        0x08000728        0x0
- .rel.iplt      0x08000728        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+.rel.dyn        0x080007d0        0x0
+ .rel.iplt      0x080007d0        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x08000728        0x0
-                0x08000728                        __exidx_start = .
+.ARM            0x080007d0        0x0
+                0x080007d0                        __exidx_start = .
  *(.ARM.exidx*)
-                0x08000728                        __exidx_end = .
+                0x080007d0                        __exidx_end = .
 
-.preinit_array  0x08000728        0x0
-                0x08000728                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x080007d0        0x0
+                0x080007d0                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x08000728                        PROVIDE (__preinit_array_end = .)
+                0x080007d0                        PROVIDE (__preinit_array_end = .)
 
-.init_array     0x08000728        0x4
-                0x08000728                        PROVIDE (__init_array_start = .)
+.init_array     0x080007d0        0x4
+                0x080007d0                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x08000728        0x4 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x0800072c                        PROVIDE (__init_array_end = .)
+ .init_array    0x080007d0        0x4 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x080007d4                        PROVIDE (__init_array_end = .)
 
-.fini_array     0x0800072c        0x4
+.fini_array     0x080007d4        0x4
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x0800072c        0x4 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .fini_array    0x080007d4        0x4 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x08000730                        _sidata = LOADADDR (.data)
+                0x080007d8                        _sidata = LOADADDR (.data)
 
-.data           0x20000000        0x4 load address 0x08000730
+.data           0x20000000        0x8 load address 0x080007d8
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
  *(.data*)
- .data.work_mode
+ .data.CurrentMode
                 0x20000000        0x1 Build/main.o
-                0x20000000                work_mode
-                0x20000004                        . = ALIGN (0x4)
+                0x20000000                CurrentMode
  *fill*         0x20000001        0x3 
-                0x20000004                        _edata = .
-                0x08000734                        _siccmram = LOADADDR (.ccmram)
+ .data.SystemCoreClock
+                0x20000004        0x4 Build/main.o
+                0x20000004                SystemCoreClock
+                0x20000008                        . = ALIGN (0x4)
+                0x20000008                        _edata = .
+                0x080007e0                        _siccmram = LOADADDR (.ccmram)
 
 .tm_clone_table
-                0x20000004        0x0 load address 0x08000734
+                0x20000008        0x0 load address 0x080007e0
  .tm_clone_table
-                0x20000004        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x20000008        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
  .tm_clone_table
-                0x20000004        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtend.o
+                0x20000008        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtend.o
 
-.igot.plt       0x20000004        0x0 load address 0x08000734
- .igot.plt      0x20000004        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+.igot.plt       0x20000008        0x0 load address 0x080007e0
+ .igot.plt      0x20000008        0x0 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.ccmram         0x10000000        0x0 load address 0x08000734
+.ccmram         0x10000000        0x0 load address 0x080007e0
                 0x10000000                        . = ALIGN (0x4)
                 0x10000000                        _sccmram = .
  *(.ccmram)
@@ -624,61 +648,71 @@ LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/
                 0x10000000                        _eccmram = .
                 0x10000000                        . = ALIGN (0x4)
 
-.bss            0x20000004       0x38
-                0x20000004                        _sbss = .
-                0x20000004                        __bss_start__ = _sbss
+.bss            0x20000008       0x64
+                0x20000008                        _sbss = .
+                0x20000008                        __bss_start__ = _sbss
  *(.bss)
  *(.bss*)
  .bss.completed.1
-                0x20000004        0x1 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
- *fill*         0x20000005        0x3 
- .bss.object.0  0x20000008       0x18 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
- .bss.blink_counter.0
-                0x20000020        0x4 Build/main.o
- .bss.systick_counter
-                0x20000024        0x4 Build/main.o
-                0x20000024                systick_counter
- .bss.button2_state
-                0x20000028        0x1 Build/main.o
-                0x20000028                button2_state
- .bss.frequency_led
-                0x20000029        0x1 Build/main.o
-                0x20000029                frequency_led
+                0x20000008        0x1 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+ *fill*         0x20000009        0x3 
+ .bss.object.0  0x2000000c       0x18 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .bss.M2SelectedLed
+                0x20000024        0x1 Build/main.o
+                0x20000024                M2SelectedLed
+ *fill*         0x20000025        0x3 
+ .bss.LedState  0x20000028        0x6 Build/main.o
+ *fill*         0x2000002e        0x2 
+ .bss.LedNextToggleTime
+                0x20000030       0x18 Build/main.o
+ .bss.LedFreqIndex
+                0x20000048        0x6 Build/main.o
+                0x20000048                LedFreqIndex
+ *fill*         0x2000004e        0x2 
+ .bss.LedActive
+                0x20000050        0x6 Build/main.o
+                0x20000050                LedActive
+ *fill*         0x20000056        0x2 
+ .bss.M1NextToggleTime
+                0x20000058        0x4 Build/main.o
+                0x20000058                M1NextToggleTime
+ .bss.M1Step    0x2000005c        0x1 Build/main.o
+                0x2000005c                M1Step
+ .bss.M1FreqIndex
+                0x2000005d        0x1 Build/main.o
+                0x2000005d                M1FreqIndex
+ .bss.flagbutton3
+                0x2000005e        0x1 Build/main.o
+                0x2000005e                flagbutton3
  .bss.flagbutton2
-                0x2000002a        0x1 Build/main.o
-                0x2000002a                flagbutton2
+                0x2000005f        0x1 Build/main.o
+                0x2000005f                flagbutton2
  .bss.flagbutton1
-                0x2000002b        0x1 Build/main.o
-                0x2000002b                flagbutton1
- .bss.flag_led  0x2000002c        0x1 Build/main.o
-                0x2000002c                flag_led
- *fill*         0x2000002d        0x3 
- .bss.button2_timer
-                0x20000030        0x4 Build/main.o
-                0x20000030                button2_timer
+                0x20000060        0x1 Build/main.o
+                0x20000060                flagbutton1
+ *fill*         0x20000061        0x3 
  .bss.ExternInterruptTickCount
-                0x20000034        0x4 Build/main.o
-                0x20000034                ExternInterruptTickCount
- .bss.DelayTickCount
-                0x20000038        0x2 Build/main.o
-                0x20000038                DelayTickCount
+                0x20000064        0x4 Build/main.o
+                0x20000064                ExternInterruptTickCount
+ .bss.GlobalTickCount
+                0x20000068        0x4 Build/main.o
+                0x20000068                GlobalTickCount
  *(COMMON)
-                0x2000003c                        . = ALIGN (0x4)
- *fill*         0x2000003a        0x2 
-                0x2000003c                        _ebss = .
-                0x2000003c                        __bss_end__ = _ebss
+                0x2000006c                        . = ALIGN (0x4)
+                0x2000006c                        _ebss = .
+                0x2000006c                        __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x2000003c      0x604
-                0x20000040                        . = ALIGN (0x8)
- *fill*         0x2000003c        0x4 
-                0x20000040                        PROVIDE (end = .)
+                0x2000006c      0x604
+                0x20000070                        . = ALIGN (0x8)
+ *fill*         0x2000006c        0x4 
+                0x20000070                        PROVIDE (end = .)
                 [!provide]                        PROVIDE (_end = .)
-                0x20000240                        . = (. + _Min_Heap_Size)
- *fill*         0x20000040      0x200 
-                0x20000640                        . = (. + _Min_Stack_Size)
- *fill*         0x20000240      0x400 
-                0x20000640                        . = ALIGN (0x8)
+                0x20000270                        . = (. + _Min_Heap_Size)
+ *fill*         0x20000070      0x200 
+                0x20000670                        . = (. + _Min_Stack_Size)
+ *fill*         0x20000270      0x400 
+                0x20000670                        . = ALIGN (0x8)
 
 /DISCARD/
  libc.a(*)
@@ -695,56 +729,80 @@ LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/
  .ARM.attributes
                 0x00000056       0x34 Build/main.o
  .ARM.attributes
-                0x0000008a       0x21 Build/startup_stm32f429xx.o
+                0x0000008a       0x34 Build/init.o
  .ARM.attributes
-                0x000000ab       0x34 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
+                0x000000be       0x34 Build/it_handlers.o
  .ARM.attributes
-                0x000000df       0x34 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtend.o
+                0x000000f2       0x21 Build/startup_stm32f429xx.o
  .ARM.attributes
-                0x00000113       0x22 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtn.o
+                0x00000113       0x34 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
+ .ARM.attributes
+                0x00000147       0x34 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtend.o
+ .ARM.attributes
+                0x0000017b       0x22 D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtn.o
 OUTPUT(Build/LABORATORY_PRACTICE.elf elf32-littlearm)
 LOAD linker stubs
 LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a
 LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a
 LOAD D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a
 
-.debug_info     0x00000000      0xf4c
- .debug_info    0x00000000      0xf1c Build/main.o
- .debug_info    0x00000f1c       0x30 Build/startup_stm32f429xx.o
+.debug_info     0x00000000     0x14cc
+ .debug_info    0x00000000      0x5aa Build/main.o
+ .debug_info    0x000005aa      0xcb9 Build/init.o
+ .debug_info    0x00001263      0x239 Build/it_handlers.o
+ .debug_info    0x0000149c       0x30 Build/startup_stm32f429xx.o
 
-.debug_abbrev   0x00000000      0x295
- .debug_abbrev  0x00000000      0x278 Build/main.o
- .debug_abbrev  0x00000278       0x1d Build/startup_stm32f429xx.o
+.debug_abbrev   0x00000000      0x58a
+ .debug_abbrev  0x00000000      0x23b Build/main.o
+ .debug_abbrev  0x0000023b      0x204 Build/init.o
+ .debug_abbrev  0x0000043f      0x12e Build/it_handlers.o
+ .debug_abbrev  0x0000056d       0x1d Build/startup_stm32f429xx.o
 
-.debug_loc      0x00000000      0x1d7
- .debug_loc     0x00000000      0x1d7 Build/main.o
+.debug_loc      0x00000000      0x3fc
+ .debug_loc     0x00000000      0x255 Build/main.o
+ .debug_loc     0x00000255      0x167 Build/init.o
+ .debug_loc     0x000003bc       0x40 Build/it_handlers.o
 
-.debug_aranges  0x00000000       0x88
+.debug_aranges  0x00000000       0xd8
  .debug_aranges
-                0x00000000       0x60 Build/main.o
+                0x00000000       0x38 Build/main.o
  .debug_aranges
-                0x00000060       0x28 Build/startup_stm32f429xx.o
+                0x00000038       0x40 Build/init.o
+ .debug_aranges
+                0x00000078       0x38 Build/it_handlers.o
+ .debug_aranges
+                0x000000b0       0x28 Build/startup_stm32f429xx.o
 
-.debug_ranges   0x00000000       0x88
- .debug_ranges  0x00000000       0x68 Build/main.o
- .debug_ranges  0x00000068       0x20 Build/startup_stm32f429xx.o
+.debug_ranges   0x00000000       0xe8
+ .debug_ranges  0x00000000       0x58 Build/main.o
+ .debug_ranges  0x00000058       0x48 Build/init.o
+ .debug_ranges  0x000000a0       0x28 Build/it_handlers.o
+ .debug_ranges  0x000000c8       0x20 Build/startup_stm32f429xx.o
 
-.debug_line     0x00000000      0x4ea
- .debug_line    0x00000000      0x478 Build/main.o
- .debug_line    0x00000478       0x72 Build/startup_stm32f429xx.o
+.debug_line     0x00000000      0x95c
+ .debug_line    0x00000000      0x2ea Build/main.o
+ .debug_line    0x000002ea      0x3a2 Build/init.o
+ .debug_line    0x0000068c      0x25e Build/it_handlers.o
+ .debug_line    0x000008ea       0x72 Build/startup_stm32f429xx.o
 
-.debug_str      0x00000000      0xb1a
- .debug_str     0x00000000      0xb1a Build/main.o
-                                0xb33 (size before relaxing)
- .debug_str     0x00000b1a       0x4c Build/startup_stm32f429xx.o
+.debug_str      0x00000000      0xb37
+ .debug_str     0x00000000      0xb37 Build/main.o
+                                0x354 (size before relaxing)
+ .debug_str     0x00000b37      0x999 Build/init.o
+ .debug_str     0x00000b37      0x26a Build/it_handlers.o
+ .debug_str     0x00000b37       0x4d Build/startup_stm32f429xx.o
 
 .comment        0x00000000       0x45
  .comment       0x00000000       0x45 Build/main.o
                                  0x46 (size before relaxing)
+ .comment       0x00000045       0x46 Build/init.o
+ .comment       0x00000045       0x46 Build/it_handlers.o
 
-.debug_frame    0x00000000       0xec
- .debug_frame   0x00000000       0xc0 Build/main.o
- .debug_frame   0x000000c0       0x2c D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
+.debug_frame    0x00000000      0x170
+ .debug_frame   0x00000000       0x70 Build/main.o
+ .debug_frame   0x00000070       0x74 Build/init.o
+ .debug_frame   0x000000e4       0x60 Build/it_handlers.o
+ .debug_frame   0x00000144       0x2c D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
 
 Cross Reference Table
 
@@ -759,6 +817,8 @@ CAN2_RX0_IRQHandler                               Build/startup_stm32f429xx.o
 CAN2_RX1_IRQHandler                               Build/startup_stm32f429xx.o
 CAN2_SCE_IRQHandler                               Build/startup_stm32f429xx.o
 CAN2_TX_IRQHandler                                Build/startup_stm32f429xx.o
+CurrentMode                                       Build/main.o
+                                                  Build/it_handlers.o
 DCMI_IRQHandler                                   Build/startup_stm32f429xx.o
 DMA1_Stream0_IRQHandler                           Build/startup_stm32f429xx.o
 DMA1_Stream1_IRQHandler                           Build/startup_stm32f429xx.o
@@ -779,22 +839,26 @@ DMA2_Stream6_IRQHandler                           Build/startup_stm32f429xx.o
 DMA2_Stream7_IRQHandler                           Build/startup_stm32f429xx.o
 DebugMon_Handler                                  Build/startup_stm32f429xx.o
 Default_Handler                                   Build/startup_stm32f429xx.o
-DelayTickCount                                    Build/main.o
 ETH_IRQHandler                                    Build/startup_stm32f429xx.o
 ETH_WKUP_IRQHandler                               Build/startup_stm32f429xx.o
 EXTI0_IRQHandler                                  Build/startup_stm32f429xx.o
-EXTI15_10_IRQHandler                              Build/main.o
+EXTI15_10_IRQHandler                              Build/it_handlers.o
 EXTI1_IRQHandler                                  Build/startup_stm32f429xx.o
 EXTI2_IRQHandler                                  Build/startup_stm32f429xx.o
-EXTI3_IRQHandler                                  Build/startup_stm32f429xx.o
+EXTI3_IRQHandler                                  Build/it_handlers.o
 EXTI4_IRQHandler                                  Build/startup_stm32f429xx.o
-EXTI9_5_IRQHandler                                Build/startup_stm32f429xx.o
-EXTI_ITR_Ini                                      Build/main.o
+EXTI9_5_IRQHandler                                Build/it_handlers.o
+EXTI_Init_All                                     Build/init.o
+                                                  Build/main.o
 ExternInterruptTickCount                          Build/main.o
+                                                  Build/it_handlers.o
 FLASH_IRQHandler                                  Build/startup_stm32f429xx.o
 FMC_IRQHandler                                    Build/startup_stm32f429xx.o
 FPU_IRQHandler                                    Build/startup_stm32f429xx.o
-GPIO_Ini                                          Build/main.o
+GPIO_Init_All                                     Build/init.o
+                                                  Build/main.o
+GlobalTickCount                                   Build/main.o
+                                                  Build/it_handlers.o
 HASH_RNG_IRQHandler                               Build/startup_stm32f429xx.o
 HardFault_Handler                                 Build/startup_stm32f429xx.o
 I2C1_ER_IRQHandler                                Build/startup_stm32f429xx.o
@@ -805,7 +869,21 @@ I2C3_ER_IRQHandler                                Build/startup_stm32f429xx.o
 I2C3_EV_IRQHandler                                Build/startup_stm32f429xx.o
 LTDC_ER_IRQHandler                                Build/startup_stm32f429xx.o
 LTDC_IRQHandler                                   Build/startup_stm32f429xx.o
+LedActive                                         Build/main.o
+                                                  Build/it_handlers.o
+LedFreqIndex                                      Build/main.o
+                                                  Build/it_handlers.o
+M1FreqIndex                                       Build/main.o
+                                                  Build/it_handlers.o
+M1NextToggleTime                                  Build/main.o
+M1Step                                            Build/main.o
+M2SelectedLed                                     Build/main.o
+                                                  Build/it_handlers.o
 MemManage_Handler                                 Build/startup_stm32f429xx.o
+Mode2_DeactivateAll                               Build/main.o
+                                                  Build/it_handlers.o
+Mode2_SetLedActive                                Build/main.o
+                                                  Build/it_handlers.o
 NMI_Handler                                       Build/startup_stm32f429xx.o
 OTG_FS_IRQHandler                                 Build/startup_stm32f429xx.o
 OTG_FS_WKUP_IRQHandler                            Build/startup_stm32f429xx.o
@@ -816,7 +894,6 @@ OTG_HS_WKUP_IRQHandler                            Build/startup_stm32f429xx.o
 PVD_IRQHandler                                    Build/startup_stm32f429xx.o
 PendSV_Handler                                    Build/startup_stm32f429xx.o
 RCC_IRQHandler                                    Build/startup_stm32f429xx.o
-RCC_Ini                                           Build/main.o
 RTC_Alarm_IRQHandler                              Build/startup_stm32f429xx.o
 RTC_WKUP_IRQHandler                               Build/startup_stm32f429xx.o
 Reset_Handler                                     Build/startup_stm32f429xx.o
@@ -829,8 +906,13 @@ SPI4_IRQHandler                                   Build/startup_stm32f429xx.o
 SPI5_IRQHandler                                   Build/startup_stm32f429xx.o
 SPI6_IRQHandler                                   Build/startup_stm32f429xx.o
 SVC_Handler                                       Build/startup_stm32f429xx.o
-SysTick_Handler                                   Build/main.o
-SysTick_Init                                      Build/main.o
+SysTick_Handler                                   Build/it_handlers.o
+SysTick_Init                                      Build/init.o
+                                                  Build/main.o
+SystemClock_Config                                Build/init.o
+                                                  Build/main.o
+SystemCoreClock                                   Build/main.o
+                                                  Build/init.o
 TAMP_STAMP_IRQHandler                             Build/startup_stm32f429xx.o
 TIM1_BRK_TIM9_IRQHandler                          Build/startup_stm32f429xx.o
 TIM1_CC_IRQHandler                                Build/startup_stm32f429xx.o
@@ -855,6 +937,7 @@ USART2_IRQHandler                                 Build/startup_stm32f429xx.o
 USART3_IRQHandler                                 Build/startup_stm32f429xx.o
 USART6_IRQHandler                                 Build/startup_stm32f429xx.o
 UsageFault_Handler                                Build/startup_stm32f429xx.o
+User_Delay                                        Build/init.o
 WWDG_IRQHandler                                   Build/startup_stm32f429xx.o
 _ITM_deregisterTMCloneTable                       D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 _ITM_registerTMCloneTable                         D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crtbegin.o
@@ -986,9 +1069,7 @@ _write                                            D:/cccccccc/SysGCC/bin/../lib/
 _write_r                                          D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-writer.o)
                                                   D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-stdio.o)
 atexit                                            D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crt0.o
-blink_periods                                     Build/main.o
-button2_state                                     Build/main.o
-button2_timer                                     Build/main.o
+blink_frequency_options                           Build/main.o
 end                                               D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libnosys.a(sbrk.o)
 errno                                             D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-reent.o)
                                                   D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libnosys.a(write.o)
@@ -1003,20 +1084,16 @@ errno                                             D:/cccccccc/SysGCC/bin/../lib/
 exit                                              D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-exit.o)
                                                   D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crt0.o
 fflush                                            D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-fflush.o)
-flag_led                                          Build/main.o
 flagbutton1                                       Build/main.o
 flagbutton2                                       Build/main.o
-frequency_led                                     Build/main.o
+flagbutton3                                       Build/main.o
 g_pfnVectors                                      Build/startup_stm32f429xx.o
 hardware_init_hook                                D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crt0.o
-led_pins                                          Build/main.o
 main                                              Build/main.o
                                                   Build/startup_stm32f429xx.o
                                                   D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crt0.o
 memset                                            D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-memset.o)
                                                   D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-findfp.o)
                                                   D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crt0.o
+period                                            Build/main.o
 software_init_hook                                D:/cccccccc/SysGCC/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard/crt0.o
-systick_counter                                   Build/main.o
-update_led_state                                  Build/main.o
-work_mode                                         Build/main.o
