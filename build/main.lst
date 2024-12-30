@@ -1,0 +1,128 @@
+ARM GAS  C:\Users\HP\AppData\Local\Temp\cc4EK8Oo.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB0:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** int main(void)
+   4:Core/Src/main.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+   5:Core/Src/main.c ****     RCC_GPIO_EN |= 0x06; // Включение тактирования порта GPIOB
+  35              		.loc 1 5 5 view .LVU1
+  36 0000 144A     		ldr	r2, .L6
+  37 0002 D2F83038 		ldr	r3, [r2, #2096]
+  38              		.loc 1 5 17 is_stmt 0 view .LVU2
+  39 0006 43F00603 		orr	r3, r3, #6
+  40 000a C2F83038 		str	r3, [r2, #2096]
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c ****     GPIOB_MODER |= GPIO_PIN_7_OUT; // Настройка работы 7-го пина GPIOB в ре
+  41              		.loc 1 7 5 is_stmt 1 view .LVU3
+  42 000e 124B     		ldr	r3, .L6+4
+  43 0010 D3F80024 		ldr	r2, [r3, #1024]
+  44              		.loc 1 7 17 is_stmt 0 view .LVU4
+  45 0014 42F48042 		orr	r2, r2, #16384
+  46 0018 C3F80024 		str	r2, [r3, #1024]
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c ****     // *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00;   // Настройка на PushPull рабо
+  10:Core/Src/main.c ****     GPIOB_OSPEEDR |= GPIO_PIN_7_MED; // Настройка скорости
+  47              		.loc 1 10 5 is_stmt 1 view .LVU5
+  48 001c D3F80824 		ldr	r2, [r3, #1032]
+ARM GAS  C:\Users\HP\AppData\Local\Temp\cc4EK8Oo.s 			page 2
+
+
+  49              		.loc 1 10 19 is_stmt 0 view .LVU6
+  50 0020 42F48042 		orr	r2, r2, #16384
+  51 0024 C3F80824 		str	r2, [r3, #1032]
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c ****     GPIOB_PUPDR |= 0x00; // Отключение PU/PD резисторов для 7-го пина 
+  52              		.loc 1 12 5 is_stmt 1 view .LVU7
+  53 0028 06E0     		b	.L2
+  54              	.L5:
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c ****     while (1)
+  15:Core/Src/main.c ****     {
+  16:Core/Src/main.c ****         if ((GPIOC_IDR & (GPIO_PIN_13)) != 0)
+  17:Core/Src/main.c ****         {
+  18:Core/Src/main.c ****             GPIOB_BSRR |= GPIO_PIN_7_SET; // Установка единицы в 7-ой бит р�
+  55              		.loc 1 18 13 view .LVU8
+  56 002a 0B4A     		ldr	r2, .L6+4
+  57 002c D2F81834 		ldr	r3, [r2, #1048]
+  58              		.loc 1 18 24 is_stmt 0 view .LVU9
+  59 0030 43F08003 		orr	r3, r3, #128
+  60 0034 C2F81834 		str	r3, [r2, #1048]
+  61              	.L2:
+  14:Core/Src/main.c ****     {
+  62              		.loc 1 14 5 is_stmt 1 view .LVU10
+  16:Core/Src/main.c ****         {
+  63              		.loc 1 16 9 view .LVU11
+  16:Core/Src/main.c ****         {
+  64              		.loc 1 16 14 is_stmt 0 view .LVU12
+  65 0038 074B     		ldr	r3, .L6+4
+  66 003a D3F81038 		ldr	r3, [r3, #2064]
+  16:Core/Src/main.c ****         {
+  67              		.loc 1 16 12 view .LVU13
+  68 003e 13F4005F 		tst	r3, #8192
+  69 0042 F2D1     		bne	.L5
+  19:Core/Src/main.c ****         }
+  20:Core/Src/main.c ****         else
+  21:Core/Src/main.c ****         {
+  22:Core/Src/main.c ****             GPIOB_BSRR |= GPIO_PIN_7_RESET; // Установка нулю в 7-ой бит рег�
+  70              		.loc 1 22 13 is_stmt 1 view .LVU14
+  71 0044 044A     		ldr	r2, .L6+4
+  72 0046 D2F81834 		ldr	r3, [r2, #1048]
+  73              		.loc 1 22 24 is_stmt 0 view .LVU15
+  74 004a 43F40003 		orr	r3, r3, #8388608
+  75 004e C2F81834 		str	r3, [r2, #1048]
+  76 0052 F1E7     		b	.L2
+  77              	.L7:
+  78              		.align	2
+  79              	.L6:
+  80 0054 00300240 		.word	1073885184
+  81 0058 00000240 		.word	1073872896
+  82              		.cfi_endproc
+  83              	.LFE0:
+  85              		.text
+  86              	.Letext0:
+  87              		.file 2 "C:/Toools/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+  88              		.file 3 "C:/Toools/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\HP\AppData\Local\Temp\cc4EK8Oo.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\HP\AppData\Local\Temp\cc4EK8Oo.s:21     .text.main:00000000 $t
+C:\Users\HP\AppData\Local\Temp\cc4EK8Oo.s:27     .text.main:00000000 main
+C:\Users\HP\AppData\Local\Temp\cc4EK8Oo.s:80     .text.main:00000054 $d
+
+NO UNDEFINED SYMBOLS
