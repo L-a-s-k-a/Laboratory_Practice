@@ -8,7 +8,7 @@ uint32_t GlobalTickBut1Wait = 0;
 uint16_t LedSetHZ[3] = {526, 2500, 909};  // 0.4Hz, 1.1Hz, 1.9Hz 的周期，单位：毫秒
 uint8_t LedCurrHZ = 0;  // 用一个变量来表示当前所有LED的频率（0, 1, 2）
 uint16_t LedCount[6] = {0, 0, 0, 0, 0, 0};  // LED计数器
-uint8_t LedState;  // 默认状态为闪烁模式
+uint8_t LedState =0;  // 默认状态为闪烁模式
 uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1}, {0, 0, 0, 0, 0, 0}}; // 第一行控制LED是否点亮，第二行控制闪烁
 uint8_t flagbutton = 0;
 uint8_t longflagbutton = 0;
