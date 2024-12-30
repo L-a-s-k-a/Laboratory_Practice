@@ -7,7 +7,7 @@ extern uint8_t flagbutton;       // 用于标记按钮1是否按下。为1，表
 extern uint8_t longflagbutton;   // 用于标记按钮1是否被长按。
 extern uint8_t CurrentState;     // 记录当前系统的状态。
 extern uint8_t LedCurrHZ;     // 表示每个LED的当前闪烁频率
-extern uint8_t LedState = 0;         // 用于记录LED的状态，0: 闪烁，1: 常亮
+extern uint8_t LedState;         // 用于记录LED的状态，0: 闪烁，1: 常亮
 
 void EXTI9_5_IRQHandler(void) // Button PC6 handler, 外部中断9到5的中断处理函数
 {
