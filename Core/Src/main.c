@@ -19,7 +19,7 @@ volatile uint8_t  CurrentMode = 1;
        // 默认上电后处于模式1
 uint8_t flagbutton1,flagbutton2,flagbutton3;
 
-float period[] = {0.6, 1.3, 2.4}; // 模式1的LED频率选项
+volatile float period[] = {0.6, 1.3, 2.4}; // 模式1的LED频率选项
 float blink_frequency_options[] = {0.2, 0.9, 1.5}; // 模式2的闪烁频率选项
 //-------------------------------------------------
 // 模式1 (对灯) 相关
@@ -79,22 +79,13 @@ void Mode2_DeactivateAll(void);
 //-------------------------------------------------
 int main(void)
 {
-    // 1. 初始化系统时钟（如设置 HSI=16MHz 或使用 PLL 等）
     SystemClock_Config();
-
-    // 2. 初始化 SysTick，以便 1ms 触发一次中断 (这里假设16MHz)
     SysTick_Init(SystemCoreClock / 1000);
-
-    // 3. 初始化所有 GPIO（包括 LED 引脚为输出、按键引脚为输入等）
     GPIO_Init_All();
 
-    // 4. 初始化 EXTI（配置外部中断，用于检测按键）
     EXTI_Init_All();
 
-    // 5. 上电后默认进入模式1
-    //    将对灯频率索引设为 0 => 0.5Hz
-    //    M1Step=0 => 对灯序列从(3&4)开始
-    //    M1NextToggleTime=0 => 让程序立刻执行一次对灯切换判断
+   
     M1FreqIndex = 0;
     M1Step = 0;
     M1NextToggleTime = 0;
