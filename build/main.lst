@@ -1,0 +1,692 @@
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.UpdateLEDs,"ax",%progbits
+  21              		.align	1
+  22              		.global	UpdateLEDs
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	UpdateLEDs:
+  28              	.LVL0:
+  29              	.LFB131:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** #include "init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** // uint8_t buttonState = 1;
+   7:Core/Src/main.c **** // uint8_t lastButtonState = 0;
+   8:Core/Src/main.c **** // volatile uint8_t counter = 0;
+   9:Core/Src/main.c **** // uint8_t led1_state = 0;
+  10:Core/Src/main.c **** // uint8_t led2_state = 0;
+  11:Core/Src/main.c **** // uint8_t led3_state = 0;
+  12:Core/Src/main.c **** // uint8_t led4_state = 0;
+  13:Core/Src/main.c **** void delay(void);
+  14:Core/Src/main.c **** void UpdateLEDs(uint8_t count);   // 更新LED状态
+  15:Core/Src/main.c **** volatile uint8_t led_count = 0;   // 当前设定同时点亮的LED数量
+  16:Core/Src/main.c **** volatile uint8_t current_led = 0; // 当前已点亮的LED数量
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c **** int main(void)
+  21:Core/Src/main.c **** {
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c ****     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIOBEN;
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c ****     // THE LED SETTINGS
+  26:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);
+  27:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);
+  28:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
+  29:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0);
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 2
+
+
+  30:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0);
+  31:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0);
+  32:Core/Src/main.c **** 
+  33:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);
+  34:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7);
+  35:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
+  36:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_8);
+  37:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_9);
+  38:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_10);
+  39:Core/Src/main.c **** 
+  40:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
+  41:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
+  42:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
+  43:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR8_0);
+  44:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR9_0);
+  45:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR10_0);
+  46:Core/Src/main.c **** 
+  47:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
+  48:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
+  49:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
+  50:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR8_0);
+  51:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR9_0);
+  52:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR10_0);
+  53:Core/Src/main.c **** 
+  54:Core/Src/main.c ****     // THE BUTTON SETTINGS PC13
+  55:Core/Src/main.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE13);
+  56:Core/Src/main.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1);
+  57:Core/Src/main.c **** 
+  58:Core/Src/main.c ****     while (1)
+  59:Core/Src/main.c ****     {
+  60:Core/Src/main.c **** 
+  61:Core/Src/main.c ****         // 处理按钮1 (PC6) - 设置同时点亮LED数量
+  62:Core/Src/main.c ****         if ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) != 0) // Detect whether PC13 is pressed
+  63:Core/Src/main.c ****         {
+  64:Core/Src/main.c ****             delay();                                          // Stabilization
+  65:Core/Src/main.c ****             if ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) != 0) //  PC13 is pressed
+  66:Core/Src/main.c ****             {
+  67:Core/Src/main.c ****                 led_count++;
+  68:Core/Src/main.c ****                 if (led_count > 6)
+  69:Core/Src/main.c ****                     led_count = 0; // 循环回到1
+  70:Core/Src/main.c ****                 while ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) != 0)
+  71:Core/Src/main.c ****                     ; // Wait  button free
+  72:Core/Src/main.c ****             }
+  73:Core/Src/main.c ****         }
+  74:Core/Src/main.c **** 
+  75:Core/Src/main.c ****         // 处理按钮2 (PC12) - 控制LED点亮/熄灭
+  76:Core/Src/main.c ****         if ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_6)) != 0) // Detect whether PC13 is pressed
+  77:Core/Src/main.c ****         {
+  78:Core/Src/main.c ****             delay();                                          // Stabilization
+  79:Core/Src/main.c ****             if ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_6)) != 0) //  PC13 is pressed
+  80:Core/Src/main.c ****             {
+  81:Core/Src/main.c ****                 current_led += led_count;
+  82:Core/Src/main.c ****                 if (current_led > 6)
+  83:Core/Src/main.c ****                 {
+  84:Core/Src/main.c ****                     led_count = 0; // 循环回到1
+  85:Core/Src/main.c ****                     current_led = 0; // 重置状态
+  86:Core/Src/main.c ****                     GPIOB->BSRR = (GPIO_BSRR_BR0 | GPIO_BSRR_BR7 | GPIO_BSRR_BR14);
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 3
+
+
+  87:Core/Src/main.c ****                     GPIOB->BSRR = (GPIO_BSRR_BR8 | GPIO_BSRR_BR9 | GPIO_BSRR_BR10); // 熄灭所有
+  88:Core/Src/main.c ****                 }
+  89:Core/Src/main.c ****                 else
+  90:Core/Src/main.c ****                 {
+  91:Core/Src/main.c ****                     UpdateLEDs(current_led); // 更新点亮状态
+  92:Core/Src/main.c ****                 }
+  93:Core/Src/main.c ****                 while ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_6)) != 0)
+  94:Core/Src/main.c ****                     ; // Wait  button free
+  95:Core/Src/main.c ****             }
+  96:Core/Src/main.c ****         }
+  97:Core/Src/main.c ****     }
+  98:Core/Src/main.c **** 
+  99:Core/Src/main.c ****     return 0;
+ 100:Core/Src/main.c **** }
+ 101:Core/Src/main.c **** 
+ 102:Core/Src/main.c **** void UpdateLEDs(uint8_t count)
+ 103:Core/Src/main.c **** {
+  30              		.loc 1 103 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+ 104:Core/Src/main.c ****     // 先关闭所有LED
+ 105:Core/Src/main.c ****     GPIOB->BSRR = (GPIO_BSRR_BR0 | GPIO_BSRR_BR7 | GPIO_BSRR_BR14);
+  35              		.loc 1 105 5 view .LVU1
+  36              		.loc 1 105 17 is_stmt 0 view .LVU2
+  37 0000 144B     		ldr	r3, .L4
+  38 0002 154A     		ldr	r2, .L4+4
+  39 0004 9A61     		str	r2, [r3, #24]
+ 106:Core/Src/main.c ****     GPIOB->BSRR = (GPIO_BSRR_BR8 | GPIO_BSRR_BR9 | GPIO_BSRR_BR10);
+  40              		.loc 1 106 5 is_stmt 1 view .LVU3
+  41              		.loc 1 106 17 is_stmt 0 view .LVU4
+  42 0006 4FF0E062 		mov	r2, #117440512
+  43 000a 9A61     		str	r2, [r3, #24]
+ 107:Core/Src/main.c **** 
+ 108:Core/Src/main.c ****     // 根据数量点亮对应LED
+ 109:Core/Src/main.c ****     if (count >= 1)
+  44              		.loc 1 109 5 is_stmt 1 view .LVU5
+  45              		.loc 1 109 8 is_stmt 0 view .LVU6
+  46 000c 0346     		mov	r3, r0
+  47 000e 48B1     		cbz	r0, .L2
+ 110:Core/Src/main.c ****         GPIOB->BSRR = GPIO_BSRR_BS0; // 点亮LED1
+  48              		.loc 1 110 9 is_stmt 1 view .LVU7
+  49              		.loc 1 110 21 is_stmt 0 view .LVU8
+  50 0010 02F16452 		add	r2, r2, #956301312
+  51 0014 02F50132 		add	r2, r2, #132096
+  52 0018 0121     		movs	r1, #1
+  53 001a 9161     		str	r1, [r2, #24]
+ 111:Core/Src/main.c ****     if (count >= 2)
+  54              		.loc 1 111 5 is_stmt 1 view .LVU9
+  55              		.loc 1 111 8 is_stmt 0 view .LVU10
+  56 001c 8842     		cmp	r0, r1
+  57 001e 17D9     		bls	.L1
+ 112:Core/Src/main.c ****         GPIOB->BSRR = GPIO_BSRR_BS7; // 点亮LED2
+  58              		.loc 1 112 9 is_stmt 1 view .LVU11
+  59              		.loc 1 112 21 is_stmt 0 view .LVU12
+  60 0020 8021     		movs	r1, #128
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 4
+
+
+  61 0022 9161     		str	r1, [r2, #24]
+  62              	.L2:
+ 113:Core/Src/main.c ****     if (count >= 3)
+  63              		.loc 1 113 5 is_stmt 1 view .LVU13
+  64              		.loc 1 113 8 is_stmt 0 view .LVU14
+  65 0024 022B     		cmp	r3, #2
+  66 0026 13D9     		bls	.L1
+ 114:Core/Src/main.c ****         GPIOB->BSRR = GPIO_BSRR_BS14; // 点亮LED3
+  67              		.loc 1 114 9 is_stmt 1 view .LVU15
+  68              		.loc 1 114 21 is_stmt 0 view .LVU16
+  69 0028 0A4A     		ldr	r2, .L4
+  70 002a 4FF48041 		mov	r1, #16384
+  71 002e 9161     		str	r1, [r2, #24]
+ 115:Core/Src/main.c ****     if (count >= 4)
+  72              		.loc 1 115 5 is_stmt 1 view .LVU17
+  73              		.loc 1 115 8 is_stmt 0 view .LVU18
+  74 0030 032B     		cmp	r3, #3
+  75 0032 0DD9     		bls	.L1
+ 116:Core/Src/main.c ****         GPIOB->BSRR = GPIO_BSRR_BS8; // 点亮LED4
+  76              		.loc 1 116 9 is_stmt 1 view .LVU19
+  77              		.loc 1 116 21 is_stmt 0 view .LVU20
+  78 0034 4FF48071 		mov	r1, #256
+  79 0038 9161     		str	r1, [r2, #24]
+ 117:Core/Src/main.c ****     if (count >= 5)
+  80              		.loc 1 117 5 is_stmt 1 view .LVU21
+  81              		.loc 1 117 8 is_stmt 0 view .LVU22
+  82 003a 042B     		cmp	r3, #4
+  83 003c 08D9     		bls	.L1
+ 118:Core/Src/main.c ****         GPIOB->BSRR = GPIO_BSRR_BS9; // 点亮LED5
+  84              		.loc 1 118 9 is_stmt 1 view .LVU23
+  85              		.loc 1 118 21 is_stmt 0 view .LVU24
+  86 003e 4FF40071 		mov	r1, #512
+  87 0042 9161     		str	r1, [r2, #24]
+ 119:Core/Src/main.c ****     if (count >= 6)
+  88              		.loc 1 119 5 is_stmt 1 view .LVU25
+  89              		.loc 1 119 8 is_stmt 0 view .LVU26
+  90 0044 052B     		cmp	r3, #5
+  91 0046 03D9     		bls	.L1
+ 120:Core/Src/main.c ****         GPIOB->BSRR = GPIO_BSRR_BS10; // 点亮LED6
+  92              		.loc 1 120 9 is_stmt 1 view .LVU27
+  93              		.loc 1 120 21 is_stmt 0 view .LVU28
+  94 0048 1346     		mov	r3, r2
+  95 004a 4FF48062 		mov	r2, #1024
+  96 004e 9A61     		str	r2, [r3, #24]
+  97              	.L1:
+ 121:Core/Src/main.c **** }
+  98              		.loc 1 121 1 view .LVU29
+  99 0050 7047     		bx	lr
+ 100              	.L5:
+ 101 0052 00BF     		.align	2
+ 102              	.L4:
+ 103 0054 00040240 		.word	1073873920
+ 104 0058 00008140 		.word	1082195968
+ 105              		.cfi_endproc
+ 106              	.LFE131:
+ 108              		.section	.text.delay,"ax",%progbits
+ 109              		.align	1
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 5
+
+
+ 110              		.global	delay
+ 111              		.syntax unified
+ 112              		.thumb
+ 113              		.thumb_func
+ 115              	delay:
+ 116              	.LFB132:
+ 122:Core/Src/main.c **** 
+ 123:Core/Src/main.c **** void delay(void)
+ 124:Core/Src/main.c **** {
+ 117              		.loc 1 124 1 is_stmt 1 view -0
+ 118              		.cfi_startproc
+ 119              		@ args = 0, pretend = 0, frame = 8
+ 120              		@ frame_needed = 0, uses_anonymous_args = 0
+ 121              		@ link register save eliminated.
+ 122 0000 82B0     		sub	sp, sp, #8
+ 123              	.LCFI0:
+ 124              		.cfi_def_cfa_offset 8
+ 125:Core/Src/main.c ****     for (volatile int i = 0; i < 100000; i++)
+ 125              		.loc 1 125 5 view .LVU31
+ 126              	.LBB2:
+ 127              		.loc 1 125 10 view .LVU32
+ 128              		.loc 1 125 23 is_stmt 0 view .LVU33
+ 129 0002 0023     		movs	r3, #0
+ 130 0004 0193     		str	r3, [sp, #4]
+ 131              		.loc 1 125 5 view .LVU34
+ 132 0006 03E0     		b	.L7
+ 133              	.L8:
+ 126:Core/Src/main.c ****     {
+ 127:Core/Src/main.c ****         __asm__("nop");
+ 134              		.loc 1 127 9 is_stmt 1 view .LVU35
+ 135              		.syntax unified
+ 136              	@ 127 "Core/Src/main.c" 1
+ 137 0008 00BF     		nop
+ 138              	@ 0 "" 2
+ 125:Core/Src/main.c ****     for (volatile int i = 0; i < 100000; i++)
+ 139              		.loc 1 125 43 discriminator 3 view .LVU36
+ 140              		.thumb
+ 141              		.syntax unified
+ 142 000a 019B     		ldr	r3, [sp, #4]
+ 143 000c 0133     		adds	r3, r3, #1
+ 144 000e 0193     		str	r3, [sp, #4]
+ 145              	.L7:
+ 125:Core/Src/main.c ****     for (volatile int i = 0; i < 100000; i++)
+ 146              		.loc 1 125 32 discriminator 1 view .LVU37
+ 147 0010 019A     		ldr	r2, [sp, #4]
+ 148 0012 024B     		ldr	r3, .L10
+ 149 0014 9A42     		cmp	r2, r3
+ 150 0016 F7DD     		ble	.L8
+ 151              	.LBE2:
+ 128:Core/Src/main.c ****     }
+ 129:Core/Src/main.c **** }
+ 152              		.loc 1 129 1 is_stmt 0 view .LVU38
+ 153 0018 02B0     		add	sp, sp, #8
+ 154              	.LCFI1:
+ 155              		.cfi_def_cfa_offset 0
+ 156              		@ sp needed
+ 157 001a 7047     		bx	lr
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 6
+
+
+ 158              	.L11:
+ 159              		.align	2
+ 160              	.L10:
+ 161 001c 9F860100 		.word	99999
+ 162              		.cfi_endproc
+ 163              	.LFE132:
+ 165              		.section	.text.main,"ax",%progbits
+ 166              		.align	1
+ 167              		.global	main
+ 168              		.syntax unified
+ 169              		.thumb
+ 170              		.thumb_func
+ 172              	main:
+ 173              	.LFB130:
+  21:Core/Src/main.c **** 
+ 174              		.loc 1 21 1 is_stmt 1 view -0
+ 175              		.cfi_startproc
+ 176              		@ Volatile: function does not return.
+ 177              		@ args = 0, pretend = 0, frame = 0
+ 178              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179 0000 08B5     		push	{r3, lr}
+ 180              	.LCFI2:
+ 181              		.cfi_def_cfa_offset 8
+ 182              		.cfi_offset 3, -8
+ 183              		.cfi_offset 14, -4
+  23:Core/Src/main.c **** 
+ 184              		.loc 1 23 5 view .LVU40
+  23:Core/Src/main.c **** 
+ 185              		.loc 1 23 8 is_stmt 0 view .LVU41
+ 186 0002 5F4A     		ldr	r2, .L24
+ 187 0004 136B     		ldr	r3, [r2, #48]
+  23:Core/Src/main.c **** 
+ 188              		.loc 1 23 18 view .LVU42
+ 189 0006 43F00603 		orr	r3, r3, #6
+ 190 000a 1363     		str	r3, [r2, #48]
+  26:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);
+ 191              		.loc 1 26 5 is_stmt 1 view .LVU43
+ 192 000c 5D4B     		ldr	r3, .L24+4
+ 193 000e 1A68     		ldr	r2, [r3]
+ 194 0010 42F00102 		orr	r2, r2, #1
+ 195 0014 1A60     		str	r2, [r3]
+  27:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
+ 196              		.loc 1 27 5 view .LVU44
+ 197 0016 1A68     		ldr	r2, [r3]
+ 198 0018 42F48042 		orr	r2, r2, #16384
+ 199 001c 1A60     		str	r2, [r3]
+  28:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0);
+ 200              		.loc 1 28 5 view .LVU45
+ 201 001e 1A68     		ldr	r2, [r3]
+ 202 0020 42F08052 		orr	r2, r2, #268435456
+ 203 0024 1A60     		str	r2, [r3]
+  29:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0);
+ 204              		.loc 1 29 5 view .LVU46
+ 205 0026 1A68     		ldr	r2, [r3]
+ 206 0028 42F48032 		orr	r2, r2, #65536
+ 207 002c 1A60     		str	r2, [r3]
+  30:Core/Src/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0);
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 7
+
+
+ 208              		.loc 1 30 5 view .LVU47
+ 209 002e 1A68     		ldr	r2, [r3]
+ 210 0030 42F48022 		orr	r2, r2, #262144
+ 211 0034 1A60     		str	r2, [r3]
+  31:Core/Src/main.c **** 
+ 212              		.loc 1 31 5 view .LVU48
+ 213 0036 1A68     		ldr	r2, [r3]
+ 214 0038 42F48012 		orr	r2, r2, #1048576
+ 215 003c 1A60     		str	r2, [r3]
+  33:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7);
+ 216              		.loc 1 33 5 view .LVU49
+ 217 003e 5A68     		ldr	r2, [r3, #4]
+ 218 0040 22F00102 		bic	r2, r2, #1
+ 219 0044 5A60     		str	r2, [r3, #4]
+  34:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
+ 220              		.loc 1 34 5 view .LVU50
+ 221 0046 5A68     		ldr	r2, [r3, #4]
+ 222 0048 22F08002 		bic	r2, r2, #128
+ 223 004c 5A60     		str	r2, [r3, #4]
+  35:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_8);
+ 224              		.loc 1 35 5 view .LVU51
+ 225 004e 5A68     		ldr	r2, [r3, #4]
+ 226 0050 22F48042 		bic	r2, r2, #16384
+ 227 0054 5A60     		str	r2, [r3, #4]
+  36:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_9);
+ 228              		.loc 1 36 5 view .LVU52
+ 229 0056 5A68     		ldr	r2, [r3, #4]
+ 230 0058 22F48072 		bic	r2, r2, #256
+ 231 005c 5A60     		str	r2, [r3, #4]
+  37:Core/Src/main.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_10);
+ 232              		.loc 1 37 5 view .LVU53
+ 233 005e 5A68     		ldr	r2, [r3, #4]
+ 234 0060 22F40072 		bic	r2, r2, #512
+ 235 0064 5A60     		str	r2, [r3, #4]
+  38:Core/Src/main.c **** 
+ 236              		.loc 1 38 5 view .LVU54
+ 237 0066 5A68     		ldr	r2, [r3, #4]
+ 238 0068 22F48062 		bic	r2, r2, #1024
+ 239 006c 5A60     		str	r2, [r3, #4]
+  40:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
+ 240              		.loc 1 40 5 view .LVU55
+ 241 006e 9A68     		ldr	r2, [r3, #8]
+ 242 0070 42F00102 		orr	r2, r2, #1
+ 243 0074 9A60     		str	r2, [r3, #8]
+  41:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
+ 244              		.loc 1 41 5 view .LVU56
+ 245 0076 9A68     		ldr	r2, [r3, #8]
+ 246 0078 42F48042 		orr	r2, r2, #16384
+ 247 007c 9A60     		str	r2, [r3, #8]
+  42:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR8_0);
+ 248              		.loc 1 42 5 view .LVU57
+ 249 007e 9A68     		ldr	r2, [r3, #8]
+ 250 0080 42F08052 		orr	r2, r2, #268435456
+ 251 0084 9A60     		str	r2, [r3, #8]
+  43:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR9_0);
+ 252              		.loc 1 43 5 view .LVU58
+ 253 0086 9A68     		ldr	r2, [r3, #8]
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 8
+
+
+ 254 0088 42F48032 		orr	r2, r2, #65536
+ 255 008c 9A60     		str	r2, [r3, #8]
+  44:Core/Src/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR10_0);
+ 256              		.loc 1 44 5 view .LVU59
+ 257 008e 9A68     		ldr	r2, [r3, #8]
+ 258 0090 42F48022 		orr	r2, r2, #262144
+ 259 0094 9A60     		str	r2, [r3, #8]
+  45:Core/Src/main.c **** 
+ 260              		.loc 1 45 5 view .LVU60
+ 261 0096 9A68     		ldr	r2, [r3, #8]
+ 262 0098 42F48012 		orr	r2, r2, #1048576
+ 263 009c 9A60     		str	r2, [r3, #8]
+  47:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
+ 264              		.loc 1 47 5 view .LVU61
+ 265 009e DA68     		ldr	r2, [r3, #12]
+ 266 00a0 22F00102 		bic	r2, r2, #1
+ 267 00a4 DA60     		str	r2, [r3, #12]
+  48:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
+ 268              		.loc 1 48 5 view .LVU62
+ 269 00a6 DA68     		ldr	r2, [r3, #12]
+ 270 00a8 22F48042 		bic	r2, r2, #16384
+ 271 00ac DA60     		str	r2, [r3, #12]
+  49:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR8_0);
+ 272              		.loc 1 49 5 view .LVU63
+ 273 00ae DA68     		ldr	r2, [r3, #12]
+ 274 00b0 22F08052 		bic	r2, r2, #268435456
+ 275 00b4 DA60     		str	r2, [r3, #12]
+  50:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR9_0);
+ 276              		.loc 1 50 5 view .LVU64
+ 277 00b6 DA68     		ldr	r2, [r3, #12]
+ 278 00b8 22F48032 		bic	r2, r2, #65536
+ 279 00bc DA60     		str	r2, [r3, #12]
+  51:Core/Src/main.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR10_0);
+ 280              		.loc 1 51 5 view .LVU65
+ 281 00be DA68     		ldr	r2, [r3, #12]
+ 282 00c0 22F48022 		bic	r2, r2, #262144
+ 283 00c4 DA60     		str	r2, [r3, #12]
+  52:Core/Src/main.c **** 
+ 284              		.loc 1 52 5 view .LVU66
+ 285 00c6 DA68     		ldr	r2, [r3, #12]
+ 286 00c8 22F48012 		bic	r2, r2, #1048576
+ 287 00cc DA60     		str	r2, [r3, #12]
+  55:Core/Src/main.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1);
+ 288              		.loc 1 55 5 view .LVU67
+ 289 00ce 03F58063 		add	r3, r3, #1024
+ 290 00d2 1A68     		ldr	r2, [r3]
+ 291 00d4 22F04062 		bic	r2, r2, #201326592
+ 292 00d8 1A60     		str	r2, [r3]
+  56:Core/Src/main.c **** 
+ 293              		.loc 1 56 5 view .LVU68
+ 294 00da DA68     		ldr	r2, [r3, #12]
+ 295 00dc 42F00062 		orr	r2, r2, #134217728
+ 296 00e0 DA60     		str	r2, [r3, #12]
+ 297 00e2 09E0     		b	.L16
+ 298              	.L15:
+  70:Core/Src/main.c ****                     ; // Wait  button free
+ 299              		.loc 1 70 64 discriminator 1 view .LVU69
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 9
+
+
+  70:Core/Src/main.c ****                     ; // Wait  button free
+ 300              		.loc 1 70 25 is_stmt 0 discriminator 1 view .LVU70
+ 301 00e4 284B     		ldr	r3, .L24+8
+ 302 00e6 1B69     		ldr	r3, [r3, #16]
+  70:Core/Src/main.c ****                     ; // Wait  button free
+ 303              		.loc 1 70 64 discriminator 1 view .LVU71
+ 304 00e8 13F4005F 		tst	r3, #8192
+ 305 00ec FAD1     		bne	.L15
+ 306              	.L13:
+  76:Core/Src/main.c ****         {
+ 307              		.loc 1 76 9 is_stmt 1 view .LVU72
+  76:Core/Src/main.c ****         {
+ 308              		.loc 1 76 14 is_stmt 0 view .LVU73
+ 309 00ee 264B     		ldr	r3, .L24+8
+ 310 00f0 1B69     		ldr	r3, [r3, #16]
+  76:Core/Src/main.c ****         {
+ 311              		.loc 1 76 12 view .LVU74
+ 312 00f2 13F0400F 		tst	r3, #64
+ 313 00f6 18D1     		bne	.L23
+ 314              	.L16:
+  58:Core/Src/main.c ****     {
+ 315              		.loc 1 58 5 is_stmt 1 view .LVU75
+  62:Core/Src/main.c ****         {
+ 316              		.loc 1 62 9 view .LVU76
+  62:Core/Src/main.c ****         {
+ 317              		.loc 1 62 14 is_stmt 0 view .LVU77
+ 318 00f8 234B     		ldr	r3, .L24+8
+ 319 00fa 1B69     		ldr	r3, [r3, #16]
+  62:Core/Src/main.c ****         {
+ 320              		.loc 1 62 12 view .LVU78
+ 321 00fc 13F4005F 		tst	r3, #8192
+ 322 0100 F5D0     		beq	.L13
+  64:Core/Src/main.c ****             if ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) != 0) //  PC13 is pressed
+ 323              		.loc 1 64 13 is_stmt 1 view .LVU79
+ 324 0102 FFF7FEFF 		bl	delay
+ 325              	.LVL1:
+  65:Core/Src/main.c ****             {
+ 326              		.loc 1 65 13 view .LVU80
+  65:Core/Src/main.c ****             {
+ 327              		.loc 1 65 18 is_stmt 0 view .LVU81
+ 328 0106 204B     		ldr	r3, .L24+8
+ 329 0108 1B69     		ldr	r3, [r3, #16]
+  65:Core/Src/main.c ****             {
+ 330              		.loc 1 65 16 view .LVU82
+ 331 010a 13F4005F 		tst	r3, #8192
+ 332 010e EED0     		beq	.L13
+  67:Core/Src/main.c ****                 if (led_count > 6)
+ 333              		.loc 1 67 17 is_stmt 1 view .LVU83
+  67:Core/Src/main.c ****                 if (led_count > 6)
+ 334              		.loc 1 67 26 is_stmt 0 view .LVU84
+ 335 0110 1E4A     		ldr	r2, .L24+12
+ 336 0112 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 337 0114 0133     		adds	r3, r3, #1
+ 338 0116 DBB2     		uxtb	r3, r3
+ 339 0118 1370     		strb	r3, [r2]
+  68:Core/Src/main.c ****                     led_count = 0; // 循环回到1
+ 340              		.loc 1 68 17 is_stmt 1 view .LVU85
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 10
+
+
+  68:Core/Src/main.c ****                     led_count = 0; // 循环回到1
+ 341              		.loc 1 68 31 is_stmt 0 view .LVU86
+ 342 011a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 343 011c DBB2     		uxtb	r3, r3
+  68:Core/Src/main.c ****                     led_count = 0; // 循环回到1
+ 344              		.loc 1 68 20 view .LVU87
+ 345 011e 062B     		cmp	r3, #6
+ 346 0120 E0D9     		bls	.L15
+  69:Core/Src/main.c ****                 while ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) != 0)
+ 347              		.loc 1 69 21 is_stmt 1 view .LVU88
+  69:Core/Src/main.c ****                 while ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) != 0)
+ 348              		.loc 1 69 31 is_stmt 0 view .LVU89
+ 349 0122 1346     		mov	r3, r2
+ 350 0124 0022     		movs	r2, #0
+ 351 0126 1A70     		strb	r2, [r3]
+ 352 0128 DCE7     		b	.L15
+ 353              	.L23:
+  78:Core/Src/main.c ****             if ((READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_6)) != 0) //  PC13 is pressed
+ 354              		.loc 1 78 13 is_stmt 1 view .LVU90
+ 355 012a FFF7FEFF 		bl	delay
+ 356              	.LVL2:
+  79:Core/Src/main.c ****             {
+ 357              		.loc 1 79 13 view .LVU91
+  79:Core/Src/main.c ****             {
+ 358              		.loc 1 79 18 is_stmt 0 view .LVU92
+ 359 012e 164B     		ldr	r3, .L24+8
+ 360 0130 1B69     		ldr	r3, [r3, #16]
+  79:Core/Src/main.c ****             {
+ 361              		.loc 1 79 16 view .LVU93
+ 362 0132 13F0400F 		tst	r3, #64
+ 363 0136 DFD0     		beq	.L16
+  81:Core/Src/main.c ****                 if (current_led > 6)
+ 364              		.loc 1 81 17 is_stmt 1 view .LVU94
+ 365 0138 144B     		ldr	r3, .L24+12
+ 366 013a 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  81:Core/Src/main.c ****                 if (current_led > 6)
+ 367              		.loc 1 81 29 is_stmt 0 view .LVU95
+ 368 013c 144A     		ldr	r2, .L24+16
+ 369 013e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 370 0140 0B44     		add	r3, r3, r1
+ 371 0142 DBB2     		uxtb	r3, r3
+ 372 0144 1370     		strb	r3, [r2]
+  82:Core/Src/main.c ****                 {
+ 373              		.loc 1 82 17 is_stmt 1 view .LVU96
+  82:Core/Src/main.c ****                 {
+ 374              		.loc 1 82 33 is_stmt 0 view .LVU97
+ 375 0146 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 376 0148 DBB2     		uxtb	r3, r3
+  82:Core/Src/main.c ****                 {
+ 377              		.loc 1 82 20 view .LVU98
+ 378 014a 062B     		cmp	r3, #6
+ 379 014c 13D9     		bls	.L18
+  84:Core/Src/main.c ****                     current_led = 0; // 重置状态
+ 380              		.loc 1 84 21 is_stmt 1 view .LVU99
+  84:Core/Src/main.c ****                     current_led = 0; // 重置状态
+ 381              		.loc 1 84 31 is_stmt 0 view .LVU100
+ 382 014e 0023     		movs	r3, #0
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 11
+
+
+ 383 0150 0E4A     		ldr	r2, .L24+12
+ 384 0152 1370     		strb	r3, [r2]
+  85:Core/Src/main.c ****                     GPIOB->BSRR = (GPIO_BSRR_BR0 | GPIO_BSRR_BR7 | GPIO_BSRR_BR14);
+ 385              		.loc 1 85 21 is_stmt 1 view .LVU101
+  85:Core/Src/main.c ****                     GPIOB->BSRR = (GPIO_BSRR_BR0 | GPIO_BSRR_BR7 | GPIO_BSRR_BR14);
+ 386              		.loc 1 85 33 is_stmt 0 view .LVU102
+ 387 0154 0E4A     		ldr	r2, .L24+16
+ 388 0156 1370     		strb	r3, [r2]
+  86:Core/Src/main.c ****                     GPIOB->BSRR = (GPIO_BSRR_BR8 | GPIO_BSRR_BR9 | GPIO_BSRR_BR10); // 熄灭所有
+ 389              		.loc 1 86 21 is_stmt 1 view .LVU103
+  86:Core/Src/main.c ****                     GPIOB->BSRR = (GPIO_BSRR_BR8 | GPIO_BSRR_BR9 | GPIO_BSRR_BR10); // 熄灭所有
+ 390              		.loc 1 86 33 is_stmt 0 view .LVU104
+ 391 0158 03F18043 		add	r3, r3, #1073741824
+ 392 015c 03F50133 		add	r3, r3, #132096
+ 393 0160 0C4A     		ldr	r2, .L24+20
+ 394 0162 9A61     		str	r2, [r3, #24]
+  87:Core/Src/main.c ****                 }
+ 395              		.loc 1 87 21 is_stmt 1 view .LVU105
+  87:Core/Src/main.c ****                 }
+ 396              		.loc 1 87 33 is_stmt 0 view .LVU106
+ 397 0164 4FF0E062 		mov	r2, #117440512
+ 398 0168 9A61     		str	r2, [r3, #24]
+ 399              	.L20:
+  93:Core/Src/main.c ****                     ; // Wait  button free
+ 400              		.loc 1 93 63 is_stmt 1 discriminator 1 view .LVU107
+  93:Core/Src/main.c ****                     ; // Wait  button free
+ 401              		.loc 1 93 25 is_stmt 0 discriminator 1 view .LVU108
+ 402 016a 074B     		ldr	r3, .L24+8
+ 403 016c 1B69     		ldr	r3, [r3, #16]
+  93:Core/Src/main.c ****                     ; // Wait  button free
+ 404              		.loc 1 93 63 discriminator 1 view .LVU109
+ 405 016e 13F0400F 		tst	r3, #64
+ 406 0172 FAD1     		bne	.L20
+ 407 0174 C0E7     		b	.L16
+ 408              	.L18:
+  91:Core/Src/main.c ****                 }
+ 409              		.loc 1 91 21 is_stmt 1 view .LVU110
+ 410 0176 064B     		ldr	r3, .L24+16
+ 411 0178 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 412 017a FFF7FEFF 		bl	UpdateLEDs
+ 413              	.LVL3:
+ 414 017e F4E7     		b	.L20
+ 415              	.L25:
+ 416              		.align	2
+ 417              	.L24:
+ 418 0180 00380240 		.word	1073887232
+ 419 0184 00040240 		.word	1073873920
+ 420 0188 00080240 		.word	1073874944
+ 421 018c 00000000 		.word	led_count
+ 422 0190 00000000 		.word	current_led
+ 423 0194 00008140 		.word	1082195968
+ 424              		.cfi_endproc
+ 425              	.LFE130:
+ 427              		.global	current_led
+ 428              		.section	.bss.current_led,"aw",%nobits
+ 431              	current_led:
+ 432 0000 00       		.space	1
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 12
+
+
+ 433              		.global	led_count
+ 434              		.section	.bss.led_count,"aw",%nobits
+ 437              	led_count:
+ 438 0000 00       		.space	1
+ 439              		.text
+ 440              	.Letext0:
+ 441              		.file 2 "D:/STEM32_works/Danpianji/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 442              		.file 3 "D:/STEM32_works/Danpianji/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 443              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:21     .text.UpdateLEDs:00000000 $t
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:27     .text.UpdateLEDs:00000000 UpdateLEDs
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:103    .text.UpdateLEDs:00000054 $d
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:109    .text.delay:00000000 $t
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:115    .text.delay:00000000 delay
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:161    .text.delay:0000001c $d
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:166    .text.main:00000000 $t
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:172    .text.main:00000000 main
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:418    .text.main:00000180 $d
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:437    .bss.led_count:00000000 led_count
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:431    .bss.current_led:00000000 current_led
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:432    .bss.current_led:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\cc5Zp5hg.s:438    .bss.led_count:00000000 $d
+
+NO UNDEFINED SYMBOLS
