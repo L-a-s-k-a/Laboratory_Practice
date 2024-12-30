@@ -1,0 +1,1090 @@
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.SetLed,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	SetLed:
+  27              	.LVL0:
+  28              	.LFB131:
+   1:Core/Src/main.c **** // #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** // const uint16_t LED_PINS[LED_COUNT] = {0, 7, 14, 2, 6, 1}; // PB0, PB7, PB14, PB8, PB9, PB10
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** // // 频率选项
+   7:Core/Src/main.c **** // float led_frequency_options[] = {0.6, 1.3, 2.4}; // 模式1的LED频率选项
+   8:Core/Src/main.c **** // float blink_frequency_options[] = {0.2, 0.9, 1.5}; // 模式2的闪烁频率选项
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** // // 全局变量
+  11:Core/Src/main.c **** // volatile uint8_t mode = 0; // 0: 模式1, 1: 模式2
+  12:Core/Src/main.c **** // volatile uint8_t led_index = 0; // 当前LED索引
+  13:Core/Src/main.c **** // volatile float led_frequency = 0.6; // 模式1的LED频率
+  14:Core/Src/main.c **** // volatile float current_blink_frequency = 0.2; // 当前LED闪烁频率
+  15:Core/Src/main.c **** // volatile uint32_t tick_count = 0; // SysTick计数
+  16:Core/Src/main.c **** // volatile uint8_t selected_led = 0; // 当前选择的LED
+  17:Core/Src/main.c **** // uint8_t flagbutton1,flagbutton2,flagbutton3;
+  18:Core/Src/main.c **** // uint16_t  DelayTickCount;
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c **** // // LED控制函数
+  21:Core/Src/main.c **** // void LED_Control(void) {
+  22:Core/Src/main.c **** //     if (mode == 0) { // 模式1：依次闪烁
+  23:Core/Src/main.c **** //         if (tick_count >= (1000 / led_frequency)) { // 根据频率控制LED状态
+  24:Core/Src/main.c **** //             GPIOB->BSRR = (0x3F << 16); // 关闭所有LED
+  25:Core/Src/main.c **** //             GPIOB->BSRR = (1 << LED_PINS[led_index]); // 点亮当前LED
+  26:Core/Src/main.c **** //             led_index = (led_index + 1) % LED_COUNT; // 更新LED索引
+  27:Core/Src/main.c **** //             tick_count = 0; // 重置计数
+  28:Core/Src/main.c **** //         }
+  29:Core/Src/main.c **** //     } else { // 模式2：闪烁
+  30:Core/Src/main.c **** //         if (tick_count >= (1000 / current_blink_frequency)) { // 根据闪烁频率
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 2
+
+
+  31:Core/Src/main.c **** //             GPIOB->ODR ^= (1 << LED_PINS[selected_led]); // 切换LED状态
+  32:Core/Src/main.c **** //             tick_count = 0; // 重置计数
+  33:Core/Src/main.c **** //         }
+  34:Core/Src/main.c **** //     }
+  35:Core/Src/main.c **** // }
+  36:Core/Src/main.c **** 
+  37:Core/Src/main.c **** // // 主函数
+  38:Core/Src/main.c **** // int main(void) {
+  39:Core/Src/main.c **** //     GPIO_Ini();   // 初始化GPIO
+  40:Core/Src/main.c **** //     SysTick_Init(); // 初始化SysTick
+  41:Core/Src/main.c **** 
+  42:Core/Src/main.c **** //     while (1) {
+  43:Core/Src/main.c **** //         flagbutton1=READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0;
+  44:Core/Src/main.c **** //         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+  45:Core/Src/main.c **** //         flagbutton3=READ_BIT(GPIOC->IDR,GPIO_IDR_ID3) != 0;
+  46:Core/Src/main.c **** //         // 检测按钮1 (切换模式)
+  47:Core/Src/main.c **** //         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0) { // 如果PC6被按下
+  48:Core/Src/main.c **** //         if(DelayTickCount >= DELAY_BUTTON_FILTER){ 
+  49:Core/Src/main.c **** //         mode ^= 1; // 切换模式
+  50:Core/Src/main.c **** //         DelayTickCount = 0;
+  51:Core/Src/main.c **** //         }
+  52:Core/Src/main.c **** //         }
+  53:Core/Src/main.c **** 
+  54:Core/Src/main.c **** //         // 检测按钮2 (调整频率)
+  55:Core/Src/main.c **** //         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0) { // 如果PC12被按下
+  56:Core/Src/main.c **** //             if(DelayTickCount >= DELAY_BUTTON_FILTER){ 
+  57:Core/Src/main.c **** //             if (mode == 0) { // 在模式1中
+  58:Core/Src/main.c **** //                 // 循环切换LED频率
+  59:Core/Src/main.c **** //                 if (led_frequency == 0.6) {
+  60:Core/Src/main.c **** //                     led_frequency = 1.3;
+  61:Core/Src/main.c **** //                 } else if (led_frequency == 1.3) {
+  62:Core/Src/main.c **** //                     led_frequency = 2.4;
+  63:Core/Src/main.c **** //                 } else {
+  64:Core/Src/main.c **** //                     led_frequency = 0.6;
+  65:Core/Src/main.c **** //                 }
+  66:Core/Src/main.c **** //             } else { // 在模式2中
+  67:Core/Src/main.c **** //                 // 循环切换当前LED的闪烁频率
+  68:Core/Src/main.c **** //                 if (current_blink_frequency == 0.2) {
+  69:Core/Src/main.c **** //                     current_blink_frequency = 0.9;
+  70:Core/Src/main.c **** //                 } else if (current_blink_frequency == 0.9) {
+  71:Core/Src/main.c **** //                     current_blink_frequency = 1.5;
+  72:Core/Src/main.c **** //                 } else {
+  73:Core/Src/main.c **** //                     current_blink_frequency = 0.2;
+  74:Core/Src/main.c **** //                 }
+  75:Core/Src/main.c **** //             }
+  76:Core/Src/main.c **** //             DelayTickCount = 0;
+  77:Core/Src/main.c **** //         }
+  78:Core/Src/main.c **** 
+  79:Core/Src/main.c **** //         }
+  80:Core/Src/main.c **** 
+  81:Core/Src/main.c **** //         // 检测按钮3 (选择下一个LED)
+  82:Core/Src/main.c **** //         if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID3) != 0) { // 如果PC3被按下
+  83:Core/Src/main.c **** //          if(DelayTickCount >= DELAY_BUTTON_FILTER){ 
+  84:Core/Src/main.c **** //             selected_led = (selected_led + 1) % LED_COUNT; // 循环选择LED
+  85:Core/Src/main.c **** //             DelayTickCount = 0;
+  86:Core/Src/main.c **** //             }
+  87:Core/Src/main.c ****             
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 3
+
+
+  88:Core/Src/main.c **** //         }
+  89:Core/Src/main.c **** 
+  90:Core/Src/main.c **** 
+  91:Core/Src/main.c ****     
+  92:Core/Src/main.c **** //     }
+  93:Core/Src/main.c **** // }
+  94:Core/Src/main.c **** 
+  95:Core/Src/main.c **** 
+  96:Core/Src/main.c **** #include "stm32f4xx.h"       // 包含 STM32F4 系列的核心与寄存器定义
+  97:Core/Src/main.c **** #include "init.h"           // 包含本项目的初始化函数声明（SystemClock_Config、GPIO_
+  98:Core/Src/main.c **** #include <stdint.h>         // 标准整数类型头文件，如 uint8_t、uint32_t 等
+  99:Core/Src/main.c **** 
+ 100:Core/Src/main.c **** // 手动定义并初始化系统时钟全局变量，用于 SysTick 等频率计算
+ 101:Core/Src/main.c **** uint32_t SystemCoreClock = 16000000U; 
+ 102:Core/Src/main.c **** 
+ 103:Core/Src/main.c **** //-------------------------- 全局变量定义 --------------------------//
+ 104:Core/Src/main.c **** // SysTick 累计计数，每 1ms 加 1，用于延时或周期性事件
+ 105:Core/Src/main.c **** volatile uint32_t GlobalTickCount = 0;         
+ 106:Core/Src/main.c **** 
+ 107:Core/Src/main.c **** // 外部中断计数器，用于简单防抖等场合（记录距离上次按键的时间）
+ 108:Core/Src/main.c **** volatile uint32_t ExternInterruptTickCount = 0; 
+ 109:Core/Src/main.c **** 
+ 110:Core/Src/main.c **** // 当前模式：1 表示模式1（对灯循环），2 表示模式2（多灯独立闪烁）a
+ 111:Core/Src/main.c **** volatile uint8_t  CurrentMode = 1;       
+ 112:Core/Src/main.c ****        // 默认上电后处于模式1
+ 113:Core/Src/main.c **** uint8_t flagbutton1,flagbutton2,flagbutton3;
+ 114:Core/Src/main.c **** 
+ 115:Core/Src/main.c **** volatile float period[] = {0.6, 1.3, 2.4}; // 模式1的LED频率选项
+ 116:Core/Src/main.c **** float blink_frequency_options[] = {0.2, 0.9, 1.5}; // 模式2的闪烁频率选项
+ 117:Core/Src/main.c **** //-------------------------------------------------
+ 118:Core/Src/main.c **** // 模式1 (对灯) 相关
+ 119:Core/Src/main.c **** //-------------------------------------------------
+ 120:Core/Src/main.c **** 
+ 121:Core/Src/main.c **** // 定义可用的对灯闪烁频率个数
+ 122:Core/Src/main.c **** #define NUM_MODE1_FREQ 3
+ 123:Core/Src/main.c **** // 对应的三种闪烁周期 (单位 ms) => 0.5Hz ~2000ms, 1.7Hz ~588ms, 2.2Hz ~455ms
+ 124:Core/Src/main.c **** static const uint32_t Mode1Periods[NUM_MODE1_FREQ] = {1667, 769, 417};
+ 125:Core/Src/main.c **** 
+ 126:Core/Src/main.c **** // 当前使用的对灯频率档位 (0..2)
+ 127:Core/Src/main.c **** volatile uint8_t  M1FreqIndex = 0;  
+ 128:Core/Src/main.c **** // 当前对灯步骤 (0..2)，分别表示 (3&4)、(2&5)、(1&6)
+ 129:Core/Src/main.c **** volatile uint8_t  M1Step = 0;       
+ 130:Core/Src/main.c **** // 记录下一次进行对灯切换的时间（基于 GlobalTickCount）
+ 131:Core/Src/main.c **** volatile uint32_t M1NextToggleTime = 0; 
+ 132:Core/Src/main.c **** 
+ 133:Core/Src/main.c **** //-------------------------------------------------
+ 134:Core/Src/main.c **** // 模式2 (多灯独立闪烁) 相关
+ 135:Core/Src/main.c **** //-------------------------------------------------
+ 136:Core/Src/main.c **** 
+ 137:Core/Src/main.c **** // 定义可用的多灯闪烁频率档数
+ 138:Core/Src/main.c **** #define NUM_MODE2_FREQ 3
+ 139:Core/Src/main.c **** // 对应的三种闪烁周期 (单位 ms)：0.3Hz ~3333ms, 0.8Hz ~1250ms, 1.4Hz ~714ms
+ 140:Core/Src/main.c **** static const uint32_t Mode2Periods[NUM_MODE2_FREQ] = {2000, 1111, 666};
+ 141:Core/Src/main.c **** 
+ 142:Core/Src/main.c **** // 数组：每个 LED 是否已经被激活进行闪烁 (1=激活, 0=未激活)
+ 143:Core/Src/main.c **** volatile uint8_t  LedActive[6] = {0,0,0,0,0,0};  
+ 144:Core/Src/main.c **** // 数组：每个 LED 当前使用的频率档位 (0..2)
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 4
+
+
+ 145:Core/Src/main.c **** volatile uint8_t  LedFreqIndex[6] = {0,0,0,0,0,0};
+ 146:Core/Src/main.c **** // 数组：每个 LED 下一次翻转（亮↔灭）的时间戳
+ 147:Core/Src/main.c **** static uint32_t   LedNextToggleTime[6] = {0,0,0,0,0,0};
+ 148:Core/Src/main.c **** // 数组：每个 LED 的当前亮灭状态 (0=灭, 1=亮)
+ 149:Core/Src/main.c **** static uint8_t    LedState[6] = {0,0,0,0,0,0};
+ 150:Core/Src/main.c **** 
+ 151:Core/Src/main.c **** // 当前选中的 LED 索引 (0..5)，用于模式2下操作“哪个灯”闪烁频率
+ 152:Core/Src/main.c **** volatile uint8_t  M2SelectedLed = 0; 
+ 153:Core/Src/main.c **** 
+ 154:Core/Src/main.c **** //-------------------------------------------------
+ 155:Core/Src/main.c **** // LED 与引脚的对应关系 (0..5)
+ 156:Core/Src/main.c **** // 这里数组 LED_PIN[i] 给出第 i 盏灯的物理 PBx 引脚编号
+ 157:Core/Src/main.c **** // 例：LED_PIN[0] = 0 => PB0, LED_PIN[1] = 7 => PB7, ...
+ 158:Core/Src/main.c **** // 这就让我们在 SetLed 函数里用到正确的位掩码 (1<<pin)
+ 159:Core/Src/main.c **** //-------------------------------------------------
+ 160:Core/Src/main.c **** static const uint8_t LED_PIN[6] = {0,7,14,6,2,1};
+ 161:Core/Src/main.c **** 
+ 162:Core/Src/main.c **** //----------------- 函数声明 -----------------//
+ 163:Core/Src/main.c **** // 用于设置指定 LED（索引ledIndex）的亮灭状态
+ 164:Core/Src/main.c **** static void SetLed(uint8_t ledIndex, uint8_t on);
+ 165:Core/Src/main.c **** // 模式2下，激活指定 LED 并设置频率
+ 166:Core/Src/main.c **** void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex);
+ 167:Core/Src/main.c **** // 模式2下，取消所有 LED 闪烁并全部熄灭
+ 168:Core/Src/main.c **** void Mode2_DeactivateAll(void);
+ 169:Core/Src/main.c **** 
+ 170:Core/Src/main.c **** //-------------------------------------------------
+ 171:Core/Src/main.c **** // main() - 主函数
+ 172:Core/Src/main.c **** //-------------------------------------------------
+ 173:Core/Src/main.c **** int main(void)
+ 174:Core/Src/main.c **** {
+ 175:Core/Src/main.c ****     SystemClock_Config();
+ 176:Core/Src/main.c ****     SysTick_Init(SystemCoreClock / 1000);
+ 177:Core/Src/main.c ****     GPIO_Init_All();
+ 178:Core/Src/main.c **** 
+ 179:Core/Src/main.c ****     EXTI_Init_All();
+ 180:Core/Src/main.c **** 
+ 181:Core/Src/main.c ****    
+ 182:Core/Src/main.c ****     M1FreqIndex = 0;
+ 183:Core/Src/main.c ****     M1Step = 0;
+ 184:Core/Src/main.c ****     M1NextToggleTime = 0;
+ 185:Core/Src/main.c **** 
+ 186:Core/Src/main.c ****     // 进入无限循环（主循环）
+ 187:Core/Src/main.c ****     while(1)
+ 188:Core/Src/main.c ****     {
+ 189:Core/Src/main.c ****         flagbutton1=READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0;
+ 190:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 191:Core/Src/main.c ****         flagbutton3=READ_BIT(GPIOC->IDR,GPIO_IDR_ID3) != 0;
+ 192:Core/Src/main.c ****         // 如果当前在模式1 => 对灯循环
+ 193:Core/Src/main.c ****         if (CurrentMode == 1)
+ 194:Core/Src/main.c **** {
+ 195:Core/Src/main.c ****     if (GlobalTickCount >= M1NextToggleTime)
+ 196:Core/Src/main.c ****     {
+ 197:Core/Src/main.c ****         // 下次切换时刻
+ 198:Core/Src/main.c ****         M1NextToggleTime = GlobalTickCount + Mode1Periods[M1FreqIndex];
+ 199:Core/Src/main.c **** 
+ 200:Core/Src/main.c ****         // M1Step 轮转 0..5
+ 201:Core/Src/main.c ****         M1Step = (M1Step + 1) % 6;
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 5
+
+
+ 202:Core/Src/main.c **** 
+ 203:Core/Src/main.c ****         // 全部先关灯
+ 204:Core/Src/main.c ****         for(uint8_t i=0; i<6; i++)
+ 205:Core/Src/main.c ****         {
+ 206:Core/Src/main.c ****             SetLed(i, 0);
+ 207:Core/Src/main.c ****         }
+ 208:Core/Src/main.c ****         // 只亮 M1Step 对应的那个 LED
+ 209:Core/Src/main.c ****         SetLed(M1Step, 1);
+ 210:Core/Src/main.c ****     }
+ 211:Core/Src/main.c **** }else
+ 212:Core/Src/main.c **** {
+ 213:Core/Src/main.c ****     // 原先的模式2闪烁逻辑保持
+ 214:Core/Src/main.c **** }
+ 215:Core/Src/main.c **** 
+ 216:Core/Src/main.c ****         {
+ 217:Core/Src/main.c ****             //--------- 模式2：多 LED 独立闪烁 ---------
+ 218:Core/Src/main.c ****             // 逐个检查哪些 LED 被激活
+ 219:Core/Src/main.c ****             for(uint8_t i=0; i<6; i++)
+ 220:Core/Src/main.c ****             {
+ 221:Core/Src/main.c ****                 // 若该 LED 处于激活状态
+ 222:Core/Src/main.c ****                 if(LedActive[i] == 1)
+ 223:Core/Src/main.c ****                 {
+ 224:Core/Src/main.c ****                     // 找到该 LED 的闪烁周期
+ 225:Core/Src/main.c ****                     uint32_t period = Mode2Periods[ LedFreqIndex[i] ];
+ 226:Core/Src/main.c **** 
+ 227:Core/Src/main.c ****                     // 判断是否到了翻转的时间
+ 228:Core/Src/main.c ****                     if(GlobalTickCount >= LedNextToggleTime[i])
+ 229:Core/Src/main.c ****                     {
+ 230:Core/Src/main.c ****                         // 如果当前是灭，就点亮；若是亮，就熄灭
+ 231:Core/Src/main.c ****                         if(LedState[i] == 0)
+ 232:Core/Src/main.c ****                         {
+ 233:Core/Src/main.c ****                             SetLed(i, 1);
+ 234:Core/Src/main.c ****                             LedState[i] = 1;
+ 235:Core/Src/main.c ****                         }
+ 236:Core/Src/main.c ****                         else
+ 237:Core/Src/main.c ****                         {
+ 238:Core/Src/main.c ****                             SetLed(i, 0);
+ 239:Core/Src/main.c ****                             LedState[i] = 0;
+ 240:Core/Src/main.c ****                         }
+ 241:Core/Src/main.c **** 
+ 242:Core/Src/main.c ****                         // 更新下次翻转时间 => 当前时刻 + 半个周期
+ 243:Core/Src/main.c ****                         // 这样亮一半时间，灭一半时间，形成完整周期
+ 244:Core/Src/main.c ****                         LedNextToggleTime[i] = GlobalTickCount + period/2;
+ 245:Core/Src/main.c ****                     }
+ 246:Core/Src/main.c ****                 }
+ 247:Core/Src/main.c ****             }
+ 248:Core/Src/main.c ****         }
+ 249:Core/Src/main.c **** 
+ 250:Core/Src/main.c ****         // 这里可以加入其它需要在主循环里执行的任务
+ 251:Core/Src/main.c ****     }
+ 252:Core/Src/main.c **** }
+ 253:Core/Src/main.c **** 
+ 254:Core/Src/main.c **** //-------------------------------------------------
+ 255:Core/Src/main.c **** // 设置某个 LED（索引 ledIndex）的亮或灭
+ 256:Core/Src/main.c **** // on=1 => 亮, on=0 => 灭
+ 257:Core/Src/main.c **** //-------------------------------------------------
+ 258:Core/Src/main.c **** static void SetLed(uint8_t ledIndex, uint8_t on)
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 6
+
+
+ 259:Core/Src/main.c **** {
+  29              		.loc 1 259 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+ 260:Core/Src/main.c ****     // 获取对应 LED_PIN 数组中的引脚号
+ 261:Core/Src/main.c ****     uint16_t pinMask = 1 << LED_PIN[ledIndex];
+  34              		.loc 1 261 5 view .LVU1
+  35              		.loc 1 261 36 is_stmt 0 view .LVU2
+  36 0000 064B     		ldr	r3, .L4
+  37 0002 1A5C     		ldrb	r2, [r3, r0]	@ zero_extendqisi2
+  38              		.loc 1 261 26 view .LVU3
+  39 0004 0123     		movs	r3, #1
+  40 0006 9340     		lsls	r3, r3, r2
+  41              	.LVL1:
+ 262:Core/Src/main.c **** 
+ 263:Core/Src/main.c ****     // 如果 on=1，就对该引脚置位 (BSRR=pinMask)
+ 264:Core/Src/main.c ****     // 否则对该引脚复位 (BSRR=pinMask<<16)
+ 265:Core/Src/main.c ****     if(on)
+  42              		.loc 1 265 5 is_stmt 1 view .LVU4
+  43              		.loc 1 265 7 is_stmt 0 view .LVU5
+  44 0008 19B1     		cbz	r1, .L2
+ 266:Core/Src/main.c ****     {
+ 267:Core/Src/main.c ****         GPIOB->BSRR = pinMask;  
+  45              		.loc 1 267 9 is_stmt 1 view .LVU6
+  46              		.loc 1 267 21 is_stmt 0 view .LVU7
+  47 000a 9BB2     		uxth	r3, r3
+  48              		.loc 1 267 21 view .LVU8
+  49 000c 044A     		ldr	r2, .L4+4
+  50 000e 9361     		str	r3, [r2, #24]
+  51 0010 7047     		bx	lr
+  52              	.L2:
+ 268:Core/Src/main.c ****     }
+ 269:Core/Src/main.c ****     else
+ 270:Core/Src/main.c ****     {
+ 271:Core/Src/main.c ****         GPIOB->BSRR = (pinMask << 16);
+  53              		.loc 1 271 9 is_stmt 1 view .LVU9
+  54 0012 1B04     		lsls	r3, r3, #16
+  55              	.LVL2:
+  56              		.loc 1 271 21 is_stmt 0 view .LVU10
+  57 0014 024A     		ldr	r2, .L4+4
+  58              	.LVL3:
+  59              		.loc 1 271 21 view .LVU11
+  60 0016 9361     		str	r3, [r2, #24]
+ 272:Core/Src/main.c ****     }
+ 273:Core/Src/main.c **** }
+  61              		.loc 1 273 1 view .LVU12
+  62 0018 7047     		bx	lr
+  63              	.L5:
+  64 001a 00BF     		.align	2
+  65              	.L4:
+  66 001c 00000000 		.word	LED_PIN
+  67 0020 00040240 		.word	1073873920
+  68              		.cfi_endproc
+  69              	.LFE131:
+  71              		.section	.text.main,"ax",%progbits
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 7
+
+
+  72              		.align	1
+  73              		.global	main
+  74              		.syntax unified
+  75              		.thumb
+  76              		.thumb_func
+  78              	main:
+  79              	.LFB130:
+ 174:Core/Src/main.c ****     SystemClock_Config();
+  80              		.loc 1 174 1 is_stmt 1 view -0
+  81              		.cfi_startproc
+  82              		@ args = 0, pretend = 0, frame = 0
+  83              		@ frame_needed = 0, uses_anonymous_args = 0
+  84 0000 70B5     		push	{r4, r5, r6, lr}
+  85              	.LCFI0:
+  86              		.cfi_def_cfa_offset 16
+  87              		.cfi_offset 4, -16
+  88              		.cfi_offset 5, -12
+  89              		.cfi_offset 6, -8
+  90              		.cfi_offset 14, -4
+ 175:Core/Src/main.c ****     SysTick_Init(SystemCoreClock / 1000);
+  91              		.loc 1 175 5 view .LVU14
+  92 0002 FFF7FEFF 		bl	SystemClock_Config
+  93              	.LVL4:
+ 176:Core/Src/main.c ****     GPIO_Init_All();
+  94              		.loc 1 176 5 view .LVU15
+  95 0006 434B     		ldr	r3, .L18
+  96 0008 1868     		ldr	r0, [r3]
+  97 000a 434B     		ldr	r3, .L18+4
+  98 000c A3FB0030 		umull	r3, r0, r3, r0
+  99 0010 8009     		lsrs	r0, r0, #6
+ 100 0012 FFF7FEFF 		bl	SysTick_Init
+ 101              	.LVL5:
+ 177:Core/Src/main.c **** 
+ 102              		.loc 1 177 5 view .LVU16
+ 103 0016 FFF7FEFF 		bl	GPIO_Init_All
+ 104              	.LVL6:
+ 179:Core/Src/main.c **** 
+ 105              		.loc 1 179 5 view .LVU17
+ 106 001a FFF7FEFF 		bl	EXTI_Init_All
+ 107              	.LVL7:
+ 182:Core/Src/main.c ****     M1Step = 0;
+ 108              		.loc 1 182 5 view .LVU18
+ 182:Core/Src/main.c ****     M1Step = 0;
+ 109              		.loc 1 182 17 is_stmt 0 view .LVU19
+ 110 001e 0023     		movs	r3, #0
+ 111 0020 3E4A     		ldr	r2, .L18+8
+ 112 0022 1370     		strb	r3, [r2]
+ 183:Core/Src/main.c ****     M1NextToggleTime = 0;
+ 113              		.loc 1 183 5 is_stmt 1 view .LVU20
+ 183:Core/Src/main.c ****     M1NextToggleTime = 0;
+ 114              		.loc 1 183 12 is_stmt 0 view .LVU21
+ 115 0024 3E4A     		ldr	r2, .L18+12
+ 116 0026 1370     		strb	r3, [r2]
+ 184:Core/Src/main.c **** 
+ 117              		.loc 1 184 5 is_stmt 1 view .LVU22
+ 184:Core/Src/main.c **** 
+ 118              		.loc 1 184 22 is_stmt 0 view .LVU23
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 8
+
+
+ 119 0028 3E4A     		ldr	r2, .L18+16
+ 120 002a 1360     		str	r3, [r2]
+ 121              	.L15:
+ 187:Core/Src/main.c ****     {
+ 122              		.loc 1 187 5 is_stmt 1 view .LVU24
+ 189:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 123              		.loc 1 189 9 view .LVU25
+ 189:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 124              		.loc 1 189 21 is_stmt 0 view .LVU26
+ 125 002c 3E4B     		ldr	r3, .L18+20
+ 126 002e 1A69     		ldr	r2, [r3, #16]
+ 189:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 127              		.loc 1 189 56 view .LVU27
+ 128 0030 C2F34032 		ubfx	r2, r2, #13, #1
+ 189:Core/Src/main.c ****         flagbutton2=READ_BIT(GPIOC->IDR,GPIO_IDR_ID6) != 0;
+ 129              		.loc 1 189 20 view .LVU28
+ 130 0034 3D49     		ldr	r1, .L18+24
+ 131 0036 0A70     		strb	r2, [r1]
+ 190:Core/Src/main.c ****         flagbutton3=READ_BIT(GPIOC->IDR,GPIO_IDR_ID3) != 0;
+ 132              		.loc 1 190 9 is_stmt 1 view .LVU29
+ 190:Core/Src/main.c ****         flagbutton3=READ_BIT(GPIOC->IDR,GPIO_IDR_ID3) != 0;
+ 133              		.loc 1 190 21 is_stmt 0 view .LVU30
+ 134 0038 1A69     		ldr	r2, [r3, #16]
+ 190:Core/Src/main.c ****         flagbutton3=READ_BIT(GPIOC->IDR,GPIO_IDR_ID3) != 0;
+ 135              		.loc 1 190 55 view .LVU31
+ 136 003a C2F38012 		ubfx	r2, r2, #6, #1
+ 190:Core/Src/main.c ****         flagbutton3=READ_BIT(GPIOC->IDR,GPIO_IDR_ID3) != 0;
+ 137              		.loc 1 190 20 view .LVU32
+ 138 003e 3C49     		ldr	r1, .L18+28
+ 139 0040 0A70     		strb	r2, [r1]
+ 191:Core/Src/main.c ****         // 如果当前在模式1 => 对灯循环
+ 140              		.loc 1 191 9 is_stmt 1 view .LVU33
+ 191:Core/Src/main.c ****         // 如果当前在模式1 => 对灯循环
+ 141              		.loc 1 191 21 is_stmt 0 view .LVU34
+ 142 0042 1B69     		ldr	r3, [r3, #16]
+ 191:Core/Src/main.c ****         // 如果当前在模式1 => 对灯循环
+ 143              		.loc 1 191 55 view .LVU35
+ 144 0044 C3F3C003 		ubfx	r3, r3, #3, #1
+ 191:Core/Src/main.c ****         // 如果当前在模式1 => 对灯循环
+ 145              		.loc 1 191 20 view .LVU36
+ 146 0048 3A4A     		ldr	r2, .L18+32
+ 147 004a 1370     		strb	r3, [r2]
+ 193:Core/Src/main.c **** {
+ 148              		.loc 1 193 9 is_stmt 1 view .LVU37
+ 193:Core/Src/main.c **** {
+ 149              		.loc 1 193 25 is_stmt 0 view .LVU38
+ 150 004c 3A4B     		ldr	r3, .L18+36
+ 151 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 152 0050 DBB2     		uxtb	r3, r3
+ 193:Core/Src/main.c **** {
+ 153              		.loc 1 193 12 view .LVU39
+ 154 0052 012B     		cmp	r3, #1
+ 155 0054 01D0     		beq	.L17
+ 156              	.L7:
+ 157              	.LBB2:
+ 204:Core/Src/main.c ****         {
+ 158              		.loc 1 204 21 view .LVU40
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 9
+
+
+ 159 0056 0024     		movs	r4, #0
+ 160 0058 3BE0     		b	.L10
+ 161              	.L17:
+ 162              	.LBE2:
+ 195:Core/Src/main.c ****     {
+ 163              		.loc 1 195 5 is_stmt 1 view .LVU41
+ 195:Core/Src/main.c ****     {
+ 164              		.loc 1 195 25 is_stmt 0 view .LVU42
+ 165 005a 384B     		ldr	r3, .L18+40
+ 166 005c 1A68     		ldr	r2, [r3]
+ 167 005e 314B     		ldr	r3, .L18+16
+ 168 0060 1B68     		ldr	r3, [r3]
+ 195:Core/Src/main.c ****     {
+ 169              		.loc 1 195 8 view .LVU43
+ 170 0062 9A42     		cmp	r2, r3
+ 171 0064 F7D3     		bcc	.L7
+ 198:Core/Src/main.c **** 
+ 172              		.loc 1 198 9 is_stmt 1 view .LVU44
+ 198:Core/Src/main.c **** 
+ 173              		.loc 1 198 58 is_stmt 0 view .LVU45
+ 174 0066 2D4B     		ldr	r3, .L18+8
+ 175 0068 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 176 006a 354B     		ldr	r3, .L18+44
+ 177 006c 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 198:Core/Src/main.c **** 
+ 178              		.loc 1 198 44 view .LVU46
+ 179 0070 324A     		ldr	r2, .L18+40
+ 180 0072 1268     		ldr	r2, [r2]
+ 181 0074 1344     		add	r3, r3, r2
+ 198:Core/Src/main.c **** 
+ 182              		.loc 1 198 26 view .LVU47
+ 183 0076 2B4A     		ldr	r2, .L18+16
+ 184 0078 1360     		str	r3, [r2]
+ 201:Core/Src/main.c **** 
+ 185              		.loc 1 201 9 is_stmt 1 view .LVU48
+ 201:Core/Src/main.c **** 
+ 186              		.loc 1 201 26 is_stmt 0 view .LVU49
+ 187 007a 2949     		ldr	r1, .L18+12
+ 188 007c 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 189 007e 0132     		adds	r2, r2, #1
+ 201:Core/Src/main.c **** 
+ 190              		.loc 1 201 31 view .LVU50
+ 191 0080 304B     		ldr	r3, .L18+48
+ 192 0082 83FB0203 		smull	r0, r3, r3, r2
+ 193 0086 03EB4303 		add	r3, r3, r3, lsl #1
+ 194 008a 5800     		lsls	r0, r3, #1
+ 195 008c 131A     		subs	r3, r2, r0
+ 201:Core/Src/main.c **** 
+ 196              		.loc 1 201 16 view .LVU51
+ 197 008e DBB2     		uxtb	r3, r3
+ 198 0090 0B70     		strb	r3, [r1]
+ 204:Core/Src/main.c ****         {
+ 199              		.loc 1 204 9 is_stmt 1 view .LVU52
+ 200              	.LBB3:
+ 204:Core/Src/main.c ****         {
+ 201              		.loc 1 204 13 view .LVU53
+ 202              	.LVL8:
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 10
+
+
+ 204:Core/Src/main.c ****         {
+ 203              		.loc 1 204 21 is_stmt 0 view .LVU54
+ 204 0092 0024     		movs	r4, #0
+ 204:Core/Src/main.c ****         {
+ 205              		.loc 1 204 9 view .LVU55
+ 206 0094 05E0     		b	.L8
+ 207              	.LVL9:
+ 208              	.L9:
+ 206:Core/Src/main.c ****         }
+ 209              		.loc 1 206 13 is_stmt 1 view .LVU56
+ 210 0096 0021     		movs	r1, #0
+ 211 0098 2046     		mov	r0, r4
+ 212 009a FFF7FEFF 		bl	SetLed
+ 213              	.LVL10:
+ 204:Core/Src/main.c ****         {
+ 214              		.loc 1 204 32 discriminator 3 view .LVU57
+ 215 009e 0134     		adds	r4, r4, #1
+ 216              	.LVL11:
+ 204:Core/Src/main.c ****         {
+ 217              		.loc 1 204 32 is_stmt 0 discriminator 3 view .LVU58
+ 218 00a0 E4B2     		uxtb	r4, r4
+ 219              	.LVL12:
+ 220              	.L8:
+ 204:Core/Src/main.c ****         {
+ 221              		.loc 1 204 27 is_stmt 1 discriminator 1 view .LVU59
+ 222 00a2 052C     		cmp	r4, #5
+ 223 00a4 F7D9     		bls	.L9
+ 224              	.LBE3:
+ 209:Core/Src/main.c ****     }
+ 225              		.loc 1 209 9 view .LVU60
+ 226 00a6 1E4B     		ldr	r3, .L18+12
+ 227 00a8 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 228 00aa 0121     		movs	r1, #1
+ 229 00ac FFF7FEFF 		bl	SetLed
+ 230              	.LVL13:
+ 231 00b0 D1E7     		b	.L7
+ 232              	.LVL14:
+ 233              	.L12:
+ 234              	.LBB4:
+ 235              	.LBB5:
+ 238:Core/Src/main.c ****                             LedState[i] = 0;
+ 236              		.loc 1 238 29 view .LVU61
+ 237 00b2 0021     		movs	r1, #0
+ 238 00b4 2046     		mov	r0, r4
+ 239 00b6 FFF7FEFF 		bl	SetLed
+ 240              	.LVL15:
+ 239:Core/Src/main.c ****                         }
+ 241              		.loc 1 239 29 view .LVU62
+ 239:Core/Src/main.c ****                         }
+ 242              		.loc 1 239 41 is_stmt 0 view .LVU63
+ 243 00ba 234B     		ldr	r3, .L18+52
+ 244 00bc 0022     		movs	r2, #0
+ 245 00be 1A55     		strb	r2, [r3, r4]
+ 246              	.L13:
+ 244:Core/Src/main.c ****                     }
+ 247              		.loc 1 244 25 is_stmt 1 view .LVU64
+ 244:Core/Src/main.c ****                     }
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 11
+
+
+ 248              		.loc 1 244 64 is_stmt 0 view .LVU65
+ 249 00c0 1E4B     		ldr	r3, .L18+40
+ 250 00c2 1B68     		ldr	r3, [r3]
+ 251 00c4 03EB5603 		add	r3, r3, r6, lsr #1
+ 244:Core/Src/main.c ****                     }
+ 252              		.loc 1 244 46 view .LVU66
+ 253 00c8 204A     		ldr	r2, .L18+56
+ 254 00ca 42F82530 		str	r3, [r2, r5, lsl #2]
+ 255              	.LVL16:
+ 256              	.L11:
+ 244:Core/Src/main.c ****                     }
+ 257              		.loc 1 244 46 view .LVU67
+ 258              	.LBE5:
+ 219:Core/Src/main.c ****             {
+ 259              		.loc 1 219 36 is_stmt 1 discriminator 2 view .LVU68
+ 260 00ce 0134     		adds	r4, r4, #1
+ 261              	.LVL17:
+ 219:Core/Src/main.c ****             {
+ 262              		.loc 1 219 36 is_stmt 0 discriminator 2 view .LVU69
+ 263 00d0 E4B2     		uxtb	r4, r4
+ 264              	.LVL18:
+ 265              	.L10:
+ 219:Core/Src/main.c ****             {
+ 266              		.loc 1 219 31 is_stmt 1 discriminator 1 view .LVU70
+ 267 00d2 052C     		cmp	r4, #5
+ 268 00d4 AAD8     		bhi	.L15
+ 222:Core/Src/main.c ****                 {
+ 269              		.loc 1 222 17 view .LVU71
+ 222:Core/Src/main.c ****                 {
+ 270              		.loc 1 222 29 is_stmt 0 view .LVU72
+ 271 00d6 2546     		mov	r5, r4
+ 272 00d8 1D4B     		ldr	r3, .L18+60
+ 273 00da 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ 274 00dc DBB2     		uxtb	r3, r3
+ 222:Core/Src/main.c ****                 {
+ 275              		.loc 1 222 19 view .LVU73
+ 276 00de 012B     		cmp	r3, #1
+ 277 00e0 F5D1     		bne	.L11
+ 278              	.LBB6:
+ 225:Core/Src/main.c **** 
+ 279              		.loc 1 225 21 is_stmt 1 view .LVU74
+ 225:Core/Src/main.c **** 
+ 280              		.loc 1 225 65 is_stmt 0 view .LVU75
+ 281 00e2 1C4B     		ldr	r3, .L18+64
+ 282 00e4 1A5D     		ldrb	r2, [r3, r4]	@ zero_extendqisi2
+ 225:Core/Src/main.c **** 
+ 283              		.loc 1 225 30 view .LVU76
+ 284 00e6 1C4B     		ldr	r3, .L18+68
+ 285 00e8 53F82260 		ldr	r6, [r3, r2, lsl #2]
+ 286              	.LVL19:
+ 228:Core/Src/main.c ****                     {
+ 287              		.loc 1 228 21 is_stmt 1 view .LVU77
+ 228:Core/Src/main.c ****                     {
+ 288              		.loc 1 228 60 is_stmt 0 view .LVU78
+ 289 00ec 174B     		ldr	r3, .L18+56
+ 290 00ee 53F82420 		ldr	r2, [r3, r4, lsl #2]
+ 228:Core/Src/main.c ****                     {
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 12
+
+
+ 291              		.loc 1 228 40 view .LVU79
+ 292 00f2 124B     		ldr	r3, .L18+40
+ 293 00f4 1B68     		ldr	r3, [r3]
+ 228:Core/Src/main.c ****                     {
+ 294              		.loc 1 228 23 view .LVU80
+ 295 00f6 9A42     		cmp	r2, r3
+ 296 00f8 E9D8     		bhi	.L11
+ 231:Core/Src/main.c ****                         {
+ 297              		.loc 1 231 25 is_stmt 1 view .LVU81
+ 231:Core/Src/main.c ****                         {
+ 298              		.loc 1 231 36 is_stmt 0 view .LVU82
+ 299 00fa 134B     		ldr	r3, .L18+52
+ 300 00fc 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ 231:Core/Src/main.c ****                         {
+ 301              		.loc 1 231 27 view .LVU83
+ 302 00fe 002B     		cmp	r3, #0
+ 303 0100 D7D1     		bne	.L12
+ 233:Core/Src/main.c ****                             LedState[i] = 1;
+ 304              		.loc 1 233 29 is_stmt 1 view .LVU84
+ 305 0102 0121     		movs	r1, #1
+ 306 0104 2046     		mov	r0, r4
+ 307 0106 FFF7FEFF 		bl	SetLed
+ 308              	.LVL20:
+ 234:Core/Src/main.c ****                         }
+ 309              		.loc 1 234 29 view .LVU85
+ 234:Core/Src/main.c ****                         }
+ 310              		.loc 1 234 41 is_stmt 0 view .LVU86
+ 311 010a 0F4B     		ldr	r3, .L18+52
+ 312 010c 0122     		movs	r2, #1
+ 313 010e 1A55     		strb	r2, [r3, r4]
+ 314 0110 D6E7     		b	.L13
+ 315              	.L19:
+ 316 0112 00BF     		.align	2
+ 317              	.L18:
+ 318 0114 00000000 		.word	SystemCoreClock
+ 319 0118 D34D6210 		.word	274877907
+ 320 011c 00000000 		.word	M1FreqIndex
+ 321 0120 00000000 		.word	M1Step
+ 322 0124 00000000 		.word	M1NextToggleTime
+ 323 0128 00080240 		.word	1073874944
+ 324 012c 00000000 		.word	flagbutton1
+ 325 0130 00000000 		.word	flagbutton2
+ 326 0134 00000000 		.word	flagbutton3
+ 327 0138 00000000 		.word	CurrentMode
+ 328 013c 00000000 		.word	GlobalTickCount
+ 329 0140 00000000 		.word	Mode1Periods
+ 330 0144 ABAAAA2A 		.word	715827883
+ 331 0148 00000000 		.word	LedState
+ 332 014c 00000000 		.word	LedNextToggleTime
+ 333 0150 00000000 		.word	LedActive
+ 334 0154 00000000 		.word	LedFreqIndex
+ 335 0158 00000000 		.word	Mode2Periods
+ 336              	.LBE6:
+ 337              	.LBE4:
+ 338              		.cfi_endproc
+ 339              	.LFE130:
+ 341              		.section	.text.Mode2_SetLedActive,"ax",%progbits
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 13
+
+
+ 342              		.align	1
+ 343              		.global	Mode2_SetLedActive
+ 344              		.syntax unified
+ 345              		.thumb
+ 346              		.thumb_func
+ 348              	Mode2_SetLedActive:
+ 349              	.LVL21:
+ 350              	.LFB132:
+ 274:Core/Src/main.c **** 
+ 275:Core/Src/main.c **** //-------------------------------------------------
+ 276:Core/Src/main.c **** // 模式2下：激活某个 LED 并设置其闪烁频率
+ 277:Core/Src/main.c **** // freqIndex=0 => 0.3Hz, 1 => 0.8Hz, 2 => 1.4Hz
+ 278:Core/Src/main.c **** //-------------------------------------------------
+ 279:Core/Src/main.c **** void Mode2_SetLedActive(uint8_t ledIndex, uint8_t freqIndex)
+ 280:Core/Src/main.c **** {
+ 351              		.loc 1 280 1 is_stmt 1 view -0
+ 352              		.cfi_startproc
+ 353              		@ args = 0, pretend = 0, frame = 0
+ 354              		@ frame_needed = 0, uses_anonymous_args = 0
+ 355              		.loc 1 280 1 is_stmt 0 view .LVU88
+ 356 0000 38B5     		push	{r3, r4, r5, lr}
+ 357              	.LCFI1:
+ 358              		.cfi_def_cfa_offset 16
+ 359              		.cfi_offset 3, -16
+ 360              		.cfi_offset 4, -12
+ 361              		.cfi_offset 5, -8
+ 362              		.cfi_offset 14, -4
+ 363 0002 0446     		mov	r4, r0
+ 364 0004 0D46     		mov	r5, r1
+ 281:Core/Src/main.c ****     // 标记该 LED 已激活
+ 282:Core/Src/main.c ****     LedActive[ledIndex] = 1;
+ 365              		.loc 1 282 5 is_stmt 1 view .LVU89
+ 366              		.loc 1 282 25 is_stmt 0 view .LVU90
+ 367 0006 0A4B     		ldr	r3, .L22
+ 368 0008 0122     		movs	r2, #1
+ 369 000a 1A54     		strb	r2, [r3, r0]
+ 283:Core/Src/main.c ****     // 记录频率档位
+ 284:Core/Src/main.c ****     LedFreqIndex[ledIndex] = freqIndex;
+ 370              		.loc 1 284 5 is_stmt 1 view .LVU91
+ 371              		.loc 1 284 28 is_stmt 0 view .LVU92
+ 372 000c 094B     		ldr	r3, .L22+4
+ 373 000e 1954     		strb	r1, [r3, r0]
+ 285:Core/Src/main.c ****     // 初始状态设置为灭
+ 286:Core/Src/main.c ****     LedState[ledIndex] = 0;
+ 374              		.loc 1 286 5 is_stmt 1 view .LVU93
+ 375              		.loc 1 286 24 is_stmt 0 view .LVU94
+ 376 0010 0021     		movs	r1, #0
+ 377              	.LVL22:
+ 378              		.loc 1 286 24 view .LVU95
+ 379 0012 094B     		ldr	r3, .L22+8
+ 380              	.LVL23:
+ 381              		.loc 1 286 24 view .LVU96
+ 382 0014 1954     		strb	r1, [r3, r0]
+ 287:Core/Src/main.c ****     // 立即执行一次灭灯操作
+ 288:Core/Src/main.c ****     SetLed(ledIndex, 0);
+ 383              		.loc 1 288 5 is_stmt 1 view .LVU97
+ 384 0016 FFF7FEFF 		bl	SetLed
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 14
+
+
+ 385              	.LVL24:
+ 289:Core/Src/main.c **** 
+ 290:Core/Src/main.c ****     // 计算下次翻转的时刻 => 当前时间 + 该频率对应周期的一半
+ 291:Core/Src/main.c ****     // 这样可以让灯先熄灭一半周期，然后再亮
+ 292:Core/Src/main.c ****     uint32_t period = Mode2Periods[freqIndex];
+ 386              		.loc 1 292 5 view .LVU98
+ 387              		.loc 1 292 14 is_stmt 0 view .LVU99
+ 388 001a 084B     		ldr	r3, .L22+12
+ 389 001c 53F82520 		ldr	r2, [r3, r5, lsl #2]
+ 390              	.LVL25:
+ 293:Core/Src/main.c ****     LedNextToggleTime[ledIndex] = GlobalTickCount + period/2;
+ 391              		.loc 1 293 5 is_stmt 1 view .LVU100
+ 392              		.loc 1 293 51 is_stmt 0 view .LVU101
+ 393 0020 074B     		ldr	r3, .L22+16
+ 394 0022 1B68     		ldr	r3, [r3]
+ 395 0024 03EB5203 		add	r3, r3, r2, lsr #1
+ 396              		.loc 1 293 33 view .LVU102
+ 397 0028 064A     		ldr	r2, .L22+20
+ 398              	.LVL26:
+ 399              		.loc 1 293 33 view .LVU103
+ 400 002a 42F82430 		str	r3, [r2, r4, lsl #2]
+ 294:Core/Src/main.c **** }
+ 401              		.loc 1 294 1 view .LVU104
+ 402 002e 38BD     		pop	{r3, r4, r5, pc}
+ 403              	.LVL27:
+ 404              	.L23:
+ 405              		.loc 1 294 1 view .LVU105
+ 406              		.align	2
+ 407              	.L22:
+ 408 0030 00000000 		.word	LedActive
+ 409 0034 00000000 		.word	LedFreqIndex
+ 410 0038 00000000 		.word	LedState
+ 411 003c 00000000 		.word	Mode2Periods
+ 412 0040 00000000 		.word	GlobalTickCount
+ 413 0044 00000000 		.word	LedNextToggleTime
+ 414              		.cfi_endproc
+ 415              	.LFE132:
+ 417              		.section	.text.Mode2_DeactivateAll,"ax",%progbits
+ 418              		.align	1
+ 419              		.global	Mode2_DeactivateAll
+ 420              		.syntax unified
+ 421              		.thumb
+ 422              		.thumb_func
+ 424              	Mode2_DeactivateAll:
+ 425              	.LFB133:
+ 295:Core/Src/main.c **** 
+ 296:Core/Src/main.c **** //-------------------------------------------------
+ 297:Core/Src/main.c **** // 模式2下：一次性取消所有 LED 的闪烁并将其熄灭
+ 298:Core/Src/main.c **** //-------------------------------------------------
+ 299:Core/Src/main.c **** void Mode2_DeactivateAll(void)
+ 300:Core/Src/main.c **** {
+ 426              		.loc 1 300 1 is_stmt 1 view -0
+ 427              		.cfi_startproc
+ 428              		@ args = 0, pretend = 0, frame = 0
+ 429              		@ frame_needed = 0, uses_anonymous_args = 0
+ 430 0000 10B5     		push	{r4, lr}
+ 431              	.LCFI2:
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 15
+
+
+ 432              		.cfi_def_cfa_offset 8
+ 433              		.cfi_offset 4, -8
+ 434              		.cfi_offset 14, -4
+ 301:Core/Src/main.c ****     // 遍历全部 6 个灯
+ 302:Core/Src/main.c ****     for(uint8_t i=0; i<6; i++)
+ 435              		.loc 1 302 5 view .LVU107
+ 436              	.LBB7:
+ 437              		.loc 1 302 9 view .LVU108
+ 438              	.LVL28:
+ 439              		.loc 1 302 17 is_stmt 0 view .LVU109
+ 440 0002 0024     		movs	r4, #0
+ 441              		.loc 1 302 5 view .LVU110
+ 442 0004 09E0     		b	.L25
+ 443              	.LVL29:
+ 444              	.L26:
+ 303:Core/Src/main.c ****     {
+ 304:Core/Src/main.c ****         // 取消激活标记
+ 305:Core/Src/main.c ****         LedActive[i] = 0;
+ 445              		.loc 1 305 9 is_stmt 1 view .LVU111
+ 446              		.loc 1 305 22 is_stmt 0 view .LVU112
+ 447 0006 0021     		movs	r1, #0
+ 448 0008 054B     		ldr	r3, .L28
+ 449 000a 1955     		strb	r1, [r3, r4]
+ 306:Core/Src/main.c ****         // 当前状态置为 0 (灭)
+ 307:Core/Src/main.c ****         LedState[i] = 0;
+ 450              		.loc 1 307 9 is_stmt 1 view .LVU113
+ 451              		.loc 1 307 21 is_stmt 0 view .LVU114
+ 452 000c 054B     		ldr	r3, .L28+4
+ 453 000e 1955     		strb	r1, [r3, r4]
+ 308:Core/Src/main.c ****         // 物理上执行一次灭灯
+ 309:Core/Src/main.c ****         SetLed(i, 0);
+ 454              		.loc 1 309 9 is_stmt 1 view .LVU115
+ 455 0010 2046     		mov	r0, r4
+ 456 0012 FFF7FEFF 		bl	SetLed
+ 457              	.LVL30:
+ 302:Core/Src/main.c ****     {
+ 458              		.loc 1 302 28 discriminator 3 view .LVU116
+ 459 0016 0134     		adds	r4, r4, #1
+ 460              	.LVL31:
+ 302:Core/Src/main.c ****     {
+ 461              		.loc 1 302 28 is_stmt 0 discriminator 3 view .LVU117
+ 462 0018 E4B2     		uxtb	r4, r4
+ 463              	.LVL32:
+ 464              	.L25:
+ 302:Core/Src/main.c ****     {
+ 465              		.loc 1 302 23 is_stmt 1 discriminator 1 view .LVU118
+ 466 001a 052C     		cmp	r4, #5
+ 467 001c F3D9     		bls	.L26
+ 468              	.LBE7:
+ 310:Core/Src/main.c ****     }
+ 311:Core/Src/main.c **** }
+ 469              		.loc 1 311 1 is_stmt 0 view .LVU119
+ 470 001e 10BD     		pop	{r4, pc}
+ 471              	.LVL33:
+ 472              	.L29:
+ 473              		.loc 1 311 1 view .LVU120
+ 474              		.align	2
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 16
+
+
+ 475              	.L28:
+ 476 0020 00000000 		.word	LedActive
+ 477 0024 00000000 		.word	LedState
+ 478              		.cfi_endproc
+ 479              	.LFE133:
+ 481              		.section	.rodata.LED_PIN,"a"
+ 482              		.align	2
+ 485              	LED_PIN:
+ 486 0000 00070E06 		.ascii	"\000\007\016\006\002\001"
+ 486      0201
+ 487              		.global	M2SelectedLed
+ 488              		.section	.bss.M2SelectedLed,"aw",%nobits
+ 491              	M2SelectedLed:
+ 492 0000 00       		.space	1
+ 493              		.section	.bss.LedState,"aw",%nobits
+ 494              		.align	2
+ 497              	LedState:
+ 498 0000 00000000 		.space	6
+ 498      0000
+ 499              		.section	.bss.LedNextToggleTime,"aw",%nobits
+ 500              		.align	2
+ 503              	LedNextToggleTime:
+ 504 0000 00000000 		.space	24
+ 504      00000000 
+ 504      00000000 
+ 504      00000000 
+ 504      00000000 
+ 505              		.global	LedFreqIndex
+ 506              		.section	.bss.LedFreqIndex,"aw",%nobits
+ 507              		.align	2
+ 510              	LedFreqIndex:
+ 511 0000 00000000 		.space	6
+ 511      0000
+ 512              		.global	LedActive
+ 513              		.section	.bss.LedActive,"aw",%nobits
+ 514              		.align	2
+ 517              	LedActive:
+ 518 0000 00000000 		.space	6
+ 518      0000
+ 519              		.section	.rodata.Mode2Periods,"a"
+ 520              		.align	2
+ 523              	Mode2Periods:
+ 524 0000 D0070000 		.word	2000
+ 525 0004 57040000 		.word	1111
+ 526 0008 9A020000 		.word	666
+ 527              		.global	M1NextToggleTime
+ 528              		.section	.bss.M1NextToggleTime,"aw",%nobits
+ 529              		.align	2
+ 532              	M1NextToggleTime:
+ 533 0000 00000000 		.space	4
+ 534              		.global	M1Step
+ 535              		.section	.bss.M1Step,"aw",%nobits
+ 538              	M1Step:
+ 539 0000 00       		.space	1
+ 540              		.global	M1FreqIndex
+ 541              		.section	.bss.M1FreqIndex,"aw",%nobits
+ 544              	M1FreqIndex:
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 17
+
+
+ 545 0000 00       		.space	1
+ 546              		.section	.rodata.Mode1Periods,"a"
+ 547              		.align	2
+ 550              	Mode1Periods:
+ 551 0000 83060000 		.word	1667
+ 552 0004 01030000 		.word	769
+ 553 0008 A1010000 		.word	417
+ 554              		.global	blink_frequency_options
+ 555              		.section	.data.blink_frequency_options,"aw"
+ 556              		.align	2
+ 559              	blink_frequency_options:
+ 560 0000 CDCC4C3E 		.word	1045220557
+ 561 0004 6666663F 		.word	1063675494
+ 562 0008 0000C03F 		.word	1069547520
+ 563              		.global	period
+ 564              		.section	.data.period,"aw"
+ 565              		.align	2
+ 568              	period:
+ 569 0000 9A99193F 		.word	1058642330
+ 570 0004 6666A63F 		.word	1067869798
+ 571 0008 9A991940 		.word	1075419546
+ 572              		.global	flagbutton3
+ 573              		.section	.bss.flagbutton3,"aw",%nobits
+ 576              	flagbutton3:
+ 577 0000 00       		.space	1
+ 578              		.global	flagbutton2
+ 579              		.section	.bss.flagbutton2,"aw",%nobits
+ 582              	flagbutton2:
+ 583 0000 00       		.space	1
+ 584              		.global	flagbutton1
+ 585              		.section	.bss.flagbutton1,"aw",%nobits
+ 588              	flagbutton1:
+ 589 0000 00       		.space	1
+ 590              		.global	CurrentMode
+ 591              		.section	.data.CurrentMode,"aw"
+ 594              	CurrentMode:
+ 595 0000 01       		.byte	1
+ 596              		.global	ExternInterruptTickCount
+ 597              		.section	.bss.ExternInterruptTickCount,"aw",%nobits
+ 598              		.align	2
+ 601              	ExternInterruptTickCount:
+ 602 0000 00000000 		.space	4
+ 603              		.global	GlobalTickCount
+ 604              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 605              		.align	2
+ 608              	GlobalTickCount:
+ 609 0000 00000000 		.space	4
+ 610              		.global	SystemCoreClock
+ 611              		.section	.data.SystemCoreClock,"aw"
+ 612              		.align	2
+ 615              	SystemCoreClock:
+ 616 0000 0024F400 		.word	16000000
+ 617              		.text
+ 618              	.Letext0:
+ 619              		.file 2 "D:/cccccccc/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 620              		.file 3 "D:/cccccccc/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ 621              		.file 4 "CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 18
+
+
+ 622              		.file 5 "CMSIS/Devices/system_stm32f4xx.h"
+ 623              		.file 6 "Core/Inc/init.h"
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:21     .text.SetLed:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:26     .text.SetLed:00000000 SetLed
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:66     .text.SetLed:0000001c $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:485    .rodata.LED_PIN:00000000 LED_PIN
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:72     .text.main:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:78     .text.main:00000000 main
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:318    .text.main:00000114 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:615    .data.SystemCoreClock:00000000 SystemCoreClock
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:544    .bss.M1FreqIndex:00000000 M1FreqIndex
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:538    .bss.M1Step:00000000 M1Step
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:532    .bss.M1NextToggleTime:00000000 M1NextToggleTime
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:588    .bss.flagbutton1:00000000 flagbutton1
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:582    .bss.flagbutton2:00000000 flagbutton2
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:576    .bss.flagbutton3:00000000 flagbutton3
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:594    .data.CurrentMode:00000000 CurrentMode
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:608    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:550    .rodata.Mode1Periods:00000000 Mode1Periods
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:497    .bss.LedState:00000000 LedState
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:503    .bss.LedNextToggleTime:00000000 LedNextToggleTime
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:517    .bss.LedActive:00000000 LedActive
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:510    .bss.LedFreqIndex:00000000 LedFreqIndex
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:523    .rodata.Mode2Periods:00000000 Mode2Periods
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:342    .text.Mode2_SetLedActive:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:348    .text.Mode2_SetLedActive:00000000 Mode2_SetLedActive
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:408    .text.Mode2_SetLedActive:00000030 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:418    .text.Mode2_DeactivateAll:00000000 $t
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:424    .text.Mode2_DeactivateAll:00000000 Mode2_DeactivateAll
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:476    .text.Mode2_DeactivateAll:00000020 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:482    .rodata.LED_PIN:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:491    .bss.M2SelectedLed:00000000 M2SelectedLed
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:492    .bss.M2SelectedLed:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:494    .bss.LedState:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:500    .bss.LedNextToggleTime:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:507    .bss.LedFreqIndex:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:514    .bss.LedActive:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:520    .rodata.Mode2Periods:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:529    .bss.M1NextToggleTime:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:539    .bss.M1Step:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:545    .bss.M1FreqIndex:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:547    .rodata.Mode1Periods:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:559    .data.blink_frequency_options:00000000 blink_frequency_options
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:556    .data.blink_frequency_options:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:568    .data.period:00000000 period
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:565    .data.period:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:577    .bss.flagbutton3:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:583    .bss.flagbutton2:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:589    .bss.flagbutton1:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:601    .bss.ExternInterruptTickCount:00000000 ExternInterruptTickCount
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:598    .bss.ExternInterruptTickCount:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:605    .bss.GlobalTickCount:00000000 $d
+C:\Users\��\AppData\Local\Temp\ccBSWfDv.s:612    .data.SystemCoreClock:00000000 $d
+
+UNDEFINED SYMBOLS
+SystemClock_Config
+SysTick_Init
+ARM GAS  C:\Users\��\AppData\Local\Temp\ccBSWfDv.s 			page 20
+
+
+GPIO_Init_All
+EXTI_Init_All
