@@ -1,21 +1,33 @@
+#ifndef INIT_H
+#define INIT_H
+
 #include "../../CMSIS/Devices/stm32f4xx.h"
 #include "../../CMSIS/Devices/stm32f429xx.h"
 
-#define RCC_GPIO_EN             (*(uint32_t*)(0x40023800UL + 0x30UL))
-#define RCC_GPIOB_EN            0x02UL
-#define RCC_GPIOC_EN            0x04UL
+// RCC 寄存器和时钟使能
+#define RCC_AHB1ENR             (*(volatile uint32_t*)0x40023830UL)  // RCC AHB1 peripheral clock enable register
+#define RCC_AHB1ENR_GPIOBEN     (1 << 1)  // GPIOB 时钟使能
+#define RCC_AHB1ENR_GPIOCEN     (1 << 2)  // GPIOC 时钟使能
 
-#define GPIOB_MODER             (*(uint32_t*)(0x40020400UL + 0x00UL))
-#define GPIOB_BSRR              (*(uint32_t*)(0x40020400UL + 0x18UL))
-#define GPIOC_IDR               (*(uint32_t*)(0x40020800UL + 0x10UL))
+// GPIOB 和 GPIOC 寄存器定义
+#define GPIOB_MODER             (*(volatile uint32_t*)0x40020400UL)  // GPIOB 模式寄存器
+#define GPIOB_BSRR              (*(volatile uint32_t*)0x40020418UL)  // GPIOB 位设置/重置寄存器
+#define GPIOC_IDR               (*(volatile uint32_t*)0x40020810UL)  // GPIOC 输入数据寄存器
 
-#define GPIOB_MODE_PIN0_OUT     0x00000001UL // PB0
-#define GPIOB_MODE_PIN7_OUT     0x00000040UL // PB7
-#define GPIOB_MODE_PIN14_OUT    0x00004000UL // PB14
-#define GPIOB_MODE_PIN15_OUT    0x00008000UL // PB15 (外接LED)
+// GPIOB 引脚定义
+#define GPIOB_MODE_PIN0_OUT     (1 << (0 * 2))   // PB0 设置为输出
+#define GPIOB_MODE_PIN7_OUT     (1 << (7 * 2))   // PB7 设置为输出
+#define GPIOB_MODE_PIN14_OUT    (1 << (14 * 2))  // PB14 设置为输出
+#define GPIOB_MODE_PIN15_OUT    (1 << (15 * 2))  // PB15 设置为输出（外接 LED）
 
-#define READ_GPIO_C13           (GPIOC_IDR & 0x2000UL) // 读 GPIOC 的引脚 13
-#define SET_GPIO_B(pin)         (GPIOB_BSRR = (1 << (pin))) // 设置 GPIOB 的引脚
-#define RESET_GPIO_B(pin)       (GPIOB_BSRR = (1 << ((pin) + 16))) // 重置 GPIOB 的引脚
+// 读取按钮状态
+#define READ_GPIO_C13           (GPIOC_IDR & (1 << 13))  // 读取 GPIOC 引脚13（按钮）
 
-void GPIO_Ini(void);
+// 控制 GPIOB 引脚
+#define SET_GPIO_B(pin)         (GPIOB_BSRR = (1 << (pin)))     // 设置 GPIOB 引脚
+#define RESET_GPIO_B(pin)       (GPIOB_BSRR = (1 << ((pin) + 16))) // 重置 GPIOB 引脚
+
+// 函数声明
+void GPIO_Ini(void);  // GPIO 初始化
+
+#endif // INIT_H
