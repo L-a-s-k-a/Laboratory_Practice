@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = LABORATORY_PRACTICE
+TARGET = Laboratory_Practice-1
 
 
 ######################################
@@ -35,9 +35,11 @@ BUILD_DIR = build
 # source
 ######################################
 # C sources
-C_SOURCES =  \
-Core/Src/init.c\
+C_SOURCES = \
 Core/Src/main.c \
+Core/Src/init.c \
+Core/Src/it_handlers.c \
+CMSIS/Devices/Src/system_stm32f4xx.c \
 
 
 # ASM sources
@@ -75,7 +77,7 @@ CPU = -mcpu=cortex-m4
 FPU = -mfpu=fpv4-sp-d16
 
 # float-abi
-FLOAT-ABI = -mfloat-abi=hard
+FLOAT-ABI = -mfloat-abi=soft
 
 # mcu
 MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
