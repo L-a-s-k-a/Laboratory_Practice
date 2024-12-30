@@ -1,0 +1,839 @@
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/main.c"
+  18              		.section	.text.Led_light,"ax",%progbits
+  19              		.align	1
+  20              		.global	Led_light
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	Led_light:
+  26              	.LFB131:
+   1:Core/Src/main.c **** #include "../Inc/init.h"  
+   2:Core/Src/main.c **** #include "../Inc/it_handlers.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** uint16_t DelayTickCount = 0;
+   5:Core/Src/main.c **** uint32_t GlobalTickBut1Wait = 0;
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c **** // 修改频率为0.4Hz、1.1Hz、1.9Hz对应的周期值（单位：毫秒）
+   8:Core/Src/main.c **** uint16_t LedSetHZ[3] = {526, 2500, 909};  // 0.4Hz, 1.1Hz, 1.9Hz 的周期，单位：毫秒
+   9:Core/Src/main.c **** uint8_t LedCurrHZ = 0;  // 用一个变量来表示当前所有LED的频率（0, 1, 2）
+  10:Core/Src/main.c **** uint16_t LedCount[6] = {0, 0, 0, 0, 0, 0};  // LED计数器
+  11:Core/Src/main.c **** uint8_t LedState;  // 默认状态为闪烁模式
+  12:Core/Src/main.c **** uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1}, {0, 0, 0, 0, 0, 0}}; // 第一行控制LED是否点亮
+  13:Core/Src/main.c **** uint8_t flagbutton = 0;
+  14:Core/Src/main.c **** uint8_t longflagbutton = 0;
+  15:Core/Src/main.c **** const uint8_t LedOffset[6] = {0U, 7U, 14U, 8U, 9U, 10U};
+  16:Core/Src/main.c **** uint8_t CurrentState = 6;
+  17:Core/Src/main.c **** uint8_t Numb = 0; // 当前系统状态下需要点亮的LED个数
+  18:Core/Src/main.c **** void LedVal_Init(); // 初始化LED频率的函数
+  19:Core/Src/main.c **** void Led_light();   // 控制LED的显示状态
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c **** int main(void) 
+  22:Core/Src/main.c **** { 
+  23:Core/Src/main.c ****     GPIO_Init();
+  24:Core/Src/main.c ****     RCC_Init(); // Initialize system clock
+  25:Core/Src/main.c ****     ITR_Init(); // Initialize interrupts  
+  26:Core/Src/main.c ****     SysTick_Init();
+  27:Core/Src/main.c ****     LedVal_Init();
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c ****     while (1) 
+  30:Core/Src/main.c ****     {
+  31:Core/Src/main.c ****         // LED blinking control
+  32:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++) {
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 2
+
+
+  33:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+  34:Core/Src/main.c ****                 LedCount[i] = 0;
+  35:Core/Src/main.c ****                 if (Ledflag[1][i] == 1) {
+  36:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+  37:Core/Src/main.c ****                 }
+  38:Core/Src/main.c ****                 else {
+  39:Core/Src/main.c ****                     Ledflag[1][i] = 1;
+  40:Core/Src/main.c ****                 }
+  41:Core/Src/main.c ****             }
+  42:Core/Src/main.c ****         }
+  43:Core/Src/main.c **** 
+  44:Core/Src/main.c ****         // Handle the LED pattern based on the current state
+  45:Core/Src/main.c ****         Numb = CurrentState % 7;
+  46:Core/Src/main.c ****         if (Numb != 0) {
+  47:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++) {
+  48:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+  49:Core/Src/main.c ****             }
+  50:Core/Src/main.c ****         } else {
+  51:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++) {
+  52:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+  53:Core/Src/main.c ****             }
+  54:Core/Src/main.c ****             CurrentState = 0;
+  55:Core/Src/main.c ****         }
+  56:Core/Src/main.c **** 
+  57:Core/Src/main.c ****         // Handle long press for frequency change
+  58:Core/Src/main.c ****         if (longflagbutton == 1) { 
+  59:Core/Src/main.c ****             // 当按钮长按时，统一改变所有LED的频率
+  60:Core/Src/main.c ****             LedCurrHZ = (LedCurrHZ + 1) % 3;  // 切换到下一个频率（0, 1, 2）
+  61:Core/Src/main.c **** 
+  62:Core/Src/main.c ****             longflagbutton = 0; // 清除长按标志
+  63:Core/Src/main.c ****         }
+  64:Core/Src/main.c **** 
+  65:Core/Src/main.c ****         // Handle short press (button release) debouncing
+  66:Core/Src/main.c ****         if (flagbutton == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0 && GlobalTickBut1Wait >= 50)
+  67:Core/Src/main.c ****             flagbutton = 0;
+  68:Core/Src/main.c ****         }
+  69:Core/Src/main.c **** 
+  70:Core/Src/main.c ****         Led_light();
+  71:Core/Src/main.c ****     } 
+  72:Core/Src/main.c **** } 
+  73:Core/Src/main.c **** 
+  74:Core/Src/main.c **** void Led_light() 
+  75:Core/Src/main.c **** {
+  27              		.loc 1 75 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  76:Core/Src/main.c ****     uint32_t ODR_clear = 0x0UL;
+  32              		.loc 1 76 5 view .LVU1
+  33              	.LVL0:
+  77:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
+  34              		.loc 1 77 5 view .LVU2
+  78:Core/Src/main.c **** 
+  79:Core/Src/main.c ****     if (LedState == 1) {  // 常亮模式
+  35              		.loc 1 79 5 view .LVU3
+  36              		.loc 1 79 18 is_stmt 0 view .LVU4
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 3
+
+
+  37 0000 1F4B     		ldr	r3, .L13
+  38 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  39              		.loc 1 79 8 view .LVU5
+  40 0004 012B     		cmp	r3, #1
+  41 0006 16D0     		beq	.L11
+  42              	.LBB2:
+  80:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++) {
+  81:Core/Src/main.c ****             if (Ledflag[0][i] == 1) {  // 如果该LED处于点亮状态
+  82:Core/Src/main.c ****                 ODR_set = ODR_set + (0x1UL << LedOffset[i]);  // 点亮该LED
+  83:Core/Src/main.c ****             } else {
+  84:Core/Src/main.c ****                 ODR_clear = ODR_clear + (0x1UL << LedOffset[i]); // 熄灭LED
+  85:Core/Src/main.c ****             }
+  86:Core/Src/main.c ****         }
+  87:Core/Src/main.c ****     } else {  // 闪烁模式
+  88:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++) {
+  43              		.loc 1 88 22 view .LVU6
+  44 0008 0023     		movs	r3, #0
+  45              	.LBE2:
+  77:Core/Src/main.c **** 
+  46              		.loc 1 77 14 view .LVU7
+  47 000a 9C46     		mov	ip, r3
+  76:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
+  48              		.loc 1 76 14 view .LVU8
+  49 000c 1946     		mov	r1, r3
+  50 000e 1DE0     		b	.L3
+  51              	.LVL1:
+  52              	.L12:
+  53              	.LBB3:
+  82:Core/Src/main.c ****             } else {
+  54              		.loc 1 82 17 is_stmt 1 view .LVU9
+  82:Core/Src/main.c ****             } else {
+  55              		.loc 1 82 56 is_stmt 0 view .LVU10
+  56 0010 1C4A     		ldr	r2, .L13+4
+  57 0012 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+  82:Core/Src/main.c ****             } else {
+  58              		.loc 1 82 44 view .LVU11
+  59 0014 0122     		movs	r2, #1
+  60 0016 8240     		lsls	r2, r2, r0
+  82:Core/Src/main.c ****             } else {
+  61              		.loc 1 82 25 view .LVU12
+  62 0018 9444     		add	ip, ip, r2
+  63              	.LVL2:
+  64              	.L5:
+  80:Core/Src/main.c ****             if (Ledflag[0][i] == 1) {  // 如果该LED处于点亮状态
+  65              		.loc 1 80 37 is_stmt 1 discriminator 2 view .LVU13
+  66 001a 0133     		adds	r3, r3, #1
+  67              	.LVL3:
+  80:Core/Src/main.c ****             if (Ledflag[0][i] == 1) {  // 如果该LED处于点亮状态
+  68              		.loc 1 80 37 is_stmt 0 discriminator 2 view .LVU14
+  69 001c DBB2     		uxtb	r3, r3
+  70              	.LVL4:
+  71              	.L2:
+  80:Core/Src/main.c ****             if (Ledflag[0][i] == 1) {  // 如果该LED处于点亮状态
+  72              		.loc 1 80 31 is_stmt 1 discriminator 1 view .LVU15
+  73 001e 052B     		cmp	r3, #5
+  74 0020 26D8     		bhi	.L7
+  81:Core/Src/main.c ****                 ODR_set = ODR_set + (0x1UL << LedOffset[i]);  // 点亮该LED
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 4
+
+
+  75              		.loc 1 81 13 view .LVU16
+  81:Core/Src/main.c ****                 ODR_set = ODR_set + (0x1UL << LedOffset[i]);  // 点亮该LED
+  76              		.loc 1 81 27 is_stmt 0 view .LVU17
+  77 0022 194A     		ldr	r2, .L13+8
+  78 0024 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+  81:Core/Src/main.c ****                 ODR_set = ODR_set + (0x1UL << LedOffset[i]);  // 点亮该LED
+  79              		.loc 1 81 16 view .LVU18
+  80 0026 012A     		cmp	r2, #1
+  81 0028 F2D0     		beq	.L12
+  84:Core/Src/main.c ****             }
+  82              		.loc 1 84 17 is_stmt 1 view .LVU19
+  84:Core/Src/main.c ****             }
+  83              		.loc 1 84 60 is_stmt 0 view .LVU20
+  84 002a 164A     		ldr	r2, .L13+4
+  85 002c D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+  84:Core/Src/main.c ****             }
+  86              		.loc 1 84 48 view .LVU21
+  87 002e 0122     		movs	r2, #1
+  88 0030 8240     		lsls	r2, r2, r0
+  84:Core/Src/main.c ****             }
+  89              		.loc 1 84 27 view .LVU22
+  90 0032 1144     		add	r1, r1, r2
+  91              	.LVL5:
+  84:Core/Src/main.c ****             }
+  92              		.loc 1 84 27 view .LVU23
+  93 0034 F1E7     		b	.L5
+  94              	.LVL6:
+  95              	.L11:
+  80:Core/Src/main.c ****             if (Ledflag[0][i] == 1) {  // 如果该LED处于点亮状态
+  96              		.loc 1 80 22 view .LVU24
+  97 0036 0023     		movs	r3, #0
+  98              	.LBE3:
+  77:Core/Src/main.c **** 
+  99              		.loc 1 77 14 view .LVU25
+ 100 0038 9C46     		mov	ip, r3
+  76:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
+ 101              		.loc 1 76 14 view .LVU26
+ 102 003a 1946     		mov	r1, r3
+ 103 003c EFE7     		b	.L2
+ 104              	.LVL7:
+ 105              	.L8:
+ 106              	.LBB4:
+  89:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+  90:Core/Src/main.c ****                 ODR_set = ODR_set + (0x1UL << LedOffset[i]); // 点亮LED
+  91:Core/Src/main.c ****             } else {
+  92:Core/Src/main.c ****                 ODR_clear = ODR_clear + (0x1UL << LedOffset[i]); // 熄灭LED
+ 107              		.loc 1 92 17 is_stmt 1 view .LVU27
+ 108              		.loc 1 92 60 is_stmt 0 view .LVU28
+ 109 003e 1148     		ldr	r0, .L13+4
+ 110 0040 805C     		ldrb	r0, [r0, r2]	@ zero_extendqisi2
+ 111              		.loc 1 92 48 view .LVU29
+ 112 0042 0122     		movs	r2, #1
+ 113 0044 8240     		lsls	r2, r2, r0
+ 114              		.loc 1 92 27 view .LVU30
+ 115 0046 1144     		add	r1, r1, r2
+ 116              	.LVL8:
+ 117              	.L9:
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 5
+
+
+  88:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+ 118              		.loc 1 88 37 is_stmt 1 discriminator 2 view .LVU31
+ 119 0048 0133     		adds	r3, r3, #1
+ 120              	.LVL9:
+  88:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+ 121              		.loc 1 88 37 is_stmt 0 discriminator 2 view .LVU32
+ 122 004a DBB2     		uxtb	r3, r3
+ 123              	.LVL10:
+ 124              	.L3:
+  88:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+ 125              		.loc 1 88 31 is_stmt 1 discriminator 1 view .LVU33
+ 126 004c 052B     		cmp	r3, #5
+ 127 004e 0FD8     		bhi	.L7
+  89:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+ 128              		.loc 1 89 13 view .LVU34
+  89:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+ 129              		.loc 1 89 28 is_stmt 0 view .LVU35
+ 130 0050 1A46     		mov	r2, r3
+ 131 0052 0D48     		ldr	r0, .L13+8
+ 132 0054 C05C     		ldrb	r0, [r0, r3]	@ zero_extendqisi2
+  89:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+ 133              		.loc 1 89 16 view .LVU36
+ 134 0056 0128     		cmp	r0, #1
+ 135 0058 F1D1     		bne	.L8
+  89:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+ 136              		.loc 1 89 52 discriminator 1 view .LVU37
+ 137 005a 0B48     		ldr	r0, .L13+8
+ 138 005c 1844     		add	r0, r0, r3
+ 139 005e 8079     		ldrb	r0, [r0, #6]	@ zero_extendqisi2
+  89:Core/Src/main.c ****             if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)) {
+ 140              		.loc 1 89 38 discriminator 1 view .LVU38
+ 141 0060 0128     		cmp	r0, #1
+ 142 0062 ECD1     		bne	.L8
+  90:Core/Src/main.c ****             } else {
+ 143              		.loc 1 90 17 is_stmt 1 view .LVU39
+  90:Core/Src/main.c ****             } else {
+ 144              		.loc 1 90 56 is_stmt 0 view .LVU40
+ 145 0064 0748     		ldr	r0, .L13+4
+ 146 0066 C05C     		ldrb	r0, [r0, r3]	@ zero_extendqisi2
+  90:Core/Src/main.c ****             } else {
+ 147              		.loc 1 90 44 view .LVU41
+ 148 0068 0122     		movs	r2, #1
+ 149 006a 8240     		lsls	r2, r2, r0
+  90:Core/Src/main.c ****             } else {
+ 150              		.loc 1 90 25 view .LVU42
+ 151 006c 9444     		add	ip, ip, r2
+ 152              	.LVL11:
+  90:Core/Src/main.c ****             } else {
+ 153              		.loc 1 90 25 view .LVU43
+ 154 006e EBE7     		b	.L9
+ 155              	.LVL12:
+ 156              	.L7:
+  90:Core/Src/main.c ****             } else {
+ 157              		.loc 1 90 25 view .LVU44
+ 158              	.LBE4:
+  93:Core/Src/main.c ****             }
+  94:Core/Src/main.c ****         }
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 6
+
+
+  95:Core/Src/main.c ****     }
+  96:Core/Src/main.c ****     MODIFY_REG(GPIOB->ODR, ODR_clear, ODR_set);
+ 159              		.loc 1 96 5 is_stmt 1 view .LVU45
+ 160 0070 064A     		ldr	r2, .L13+12
+ 161 0072 5369     		ldr	r3, [r2, #20]
+ 162 0074 23EA0103 		bic	r3, r3, r1
+ 163 0078 43EA0C03 		orr	r3, r3, ip
+ 164 007c 5361     		str	r3, [r2, #20]
+  97:Core/Src/main.c **** }
+ 165              		.loc 1 97 1 is_stmt 0 view .LVU46
+ 166 007e 7047     		bx	lr
+ 167              	.L14:
+ 168              		.align	2
+ 169              	.L13:
+ 170 0080 00000000 		.word	LedState
+ 171 0084 00000000 		.word	LedOffset
+ 172 0088 00000000 		.word	Ledflag
+ 173 008c 00040240 		.word	1073873920
+ 174              		.cfi_endproc
+ 175              	.LFE131:
+ 177              		.section	.text.LedVal_Init,"ax",%progbits
+ 178              		.align	1
+ 179              		.global	LedVal_Init
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 184              	LedVal_Init:
+ 185              	.LFB132:
+  98:Core/Src/main.c **** 
+  99:Core/Src/main.c **** void LedVal_Init() 
+ 100:Core/Src/main.c **** {
+ 186              		.loc 1 100 1 is_stmt 1 view -0
+ 187              		.cfi_startproc
+ 188              		@ args = 0, pretend = 0, frame = 0
+ 189              		@ frame_needed = 0, uses_anonymous_args = 0
+ 190              		@ link register save eliminated.
+ 101:Core/Src/main.c ****     // 初始化时，所有LED使用相同的频率周期
+ 102:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++) {
+ 191              		.loc 1 102 5 view .LVU48
+ 192              	.LBB5:
+ 193              		.loc 1 102 10 view .LVU49
+ 194              	.LVL13:
+ 195              		.loc 1 102 18 is_stmt 0 view .LVU50
+ 196 0000 0023     		movs	r3, #0
+ 197              		.loc 1 102 5 view .LVU51
+ 198 0002 09E0     		b	.L16
+ 199              	.LVL14:
+ 200              	.L17:
+ 103:Core/Src/main.c ****         LedCount[i] = LedSetHZ[LedCurrHZ];  // 初始化LED计数器
+ 201              		.loc 1 103 9 is_stmt 1 view .LVU52
+ 202              		.loc 1 103 31 is_stmt 0 view .LVU53
+ 203 0004 064A     		ldr	r2, .L18
+ 204 0006 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 205 0008 064A     		ldr	r2, .L18+4
+ 206 000a 32F81110 		ldrh	r1, [r2, r1, lsl #1]
+ 207              		.loc 1 103 21 view .LVU54
+ 208 000e 064A     		ldr	r2, .L18+8
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 7
+
+
+ 209 0010 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
+ 102:Core/Src/main.c ****         LedCount[i] = LedSetHZ[LedCurrHZ];  // 初始化LED计数器
+ 210              		.loc 1 102 33 is_stmt 1 discriminator 3 view .LVU55
+ 211 0014 0133     		adds	r3, r3, #1
+ 212              	.LVL15:
+ 102:Core/Src/main.c ****         LedCount[i] = LedSetHZ[LedCurrHZ];  // 初始化LED计数器
+ 213              		.loc 1 102 33 is_stmt 0 discriminator 3 view .LVU56
+ 214 0016 DBB2     		uxtb	r3, r3
+ 215              	.LVL16:
+ 216              	.L16:
+ 102:Core/Src/main.c ****         LedCount[i] = LedSetHZ[LedCurrHZ];  // 初始化LED计数器
+ 217              		.loc 1 102 27 is_stmt 1 discriminator 1 view .LVU57
+ 218 0018 052B     		cmp	r3, #5
+ 219 001a F3D9     		bls	.L17
+ 220              	.LBE5:
+ 104:Core/Src/main.c ****     }
+ 105:Core/Src/main.c **** }
+ 221              		.loc 1 105 1 is_stmt 0 view .LVU58
+ 222 001c 7047     		bx	lr
+ 223              	.L19:
+ 224 001e 00BF     		.align	2
+ 225              	.L18:
+ 226 0020 00000000 		.word	LedCurrHZ
+ 227 0024 00000000 		.word	LedSetHZ
+ 228 0028 00000000 		.word	LedCount
+ 229              		.cfi_endproc
+ 230              	.LFE132:
+ 232              		.section	.text.main,"ax",%progbits
+ 233              		.align	1
+ 234              		.global	main
+ 235              		.syntax unified
+ 236              		.thumb
+ 237              		.thumb_func
+ 239              	main:
+ 240              	.LFB130:
+  22:Core/Src/main.c ****     GPIO_Init();
+ 241              		.loc 1 22 1 is_stmt 1 view -0
+ 242              		.cfi_startproc
+ 243              		@ args = 0, pretend = 0, frame = 0
+ 244              		@ frame_needed = 0, uses_anonymous_args = 0
+ 245 0000 08B5     		push	{r3, lr}
+ 246              	.LCFI0:
+ 247              		.cfi_def_cfa_offset 8
+ 248              		.cfi_offset 3, -8
+ 249              		.cfi_offset 14, -4
+  23:Core/Src/main.c ****     RCC_Init(); // Initialize system clock
+ 250              		.loc 1 23 5 view .LVU60
+ 251 0002 FFF7FEFF 		bl	GPIO_Init
+ 252              	.LVL17:
+  24:Core/Src/main.c ****     ITR_Init(); // Initialize interrupts  
+ 253              		.loc 1 24 5 view .LVU61
+ 254 0006 FFF7FEFF 		bl	RCC_Init
+ 255              	.LVL18:
+  25:Core/Src/main.c ****     SysTick_Init();
+ 256              		.loc 1 25 5 view .LVU62
+ 257 000a FFF7FEFF 		bl	ITR_Init
+ 258              	.LVL19:
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 8
+
+
+  26:Core/Src/main.c ****     LedVal_Init();
+ 259              		.loc 1 26 5 view .LVU63
+ 260 000e FFF7FEFF 		bl	SysTick_Init
+ 261              	.LVL20:
+  27:Core/Src/main.c **** 
+ 262              		.loc 1 27 5 view .LVU64
+ 263 0012 FFF7FEFF 		bl	LedVal_Init
+ 264              	.LVL21:
+ 265 0016 58E0     		b	.L32
+ 266              	.LVL22:
+ 267              	.L36:
+ 268              	.LBB6:
+  36:Core/Src/main.c ****                 }
+ 269              		.loc 1 36 21 view .LVU65
+  36:Core/Src/main.c ****                 }
+ 270              		.loc 1 36 35 is_stmt 0 view .LVU66
+ 271 0018 344A     		ldr	r2, .L39
+ 272 001a 1A44     		add	r2, r2, r3
+ 273 001c 9171     		strb	r1, [r2, #6]
+ 274              	.L22:
+  32:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+ 275              		.loc 1 32 37 is_stmt 1 discriminator 2 view .LVU67
+ 276 001e 0133     		adds	r3, r3, #1
+ 277              	.LVL23:
+  32:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+ 278              		.loc 1 32 37 is_stmt 0 discriminator 2 view .LVU68
+ 279 0020 DBB2     		uxtb	r3, r3
+ 280              	.LVL24:
+ 281              	.L21:
+  32:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+ 282              		.loc 1 32 31 is_stmt 1 discriminator 1 view .LVU69
+ 283 0022 052B     		cmp	r3, #5
+ 284 0024 17D8     		bhi	.L35
+  33:Core/Src/main.c ****                 LedCount[i] = 0;
+ 285              		.loc 1 33 13 view .LVU70
+  33:Core/Src/main.c ****                 LedCount[i] = 0;
+ 286              		.loc 1 33 25 is_stmt 0 view .LVU71
+ 287 0026 324A     		ldr	r2, .L39+4
+ 288 0028 32F81310 		ldrh	r1, [r2, r3, lsl #1]
+  33:Core/Src/main.c ****                 LedCount[i] = 0;
+ 289              		.loc 1 33 40 view .LVU72
+ 290 002c 314A     		ldr	r2, .L39+8
+ 291 002e 1078     		ldrb	r0, [r2]	@ zero_extendqisi2
+ 292 0030 314A     		ldr	r2, .L39+12
+ 293 0032 32F81020 		ldrh	r2, [r2, r0, lsl #1]
+  33:Core/Src/main.c ****                 LedCount[i] = 0;
+ 294              		.loc 1 33 16 view .LVU73
+ 295 0036 9142     		cmp	r1, r2
+ 296 0038 F1D3     		bcc	.L22
+  34:Core/Src/main.c ****                 if (Ledflag[1][i] == 1) {
+ 297              		.loc 1 34 17 is_stmt 1 view .LVU74
+  34:Core/Src/main.c ****                 if (Ledflag[1][i] == 1) {
+ 298              		.loc 1 34 29 is_stmt 0 view .LVU75
+ 299 003a 2D4A     		ldr	r2, .L39+4
+ 300 003c 0021     		movs	r1, #0
+ 301 003e 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
+  35:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 9
+
+
+ 302              		.loc 1 35 17 is_stmt 1 view .LVU76
+  35:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+ 303              		.loc 1 35 31 is_stmt 0 view .LVU77
+ 304 0042 2A4A     		ldr	r2, .L39
+ 305 0044 1A44     		add	r2, r2, r3
+ 306 0046 9279     		ldrb	r2, [r2, #6]	@ zero_extendqisi2
+  35:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+ 307              		.loc 1 35 20 view .LVU78
+ 308 0048 012A     		cmp	r2, #1
+ 309 004a E5D0     		beq	.L36
+  39:Core/Src/main.c ****                 }
+ 310              		.loc 1 39 21 is_stmt 1 view .LVU79
+  39:Core/Src/main.c ****                 }
+ 311              		.loc 1 39 35 is_stmt 0 view .LVU80
+ 312 004c 274A     		ldr	r2, .L39
+ 313 004e 1A44     		add	r2, r2, r3
+ 314 0050 0121     		movs	r1, #1
+ 315 0052 9171     		strb	r1, [r2, #6]
+ 316 0054 E3E7     		b	.L22
+ 317              	.L35:
+ 318              	.LBE6:
+  45:Core/Src/main.c ****         if (Numb != 0) {
+ 319              		.loc 1 45 9 is_stmt 1 view .LVU81
+  45:Core/Src/main.c ****         if (Numb != 0) {
+ 320              		.loc 1 45 14 is_stmt 0 view .LVU82
+ 321 0056 294B     		ldr	r3, .L39+16
+ 322              	.LVL25:
+  45:Core/Src/main.c ****         if (Numb != 0) {
+ 323              		.loc 1 45 14 view .LVU83
+ 324 0058 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 325 005a 294A     		ldr	r2, .L39+20
+ 326 005c A2FB0312 		umull	r1, r2, r2, r3
+ 327 0060 991A     		subs	r1, r3, r2
+ 328 0062 02EB5102 		add	r2, r2, r1, lsr #1
+ 329 0066 9208     		lsrs	r2, r2, #2
+ 330 0068 C2EBC202 		rsb	r2, r2, r2, lsl #3
+ 331 006c 9B1A     		subs	r3, r3, r2
+ 332 006e DBB2     		uxtb	r3, r3
+ 333 0070 244A     		ldr	r2, .L39+24
+ 334 0072 1370     		strb	r3, [r2]
+  46:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++) {
+ 335              		.loc 1 46 9 is_stmt 1 view .LVU84
+  46:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++) {
+ 336              		.loc 1 46 12 is_stmt 0 view .LVU85
+ 337 0074 3BB9     		cbnz	r3, .L33
+ 338              	.L26:
+ 339              	.LVL26:
+ 340              	.LBB7:
+  51:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 341              		.loc 1 51 35 is_stmt 1 discriminator 1 view .LVU86
+ 342 0076 052B     		cmp	r3, #5
+ 343 0078 0ED8     		bhi	.L37
+  52:Core/Src/main.c ****             }
+ 344              		.loc 1 52 17 view .LVU87
+  52:Core/Src/main.c ****             }
+ 345              		.loc 1 52 31 is_stmt 0 view .LVU88
+ 346 007a 1C4A     		ldr	r2, .L39
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 10
+
+
+ 347 007c 0021     		movs	r1, #0
+ 348 007e D154     		strb	r1, [r2, r3]
+  51:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 349              		.loc 1 51 41 is_stmt 1 discriminator 3 view .LVU89
+ 350 0080 0133     		adds	r3, r3, #1
+ 351              	.LVL27:
+  51:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 352              		.loc 1 51 41 is_stmt 0 discriminator 3 view .LVU90
+ 353 0082 DBB2     		uxtb	r3, r3
+ 354              	.LVL28:
+  51:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 355              		.loc 1 51 41 discriminator 3 view .LVU91
+ 356 0084 F7E7     		b	.L26
+ 357              	.LVL29:
+ 358              	.L33:
+  51:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 359              		.loc 1 51 41 discriminator 3 view .LVU92
+ 360              	.LBE7:
+ 361              	.LBB8:
+  47:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 362              		.loc 1 47 26 view .LVU93
+ 363 0086 0022     		movs	r2, #0
+ 364              	.L25:
+ 365              	.LVL30:
+  47:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 366              		.loc 1 47 35 is_stmt 1 discriminator 1 view .LVU94
+ 367 0088 9342     		cmp	r3, r2
+ 368 008a 08D9     		bls	.L28
+  48:Core/Src/main.c ****             }
+ 369              		.loc 1 48 17 view .LVU95
+  48:Core/Src/main.c ****             }
+ 370              		.loc 1 48 31 is_stmt 0 view .LVU96
+ 371 008c 1749     		ldr	r1, .L39
+ 372 008e 0120     		movs	r0, #1
+ 373 0090 8854     		strb	r0, [r1, r2]
+  47:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 374              		.loc 1 47 44 is_stmt 1 discriminator 3 view .LVU97
+ 375 0092 0244     		add	r2, r2, r0
+ 376              	.LVL31:
+  47:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 377              		.loc 1 47 44 is_stmt 0 discriminator 3 view .LVU98
+ 378 0094 D2B2     		uxtb	r2, r2
+ 379              	.LVL32:
+  47:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 380              		.loc 1 47 44 discriminator 3 view .LVU99
+ 381 0096 F7E7     		b	.L25
+ 382              	.LVL33:
+ 383              	.L37:
+  47:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 384              		.loc 1 47 44 discriminator 3 view .LVU100
+ 385              	.LBE8:
+  54:Core/Src/main.c ****         }
+ 386              		.loc 1 54 13 is_stmt 1 view .LVU101
+  54:Core/Src/main.c ****         }
+ 387              		.loc 1 54 26 is_stmt 0 view .LVU102
+ 388 0098 184B     		ldr	r3, .L39+16
+ 389              	.LVL34:
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 11
+
+
+  54:Core/Src/main.c ****         }
+ 390              		.loc 1 54 26 view .LVU103
+ 391 009a 0022     		movs	r2, #0
+ 392 009c 1A70     		strb	r2, [r3]
+ 393              	.LVL35:
+ 394              	.L28:
+  58:Core/Src/main.c ****             // 当按钮长按时，统一改变所有LED的频率
+ 395              		.loc 1 58 9 is_stmt 1 view .LVU104
+  58:Core/Src/main.c ****             // 当按钮长按时，统一改变所有LED的频率
+ 396              		.loc 1 58 28 is_stmt 0 view .LVU105
+ 397 009e 1A4B     		ldr	r3, .L39+28
+ 398 00a0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  58:Core/Src/main.c ****             // 当按钮长按时，统一改变所有LED的频率
+ 399              		.loc 1 58 12 view .LVU106
+ 400 00a2 012B     		cmp	r3, #1
+ 401 00a4 13D0     		beq	.L38
+ 402              	.L30:
+  66:Core/Src/main.c ****             flagbutton = 0;
+ 403              		.loc 1 66 9 is_stmt 1 view .LVU107
+  66:Core/Src/main.c ****             flagbutton = 0;
+ 404              		.loc 1 66 24 is_stmt 0 view .LVU108
+ 405 00a6 194B     		ldr	r3, .L39+32
+ 406 00a8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  66:Core/Src/main.c ****             flagbutton = 0;
+ 407              		.loc 1 66 12 view .LVU109
+ 408 00aa 012B     		cmp	r3, #1
+ 409 00ac 0BD1     		bne	.L31
+  66:Core/Src/main.c ****             flagbutton = 0;
+ 410              		.loc 1 66 32 discriminator 1 view .LVU110
+ 411 00ae 184B     		ldr	r3, .L39+36
+ 412 00b0 1B69     		ldr	r3, [r3, #16]
+  66:Core/Src/main.c ****             flagbutton = 0;
+ 413              		.loc 1 66 29 discriminator 1 view .LVU111
+ 414 00b2 13F0400F 		tst	r3, #64
+ 415 00b6 06D1     		bne	.L31
+  66:Core/Src/main.c ****             flagbutton = 0;
+ 416              		.loc 1 66 94 discriminator 2 view .LVU112
+ 417 00b8 164B     		ldr	r3, .L39+40
+ 418 00ba 1B68     		ldr	r3, [r3]
+  66:Core/Src/main.c ****             flagbutton = 0;
+ 419              		.loc 1 66 72 discriminator 2 view .LVU113
+ 420 00bc 312B     		cmp	r3, #49
+ 421 00be 02D9     		bls	.L31
+  67:Core/Src/main.c ****         }
+ 422              		.loc 1 67 13 is_stmt 1 view .LVU114
+  67:Core/Src/main.c ****         }
+ 423              		.loc 1 67 24 is_stmt 0 view .LVU115
+ 424 00c0 124B     		ldr	r3, .L39+32
+ 425 00c2 0022     		movs	r2, #0
+ 426 00c4 1A70     		strb	r2, [r3]
+ 427              	.L31:
+  70:Core/Src/main.c ****     } 
+ 428              		.loc 1 70 9 is_stmt 1 view .LVU116
+ 429 00c6 FFF7FEFF 		bl	Led_light
+ 430              	.LVL36:
+  29:Core/Src/main.c ****     {
+ 431              		.loc 1 29 11 view .LVU117
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 12
+
+
+ 432              	.L32:
+  29:Core/Src/main.c ****     {
+ 433              		.loc 1 29 5 view .LVU118
+  32:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+ 434              		.loc 1 32 9 view .LVU119
+ 435              	.LBB9:
+  32:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+ 436              		.loc 1 32 14 view .LVU120
+  32:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+ 437              		.loc 1 32 22 is_stmt 0 view .LVU121
+ 438 00ca 0023     		movs	r3, #0
+  32:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+ 439              		.loc 1 32 9 view .LVU122
+ 440 00cc A9E7     		b	.L21
+ 441              	.LVL37:
+ 442              	.L38:
+  32:Core/Src/main.c ****             if (LedCount[i] >= LedSetHZ[LedCurrHZ]) { // 使用LedSetHZ[LedCurrHZ]作为周期
+ 443              		.loc 1 32 9 view .LVU123
+ 444              	.LBE9:
+  60:Core/Src/main.c **** 
+ 445              		.loc 1 60 13 is_stmt 1 view .LVU124
+  60:Core/Src/main.c **** 
+ 446              		.loc 1 60 36 is_stmt 0 view .LVU125
+ 447 00ce 0949     		ldr	r1, .L39+8
+ 448 00d0 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 449 00d2 0132     		adds	r2, r2, #1
+  60:Core/Src/main.c **** 
+ 450              		.loc 1 60 41 view .LVU126
+ 451 00d4 03F15533 		add	r3, r3, #1431655765
+ 452 00d8 83FB0203 		smull	r0, r3, r3, r2
+ 453 00dc 03EB4303 		add	r3, r3, r3, lsl #1
+ 454 00e0 D31A     		subs	r3, r2, r3
+  60:Core/Src/main.c **** 
+ 455              		.loc 1 60 23 view .LVU127
+ 456 00e2 0B70     		strb	r3, [r1]
+  62:Core/Src/main.c ****         }
+ 457              		.loc 1 62 13 is_stmt 1 view .LVU128
+  62:Core/Src/main.c ****         }
+ 458              		.loc 1 62 28 is_stmt 0 view .LVU129
+ 459 00e4 084B     		ldr	r3, .L39+28
+ 460 00e6 0022     		movs	r2, #0
+ 461 00e8 1A70     		strb	r2, [r3]
+ 462 00ea DCE7     		b	.L30
+ 463              	.L40:
+ 464              		.align	2
+ 465              	.L39:
+ 466 00ec 00000000 		.word	Ledflag
+ 467 00f0 00000000 		.word	LedCount
+ 468 00f4 00000000 		.word	LedCurrHZ
+ 469 00f8 00000000 		.word	LedSetHZ
+ 470 00fc 00000000 		.word	CurrentState
+ 471 0100 25499224 		.word	613566757
+ 472 0104 00000000 		.word	Numb
+ 473 0108 00000000 		.word	longflagbutton
+ 474 010c 00000000 		.word	flagbutton
+ 475 0110 00080240 		.word	1073874944
+ 476 0114 00000000 		.word	GlobalTickBut1Wait
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 13
+
+
+ 477              		.cfi_endproc
+ 478              	.LFE130:
+ 480              		.global	Numb
+ 481              		.section	.bss.Numb,"aw",%nobits
+ 484              	Numb:
+ 485 0000 00       		.space	1
+ 486              		.global	CurrentState
+ 487              		.section	.data.CurrentState,"aw"
+ 490              	CurrentState:
+ 491 0000 06       		.byte	6
+ 492              		.global	LedOffset
+ 493              		.section	.rodata.LedOffset,"a"
+ 494              		.align	2
+ 497              	LedOffset:
+ 498 0000 00070E08 		.ascii	"\000\007\016\010\011\012"
+ 498      090A
+ 499              		.global	longflagbutton
+ 500              		.section	.bss.longflagbutton,"aw",%nobits
+ 503              	longflagbutton:
+ 504 0000 00       		.space	1
+ 505              		.global	flagbutton
+ 506              		.section	.bss.flagbutton,"aw",%nobits
+ 509              	flagbutton:
+ 510 0000 00       		.space	1
+ 511              		.global	Ledflag
+ 512              		.section	.data.Ledflag,"aw"
+ 513              		.align	2
+ 516              	Ledflag:
+ 517 0000 01010101 		.ascii	"\001\001\001\001\001\001"
+ 517      0101
+ 518 0006 00000000 		.ascii	"\000\000\000\000\000\000"
+ 518      0000
+ 519              		.global	LedState
+ 520              		.section	.bss.LedState,"aw",%nobits
+ 523              	LedState:
+ 524 0000 00       		.space	1
+ 525              		.global	LedCount
+ 526              		.section	.bss.LedCount,"aw",%nobits
+ 527              		.align	2
+ 530              	LedCount:
+ 531 0000 00000000 		.space	12
+ 531      00000000 
+ 531      00000000 
+ 532              		.global	LedCurrHZ
+ 533              		.section	.bss.LedCurrHZ,"aw",%nobits
+ 536              	LedCurrHZ:
+ 537 0000 00       		.space	1
+ 538              		.global	LedSetHZ
+ 539              		.section	.data.LedSetHZ,"aw"
+ 540              		.align	2
+ 543              	LedSetHZ:
+ 544 0000 0E02     		.short	526
+ 545 0002 C409     		.short	2500
+ 546 0004 8D03     		.short	909
+ 547              		.global	GlobalTickBut1Wait
+ 548              		.section	.bss.GlobalTickBut1Wait,"aw",%nobits
+ 549              		.align	2
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 14
+
+
+ 552              	GlobalTickBut1Wait:
+ 553 0000 00000000 		.space	4
+ 554              		.global	DelayTickCount
+ 555              		.section	.bss.DelayTickCount,"aw",%nobits
+ 556              		.align	1
+ 559              	DelayTickCount:
+ 560 0000 0000     		.space	2
+ 561              		.text
+ 562              	.Letext0:
+ 563              		.file 2 "D:/STEM32_works/Danpianji/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 564              		.file 3 "D:/STEM32_works/Danpianji/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 565              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ 566              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:19     .text.Led_light:00000000 $t
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:25     .text.Led_light:00000000 Led_light
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:170    .text.Led_light:00000080 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:523    .bss.LedState:00000000 LedState
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:497    .rodata.LedOffset:00000000 LedOffset
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:516    .data.Ledflag:00000000 Ledflag
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:178    .text.LedVal_Init:00000000 $t
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:184    .text.LedVal_Init:00000000 LedVal_Init
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:226    .text.LedVal_Init:00000020 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:536    .bss.LedCurrHZ:00000000 LedCurrHZ
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:543    .data.LedSetHZ:00000000 LedSetHZ
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:530    .bss.LedCount:00000000 LedCount
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:233    .text.main:00000000 $t
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:239    .text.main:00000000 main
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:466    .text.main:000000ec $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:490    .data.CurrentState:00000000 CurrentState
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:484    .bss.Numb:00000000 Numb
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:503    .bss.longflagbutton:00000000 longflagbutton
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:509    .bss.flagbutton:00000000 flagbutton
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:552    .bss.GlobalTickBut1Wait:00000000 GlobalTickBut1Wait
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:485    .bss.Numb:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:494    .rodata.LedOffset:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:504    .bss.longflagbutton:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:510    .bss.flagbutton:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:513    .data.Ledflag:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:524    .bss.LedState:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:527    .bss.LedCount:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:537    .bss.LedCurrHZ:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:540    .data.LedSetHZ:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:549    .bss.GlobalTickBut1Wait:00000000 $d
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:559    .bss.DelayTickCount:00000000 DelayTickCount
+C:\Users\Nedoo\AppData\Local\Temp\ccjHmrJf.s:556    .bss.DelayTickCount:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init
+RCC_Init
+ITR_Init
+SysTick_Init
