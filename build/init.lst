@@ -1,0 +1,284 @@
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccr59h4U.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Ini,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include <init.h>
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** // GPIO 初始化
+   4:Core/Src/init.c **** void GPIO_Ini(void) {
+  29              		.loc 1 4 21 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****     SET_BIT(*(volatile uint32_t *)RCC_GPIO_EN, RCC_GPIOB_EN | RCC_GPIOC_EN);
+  34              		.loc 1 5 5 view .LVU1
+  35 0000 074A     		ldr	r2, .L2
+  36 0002 D2F83038 		ldr	r3, [r2, #2096]
+  37 0006 43F00603 		orr	r3, r3, #6
+  38 000a C2F83038 		str	r3, [r2, #2096]
+   6:Core/Src/init.c ****     *(volatile uint32_t *)GPIOB_MODER |= GPIOB_MODE_PIN0_OUT | GPIOB_MODE_PIN7_OUT | GPIOB_MODE_PIN
+  39              		.loc 1 6 5 view .LVU2
+  40 000e A2F54052 		sub	r2, r2, #12288
+  41 0012 D2F80014 		ldr	r1, [r2, #1024]
+  42              		.loc 1 6 39 is_stmt 0 view .LVU3
+  43 0016 034B     		ldr	r3, .L2+4
+  44 0018 0B43     		orrs	r3, r3, r1
+  45 001a C2F80034 		str	r3, [r2, #1024]
+   7:Core/Src/init.c **** }
+  46              		.loc 1 7 1 view .LVU4
+  47 001e 7047     		bx	lr
+  48              	.L3:
+  49              		.align	2
+  50              	.L2:
+  51 0020 00300240 		.word	1073885184
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccr59h4U.s 			page 2
+
+
+  52 0024 01401010 		.word	269500417
+  53              		.cfi_endproc
+  54              	.LFE130:
+  56              		.section	.text.ToggleLED,"ax",%progbits
+  57              		.align	1
+  58              		.global	ToggleLED
+  59              		.syntax unified
+  60              		.thumb
+  61              		.thumb_func
+  63              	ToggleLED:
+  64              	.LVL0:
+  65              	.LFB131:
+   8:Core/Src/init.c **** 
+   9:Core/Src/init.c **** // 切换 LED 状态
+  10:Core/Src/init.c **** void ToggleLED(uint8_t led_index, uint8_t state) {
+  66              		.loc 1 10 50 is_stmt 1 view -0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 0
+  69              		@ frame_needed = 0, uses_anonymous_args = 0
+  70              		@ link register save eliminated.
+  11:Core/Src/init.c ****     switch (led_index) {
+  71              		.loc 1 11 5 view .LVU6
+  72 0000 0138     		subs	r0, r0, #1
+  73              	.LVL1:
+  74              		.loc 1 11 5 is_stmt 0 view .LVU7
+  75 0002 0328     		cmp	r0, #3
+  76 0004 25D8     		bhi	.L4
+  77 0006 DFE800F0 		tbb	[pc, r0]
+  78              	.L7:
+  79 000a 02       		.byte	(.L10-.L7)/2
+  80 000b 0B       		.byte	(.L9-.L7)/2
+  81 000c 14       		.byte	(.L8-.L7)/2
+  82 000d 1E       		.byte	(.L6-.L7)/2
+  83              		.p2align 1
+  84              	.L10:
+  12:Core/Src/init.c ****         case 1:
+  13:Core/Src/init.c ****             *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN0_SET : GPIOB_BSRR_PIN0_RESET;
+  85              		.loc 1 13 13 is_stmt 1 view .LVU8
+  86              		.loc 1 13 76 is_stmt 0 view .LVU9
+  87 000e 21B1     		cbz	r1, .L15
+  88              		.loc 1 13 76 discriminator 1 view .LVU10
+  89 0010 0122     		movs	r2, #1
+  90              	.L11:
+  91              		.loc 1 13 46 discriminator 4 view .LVU11
+  92 0012 124B     		ldr	r3, .L20
+  93 0014 C3F81824 		str	r2, [r3, #1048]
+  14:Core/Src/init.c ****             break;
+  94              		.loc 1 14 13 is_stmt 1 view .LVU12
+  95 0018 7047     		bx	lr
+  96              	.L15:
+  13:Core/Src/init.c ****             break;
+  97              		.loc 1 13 76 is_stmt 0 discriminator 2 view .LVU13
+  98 001a 4FF48032 		mov	r2, #65536
+  99 001e F8E7     		b	.L11
+ 100              	.L9:
+  15:Core/Src/init.c ****         case 2:
+  16:Core/Src/init.c ****             *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN7_SET : GPIOB_BSRR_PIN7_RESET;
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccr59h4U.s 			page 3
+
+
+ 101              		.loc 1 16 13 is_stmt 1 view .LVU14
+ 102              		.loc 1 16 76 is_stmt 0 view .LVU15
+ 103 0020 21B1     		cbz	r1, .L16
+ 104              		.loc 1 16 76 discriminator 1 view .LVU16
+ 105 0022 8022     		movs	r2, #128
+ 106              	.L12:
+ 107              		.loc 1 16 46 discriminator 4 view .LVU17
+ 108 0024 0D4B     		ldr	r3, .L20
+ 109 0026 C3F81824 		str	r2, [r3, #1048]
+  17:Core/Src/init.c ****             break;
+ 110              		.loc 1 17 13 is_stmt 1 view .LVU18
+ 111 002a 7047     		bx	lr
+ 112              	.L16:
+  16:Core/Src/init.c ****             break;
+ 113              		.loc 1 16 76 is_stmt 0 discriminator 2 view .LVU19
+ 114 002c 4FF40002 		mov	r2, #8388608
+ 115 0030 F8E7     		b	.L12
+ 116              	.L8:
+  18:Core/Src/init.c ****         case 3:
+  19:Core/Src/init.c ****             *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN14_SET : GPIOB_BSRR_PIN14_RESE
+ 117              		.loc 1 19 13 is_stmt 1 view .LVU20
+ 118              		.loc 1 19 77 is_stmt 0 view .LVU21
+ 119 0032 29B1     		cbz	r1, .L17
+ 120              		.loc 1 19 77 discriminator 1 view .LVU22
+ 121 0034 4FF48042 		mov	r2, #16384
+ 122              	.L13:
+ 123              		.loc 1 19 46 discriminator 4 view .LVU23
+ 124 0038 084B     		ldr	r3, .L20
+ 125 003a C3F81824 		str	r2, [r3, #1048]
+  20:Core/Src/init.c ****             break;
+ 126              		.loc 1 20 13 is_stmt 1 view .LVU24
+ 127 003e 7047     		bx	lr
+ 128              	.L17:
+  19:Core/Src/init.c ****             break;
+ 129              		.loc 1 19 77 is_stmt 0 discriminator 2 view .LVU25
+ 130 0040 4FF08042 		mov	r2, #1073741824
+ 131 0044 F8E7     		b	.L13
+ 132              	.L6:
+  21:Core/Src/init.c ****         case 4:
+  22:Core/Src/init.c ****             *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN10_SET : GPIOB_BSRR_PIN10_RESE
+ 133              		.loc 1 22 13 is_stmt 1 view .LVU26
+ 134              		.loc 1 22 77 is_stmt 0 view .LVU27
+ 135 0046 29B1     		cbz	r1, .L18
+ 136              		.loc 1 22 77 discriminator 1 view .LVU28
+ 137 0048 4FF48062 		mov	r2, #1024
+ 138              	.L14:
+ 139              		.loc 1 22 46 discriminator 4 view .LVU29
+ 140 004c 034B     		ldr	r3, .L20
+ 141 004e C3F81824 		str	r2, [r3, #1048]
+  23:Core/Src/init.c ****             break;
+ 142              		.loc 1 23 13 is_stmt 1 view .LVU30
+ 143              	.L4:
+  24:Core/Src/init.c ****     }
+  25:Core/Src/init.c **** }
+ 144              		.loc 1 25 1 is_stmt 0 view .LVU31
+ 145 0052 7047     		bx	lr
+ 146              	.L18:
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccr59h4U.s 			page 4
+
+
+  22:Core/Src/init.c ****             break;
+ 147              		.loc 1 22 77 discriminator 2 view .LVU32
+ 148 0054 4FF08062 		mov	r2, #67108864
+ 149 0058 F8E7     		b	.L14
+ 150              	.L21:
+ 151 005a 00BF     		.align	2
+ 152              	.L20:
+ 153 005c 00000240 		.word	1073872896
+ 154              		.cfi_endproc
+ 155              	.LFE131:
+ 157              		.section	.text.TurnOffAllLEDs,"ax",%progbits
+ 158              		.align	1
+ 159              		.global	TurnOffAllLEDs
+ 160              		.syntax unified
+ 161              		.thumb
+ 162              		.thumb_func
+ 164              	TurnOffAllLEDs:
+ 165              	.LFB132:
+  26:Core/Src/init.c **** 
+  27:Core/Src/init.c **** // 关闭所有 LED
+  28:Core/Src/init.c **** void TurnOffAllLEDs(void) {
+ 166              		.loc 1 28 27 is_stmt 1 view -0
+ 167              		.cfi_startproc
+ 168              		@ args = 0, pretend = 0, frame = 0
+ 169              		@ frame_needed = 0, uses_anonymous_args = 0
+ 170              		@ link register save eliminated.
+  29:Core/Src/init.c ****     *(volatile uint32_t *)GPIOB_BSRR = GPIOB_BSRR_PIN0_RESET | GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_P
+ 171              		.loc 1 29 5 view .LVU34
+ 172              		.loc 1 29 38 is_stmt 0 view .LVU35
+ 173 0000 024B     		ldr	r3, .L23
+ 174 0002 034A     		ldr	r2, .L23+4
+ 175 0004 C3F81824 		str	r2, [r3, #1048]
+  30:Core/Src/init.c **** }
+ 176              		.loc 1 30 1 view .LVU36
+ 177 0008 7047     		bx	lr
+ 178              	.L24:
+ 179 000a 00BF     		.align	2
+ 180              	.L23:
+ 181 000c 00000240 		.word	1073872896
+ 182 0010 00008144 		.word	1149304832
+ 183              		.cfi_endproc
+ 184              	.LFE132:
+ 186              		.section	.text.TurnOnAllLEDs,"ax",%progbits
+ 187              		.align	1
+ 188              		.global	TurnOnAllLEDs
+ 189              		.syntax unified
+ 190              		.thumb
+ 191              		.thumb_func
+ 193              	TurnOnAllLEDs:
+ 194              	.LFB133:
+  31:Core/Src/init.c **** 
+  32:Core/Src/init.c **** // 点亮所有 LED
+  33:Core/Src/init.c **** void TurnOnAllLEDs(void) {
+ 195              		.loc 1 33 26 is_stmt 1 view -0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 0
+ 198              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccr59h4U.s 			page 5
+
+
+ 199              		@ link register save eliminated.
+  34:Core/Src/init.c ****     *(volatile uint32_t *)GPIOB_BSRR = GPIOB_BSRR_PIN0_SET | GPIOB_BSRR_PIN7_SET | GPIOB_BSRR_PIN14
+ 200              		.loc 1 34 5 view .LVU38
+ 201              		.loc 1 34 38 is_stmt 0 view .LVU39
+ 202 0000 024B     		ldr	r3, .L26
+ 203 0002 44F28142 		movw	r2, #17537
+ 204 0006 C3F81824 		str	r2, [r3, #1048]
+  35:Core/Src/init.c **** }
+ 205              		.loc 1 35 1 view .LVU40
+ 206 000a 7047     		bx	lr
+ 207              	.L27:
+ 208              		.align	2
+ 209              	.L26:
+ 210 000c 00000240 		.word	1073872896
+ 211              		.cfi_endproc
+ 212              	.LFE133:
+ 214              		.text
+ 215              	.Letext0:
+ 216              		.file 2 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
+ 217              		.file 3 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccr59h4U.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:21     .text.GPIO_Ini:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:51     .text.GPIO_Ini:00000020 $d
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:57     .text.ToggleLED:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:63     .text.ToggleLED:00000000 ToggleLED
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:79     .text.ToggleLED:0000000a $d
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:83     .text.ToggleLED:0000000e $t
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:153    .text.ToggleLED:0000005c $d
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:158    .text.TurnOffAllLEDs:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:164    .text.TurnOffAllLEDs:00000000 TurnOffAllLEDs
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:181    .text.TurnOffAllLEDs:0000000c $d
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:187    .text.TurnOnAllLEDs:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:193    .text.TurnOnAllLEDs:00000000 TurnOnAllLEDs
+C:\Users\25084\AppData\Local\Temp\ccr59h4U.s:210    .text.TurnOnAllLEDs:0000000c $d
+
+NO UNDEFINED SYMBOLS

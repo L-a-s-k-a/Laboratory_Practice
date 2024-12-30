@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\25084\AppData\Local\Temp\cct3A1In.s 			page 1
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,39 +27,496 @@ ARM GAS  C:\Users\25084\AppData\Local\Temp\cct3A1In.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void)
-   2:Core/Src/main.c **** {
-  29              		.loc 1 2 1 view -0
-  30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <stdint.h> 
+   2:Core/Src/main.c **** #include <init.h>
    3:Core/Src/main.c **** 
-   4:Core/Src/main.c ****     while (1){
-  36              		.loc 1 4 5 view .LVU1
-   5:Core/Src/main.c ****     }
-  37              		.loc 1 5 5 view .LVU2
-   4:Core/Src/main.c **** int main(void)
-{
-
-    while (1){
-    }
-}
-  38              		.loc 1 4 11 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\25084\AppData\Local\Temp\cct3A1In.s 			page 2
+   4:Core/Src/main.c **** volatile uint8_t led_states[4] = {0, 0, 0, 0}; // 记录每个 LED 的状态
+   5:Core/Src/main.c **** volatile uint8_t button_count = 0;            // 按钮按下次数
+   6:Core/Src/main.c **** volatile uint8_t button_flag = 0;
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** int main(void) {
+  29              		.loc 1 8 16 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38 0002 82B0     		sub	sp, sp, #8
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 16
+   9:Core/Src/main.c ****     uint8_t button_pressed = 0; // 按钮状态
+  41              		.loc 1 9 5 view .LVU1
+  42              	.LVL0:
+  10:Core/Src/main.c ****     GPIO_Ini();                 // 初始化 GPIO
+  43              		.loc 1 10 5 view .LVU2
+  44 0004 FFF7FEFF 		bl	GPIO_Ini
+  45              	.LVL1:
+   9:Core/Src/main.c ****     uint8_t button_pressed = 0; // 按钮状态
+  46              		.loc 1 9 13 is_stmt 0 view .LVU3
+  47 0008 0024     		movs	r4, #0
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 2
+
+
+  48 000a 00E0     		b	.L3
+  49              	.LVL2:
+  50              	.L20:
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c ****     while (1) {
+  13:Core/Src/main.c ****         // 更新按钮状态
+  14:Core/Src/main.c ****         button_flag = READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) ? 1 : 0;
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c ****         // 检测按钮是否按下
+  17:Core/Src/main.c ****         if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) != 0) { // 按钮按下
+  18:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
+  19:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
+  20:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
+  21:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c ****                 // 根据按钮按下次数控制灯
+  24:Core/Src/main.c ****                 if (button_count >= 1 && button_count <= 4) {
+  25:Core/Src/main.c ****                     // 点亮指定数量的 LED
+  26:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
+  27:Core/Src/main.c ****                         if (i < button_count) {
+  28:Core/Src/main.c ****                             ToggleLED(i + 1, 1); // 打开 LED
+  29:Core/Src/main.c ****                             led_states[i] = 1;  // 更新状态
+  30:Core/Src/main.c ****                         } else {
+  31:Core/Src/main.c ****                             ToggleLED(i + 1, 0); // 关闭 LED
+  32:Core/Src/main.c ****                             led_states[i] = 0;  // 更新状态
+  33:Core/Src/main.c ****                         }
+  34:Core/Src/main.c ****                     }
+  35:Core/Src/main.c ****                 } else if (button_count == 5) {
+  36:Core/Src/main.c ****                     // 关闭所有 LED
+  37:Core/Src/main.c ****                     TurnOffAllLEDs();
+  38:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
+  39:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+  40:Core/Src/main.c ****                     }
+  41:Core/Src/main.c ****                 } else if (button_count == 6) {
+  42:Core/Src/main.c ****                     // 点亮所有 LED
+  43:Core/Src/main.c ****                     TurnOnAllLEDs();
+  44:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
+  45:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
+  46:Core/Src/main.c ****                     }
+  47:Core/Src/main.c ****                 } else if (button_count > 6) {
+  48:Core/Src/main.c ****                     // 重置逻辑并重新开始
+  49:Core/Src/main.c ****                     TurnOffAllLEDs();
+  50:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
+  51:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+  52:Core/Src/main.c ****                     }
+  53:Core/Src/main.c ****                     button_count = 0; // 重置计数
+  54:Core/Src/main.c ****                 }
+  55:Core/Src/main.c ****             }
+  56:Core/Src/main.c ****         } else {
+  57:Core/Src/main.c ****             button_pressed = 0; // 按钮释放
+  51              		.loc 1 57 28 view .LVU4
+  52 000c 0024     		movs	r4, #0
+  53              	.LVL3:
+  54              	.L3:
+  12:Core/Src/main.c ****         // 更新按钮状态
+  55              		.loc 1 12 5 is_stmt 1 view .LVU5
+  14:Core/Src/main.c **** 
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 3
+
+
+  56              		.loc 1 14 9 view .LVU6
+  14:Core/Src/main.c **** 
+  57              		.loc 1 14 23 is_stmt 0 view .LVU7
+  58 000e 3E4A     		ldr	r2, .L28
+  59 0010 D2F81038 		ldr	r3, [r2, #2064]
+  14:Core/Src/main.c **** 
+  60              		.loc 1 14 86 view .LVU8
+  61 0014 C3F34033 		ubfx	r3, r3, #13, #1
+  14:Core/Src/main.c **** 
+  62              		.loc 1 14 21 view .LVU9
+  63 0018 3C49     		ldr	r1, .L28+4
+  64 001a 0B70     		strb	r3, [r1]
+  17:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
+  65              		.loc 1 17 9 is_stmt 1 view .LVU10
+  17:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
+  66              		.loc 1 17 13 is_stmt 0 view .LVU11
+  67 001c D2F81038 		ldr	r3, [r2, #2064]
+  17:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
+  68              		.loc 1 17 12 view .LVU12
+  69 0020 13F4005F 		tst	r3, #8192
+  70 0024 F2D0     		beq	.L20
+  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
+  71              		.loc 1 18 13 is_stmt 1 view .LVU13
+  72              	.LBB2:
+  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
+  73              		.loc 1 18 18 view .LVU14
+  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
+  74              		.loc 1 18 31 is_stmt 0 view .LVU15
+  75 0026 0023     		movs	r3, #0
+  76 0028 0193     		str	r3, [sp, #4]
+  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
+  77              		.loc 1 18 13 view .LVU16
+  78 002a 02E0     		b	.L4
+  79              	.L5:
+  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
+  80              		.loc 1 18 51 is_stmt 1 discriminator 3 view .LVU17
+  81 002c 019B     		ldr	r3, [sp, #4]
+  82 002e 0133     		adds	r3, r3, #1
+  83 0030 0193     		str	r3, [sp, #4]
+  84              	.L4:
+  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
+  85              		.loc 1 18 40 discriminator 1 view .LVU18
+  86 0032 019A     		ldr	r2, [sp, #4]
+  87 0034 364B     		ldr	r3, .L28+8
+  88 0036 9A42     		cmp	r2, r3
+  89 0038 F8DD     		ble	.L5
+  90              	.LBE2:
+  19:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
+  91              		.loc 1 19 13 view .LVU19
+  19:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
+  92              		.loc 1 19 17 is_stmt 0 view .LVU20
+  93 003a 334B     		ldr	r3, .L28
+  94 003c D3F81038 		ldr	r3, [r3, #2064]
+  19:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
+  95              		.loc 1 19 16 view .LVU21
+  96 0040 13F4005F 		tst	r3, #8192
+  97 0044 E3D1     		bne	.L3
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 4
+
+
+  19:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
+  98              		.loc 1 19 81 discriminator 1 view .LVU22
+  99 0046 002C     		cmp	r4, #0
+ 100 0048 E1D1     		bne	.L3
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 101              		.loc 1 20 17 is_stmt 1 view .LVU23
+ 102              	.LVL4:
+  21:Core/Src/main.c **** 
+ 103              		.loc 1 21 17 view .LVU24
+  21:Core/Src/main.c **** 
+ 104              		.loc 1 21 29 is_stmt 0 view .LVU25
+ 105 004a 324A     		ldr	r2, .L28+12
+ 106 004c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 107 004e 0133     		adds	r3, r3, #1
+ 108 0050 DBB2     		uxtb	r3, r3
+ 109 0052 1370     		strb	r3, [r2]
+  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
+ 110              		.loc 1 24 17 is_stmt 1 view .LVU26
+  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
+ 111              		.loc 1 24 34 is_stmt 0 view .LVU27
+ 112 0054 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
+ 113              		.loc 1 24 20 view .LVU28
+ 114 0056 1BB1     		cbz	r3, .L7
+  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
+ 115              		.loc 1 24 55 discriminator 1 view .LVU29
+ 116 0058 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 117 005a DBB2     		uxtb	r3, r3
+  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
+ 118              		.loc 1 24 39 discriminator 1 view .LVU30
+ 119 005c 042B     		cmp	r3, #4
+ 120 005e 1AD9     		bls	.L8
+ 121              	.L7:
+  35:Core/Src/main.c ****                     // 关闭所有 LED
+ 122              		.loc 1 35 24 is_stmt 1 view .LVU31
+  35:Core/Src/main.c ****                     // 关闭所有 LED
+ 123              		.loc 1 35 41 is_stmt 0 view .LVU32
+ 124 0060 2C4B     		ldr	r3, .L28+12
+ 125 0062 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 126 0064 DBB2     		uxtb	r3, r3
+  35:Core/Src/main.c ****                     // 关闭所有 LED
+ 127              		.loc 1 35 27 view .LVU33
+ 128 0066 052B     		cmp	r3, #5
+ 129 0068 27D0     		beq	.L23
+  41:Core/Src/main.c ****                     // 点亮所有 LED
+ 130              		.loc 1 41 24 is_stmt 1 view .LVU34
+  41:Core/Src/main.c ****                     // 点亮所有 LED
+ 131              		.loc 1 41 41 is_stmt 0 view .LVU35
+ 132 006a 2A4B     		ldr	r3, .L28+12
+ 133 006c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 134 006e DBB2     		uxtb	r3, r3
+  41:Core/Src/main.c ****                     // 点亮所有 LED
+ 135              		.loc 1 41 27 view .LVU36
+ 136 0070 062B     		cmp	r3, #6
+ 137 0072 2ED0     		beq	.L24
+  47:Core/Src/main.c ****                     // 重置逻辑并重新开始
+ 138              		.loc 1 47 24 is_stmt 1 view .LVU37
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 5
+
+
+  47:Core/Src/main.c ****                     // 重置逻辑并重新开始
+ 139              		.loc 1 47 41 is_stmt 0 view .LVU38
+ 140 0074 274B     		ldr	r3, .L28+12
+ 141 0076 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 142 0078 DBB2     		uxtb	r3, r3
+  47:Core/Src/main.c ****                     // 重置逻辑并重新开始
+ 143              		.loc 1 47 27 view .LVU39
+ 144 007a 062B     		cmp	r3, #6
+ 145 007c 35D8     		bhi	.L25
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 146              		.loc 1 20 32 view .LVU40
+ 147 007e 0124     		movs	r4, #1
+ 148 0080 C5E7     		b	.L3
+ 149              	.LVL5:
+ 150              	.L9:
+ 151              	.LBB3:
+  31:Core/Src/main.c ****                             led_states[i] = 0;  // 更新状态
+ 152              		.loc 1 31 29 is_stmt 1 view .LVU41
+ 153 0082 601C     		adds	r0, r4, #1
+ 154 0084 0021     		movs	r1, #0
+ 155 0086 C0B2     		uxtb	r0, r0
+ 156 0088 FFF7FEFF 		bl	ToggleLED
+ 157              	.LVL6:
+  32:Core/Src/main.c ****                         }
+ 158              		.loc 1 32 29 view .LVU42
+  32:Core/Src/main.c ****                         }
+ 159              		.loc 1 32 43 is_stmt 0 view .LVU43
+ 160 008c 224B     		ldr	r3, .L28+16
+ 161 008e 0022     		movs	r2, #0
+ 162 0090 1A55     		strb	r2, [r3, r4]
+ 163              	.L10:
+  26:Core/Src/main.c ****                         if (i < button_count) {
+ 164              		.loc 1 26 49 is_stmt 1 discriminator 2 view .LVU44
+ 165 0092 0134     		adds	r4, r4, #1
+ 166              	.LVL7:
+  26:Core/Src/main.c ****                         if (i < button_count) {
+ 167              		.loc 1 26 49 is_stmt 0 discriminator 2 view .LVU45
+ 168 0094 E4B2     		uxtb	r4, r4
+ 169              	.LVL8:
+ 170              	.L8:
+  26:Core/Src/main.c ****                         if (i < button_count) {
+ 171              		.loc 1 26 43 is_stmt 1 discriminator 1 view .LVU46
+ 172 0096 032C     		cmp	r4, #3
+ 173 0098 0DD8     		bhi	.L26
+  27:Core/Src/main.c ****                             ToggleLED(i + 1, 1); // 打开 LED
+ 174              		.loc 1 27 25 view .LVU47
+  27:Core/Src/main.c ****                             ToggleLED(i + 1, 1); // 打开 LED
+ 175              		.loc 1 27 31 is_stmt 0 view .LVU48
+ 176 009a 1E4B     		ldr	r3, .L28+12
+ 177 009c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 178 009e DBB2     		uxtb	r3, r3
+  27:Core/Src/main.c ****                             ToggleLED(i + 1, 1); // 打开 LED
+ 179              		.loc 1 27 28 view .LVU49
+ 180 00a0 A342     		cmp	r3, r4
+ 181 00a2 EED9     		bls	.L9
+  28:Core/Src/main.c ****                             led_states[i] = 1;  // 更新状态
+ 182              		.loc 1 28 29 is_stmt 1 view .LVU50
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 6
+
+
+ 183 00a4 601C     		adds	r0, r4, #1
+ 184 00a6 0121     		movs	r1, #1
+ 185 00a8 C0B2     		uxtb	r0, r0
+ 186 00aa FFF7FEFF 		bl	ToggleLED
+ 187              	.LVL9:
+  29:Core/Src/main.c ****                         } else {
+ 188              		.loc 1 29 29 view .LVU51
+  29:Core/Src/main.c ****                         } else {
+ 189              		.loc 1 29 43 is_stmt 0 view .LVU52
+ 190 00ae 1A4B     		ldr	r3, .L28+16
+ 191 00b0 0122     		movs	r2, #1
+ 192 00b2 1A55     		strb	r2, [r3, r4]
+ 193 00b4 EDE7     		b	.L10
+ 194              	.L26:
+ 195              	.LBE3:
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 196              		.loc 1 20 32 view .LVU53
+ 197 00b6 0124     		movs	r4, #1
+ 198              	.LVL10:
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 199              		.loc 1 20 32 view .LVU54
+ 200 00b8 A9E7     		b	.L3
+ 201              	.LVL11:
+ 202              	.L23:
+  37:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
+ 203              		.loc 1 37 21 is_stmt 1 view .LVU55
+ 204 00ba FFF7FEFF 		bl	TurnOffAllLEDs
+ 205              	.LVL12:
+  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 206              		.loc 1 38 21 view .LVU56
+ 207              	.LBB4:
+  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 208              		.loc 1 38 26 view .LVU57
+ 209              	.L13:
+  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 210              		.loc 1 38 43 discriminator 1 view .LVU58
+ 211 00be 032C     		cmp	r4, #3
+ 212 00c0 05D8     		bhi	.L27
+  39:Core/Src/main.c ****                     }
+ 213              		.loc 1 39 25 view .LVU59
+  39:Core/Src/main.c ****                     }
+ 214              		.loc 1 39 39 is_stmt 0 view .LVU60
+ 215 00c2 154B     		ldr	r3, .L28+16
+ 216 00c4 0022     		movs	r2, #0
+ 217 00c6 1A55     		strb	r2, [r3, r4]
+  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 218              		.loc 1 38 49 is_stmt 1 discriminator 3 view .LVU61
+ 219 00c8 0134     		adds	r4, r4, #1
+ 220              	.LVL13:
+  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 221              		.loc 1 38 49 is_stmt 0 discriminator 3 view .LVU62
+ 222 00ca E4B2     		uxtb	r4, r4
+ 223              	.LVL14:
+  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 224              		.loc 1 38 49 discriminator 3 view .LVU63
+ 225 00cc F7E7     		b	.L13
+ 226              	.L27:
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 7
+
+
+  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 227              		.loc 1 38 49 discriminator 3 view .LVU64
+ 228              	.LBE4:
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 229              		.loc 1 20 32 view .LVU65
+ 230 00ce 0124     		movs	r4, #1
+ 231              	.LVL15:
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 232              		.loc 1 20 32 view .LVU66
+ 233 00d0 9DE7     		b	.L3
+ 234              	.LVL16:
+ 235              	.L24:
+  43:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
+ 236              		.loc 1 43 21 is_stmt 1 view .LVU67
+ 237 00d2 FFF7FEFF 		bl	TurnOnAllLEDs
+ 238              	.LVL17:
+  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
+ 239              		.loc 1 44 21 view .LVU68
+ 240              	.LBB5:
+  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
+ 241              		.loc 1 44 26 view .LVU69
+  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
+ 242              		.loc 1 44 21 is_stmt 0 view .LVU70
+ 243 00d6 04E0     		b	.L16
+ 244              	.LVL18:
+ 245              	.L17:
+  45:Core/Src/main.c ****                     }
+ 246              		.loc 1 45 25 is_stmt 1 view .LVU71
+  45:Core/Src/main.c ****                     }
+ 247              		.loc 1 45 39 is_stmt 0 view .LVU72
+ 248 00d8 0F4B     		ldr	r3, .L28+16
+ 249 00da 0122     		movs	r2, #1
+ 250 00dc 1A55     		strb	r2, [r3, r4]
+  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
+ 251              		.loc 1 44 49 is_stmt 1 discriminator 3 view .LVU73
+ 252 00de 1444     		add	r4, r4, r2
+ 253              	.LVL19:
+  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
+ 254              		.loc 1 44 49 is_stmt 0 discriminator 3 view .LVU74
+ 255 00e0 E4B2     		uxtb	r4, r4
+ 256              	.LVL20:
+ 257              	.L16:
+  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
+ 258              		.loc 1 44 43 is_stmt 1 discriminator 1 view .LVU75
+ 259 00e2 032C     		cmp	r4, #3
+ 260 00e4 F8D9     		bls	.L17
+ 261              	.LBE5:
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 262              		.loc 1 20 32 is_stmt 0 view .LVU76
+ 263 00e6 0124     		movs	r4, #1
+ 264              	.LVL21:
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 265              		.loc 1 20 32 view .LVU77
+ 266 00e8 91E7     		b	.L3
+ 267              	.LVL22:
+ 268              	.L25:
+  49:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 8
+
+
+ 269              		.loc 1 49 21 is_stmt 1 view .LVU78
+ 270 00ea FFF7FEFF 		bl	TurnOffAllLEDs
+ 271              	.LVL23:
+  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 272              		.loc 1 50 21 view .LVU79
+ 273              	.LBB6:
+  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 274              		.loc 1 50 26 view .LVU80
+  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 275              		.loc 1 50 21 is_stmt 0 view .LVU81
+ 276 00ee 04E0     		b	.L18
+ 277              	.LVL24:
+ 278              	.L19:
+  51:Core/Src/main.c ****                     }
+ 279              		.loc 1 51 25 is_stmt 1 view .LVU82
+  51:Core/Src/main.c ****                     }
+ 280              		.loc 1 51 39 is_stmt 0 view .LVU83
+ 281 00f0 094B     		ldr	r3, .L28+16
+ 282 00f2 0022     		movs	r2, #0
+ 283 00f4 1A55     		strb	r2, [r3, r4]
+  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 284              		.loc 1 50 49 is_stmt 1 discriminator 3 view .LVU84
+ 285 00f6 0134     		adds	r4, r4, #1
+ 286              	.LVL25:
+  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 287              		.loc 1 50 49 is_stmt 0 discriminator 3 view .LVU85
+ 288 00f8 E4B2     		uxtb	r4, r4
+ 289              	.LVL26:
+ 290              	.L18:
+  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
+ 291              		.loc 1 50 43 is_stmt 1 discriminator 1 view .LVU86
+ 292 00fa 032C     		cmp	r4, #3
+ 293 00fc F8D9     		bls	.L19
+ 294              	.LBE6:
+  53:Core/Src/main.c ****                 }
+ 295              		.loc 1 53 21 view .LVU87
+  53:Core/Src/main.c ****                 }
+ 296              		.loc 1 53 34 is_stmt 0 view .LVU88
+ 297 00fe 054B     		ldr	r3, .L28+12
+ 298 0100 0022     		movs	r2, #0
+ 299 0102 1A70     		strb	r2, [r3]
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 300              		.loc 1 20 32 view .LVU89
+ 301 0104 0124     		movs	r4, #1
+ 302              	.LVL27:
+  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
+ 303              		.loc 1 20 32 view .LVU90
+ 304 0106 82E7     		b	.L3
+ 305              	.L29:
+ 306              		.align	2
+ 307              	.L28:
+ 308 0108 00000240 		.word	1073872896
+ 309 010c 00000000 		.word	button_flag
+ 310 0110 9F860100 		.word	99999
+ 311 0114 00000000 		.word	button_count
+ 312 0118 00000000 		.word	led_states
+ 313              		.cfi_endproc
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 9
+
+
+ 314              	.LFE130:
+ 316              		.global	button_flag
+ 317              		.section	.bss.button_flag,"aw",%nobits
+ 320              	button_flag:
+ 321 0000 00       		.space	1
+ 322              		.global	button_count
+ 323              		.section	.bss.button_count,"aw",%nobits
+ 326              	button_count:
+ 327 0000 00       		.space	1
+ 328              		.global	led_states
+ 329              		.section	.bss.led_states,"aw",%nobits
+ 330              		.align	2
+ 333              	led_states:
+ 334 0000 00000000 		.space	4
+ 335              		.text
+ 336              	.Letext0:
+ 337              		.file 2 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
+ 338              		.file 3 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
+ 339              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\25084\AppData\Local\Temp\cct3A1In.s:21     .text.main:00000000 $t
-C:\Users\25084\AppData\Local\Temp\cct3A1In.s:27     .text.main:00000000 main
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:21     .text.main:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:27     .text.main:00000000 main
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:308    .text.main:00000108 $d
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:320    .bss.button_flag:00000000 button_flag
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:326    .bss.button_count:00000000 button_count
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:333    .bss.led_states:00000000 led_states
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:321    .bss.button_flag:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:327    .bss.button_count:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccb5zvVP.s:330    .bss.led_states:00000000 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Ini
+ToggleLED
+TurnOffAllLEDs
+TurnOnAllLEDs
