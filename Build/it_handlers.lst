@@ -1,0 +1,304 @@
+ARM GAS  C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+  21              		.align	1
+  22              		.global	EXTI15_10_IRQHandler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	EXTI15_10_IRQHandler:
+  28              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "it_handlers.h"
+   2:Core/Src/it_handlers.c **** #include "init.h"
+   3:Core/Src/it_handlers.c **** 
+   4:Core/Src/it_handlers.c **** // Declare getMillis function
+   5:Core/Src/it_handlers.c **** uint32_t getMillis(void);
+   6:Core/Src/it_handlers.c **** 
+   7:Core/Src/it_handlers.c **** // External variables from main.c
+   8:Core/Src/it_handlers.c **** extern uint8_t button1Pressed;
+   9:Core/Src/it_handlers.c **** extern uint8_t button2Pressed;
+  10:Core/Src/it_handlers.c **** extern uint32_t button1PressTime;
+  11:Core/Src/it_handlers.c **** extern uint32_t button2PressTime;
+  12:Core/Src/it_handlers.c **** 
+  13:Core/Src/it_handlers.c **** 
+  14:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void) {
+  29              		.loc 1 14 33 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  15:Core/Src/it_handlers.c ****     uint32_t currentTime = getMillis();
+  38              		.loc 1 15 5 view .LVU1
+  39              		.loc 1 15 28 is_stmt 0 view .LVU2
+  40 0002 FFF7FEFF 		bl	getMillis
+  41              	.LVL0:
+  16:Core/Src/it_handlers.c ****     
+  17:Core/Src/it_handlers.c ****     // Check which button triggered the interrupt
+ARM GAS  C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s 			page 2
+
+
+  18:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR13)) { // Button 1
+  42              		.loc 1 18 5 is_stmt 1 view .LVU3
+  43              		.loc 1 18 9 is_stmt 0 view .LVU4
+  44 0006 124B     		ldr	r3, .L5
+  45 0008 5B69     		ldr	r3, [r3, #20]
+  46              		.loc 1 18 8 view .LVU5
+  47 000a 13F4005F 		tst	r3, #8192
+  48 000e 0CD0     		beq	.L2
+  19:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13); // Clear interrupt flag
+  49              		.loc 1 19 9 is_stmt 1 view .LVU6
+  50 0010 0F4A     		ldr	r2, .L5
+  51 0012 5369     		ldr	r3, [r2, #20]
+  52 0014 43F40053 		orr	r3, r3, #8192
+  53 0018 5361     		str	r3, [r2, #20]
+  20:Core/Src/it_handlers.c ****         if (!button1Pressed) {
+  54              		.loc 1 20 9 view .LVU7
+  55              		.loc 1 20 13 is_stmt 0 view .LVU8
+  56 001a 0E4B     		ldr	r3, .L5+4
+  57 001c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  58              		.loc 1 20 12 view .LVU9
+  59 001e 23B9     		cbnz	r3, .L2
+  21:Core/Src/it_handlers.c ****             button1Pressed = 1;
+  60              		.loc 1 21 13 is_stmt 1 view .LVU10
+  61              		.loc 1 21 28 is_stmt 0 view .LVU11
+  62 0020 0C4B     		ldr	r3, .L5+4
+  63 0022 0122     		movs	r2, #1
+  64 0024 1A70     		strb	r2, [r3]
+  22:Core/Src/it_handlers.c ****             button1PressTime = currentTime;
+  65              		.loc 1 22 13 is_stmt 1 view .LVU12
+  66              		.loc 1 22 30 is_stmt 0 view .LVU13
+  67 0026 0C4B     		ldr	r3, .L5+8
+  68 0028 1860     		str	r0, [r3]
+  69              	.L2:
+  23:Core/Src/it_handlers.c ****         }
+  24:Core/Src/it_handlers.c ****     }
+  25:Core/Src/it_handlers.c ****     
+  26:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR14)) { // Button 2
+  70              		.loc 1 26 5 is_stmt 1 view .LVU14
+  71              		.loc 1 26 9 is_stmt 0 view .LVU15
+  72 002a 094B     		ldr	r3, .L5
+  73 002c 5B69     		ldr	r3, [r3, #20]
+  74              		.loc 1 26 8 view .LVU16
+  75 002e 13F4804F 		tst	r3, #16384
+  76 0032 0CD0     		beq	.L1
+  27:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR14); // Clear interrupt flag
+  77              		.loc 1 27 9 is_stmt 1 view .LVU17
+  78 0034 064A     		ldr	r2, .L5
+  79 0036 5369     		ldr	r3, [r2, #20]
+  80 0038 43F48043 		orr	r3, r3, #16384
+  81 003c 5361     		str	r3, [r2, #20]
+  28:Core/Src/it_handlers.c ****         if (!button2Pressed) {
+  82              		.loc 1 28 9 view .LVU18
+  83              		.loc 1 28 13 is_stmt 0 view .LVU19
+  84 003e 074B     		ldr	r3, .L5+12
+  85 0040 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  86              		.loc 1 28 12 view .LVU20
+  87 0042 23B9     		cbnz	r3, .L1
+ARM GAS  C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s 			page 3
+
+
+  29:Core/Src/it_handlers.c ****             button2Pressed = 1;
+  88              		.loc 1 29 13 is_stmt 1 view .LVU21
+  89              		.loc 1 29 28 is_stmt 0 view .LVU22
+  90 0044 054B     		ldr	r3, .L5+12
+  91 0046 0122     		movs	r2, #1
+  92 0048 1A70     		strb	r2, [r3]
+  30:Core/Src/it_handlers.c ****             button2PressTime = currentTime;
+  93              		.loc 1 30 13 is_stmt 1 view .LVU23
+  94              		.loc 1 30 30 is_stmt 0 view .LVU24
+  95 004a 054B     		ldr	r3, .L5+16
+  96 004c 1860     		str	r0, [r3]
+  97              	.L1:
+  31:Core/Src/it_handlers.c ****         }
+  32:Core/Src/it_handlers.c ****     }
+  33:Core/Src/it_handlers.c **** }
+  98              		.loc 1 33 1 view .LVU25
+  99 004e 08BD     		pop	{r3, pc}
+ 100              	.L6:
+ 101              		.align	2
+ 102              	.L5:
+ 103 0050 003C0140 		.word	1073822720
+ 104 0054 00000000 		.word	button1Pressed
+ 105 0058 00000000 		.word	button1PressTime
+ 106 005c 00000000 		.word	button2Pressed
+ 107 0060 00000000 		.word	button2PressTime
+ 108              		.cfi_endproc
+ 109              	.LFE130:
+ 111              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+ 112              		.align	1
+ 113              		.global	EXTI9_5_IRQHandler
+ 114              		.syntax unified
+ 115              		.thumb
+ 116              		.thumb_func
+ 118              	EXTI9_5_IRQHandler:
+ 119              	.LFB131:
+  34:Core/Src/it_handlers.c **** 
+  35:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void) {
+ 120              		.loc 1 35 31 is_stmt 1 view -0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              		@ link register save eliminated.
+  36:Core/Src/it_handlers.c ****     // Handle button release
+  37:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR13)) { // Button 1 release
+ 125              		.loc 1 37 5 view .LVU27
+ 126              		.loc 1 37 9 is_stmt 0 view .LVU28
+ 127 0000 0D4B     		ldr	r3, .L10
+ 128 0002 5B69     		ldr	r3, [r3, #20]
+ 129              		.loc 1 37 8 view .LVU29
+ 130 0004 13F4005F 		tst	r3, #8192
+ 131 0008 07D0     		beq	.L8
+  38:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13);
+ 132              		.loc 1 38 9 is_stmt 1 view .LVU30
+ 133 000a 0B4A     		ldr	r2, .L10
+ 134 000c 5369     		ldr	r3, [r2, #20]
+ 135 000e 43F40053 		orr	r3, r3, #8192
+ 136 0012 5361     		str	r3, [r2, #20]
+ARM GAS  C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s 			page 4
+
+
+  39:Core/Src/it_handlers.c ****         button1Pressed = 0;
+ 137              		.loc 1 39 9 view .LVU31
+ 138              		.loc 1 39 24 is_stmt 0 view .LVU32
+ 139 0014 094B     		ldr	r3, .L10+4
+ 140 0016 0022     		movs	r2, #0
+ 141 0018 1A70     		strb	r2, [r3]
+ 142              	.L8:
+  40:Core/Src/it_handlers.c ****     }
+  41:Core/Src/it_handlers.c ****     
+  42:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR14)) { // Button 2 release
+ 143              		.loc 1 42 5 is_stmt 1 view .LVU33
+ 144              		.loc 1 42 9 is_stmt 0 view .LVU34
+ 145 001a 074B     		ldr	r3, .L10
+ 146 001c 5B69     		ldr	r3, [r3, #20]
+ 147              		.loc 1 42 8 view .LVU35
+ 148 001e 13F4804F 		tst	r3, #16384
+ 149 0022 07D0     		beq	.L7
+  43:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR14);
+ 150              		.loc 1 43 9 is_stmt 1 view .LVU36
+ 151 0024 044A     		ldr	r2, .L10
+ 152 0026 5369     		ldr	r3, [r2, #20]
+ 153 0028 43F48043 		orr	r3, r3, #16384
+ 154 002c 5361     		str	r3, [r2, #20]
+  44:Core/Src/it_handlers.c ****         button2Pressed = 0;
+ 155              		.loc 1 44 9 view .LVU37
+ 156              		.loc 1 44 24 is_stmt 0 view .LVU38
+ 157 002e 044B     		ldr	r3, .L10+8
+ 158 0030 0022     		movs	r2, #0
+ 159 0032 1A70     		strb	r2, [r3]
+ 160              	.L7:
+  45:Core/Src/it_handlers.c ****     }
+  46:Core/Src/it_handlers.c **** }
+ 161              		.loc 1 46 1 view .LVU39
+ 162 0034 7047     		bx	lr
+ 163              	.L11:
+ 164 0036 00BF     		.align	2
+ 165              	.L10:
+ 166 0038 003C0140 		.word	1073822720
+ 167 003c 00000000 		.word	button1Pressed
+ 168 0040 00000000 		.word	button2Pressed
+ 169              		.cfi_endproc
+ 170              	.LFE131:
+ 172              		.section	.text.User_Delay,"ax",%progbits
+ 173              		.align	1
+ 174              		.global	User_Delay
+ 175              		.syntax unified
+ 176              		.thumb
+ 177              		.thumb_func
+ 179              	User_Delay:
+ 180              	.LVL1:
+ 181              	.LFB132:
+  47:Core/Src/it_handlers.c **** 
+  48:Core/Src/it_handlers.c **** void User_Delay(uint32_t delay) {
+ 182              		.loc 1 48 33 is_stmt 1 view -0
+ 183              		.cfi_startproc
+ 184              		@ args = 0, pretend = 0, frame = 0
+ 185              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s 			page 5
+
+
+ 186              		.loc 1 48 33 is_stmt 0 view .LVU41
+ 187 0000 38B5     		push	{r3, r4, r5, lr}
+ 188              	.LCFI1:
+ 189              		.cfi_def_cfa_offset 16
+ 190              		.cfi_offset 3, -16
+ 191              		.cfi_offset 4, -12
+ 192              		.cfi_offset 5, -8
+ 193              		.cfi_offset 14, -4
+ 194 0002 0546     		mov	r5, r0
+  49:Core/Src/it_handlers.c ****     uint32_t start = getMillis();
+ 195              		.loc 1 49 5 is_stmt 1 view .LVU42
+ 196              		.loc 1 49 22 is_stmt 0 view .LVU43
+ 197 0004 FFF7FEFF 		bl	getMillis
+ 198              	.LVL2:
+ 199              		.loc 1 49 22 view .LVU44
+ 200 0008 0446     		mov	r4, r0
+ 201              	.LVL3:
+  50:Core/Src/it_handlers.c ****     while (getMillis() - start < delay) {}
+ 202              		.loc 1 50 5 is_stmt 1 view .LVU45
+ 203              	.L13:
+ 204              		.loc 1 50 42 discriminator 1 view .LVU46
+ 205              		.loc 1 50 32 discriminator 1 view .LVU47
+ 206              		.loc 1 50 12 is_stmt 0 discriminator 1 view .LVU48
+ 207 000a FFF7FEFF 		bl	getMillis
+ 208              	.LVL4:
+ 209              		.loc 1 50 24 discriminator 1 view .LVU49
+ 210 000e 001B     		subs	r0, r0, r4
+ 211              		.loc 1 50 32 discriminator 1 view .LVU50
+ 212 0010 A842     		cmp	r0, r5
+ 213 0012 FAD3     		bcc	.L13
+  51:Core/Src/it_handlers.c **** }
+ 214              		.loc 1 51 1 view .LVU51
+ 215 0014 38BD     		pop	{r3, r4, r5, pc}
+ 216              		.loc 1 51 1 view .LVU52
+ 217              		.cfi_endproc
+ 218              	.LFE132:
+ 220              		.text
+ 221              	.Letext0:
+ 222              		.file 2 "C:/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 223              		.file 3 "C:/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 224              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ARM GAS  C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s:21     .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s:27     .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s:103    .text.EXTI15_10_IRQHandler:00000050 $d
+C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s:112    .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s:118    .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s:166    .text.EXTI9_5_IRQHandler:00000038 $d
+C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s:173    .text.User_Delay:00000000 $t
+C:\Users\36525\AppData\Local\Temp\cc7ezN5x.s:179    .text.User_Delay:00000000 User_Delay
+
+UNDEFINED SYMBOLS
+getMillis
+button1Pressed
+button1PressTime
+button2Pressed
+button2PressTime

@@ -1,4 +1,4 @@
-Build/main.o: Core/Src/main.c Core/Inc/init.h \
+Build/init.o: Core/Src/init.c Core/Inc/init.h \
  Core/Inc/../../CMSIS/Devices/Inc/stm32f4xx.h \
  Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h \
  CMSIS/Devices/../include/core_cm4.h \
@@ -7,9 +7,7 @@ Build/main.o: Core/Src/main.c Core/Inc/init.h \
  CMSIS/Devices/../include/cmsis_gcc.h \
  CMSIS/Devices/../include/mpu_armv7.h \
  Core/Inc/../../CMSIS/Devices/Inc/system_stm32f4xx.h \
- Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h Core/Inc/it_handlers.h \
- Core/Inc/init.h Core/Src/../../CMSIS/Devices/Inc/stm32f4xx.h \
- Core/Src/../../CMSIS/Devices/Inc/stm32f429xx.h
+ Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h
 Core/Inc/init.h:
 Core/Inc/../../CMSIS/Devices/Inc/stm32f4xx.h:
 Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h:
@@ -20,7 +18,3 @@ CMSIS/Devices/../include/cmsis_gcc.h:
 CMSIS/Devices/../include/mpu_armv7.h:
 Core/Inc/../../CMSIS/Devices/Inc/system_stm32f4xx.h:
 Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h:
-Core/Inc/it_handlers.h:
-Core/Inc/init.h:
-Core/Src/../../CMSIS/Devices/Inc/stm32f4xx.h:
-Core/Src/../../CMSIS/Devices/Inc/stm32f429xx.h:
