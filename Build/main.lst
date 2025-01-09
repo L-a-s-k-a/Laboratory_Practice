@@ -1,0 +1,669 @@
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** #include "main.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** extern uint8_t flag1, flag2, flag3, flag4, flag5, flag6, LedState;
+   5:Core/Src/main.c **** extern uint8_t flag1ON, flag2ON, flag3ON, flag4ON, flag5ON, flag6ON;
+   6:Core/Src/main.c **** extern uint8_t BtnCount1, LongBtnCount1, VeryLongBtnCount;
+   7:Core/Src/main.c **** extern uint16_t ledTime1, ledTime2, ledTime3, ledTime4, ledTime5, ledTime6;
+   8:Core/Src/main.c **** extern uint16_t freq1, freq2, freq3, freq4, freq5, freq6;
+   9:Core/Src/main.c **** extern uint16_t GlobalTickCount;
+  10:Core/Src/main.c **** extern uint16_t dtime, cycleTime;
+  11:Core/Src/main.c **** uint16_t led_tick_count;
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** int freq[3] = {2200, 1500, 300};
+  14:Core/Src/main.c **** 
+  15:Core/Src/main.c **** int main(void)
+  16:Core/Src/main.c **** {
+  29              		.loc 1 16 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  17:Core/Src/main.c ****     ITR_init();
+  39              		.loc 1 17 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	ITR_init
+  41              	.LVL0:
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 2
+
+
+  18:Core/Src/main.c ****     RCC_Init();
+  42              		.loc 1 18 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	RCC_Init
+  44              	.LVL1:
+  19:Core/Src/main.c ****     GPIO_Ini();
+  45              		.loc 1 19 5 view .LVU3
+  46 000a FFF7FEFF 		bl	GPIO_Ini
+  47              	.LVL2:
+  20:Core/Src/main.c ****     SysTick_Init();
+  48              		.loc 1 20 5 view .LVU4
+  49 000e FFF7FEFF 		bl	SysTick_Init
+  50              	.LVL3:
+  51 0012 31E0     		b	.L2
+  52              	.L40:
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c ****     while (1)
+  23:Core/Src/main.c ****     {
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c ****         dtime = GlobalTickCount - cycleTime;
+  26:Core/Src/main.c ****         cycleTime = GlobalTickCount;
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c ****         ledTime1 = ledTime1 + dtime;
+  29:Core/Src/main.c ****         if (ledTime1 >= freq[LongBtnCount1])
+  30:Core/Src/main.c ****         {
+  31:Core/Src/main.c **** 
+  32:Core/Src/main.c ****             flag1ON = !flag1ON;
+  33:Core/Src/main.c ****             ledTime1 = 0;
+  34:Core/Src/main.c ****         }
+  35:Core/Src/main.c ****         if (VeryLongBtnCount == 1)
+  36:Core/Src/main.c ****         {
+  37:Core/Src/main.c ****             if (BtnCount1 == 0)
+  53              		.loc 1 37 13 view .LVU5
+  54              		.loc 1 37 27 is_stmt 0 view .LVU6
+  55 0014 7E4B     		ldr	r3, .L50
+  56 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  57              		.loc 1 37 16 view .LVU7
+  58 0018 002B     		cmp	r3, #0
+  59 001a 40F09980 		bne	.L5
+  38:Core/Src/main.c ****                 
+  39:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  60              		.loc 1 39 13 is_stmt 1 view .LVU8
+  61 001e 7D49     		ldr	r1, .L50+4
+  62 0020 8A69     		ldr	r2, [r1, #24]
+  63 0022 42F00102 		orr	r2, r2, #1
+  64 0026 8A61     		str	r2, [r1, #24]
+  65              	.L6:
+  40:Core/Src/main.c ****             else
+  41:Core/Src/main.c ****             {
+  42:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+  43:Core/Src/main.c ****             }
+  44:Core/Src/main.c ****             if (BtnCount1 == 1)
+  66              		.loc 1 44 13 view .LVU9
+  67              		.loc 1 44 16 is_stmt 0 view .LVU10
+  68 0028 012B     		cmp	r3, #1
+  69 002a 00F09780 		beq	.L35
+  45:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  46:Core/Src/main.c ****             else
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 3
+
+
+  47:Core/Src/main.c ****             {
+  48:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  70              		.loc 1 48 17 is_stmt 1 view .LVU11
+  71 002e 7949     		ldr	r1, .L50+4
+  72 0030 8A69     		ldr	r2, [r1, #24]
+  73 0032 42F40002 		orr	r2, r2, #8388608
+  74 0036 8A61     		str	r2, [r1, #24]
+  75              	.L8:
+  49:Core/Src/main.c ****             }
+  50:Core/Src/main.c ****             if (BtnCount1 == 2)
+  76              		.loc 1 50 13 view .LVU12
+  77              		.loc 1 50 16 is_stmt 0 view .LVU13
+  78 0038 022B     		cmp	r3, #2
+  79 003a 00F09580 		beq	.L36
+  51:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  52:Core/Src/main.c ****             else
+  53:Core/Src/main.c ****             {
+  54:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+  80              		.loc 1 54 17 is_stmt 1 view .LVU14
+  81 003e 7549     		ldr	r1, .L50+4
+  82 0040 8A69     		ldr	r2, [r1, #24]
+  83 0042 42F08042 		orr	r2, r2, #1073741824
+  84 0046 8A61     		str	r2, [r1, #24]
+  85              	.L10:
+  55:Core/Src/main.c ****             }
+  56:Core/Src/main.c ****             if (BtnCount1 == 3)
+  86              		.loc 1 56 13 view .LVU15
+  87              		.loc 1 56 16 is_stmt 0 view .LVU16
+  88 0048 032B     		cmp	r3, #3
+  89 004a 00F09380 		beq	.L37
+  57:Core/Src/main.c ****             {
+  58:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15);
+  59:Core/Src/main.c ****                 }
+  60:Core/Src/main.c ****             else
+  61:Core/Src/main.c ****             {
+  62:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);
+  90              		.loc 1 62 17 is_stmt 1 view .LVU17
+  91 004e 7149     		ldr	r1, .L50+4
+  92 0050 8A69     		ldr	r2, [r1, #24]
+  93 0052 42F00042 		orr	r2, r2, #-2147483648
+  94 0056 8A61     		str	r2, [r1, #24]
+  95              	.L12:
+  63:Core/Src/main.c ****             }
+  64:Core/Src/main.c ****             if (BtnCount1 == 4)
+  96              		.loc 1 64 13 view .LVU18
+  97              		.loc 1 64 16 is_stmt 0 view .LVU19
+  98 0058 042B     		cmp	r3, #4
+  99 005a 00F09180 		beq	.L38
+  65:Core/Src/main.c ****             {
+  66:Core/Src/main.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6);
+  67:Core/Src/main.c ****                 }
+  68:Core/Src/main.c ****             else
+  69:Core/Src/main.c ****             {
+  70:Core/Src/main.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR6);
+ 100              		.loc 1 70 17 is_stmt 1 view .LVU20
+ 101 005e 6E49     		ldr	r1, .L50+8
+ 102 0060 8A69     		ldr	r2, [r1, #24]
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 4
+
+
+ 103 0062 42F48002 		orr	r2, r2, #4194304
+ 104 0066 8A61     		str	r2, [r1, #24]
+ 105              	.L14:
+  71:Core/Src/main.c ****             }
+  72:Core/Src/main.c ****             if (BtnCount1 == 5){
+ 106              		.loc 1 72 13 view .LVU21
+ 107              		.loc 1 72 16 is_stmt 0 view .LVU22
+ 108 0068 052B     		cmp	r3, #5
+ 109 006a 00F08F80 		beq	.L39
+  73:Core/Src/main.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
+  74:Core/Src/main.c ****             }
+  75:Core/Src/main.c ****             else
+  76:Core/Src/main.c ****             {
+  77:Core/Src/main.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
+ 110              		.loc 1 77 17 is_stmt 1 view .LVU23
+ 111 006e 6A4A     		ldr	r2, .L50+8
+ 112 0070 9369     		ldr	r3, [r2, #24]
+ 113 0072 43F40003 		orr	r3, r3, #8388608
+ 114 0076 9361     		str	r3, [r2, #24]
+ 115              	.L2:
+  22:Core/Src/main.c ****     {
+ 116              		.loc 1 22 5 view .LVU24
+  25:Core/Src/main.c ****         cycleTime = GlobalTickCount;
+ 117              		.loc 1 25 9 view .LVU25
+  25:Core/Src/main.c ****         cycleTime = GlobalTickCount;
+ 118              		.loc 1 25 33 is_stmt 0 view .LVU26
+ 119 0078 684B     		ldr	r3, .L50+12
+ 120 007a 1988     		ldrh	r1, [r3]
+ 121 007c 684A     		ldr	r2, .L50+16
+ 122 007e 1388     		ldrh	r3, [r2]
+ 123 0080 CB1A     		subs	r3, r1, r3
+ 124 0082 9BB2     		uxth	r3, r3
+  25:Core/Src/main.c ****         cycleTime = GlobalTickCount;
+ 125              		.loc 1 25 15 view .LVU27
+ 126 0084 6748     		ldr	r0, .L50+20
+ 127 0086 0380     		strh	r3, [r0]	@ movhi
+  26:Core/Src/main.c **** 
+ 128              		.loc 1 26 9 is_stmt 1 view .LVU28
+  26:Core/Src/main.c **** 
+ 129              		.loc 1 26 19 is_stmt 0 view .LVU29
+ 130 0088 1180     		strh	r1, [r2]	@ movhi
+  28:Core/Src/main.c ****         if (ledTime1 >= freq[LongBtnCount1])
+ 131              		.loc 1 28 9 is_stmt 1 view .LVU30
+  28:Core/Src/main.c ****         if (ledTime1 >= freq[LongBtnCount1])
+ 132              		.loc 1 28 29 is_stmt 0 view .LVU31
+ 133 008a 674A     		ldr	r2, .L50+24
+ 134 008c 1188     		ldrh	r1, [r2]
+ 135 008e 0B44     		add	r3, r3, r1
+ 136 0090 9BB2     		uxth	r3, r3
+  28:Core/Src/main.c ****         if (ledTime1 >= freq[LongBtnCount1])
+ 137              		.loc 1 28 18 view .LVU32
+ 138 0092 1380     		strh	r3, [r2]	@ movhi
+  29:Core/Src/main.c ****         {
+ 139              		.loc 1 29 9 is_stmt 1 view .LVU33
+  29:Core/Src/main.c ****         {
+ 140              		.loc 1 29 29 is_stmt 0 view .LVU34
+ 141 0094 654A     		ldr	r2, .L50+28
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 5
+
+
+ 142 0096 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 143 0098 654A     		ldr	r2, .L50+32
+ 144 009a 52F82120 		ldr	r2, [r2, r1, lsl #2]
+  29:Core/Src/main.c ****         {
+ 145              		.loc 1 29 12 view .LVU35
+ 146 009e 9342     		cmp	r3, r2
+ 147 00a0 08DB     		blt	.L3
+  32:Core/Src/main.c ****             ledTime1 = 0;
+ 148              		.loc 1 32 13 is_stmt 1 view .LVU36
+  32:Core/Src/main.c ****             ledTime1 = 0;
+ 149              		.loc 1 32 23 is_stmt 0 view .LVU37
+ 150 00a2 644A     		ldr	r2, .L50+36
+ 151 00a4 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 152 00a6 B3FA83F3 		clz	r3, r3
+ 153 00aa 5B09     		lsrs	r3, r3, #5
+  32:Core/Src/main.c ****             ledTime1 = 0;
+ 154              		.loc 1 32 21 view .LVU38
+ 155 00ac 1370     		strb	r3, [r2]
+  33:Core/Src/main.c ****         }
+ 156              		.loc 1 33 13 is_stmt 1 view .LVU39
+  33:Core/Src/main.c ****         }
+ 157              		.loc 1 33 22 is_stmt 0 view .LVU40
+ 158 00ae 5E4B     		ldr	r3, .L50+24
+ 159 00b0 0022     		movs	r2, #0
+ 160 00b2 1A80     		strh	r2, [r3]	@ movhi
+ 161              	.L3:
+  35:Core/Src/main.c ****         {
+ 162              		.loc 1 35 9 is_stmt 1 view .LVU41
+  35:Core/Src/main.c ****         {
+ 163              		.loc 1 35 30 is_stmt 0 view .LVU42
+ 164 00b4 604B     		ldr	r3, .L50+40
+ 165 00b6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  35:Core/Src/main.c ****         {
+ 166              		.loc 1 35 12 view .LVU43
+ 167 00b8 012B     		cmp	r3, #1
+ 168 00ba ABD0     		beq	.L40
+  78:Core/Src/main.c ****             }
+  79:Core/Src/main.c ****         }
+  80:Core/Src/main.c ****         else
+  81:Core/Src/main.c ****         {
+  82:Core/Src/main.c ****             if (flag1ON)
+ 169              		.loc 1 82 13 is_stmt 1 view .LVU44
+ 170              		.loc 1 82 17 is_stmt 0 view .LVU45
+ 171 00bc 5D4B     		ldr	r3, .L50+36
+ 172 00be 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 173              		.loc 1 82 16 view .LVU46
+ 174 00c0 002A     		cmp	r2, #0
+ 175 00c2 2BD0     		beq	.L17
+  83:Core/Src/main.c ****             {
+  84:Core/Src/main.c ****                 if (BtnCount1 == 0)
+ 176              		.loc 1 84 17 is_stmt 1 view .LVU47
+ 177              		.loc 1 84 31 is_stmt 0 view .LVU48
+ 178 00c4 524B     		ldr	r3, .L50
+ 179 00c6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 180              		.loc 1 84 20 view .LVU49
+ 181 00c8 002B     		cmp	r3, #0
+ 182 00ca 65D1     		bne	.L18
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 6
+
+
+  85:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+ 183              		.loc 1 85 21 is_stmt 1 view .LVU50
+ 184 00cc 5148     		ldr	r0, .L50+4
+ 185 00ce 8169     		ldr	r1, [r0, #24]
+ 186 00d0 41F00101 		orr	r1, r1, #1
+ 187 00d4 8161     		str	r1, [r0, #24]
+ 188              	.L19:
+  86:Core/Src/main.c ****                 else
+  87:Core/Src/main.c ****                 {
+  88:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+  89:Core/Src/main.c ****                 }
+  90:Core/Src/main.c ****                 if (BtnCount1 == 1)
+ 189              		.loc 1 90 17 view .LVU51
+ 190              		.loc 1 90 20 is_stmt 0 view .LVU52
+ 191 00d6 012B     		cmp	r3, #1
+ 192 00d8 64D0     		beq	.L41
+  91:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  92:Core/Src/main.c ****                 else
+  93:Core/Src/main.c ****                 {
+  94:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 193              		.loc 1 94 21 is_stmt 1 view .LVU53
+ 194 00da 4E48     		ldr	r0, .L50+4
+ 195 00dc 8169     		ldr	r1, [r0, #24]
+ 196 00de 41F40001 		orr	r1, r1, #8388608
+ 197 00e2 8161     		str	r1, [r0, #24]
+ 198              	.L21:
+  95:Core/Src/main.c ****                 }
+  96:Core/Src/main.c ****                 if (BtnCount1 == 2)
+ 199              		.loc 1 96 17 view .LVU54
+ 200              		.loc 1 96 20 is_stmt 0 view .LVU55
+ 201 00e4 022B     		cmp	r3, #2
+ 202 00e6 63D0     		beq	.L42
+  97:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+  98:Core/Src/main.c ****                 else
+  99:Core/Src/main.c ****                 {
+ 100:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 203              		.loc 1 100 21 is_stmt 1 view .LVU56
+ 204 00e8 4A48     		ldr	r0, .L50+4
+ 205 00ea 8169     		ldr	r1, [r0, #24]
+ 206 00ec 41F08041 		orr	r1, r1, #1073741824
+ 207 00f0 8161     		str	r1, [r0, #24]
+ 208              	.L23:
+ 101:Core/Src/main.c ****                 }
+ 102:Core/Src/main.c ****                 if (BtnCount1 == 3)
+ 209              		.loc 1 102 17 view .LVU57
+ 210              		.loc 1 102 20 is_stmt 0 view .LVU58
+ 211 00f2 032B     		cmp	r3, #3
+ 212 00f4 62D0     		beq	.L43
+ 103:Core/Src/main.c ****                 {
+ 104:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15);
+ 105:Core/Src/main.c ****                     }
+ 106:Core/Src/main.c ****                 else
+ 107:Core/Src/main.c ****                 {
+ 108:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);
+ 213              		.loc 1 108 21 is_stmt 1 view .LVU59
+ 214 00f6 4748     		ldr	r0, .L50+4
+ 215 00f8 8169     		ldr	r1, [r0, #24]
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 7
+
+
+ 216 00fa 41F00041 		orr	r1, r1, #-2147483648
+ 217 00fe 8161     		str	r1, [r0, #24]
+ 218              	.L25:
+ 109:Core/Src/main.c ****                 }
+ 110:Core/Src/main.c ****                 if (BtnCount1 == 4)
+ 219              		.loc 1 110 17 view .LVU60
+ 220              		.loc 1 110 20 is_stmt 0 view .LVU61
+ 221 0100 042B     		cmp	r3, #4
+ 222 0102 61D0     		beq	.L44
+ 111:Core/Src/main.c ****                 {
+ 112:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS6);
+ 113:Core/Src/main.c ****                     }
+ 114:Core/Src/main.c ****                 else
+ 115:Core/Src/main.c ****                 {
+ 116:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR6);
+ 223              		.loc 1 116 21 is_stmt 1 view .LVU62
+ 224 0104 4448     		ldr	r0, .L50+8
+ 225 0106 8169     		ldr	r1, [r0, #24]
+ 226 0108 41F48001 		orr	r1, r1, #4194304
+ 227 010c 8161     		str	r1, [r0, #24]
+ 228              	.L27:
+ 117:Core/Src/main.c ****                 }
+ 118:Core/Src/main.c ****                 if (BtnCount1 == 5){
+ 229              		.loc 1 118 17 view .LVU63
+ 230              		.loc 1 118 20 is_stmt 0 view .LVU64
+ 231 010e 052B     		cmp	r3, #5
+ 232 0110 60D0     		beq	.L45
+ 119:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
+ 120:Core/Src/main.c ****                 }
+ 121:Core/Src/main.c ****                 else
+ 122:Core/Src/main.c ****                 {
+ 123:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
+ 233              		.loc 1 123 21 is_stmt 1 view .LVU65
+ 234 0112 4149     		ldr	r1, .L50+8
+ 235 0114 8B69     		ldr	r3, [r1, #24]
+ 236 0116 43F40003 		orr	r3, r3, #8388608
+ 237 011a 8B61     		str	r3, [r1, #24]
+ 238              	.L17:
+ 124:Core/Src/main.c ****                 }
+ 125:Core/Src/main.c ****             }
+ 126:Core/Src/main.c ****             if (!flag1ON)
+ 239              		.loc 1 126 13 view .LVU66
+ 240              		.loc 1 126 16 is_stmt 0 view .LVU67
+ 241 011c 002A     		cmp	r2, #0
+ 242 011e ABD1     		bne	.L2
+ 127:Core/Src/main.c ****             {
+ 128:Core/Src/main.c ****                 if (BtnCount1 == 0)
+ 243              		.loc 1 128 17 is_stmt 1 view .LVU68
+ 244              		.loc 1 128 31 is_stmt 0 view .LVU69
+ 245 0120 3B4B     		ldr	r3, .L50
+ 246 0122 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 247              		.loc 1 128 20 view .LVU70
+ 248 0124 23B9     		cbnz	r3, .L29
+ 129:Core/Src/main.c ****                 {
+ 130:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 249              		.loc 1 130 21 is_stmt 1 view .LVU71
+ 250 0126 3B49     		ldr	r1, .L50+4
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 8
+
+
+ 251 0128 8A69     		ldr	r2, [r1, #24]
+ 252 012a 42F48032 		orr	r2, r2, #65536
+ 253 012e 8A61     		str	r2, [r1, #24]
+ 254              	.L29:
+ 131:Core/Src/main.c ****                 }
+ 132:Core/Src/main.c ****                 if (BtnCount1 == 1)
+ 255              		.loc 1 132 17 view .LVU72
+ 256              		.loc 1 132 20 is_stmt 0 view .LVU73
+ 257 0130 012B     		cmp	r3, #1
+ 258 0132 55D0     		beq	.L46
+ 259              	.L30:
+ 133:Core/Src/main.c ****                 {
+ 134:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 135:Core/Src/main.c ****                 }
+ 136:Core/Src/main.c ****                 if (BtnCount1 == 2)
+ 260              		.loc 1 136 17 is_stmt 1 view .LVU74
+ 261              		.loc 1 136 20 is_stmt 0 view .LVU75
+ 262 0134 022B     		cmp	r3, #2
+ 263 0136 59D0     		beq	.L47
+ 264              	.L31:
+ 137:Core/Src/main.c ****                 {
+ 138:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 139:Core/Src/main.c ****                 }
+ 140:Core/Src/main.c ****                 if (BtnCount1 == 3)
+ 265              		.loc 1 140 17 is_stmt 1 view .LVU76
+ 266              		.loc 1 140 20 is_stmt 0 view .LVU77
+ 267 0138 032B     		cmp	r3, #3
+ 268 013a 5DD0     		beq	.L48
+ 269              	.L32:
+ 141:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);
+ 142:Core/Src/main.c ****                 if (BtnCount1 == 4)
+ 270              		.loc 1 142 17 is_stmt 1 view .LVU78
+ 271              		.loc 1 142 20 is_stmt 0 view .LVU79
+ 272 013c 042B     		cmp	r3, #4
+ 273 013e 61D0     		beq	.L49
+ 274              	.L33:
+ 143:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR6);
+ 144:Core/Src/main.c ****                 if (BtnCount1 == 5)
+ 275              		.loc 1 144 17 is_stmt 1 view .LVU80
+ 276              		.loc 1 144 20 is_stmt 0 view .LVU81
+ 277 0140 052B     		cmp	r3, #5
+ 278 0142 99D1     		bne	.L2
+ 145:Core/Src/main.c ****                     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
+ 279              		.loc 1 145 21 is_stmt 1 view .LVU82
+ 280 0144 344A     		ldr	r2, .L50+8
+ 281 0146 9369     		ldr	r3, [r2, #24]
+ 282 0148 43F40003 		orr	r3, r3, #8388608
+ 283 014c 9361     		str	r3, [r2, #24]
+ 284 014e 93E7     		b	.L2
+ 285              	.L5:
+  42:Core/Src/main.c ****             }
+ 286              		.loc 1 42 17 view .LVU83
+ 287 0150 3049     		ldr	r1, .L50+4
+ 288 0152 8A69     		ldr	r2, [r1, #24]
+ 289 0154 42F48032 		orr	r2, r2, #65536
+ 290 0158 8A61     		str	r2, [r1, #24]
+ 291 015a 65E7     		b	.L6
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 9
+
+
+ 292              	.L35:
+  45:Core/Src/main.c ****             else
+ 293              		.loc 1 45 17 view .LVU84
+ 294 015c 2D49     		ldr	r1, .L50+4
+ 295 015e 8A69     		ldr	r2, [r1, #24]
+ 296 0160 42F08002 		orr	r2, r2, #128
+ 297 0164 8A61     		str	r2, [r1, #24]
+ 298 0166 67E7     		b	.L8
+ 299              	.L36:
+  51:Core/Src/main.c ****             else
+ 300              		.loc 1 51 17 view .LVU85
+ 301 0168 2A49     		ldr	r1, .L50+4
+ 302 016a 8A69     		ldr	r2, [r1, #24]
+ 303 016c 42F48042 		orr	r2, r2, #16384
+ 304 0170 8A61     		str	r2, [r1, #24]
+ 305 0172 69E7     		b	.L10
+ 306              	.L37:
+  58:Core/Src/main.c ****                 }
+ 307              		.loc 1 58 17 view .LVU86
+ 308 0174 2749     		ldr	r1, .L50+4
+ 309 0176 8A69     		ldr	r2, [r1, #24]
+ 310 0178 42F40042 		orr	r2, r2, #32768
+ 311 017c 8A61     		str	r2, [r1, #24]
+ 312 017e 6BE7     		b	.L12
+ 313              	.L38:
+  66:Core/Src/main.c ****                 }
+ 314              		.loc 1 66 17 view .LVU87
+ 315 0180 2549     		ldr	r1, .L50+8
+ 316 0182 8A69     		ldr	r2, [r1, #24]
+ 317 0184 42F04002 		orr	r2, r2, #64
+ 318 0188 8A61     		str	r2, [r1, #24]
+ 319 018a 6DE7     		b	.L14
+ 320              	.L39:
+  73:Core/Src/main.c ****             }
+ 321              		.loc 1 73 17 view .LVU88
+ 322 018c 224A     		ldr	r2, .L50+8
+ 323 018e 9369     		ldr	r3, [r2, #24]
+ 324 0190 43F08003 		orr	r3, r3, #128
+ 325 0194 9361     		str	r3, [r2, #24]
+ 326 0196 6FE7     		b	.L2
+ 327              	.L18:
+  88:Core/Src/main.c ****                 }
+ 328              		.loc 1 88 21 view .LVU89
+ 329 0198 1E48     		ldr	r0, .L50+4
+ 330 019a 8169     		ldr	r1, [r0, #24]
+ 331 019c 41F48031 		orr	r1, r1, #65536
+ 332 01a0 8161     		str	r1, [r0, #24]
+ 333 01a2 98E7     		b	.L19
+ 334              	.L41:
+  91:Core/Src/main.c ****                 else
+ 335              		.loc 1 91 21 view .LVU90
+ 336 01a4 1B48     		ldr	r0, .L50+4
+ 337 01a6 8169     		ldr	r1, [r0, #24]
+ 338 01a8 41F08001 		orr	r1, r1, #128
+ 339 01ac 8161     		str	r1, [r0, #24]
+ 340 01ae 99E7     		b	.L21
+ 341              	.L42:
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 10
+
+
+  97:Core/Src/main.c ****                 else
+ 342              		.loc 1 97 21 view .LVU91
+ 343 01b0 1848     		ldr	r0, .L50+4
+ 344 01b2 8169     		ldr	r1, [r0, #24]
+ 345 01b4 41F48041 		orr	r1, r1, #16384
+ 346 01b8 8161     		str	r1, [r0, #24]
+ 347 01ba 9AE7     		b	.L23
+ 348              	.L43:
+ 104:Core/Src/main.c ****                     }
+ 349              		.loc 1 104 21 view .LVU92
+ 350 01bc 1548     		ldr	r0, .L50+4
+ 351 01be 8169     		ldr	r1, [r0, #24]
+ 352 01c0 41F40041 		orr	r1, r1, #32768
+ 353 01c4 8161     		str	r1, [r0, #24]
+ 354 01c6 9BE7     		b	.L25
+ 355              	.L44:
+ 112:Core/Src/main.c ****                     }
+ 356              		.loc 1 112 21 view .LVU93
+ 357 01c8 1348     		ldr	r0, .L50+8
+ 358 01ca 8169     		ldr	r1, [r0, #24]
+ 359 01cc 41F04001 		orr	r1, r1, #64
+ 360 01d0 8161     		str	r1, [r0, #24]
+ 361 01d2 9CE7     		b	.L27
+ 362              	.L45:
+ 119:Core/Src/main.c ****                 }
+ 363              		.loc 1 119 21 view .LVU94
+ 364 01d4 1049     		ldr	r1, .L50+8
+ 365 01d6 8B69     		ldr	r3, [r1, #24]
+ 366 01d8 43F08003 		orr	r3, r3, #128
+ 367 01dc 8B61     		str	r3, [r1, #24]
+ 368 01de 9DE7     		b	.L17
+ 369              	.L46:
+ 134:Core/Src/main.c ****                 }
+ 370              		.loc 1 134 21 view .LVU95
+ 371 01e0 0C49     		ldr	r1, .L50+4
+ 372 01e2 8A69     		ldr	r2, [r1, #24]
+ 373 01e4 42F40002 		orr	r2, r2, #8388608
+ 374 01e8 8A61     		str	r2, [r1, #24]
+ 375 01ea A3E7     		b	.L30
+ 376              	.L47:
+ 138:Core/Src/main.c ****                 }
+ 377              		.loc 1 138 21 view .LVU96
+ 378 01ec 0949     		ldr	r1, .L50+4
+ 379 01ee 8A69     		ldr	r2, [r1, #24]
+ 380 01f0 42F08042 		orr	r2, r2, #1073741824
+ 381 01f4 8A61     		str	r2, [r1, #24]
+ 382 01f6 9FE7     		b	.L31
+ 383              	.L48:
+ 141:Core/Src/main.c ****                 if (BtnCount1 == 4)
+ 384              		.loc 1 141 21 view .LVU97
+ 385 01f8 0649     		ldr	r1, .L50+4
+ 386 01fa 8A69     		ldr	r2, [r1, #24]
+ 387 01fc 42F00042 		orr	r2, r2, #-2147483648
+ 388 0200 8A61     		str	r2, [r1, #24]
+ 389 0202 9BE7     		b	.L32
+ 390              	.L49:
+ 143:Core/Src/main.c ****                 if (BtnCount1 == 5)
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 11
+
+
+ 391              		.loc 1 143 21 view .LVU98
+ 392 0204 0449     		ldr	r1, .L50+8
+ 393 0206 8A69     		ldr	r2, [r1, #24]
+ 394 0208 42F48002 		orr	r2, r2, #4194304
+ 395 020c 8A61     		str	r2, [r1, #24]
+ 396 020e 97E7     		b	.L33
+ 397              	.L51:
+ 398              		.align	2
+ 399              	.L50:
+ 400 0210 00000000 		.word	BtnCount1
+ 401 0214 00040240 		.word	1073873920
+ 402 0218 000C0240 		.word	1073875968
+ 403 021c 00000000 		.word	GlobalTickCount
+ 404 0220 00000000 		.word	cycleTime
+ 405 0224 00000000 		.word	dtime
+ 406 0228 00000000 		.word	ledTime1
+ 407 022c 00000000 		.word	LongBtnCount1
+ 408 0230 00000000 		.word	freq
+ 409 0234 00000000 		.word	flag1ON
+ 410 0238 00000000 		.word	VeryLongBtnCount
+ 411              		.cfi_endproc
+ 412              	.LFE130:
+ 414              		.global	freq
+ 415              		.section	.data.freq,"aw"
+ 416              		.align	2
+ 419              	freq:
+ 420 0000 98080000 		.word	2200
+ 421 0004 DC050000 		.word	1500
+ 422 0008 2C010000 		.word	300
+ 423              		.global	led_tick_count
+ 424              		.section	.bss.led_tick_count,"aw",%nobits
+ 425              		.align	1
+ 428              	led_tick_count:
+ 429 0000 0000     		.space	2
+ 430              		.text
+ 431              	.Letext0:
+ 432              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 433              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 434              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 435              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s:21     .text.main:00000000 $t
+C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s:27     .text.main:00000000 main
+C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s:400    .text.main:00000210 $d
+C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s:419    .data.freq:00000000 freq
+C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s:416    .data.freq:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s:428    .bss.led_tick_count:00000000 led_tick_count
+C:\Users\druzh\AppData\Local\Temp\ccae5I0f.s:425    .bss.led_tick_count:00000000 $d
+
+UNDEFINED SYMBOLS
+ITR_init
+RCC_Init
+GPIO_Ini
+SysTick_Init
+BtnCount1
+GlobalTickCount
+cycleTime
+dtime
+ledTime1
+LongBtnCount1
+flag1ON
+VeryLongBtnCount
