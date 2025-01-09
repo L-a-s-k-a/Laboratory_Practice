@@ -1,0 +1,631 @@
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "it_handlers.h"
+   2:Core/Src/it_handlers.c **** #include "main.h"
+   3:Core/Src/it_handlers.c **** #include "init.h"
+   4:Core/Src/it_handlers.c **** 
+   5:Core/Src/it_handlers.c **** volatile uint8_t flag1, flag2, flag3, flag4, flag5, flag6, LedState;
+   6:Core/Src/it_handlers.c **** volatile uint8_t flag1ON, flag2ON, flag3ON, flag4ON, flag5ON, flag6ON;
+   7:Core/Src/it_handlers.c **** volatile uint8_t BtnCount1, LongBtnCount1, VeryLongBtnCount;
+   8:Core/Src/it_handlers.c **** volatile uint16_t ledTime1, ledTime2, ledTime3, ledTime4, ledTime5, ledTime6;
+   9:Core/Src/it_handlers.c **** volatile uint16_t freq1, freq2, freq3, freq4, freq5, freq6;
+  10:Core/Src/it_handlers.c **** volatile uint16_t GlobalTickCount;
+  11:Core/Src/it_handlers.c **** volatile uint16_t dtime, cycleTime;
+  12:Core/Src/it_handlers.c **** uint16_t delta_time_press;
+  13:Core/Src/it_handlers.c **** int ExternInterruptTickCount, ExternInterruptTickCount2, dTime1, front1, DelayTickCount;
+  14:Core/Src/it_handlers.c **** 
+  15:Core/Src/it_handlers.c **** 
+  16:Core/Src/it_handlers.c **** void SysTick_Handler(void)
+  17:Core/Src/it_handlers.c **** { // прерывание по таймеру
+  29              		.loc 1 17 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  18:Core/Src/it_handlers.c ****     ExternInterruptTickCount++;
+  34              		.loc 1 18 5 view .LVU1
+  35              		.loc 1 18 29 is_stmt 0 view .LVU2
+  36 0000 074A     		ldr	r2, .L2
+  37 0002 1368     		ldr	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1360     		str	r3, [r2]
+  19:Core/Src/it_handlers.c ****     ExternInterruptTickCount2++;
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 2
+
+
+  40              		.loc 1 19 5 is_stmt 1 view .LVU3
+  41              		.loc 1 19 30 is_stmt 0 view .LVU4
+  42 0008 064A     		ldr	r2, .L2+4
+  43 000a 1368     		ldr	r3, [r2]
+  44 000c 0133     		adds	r3, r3, #1
+  45 000e 1360     		str	r3, [r2]
+  20:Core/Src/it_handlers.c ****     GlobalTickCount++;
+  46              		.loc 1 20 5 is_stmt 1 view .LVU5
+  47              		.loc 1 20 20 is_stmt 0 view .LVU6
+  48 0010 054A     		ldr	r2, .L2+8
+  49 0012 1388     		ldrh	r3, [r2]
+  50 0014 9BB2     		uxth	r3, r3
+  51 0016 0133     		adds	r3, r3, #1
+  52 0018 9BB2     		uxth	r3, r3
+  53 001a 1380     		strh	r3, [r2]	@ movhi
+  21:Core/Src/it_handlers.c **** }
+  54              		.loc 1 21 1 view .LVU7
+  55 001c 7047     		bx	lr
+  56              	.L3:
+  57 001e 00BF     		.align	2
+  58              	.L2:
+  59 0020 00000000 		.word	ExternInterruptTickCount
+  60 0024 00000000 		.word	ExternInterruptTickCount2
+  61 0028 00000000 		.word	GlobalTickCount
+  62              		.cfi_endproc
+  63              	.LFE130:
+  65              		.section	.text.EXTI4_IRQHandler,"ax",%progbits
+  66              		.align	1
+  67              		.global	EXTI4_IRQHandler
+  68              		.syntax unified
+  69              		.thumb
+  70              		.thumb_func
+  72              	EXTI4_IRQHandler:
+  73              	.LFB131:
+  22:Core/Src/it_handlers.c **** void EXTI4_IRQHandler(void)
+  23:Core/Src/it_handlers.c **** {                                    // прерывание по кнопке
+  74              		.loc 1 23 1 is_stmt 1 view -0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 0
+  77              		@ frame_needed = 0, uses_anonymous_args = 0
+  78              		@ link register save eliminated.
+  24:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR4); // Сброс флага прерывания
+  79              		.loc 1 24 5 view .LVU9
+  80 0000 2C4A     		ldr	r2, .L12
+  81 0002 5369     		ldr	r3, [r2, #20]
+  82 0004 43F01003 		orr	r3, r3, #16
+  83 0008 5361     		str	r3, [r2, #20]
+  25:Core/Src/it_handlers.c ****     if (ExternInterruptTickCount >= DELAY_BUTTON_FILTER)
+  84              		.loc 1 25 5 view .LVU10
+  85              		.loc 1 25 34 is_stmt 0 view .LVU11
+  86 000a 2B4B     		ldr	r3, .L12+4
+  87 000c 1B68     		ldr	r3, [r3]
+  88              		.loc 1 25 8 view .LVU12
+  89 000e 632B     		cmp	r3, #99
+  90 0010 2EDD     		ble	.L4
+  26:Core/Src/it_handlers.c ****     { // Выполнится, когда пройдёт 100 мс с момента обнулен�
+  27:Core/Src/it_handlers.c ****         front1 = !front1;
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 3
+
+
+  91              		.loc 1 27 9 is_stmt 1 view .LVU13
+  92              		.loc 1 27 18 is_stmt 0 view .LVU14
+  93 0012 2A4A     		ldr	r2, .L12+8
+  94 0014 1368     		ldr	r3, [r2]
+  95 0016 B3FA83F3 		clz	r3, r3
+  96 001a 5B09     		lsrs	r3, r3, #5
+  97              		.loc 1 27 16 view .LVU15
+  98 001c 1360     		str	r3, [r2]
+  28:Core/Src/it_handlers.c ****         if (front1 == 1)
+  99              		.loc 1 28 9 is_stmt 1 view .LVU16
+ 100              		.loc 1 28 12 is_stmt 0 view .LVU17
+ 101 001e 43BB     		cbnz	r3, .L11
+  29:Core/Src/it_handlers.c ****             dTime1 = GlobalTickCount;
+  30:Core/Src/it_handlers.c ****         else
+  31:Core/Src/it_handlers.c ****         {
+  32:Core/Src/it_handlers.c ****             delta_time_press = GlobalTickCount - (dTime1 - 1);
+ 102              		.loc 1 32 13 is_stmt 1 view .LVU18
+ 103              		.loc 1 32 48 is_stmt 0 view .LVU19
+ 104 0020 274A     		ldr	r2, .L12+12
+ 105 0022 1388     		ldrh	r3, [r2]
+ 106 0024 9BB2     		uxth	r3, r3
+ 107 0026 2749     		ldr	r1, .L12+16
+ 108 0028 0968     		ldr	r1, [r1]
+ 109 002a 5B1A     		subs	r3, r3, r1
+ 110 002c 0133     		adds	r3, r3, #1
+ 111              		.loc 1 32 30 view .LVU20
+ 112 002e 2648     		ldr	r0, .L12+20
+ 113 0030 0380     		strh	r3, [r0]	@ movhi
+  33:Core/Src/it_handlers.c ****             if ((GlobalTickCount - (dTime1 - 1) >= 2001) && (GlobalTickCount - (dTime1 - 1) <= 4001
+ 114              		.loc 1 33 13 is_stmt 1 view .LVU21
+ 115              		.loc 1 33 34 is_stmt 0 view .LVU22
+ 116 0032 1288     		ldrh	r2, [r2]
+ 117 0034 92B2     		uxth	r2, r2
+ 118              		.loc 1 33 44 view .LVU23
+ 119 0036 4B1E     		subs	r3, r1, #1
+ 120              		.loc 1 33 34 view .LVU24
+ 121 0038 D21A     		subs	r2, r2, r3
+ 122              		.loc 1 33 16 view .LVU25
+ 123 003a B2F5FA6F 		cmp	r2, #2000
+ 124 003e 0CDD     		ble	.L7
+ 125              		.loc 1 33 78 discriminator 1 view .LVU26
+ 126 0040 1F4A     		ldr	r2, .L12+12
+ 127 0042 1288     		ldrh	r2, [r2]
+ 128 0044 92B2     		uxth	r2, r2
+ 129 0046 D21A     		subs	r2, r2, r3
+ 130              		.loc 1 33 58 discriminator 1 view .LVU27
+ 131 0048 40F6A171 		movw	r1, #4001
+ 132 004c 8A42     		cmp	r2, r1
+ 133 004e 04DC     		bgt	.L7
+  34:Core/Src/it_handlers.c ****                 LongBtnCount1++; // если разница между фронтами нажат�
+ 134              		.loc 1 34 17 is_stmt 1 view .LVU28
+ 135              		.loc 1 34 30 is_stmt 0 view .LVU29
+ 136 0050 1E49     		ldr	r1, .L12+24
+ 137 0052 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 138 0054 0132     		adds	r2, r2, #1
+ 139 0056 D2B2     		uxtb	r2, r2
+ 140 0058 0A70     		strb	r2, [r1]
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 4
+
+
+ 141              	.L7:
+  35:Core/Src/it_handlers.c ****                 if (LongBtnCount1 >=3 )
+ 142              		.loc 1 35 17 is_stmt 1 view .LVU30
+ 143              		.loc 1 35 35 is_stmt 0 view .LVU31
+ 144 005a 1C4A     		ldr	r2, .L12+24
+ 145 005c 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 146 005e D2B2     		uxtb	r2, r2
+ 147              		.loc 1 35 20 view .LVU32
+ 148 0060 022A     		cmp	r2, #2
+ 149 0062 0CD9     		bls	.L8
+  36:Core/Src/it_handlers.c ****                 {
+  37:Core/Src/it_handlers.c ****                     LongBtnCount1 = 0;
+ 150              		.loc 1 37 21 is_stmt 1 view .LVU33
+ 151              		.loc 1 37 35 is_stmt 0 view .LVU34
+ 152 0064 194B     		ldr	r3, .L12+24
+ 153 0066 0022     		movs	r2, #0
+ 154 0068 1A70     		strb	r2, [r3]
+ 155              	.L9:
+  38:Core/Src/it_handlers.c ****                 }
+  39:Core/Src/it_handlers.c ****             else{
+  40:Core/Src/it_handlers.c ****                 if (GlobalTickCount - (dTime1 - 1) >= 4001)
+  41:Core/Src/it_handlers.c ****                     VeryLongBtnCount = !VeryLongBtnCount; // если разница между ф�
+  42:Core/Src/it_handlers.c ****                 else
+  43:Core/Src/it_handlers.c ****                 {
+  44:Core/Src/it_handlers.c ****                     BtnCount1++;
+  45:Core/Src/it_handlers.c ****                     if (BtnCount1>=6)
+  46:Core/Src/it_handlers.c ****                     {
+  47:Core/Src/it_handlers.c ****                        BtnCount1 = 0; 
+  48:Core/Src/it_handlers.c ****                     }
+  49:Core/Src/it_handlers.c ****                 } // Изменение состояния кнопки
+  50:Core/Src/it_handlers.c ****         }
+  51:Core/Src/it_handlers.c ****         ExternInterruptTickCount = 0; // Обнуление счётчика таймера
+ 156              		.loc 1 51 9 is_stmt 1 view .LVU35
+ 157              		.loc 1 51 34 is_stmt 0 view .LVU36
+ 158 006a 134B     		ldr	r3, .L12+4
+ 159 006c 0022     		movs	r2, #0
+ 160 006e 1A60     		str	r2, [r3]
+ 161              	.L4:
+  52:Core/Src/it_handlers.c ****     }
+  53:Core/Src/it_handlers.c **** }
+  54:Core/Src/it_handlers.c **** 
+  55:Core/Src/it_handlers.c **** }
+ 162              		.loc 1 55 1 view .LVU37
+ 163 0070 7047     		bx	lr
+ 164              	.L11:
+  29:Core/Src/it_handlers.c ****         else
+ 165              		.loc 1 29 13 is_stmt 1 view .LVU38
+  29:Core/Src/it_handlers.c ****         else
+ 166              		.loc 1 29 20 is_stmt 0 view .LVU39
+ 167 0072 134B     		ldr	r3, .L12+12
+ 168 0074 1B88     		ldrh	r3, [r3]
+ 169 0076 9BB2     		uxth	r3, r3
+ 170 0078 124A     		ldr	r2, .L12+16
+ 171 007a 1360     		str	r3, [r2]
+ 172 007c 7047     		bx	lr
+ 173              	.L8:
+  40:Core/Src/it_handlers.c ****                     VeryLongBtnCount = !VeryLongBtnCount; // если разница между ф�
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 5
+
+
+ 174              		.loc 1 40 17 is_stmt 1 view .LVU40
+  40:Core/Src/it_handlers.c ****                     VeryLongBtnCount = !VeryLongBtnCount; // если разница между ф�
+ 175              		.loc 1 40 37 is_stmt 0 view .LVU41
+ 176 007e 104A     		ldr	r2, .L12+12
+ 177 0080 1288     		ldrh	r2, [r2]
+ 178 0082 92B2     		uxth	r2, r2
+ 179 0084 D31A     		subs	r3, r2, r3
+  40:Core/Src/it_handlers.c ****                     VeryLongBtnCount = !VeryLongBtnCount; // если разница между ф�
+ 180              		.loc 1 40 20 view .LVU42
+ 181 0086 B3F57A6F 		cmp	r3, #4000
+ 182 008a 06DD     		ble	.L10
+  41:Core/Src/it_handlers.c ****                 else
+ 183              		.loc 1 41 21 is_stmt 1 view .LVU43
+  41:Core/Src/it_handlers.c ****                 else
+ 184              		.loc 1 41 40 is_stmt 0 view .LVU44
+ 185 008c 104A     		ldr	r2, .L12+28
+ 186 008e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 187 0090 B3FA83F3 		clz	r3, r3
+ 188 0094 5B09     		lsrs	r3, r3, #5
+  41:Core/Src/it_handlers.c ****                 else
+ 189              		.loc 1 41 38 view .LVU45
+ 190 0096 1370     		strb	r3, [r2]
+ 191 0098 E7E7     		b	.L9
+ 192              	.L10:
+  44:Core/Src/it_handlers.c ****                     if (BtnCount1>=6)
+ 193              		.loc 1 44 21 is_stmt 1 view .LVU46
+  44:Core/Src/it_handlers.c ****                     if (BtnCount1>=6)
+ 194              		.loc 1 44 30 is_stmt 0 view .LVU47
+ 195 009a 0E4A     		ldr	r2, .L12+32
+ 196 009c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 197 009e 0133     		adds	r3, r3, #1
+ 198 00a0 DBB2     		uxtb	r3, r3
+ 199 00a2 1370     		strb	r3, [r2]
+  45:Core/Src/it_handlers.c ****                     {
+ 200              		.loc 1 45 21 is_stmt 1 view .LVU48
+  45:Core/Src/it_handlers.c ****                     {
+ 201              		.loc 1 45 34 is_stmt 0 view .LVU49
+ 202 00a4 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 203 00a6 DBB2     		uxtb	r3, r3
+  45:Core/Src/it_handlers.c ****                     {
+ 204              		.loc 1 45 24 view .LVU50
+ 205 00a8 052B     		cmp	r3, #5
+ 206 00aa DED9     		bls	.L9
+  47:Core/Src/it_handlers.c ****                     }
+ 207              		.loc 1 47 24 is_stmt 1 view .LVU51
+  47:Core/Src/it_handlers.c ****                     }
+ 208              		.loc 1 47 34 is_stmt 0 view .LVU52
+ 209 00ac 1346     		mov	r3, r2
+ 210 00ae 0022     		movs	r2, #0
+ 211 00b0 1A70     		strb	r2, [r3]
+ 212 00b2 DAE7     		b	.L9
+ 213              	.L13:
+ 214              		.align	2
+ 215              	.L12:
+ 216 00b4 003C0140 		.word	1073822720
+ 217 00b8 00000000 		.word	ExternInterruptTickCount
+ 218 00bc 00000000 		.word	front1
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 6
+
+
+ 219 00c0 00000000 		.word	GlobalTickCount
+ 220 00c4 00000000 		.word	dTime1
+ 221 00c8 00000000 		.word	delta_time_press
+ 222 00cc 00000000 		.word	LongBtnCount1
+ 223 00d0 00000000 		.word	VeryLongBtnCount
+ 224 00d4 00000000 		.word	BtnCount1
+ 225              		.cfi_endproc
+ 226              	.LFE131:
+ 228              		.section	.text.User_Delay,"ax",%progbits
+ 229              		.align	1
+ 230              		.global	User_Delay
+ 231              		.syntax unified
+ 232              		.thumb
+ 233              		.thumb_func
+ 235              	User_Delay:
+ 236              	.LFB132:
+  56:Core/Src/it_handlers.c **** void User_Delay(uint32_t delay)
+  57:Core/Src/it_handlers.c **** { // пользовательская функция
+ 237              		.loc 1 57 1 is_stmt 1 view -0
+ 238              		.cfi_startproc
+ 239              		@ args = 0, pretend = 0, frame = 0
+ 240              		@ frame_needed = 0, uses_anonymous_args = 0
+ 241              		@ link register save eliminated.
+ 242              	.LVL0:
+ 243              	.L15:
+  58:Core/Src/it_handlers.c ****     while (DelayTickCount < delay)
+  59:Core/Src/it_handlers.c ****     {
+  60:Core/Src/it_handlers.c ****     } // Цикл, благодаря которому происходит задержка про
+ 244              		.loc 1 60 5 view .LVU54
+  58:Core/Src/it_handlers.c ****     while (DelayTickCount < delay)
+ 245              		.loc 1 58 27 discriminator 1 view .LVU55
+ 246 0000 034B     		ldr	r3, .L16
+ 247 0002 1B68     		ldr	r3, [r3]
+ 248 0004 8342     		cmp	r3, r0
+ 249 0006 FBD3     		bcc	.L15
+  61:Core/Src/it_handlers.c ****     if (DelayTickCount >= delay)
+ 250              		.loc 1 61 5 view .LVU56
+  62:Core/Src/it_handlers.c ****         DelayTickCount = 0; // Обнуление переменной счётчика, при д�
+ 251              		.loc 1 62 9 view .LVU57
+ 252              		.loc 1 62 24 is_stmt 0 view .LVU58
+ 253 0008 014B     		ldr	r3, .L16
+ 254 000a 0022     		movs	r2, #0
+ 255 000c 1A60     		str	r2, [r3]
+  63:Core/Src/it_handlers.c **** }...
+ 256              		.loc 1 63 1 view .LVU59
+ 257 000e 7047     		bx	lr
+ 258              	.L17:
+ 259              		.align	2
+ 260              	.L16:
+ 261 0010 00000000 		.word	DelayTickCount
+ 262              		.cfi_endproc
+ 263              	.LFE132:
+ 265              		.global	DelayTickCount
+ 266              		.section	.bss.DelayTickCount,"aw",%nobits
+ 267              		.align	2
+ 270              	DelayTickCount:
+ 271 0000 00000000 		.space	4
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 7
+
+
+ 272              		.global	front1
+ 273              		.section	.bss.front1,"aw",%nobits
+ 274              		.align	2
+ 277              	front1:
+ 278 0000 00000000 		.space	4
+ 279              		.global	dTime1
+ 280              		.section	.bss.dTime1,"aw",%nobits
+ 281              		.align	2
+ 284              	dTime1:
+ 285 0000 00000000 		.space	4
+ 286              		.global	ExternInterruptTickCount2
+ 287              		.section	.bss.ExternInterruptTickCount2,"aw",%nobits
+ 288              		.align	2
+ 291              	ExternInterruptTickCount2:
+ 292 0000 00000000 		.space	4
+ 293              		.global	ExternInterruptTickCount
+ 294              		.section	.bss.ExternInterruptTickCount,"aw",%nobits
+ 295              		.align	2
+ 298              	ExternInterruptTickCount:
+ 299 0000 00000000 		.space	4
+ 300              		.global	delta_time_press
+ 301              		.section	.bss.delta_time_press,"aw",%nobits
+ 302              		.align	1
+ 305              	delta_time_press:
+ 306 0000 0000     		.space	2
+ 307              		.global	cycleTime
+ 308              		.section	.bss.cycleTime,"aw",%nobits
+ 309              		.align	1
+ 312              	cycleTime:
+ 313 0000 0000     		.space	2
+ 314              		.global	dtime
+ 315              		.section	.bss.dtime,"aw",%nobits
+ 316              		.align	1
+ 319              	dtime:
+ 320 0000 0000     		.space	2
+ 321              		.global	GlobalTickCount
+ 322              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 323              		.align	1
+ 326              	GlobalTickCount:
+ 327 0000 0000     		.space	2
+ 328              		.global	freq6
+ 329              		.section	.bss.freq6,"aw",%nobits
+ 330              		.align	1
+ 333              	freq6:
+ 334 0000 0000     		.space	2
+ 335              		.global	freq5
+ 336              		.section	.bss.freq5,"aw",%nobits
+ 337              		.align	1
+ 340              	freq5:
+ 341 0000 0000     		.space	2
+ 342              		.global	freq4
+ 343              		.section	.bss.freq4,"aw",%nobits
+ 344              		.align	1
+ 347              	freq4:
+ 348 0000 0000     		.space	2
+ 349              		.global	freq3
+ 350              		.section	.bss.freq3,"aw",%nobits
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 8
+
+
+ 351              		.align	1
+ 354              	freq3:
+ 355 0000 0000     		.space	2
+ 356              		.global	freq2
+ 357              		.section	.bss.freq2,"aw",%nobits
+ 358              		.align	1
+ 361              	freq2:
+ 362 0000 0000     		.space	2
+ 363              		.global	freq1
+ 364              		.section	.bss.freq1,"aw",%nobits
+ 365              		.align	1
+ 368              	freq1:
+ 369 0000 0000     		.space	2
+ 370              		.global	ledTime6
+ 371              		.section	.bss.ledTime6,"aw",%nobits
+ 372              		.align	1
+ 375              	ledTime6:
+ 376 0000 0000     		.space	2
+ 377              		.global	ledTime5
+ 378              		.section	.bss.ledTime5,"aw",%nobits
+ 379              		.align	1
+ 382              	ledTime5:
+ 383 0000 0000     		.space	2
+ 384              		.global	ledTime4
+ 385              		.section	.bss.ledTime4,"aw",%nobits
+ 386              		.align	1
+ 389              	ledTime4:
+ 390 0000 0000     		.space	2
+ 391              		.global	ledTime3
+ 392              		.section	.bss.ledTime3,"aw",%nobits
+ 393              		.align	1
+ 396              	ledTime3:
+ 397 0000 0000     		.space	2
+ 398              		.global	ledTime2
+ 399              		.section	.bss.ledTime2,"aw",%nobits
+ 400              		.align	1
+ 403              	ledTime2:
+ 404 0000 0000     		.space	2
+ 405              		.global	ledTime1
+ 406              		.section	.bss.ledTime1,"aw",%nobits
+ 407              		.align	1
+ 410              	ledTime1:
+ 411 0000 0000     		.space	2
+ 412              		.global	VeryLongBtnCount
+ 413              		.section	.bss.VeryLongBtnCount,"aw",%nobits
+ 416              	VeryLongBtnCount:
+ 417 0000 00       		.space	1
+ 418              		.global	LongBtnCount1
+ 419              		.section	.bss.LongBtnCount1,"aw",%nobits
+ 422              	LongBtnCount1:
+ 423 0000 00       		.space	1
+ 424              		.global	BtnCount1
+ 425              		.section	.bss.BtnCount1,"aw",%nobits
+ 428              	BtnCount1:
+ 429 0000 00       		.space	1
+ 430              		.global	flag6ON
+ 431              		.section	.bss.flag6ON,"aw",%nobits
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 9
+
+
+ 434              	flag6ON:
+ 435 0000 00       		.space	1
+ 436              		.global	flag5ON
+ 437              		.section	.bss.flag5ON,"aw",%nobits
+ 440              	flag5ON:
+ 441 0000 00       		.space	1
+ 442              		.global	flag4ON
+ 443              		.section	.bss.flag4ON,"aw",%nobits
+ 446              	flag4ON:
+ 447 0000 00       		.space	1
+ 448              		.global	flag3ON
+ 449              		.section	.bss.flag3ON,"aw",%nobits
+ 452              	flag3ON:
+ 453 0000 00       		.space	1
+ 454              		.global	flag2ON
+ 455              		.section	.bss.flag2ON,"aw",%nobits
+ 458              	flag2ON:
+ 459 0000 00       		.space	1
+ 460              		.global	flag1ON
+ 461              		.section	.bss.flag1ON,"aw",%nobits
+ 464              	flag1ON:
+ 465 0000 00       		.space	1
+ 466              		.global	LedState
+ 467              		.section	.bss.LedState,"aw",%nobits
+ 470              	LedState:
+ 471 0000 00       		.space	1
+ 472              		.global	flag6
+ 473              		.section	.bss.flag6,"aw",%nobits
+ 476              	flag6:
+ 477 0000 00       		.space	1
+ 478              		.global	flag5
+ 479              		.section	.bss.flag5,"aw",%nobits
+ 482              	flag5:
+ 483 0000 00       		.space	1
+ 484              		.global	flag4
+ 485              		.section	.bss.flag4,"aw",%nobits
+ 488              	flag4:
+ 489 0000 00       		.space	1
+ 490              		.global	flag3
+ 491              		.section	.bss.flag3,"aw",%nobits
+ 494              	flag3:
+ 495 0000 00       		.space	1
+ 496              		.global	flag2
+ 497              		.section	.bss.flag2,"aw",%nobits
+ 500              	flag2:
+ 501 0000 00       		.space	1
+ 502              		.global	flag1
+ 503              		.section	.bss.flag1,"aw",%nobits
+ 506              	flag1:
+ 507 0000 00       		.space	1
+ 508              		.text
+ 509              	.Letext0:
+ 510              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 511              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 512              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:59     .text.SysTick_Handler:00000020 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:298    .bss.ExternInterruptTickCount:00000000 ExternInterruptTickCount
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:291    .bss.ExternInterruptTickCount2:00000000 ExternInterruptTickCount2
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:326    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:66     .text.EXTI4_IRQHandler:00000000 $t
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:72     .text.EXTI4_IRQHandler:00000000 EXTI4_IRQHandler
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:216    .text.EXTI4_IRQHandler:000000b4 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:277    .bss.front1:00000000 front1
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:284    .bss.dTime1:00000000 dTime1
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:305    .bss.delta_time_press:00000000 delta_time_press
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:422    .bss.LongBtnCount1:00000000 LongBtnCount1
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:416    .bss.VeryLongBtnCount:00000000 VeryLongBtnCount
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:428    .bss.BtnCount1:00000000 BtnCount1
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:229    .text.User_Delay:00000000 $t
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:235    .text.User_Delay:00000000 User_Delay
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:261    .text.User_Delay:00000010 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:270    .bss.DelayTickCount:00000000 DelayTickCount
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:267    .bss.DelayTickCount:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:274    .bss.front1:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:281    .bss.dTime1:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:288    .bss.ExternInterruptTickCount2:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:295    .bss.ExternInterruptTickCount:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:302    .bss.delta_time_press:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:312    .bss.cycleTime:00000000 cycleTime
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:309    .bss.cycleTime:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:319    .bss.dtime:00000000 dtime
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:316    .bss.dtime:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:323    .bss.GlobalTickCount:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:333    .bss.freq6:00000000 freq6
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:330    .bss.freq6:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:340    .bss.freq5:00000000 freq5
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:337    .bss.freq5:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:347    .bss.freq4:00000000 freq4
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:344    .bss.freq4:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:354    .bss.freq3:00000000 freq3
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:351    .bss.freq3:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:361    .bss.freq2:00000000 freq2
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:358    .bss.freq2:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:368    .bss.freq1:00000000 freq1
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:365    .bss.freq1:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:375    .bss.ledTime6:00000000 ledTime6
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:372    .bss.ledTime6:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:382    .bss.ledTime5:00000000 ledTime5
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:379    .bss.ledTime5:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:389    .bss.ledTime4:00000000 ledTime4
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:386    .bss.ledTime4:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:396    .bss.ledTime3:00000000 ledTime3
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:393    .bss.ledTime3:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:403    .bss.ledTime2:00000000 ledTime2
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:400    .bss.ledTime2:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:410    .bss.ledTime1:00000000 ledTime1
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:407    .bss.ledTime1:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:417    .bss.VeryLongBtnCount:00000000 $d
+ARM GAS  C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s 			page 11
+
+
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:423    .bss.LongBtnCount1:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:429    .bss.BtnCount1:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:434    .bss.flag6ON:00000000 flag6ON
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:435    .bss.flag6ON:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:440    .bss.flag5ON:00000000 flag5ON
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:441    .bss.flag5ON:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:446    .bss.flag4ON:00000000 flag4ON
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:447    .bss.flag4ON:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:452    .bss.flag3ON:00000000 flag3ON
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:453    .bss.flag3ON:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:458    .bss.flag2ON:00000000 flag2ON
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:459    .bss.flag2ON:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:464    .bss.flag1ON:00000000 flag1ON
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:465    .bss.flag1ON:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:470    .bss.LedState:00000000 LedState
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:471    .bss.LedState:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:476    .bss.flag6:00000000 flag6
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:477    .bss.flag6:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:482    .bss.flag5:00000000 flag5
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:483    .bss.flag5:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:488    .bss.flag4:00000000 flag4
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:489    .bss.flag4:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:494    .bss.flag3:00000000 flag3
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:495    .bss.flag3:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:500    .bss.flag2:00000000 flag2
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:501    .bss.flag2:00000000 $d
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:506    .bss.flag1:00000000 flag1
+C:\Users\druzh\AppData\Local\Temp\cc0q1Yd5.s:507    .bss.flag1:00000000 $d
+
+NO UNDEFINED SYMBOLS
