@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 1
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -30,175 +30,260 @@ ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 1
   28              	.LFB130:
    1:Core/Src/it_handlers.c **** #include "it_handlers.h"
    2:Core/Src/it_handlers.c **** 
-   3:Core/Src/it_handlers.c **** extern uint8_t current_mode;
-   4:Core/Src/it_handlers.c **** extern uint8_t current_led;
-   5:Core/Src/it_handlers.c **** extern uint8_t current_frequency;
-   6:Core/Src/it_handlers.c **** extern volatile uint32_t systick_counter;
-   7:Core/Src/it_handlers.c **** 
-   8:Core/Src/it_handlers.c **** void SysTick_Handler(void) {
-  29              		.loc 1 8 28 view -0
+   3:Core/Src/it_handlers.c **** extern uint16_t FLICKER_PERIOD; // 闪烁周期
+   4:Core/Src/it_handlers.c **** extern uint16_t GlobalTickCount,    // 全局时间计数
+   5:Core/Src/it_handlers.c ****                 ExternInterruptTickCount1,  // 按钮1中断计数
+   6:Core/Src/it_handlers.c ****                 ExternInterruptTickCount2,  // 按钮2中断计数
+   7:Core/Src/it_handlers.c ****                 ExternInterruptTickCount3;  // 按钮3中断计数
+   8:Core/Src/it_handlers.c **** extern uint16_t LedState2Data[3][6]; // LED状态数据
+   9:Core/Src/it_handlers.c **** 
+  10:Core/Src/it_handlers.c **** // 系统定时器中断处理函数
+  11:Core/Src/it_handlers.c **** void SysTick_Handler(void)
+  12:Core/Src/it_handlers.c **** {
+  29              		.loc 1 12 1 view -0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
   33              		@ link register save eliminated.
-   9:Core/Src/it_handlers.c ****     systick_counter++;
-  34              		.loc 1 9 5 view .LVU1
-  35              		.loc 1 9 20 is_stmt 0 view .LVU2
-  36 0000 024A     		ldr	r2, .L2
-  37 0002 1368     		ldr	r3, [r2]
+  13:Core/Src/it_handlers.c ****     // 增加外部中断计数
+  14:Core/Src/it_handlers.c ****     ExternInterruptTickCount1++;
+  34              		.loc 1 14 5 view .LVU1
+  35              		.loc 1 14 30 is_stmt 0 view .LVU2
+  36 0000 0D4A     		ldr	r2, .L4
+  37 0002 1388     		ldrh	r3, [r2]
   38 0004 0133     		adds	r3, r3, #1
-  39 0006 1360     		str	r3, [r2]
-  10:Core/Src/it_handlers.c **** }
-  40              		.loc 1 10 1 view .LVU3
-  41 0008 7047     		bx	lr
-  42              	.L3:
-  43 000a 00BF     		.align	2
-  44              	.L2:
-  45 000c 00000000 		.word	systick_counter
-  46              		.cfi_endproc
-  47              	.LFE130:
-  49              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 2
+  39 0006 1380     		strh	r3, [r2]	@ movhi
+  15:Core/Src/it_handlers.c ****     ExternInterruptTickCount2++;
+  40              		.loc 1 15 5 is_stmt 1 view .LVU3
+  41              		.loc 1 15 30 is_stmt 0 view .LVU4
+  42 0008 0C4A     		ldr	r2, .L4+4
+  43 000a 1388     		ldrh	r3, [r2]
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s 			page 2
 
 
-  50              		.align	1
-  51              		.global	EXTI9_5_IRQHandler
-  52              		.syntax unified
-  53              		.thumb
-  54              		.thumb_func
-  56              	EXTI9_5_IRQHandler:
-  57              	.LFB131:
-  11:Core/Src/it_handlers.c **** 
-  12:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void) {
-  58              		.loc 1 12 31 is_stmt 1 view -0
-  59              		.cfi_startproc
-  60              		@ args = 0, pretend = 0, frame = 0
-  61              		@ frame_needed = 0, uses_anonymous_args = 0
-  62              		@ link register save eliminated.
-  13:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR8)) {
-  63              		.loc 1 13 5 view .LVU5
-  64              		.loc 1 13 9 is_stmt 0 view .LVU6
-  65 0000 1C4B     		ldr	r3, .L8
-  66 0002 5B69     		ldr	r3, [r3, #20]
-  67              		.loc 1 13 8 view .LVU7
-  68 0004 13F4807F 		tst	r3, #256
-  69 0008 0AD0     		beq	.L5
-  14:Core/Src/it_handlers.c ****         current_mode = (current_mode % 2) + 1;
-  70              		.loc 1 14 9 is_stmt 1 view .LVU8
-  71              		.loc 1 14 38 is_stmt 0 view .LVU9
-  72 000a 1B4A     		ldr	r2, .L8+4
-  73 000c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  74 000e 03F00103 		and	r3, r3, #1
-  75              		.loc 1 14 43 view .LVU10
-  76 0012 0133     		adds	r3, r3, #1
-  77              		.loc 1 14 22 view .LVU11
-  78 0014 1370     		strb	r3, [r2]
-  15:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR8);
-  79              		.loc 1 15 9 is_stmt 1 view .LVU12
-  80 0016 174A     		ldr	r2, .L8
-  81 0018 5369     		ldr	r3, [r2, #20]
-  82 001a 43F48073 		orr	r3, r3, #256
-  83 001e 5361     		str	r3, [r2, #20]
-  84              	.L5:
-  16:Core/Src/it_handlers.c ****     }
-  17:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR9)) {
-  85              		.loc 1 17 5 view .LVU13
-  86              		.loc 1 17 9 is_stmt 0 view .LVU14
-  87 0020 144B     		ldr	r3, .L8
-  88 0022 5B69     		ldr	r3, [r3, #20]
-  89              		.loc 1 17 8 view .LVU15
-  90 0024 13F4007F 		tst	r3, #512
-  91 0028 0ED0     		beq	.L6
-  18:Core/Src/it_handlers.c ****         current_frequency = (current_frequency + 1) % 3;
-  92              		.loc 1 18 9 is_stmt 1 view .LVU16
-  93              		.loc 1 18 48 is_stmt 0 view .LVU17
-  94 002a 1449     		ldr	r1, .L8+8
-  95 002c 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
-  96 002e 0132     		adds	r2, r2, #1
-  97              		.loc 1 18 53 view .LVU18
-  98 0030 134B     		ldr	r3, .L8+12
-  99 0032 83FB0203 		smull	r0, r3, r3, r2
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 3
-
-
- 100 0036 03EB4303 		add	r3, r3, r3, lsl #1
- 101 003a D31A     		subs	r3, r2, r3
- 102              		.loc 1 18 27 view .LVU19
- 103 003c 0B70     		strb	r3, [r1]
-  19:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR9);
- 104              		.loc 1 19 9 is_stmt 1 view .LVU20
- 105 003e 0D4A     		ldr	r2, .L8
- 106 0040 5369     		ldr	r3, [r2, #20]
- 107 0042 43F40073 		orr	r3, r3, #512
- 108 0046 5361     		str	r3, [r2, #20]
- 109              	.L6:
-  20:Core/Src/it_handlers.c ****     }
-  21:Core/Src/it_handlers.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR10)) {
- 110              		.loc 1 21 5 view .LVU21
- 111              		.loc 1 21 9 is_stmt 0 view .LVU22
- 112 0048 0A4B     		ldr	r3, .L8
- 113 004a 5B69     		ldr	r3, [r3, #20]
- 114              		.loc 1 21 8 view .LVU23
- 115 004c 13F4806F 		tst	r3, #1024
- 116 0050 0FD0     		beq	.L4
-  22:Core/Src/it_handlers.c ****         current_led = (current_led + 1) % 6;
- 117              		.loc 1 22 9 is_stmt 1 view .LVU24
- 118              		.loc 1 22 36 is_stmt 0 view .LVU25
- 119 0052 0C49     		ldr	r1, .L8+16
- 120 0054 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
- 121 0056 0132     		adds	r2, r2, #1
- 122              		.loc 1 22 41 view .LVU26
- 123 0058 0B4B     		ldr	r3, .L8+20
- 124 005a 83FB0203 		smull	r0, r3, r3, r2
- 125 005e 03EB4303 		add	r3, r3, r3, lsl #1
- 126 0062 5800     		lsls	r0, r3, #1
- 127 0064 131A     		subs	r3, r2, r0
- 128              		.loc 1 22 21 view .LVU27
- 129 0066 0B70     		strb	r3, [r1]
-  23:Core/Src/it_handlers.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR10);
- 130              		.loc 1 23 9 is_stmt 1 view .LVU28
- 131 0068 024A     		ldr	r2, .L8
- 132 006a 5369     		ldr	r3, [r2, #20]
- 133 006c 43F48063 		orr	r3, r3, #1024
- 134 0070 5361     		str	r3, [r2, #20]
- 135              	.L4:
-  24:Core/Src/it_handlers.c ****     }
+  44 000c 0133     		adds	r3, r3, #1
+  45 000e 1380     		strh	r3, [r2]	@ movhi
+  16:Core/Src/it_handlers.c ****     ExternInterruptTickCount3++;
+  46              		.loc 1 16 5 is_stmt 1 view .LVU5
+  47              		.loc 1 16 30 is_stmt 0 view .LVU6
+  48 0010 0B4A     		ldr	r2, .L4+8
+  49 0012 1388     		ldrh	r3, [r2]
+  50 0014 0133     		adds	r3, r3, #1
+  51 0016 1380     		strh	r3, [r2]	@ movhi
+  17:Core/Src/it_handlers.c **** 
+  18:Core/Src/it_handlers.c ****     // 增加 LED 状态的数据
+  19:Core/Src/it_handlers.c ****     for(int ii = 0; ii < 6; ii++){
+  52              		.loc 1 19 5 is_stmt 1 view .LVU7
+  53              	.LBB2:
+  54              		.loc 1 19 9 view .LVU8
+  55              	.LVL0:
+  56              		.loc 1 19 13 is_stmt 0 view .LVU9
+  57 0018 0023     		movs	r3, #0
+  58              		.loc 1 19 5 view .LVU10
+  59 001a 06E0     		b	.L2
+  60              	.LVL1:
+  61              	.L3:
+  20:Core/Src/it_handlers.c ****         LedState2Data[0][ii]++;
+  62              		.loc 1 20 9 is_stmt 1 view .LVU11
+  63              		.loc 1 20 25 is_stmt 0 view .LVU12
+  64 001c 0949     		ldr	r1, .L4+12
+  65 001e 31F81320 		ldrh	r2, [r1, r3, lsl #1]
+  66              		.loc 1 20 29 view .LVU13
+  67 0022 0132     		adds	r2, r2, #1
+  68 0024 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
+  19:Core/Src/it_handlers.c ****         LedState2Data[0][ii]++;
+  69              		.loc 1 19 31 is_stmt 1 discriminator 3 view .LVU14
+  70 0028 0133     		adds	r3, r3, #1
+  71              	.LVL2:
+  72              	.L2:
+  19:Core/Src/it_handlers.c ****         LedState2Data[0][ii]++;
+  73              		.loc 1 19 24 discriminator 1 view .LVU15
+  74 002a 052B     		cmp	r3, #5
+  75 002c F6DD     		ble	.L3
+  76              	.LBE2:
+  21:Core/Src/it_handlers.c ****     }
+  22:Core/Src/it_handlers.c **** 
+  23:Core/Src/it_handlers.c ****     // 全局时间计数增加
+  24:Core/Src/it_handlers.c ****     GlobalTickCount++;
+  77              		.loc 1 24 5 view .LVU16
+  78              		.loc 1 24 20 is_stmt 0 view .LVU17
+  79 002e 064A     		ldr	r2, .L4+16
+  80 0030 1388     		ldrh	r3, [r2]
+  81              	.LVL3:
+  82              		.loc 1 24 20 view .LVU18
+  83 0032 0133     		adds	r3, r3, #1
+  84 0034 1380     		strh	r3, [r2]	@ movhi
   25:Core/Src/it_handlers.c **** }
- 136              		.loc 1 25 1 is_stmt 0 view .LVU29
- 137 0072 7047     		bx	lr
- 138              	.L9:
- 139              		.align	2
- 140              	.L8:
- 141 0074 003C0140 		.word	1073822720
- 142 0078 00000000 		.word	current_mode
- 143 007c 00000000 		.word	current_frequency
- 144 0080 56555555 		.word	1431655766
- 145 0084 00000000 		.word	current_led
- 146 0088 ABAAAA2A 		.word	715827883
- 147              		.cfi_endproc
- 148              	.LFE131:
- 150              		.text
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 4
+  85              		.loc 1 25 1 view .LVU19
+  86 0036 7047     		bx	lr
+  87              	.L5:
+  88              		.align	2
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s 			page 3
 
 
- 151              	.Letext0:
- 152              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
- 153              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
- 154              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s 			page 5
+  89              	.L4:
+  90 0038 00000000 		.word	ExternInterruptTickCount1
+  91 003c 00000000 		.word	ExternInterruptTickCount2
+  92 0040 00000000 		.word	ExternInterruptTickCount3
+  93 0044 00000000 		.word	LedState2Data
+  94 0048 00000000 		.word	GlobalTickCount
+  95              		.cfi_endproc
+  96              	.LFE130:
+  98              		.section	.text.EXTI0_IRQHandler,"ax",%progbits
+  99              		.align	1
+ 100              		.global	EXTI0_IRQHandler
+ 101              		.syntax unified
+ 102              		.thumb
+ 103              		.thumb_func
+ 105              	EXTI0_IRQHandler:
+ 106              	.LFB131:
+  26:Core/Src/it_handlers.c **** 
+  27:Core/Src/it_handlers.c **** // EXTI0 按钮 1 中断处理函数
+  28:Core/Src/it_handlers.c **** void EXTI0_IRQHandler(void)
+  29:Core/Src/it_handlers.c **** {
+ 107              		.loc 1 29 1 is_stmt 1 view -0
+ 108              		.cfi_startproc
+ 109              		@ args = 0, pretend = 0, frame = 0
+ 110              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111 0000 08B5     		push	{r3, lr}
+ 112              	.LCFI0:
+ 113              		.cfi_def_cfa_offset 8
+ 114              		.cfi_offset 3, -8
+ 115              		.cfi_offset 14, -4
+  30:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR0); // 清除中断标志
+ 116              		.loc 1 30 5 view .LVU21
+ 117 0002 044A     		ldr	r2, .L8
+ 118 0004 5369     		ldr	r3, [r2, #20]
+ 119 0006 43F00103 		orr	r3, r3, #1
+ 120 000a 5361     		str	r3, [r2, #20]
+  31:Core/Src/it_handlers.c ****     b1_clicked();  // 调用按钮1点击事件
+ 121              		.loc 1 31 5 view .LVU22
+ 122 000c FFF7FEFF 		bl	b1_clicked
+ 123              	.LVL4:
+  32:Core/Src/it_handlers.c **** }
+ 124              		.loc 1 32 1 is_stmt 0 view .LVU23
+ 125 0010 08BD     		pop	{r3, pc}
+ 126              	.L9:
+ 127 0012 00BF     		.align	2
+ 128              	.L8:
+ 129 0014 003C0140 		.word	1073822720
+ 130              		.cfi_endproc
+ 131              	.LFE131:
+ 133              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+ 134              		.align	1
+ 135              		.global	EXTI9_5_IRQHandler
+ 136              		.syntax unified
+ 137              		.thumb
+ 138              		.thumb_func
+ 140              	EXTI9_5_IRQHandler:
+ 141              	.LFB132:
+  33:Core/Src/it_handlers.c **** 
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s 			page 4
+
+
+  34:Core/Src/it_handlers.c **** // EXTI9_5 按钮 2 中断处理函数
+  35:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void)
+  36:Core/Src/it_handlers.c **** {
+ 142              		.loc 1 36 1 is_stmt 1 view -0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146 0000 08B5     		push	{r3, lr}
+ 147              	.LCFI1:
+ 148              		.cfi_def_cfa_offset 8
+ 149              		.cfi_offset 3, -8
+ 150              		.cfi_offset 14, -4
+  37:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR9); // 清除中断标志
+ 151              		.loc 1 37 5 view .LVU25
+ 152 0002 044A     		ldr	r2, .L12
+ 153 0004 5369     		ldr	r3, [r2, #20]
+ 154 0006 43F40073 		orr	r3, r3, #512
+ 155 000a 5361     		str	r3, [r2, #20]
+  38:Core/Src/it_handlers.c ****     b2_clicked();  // 调用按钮2点击事件
+ 156              		.loc 1 38 5 view .LVU26
+ 157 000c FFF7FEFF 		bl	b2_clicked
+ 158              	.LVL5:
+  39:Core/Src/it_handlers.c **** }
+ 159              		.loc 1 39 1 is_stmt 0 view .LVU27
+ 160 0010 08BD     		pop	{r3, pc}
+ 161              	.L13:
+ 162 0012 00BF     		.align	2
+ 163              	.L12:
+ 164 0014 003C0140 		.word	1073822720
+ 165              		.cfi_endproc
+ 166              	.LFE132:
+ 168              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ 169              		.align	1
+ 170              		.global	EXTI15_10_IRQHandler
+ 171              		.syntax unified
+ 172              		.thumb
+ 173              		.thumb_func
+ 175              	EXTI15_10_IRQHandler:
+ 176              	.LFB133:
+  40:Core/Src/it_handlers.c **** 
+  41:Core/Src/it_handlers.c **** // EXTI15_10 按钮 3 中断处理函数
+  42:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void)
+  43:Core/Src/it_handlers.c **** {
+ 177              		.loc 1 43 1 is_stmt 1 view -0
+ 178              		.cfi_startproc
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181 0000 08B5     		push	{r3, lr}
+ 182              	.LCFI2:
+ 183              		.cfi_def_cfa_offset 8
+ 184              		.cfi_offset 3, -8
+ 185              		.cfi_offset 14, -4
+  44:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR12); // 清除中断标志
+ 186              		.loc 1 44 5 view .LVU29
+ 187 0002 044A     		ldr	r2, .L16
+ 188 0004 5369     		ldr	r3, [r2, #20]
+ 189 0006 43F48053 		orr	r3, r3, #4096
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s 			page 5
+
+
+ 190 000a 5361     		str	r3, [r2, #20]
+  45:Core/Src/it_handlers.c ****     b3_clicked();  // 调用按钮3点击事件
+ 191              		.loc 1 45 5 view .LVU30
+ 192 000c FFF7FEFF 		bl	b3_clicked
+ 193              	.LVL6:
+  46:Core/Src/it_handlers.c **** }
+ 194              		.loc 1 46 1 is_stmt 0 view .LVU31
+ 195 0010 08BD     		pop	{r3, pc}
+ 196              	.L17:
+ 197 0012 00BF     		.align	2
+ 198              	.L16:
+ 199 0014 003C0140 		.word	1073822720
+ 200              		.cfi_endproc
+ 201              	.LFE133:
+ 203              		.text
+ 204              	.Letext0:
+ 205              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 206              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 207              		.file 4 "CMSIS/Devices/Inc/stm32f429xx.h"
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 it_handlers.c
-C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:21     .text.SysTick_Handler:00000000 $t
-C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
-C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:45     .text.SysTick_Handler:0000000c $d
-C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:50     .text.EXTI9_5_IRQHandler:00000000 $t
-C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:56     .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
-C:\Users\Sunne\AppData\Local\Temp\ccxnHDEf.s:141    .text.EXTI9_5_IRQHandler:00000074 $d
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:90     .text.SysTick_Handler:00000038 $d
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:99     .text.EXTI0_IRQHandler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:105    .text.EXTI0_IRQHandler:00000000 EXTI0_IRQHandler
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:129    .text.EXTI0_IRQHandler:00000014 $d
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:134    .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:140    .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:164    .text.EXTI9_5_IRQHandler:00000014 $d
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:169    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:175    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\Sunne\AppData\Local\Temp\ccUx1Jdk.s:199    .text.EXTI15_10_IRQHandler:00000014 $d
 
 UNDEFINED SYMBOLS
-systick_counter
-current_mode
-current_frequency
-current_led
+ExternInterruptTickCount1
+ExternInterruptTickCount2
+ExternInterruptTickCount3
+LedState2Data
+GlobalTickCount
+b1_clicked
+b2_clicked
+b3_clicked

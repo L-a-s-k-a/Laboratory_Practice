@@ -1,29 +1,16 @@
-#ifndef INIT_H
-#define INIT_H
+#ifndef __INIT_H
+#define __INIT_H
 
-#include <stdint.h>
-#include "../../CMSIS/Devices/stm32f4xx.h"
-#include "../../CMSIS/Devices/stm32f429xx.h"
+#include "stm32f4xx.h"
+#include "system_stm32f4xx.h"
 
-void RCC_Ini(void);
-void GPIO_Ini(void);
-void EXTI_ITR_Ini(void);
-void SysTick_Init(void);
+// 宏定义：用于翻转寄存器的指定位
+#define TOGGLE_BIT(REG, BIT) ((REG) ^= (BIT))
 
-void update_led_pair(uint8_t stage);
-void reverse_led_pair(uint8_t stage);
-void toggle_led(uint8_t led);
+// 函数声明
+void RCC_Ini(void);       // 系统时钟初始化函数
+void GPIO_Ini(void);      // GPIO初始化函数
+void ITR_Ini(void);       // 外部中断初始化函数
+void SysTick_Init(void);  // 系统定时器初始化函数
 
-#define BUTTON1_PIN GPIO_IDR_ID8
-#define BUTTON2_PIN GPIO_IDR_ID9
-#define BUTTON3_PIN GPIO_IDR_ID10
-
-#define LED1_PIN GPIO_ODR_OD14
-#define LED2_PIN GPIO_ODR_OD7
-#define LED3_PIN GPIO_ODR_OD0
-#define LED4_PIN GPIO_ODR_OD15
-#define LED5_PIN GPIO_ODR_OD13
-#define LED6_PIN GPIO_ODR_OD12
-
-#endif
-
+#endif // __INIT_H

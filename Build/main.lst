@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s 			page 1
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,329 +28,336 @@ ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s 			page 1
   25              		.thumb_func
   27              	main:
   28              	.LFB130:
-   1:Core/Src/main.c **** #include "init.h"
+   1:Core/Src/main.c **** #include <init.h>
    2:Core/Src/main.c **** #include "it_handlers.h"
-   3:Core/Src/main.c **** 
-   4:Core/Src/main.c **** const uint32_t mode1_frequencies[] = {1666, 454, 333}; // 0.6Hz, 2.2Hz, 3Hz (单位：毫秒)
-   5:Core/Src/main.c **** const uint32_t mode2_frequencies[] = {2000, 833, 500}; // 0.5Hz, 1.2Hz, 2Hz (单位：毫秒)
-   6:Core/Src/main.c **** 
-   7:Core/Src/main.c **** volatile uint8_t current_mode = 1;      // 当前模式：1 或 2
-   8:Core/Src/main.c **** volatile uint8_t current_led = 0;      // 当前设置频率的LED编号
-   9:Core/Src/main.c **** volatile uint8_t current_frequency = 0; // 当前频率索引
-  10:Core/Src/main.c **** volatile uint8_t button2_state = 0;    // 按钮2状态
-  11:Core/Src/main.c **** volatile uint8_t button3_state = 0;    // 按钮3状态
-  12:Core/Src/main.c **** volatile uint32_t systick_counter = 0; // SysTick计数器
-  13:Core/Src/main.c **** volatile uint8_t active_leds[] = {0};  // 当前点亮的LED编号
-  14:Core/Src/main.c **** 
-  15:Core/Src/main.c **** int main(void) {
-  29              		.loc 1 15 16 view -0
-  30              		.cfi_startproc
-  31              		@ args = 0, pretend = 0, frame = 0
-  32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33 0000 10B5     		push	{r4, lr}
-  34              	.LCFI0:
-  35              		.cfi_def_cfa_offset 8
-  36              		.cfi_offset 4, -8
-  37              		.cfi_offset 14, -4
-  16:Core/Src/main.c ****     RCC_Ini();
-  38              		.loc 1 16 5 view .LVU1
-  39 0002 FFF7FEFF 		bl	RCC_Ini
-  40              	.LVL0:
-  17:Core/Src/main.c ****     GPIO_Ini();
-  41              		.loc 1 17 5 view .LVU2
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s 			page 2
-
-
-  42 0006 FFF7FEFF 		bl	GPIO_Ini
-  43              	.LVL1:
-  18:Core/Src/main.c ****     EXTI_ITR_Ini();
-  44              		.loc 1 18 5 view .LVU3
-  45 000a FFF7FEFF 		bl	EXTI_ITR_Ini
-  46              	.LVL2:
-  19:Core/Src/main.c ****     SysTick_Init();
-  47              		.loc 1 19 5 view .LVU4
-  48 000e FFF7FEFF 		bl	SysTick_Init
-  49              	.LVL3:
-  50 0012 19E0     		b	.L2
-  51              	.L11:
-  52              	.LBB2:
-  20:Core/Src/main.c **** 
-  21:Core/Src/main.c ****     while (1) {
-  22:Core/Src/main.c ****         if (current_mode == 1) { // 模式 1：两灯一组按顺序点亮并熄灭
-  23:Core/Src/main.c ****             static uint32_t last_toggle = 0;
-  53              		.loc 1 23 13 view .LVU5
-  24:Core/Src/main.c ****             static uint8_t stage = 0;
-  54              		.loc 1 24 13 view .LVU6
+   3:Core/Src/main.c **** #include "leds.h"
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** // LED 闪烁频率数据
+   6:Core/Src/main.c **** uint16_t LedFreq[2][3] = {{1600, 450, 330}, {2000, 830, 500}};
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** // LED 状态数据
+   9:Core/Src/main.c **** uint16_t LedState2Data[3][6] = {{0, 0, 0, 0, 0, 0}, {2000, 2000, 2000, 2000, 2000, 2000}, {0, 0, 0,
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** // 按钮点击次数
+  12:Core/Src/main.c **** uint8_t b1_clicks = 0;
+  13:Core/Src/main.c **** uint8_t b2_clicks = 0;
+  14:Core/Src/main.c **** uint8_t b3_clicks = 0;
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c **** // 全局时间计数
+  17:Core/Src/main.c **** uint16_t GlobalTickCount,
+  18:Core/Src/main.c ****         ExternInterruptTickCount1, 
+  19:Core/Src/main.c ****         ExternInterruptTickCount2, 
+  20:Core/Src/main.c ****         ExternInterruptTickCount3;
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c **** // 闪烁周期
+  23:Core/Src/main.c **** uint16_t FLICKER_PERIOD = 4000;
+  24:Core/Src/main.c **** uint16_t delay = 500;
   25:Core/Src/main.c **** 
-  26:Core/Src/main.c ****             if (systick_counter - last_toggle >= mode1_frequencies[current_frequency]) {
-  55              		.loc 1 26 13 view .LVU7
-  56              		.loc 1 26 33 is_stmt 0 view .LVU8
-  57 0014 224B     		ldr	r3, .L12
-  58 0016 1B68     		ldr	r3, [r3]
-  59 0018 224A     		ldr	r2, .L12+4
-  60 001a 1268     		ldr	r2, [r2]
-  61 001c 9B1A     		subs	r3, r3, r2
-  62              		.loc 1 26 67 view .LVU9
-  63 001e 224A     		ldr	r2, .L12+8
-  64 0020 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
-  65 0022 224A     		ldr	r2, .L12+12
-  66 0024 52F82120 		ldr	r2, [r2, r1, lsl #2]
-  67              		.loc 1 26 16 view .LVU10
-  68 0028 9342     		cmp	r3, r2
-  69 002a 0DD3     		bcc	.L2
-  27:Core/Src/main.c ****                 last_toggle = systick_counter;
-  70              		.loc 1 27 17 is_stmt 1 view .LVU11
-  71              		.loc 1 27 29 is_stmt 0 view .LVU12
-  72 002c 1C4B     		ldr	r3, .L12
-  73 002e 1A68     		ldr	r2, [r3]
-  74 0030 1C4B     		ldr	r3, .L12+4
-  75 0032 1A60     		str	r2, [r3]
-  28:Core/Src/main.c **** 
-  29:Core/Src/main.c ****                 if (stage < 3) {
-  76              		.loc 1 29 17 is_stmt 1 view .LVU13
-  77              		.loc 1 29 27 is_stmt 0 view .LVU14
-  78 0034 1E4B     		ldr	r3, .L12+16
-  79 0036 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
-  80              		.loc 1 29 20 view .LVU15
-  81 0038 0228     		cmp	r0, #2
-  82 003a 11D8     		bhi	.L5
-  30:Core/Src/main.c ****                     update_led_pair(stage);
-  83              		.loc 1 30 21 is_stmt 1 view .LVU16
-  84 003c FFF7FEFF 		bl	update_led_pair
-  85              	.LVL4:
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s 			page 3
+  26:Core/Src/main.c **** // LED 状态控制变量
+  27:Core/Src/main.c **** int8_t i1 = 0;
+  28:Core/Src/main.c **** int8_t i2 = 0;
+  29:Core/Src/main.c **** int8_t i3 = 0;
+  30:Core/Src/main.c **** 
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s 			page 2
 
 
-  31:Core/Src/main.c ****                     stage++;
-  86              		.loc 1 31 21 view .LVU17
-  87              		.loc 1 31 26 is_stmt 0 view .LVU18
-  88 0040 1B4A     		ldr	r2, .L12+16
-  89 0042 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  90 0044 0133     		adds	r3, r3, #1
-  91 0046 1370     		strb	r3, [r2]
-  92              	.L2:
-  93              	.LBE2:
-  21:Core/Src/main.c ****         if (current_mode == 1) { // 模式 1：两灯一组按顺序点亮并熄灭
-  94              		.loc 1 21 5 is_stmt 1 view .LVU19
-  22:Core/Src/main.c ****             static uint32_t last_toggle = 0;
-  95              		.loc 1 22 9 view .LVU20
-  22:Core/Src/main.c ****             static uint32_t last_toggle = 0;
-  96              		.loc 1 22 26 is_stmt 0 view .LVU21
-  97 0048 1A4B     		ldr	r3, .L12+20
-  98 004a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  99 004c DBB2     		uxtb	r3, r3
-  22:Core/Src/main.c ****             static uint32_t last_toggle = 0;
- 100              		.loc 1 22 12 view .LVU22
- 101 004e 012B     		cmp	r3, #1
- 102 0050 E0D0     		beq	.L11
-  32:Core/Src/main.c ****                 } else {
-  33:Core/Src/main.c ****                     reverse_led_pair(stage - 1);
-  34:Core/Src/main.c ****                     stage--;
-  35:Core/Src/main.c ****                 }
-  36:Core/Src/main.c ****             }
-  37:Core/Src/main.c ****         } else if (current_mode == 2) { // 模式 2：单灯闪烁并调整频率
- 103              		.loc 1 37 16 is_stmt 1 view .LVU23
- 104              		.loc 1 37 33 is_stmt 0 view .LVU24
- 105 0052 184B     		ldr	r3, .L12+20
- 106 0054 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 107 0056 DBB2     		uxtb	r3, r3
- 108              		.loc 1 37 19 view .LVU25
- 109 0058 022B     		cmp	r3, #2
- 110 005a F5D1     		bne	.L2
- 111              	.LBB3:
- 112              	.LBB4:
-  38:Core/Src/main.c ****             static uint32_t last_blink[6] = {0};
-  39:Core/Src/main.c ****             for (int i = 0; i < 6; i++) {
- 113              		.loc 1 39 22 view .LVU26
- 114 005c 0024     		movs	r4, #0
- 115 005e 09E0     		b	.L6
- 116              	.L5:
- 117              	.LBE4:
- 118              	.LBE3:
- 119              	.LBB6:
-  33:Core/Src/main.c ****                     stage--;
- 120              		.loc 1 33 21 is_stmt 1 view .LVU27
- 121 0060 0138     		subs	r0, r0, #1
- 122 0062 C0B2     		uxtb	r0, r0
- 123 0064 FFF7FEFF 		bl	reverse_led_pair
- 124              	.LVL5:
-  34:Core/Src/main.c ****                 }
- 125              		.loc 1 34 21 view .LVU28
-  34:Core/Src/main.c ****                 }
- 126              		.loc 1 34 26 is_stmt 0 view .LVU29
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s 			page 4
+  31:Core/Src/main.c **** // 控制标志
+  32:Core/Src/main.c **** uint8_t flagUp2 = 1;
+  33:Core/Src/main.c **** uint8_t state2_flag = 1;
+  34:Core/Src/main.c **** 
+  35:Core/Src/main.c **** // 按钮状态检查
+  36:Core/Src/main.c **** uint8_t state_check, p_state_check = 0;
+  37:Core/Src/main.c **** 
+  38:Core/Src/main.c **** int main(void)
+  39:Core/Src/main.c **** {
+  29              		.loc 1 39 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  40:Core/Src/main.c ****         GPIO_Ini();     // 初始化 GPIO
+  39              		.loc 1 40 9 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Ini
+  41              	.LVL0:
+  41:Core/Src/main.c ****         RCC_Ini();      // 初始化系统时钟
+  42              		.loc 1 41 9 view .LVU2
+  43 0006 FFF7FEFF 		bl	RCC_Ini
+  44              	.LVL1:
+  42:Core/Src/main.c ****         ITR_Ini();      // 初始化中断
+  45              		.loc 1 42 9 view .LVU3
+  46 000a FFF7FEFF 		bl	ITR_Ini
+  47              	.LVL2:
+  43:Core/Src/main.c ****         SysTick_Init(); // 初始化系统定时器
+  48              		.loc 1 43 9 view .LVU4
+  49 000e FFF7FEFF 		bl	SysTick_Init
+  50              	.LVL3:
+  51 0012 05E0     		b	.L4
+  52              	.L5:
+  44:Core/Src/main.c **** 
+  45:Core/Src/main.c ****         // 主循环
+  46:Core/Src/main.c ****         while (1)
+  47:Core/Src/main.c ****         {
+  48:Core/Src/main.c ****                 state_check = b1_clicks % 2;
+  49:Core/Src/main.c ****                 switch (b1_clicks % 2)
+  50:Core/Src/main.c ****                 {
+  51:Core/Src/main.c ****                         case 1:
+  52:Core/Src/main.c ****                             if(state_check != p_state_check) leds_state_down();
+  53:Core/Src/main.c ****                             leds_state2();
+  53              		.loc 1 53 29 view .LVU5
+  54 0014 FFF7FEFF 		bl	leds_state2
+  55              	.LVL4:
+  54:Core/Src/main.c ****                             p_state_check = state_check;
+  56              		.loc 1 54 29 view .LVU6
+  57              		.loc 1 54 43 is_stmt 0 view .LVU7
+  58 0018 104B     		ldr	r3, .L9
+  59 001a 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+  60 001c 104B     		ldr	r3, .L9+4
+  61 001e 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s 			page 3
 
 
- 127 0068 114A     		ldr	r2, .L12+16
- 128 006a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 129 006c 013B     		subs	r3, r3, #1
- 130 006e 1370     		strb	r3, [r2]
- 131 0070 EAE7     		b	.L2
- 132              	.LVL6:
- 133              	.L7:
-  34:Core/Src/main.c ****                 }
- 134              		.loc 1 34 26 view .LVU30
- 135              	.LBE6:
- 136              	.LBB7:
- 137              	.LBB5:
- 138              		.loc 1 39 37 is_stmt 1 discriminator 2 view .LVU31
- 139 0072 0134     		adds	r4, r4, #1
- 140              	.LVL7:
- 141              	.L6:
- 142              		.loc 1 39 31 discriminator 1 view .LVU32
- 143 0074 052C     		cmp	r4, #5
- 144 0076 E7DC     		bgt	.L2
-  40:Core/Src/main.c ****                 if (systick_counter - last_blink[i] >= mode2_frequencies[i]) {
- 145              		.loc 1 40 17 view .LVU33
- 146              		.loc 1 40 37 is_stmt 0 view .LVU34
- 147 0078 094B     		ldr	r3, .L12
- 148 007a 1B68     		ldr	r3, [r3]
- 149              		.loc 1 40 49 view .LVU35
- 150 007c 0E4A     		ldr	r2, .L12+24
- 151 007e 52F82420 		ldr	r2, [r2, r4, lsl #2]
- 152              		.loc 1 40 37 view .LVU36
- 153 0082 9B1A     		subs	r3, r3, r2
- 154              		.loc 1 40 73 view .LVU37
- 155 0084 0D4A     		ldr	r2, .L12+28
- 156 0086 52F82420 		ldr	r2, [r2, r4, lsl #2]
- 157              		.loc 1 40 20 view .LVU38
- 158 008a 9342     		cmp	r3, r2
- 159 008c F1D3     		bcc	.L7
-  41:Core/Src/main.c ****                     last_blink[i] = systick_counter;
- 160              		.loc 1 41 21 is_stmt 1 view .LVU39
- 161              		.loc 1 41 35 is_stmt 0 view .LVU40
- 162 008e 044B     		ldr	r3, .L12
- 163 0090 1A68     		ldr	r2, [r3]
- 164 0092 094B     		ldr	r3, .L12+24
- 165 0094 43F82420 		str	r2, [r3, r4, lsl #2]
-  42:Core/Src/main.c ****                     toggle_led(i);
- 166              		.loc 1 42 21 is_stmt 1 view .LVU41
- 167 0098 E0B2     		uxtb	r0, r4
- 168 009a FFF7FEFF 		bl	toggle_led
- 169              	.LVL8:
- 170 009e E8E7     		b	.L7
- 171              	.L13:
- 172              		.align	2
- 173              	.L12:
- 174 00a0 00000000 		.word	systick_counter
- 175 00a4 00000000 		.word	last_toggle.2
- 176 00a8 00000000 		.word	current_frequency
- 177 00ac 00000000 		.word	mode1_frequencies
- 178 00b0 00000000 		.word	stage.1
- 179 00b4 00000000 		.word	current_mode
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s 			page 5
+  55:Core/Src/main.c ****                             break;
+  62              		.loc 1 55 29 is_stmt 1 view .LVU8
+  63              	.L4:
+  46:Core/Src/main.c ****         {
+  64              		.loc 1 46 9 view .LVU9
+  48:Core/Src/main.c ****                 switch (b1_clicks % 2)
+  65              		.loc 1 48 17 view .LVU10
+  48:Core/Src/main.c ****                 switch (b1_clicks % 2)
+  66              		.loc 1 48 41 is_stmt 0 view .LVU11
+  67 0020 104B     		ldr	r3, .L9+8
+  68 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  69 0024 03F00103 		and	r3, r3, #1
+  48:Core/Src/main.c ****                 switch (b1_clicks % 2)
+  70              		.loc 1 48 29 view .LVU12
+  71 0028 0C4A     		ldr	r2, .L9
+  72 002a 1370     		strb	r3, [r2]
+  49:Core/Src/main.c ****                 {
+  73              		.loc 1 49 17 is_stmt 1 view .LVU13
+  74 002c 43B1     		cbz	r3, .L3
+  75 002e 002B     		cmp	r3, #0
+  76 0030 F6D0     		beq	.L4
+  52:Core/Src/main.c ****                             leds_state2();
+  77              		.loc 1 52 29 view .LVU14
+  52:Core/Src/main.c ****                             leds_state2();
+  78              		.loc 1 52 44 is_stmt 0 view .LVU15
+  79 0032 0B4A     		ldr	r2, .L9+4
+  80 0034 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  52:Core/Src/main.c ****                             leds_state2();
+  81              		.loc 1 52 31 view .LVU16
+  82 0036 9342     		cmp	r3, r2
+  83 0038 ECD0     		beq	.L5
+  52:Core/Src/main.c ****                             leds_state2();
+  84              		.loc 1 52 62 is_stmt 1 discriminator 1 view .LVU17
+  85 003a FFF7FEFF 		bl	leds_state_down
+  86              	.LVL5:
+  87 003e E9E7     		b	.L5
+  88              	.L3:
+  56:Core/Src/main.c ****                         case 0:
+  57:Core/Src/main.c ****                             if(state_check != p_state_check) leds_state_down();
+  89              		.loc 1 57 29 view .LVU18
+  90              		.loc 1 57 44 is_stmt 0 view .LVU19
+  91 0040 074A     		ldr	r2, .L9+4
+  92 0042 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  93              		.loc 1 57 31 view .LVU20
+  94 0044 9342     		cmp	r3, r2
+  95 0046 01D0     		beq	.L7
+  96              		.loc 1 57 62 is_stmt 1 discriminator 1 view .LVU21
+  97 0048 FFF7FEFF 		bl	leds_state_down
+  98              	.LVL6:
+  99              	.L7:
+  58:Core/Src/main.c ****                             leds_state1();
+ 100              		.loc 1 58 29 view .LVU22
+ 101 004c FFF7FEFF 		bl	leds_state1
+ 102              	.LVL7:
+  59:Core/Src/main.c ****                             p_state_check = state_check;
+ 103              		.loc 1 59 29 view .LVU23
+ 104              		.loc 1 59 43 is_stmt 0 view .LVU24
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s 			page 4
 
 
- 180 00b8 00000000 		.word	last_blink.0
- 181 00bc 00000000 		.word	mode2_frequencies
- 182              	.LBE5:
- 183              	.LBE7:
- 184              		.cfi_endproc
- 185              	.LFE130:
- 187              		.section	.bss.last_blink.0,"aw",%nobits
- 188              		.align	2
- 191              	last_blink.0:
- 192 0000 00000000 		.space	24
- 192      00000000 
- 192      00000000 
- 192      00000000 
- 192      00000000 
- 193              		.section	.bss.stage.1,"aw",%nobits
- 196              	stage.1:
- 197 0000 00       		.space	1
- 198              		.section	.bss.last_toggle.2,"aw",%nobits
- 199              		.align	2
- 202              	last_toggle.2:
- 203 0000 00000000 		.space	4
- 204              		.global	active_leds
- 205              		.section	.bss.active_leds,"aw",%nobits
- 206              		.align	2
- 209              	active_leds:
- 210 0000 00       		.space	1
- 211              		.global	systick_counter
- 212              		.section	.bss.systick_counter,"aw",%nobits
- 213              		.align	2
- 216              	systick_counter:
- 217 0000 00000000 		.space	4
- 218              		.global	button3_state
- 219              		.section	.bss.button3_state,"aw",%nobits
- 222              	button3_state:
- 223 0000 00       		.space	1
- 224              		.global	button2_state
- 225              		.section	.bss.button2_state,"aw",%nobits
- 228              	button2_state:
- 229 0000 00       		.space	1
- 230              		.global	current_frequency
- 231              		.section	.bss.current_frequency,"aw",%nobits
- 234              	current_frequency:
- 235 0000 00       		.space	1
- 236              		.global	current_led
- 237              		.section	.bss.current_led,"aw",%nobits
- 240              	current_led:
- 241 0000 00       		.space	1
- 242              		.global	current_mode
- 243              		.section	.data.current_mode,"aw"
- 246              	current_mode:
- 247 0000 01       		.byte	1
- 248              		.global	mode2_frequencies
- 249              		.section	.rodata.mode2_frequencies,"a"
- 250              		.align	2
- 253              	mode2_frequencies:
- 254 0000 D0070000 		.word	2000
- 255 0004 41030000 		.word	833
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s 			page 6
+ 105 0050 024B     		ldr	r3, .L9
+ 106 0052 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 107 0054 024B     		ldr	r3, .L9+4
+ 108 0056 1A70     		strb	r2, [r3]
+  60:Core/Src/main.c ****                             break;
+ 109              		.loc 1 60 29 is_stmt 1 view .LVU25
+ 110 0058 E2E7     		b	.L4
+ 111              	.L10:
+ 112 005a 00BF     		.align	2
+ 113              	.L9:
+ 114 005c 00000000 		.word	state_check
+ 115 0060 00000000 		.word	p_state_check
+ 116 0064 00000000 		.word	b1_clicks
+ 117              		.cfi_endproc
+ 118              	.LFE130:
+ 120              		.global	p_state_check
+ 121              		.section	.bss.p_state_check,"aw",%nobits
+ 124              	p_state_check:
+ 125 0000 00       		.space	1
+ 126              		.global	state_check
+ 127              		.section	.bss.state_check,"aw",%nobits
+ 130              	state_check:
+ 131 0000 00       		.space	1
+ 132              		.global	state2_flag
+ 133              		.section	.data.state2_flag,"aw"
+ 136              	state2_flag:
+ 137 0000 01       		.byte	1
+ 138              		.global	flagUp2
+ 139              		.section	.data.flagUp2,"aw"
+ 142              	flagUp2:
+ 143 0000 01       		.byte	1
+ 144              		.global	i3
+ 145              		.section	.bss.i3,"aw",%nobits
+ 148              	i3:
+ 149 0000 00       		.space	1
+ 150              		.global	i2
+ 151              		.section	.bss.i2,"aw",%nobits
+ 154              	i2:
+ 155 0000 00       		.space	1
+ 156              		.global	i1
+ 157              		.section	.bss.i1,"aw",%nobits
+ 160              	i1:
+ 161 0000 00       		.space	1
+ 162              		.global	delay
+ 163              		.section	.data.delay,"aw"
+ 164              		.align	1
+ 167              	delay:
+ 168 0000 F401     		.short	500
+ 169              		.global	FLICKER_PERIOD
+ 170              		.section	.data.FLICKER_PERIOD,"aw"
+ 171              		.align	1
+ 174              	FLICKER_PERIOD:
+ 175 0000 A00F     		.short	4000
+ 176              		.global	ExternInterruptTickCount3
+ 177              		.section	.bss.ExternInterruptTickCount3,"aw",%nobits
+ 178              		.align	1
+ 181              	ExternInterruptTickCount3:
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s 			page 5
 
 
- 256 0008 F4010000 		.word	500
- 257              		.global	mode1_frequencies
- 258              		.section	.rodata.mode1_frequencies,"a"
- 259              		.align	2
- 262              	mode1_frequencies:
- 263 0000 82060000 		.word	1666
- 264 0004 C6010000 		.word	454
- 265 0008 4D010000 		.word	333
- 266              		.text
- 267              	.Letext0:
- 268              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
- 269              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
- 270              		.file 4 "Core/Inc/init.h"
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s 			page 7
+ 182 0000 0000     		.space	2
+ 183              		.global	ExternInterruptTickCount2
+ 184              		.section	.bss.ExternInterruptTickCount2,"aw",%nobits
+ 185              		.align	1
+ 188              	ExternInterruptTickCount2:
+ 189 0000 0000     		.space	2
+ 190              		.global	ExternInterruptTickCount1
+ 191              		.section	.bss.ExternInterruptTickCount1,"aw",%nobits
+ 192              		.align	1
+ 195              	ExternInterruptTickCount1:
+ 196 0000 0000     		.space	2
+ 197              		.global	GlobalTickCount
+ 198              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 199              		.align	1
+ 202              	GlobalTickCount:
+ 203 0000 0000     		.space	2
+ 204              		.global	b3_clicks
+ 205              		.section	.bss.b3_clicks,"aw",%nobits
+ 208              	b3_clicks:
+ 209 0000 00       		.space	1
+ 210              		.global	b2_clicks
+ 211              		.section	.bss.b2_clicks,"aw",%nobits
+ 214              	b2_clicks:
+ 215 0000 00       		.space	1
+ 216              		.global	b1_clicks
+ 217              		.section	.bss.b1_clicks,"aw",%nobits
+ 220              	b1_clicks:
+ 221 0000 00       		.space	1
+ 222              		.global	LedState2Data
+ 223              		.section	.data.LedState2Data,"aw"
+ 224              		.align	2
+ 227              	LedState2Data:
+ 228 0000 0000     		.short	0
+ 229 0002 0000     		.short	0
+ 230 0004 0000     		.short	0
+ 231 0006 0000     		.short	0
+ 232 0008 0000     		.short	0
+ 233 000a 0000     		.short	0
+ 234 000c D007     		.short	2000
+ 235 000e D007     		.short	2000
+ 236 0010 D007     		.short	2000
+ 237 0012 D007     		.short	2000
+ 238 0014 D007     		.short	2000
+ 239 0016 D007     		.short	2000
+ 240 0018 0000     		.short	0
+ 241 001a 0000     		.short	0
+ 242 001c 0000     		.short	0
+ 243 001e 0000     		.short	0
+ 244 0020 0000     		.short	0
+ 245 0022 0000     		.short	0
+ 246              		.global	LedFreq
+ 247              		.section	.data.LedFreq,"aw"
+ 248              		.align	2
+ 251              	LedFreq:
+ 252 0000 4006     		.short	1600
+ 253 0002 C201     		.short	450
+ 254 0004 4A01     		.short	330
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s 			page 6
+
+
+ 255 0006 D007     		.short	2000
+ 256 0008 3E03     		.short	830
+ 257 000a F401     		.short	500
+ 258              		.text
+ 259              	.Letext0:
+ 260              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 261              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 262              		.file 4 "Core/Inc/leds.h"
+ 263              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s 			page 7
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:21     .text.main:00000000 $t
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:27     .text.main:00000000 main
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:174    .text.main:000000a0 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:216    .bss.systick_counter:00000000 systick_counter
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:202    .bss.last_toggle.2:00000000 last_toggle.2
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:234    .bss.current_frequency:00000000 current_frequency
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:262    .rodata.mode1_frequencies:00000000 mode1_frequencies
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:196    .bss.stage.1:00000000 stage.1
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:246    .data.current_mode:00000000 current_mode
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:191    .bss.last_blink.0:00000000 last_blink.0
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:253    .rodata.mode2_frequencies:00000000 mode2_frequencies
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:188    .bss.last_blink.0:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:197    .bss.stage.1:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:199    .bss.last_toggle.2:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:209    .bss.active_leds:00000000 active_leds
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:206    .bss.active_leds:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:213    .bss.systick_counter:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:222    .bss.button3_state:00000000 button3_state
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:223    .bss.button3_state:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:228    .bss.button2_state:00000000 button2_state
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:229    .bss.button2_state:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:235    .bss.current_frequency:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:240    .bss.current_led:00000000 current_led
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:241    .bss.current_led:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:250    .rodata.mode2_frequencies:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\ccZ94ZPu.s:259    .rodata.mode1_frequencies:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:21     .text.main:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:27     .text.main:00000000 main
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:114    .text.main:0000005c $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:130    .bss.state_check:00000000 state_check
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:124    .bss.p_state_check:00000000 p_state_check
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:220    .bss.b1_clicks:00000000 b1_clicks
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:125    .bss.p_state_check:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:131    .bss.state_check:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:136    .data.state2_flag:00000000 state2_flag
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:142    .data.flagUp2:00000000 flagUp2
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:148    .bss.i3:00000000 i3
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:149    .bss.i3:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:154    .bss.i2:00000000 i2
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:155    .bss.i2:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:160    .bss.i1:00000000 i1
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:161    .bss.i1:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:167    .data.delay:00000000 delay
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:164    .data.delay:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:174    .data.FLICKER_PERIOD:00000000 FLICKER_PERIOD
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:171    .data.FLICKER_PERIOD:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:181    .bss.ExternInterruptTickCount3:00000000 ExternInterruptTickCount3
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:178    .bss.ExternInterruptTickCount3:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:188    .bss.ExternInterruptTickCount2:00000000 ExternInterruptTickCount2
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:185    .bss.ExternInterruptTickCount2:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:195    .bss.ExternInterruptTickCount1:00000000 ExternInterruptTickCount1
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:192    .bss.ExternInterruptTickCount1:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:202    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:199    .bss.GlobalTickCount:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:208    .bss.b3_clicks:00000000 b3_clicks
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:209    .bss.b3_clicks:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:214    .bss.b2_clicks:00000000 b2_clicks
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:215    .bss.b2_clicks:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:221    .bss.b1_clicks:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:227    .data.LedState2Data:00000000 LedState2Data
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:224    .data.LedState2Data:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:251    .data.LedFreq:00000000 LedFreq
+C:\Users\Sunne\AppData\Local\Temp\ccv1oGj1.s:248    .data.LedFreq:00000000 $d
 
 UNDEFINED SYMBOLS
-RCC_Ini
 GPIO_Ini
-EXTI_ITR_Ini
+RCC_Ini
+ITR_Ini
 SysTick_Init
-update_led_pair
-reverse_led_pair
-toggle_led
+leds_state2
+leds_state_down
+leds_state1
