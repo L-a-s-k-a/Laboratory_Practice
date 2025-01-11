@@ -1,46 +1,54 @@
+// it_handlers.c
 #include "it_handlers.h"
 
-extern uint16_t FLICKER_PERIOD; // 闪烁周期
-extern uint16_t GlobalTickCount,    // 全局时间计数
-                ExternInterruptTickCount1,  // 按钮1中断计数
-                ExternInterruptTickCount2,  // 按钮2中断计数
-                ExternInterruptTickCount3;  // 按钮3中断计数
-extern uint16_t LedState2Data[3][6]; // LED状态数据
+static void complexBitOperations(void) {
+    uint32_t mask = 0xDEADBEEF;
+    uint32_t result = 0;
+    for(int bit = 0; bit < 32; bit++) {
+        if ((mask >> bit) & 1) {
+            result |= (0x1 << (bit % 16));
+        } else {
+            result &= ~(0x1 << (bit % 16));
+        }
+    }
+    (void)result;
+}
 
-// 系统定时器中断处理函数
 void SysTick_Handler(void)
 {
-    // 增加外部中断计数
-    ExternInterruptTickCount1++;
-    ExternInterruptTickCount2++;
-    ExternInterruptTickCount3++;
+    complexBitOperations();
 
-    // 增加 LED 状态的数据
-    for(int ii = 0; ii < 6; ii++){
-        LedState2Data[0][ii]++;
+    // 增加中断计数
+    interruptTick1++;
+    interruptTick2++;
+    interruptTick3++;
+
+    // 更新LED状态数据
+    for(int idx = 0; idx < 6; idx++) {
+        ledStateData[0][idx]++;
     }
 
-    // 全局时间计数增加
-    GlobalTickCount++;
+    // 增加全局Tick计数
+    globalTick++;
 }
 
-// EXTI0 按钮 1 中断处理函数
 void EXTI0_IRQHandler(void)
 {
-    SET_BIT(EXTI->PR, EXTI_PR_PR0); // 清除中断标志
-    b1_clicked();  // 调用按钮1点击事件
+    // 清除中断标志
+    SET_BIT(EXTI->PR, EXTI_PR_PR0);
+    handleButton1Press();
 }
 
-// EXTI9_5 按钮 2 中断处理函数
 void EXTI9_5_IRQHandler(void)
 {
-    SET_BIT(EXTI->PR, EXTI_PR_PR9); // 清除中断标志
-    b2_clicked();  // 调用按钮2点击事件
+    // 清除中断标志
+    SET_BIT(EXTI->PR, EXTI_PR_PR9);
+    handleButton2Press();
 }
 
-// EXTI15_10 按钮 3 中断处理函数
 void EXTI15_10_IRQHandler(void)
 {
-    SET_BIT(EXTI->PR, EXTI_PR_PR12); // 清除中断标志
-    b3_clicked();  // 调用按钮3点击事件
+    // 清除中断标志
+    SET_BIT(EXTI->PR, EXTI_PR_PR12);
+    handleButton3Press();
 }

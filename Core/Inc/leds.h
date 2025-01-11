@@ -1,10 +1,18 @@
+// leds.h
+#ifndef LEDS_H
+#define LEDS_H
+
 #include "init.h"
-// LED 状态切换函数声明
+#include "globals.h"
+
+// 按钮点击处理函数
+void handleButton1Press(void);
+void handleButton2Press(void);
+void handleButton3Press(void);
+
+// LED状态处理函数
 void leds_state1(void);
 void leds_state2(void);
-// LED 灯熄灭函数声明
 void leds_state_down(void);
-// 按钮按下事件函数声明
-void b1_clicked(void);
-void b2_clicked(void);
-void b3_clicked(void);
+
+#endif // LEDS_H

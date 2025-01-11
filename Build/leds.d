@@ -6,7 +6,8 @@ Build/leds.o: Core/Src/leds.c Core/Inc/leds.h Core/Inc/init.h \
  CMSIS/Include/../include/cmsis_gcc.h \
  CMSIS/Include/../include/mpu_armv7.h \
  CMSIS/Devices/Inc/system_stm32f4xx.h \
- CMSIS/Devices/Inc/system_stm32f4xx.h Core/Inc/it_handlers.h
+ CMSIS/Devices/Inc/system_stm32f4xx.h Core/Inc/globals.h \
+ Core/Inc/it_handlers.h Core/Inc/globals.h
 Core/Inc/leds.h:
 Core/Inc/init.h:
 CMSIS/Devices/Inc/stm32f4xx.h:
@@ -18,4 +19,6 @@ CMSIS/Include/../include/cmsis_gcc.h:
 CMSIS/Include/../include/mpu_armv7.h:
 CMSIS/Devices/Inc/system_stm32f4xx.h:
 CMSIS/Devices/Inc/system_stm32f4xx.h:
+Core/Inc/globals.h:
 Core/Inc/it_handlers.h:
+Core/Inc/globals.h:

@@ -1,8 +1,17 @@
+// it_handlers.h
+#ifndef IT_HANDLERS_H
+#define IT_HANDLERS_H
+
 #include "init.h"
-#define DELAY_BUTTON_FILTER 500  // 按钮去抖延迟（单位：毫秒）
-// 系统定时器中断处理函数声明
+#include "globals.h"
+
+// 按钮防抖延迟（毫秒）
+#define DELAY_BUTTON_FILTER 500
+
+// 中断处理函数声明
 void SysTick_Handler(void);
-// 外部中断处理函数声明
 void EXTI0_IRQHandler(void);
 void EXTI9_5_IRQHandler(void);
 void EXTI15_10_IRQHandler(void);
+
+#endif // IT_HANDLERS_H
