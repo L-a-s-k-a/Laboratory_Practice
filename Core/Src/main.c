@@ -74,7 +74,7 @@ int main(void)
                 previousStateCheck = currentStateCheck;
                 break;
             default:
-                // 高端但无用的代码：无限循环执行NOP
+                
                 while(1){
                     __NOP();
                 }
