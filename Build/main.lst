@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s 			page 1
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,375 +20,491 @@ ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.main,"ax",%progbits
+  20              		.section	.text.delay,"ax",%progbits
   21              		.align	1
-  22              		.global	main
+  22              		.global	delay
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	main:
-  28              	.LFB131:
-   1:Core/Src/main.c **** // main.c
-   2:Core/Src/main.c **** #include "init.h"
-   3:Core/Src/main.c **** #include "it_handlers.h"
-   4:Core/Src/main.c **** #include "leds.h"
-   5:Core/Src/main.c **** #include "globals.h"
-   6:Core/Src/main.c **** 
-   7:Core/Src/main.c **** #include <math.h> // 高端但无用的数学库
-   8:Core/Src/main.c **** 
-   9:Core/Src/main.c **** // 全局变量定义
-  10:Core/Src/main.c **** uint16_t ledFrequencies[2][3] = {
-  11:Core/Src/main.c ****     {1600, 450, 330},
-  12:Core/Src/main.c ****     {2000, 830, 500}
-  13:Core/Src/main.c **** };
-  14:Core/Src/main.c **** 
-  15:Core/Src/main.c **** uint16_t ledStateData[3][6] = {
-  16:Core/Src/main.c ****     {0, 0, 0, 0, 0, 0},
-  17:Core/Src/main.c ****     {2000, 2000, 2000, 2000, 2000, 2000},
-  18:Core/Src/main.c ****     {0, 0, 0, 0, 0, 0}
-  19:Core/Src/main.c **** };
-  20:Core/Src/main.c **** 
-  21:Core/Src/main.c **** uint8_t button1Clicks = 0;
-  22:Core/Src/main.c **** uint8_t button2Clicks = 0;
-  23:Core/Src/main.c **** uint8_t button3Clicks = 0;
-  24:Core/Src/main.c **** uint16_t globalTick = 0,
-  25:Core/Src/main.c ****          interruptTick1 = 0, 
-  26:Core/Src/main.c ****          interruptTick2 = 0, 
-  27:Core/Src/main.c ****          interruptTick3 = 0;
-  28:Core/Src/main.c **** uint16_t flickerInterval = 4000;
-  29:Core/Src/main.c **** uint16_t buttonDelay = 500;
-  30:Core/Src/main.c **** 
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s 			page 2
-
-
-  31:Core/Src/main.c **** int8_t ledIndex1 = 0;
-  32:Core/Src/main.c **** int8_t ledIndex2 = 0;
-  33:Core/Src/main.c **** int8_t ledIndex3 = 0;
-  34:Core/Src/main.c **** 
-  35:Core/Src/main.c **** uint8_t isFlagUp2 = 1;
-  36:Core/Src/main.c **** uint8_t isState2Flag = 1;
-  37:Core/Src/main.c **** uint8_t currentStateCheck = 0, previousStateCheck = 0;
-  38:Core/Src/main.c **** 
-  39:Core/Src/main.c **** // 高端但无用的代码：复杂的数学运算函数
-  40:Core/Src/main.c **** static void complexMathOperations(void){
-  41:Core/Src/main.c ****     double result = 0.0;
-  42:Core/Src/main.c ****     for(int i = 0; i < 1000; i++) {
-  43:Core/Src/main.c ****         result += sin(i) * cos(i) / tan(i + 1);
-  44:Core/Src/main.c ****     }
-  45:Core/Src/main.c ****     // 结果未被使用
-  46:Core/Src/main.c ****     (void)result;
-  47:Core/Src/main.c **** }
-  48:Core/Src/main.c **** 
-  49:Core/Src/main.c **** int main(void)
-  50:Core/Src/main.c **** {
-  29              		.loc 1 50 1 view -0
-  30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
+  27              	delay:
+  28              	.LVL0:
+  29              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** #define DEBOUNCE_DELAY 20000 // 防抖延迟
+   4:Core/Src/main.c **** #define LIGHT_DELAY 500000   // 每个LED点亮后的延迟时间
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** void delay(uint32_t s) {
+  30              		.loc 1 6 24 view -0
+  31              		.cfi_startproc
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34 0000 08B5     		push	{r3, lr}
-  35              	.LCFI0:
-  36              		.cfi_def_cfa_offset 8
-  37              		.cfi_offset 3, -8
-  38              		.cfi_offset 14, -4
-  51:Core/Src/main.c ****     // 调用无用的高端函数
-  52:Core/Src/main.c ****     complexMathOperations();
-  39              		.loc 1 52 5 view .LVU1
-  53:Core/Src/main.c **** 
-  54:Core/Src/main.c ****     // 初始化外设
-  55:Core/Src/main.c ****     GPIO_Ini();     // 初始化GPIO端口
-  40              		.loc 1 55 5 view .LVU2
-  41 0002 FFF7FEFF 		bl	GPIO_Ini
-  42              	.LVL0:
-  56:Core/Src/main.c ****     RCC_Ini();      // 初始化RCC系统时钟
-  43              		.loc 1 56 5 view .LVU3
-  44 0006 FFF7FEFF 		bl	RCC_Ini
-  45              	.LVL1:
-  57:Core/Src/main.c ****     ITR_Ini();      // 初始化中断控制器
-  46              		.loc 1 57 5 view .LVU4
-  47 000a FFF7FEFF 		bl	ITR_Ini
-  48              	.LVL2:
-  58:Core/Src/main.c ****     SysTick_Init(); // 初始化SysTick定时器
-  49              		.loc 1 58 5 view .LVU5
-  50 000e FFF7FEFF 		bl	SysTick_Init
-  51              	.LVL3:
-  52              	.L2:
-  59:Core/Src/main.c **** 
-  60:Core/Src/main.c ****     while (1)
-  53              		.loc 1 60 5 view .LVU6
-  61:Core/Src/main.c ****     {
-  62:Core/Src/main.c ****         currentStateCheck = button1Clicks % 2;
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s 			page 3
+  34              		@ link register save eliminated.
+   7:Core/Src/main.c ****     while (s--) {
+  35              		.loc 1 7 5 view .LVU1
+  36              		.loc 1 7 11 is_stmt 0 view .LVU2
+  37 0000 01E0     		b	.L2
+  38              	.LVL1:
+  39              	.L3:
+   8:Core/Src/main.c ****         __NOP(); // 空循环
+  40              		.loc 1 8 9 is_stmt 1 view .LVU3
+  41              		.syntax unified
+  42              	@ 8 "Core/Src/main.c" 1
+  43 0002 00BF     		nop
+  44              	@ 0 "" 2
+   7:Core/Src/main.c ****     while (s--) {
+  45              		.loc 1 7 13 is_stmt 0 view .LVU4
+  46              		.thumb
+  47              		.syntax unified
+  48 0004 1846     		mov	r0, r3
+  49              	.LVL2:
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 2
 
 
-  54              		.loc 1 62 9 view .LVU7
-  55              		.loc 1 62 43 is_stmt 0 view .LVU8
-  56 0012 134B     		ldr	r3, .L11
-  57 0014 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  58 0016 03F00103 		and	r3, r3, #1
-  59              		.loc 1 62 27 view .LVU9
-  60 001a 124A     		ldr	r2, .L11+4
-  61 001c 1370     		strb	r3, [r2]
-  63:Core/Src/main.c ****         switch (currentStateCheck){
-  62              		.loc 1 63 9 is_stmt 1 view .LVU10
-  63 001e 73B1     		cbz	r3, .L3
-  64 0020 DBB1     		cbz	r3, .L4
-  64:Core/Src/main.c ****             case 1:
-  65:Core/Src/main.c ****                 if(currentStateCheck != previousStateCheck){
-  65              		.loc 1 65 17 view .LVU11
-  66              		.loc 1 65 38 is_stmt 0 view .LVU12
-  67 0022 114A     		ldr	r2, .L11+8
-  68 0024 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
-  69              		.loc 1 65 19 view .LVU13
-  70 0026 9342     		cmp	r3, r2
-  71 0028 06D1     		bne	.L9
-  72              	.L5:
-  66:Core/Src/main.c ****                     leds_state_down();
-  67:Core/Src/main.c ****                 }
-  68:Core/Src/main.c ****                 leds_state2();
-  73              		.loc 1 68 17 is_stmt 1 view .LVU14
-  74 002a FFF7FEFF 		bl	leds_state2
-  75              	.LVL4:
-  69:Core/Src/main.c ****                 previousStateCheck = currentStateCheck;
-  76              		.loc 1 69 17 view .LVU15
-  77              		.loc 1 69 36 is_stmt 0 view .LVU16
-  78 002e 0D4B     		ldr	r3, .L11+4
-  79 0030 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
-  80 0032 0D4B     		ldr	r3, .L11+8
-  81 0034 1A70     		strb	r2, [r3]
-  70:Core/Src/main.c ****                 break;
-  82              		.loc 1 70 17 is_stmt 1 view .LVU17
-  83 0036 ECE7     		b	.L2
-  84              	.L9:
-  66:Core/Src/main.c ****                     leds_state_down();
-  85              		.loc 1 66 21 view .LVU18
-  86 0038 FFF7FEFF 		bl	leds_state_down
-  87              	.LVL5:
-  88 003c F5E7     		b	.L5
-  89              	.L3:
-  71:Core/Src/main.c ****             case 0:
-  72:Core/Src/main.c ****                 if(currentStateCheck != previousStateCheck){
-  90              		.loc 1 72 17 view .LVU19
-  91              		.loc 1 72 38 is_stmt 0 view .LVU20
-  92 003e 0A4A     		ldr	r2, .L11+8
-  93 0040 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
-  94              		.loc 1 72 19 view .LVU21
-  95 0042 9342     		cmp	r3, r2
-  96 0044 06D1     		bne	.L10
-  97              	.L7:
-  73:Core/Src/main.c ****                     leds_state_down();
-  74:Core/Src/main.c ****                 }
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s 			page 4
+  50              	.L2:
+   7:Core/Src/main.c ****     while (s--) {
+  51              		.loc 1 7 12 is_stmt 1 view .LVU5
+   7:Core/Src/main.c ****     while (s--) {
+  52              		.loc 1 7 13 is_stmt 0 view .LVU6
+  53 0006 431E     		subs	r3, r0, #1
+  54              	.LVL3:
+   7:Core/Src/main.c ****     while (s--) {
+  55              		.loc 1 7 12 view .LVU7
+  56 0008 0028     		cmp	r0, #0
+  57 000a FAD1     		bne	.L3
+   9:Core/Src/main.c ****     }
+  10:Core/Src/main.c **** }
+  58              		.loc 1 10 1 view .LVU8
+  59 000c 7047     		bx	lr
+  60              		.cfi_endproc
+  61              	.LFE130:
+  63              		.section	.text.main,"ax",%progbits
+  64              		.align	1
+  65              		.global	main
+  66              		.syntax unified
+  67              		.thumb
+  68              		.thumb_func
+  70              	main:
+  71              	.LFB131:
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c **** uint8_t flag1 = 0;
+  13:Core/Src/main.c **** uint8_t flag2 = 0;
+  14:Core/Src/main.c **** uint8_t flag3 = 0;
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c **** int main(void) {
+  72              		.loc 1 16 16 is_stmt 1 view -0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 8
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76 0000 70B5     		push	{r4, r5, r6, lr}
+  77              	.LCFI0:
+  78              		.cfi_def_cfa_offset 16
+  79              		.cfi_offset 4, -16
+  80              		.cfi_offset 5, -12
+  81              		.cfi_offset 6, -8
+  82              		.cfi_offset 14, -4
+  83 0002 82B0     		sub	sp, sp, #8
+  84              	.LCFI1:
+  85              		.cfi_def_cfa_offset 24
+  17:Core/Src/main.c ****     GPIO_Ini(); // 初始化 GPIO
+  86              		.loc 1 17 5 view .LVU10
+  87 0004 FFF7FEFF 		bl	GPIO_Ini
+  88              	.LVL4:
+  18:Core/Src/main.c ****     uint8_t leds[] = {BOARD_LED1_PIN, BOARD_LED2_PIN, BOARD_LED3_PIN, CN8_LED4_PIN, CN8_LED5_PIN, C
+  89              		.loc 1 18 5 view .LVU11
+  90              		.loc 1 18 13 is_stmt 0 view .LVU12
+  91 0008 4A4B     		ldr	r3, .L14
+  92 000a 93E80300 		ldm	r3, {r0, r1}
+  93 000e 0090     		str	r0, [sp]
+  94 0010 ADF80410 		strh	r1, [sp, #4]	@ movhi
+  19:Core/Src/main.c ****     uint8_t led_state = 0;   // 当前点亮的 LED
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 3
 
 
-  75:Core/Src/main.c ****                 leds_state1();
-  98              		.loc 1 75 17 is_stmt 1 view .LVU22
-  99 0046 FFF7FEFF 		bl	leds_state1
- 100              	.LVL6:
-  76:Core/Src/main.c ****                 previousStateCheck = currentStateCheck;
- 101              		.loc 1 76 17 view .LVU23
- 102              		.loc 1 76 36 is_stmt 0 view .LVU24
- 103 004a 064B     		ldr	r3, .L11+4
- 104 004c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
- 105 004e 064B     		ldr	r3, .L11+8
- 106 0050 1A70     		strb	r2, [r3]
-  77:Core/Src/main.c ****                 break;
- 107              		.loc 1 77 17 is_stmt 1 view .LVU25
- 108 0052 DEE7     		b	.L2
- 109              	.L10:
-  73:Core/Src/main.c ****                     leds_state_down();
- 110              		.loc 1 73 21 view .LVU26
- 111 0054 FFF7FEFF 		bl	leds_state_down
- 112              	.LVL7:
- 113 0058 F5E7     		b	.L7
- 114              	.L4:
-  78:Core/Src/main.c ****             default:
-  79:Core/Src/main.c ****                 // 高端但无用的代码：无限循环执行NOP
-  80:Core/Src/main.c ****                 while(1){
- 115              		.loc 1 80 17 view .LVU27
-  81:Core/Src/main.c ****                     __NOP();
- 116              		.loc 1 81 21 discriminator 1 view .LVU28
- 117              		.syntax unified
- 118              	@ 81 "Core/Src/main.c" 1
- 119 005a 00BF     		nop
- 120              	@ 0 "" 2
-  80:Core/Src/main.c ****                     __NOP();
- 121              		.loc 1 80 22 view .LVU29
- 122              		.thumb
- 123              		.syntax unified
- 124 005c FDE7     		b	.L4
- 125              	.L12:
- 126 005e 00BF     		.align	2
- 127              	.L11:
- 128 0060 00000000 		.word	button1Clicks
- 129 0064 00000000 		.word	currentStateCheck
- 130 0068 00000000 		.word	previousStateCheck
- 131              		.cfi_endproc
- 132              	.LFE131:
- 134              		.global	previousStateCheck
- 135              		.section	.bss.previousStateCheck,"aw",%nobits
- 138              	previousStateCheck:
- 139 0000 00       		.space	1
- 140              		.global	currentStateCheck
- 141              		.section	.bss.currentStateCheck,"aw",%nobits
- 144              	currentStateCheck:
- 145 0000 00       		.space	1
- 146              		.global	isState2Flag
- 147              		.section	.data.isState2Flag,"aw"
- 150              	isState2Flag:
- 151 0000 01       		.byte	1
- 152              		.global	isFlagUp2
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s 			page 5
+  95              		.loc 1 19 5 is_stmt 1 view .LVU13
+  96              	.LVL5:
+  20:Core/Src/main.c ****     uint8_t swap = 0;        // 功能交换标志
+  97              		.loc 1 20 5 view .LVU14
+  21:Core/Src/main.c ****     uint8_t button1_function = 1; // 按钮1功能（点亮）
+  98              		.loc 1 21 5 view .LVU15
+  22:Core/Src/main.c ****     uint8_t button2_function = 0; // 按钮2功能（熄灭）
+  99              		.loc 1 22 5 view .LVU16
+ 100              		.loc 1 22 13 is_stmt 0 view .LVU17
+ 101 0014 0025     		movs	r5, #0
+  21:Core/Src/main.c ****     uint8_t button1_function = 1; // 按钮1功能（点亮）
+ 102              		.loc 1 21 13 view .LVU18
+ 103 0016 0126     		movs	r6, #1
+  19:Core/Src/main.c ****     uint8_t swap = 0;        // 功能交换标志
+ 104              		.loc 1 19 13 view .LVU19
+ 105 0018 2C46     		mov	r4, r5
+ 106              	.LVL6:
+ 107              	.L5:
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c ****     while (1) {
+ 108              		.loc 1 24 5 is_stmt 1 view .LVU20
+  25:Core/Src/main.c ****         flag1 = (READ_BIT(GPIOC_IDR, (1 << BUTTON1_PIN)) != 0);
+ 109              		.loc 1 25 9 view .LVU21
+ 110              		.loc 1 25 18 is_stmt 0 view .LVU22
+ 111 001a 474B     		ldr	r3, .L14+4
+ 112 001c D3F81038 		ldr	r3, [r3, #2064]
+ 113              		.loc 1 25 58 view .LVU23
+ 114 0020 C3F3C022 		ubfx	r2, r3, #11, #1
+ 115              		.loc 1 25 15 view .LVU24
+ 116 0024 4549     		ldr	r1, .L14+8
+ 117 0026 0A70     		strb	r2, [r1]
+  26:Core/Src/main.c ****         flag2 = (READ_BIT(GPIOC_IDR, (1 << BUTTON2_PIN)) != 0);
+ 118              		.loc 1 26 9 is_stmt 1 view .LVU25
+ 119              		.loc 1 26 58 is_stmt 0 view .LVU26
+ 120 0028 C3F38010 		ubfx	r0, r3, #6, #1
+ 121              		.loc 1 26 15 view .LVU27
+ 122 002c 4449     		ldr	r1, .L14+12
+ 123 002e 0870     		strb	r0, [r1]
+  27:Core/Src/main.c ****         flag3 = (READ_BIT(GPIOC_IDR, (1 << BUTTON3_PIN)) != 0);
+ 124              		.loc 1 27 9 is_stmt 1 view .LVU28
+ 125              		.loc 1 27 58 is_stmt 0 view .LVU29
+ 126 0030 C3F30033 		ubfx	r3, r3, #12, #1
+ 127              		.loc 1 27 15 view .LVU30
+ 128 0034 4349     		ldr	r1, .L14+16
+ 129 0036 0B70     		strb	r3, [r1]
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c ****         // 检测按钮1
+  30:Core/Src/main.c ****         if (flag1) {
+ 130              		.loc 1 30 9 is_stmt 1 view .LVU31
+ 131              		.loc 1 30 12 is_stmt 0 view .LVU32
+ 132 0038 A2B9     		cbnz	r2, .L12
+ 133              	.L6:
+  31:Core/Src/main.c ****             delay(DEBOUNCE_DELAY);
+  32:Core/Src/main.c ****             if (flag1) {
+  33:Core/Src/main.c ****                 if (button1_function) { // 点亮模式
+  34:Core/Src/main.c ****                     if (led_state < 6) {
+  35:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << leds[led_state])); // 点亮 LED
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 4
 
 
- 153              		.section	.data.isFlagUp2,"aw"
- 156              	isFlagUp2:
- 157 0000 01       		.byte	1
- 158              		.global	ledIndex3
- 159              		.section	.bss.ledIndex3,"aw",%nobits
- 162              	ledIndex3:
- 163 0000 00       		.space	1
- 164              		.global	ledIndex2
- 165              		.section	.bss.ledIndex2,"aw",%nobits
- 168              	ledIndex2:
- 169 0000 00       		.space	1
- 170              		.global	ledIndex1
- 171              		.section	.bss.ledIndex1,"aw",%nobits
- 174              	ledIndex1:
- 175 0000 00       		.space	1
- 176              		.global	buttonDelay
- 177              		.section	.data.buttonDelay,"aw"
- 178              		.align	1
- 181              	buttonDelay:
- 182 0000 F401     		.short	500
- 183              		.global	flickerInterval
- 184              		.section	.data.flickerInterval,"aw"
- 185              		.align	1
- 188              	flickerInterval:
- 189 0000 A00F     		.short	4000
- 190              		.global	interruptTick3
- 191              		.section	.bss.interruptTick3,"aw",%nobits
- 192              		.align	1
- 195              	interruptTick3:
- 196 0000 0000     		.space	2
- 197              		.global	interruptTick2
- 198              		.section	.bss.interruptTick2,"aw",%nobits
- 199              		.align	1
- 202              	interruptTick2:
- 203 0000 0000     		.space	2
- 204              		.global	interruptTick1
- 205              		.section	.bss.interruptTick1,"aw",%nobits
- 206              		.align	1
- 209              	interruptTick1:
- 210 0000 0000     		.space	2
- 211              		.global	globalTick
- 212              		.section	.bss.globalTick,"aw",%nobits
- 213              		.align	1
- 216              	globalTick:
- 217 0000 0000     		.space	2
- 218              		.global	button3Clicks
- 219              		.section	.bss.button3Clicks,"aw",%nobits
- 222              	button3Clicks:
- 223 0000 00       		.space	1
- 224              		.global	button2Clicks
- 225              		.section	.bss.button2Clicks,"aw",%nobits
- 228              	button2Clicks:
- 229 0000 00       		.space	1
- 230              		.global	button1Clicks
- 231              		.section	.bss.button1Clicks,"aw",%nobits
- 234              	button1Clicks:
- 235 0000 00       		.space	1
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s 			page 6
+  36:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个点亮
+  37:Core/Src/main.c ****                         led_state++;
+  38:Core/Src/main.c ****                     }
+  39:Core/Src/main.c ****                 } else { // 熄灭模式
+  40:Core/Src/main.c ****                     if (led_state > 0) {
+  41:Core/Src/main.c ****                         led_state--;
+  42:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个熄灭
+  43:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << (leds[led_state] + 16))); // 熄灭 LED
+  44:Core/Src/main.c ****                     }
+  45:Core/Src/main.c ****                 }
+  46:Core/Src/main.c ****             }
+  47:Core/Src/main.c ****         }
+  48:Core/Src/main.c **** 
+  49:Core/Src/main.c ****         // 检测按钮2
+  50:Core/Src/main.c ****         if (flag2) {
+ 134              		.loc 1 50 9 is_stmt 1 view .LVU33
+ 135              		.loc 1 50 13 is_stmt 0 view .LVU34
+ 136 003a 414B     		ldr	r3, .L14+12
+ 137 003c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 138              		.loc 1 50 12 view .LVU35
+ 139 003e 002B     		cmp	r3, #0
+ 140 0040 44D1     		bne	.L13
+ 141              	.L8:
+  51:Core/Src/main.c ****             delay(DEBOUNCE_DELAY);
+  52:Core/Src/main.c ****             if (flag2) {
+  53:Core/Src/main.c ****                 if (button2_function) { // 点亮模式
+  54:Core/Src/main.c ****                     if (led_state < 6) {
+  55:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << leds[led_state])); // 点亮 LED
+  56:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个点亮
+  57:Core/Src/main.c ****                         led_state++;
+  58:Core/Src/main.c ****                     }
+  59:Core/Src/main.c ****                 } else { // 熄灭模式
+  60:Core/Src/main.c ****                     if (led_state > 0) {
+  61:Core/Src/main.c ****                         led_state--;
+  62:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个熄灭
+  63:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << (leds[led_state] + 16))); // 熄灭 LED
+  64:Core/Src/main.c ****                     }
+  65:Core/Src/main.c ****                 }
+  66:Core/Src/main.c ****             }
+  67:Core/Src/main.c ****         }
+  68:Core/Src/main.c **** 
+  69:Core/Src/main.c ****         // 检测按钮3
+  70:Core/Src/main.c ****         if (flag3) {
+ 142              		.loc 1 70 9 is_stmt 1 view .LVU36
+ 143              		.loc 1 70 13 is_stmt 0 view .LVU37
+ 144 0042 404B     		ldr	r3, .L14+16
+ 145 0044 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 146              		.loc 1 70 12 view .LVU38
+ 147 0046 002B     		cmp	r3, #0
+ 148 0048 E7D0     		beq	.L5
+  71:Core/Src/main.c ****             delay(DEBOUNCE_DELAY);
+ 149              		.loc 1 71 13 is_stmt 1 view .LVU39
+ 150 004a 44F62060 		movw	r0, #20000
+ 151 004e FFF7FEFF 		bl	delay
+ 152              	.LVL7:
+  72:Core/Src/main.c ****             if (flag3) {
+ 153              		.loc 1 72 13 view .LVU40
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 5
 
 
- 236              		.global	ledStateData
- 237              		.section	.data.ledStateData,"aw"
- 238              		.align	2
- 241              	ledStateData:
- 242 0000 0000     		.short	0
- 243 0002 0000     		.short	0
- 244 0004 0000     		.short	0
- 245 0006 0000     		.short	0
- 246 0008 0000     		.short	0
- 247 000a 0000     		.short	0
- 248 000c D007     		.short	2000
- 249 000e D007     		.short	2000
- 250 0010 D007     		.short	2000
- 251 0012 D007     		.short	2000
- 252 0014 D007     		.short	2000
- 253 0016 D007     		.short	2000
- 254 0018 0000     		.short	0
- 255 001a 0000     		.short	0
- 256 001c 0000     		.short	0
- 257 001e 0000     		.short	0
- 258 0020 0000     		.short	0
- 259 0022 0000     		.short	0
- 260              		.global	ledFrequencies
- 261              		.section	.data.ledFrequencies,"aw"
- 262              		.align	2
- 265              	ledFrequencies:
- 266 0000 4006     		.short	1600
- 267 0002 C201     		.short	450
- 268 0004 4A01     		.short	330
- 269 0006 D007     		.short	2000
- 270 0008 3E03     		.short	830
- 271 000a F401     		.short	500
- 272              		.text
- 273              	.Letext0:
- 274              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
- 275              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
- 276              		.file 4 "Core/Inc/globals.h"
- 277              		.file 5 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
- 278              		.file 6 "Core/Inc/leds.h"
- 279              		.file 7 "Core/Inc/init.h"
-ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s 			page 7
+ 154              		.loc 1 72 17 is_stmt 0 view .LVU41
+ 155 0052 3C4B     		ldr	r3, .L14+16
+ 156 0054 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 157              		.loc 1 72 16 view .LVU42
+ 158 0056 002B     		cmp	r3, #0
+ 159 0058 DFD0     		beq	.L5
+  73:Core/Src/main.c ****                 // 交换功能
+  74:Core/Src/main.c ****                 button1_function ^= 1;
+ 160              		.loc 1 74 17 is_stmt 1 view .LVU43
+ 161              		.loc 1 74 34 is_stmt 0 view .LVU44
+ 162 005a 86F00106 		eor	r6, r6, #1
+ 163              	.LVL8:
+  75:Core/Src/main.c ****                 button2_function ^= 1;
+ 164              		.loc 1 75 17 is_stmt 1 view .LVU45
+ 165              		.loc 1 75 34 is_stmt 0 view .LVU46
+ 166 005e 85F00105 		eor	r5, r5, #1
+ 167              	.LVL9:
+ 168              		.loc 1 75 34 view .LVU47
+ 169 0062 DAE7     		b	.L5
+ 170              	.L12:
+  31:Core/Src/main.c ****             if (flag1) {
+ 171              		.loc 1 31 13 is_stmt 1 view .LVU48
+ 172 0064 44F62060 		movw	r0, #20000
+ 173 0068 FFF7FEFF 		bl	delay
+ 174              	.LVL10:
+  32:Core/Src/main.c ****                 if (button1_function) { // 点亮模式
+ 175              		.loc 1 32 13 view .LVU49
+  32:Core/Src/main.c ****                 if (button1_function) { // 点亮模式
+ 176              		.loc 1 32 17 is_stmt 0 view .LVU50
+ 177 006c 334B     		ldr	r3, .L14+8
+ 178 006e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  32:Core/Src/main.c ****                 if (button1_function) { // 点亮模式
+ 179              		.loc 1 32 16 view .LVU51
+ 180 0070 002B     		cmp	r3, #0
+ 181 0072 E2D0     		beq	.L6
+  33:Core/Src/main.c ****                     if (led_state < 6) {
+ 182              		.loc 1 33 17 is_stmt 1 view .LVU52
+  33:Core/Src/main.c ****                     if (led_state < 6) {
+ 183              		.loc 1 33 20 is_stmt 0 view .LVU53
+ 184 0074 A6B1     		cbz	r6, .L7
+  34:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << leds[led_state])); // 点亮 LED
+ 185              		.loc 1 34 21 is_stmt 1 view .LVU54
+  34:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << leds[led_state])); // 点亮 LED
+ 186              		.loc 1 34 24 is_stmt 0 view .LVU55
+ 187 0076 052C     		cmp	r4, #5
+ 188 0078 DFD8     		bhi	.L6
+  35:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个点亮
+ 189              		.loc 1 35 25 is_stmt 1 view .LVU56
+ 190 007a 2F49     		ldr	r1, .L14+4
+ 191 007c D1F81834 		ldr	r3, [r1, #1048]
+ 192 0080 04F10802 		add	r2, r4, #8
+ 193 0084 6A44     		add	r2, sp, r2
+ 194 0086 12F8080C 		ldrb	r0, [r2, #-8]	@ zero_extendqisi2
+ 195 008a 0122     		movs	r2, #1
+ 196 008c 8240     		lsls	r2, r2, r0
+ 197 008e 1343     		orrs	r3, r3, r2
+ 198 0090 C1F81834 		str	r3, [r1, #1048]
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 6
+
+
+  36:Core/Src/main.c ****                         led_state++;
+ 199              		.loc 1 36 25 view .LVU57
+ 200 0094 2C48     		ldr	r0, .L14+20
+ 201 0096 FFF7FEFF 		bl	delay
+ 202              	.LVL11:
+  37:Core/Src/main.c ****                     }
+ 203              		.loc 1 37 25 view .LVU58
+  37:Core/Src/main.c ****                     }
+ 204              		.loc 1 37 34 is_stmt 0 view .LVU59
+ 205 009a 0134     		adds	r4, r4, #1
+ 206              	.LVL12:
+  37:Core/Src/main.c ****                     }
+ 207              		.loc 1 37 34 view .LVU60
+ 208 009c E4B2     		uxtb	r4, r4
+ 209              	.LVL13:
+  37:Core/Src/main.c ****                     }
+ 210              		.loc 1 37 34 view .LVU61
+ 211 009e CCE7     		b	.L6
+ 212              	.L7:
+  40:Core/Src/main.c ****                         led_state--;
+ 213              		.loc 1 40 21 is_stmt 1 view .LVU62
+  40:Core/Src/main.c ****                         led_state--;
+ 214              		.loc 1 40 24 is_stmt 0 view .LVU63
+ 215 00a0 002C     		cmp	r4, #0
+ 216 00a2 CAD0     		beq	.L6
+  41:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个熄灭
+ 217              		.loc 1 41 25 is_stmt 1 view .LVU64
+  41:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个熄灭
+ 218              		.loc 1 41 34 is_stmt 0 view .LVU65
+ 219 00a4 013C     		subs	r4, r4, #1
+ 220              	.LVL14:
+  41:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个熄灭
+ 221              		.loc 1 41 34 view .LVU66
+ 222 00a6 E4B2     		uxtb	r4, r4
+ 223              	.LVL15:
+  42:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << (leds[led_state] + 16))); // 熄灭 LED
+ 224              		.loc 1 42 25 is_stmt 1 view .LVU67
+ 225 00a8 2748     		ldr	r0, .L14+20
+ 226 00aa FFF7FEFF 		bl	delay
+ 227              	.LVL16:
+  43:Core/Src/main.c ****                     }
+ 228              		.loc 1 43 25 view .LVU68
+ 229 00ae 2248     		ldr	r0, .L14+4
+ 230 00b0 D0F81834 		ldr	r3, [r0, #1048]
+ 231 00b4 04F10802 		add	r2, r4, #8
+ 232 00b8 6A44     		add	r2, sp, r2
+ 233 00ba 12F8081C 		ldrb	r1, [r2, #-8]	@ zero_extendqisi2
+ 234 00be 1031     		adds	r1, r1, #16
+ 235 00c0 0122     		movs	r2, #1
+ 236 00c2 8A40     		lsls	r2, r2, r1
+ 237 00c4 1343     		orrs	r3, r3, r2
+ 238 00c6 C0F81834 		str	r3, [r0, #1048]
+ 239 00ca B6E7     		b	.L6
+ 240              	.L13:
+  51:Core/Src/main.c ****             if (flag2) {
+ 241              		.loc 1 51 13 view .LVU69
+ 242 00cc 44F62060 		movw	r0, #20000
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 7
+
+
+ 243 00d0 FFF7FEFF 		bl	delay
+ 244              	.LVL17:
+  52:Core/Src/main.c ****                 if (button2_function) { // 点亮模式
+ 245              		.loc 1 52 13 view .LVU70
+  52:Core/Src/main.c ****                 if (button2_function) { // 点亮模式
+ 246              		.loc 1 52 17 is_stmt 0 view .LVU71
+ 247 00d4 1A4B     		ldr	r3, .L14+12
+ 248 00d6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  52:Core/Src/main.c ****                 if (button2_function) { // 点亮模式
+ 249              		.loc 1 52 16 view .LVU72
+ 250 00d8 002B     		cmp	r3, #0
+ 251 00da B2D0     		beq	.L8
+  53:Core/Src/main.c ****                     if (led_state < 6) {
+ 252              		.loc 1 53 17 is_stmt 1 view .LVU73
+  53:Core/Src/main.c ****                     if (led_state < 6) {
+ 253              		.loc 1 53 20 is_stmt 0 view .LVU74
+ 254 00dc A5B1     		cbz	r5, .L9
+  54:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << leds[led_state])); // 点亮 LED
+ 255              		.loc 1 54 21 is_stmt 1 view .LVU75
+  54:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << leds[led_state])); // 点亮 LED
+ 256              		.loc 1 54 24 is_stmt 0 view .LVU76
+ 257 00de 052C     		cmp	r4, #5
+ 258 00e0 AFD8     		bhi	.L8
+  55:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个点亮
+ 259              		.loc 1 55 25 is_stmt 1 view .LVU77
+ 260 00e2 1549     		ldr	r1, .L14+4
+ 261 00e4 D1F81834 		ldr	r3, [r1, #1048]
+ 262 00e8 04F10802 		add	r2, r4, #8
+ 263 00ec 6A44     		add	r2, sp, r2
+ 264 00ee 12F8080C 		ldrb	r0, [r2, #-8]	@ zero_extendqisi2
+ 265 00f2 0122     		movs	r2, #1
+ 266 00f4 8240     		lsls	r2, r2, r0
+ 267 00f6 1343     		orrs	r3, r3, r2
+ 268 00f8 C1F81834 		str	r3, [r1, #1048]
+  56:Core/Src/main.c ****                         led_state++;
+ 269              		.loc 1 56 25 view .LVU78
+ 270 00fc 1248     		ldr	r0, .L14+20
+ 271 00fe FFF7FEFF 		bl	delay
+ 272              	.LVL18:
+  57:Core/Src/main.c ****                     }
+ 273              		.loc 1 57 25 view .LVU79
+  57:Core/Src/main.c ****                     }
+ 274              		.loc 1 57 34 is_stmt 0 view .LVU80
+ 275 0102 0134     		adds	r4, r4, #1
+ 276              	.LVL19:
+  57:Core/Src/main.c ****                     }
+ 277              		.loc 1 57 34 view .LVU81
+ 278 0104 E4B2     		uxtb	r4, r4
+ 279              	.LVL20:
+  57:Core/Src/main.c ****                     }
+ 280              		.loc 1 57 34 view .LVU82
+ 281 0106 9CE7     		b	.L8
+ 282              	.L9:
+  60:Core/Src/main.c ****                         led_state--;
+ 283              		.loc 1 60 21 is_stmt 1 view .LVU83
+  60:Core/Src/main.c ****                         led_state--;
+ 284              		.loc 1 60 24 is_stmt 0 view .LVU84
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 8
+
+
+ 285 0108 002C     		cmp	r4, #0
+ 286 010a 9AD0     		beq	.L8
+  61:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个熄灭
+ 287              		.loc 1 61 25 is_stmt 1 view .LVU85
+  61:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个熄灭
+ 288              		.loc 1 61 34 is_stmt 0 view .LVU86
+ 289 010c 013C     		subs	r4, r4, #1
+ 290              	.LVL21:
+  61:Core/Src/main.c ****                         delay(LIGHT_DELAY); // 添加延迟以体现逐个熄灭
+ 291              		.loc 1 61 34 view .LVU87
+ 292 010e E4B2     		uxtb	r4, r4
+ 293              	.LVL22:
+  62:Core/Src/main.c ****                         SET_BIT(GPIOB_BSRR, (1 << (leds[led_state] + 16))); // 熄灭 LED
+ 294              		.loc 1 62 25 is_stmt 1 view .LVU88
+ 295 0110 0D48     		ldr	r0, .L14+20
+ 296 0112 FFF7FEFF 		bl	delay
+ 297              	.LVL23:
+  63:Core/Src/main.c ****                     }
+ 298              		.loc 1 63 25 view .LVU89
+ 299 0116 0848     		ldr	r0, .L14+4
+ 300 0118 D0F81834 		ldr	r3, [r0, #1048]
+ 301 011c 04F10802 		add	r2, r4, #8
+ 302 0120 6A44     		add	r2, sp, r2
+ 303 0122 12F8081C 		ldrb	r1, [r2, #-8]	@ zero_extendqisi2
+ 304 0126 1031     		adds	r1, r1, #16
+ 305 0128 0122     		movs	r2, #1
+ 306 012a 8A40     		lsls	r2, r2, r1
+ 307 012c 1343     		orrs	r3, r3, r2
+ 308 012e C0F81834 		str	r3, [r0, #1048]
+ 309 0132 86E7     		b	.L8
+ 310              	.L15:
+ 311              		.align	2
+ 312              	.L14:
+ 313 0134 00000000 		.word	.LANCHOR0
+ 314 0138 00000240 		.word	1073872896
+ 315 013c 00000000 		.word	flag1
+ 316 0140 00000000 		.word	flag2
+ 317 0144 00000000 		.word	flag3
+ 318 0148 20A10700 		.word	500000
+ 319              		.cfi_endproc
+ 320              	.LFE131:
+ 322              		.global	flag3
+ 323              		.section	.bss.flag3,"aw",%nobits
+ 326              	flag3:
+ 327 0000 00       		.space	1
+ 328              		.global	flag2
+ 329              		.section	.bss.flag2,"aw",%nobits
+ 332              	flag2:
+ 333 0000 00       		.space	1
+ 334              		.global	flag1
+ 335              		.section	.bss.flag1,"aw",%nobits
+ 338              	flag1:
+ 339 0000 00       		.space	1
+ 340              		.section	.rodata
+ 341              		.align	2
+ 342              		.set	.LANCHOR0,. + 0
+ 343              	.LC0:
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 9
+
+
+ 344 0000 00070E08 		.ascii	"\000\007\016\010\011\012"
+ 344      090A
+ 345              		.text
+ 346              	.Letext0:
+ 347              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 348              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 349              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:21     .text.main:00000000 $t
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:27     .text.main:00000000 main
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:128    .text.main:00000060 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:234    .bss.button1Clicks:00000000 button1Clicks
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:144    .bss.currentStateCheck:00000000 currentStateCheck
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:138    .bss.previousStateCheck:00000000 previousStateCheck
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:139    .bss.previousStateCheck:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:145    .bss.currentStateCheck:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:150    .data.isState2Flag:00000000 isState2Flag
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:156    .data.isFlagUp2:00000000 isFlagUp2
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:162    .bss.ledIndex3:00000000 ledIndex3
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:163    .bss.ledIndex3:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:168    .bss.ledIndex2:00000000 ledIndex2
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:169    .bss.ledIndex2:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:174    .bss.ledIndex1:00000000 ledIndex1
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:175    .bss.ledIndex1:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:181    .data.buttonDelay:00000000 buttonDelay
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:178    .data.buttonDelay:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:188    .data.flickerInterval:00000000 flickerInterval
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:185    .data.flickerInterval:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:195    .bss.interruptTick3:00000000 interruptTick3
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:192    .bss.interruptTick3:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:202    .bss.interruptTick2:00000000 interruptTick2
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:199    .bss.interruptTick2:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:209    .bss.interruptTick1:00000000 interruptTick1
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:206    .bss.interruptTick1:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:216    .bss.globalTick:00000000 globalTick
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:213    .bss.globalTick:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:222    .bss.button3Clicks:00000000 button3Clicks
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:223    .bss.button3Clicks:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:228    .bss.button2Clicks:00000000 button2Clicks
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:229    .bss.button2Clicks:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:235    .bss.button1Clicks:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:241    .data.ledStateData:00000000 ledStateData
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:238    .data.ledStateData:00000000 $d
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:265    .data.ledFrequencies:00000000 ledFrequencies
-C:\Users\Sunne\AppData\Local\Temp\cciGvCCF.s:262    .data.ledFrequencies:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:21     .text.delay:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:27     .text.delay:00000000 delay
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:64     .text.main:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:70     .text.main:00000000 main
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:313    .text.main:00000134 $d
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:338    .bss.flag1:00000000 flag1
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:332    .bss.flag2:00000000 flag2
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:326    .bss.flag3:00000000 flag3
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:327    .bss.flag3:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:333    .bss.flag2:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:339    .bss.flag1:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\ccDOIjGk.s:341    .rodata:00000000 $d
 
 UNDEFINED SYMBOLS
 GPIO_Ini
-RCC_Ini
-ITR_Ini
-SysTick_Init
-leds_state2
-leds_state_down
-leds_state1
