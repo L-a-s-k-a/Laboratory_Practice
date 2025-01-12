@@ -1,0 +1,302 @@
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB131:
+   1:Core/Src/it_handlers.c **** // it_handlers.c
+   2:Core/Src/it_handlers.c **** #include "it_handlers.h"
+   3:Core/Src/it_handlers.c **** 
+   4:Core/Src/it_handlers.c **** // 高端但无用的代码：复杂的位运算函数
+   5:Core/Src/it_handlers.c **** static void complexBitOperations(void) {
+   6:Core/Src/it_handlers.c ****     uint32_t mask = 0xDEADBEEF;
+   7:Core/Src/it_handlers.c ****     uint32_t result = 0;
+   8:Core/Src/it_handlers.c ****     for(int bit = 0; bit < 32; bit++) {
+   9:Core/Src/it_handlers.c ****         if ((mask >> bit) & 1) {
+  10:Core/Src/it_handlers.c ****             result |= (0x1 << (bit % 16));
+  11:Core/Src/it_handlers.c ****         } else {
+  12:Core/Src/it_handlers.c ****             result &= ~(0x1 << (bit % 16));
+  13:Core/Src/it_handlers.c ****         }
+  14:Core/Src/it_handlers.c ****     }
+  15:Core/Src/it_handlers.c ****     // 结果未被使用
+  16:Core/Src/it_handlers.c ****     (void)result;
+  17:Core/Src/it_handlers.c **** }
+  18:Core/Src/it_handlers.c **** 
+  19:Core/Src/it_handlers.c **** void SysTick_Handler(void)
+  20:Core/Src/it_handlers.c **** {
+  29              		.loc 1 20 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  21:Core/Src/it_handlers.c ****     // 调用无用的高端函数
+  22:Core/Src/it_handlers.c ****     complexBitOperations();
+  34              		.loc 1 22 5 view .LVU1
+  23:Core/Src/it_handlers.c **** 
+  24:Core/Src/it_handlers.c ****     // 增加中断计数
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s 			page 2
+
+
+  25:Core/Src/it_handlers.c ****     interruptTick1++;
+  35              		.loc 1 25 5 view .LVU2
+  36              		.loc 1 25 19 is_stmt 0 view .LVU3
+  37 0000 0D4A     		ldr	r2, .L4
+  38 0002 1388     		ldrh	r3, [r2]
+  39 0004 0133     		adds	r3, r3, #1
+  40 0006 1380     		strh	r3, [r2]	@ movhi
+  26:Core/Src/it_handlers.c ****     interruptTick2++;
+  41              		.loc 1 26 5 is_stmt 1 view .LVU4
+  42              		.loc 1 26 19 is_stmt 0 view .LVU5
+  43 0008 0C4A     		ldr	r2, .L4+4
+  44 000a 1388     		ldrh	r3, [r2]
+  45 000c 0133     		adds	r3, r3, #1
+  46 000e 1380     		strh	r3, [r2]	@ movhi
+  27:Core/Src/it_handlers.c ****     interruptTick3++;
+  47              		.loc 1 27 5 is_stmt 1 view .LVU6
+  48              		.loc 1 27 19 is_stmt 0 view .LVU7
+  49 0010 0B4A     		ldr	r2, .L4+8
+  50 0012 1388     		ldrh	r3, [r2]
+  51 0014 0133     		adds	r3, r3, #1
+  52 0016 1380     		strh	r3, [r2]	@ movhi
+  28:Core/Src/it_handlers.c **** 
+  29:Core/Src/it_handlers.c ****     // 更新LED状态数据
+  30:Core/Src/it_handlers.c ****     for(int idx = 0; idx < 6; idx++) {
+  53              		.loc 1 30 5 is_stmt 1 view .LVU8
+  54              	.LBB2:
+  55              		.loc 1 30 9 view .LVU9
+  56              	.LVL0:
+  57              		.loc 1 30 13 is_stmt 0 view .LVU10
+  58 0018 0023     		movs	r3, #0
+  59              		.loc 1 30 5 view .LVU11
+  60 001a 06E0     		b	.L2
+  61              	.LVL1:
+  62              	.L3:
+  31:Core/Src/it_handlers.c ****         ledStateData[0][idx]++;
+  63              		.loc 1 31 9 is_stmt 1 view .LVU12
+  64              		.loc 1 31 24 is_stmt 0 view .LVU13
+  65 001c 0949     		ldr	r1, .L4+12
+  66 001e 31F81320 		ldrh	r2, [r1, r3, lsl #1]
+  67              		.loc 1 31 29 view .LVU14
+  68 0022 0132     		adds	r2, r2, #1
+  69 0024 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
+  30:Core/Src/it_handlers.c ****         ledStateData[0][idx]++;
+  70              		.loc 1 30 34 is_stmt 1 discriminator 3 view .LVU15
+  71 0028 0133     		adds	r3, r3, #1
+  72              	.LVL2:
+  73              	.L2:
+  30:Core/Src/it_handlers.c ****         ledStateData[0][idx]++;
+  74              		.loc 1 30 26 discriminator 1 view .LVU16
+  75 002a 052B     		cmp	r3, #5
+  76 002c F6DD     		ble	.L3
+  77              	.LBE2:
+  32:Core/Src/it_handlers.c ****     }
+  33:Core/Src/it_handlers.c **** 
+  34:Core/Src/it_handlers.c ****     // 增加全局Tick计数
+  35:Core/Src/it_handlers.c ****     globalTick++;
+  78              		.loc 1 35 5 view .LVU17
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s 			page 3
+
+
+  79              		.loc 1 35 15 is_stmt 0 view .LVU18
+  80 002e 064A     		ldr	r2, .L4+16
+  81 0030 1388     		ldrh	r3, [r2]
+  82              	.LVL3:
+  83              		.loc 1 35 15 view .LVU19
+  84 0032 0133     		adds	r3, r3, #1
+  85 0034 1380     		strh	r3, [r2]	@ movhi
+  36:Core/Src/it_handlers.c **** }
+  86              		.loc 1 36 1 view .LVU20
+  87 0036 7047     		bx	lr
+  88              	.L5:
+  89              		.align	2
+  90              	.L4:
+  91 0038 00000000 		.word	interruptTick1
+  92 003c 00000000 		.word	interruptTick2
+  93 0040 00000000 		.word	interruptTick3
+  94 0044 00000000 		.word	ledStateData
+  95 0048 00000000 		.word	globalTick
+  96              		.cfi_endproc
+  97              	.LFE131:
+  99              		.section	.text.EXTI0_IRQHandler,"ax",%progbits
+ 100              		.align	1
+ 101              		.global	EXTI0_IRQHandler
+ 102              		.syntax unified
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	EXTI0_IRQHandler:
+ 107              	.LFB132:
+  37:Core/Src/it_handlers.c **** 
+  38:Core/Src/it_handlers.c **** void EXTI0_IRQHandler(void)
+  39:Core/Src/it_handlers.c **** {
+ 108              		.loc 1 39 1 is_stmt 1 view -0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112 0000 08B5     		push	{r3, lr}
+ 113              	.LCFI0:
+ 114              		.cfi_def_cfa_offset 8
+ 115              		.cfi_offset 3, -8
+ 116              		.cfi_offset 14, -4
+  40:Core/Src/it_handlers.c ****     // 清除中断标志
+  41:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR0);
+ 117              		.loc 1 41 5 view .LVU22
+ 118 0002 044A     		ldr	r2, .L8
+ 119 0004 5369     		ldr	r3, [r2, #20]
+ 120 0006 43F00103 		orr	r3, r3, #1
+ 121 000a 5361     		str	r3, [r2, #20]
+  42:Core/Src/it_handlers.c ****     handleButton1Press();
+ 122              		.loc 1 42 5 view .LVU23
+ 123 000c FFF7FEFF 		bl	handleButton1Press
+ 124              	.LVL4:
+  43:Core/Src/it_handlers.c **** }
+ 125              		.loc 1 43 1 is_stmt 0 view .LVU24
+ 126 0010 08BD     		pop	{r3, pc}
+ 127              	.L9:
+ 128 0012 00BF     		.align	2
+ 129              	.L8:
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s 			page 4
+
+
+ 130 0014 003C0140 		.word	1073822720
+ 131              		.cfi_endproc
+ 132              	.LFE132:
+ 134              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+ 135              		.align	1
+ 136              		.global	EXTI9_5_IRQHandler
+ 137              		.syntax unified
+ 138              		.thumb
+ 139              		.thumb_func
+ 141              	EXTI9_5_IRQHandler:
+ 142              	.LFB133:
+  44:Core/Src/it_handlers.c **** 
+  45:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void)
+  46:Core/Src/it_handlers.c **** {
+ 143              		.loc 1 46 1 is_stmt 1 view -0
+ 144              		.cfi_startproc
+ 145              		@ args = 0, pretend = 0, frame = 0
+ 146              		@ frame_needed = 0, uses_anonymous_args = 0
+ 147 0000 08B5     		push	{r3, lr}
+ 148              	.LCFI1:
+ 149              		.cfi_def_cfa_offset 8
+ 150              		.cfi_offset 3, -8
+ 151              		.cfi_offset 14, -4
+  47:Core/Src/it_handlers.c ****     // 清除中断标志
+  48:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR9);
+ 152              		.loc 1 48 5 view .LVU26
+ 153 0002 044A     		ldr	r2, .L12
+ 154 0004 5369     		ldr	r3, [r2, #20]
+ 155 0006 43F40073 		orr	r3, r3, #512
+ 156 000a 5361     		str	r3, [r2, #20]
+  49:Core/Src/it_handlers.c ****     handleButton2Press();
+ 157              		.loc 1 49 5 view .LVU27
+ 158 000c FFF7FEFF 		bl	handleButton2Press
+ 159              	.LVL5:
+  50:Core/Src/it_handlers.c **** }
+ 160              		.loc 1 50 1 is_stmt 0 view .LVU28
+ 161 0010 08BD     		pop	{r3, pc}
+ 162              	.L13:
+ 163 0012 00BF     		.align	2
+ 164              	.L12:
+ 165 0014 003C0140 		.word	1073822720
+ 166              		.cfi_endproc
+ 167              	.LFE133:
+ 169              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ 170              		.align	1
+ 171              		.global	EXTI15_10_IRQHandler
+ 172              		.syntax unified
+ 173              		.thumb
+ 174              		.thumb_func
+ 176              	EXTI15_10_IRQHandler:
+ 177              	.LFB134:
+  51:Core/Src/it_handlers.c **** 
+  52:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void)
+  53:Core/Src/it_handlers.c **** {
+ 178              		.loc 1 53 1 is_stmt 1 view -0
+ 179              		.cfi_startproc
+ 180              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s 			page 5
+
+
+ 181              		@ frame_needed = 0, uses_anonymous_args = 0
+ 182 0000 08B5     		push	{r3, lr}
+ 183              	.LCFI2:
+ 184              		.cfi_def_cfa_offset 8
+ 185              		.cfi_offset 3, -8
+ 186              		.cfi_offset 14, -4
+  54:Core/Src/it_handlers.c ****     // 清除中断标志
+  55:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR12);
+ 187              		.loc 1 55 5 view .LVU30
+ 188 0002 044A     		ldr	r2, .L16
+ 189 0004 5369     		ldr	r3, [r2, #20]
+ 190 0006 43F48053 		orr	r3, r3, #4096
+ 191 000a 5361     		str	r3, [r2, #20]
+  56:Core/Src/it_handlers.c ****     handleButton3Press();
+ 192              		.loc 1 56 5 view .LVU31
+ 193 000c FFF7FEFF 		bl	handleButton3Press
+ 194              	.LVL6:
+  57:Core/Src/it_handlers.c **** }
+ 195              		.loc 1 57 1 is_stmt 0 view .LVU32
+ 196 0010 08BD     		pop	{r3, pc}
+ 197              	.L17:
+ 198 0012 00BF     		.align	2
+ 199              	.L16:
+ 200 0014 003C0140 		.word	1073822720
+ 201              		.cfi_endproc
+ 202              	.LFE134:
+ 204              		.text
+ 205              	.Letext0:
+ 206              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 207              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 208              		.file 4 "CMSIS/Devices/Inc/stm32f429xx.h"
+ 209              		.file 5 "Core/Inc/globals.h"
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:91     .text.SysTick_Handler:00000038 $d
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:100    .text.EXTI0_IRQHandler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:106    .text.EXTI0_IRQHandler:00000000 EXTI0_IRQHandler
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:130    .text.EXTI0_IRQHandler:00000014 $d
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:135    .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:141    .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:165    .text.EXTI9_5_IRQHandler:00000014 $d
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:170    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:176    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\Sunne\AppData\Local\Temp\ccmMWXYe.s:200    .text.EXTI15_10_IRQHandler:00000014 $d
+
+UNDEFINED SYMBOLS
+interruptTick1
+interruptTick2
+interruptTick3
+ledStateData
+globalTick
+handleButton1Press
+handleButton2Press
+handleButton3Press

@@ -1,0 +1,1238 @@
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"leds.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/leds.c"
+  20              		.section	.text.handleButton1Press,"ax",%progbits
+  21              		.align	1
+  22              		.global	handleButton1Press
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	handleButton1Press:
+  28              	.LFB130:
+   1:Core/Src/leds.c **** // leds.c
+   2:Core/Src/leds.c **** #include "leds.h"
+   3:Core/Src/leds.c **** #include "it_handlers.h"
+   4:Core/Src/leds.c **** #include "globals.h"
+   5:Core/Src/leds.c **** 
+   6:Core/Src/leds.c **** // 内部变量
+   7:Core/Src/leds.c **** static uint8_t toggleFlag1 = 0;
+   8:Core/Src/leds.c **** static uint8_t toggleFlag2 = 0;
+   9:Core/Src/leds.c **** static uint8_t toggleFlag3 = 0;
+  10:Core/Src/leds.c **** 
+  11:Core/Src/leds.c **** // LED引脚序列
+  12:Core/Src/leds.c **** static uint8_t ledPins[] = {0, 7, 14, 12, 13, 15};
+  13:Core/Src/leds.c **** 
+  14:Core/Src/leds.c **** // 高端但无用的代码：定义并初始化复杂的结构体
+  15:Core/Src/leds.c **** typedef struct {
+  16:Core/Src/leds.c ****     uint16_t identifier;
+  17:Core/Src/leds.c ****     char description[12];
+  18:Core/Src/leds.c ****     float metrics[3];
+  19:Core/Src/leds.c **** } AdvancedStruct;
+  20:Core/Src/leds.c **** 
+  21:Core/Src/leds.c **** static AdvancedStruct unusedAdvancedStruct = { 
+  22:Core/Src/leds.c ****     .identifier = 1001, 
+  23:Core/Src/leds.c ****     .description = "Unused", 
+  24:Core/Src/leds.c ****     .metrics = {3.14f, 2.71f, 1.61f} 
+  25:Core/Src/leds.c **** };
+  26:Core/Src/leds.c **** 
+  27:Core/Src/leds.c **** // 按钮1点击处理
+  28:Core/Src/leds.c **** void handleButton1Press(void){
+  29              		.loc 1 28 30 view -0
+  30              		.cfi_startproc
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 2
+
+
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  29:Core/Src/leds.c ****     if (interruptTick1 >= DELAY_BUTTON_FILTER)
+  34              		.loc 1 29 5 view .LVU1
+  35              		.loc 1 29 24 is_stmt 0 view .LVU2
+  36 0000 094B     		ldr	r3, .L3
+  37 0002 1B88     		ldrh	r3, [r3]
+  38              		.loc 1 29 8 view .LVU3
+  39 0004 B3F5FA7F 		cmp	r3, #500
+  40 0008 0CD3     		bcc	.L1
+  30:Core/Src/leds.c ****     {
+  31:Core/Src/leds.c ****         toggleFlag1 = !toggleFlag1;
+  41              		.loc 1 31 9 is_stmt 1 view .LVU4
+  42              		.loc 1 31 23 is_stmt 0 view .LVU5
+  43 000a 084A     		ldr	r2, .L3+4
+  44 000c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  45 000e B3FA83F3 		clz	r3, r3
+  46 0012 5B09     		lsrs	r3, r3, #5
+  47              		.loc 1 31 21 view .LVU6
+  48 0014 1370     		strb	r3, [r2]
+  32:Core/Src/leds.c ****         button1Clicks++;
+  49              		.loc 1 32 9 is_stmt 1 view .LVU7
+  50              		.loc 1 32 22 is_stmt 0 view .LVU8
+  51 0016 064A     		ldr	r2, .L3+8
+  52 0018 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  53 001a 0133     		adds	r3, r3, #1
+  54 001c 1370     		strb	r3, [r2]
+  33:Core/Src/leds.c ****         interruptTick1 = 0; // 重置计数器
+  55              		.loc 1 33 9 is_stmt 1 view .LVU9
+  56              		.loc 1 33 24 is_stmt 0 view .LVU10
+  57 001e 024B     		ldr	r3, .L3
+  58 0020 0022     		movs	r2, #0
+  59 0022 1A80     		strh	r2, [r3]	@ movhi
+  60              	.L1:
+  34:Core/Src/leds.c ****     }
+  35:Core/Src/leds.c **** }
+  61              		.loc 1 35 1 view .LVU11
+  62 0024 7047     		bx	lr
+  63              	.L4:
+  64 0026 00BF     		.align	2
+  65              	.L3:
+  66 0028 00000000 		.word	interruptTick1
+  67 002c 00000000 		.word	toggleFlag1
+  68 0030 00000000 		.word	button1Clicks
+  69              		.cfi_endproc
+  70              	.LFE130:
+  72              		.section	.text.handleButton2Press,"ax",%progbits
+  73              		.align	1
+  74              		.global	handleButton2Press
+  75              		.syntax unified
+  76              		.thumb
+  77              		.thumb_func
+  79              	handleButton2Press:
+  80              	.LFB131:
+  36:Core/Src/leds.c **** 
+  37:Core/Src/leds.c **** // 按钮2点击处理
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 3
+
+
+  38:Core/Src/leds.c **** void handleButton2Press(void){
+  81              		.loc 1 38 30 is_stmt 1 view -0
+  82              		.cfi_startproc
+  83              		@ args = 0, pretend = 0, frame = 0
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+  85              		@ link register save eliminated.
+  39:Core/Src/leds.c ****     if (interruptTick2 >= DELAY_BUTTON_FILTER)
+  86              		.loc 1 39 5 view .LVU13
+  87              		.loc 1 39 24 is_stmt 0 view .LVU14
+  88 0000 094B     		ldr	r3, .L7
+  89 0002 1B88     		ldrh	r3, [r3]
+  90              		.loc 1 39 8 view .LVU15
+  91 0004 B3F5FA7F 		cmp	r3, #500
+  92 0008 0CD3     		bcc	.L5
+  40:Core/Src/leds.c ****     {
+  41:Core/Src/leds.c ****         toggleFlag2 = !toggleFlag2;
+  93              		.loc 1 41 9 is_stmt 1 view .LVU16
+  94              		.loc 1 41 23 is_stmt 0 view .LVU17
+  95 000a 084A     		ldr	r2, .L7+4
+  96 000c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  97 000e B3FA83F3 		clz	r3, r3
+  98 0012 5B09     		lsrs	r3, r3, #5
+  99              		.loc 1 41 21 view .LVU18
+ 100 0014 1370     		strb	r3, [r2]
+  42:Core/Src/leds.c ****         button2Clicks++;
+ 101              		.loc 1 42 9 is_stmt 1 view .LVU19
+ 102              		.loc 1 42 22 is_stmt 0 view .LVU20
+ 103 0016 064A     		ldr	r2, .L7+8
+ 104 0018 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 105 001a 0133     		adds	r3, r3, #1
+ 106 001c 1370     		strb	r3, [r2]
+  43:Core/Src/leds.c ****         interruptTick2 = 0; // 重置计数器
+ 107              		.loc 1 43 9 is_stmt 1 view .LVU21
+ 108              		.loc 1 43 24 is_stmt 0 view .LVU22
+ 109 001e 024B     		ldr	r3, .L7
+ 110 0020 0022     		movs	r2, #0
+ 111 0022 1A80     		strh	r2, [r3]	@ movhi
+ 112              	.L5:
+  44:Core/Src/leds.c ****     }
+  45:Core/Src/leds.c **** }
+ 113              		.loc 1 45 1 view .LVU23
+ 114 0024 7047     		bx	lr
+ 115              	.L8:
+ 116 0026 00BF     		.align	2
+ 117              	.L7:
+ 118 0028 00000000 		.word	interruptTick2
+ 119 002c 00000000 		.word	toggleFlag2
+ 120 0030 00000000 		.word	button2Clicks
+ 121              		.cfi_endproc
+ 122              	.LFE131:
+ 124              		.section	.text.handleButton3Press,"ax",%progbits
+ 125              		.align	1
+ 126              		.global	handleButton3Press
+ 127              		.syntax unified
+ 128              		.thumb
+ 129              		.thumb_func
+ 131              	handleButton3Press:
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 4
+
+
+ 132              	.LFB132:
+  46:Core/Src/leds.c **** 
+  47:Core/Src/leds.c **** // 按钮3点击处理
+  48:Core/Src/leds.c **** void handleButton3Press(void){
+ 133              		.loc 1 48 30 is_stmt 1 view -0
+ 134              		.cfi_startproc
+ 135              		@ args = 0, pretend = 0, frame = 0
+ 136              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137              		@ link register save eliminated.
+  49:Core/Src/leds.c ****     if (interruptTick3 >= DELAY_BUTTON_FILTER)
+ 138              		.loc 1 49 5 view .LVU25
+ 139              		.loc 1 49 24 is_stmt 0 view .LVU26
+ 140 0000 094B     		ldr	r3, .L11
+ 141 0002 1B88     		ldrh	r3, [r3]
+ 142              		.loc 1 49 8 view .LVU27
+ 143 0004 B3F5FA7F 		cmp	r3, #500
+ 144 0008 0CD3     		bcc	.L9
+  50:Core/Src/leds.c ****     {
+  51:Core/Src/leds.c ****         toggleFlag3 = !toggleFlag3;
+ 145              		.loc 1 51 9 is_stmt 1 view .LVU28
+ 146              		.loc 1 51 23 is_stmt 0 view .LVU29
+ 147 000a 084A     		ldr	r2, .L11+4
+ 148 000c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 149 000e B3FA83F3 		clz	r3, r3
+ 150 0012 5B09     		lsrs	r3, r3, #5
+ 151              		.loc 1 51 21 view .LVU30
+ 152 0014 1370     		strb	r3, [r2]
+  52:Core/Src/leds.c ****         button3Clicks++;
+ 153              		.loc 1 52 9 is_stmt 1 view .LVU31
+ 154              		.loc 1 52 22 is_stmt 0 view .LVU32
+ 155 0016 064A     		ldr	r2, .L11+8
+ 156 0018 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 157 001a 0133     		adds	r3, r3, #1
+ 158 001c 1370     		strb	r3, [r2]
+  53:Core/Src/leds.c ****         interruptTick3 = 0; // 重置计数器
+ 159              		.loc 1 53 9 is_stmt 1 view .LVU33
+ 160              		.loc 1 53 24 is_stmt 0 view .LVU34
+ 161 001e 024B     		ldr	r3, .L11
+ 162 0020 0022     		movs	r2, #0
+ 163 0022 1A80     		strh	r2, [r3]	@ movhi
+ 164              	.L9:
+  54:Core/Src/leds.c ****     }
+  55:Core/Src/leds.c **** }
+ 165              		.loc 1 55 1 view .LVU35
+ 166 0024 7047     		bx	lr
+ 167              	.L12:
+ 168 0026 00BF     		.align	2
+ 169              	.L11:
+ 170 0028 00000000 		.word	interruptTick3
+ 171 002c 00000000 		.word	toggleFlag3
+ 172 0030 00000000 		.word	button3Clicks
+ 173              		.cfi_endproc
+ 174              	.LFE132:
+ 176              		.section	.text.leds_state1,"ax",%progbits
+ 177              		.align	1
+ 178              		.global	leds_state1
+ 179              		.syntax unified
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 5
+
+
+ 180              		.thumb
+ 181              		.thumb_func
+ 183              	leds_state1:
+ 184              	.LFB133:
+  56:Core/Src/leds.c **** 
+  57:Core/Src/leds.c **** // LED状态1处理
+  58:Core/Src/leds.c **** void leds_state1(void)
+  59:Core/Src/leds.c **** {
+ 185              		.loc 1 59 1 is_stmt 1 view -0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              		@ link register save eliminated.
+ 190 0000 30B4     		push	{r4, r5}
+ 191              	.LCFI0:
+ 192              		.cfi_def_cfa_offset 8
+ 193              		.cfi_offset 4, -8
+ 194              		.cfi_offset 5, -4
+  60:Core/Src/leds.c ****     if(globalTick >= ledFrequencies[0][button2Clicks % 3] && toggleFlag1)
+ 195              		.loc 1 60 5 view .LVU37
+ 196              		.loc 1 60 54 is_stmt 0 view .LVU38
+ 197 0002 334B     		ldr	r3, .L21
+ 198 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 199 0006 334A     		ldr	r2, .L21+4
+ 200 0008 A2FB0312 		umull	r1, r2, r2, r3
+ 201 000c 02F0FE01 		and	r1, r2, #254
+ 202 0010 01EB5202 		add	r2, r1, r2, lsr #1
+ 203 0014 9B1A     		subs	r3, r3, r2
+ 204 0016 DBB2     		uxtb	r3, r3
+ 205              		.loc 1 60 39 view .LVU39
+ 206 0018 2F4A     		ldr	r2, .L21+8
+ 207 001a 32F81330 		ldrh	r3, [r2, r3, lsl #1]
+ 208              		.loc 1 60 19 view .LVU40
+ 209 001e 2F4A     		ldr	r2, .L21+12
+ 210 0020 1288     		ldrh	r2, [r2]
+ 211              		.loc 1 60 7 view .LVU41
+ 212 0022 9342     		cmp	r3, r2
+ 213 0024 20D8     		bhi	.L14
+ 214              		.loc 1 60 59 discriminator 1 view .LVU42
+ 215 0026 2E4A     		ldr	r2, .L21+16
+ 216 0028 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 217 002a EAB1     		cbz	r2, .L14
+  61:Core/Src/leds.c ****     {
+  62:Core/Src/leds.c ****         if(ledIndex1 == 3){
+ 218              		.loc 1 62 9 is_stmt 1 view .LVU43
+ 219              		.loc 1 62 22 is_stmt 0 view .LVU44
+ 220 002c 2D4A     		ldr	r2, .L21+20
+ 221 002e 92F90020 		ldrsb	r2, [r2]
+ 222              		.loc 1 62 11 view .LVU45
+ 223 0032 032A     		cmp	r2, #3
+ 224 0034 3ED0     		beq	.L19
+  63:Core/Src/leds.c ****             toggleFlag1 = 0;
+  64:Core/Src/leds.c ****             ledIndex1 = 2;
+  65:Core/Src/leds.c ****             return;
+  66:Core/Src/leds.c ****         }
+  67:Core/Src/leds.c ****         if (globalTick >= ledFrequencies[0][button2Clicks % 3]){
+ 225              		.loc 1 67 9 is_stmt 1 view .LVU46
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 6
+
+
+  68:Core/Src/leds.c ****             globalTick = 0;
+ 226              		.loc 1 68 13 view .LVU47
+ 227              		.loc 1 68 24 is_stmt 0 view .LVU48
+ 228 0036 2949     		ldr	r1, .L21+12
+ 229 0038 0020     		movs	r0, #0
+ 230 003a 0880     		strh	r0, [r1]	@ movhi
+  69:Core/Src/leds.c ****         }
+  70:Core/Src/leds.c ****         SET_BIT(GPIOB->BSRR, 1UL << ledPins[ledIndex1]);
+ 231              		.loc 1 70 9 is_stmt 1 view .LVU49
+ 232 003c 2A49     		ldr	r1, .L21+24
+ 233 003e 8C69     		ldr	r4, [r1, #24]
+ 234 0040 2A4D     		ldr	r5, .L21+28
+ 235 0042 15F802C0 		ldrb	ip, [r5, r2]	@ zero_extendqisi2
+ 236 0046 0120     		movs	r0, #1
+ 237 0048 00FA0CFC 		lsl	ip, r0, ip
+ 238 004c 44EA0C04 		orr	r4, r4, ip
+ 239 0050 8C61     		str	r4, [r1, #24]
+  71:Core/Src/leds.c ****         SET_BIT(GPIOB->BSRR, 1UL << ledPins[5 - ledIndex1]);
+ 240              		.loc 1 71 9 view .LVU50
+ 241 0052 8C69     		ldr	r4, [r1, #24]
+ 242 0054 C2F1050C 		rsb	ip, r2, #5
+ 243 0058 15F80C50 		ldrb	r5, [r5, ip]	@ zero_extendqisi2
+ 244 005c A840     		lsls	r0, r0, r5
+ 245 005e 2043     		orrs	r0, r0, r4
+ 246 0060 8861     		str	r0, [r1, #24]
+  72:Core/Src/leds.c ****         ledIndex1++;
+ 247              		.loc 1 72 9 view .LVU51
+ 248              		.loc 1 72 18 is_stmt 0 view .LVU52
+ 249 0062 0132     		adds	r2, r2, #1
+ 250 0064 1F49     		ldr	r1, .L21+20
+ 251 0066 0A70     		strb	r2, [r1]
+ 252              	.L14:
+  73:Core/Src/leds.c ****     }
+  74:Core/Src/leds.c **** 
+  75:Core/Src/leds.c ****     if(globalTick >= ledFrequencies[0][button2Clicks % 3] && !toggleFlag1)
+ 253              		.loc 1 75 5 is_stmt 1 view .LVU53
+ 254              		.loc 1 75 19 is_stmt 0 view .LVU54
+ 255 0068 1C4A     		ldr	r2, .L21+12
+ 256 006a 1288     		ldrh	r2, [r2]
+ 257              		.loc 1 75 7 view .LVU55
+ 258 006c 9342     		cmp	r3, r2
+ 259 006e 1FD8     		bhi	.L13
+ 260              		.loc 1 75 62 discriminator 1 view .LVU56
+ 261 0070 1B4B     		ldr	r3, .L21+16
+ 262 0072 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 263              		.loc 1 75 59 discriminator 1 view .LVU57
+ 264 0074 E3B9     		cbnz	r3, .L13
+  76:Core/Src/leds.c ****     {
+  77:Core/Src/leds.c ****         if(ledIndex1 <= -1){
+ 265              		.loc 1 77 9 is_stmt 1 view .LVU58
+ 266              		.loc 1 77 22 is_stmt 0 view .LVU59
+ 267 0076 1B4B     		ldr	r3, .L21+20
+ 268 0078 93F90030 		ldrsb	r3, [r3]
+ 269              		.loc 1 77 11 view .LVU60
+ 270 007c 002B     		cmp	r3, #0
+ 271 007e 20DB     		blt	.L20
+  78:Core/Src/leds.c ****             toggleFlag1 = 1;
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 7
+
+
+  79:Core/Src/leds.c ****             ledIndex1 = 0;
+  80:Core/Src/leds.c ****             return;
+  81:Core/Src/leds.c ****         }
+  82:Core/Src/leds.c ****         if (globalTick >= ledFrequencies[0][button2Clicks % 3]){
+ 272              		.loc 1 82 9 is_stmt 1 view .LVU61
+  83:Core/Src/leds.c ****             globalTick = 0;
+ 273              		.loc 1 83 13 view .LVU62
+ 274              		.loc 1 83 24 is_stmt 0 view .LVU63
+ 275 0080 164A     		ldr	r2, .L21+12
+ 276 0082 0021     		movs	r1, #0
+ 277 0084 1180     		strh	r1, [r2]	@ movhi
+  84:Core/Src/leds.c ****         }
+  85:Core/Src/leds.c ****         SET_BIT(GPIOB->BSRR, (1UL << ledPins[ledIndex1]) << 16U);
+ 278              		.loc 1 85 9 is_stmt 1 view .LVU64
+ 279 0086 184A     		ldr	r2, .L21+24
+ 280 0088 9069     		ldr	r0, [r2, #24]
+ 281 008a 184D     		ldr	r5, .L21+28
+ 282 008c EC5C     		ldrb	r4, [r5, r3]	@ zero_extendqisi2
+ 283 008e 0121     		movs	r1, #1
+ 284 0090 01FA04F4 		lsl	r4, r1, r4
+ 285 0094 40EA0440 		orr	r0, r0, r4, lsl #16
+ 286 0098 9061     		str	r0, [r2, #24]
+  86:Core/Src/leds.c ****         SET_BIT(GPIOB->BSRR, (1UL << ledPins[5 - ledIndex1]) << 16U);
+ 287              		.loc 1 86 9 view .LVU65
+ 288 009a 9069     		ldr	r0, [r2, #24]
+ 289 009c C3F10504 		rsb	r4, r3, #5
+ 290 00a0 2C5D     		ldrb	r4, [r5, r4]	@ zero_extendqisi2
+ 291 00a2 A140     		lsls	r1, r1, r4
+ 292 00a4 40EA0141 		orr	r1, r0, r1, lsl #16
+ 293 00a8 9161     		str	r1, [r2, #24]
+  87:Core/Src/leds.c ****         ledIndex1--;
+ 294              		.loc 1 87 9 view .LVU66
+ 295              		.loc 1 87 18 is_stmt 0 view .LVU67
+ 296 00aa 013B     		subs	r3, r3, #1
+ 297 00ac 0D4A     		ldr	r2, .L21+20
+ 298 00ae 1370     		strb	r3, [r2]
+ 299              	.L13:
+  88:Core/Src/leds.c ****     }
+  89:Core/Src/leds.c **** }
+ 300              		.loc 1 89 1 view .LVU68
+ 301 00b0 30BC     		pop	{r4, r5}
+ 302              	.LCFI1:
+ 303              		.cfi_remember_state
+ 304              		.cfi_restore 5
+ 305              		.cfi_restore 4
+ 306              		.cfi_def_cfa_offset 0
+ 307 00b2 7047     		bx	lr
+ 308              	.L19:
+ 309              	.LCFI2:
+ 310              		.cfi_restore_state
+  63:Core/Src/leds.c ****             ledIndex1 = 2;
+ 311              		.loc 1 63 13 is_stmt 1 view .LVU69
+  63:Core/Src/leds.c ****             ledIndex1 = 2;
+ 312              		.loc 1 63 25 is_stmt 0 view .LVU70
+ 313 00b4 0A4B     		ldr	r3, .L21+16
+ 314 00b6 0022     		movs	r2, #0
+ 315 00b8 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 8
+
+
+  64:Core/Src/leds.c ****             return;
+ 316              		.loc 1 64 13 is_stmt 1 view .LVU71
+  64:Core/Src/leds.c ****             return;
+ 317              		.loc 1 64 23 is_stmt 0 view .LVU72
+ 318 00ba 0A4B     		ldr	r3, .L21+20
+ 319 00bc 0222     		movs	r2, #2
+ 320 00be 1A70     		strb	r2, [r3]
+  65:Core/Src/leds.c ****         }
+ 321              		.loc 1 65 13 is_stmt 1 view .LVU73
+ 322 00c0 F6E7     		b	.L13
+ 323              	.L20:
+  78:Core/Src/leds.c ****             ledIndex1 = 0;
+ 324              		.loc 1 78 13 view .LVU74
+  78:Core/Src/leds.c ****             ledIndex1 = 0;
+ 325              		.loc 1 78 25 is_stmt 0 view .LVU75
+ 326 00c2 074B     		ldr	r3, .L21+16
+ 327 00c4 0122     		movs	r2, #1
+ 328 00c6 1A70     		strb	r2, [r3]
+  79:Core/Src/leds.c ****             return;
+ 329              		.loc 1 79 13 is_stmt 1 view .LVU76
+  79:Core/Src/leds.c ****             return;
+ 330              		.loc 1 79 23 is_stmt 0 view .LVU77
+ 331 00c8 064B     		ldr	r3, .L21+20
+ 332 00ca 0022     		movs	r2, #0
+ 333 00cc 1A70     		strb	r2, [r3]
+  80:Core/Src/leds.c ****         }
+ 334              		.loc 1 80 13 is_stmt 1 view .LVU78
+ 335 00ce EFE7     		b	.L13
+ 336              	.L22:
+ 337              		.align	2
+ 338              	.L21:
+ 339 00d0 00000000 		.word	button2Clicks
+ 340 00d4 ABAAAAAA 		.word	-1431655765
+ 341 00d8 00000000 		.word	ledFrequencies
+ 342 00dc 00000000 		.word	globalTick
+ 343 00e0 00000000 		.word	toggleFlag1
+ 344 00e4 00000000 		.word	ledIndex1
+ 345 00e8 00040240 		.word	1073873920
+ 346 00ec 00000000 		.word	ledPins
+ 347              		.cfi_endproc
+ 348              	.LFE133:
+ 350              		.section	.text.leds_state_down,"ax",%progbits
+ 351              		.align	1
+ 352              		.global	leds_state_down
+ 353              		.syntax unified
+ 354              		.thumb
+ 355              		.thumb_func
+ 357              	leds_state_down:
+ 358              	.LFB134:
+  90:Core/Src/leds.c **** 
+  91:Core/Src/leds.c **** // LED重置处理
+  92:Core/Src/leds.c **** void leds_state_down(void){
+ 359              		.loc 1 92 27 view -0
+ 360              		.cfi_startproc
+ 361              		@ args = 0, pretend = 0, frame = 0
+ 362              		@ frame_needed = 0, uses_anonymous_args = 0
+ 363              		@ link register save eliminated.
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 9
+
+
+  93:Core/Src/leds.c ****     for(uint16_t k = 0; k < 6; k++) {
+ 364              		.loc 1 93 5 view .LVU80
+ 365              	.LBB2:
+ 366              		.loc 1 93 9 view .LVU81
+ 367              	.LVL0:
+ 368              		.loc 1 93 18 is_stmt 0 view .LVU82
+ 369 0000 0023     		movs	r3, #0
+ 370              		.loc 1 93 5 view .LVU83
+ 371 0002 0CE0     		b	.L24
+ 372              	.LVL1:
+ 373              	.L25:
+  94:Core/Src/leds.c ****         SET_BIT(GPIOB->BSRR, (1UL << ledPins[k]) << 16U);
+ 374              		.loc 1 94 9 is_stmt 1 view .LVU84
+ 375 0004 1648     		ldr	r0, .L28
+ 376 0006 8269     		ldr	r2, [r0, #24]
+ 377 0008 1649     		ldr	r1, .L28+4
+ 378 000a 11F803C0 		ldrb	ip, [r1, r3]	@ zero_extendqisi2
+ 379 000e 0121     		movs	r1, #1
+ 380 0010 01FA0CF1 		lsl	r1, r1, ip
+ 381 0014 42EA0142 		orr	r2, r2, r1, lsl #16
+ 382 0018 8261     		str	r2, [r0, #24]
+  93:Core/Src/leds.c ****     for(uint16_t k = 0; k < 6; k++) {
+ 383              		.loc 1 93 33 discriminator 3 view .LVU85
+ 384 001a 0133     		adds	r3, r3, #1
+ 385              	.LVL2:
+  93:Core/Src/leds.c ****     for(uint16_t k = 0; k < 6; k++) {
+ 386              		.loc 1 93 33 is_stmt 0 discriminator 3 view .LVU86
+ 387 001c 9BB2     		uxth	r3, r3
+ 388              	.LVL3:
+ 389              	.L24:
+  93:Core/Src/leds.c ****     for(uint16_t k = 0; k < 6; k++) {
+ 390              		.loc 1 93 27 is_stmt 1 discriminator 1 view .LVU87
+ 391 001e 052B     		cmp	r3, #5
+ 392 0020 F0D9     		bls	.L25
+ 393              	.LBE2:
+  95:Core/Src/leds.c ****     }
+  96:Core/Src/leds.c ****     ledIndex1 = 0;
+ 394              		.loc 1 96 5 view .LVU88
+ 395              		.loc 1 96 15 is_stmt 0 view .LVU89
+ 396 0022 0023     		movs	r3, #0
+ 397              	.LVL4:
+ 398              		.loc 1 96 15 view .LVU90
+ 399 0024 104A     		ldr	r2, .L28+8
+ 400 0026 1370     		strb	r3, [r2]
+  97:Core/Src/leds.c ****     ledIndex2 = 0;
+ 401              		.loc 1 97 5 is_stmt 1 view .LVU91
+ 402              		.loc 1 97 15 is_stmt 0 view .LVU92
+ 403 0028 104A     		ldr	r2, .L28+12
+ 404 002a 1370     		strb	r3, [r2]
+  98:Core/Src/leds.c ****     button2Clicks = 0;
+ 405              		.loc 1 98 5 is_stmt 1 view .LVU93
+ 406              		.loc 1 98 19 is_stmt 0 view .LVU94
+ 407 002c 104A     		ldr	r2, .L28+16
+ 408 002e 1370     		strb	r3, [r2]
+  99:Core/Src/leds.c ****     button3Clicks = 0;
+ 409              		.loc 1 99 5 is_stmt 1 view .LVU95
+ 410              		.loc 1 99 19 is_stmt 0 view .LVU96
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 10
+
+
+ 411 0030 104A     		ldr	r2, .L28+20
+ 412 0032 1370     		strb	r3, [r2]
+ 100:Core/Src/leds.c **** 
+ 101:Core/Src/leds.c ****     isFlagUp2 = 1;
+ 413              		.loc 1 101 5 is_stmt 1 view .LVU97
+ 414              		.loc 1 101 15 is_stmt 0 view .LVU98
+ 415 0034 104A     		ldr	r2, .L28+24
+ 416 0036 0121     		movs	r1, #1
+ 417 0038 1170     		strb	r1, [r2]
+ 102:Core/Src/leds.c ****     for(uint8_t g = 0; g < 6; g++){
+ 418              		.loc 1 102 5 is_stmt 1 view .LVU99
+ 419              	.LBB3:
+ 420              		.loc 1 102 9 view .LVU100
+ 421              	.LVL5:
+ 422              		.loc 1 102 5 is_stmt 0 view .LVU101
+ 423 003a 0EE0     		b	.L26
+ 424              	.LVL6:
+ 425              	.L27:
+ 103:Core/Src/leds.c ****         ledStateData[0][g] = 0;
+ 426              		.loc 1 103 9 is_stmt 1 view .LVU102
+ 427              		.loc 1 103 28 is_stmt 0 view .LVU103
+ 428 003c 0F4A     		ldr	r2, .L28+28
+ 429 003e 0021     		movs	r1, #0
+ 430 0040 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
+ 104:Core/Src/leds.c ****         ledStateData[1][g] = 2000;
+ 431              		.loc 1 104 9 is_stmt 1 view .LVU104
+ 432              		.loc 1 104 28 is_stmt 0 view .LVU105
+ 433 0044 981D     		adds	r0, r3, #6
+ 434 0046 4FF4FA6C 		mov	ip, #2000
+ 435 004a 22F810C0 		strh	ip, [r2, r0, lsl #1]	@ movhi
+ 105:Core/Src/leds.c ****         ledStateData[2][g] = 0;
+ 436              		.loc 1 105 9 is_stmt 1 view .LVU106
+ 437              		.loc 1 105 28 is_stmt 0 view .LVU107
+ 438 004e 03F10C00 		add	r0, r3, #12
+ 439 0052 22F81010 		strh	r1, [r2, r0, lsl #1]	@ movhi
+ 102:Core/Src/leds.c ****         ledStateData[0][g] = 0;
+ 440              		.loc 1 102 32 is_stmt 1 discriminator 3 view .LVU108
+ 441 0056 0133     		adds	r3, r3, #1
+ 442              	.LVL7:
+ 102:Core/Src/leds.c ****         ledStateData[0][g] = 0;
+ 443              		.loc 1 102 32 is_stmt 0 discriminator 3 view .LVU109
+ 444 0058 DBB2     		uxtb	r3, r3
+ 445              	.LVL8:
+ 446              	.L26:
+ 102:Core/Src/leds.c ****         ledStateData[0][g] = 0;
+ 447              		.loc 1 102 26 is_stmt 1 discriminator 1 view .LVU110
+ 448 005a 052B     		cmp	r3, #5
+ 449 005c EED9     		bls	.L27
+ 450              	.LBE3:
+ 106:Core/Src/leds.c ****     }
+ 107:Core/Src/leds.c **** }
+ 451              		.loc 1 107 1 is_stmt 0 view .LVU111
+ 452 005e 7047     		bx	lr
+ 453              	.L29:
+ 454              		.align	2
+ 455              	.L28:
+ 456 0060 00040240 		.word	1073873920
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 11
+
+
+ 457 0064 00000000 		.word	ledPins
+ 458 0068 00000000 		.word	ledIndex1
+ 459 006c 00000000 		.word	ledIndex2
+ 460 0070 00000000 		.word	button2Clicks
+ 461 0074 00000000 		.word	button3Clicks
+ 462 0078 00000000 		.word	isFlagUp2
+ 463 007c 00000000 		.word	ledStateData
+ 464              		.cfi_endproc
+ 465              	.LFE134:
+ 467              		.section	.text.leds_state2_go_up,"ax",%progbits
+ 468              		.align	1
+ 469              		.global	leds_state2_go_up
+ 470              		.syntax unified
+ 471              		.thumb
+ 472              		.thumb_func
+ 474              	leds_state2_go_up:
+ 475              	.LFB135:
+ 108:Core/Src/leds.c **** 
+ 109:Core/Src/leds.c **** // LED状态2上升处理
+ 110:Core/Src/leds.c **** void leds_state2_go_up(void){
+ 476              		.loc 1 110 29 is_stmt 1 view -0
+ 477              		.cfi_startproc
+ 478              		@ args = 0, pretend = 0, frame = 0
+ 479              		@ frame_needed = 0, uses_anonymous_args = 0
+ 480              		@ link register save eliminated.
+ 111:Core/Src/leds.c ****     if(globalTick >= ledFrequencies[1][2] && isFlagUp2)
+ 481              		.loc 1 111 5 view .LVU113
+ 482              		.loc 1 111 39 is_stmt 0 view .LVU114
+ 483 0000 114B     		ldr	r3, .L34
+ 484 0002 5A89     		ldrh	r2, [r3, #10]
+ 485              		.loc 1 111 19 view .LVU115
+ 486 0004 114B     		ldr	r3, .L34+4
+ 487 0006 1B88     		ldrh	r3, [r3]
+ 488              		.loc 1 111 7 view .LVU116
+ 489 0008 9A42     		cmp	r2, r3
+ 490 000a 17D8     		bhi	.L30
+ 491              		.loc 1 111 43 discriminator 1 view .LVU117
+ 492 000c 104B     		ldr	r3, .L34+8
+ 493 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 494 0010 A3B1     		cbz	r3, .L30
+ 112:Core/Src/leds.c ****     {
+ 113:Core/Src/leds.c ****         if(ledIndex2 == 6){
+ 495              		.loc 1 113 9 is_stmt 1 view .LVU118
+ 496              		.loc 1 113 22 is_stmt 0 view .LVU119
+ 497 0012 104B     		ldr	r3, .L34+12
+ 498 0014 93F90030 		ldrsb	r3, [r3]
+ 499              		.loc 1 113 11 view .LVU120
+ 500 0018 062B     		cmp	r3, #6
+ 501 001a 10D0     		beq	.L33
+ 114:Core/Src/leds.c ****             isFlagUp2 = 0;
+ 115:Core/Src/leds.c ****             return;
+ 116:Core/Src/leds.c ****         }
+ 117:Core/Src/leds.c ****         if (globalTick >= ledFrequencies[1][2]){
+ 502              		.loc 1 117 9 is_stmt 1 view .LVU121
+ 118:Core/Src/leds.c ****             globalTick = 0;
+ 503              		.loc 1 118 13 view .LVU122
+ 504              		.loc 1 118 24 is_stmt 0 view .LVU123
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 12
+
+
+ 505 001c 0B4A     		ldr	r2, .L34+4
+ 506 001e 0021     		movs	r1, #0
+ 507 0020 1180     		strh	r1, [r2]	@ movhi
+ 119:Core/Src/leds.c ****         }
+ 120:Core/Src/leds.c ****         SET_BIT(GPIOB->BSRR, 1UL << ledPins[ledIndex2]);
+ 508              		.loc 1 120 9 is_stmt 1 view .LVU124
+ 509 0022 0D48     		ldr	r0, .L34+16
+ 510 0024 8269     		ldr	r2, [r0, #24]
+ 511 0026 0D49     		ldr	r1, .L34+20
+ 512 0028 11F803C0 		ldrb	ip, [r1, r3]	@ zero_extendqisi2
+ 513 002c 0121     		movs	r1, #1
+ 514 002e 01FA0CF1 		lsl	r1, r1, ip
+ 515 0032 0A43     		orrs	r2, r2, r1
+ 516 0034 8261     		str	r2, [r0, #24]
+ 121:Core/Src/leds.c ****         ledIndex2++;
+ 517              		.loc 1 121 9 view .LVU125
+ 518              		.loc 1 121 18 is_stmt 0 view .LVU126
+ 519 0036 0133     		adds	r3, r3, #1
+ 520 0038 064A     		ldr	r2, .L34+12
+ 521 003a 1370     		strb	r3, [r2]
+ 522              	.L30:
+ 122:Core/Src/leds.c ****     }
+ 123:Core/Src/leds.c **** }
+ 523              		.loc 1 123 1 view .LVU127
+ 524 003c 7047     		bx	lr
+ 525              	.L33:
+ 114:Core/Src/leds.c ****             return;
+ 526              		.loc 1 114 13 is_stmt 1 view .LVU128
+ 114:Core/Src/leds.c ****             return;
+ 527              		.loc 1 114 23 is_stmt 0 view .LVU129
+ 528 003e 044B     		ldr	r3, .L34+8
+ 529 0040 0022     		movs	r2, #0
+ 530 0042 1A70     		strb	r2, [r3]
+ 115:Core/Src/leds.c ****         }
+ 531              		.loc 1 115 13 is_stmt 1 view .LVU130
+ 532 0044 7047     		bx	lr
+ 533              	.L35:
+ 534 0046 00BF     		.align	2
+ 535              	.L34:
+ 536 0048 00000000 		.word	ledFrequencies
+ 537 004c 00000000 		.word	globalTick
+ 538 0050 00000000 		.word	isFlagUp2
+ 539 0054 00000000 		.word	ledIndex2
+ 540 0058 00040240 		.word	1073873920
+ 541 005c 00000000 		.word	ledPins
+ 542              		.cfi_endproc
+ 543              	.LFE135:
+ 545              		.section	.text.button3_change,"ax",%progbits
+ 546              		.align	1
+ 547              		.global	button3_change
+ 548              		.syntax unified
+ 549              		.thumb
+ 550              		.thumb_func
+ 552              	button3_change:
+ 553              	.LFB136:
+ 124:Core/Src/leds.c **** 
+ 125:Core/Src/leds.c **** uint8_t b2_check, p_b2_check = 0;
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 13
+
+
+ 126:Core/Src/leds.c **** uint8_t b3_check, p_b3_check = 0;
+ 127:Core/Src/leds.c **** uint8_t counter = 0;
+ 128:Core/Src/leds.c **** 
+ 129:Core/Src/leds.c **** // 按钮3状态变化处理
+ 130:Core/Src/leds.c **** void button3_change(void)
+ 131:Core/Src/leds.c **** {
+ 554              		.loc 1 131 1 view -0
+ 555              		.cfi_startproc
+ 556              		@ args = 0, pretend = 0, frame = 0
+ 557              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132:Core/Src/leds.c ****     b3_check = button3Clicks;
+ 558              		.loc 1 132 5 view .LVU132
+ 559              		.loc 1 132 14 is_stmt 0 view .LVU133
+ 560 0000 1C4B     		ldr	r3, .L44
+ 561 0002 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 562 0004 1C4B     		ldr	r3, .L44+4
+ 563 0006 1A70     		strb	r2, [r3]
+ 133:Core/Src/leds.c ****     if (b3_check != p_b3_check)
+ 564              		.loc 1 133 5 is_stmt 1 view .LVU134
+ 565              		.loc 1 133 18 is_stmt 0 view .LVU135
+ 566 0008 1C4B     		ldr	r3, .L44+8
+ 567 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 568              		.loc 1 133 8 view .LVU136
+ 569 000c 9A42     		cmp	r2, r3
+ 570 000e 2DD0     		beq	.L40
+ 134:Core/Src/leds.c ****     {
+ 135:Core/Src/leds.c ****         b2_check = button2Clicks;
+ 571              		.loc 1 135 9 is_stmt 1 view .LVU137
+ 572              		.loc 1 135 18 is_stmt 0 view .LVU138
+ 573 0010 1B4B     		ldr	r3, .L44+12
+ 574 0012 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 575 0014 1B4B     		ldr	r3, .L44+16
+ 576 0016 1870     		strb	r0, [r3]
+ 136:Core/Src/leds.c ****         if (b2_check != p_b2_check)
+ 577              		.loc 1 136 9 is_stmt 1 view .LVU139
+ 578              		.loc 1 136 22 is_stmt 0 view .LVU140
+ 579 0018 1B4B     		ldr	r3, .L44+20
+ 580 001a 93F800C0 		ldrb	ip, [r3]	@ zero_extendqisi2
+ 581              		.loc 1 136 12 view .LVU141
+ 582 001e 6045     		cmp	r0, ip
+ 583 0020 21D0     		beq	.L41
+ 131:Core/Src/leds.c ****     b3_check = button3Clicks;
+ 584              		.loc 1 131 1 view .LVU142
+ 585 0022 10B5     		push	{r4, lr}
+ 586              	.LCFI3:
+ 587              		.cfi_def_cfa_offset 8
+ 588              		.cfi_offset 4, -8
+ 589              		.cfi_offset 14, -4
+ 137:Core/Src/leds.c ****         {
+ 138:Core/Src/leds.c ****             ledStateData[1][--button3Clicks % 6] = ledFrequencies[1][button2Clicks];
+ 590              		.loc 1 138 13 is_stmt 1 view .LVU143
+ 591              		.loc 1 138 29 is_stmt 0 view .LVU144
+ 592 0024 531E     		subs	r3, r2, #1
+ 593 0026 DBB2     		uxtb	r3, r3
+ 594              		.loc 1 138 50 view .LVU145
+ 595 0028 124C     		ldr	r4, .L44
+ 596 002a 2370     		strb	r3, [r4]
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 14
+
+
+ 597              		.loc 1 138 45 view .LVU146
+ 598 002c 1749     		ldr	r1, .L44+24
+ 599 002e A1FB03E1 		umull	lr, r1, r1, r3
+ 600 0032 8908     		lsrs	r1, r1, #2
+ 601 0034 01EB4101 		add	r1, r1, r1, lsl #1
+ 602 0038 4FEA410E 		lsl	lr, r1, #1
+ 603 003c A3EB0E03 		sub	r3, r3, lr
+ 604 0040 DBB2     		uxtb	r3, r3
+ 605              		.loc 1 138 69 view .LVU147
+ 606 0042 0330     		adds	r0, r0, #3
+ 607 0044 1249     		ldr	r1, .L44+28
+ 608 0046 31F81000 		ldrh	r0, [r1, r0, lsl #1]
+ 609              		.loc 1 138 50 view .LVU148
+ 610 004a 0633     		adds	r3, r3, #6
+ 611 004c 1149     		ldr	r1, .L44+32
+ 612 004e 21F81300 		strh	r0, [r1, r3, lsl #1]	@ movhi
+ 139:Core/Src/leds.c ****             button2Clicks = 0;
+ 613              		.loc 1 139 13 is_stmt 1 view .LVU149
+ 614              		.loc 1 139 27 is_stmt 0 view .LVU150
+ 615 0052 0023     		movs	r3, #0
+ 616 0054 0A49     		ldr	r1, .L44+12
+ 617 0056 0B70     		strb	r3, [r1]
+ 140:Core/Src/leds.c ****             button3Clicks = 0;
+ 618              		.loc 1 140 13 is_stmt 1 view .LVU151
+ 619              		.loc 1 140 27 is_stmt 0 view .LVU152
+ 620 0058 2370     		strb	r3, [r4]
+ 141:Core/Src/leds.c ****         }
+ 142:Core/Src/leds.c ****         b2_check = p_b2_check;
+ 621              		.loc 1 142 9 is_stmt 1 view .LVU153
+ 622              		.loc 1 142 18 is_stmt 0 view .LVU154
+ 623 005a 0A4B     		ldr	r3, .L44+16
+ 624 005c 83F800C0 		strb	ip, [r3]
+ 143:Core/Src/leds.c ****     }
+ 144:Core/Src/leds.c ****     p_b3_check = b3_check;
+ 625              		.loc 1 144 5 is_stmt 1 view .LVU155
+ 626              		.loc 1 144 16 is_stmt 0 view .LVU156
+ 627 0060 064B     		ldr	r3, .L44+8
+ 628 0062 1A70     		strb	r2, [r3]
+ 145:Core/Src/leds.c **** }
+ 629              		.loc 1 145 1 view .LVU157
+ 630 0064 10BD     		pop	{r4, pc}
+ 631              	.L41:
+ 632              	.LCFI4:
+ 633              		.cfi_def_cfa_offset 0
+ 634              		.cfi_restore 4
+ 635              		.cfi_restore 14
+ 142:Core/Src/leds.c ****     }
+ 636              		.loc 1 142 9 is_stmt 1 view .LVU158
+ 142:Core/Src/leds.c ****     }
+ 637              		.loc 1 142 18 is_stmt 0 view .LVU159
+ 638 0066 074B     		ldr	r3, .L44+16
+ 639 0068 83F800C0 		strb	ip, [r3]
+ 640              	.L40:
+ 144:Core/Src/leds.c **** }
+ 641              		.loc 1 144 5 is_stmt 1 view .LVU160
+ 144:Core/Src/leds.c **** }
+ 642              		.loc 1 144 16 is_stmt 0 view .LVU161
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 15
+
+
+ 643 006c 034B     		ldr	r3, .L44+8
+ 644 006e 1A70     		strb	r2, [r3]
+ 645 0070 7047     		bx	lr
+ 646              	.L45:
+ 647 0072 00BF     		.align	2
+ 648              	.L44:
+ 649 0074 00000000 		.word	button3Clicks
+ 650 0078 00000000 		.word	b3_check
+ 651 007c 00000000 		.word	p_b3_check
+ 652 0080 00000000 		.word	button2Clicks
+ 653 0084 00000000 		.word	b2_check
+ 654 0088 00000000 		.word	p_b2_check
+ 655 008c ABAAAAAA 		.word	-1431655765
+ 656 0090 00000000 		.word	ledFrequencies
+ 657 0094 00000000 		.word	ledStateData
+ 658              		.cfi_endproc
+ 659              	.LFE136:
+ 661              		.section	.text.leds_state2,"ax",%progbits
+ 662              		.align	1
+ 663              		.global	leds_state2
+ 664              		.syntax unified
+ 665              		.thumb
+ 666              		.thumb_func
+ 668              	leds_state2:
+ 669              	.LFB137:
+ 146:Core/Src/leds.c **** 
+ 147:Core/Src/leds.c **** extern uint8_t isState2Flag;
+ 148:Core/Src/leds.c **** uint8_t tmp_counter = 0;
+ 149:Core/Src/leds.c **** 
+ 150:Core/Src/leds.c **** // LED状态2处理
+ 151:Core/Src/leds.c **** void leds_state2(void)
+ 152:Core/Src/leds.c **** {
+ 670              		.loc 1 152 1 is_stmt 1 view -0
+ 671              		.cfi_startproc
+ 672              		@ args = 0, pretend = 0, frame = 0
+ 673              		@ frame_needed = 0, uses_anonymous_args = 0
+ 674 0000 38B5     		push	{r3, r4, r5, lr}
+ 675              	.LCFI5:
+ 676              		.cfi_def_cfa_offset 16
+ 677              		.cfi_offset 3, -16
+ 678              		.cfi_offset 4, -12
+ 679              		.cfi_offset 5, -8
+ 680              		.cfi_offset 14, -4
+ 153:Core/Src/leds.c ****     leds_state2_go_up();
+ 681              		.loc 1 153 5 view .LVU163
+ 682 0002 FFF7FEFF 		bl	leds_state2_go_up
+ 683              	.LVL9:
+ 154:Core/Src/leds.c ****     button3_change();   
+ 684              		.loc 1 154 5 view .LVU164
+ 685 0006 FFF7FEFF 		bl	button3_change
+ 686              	.LVL10:
+ 155:Core/Src/leds.c **** 
+ 156:Core/Src/leds.c ****     if (!isFlagUp2 && isState2Flag)
+ 687              		.loc 1 156 5 view .LVU165
+ 688              		.loc 1 156 9 is_stmt 0 view .LVU166
+ 689 000a 304B     		ldr	r3, .L59
+ 690 000c 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 16
+
+
+ 691              		.loc 1 156 8 view .LVU167
+ 692 000e 11B9     		cbnz	r1, .L47
+ 693              		.loc 1 156 20 discriminator 1 view .LVU168
+ 694 0010 2F4B     		ldr	r3, .L59+4
+ 695 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 696 0014 5BBB     		cbnz	r3, .L55
+ 697              	.L47:
+ 157:Core/Src/leds.c ****     {
+ 158:Core/Src/leds.c ****         for(uint8_t tmp = 0; tmp < 6; tmp++){
+ 159:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 0){
+ 160:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 161:Core/Src/leds.c ****                 ledStateData[2][tmp] = 1;
+ 162:Core/Src/leds.c ****                 SET_BIT(GPIOB->BSRR, (1UL << ledPins[tmp]) << 16U);
+ 163:Core/Src/leds.c ****             }
+ 164:Core/Src/leds.c ****         }
+ 165:Core/Src/leds.c ****         isState2Flag = 0;
+ 166:Core/Src/leds.c ****     }
+ 167:Core/Src/leds.c **** 
+ 168:Core/Src/leds.c ****     if (!isFlagUp2 && !isState2Flag)
+ 698              		.loc 1 168 5 is_stmt 1 view .LVU169
+ 699              		.loc 1 168 8 is_stmt 0 view .LVU170
+ 700 0016 11B9     		cbnz	r1, .L46
+ 701              		.loc 1 168 23 discriminator 1 view .LVU171
+ 702 0018 2D4B     		ldr	r3, .L59+4
+ 703 001a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 704              		.loc 1 168 20 discriminator 1 view .LVU172
+ 705 001c 7BB3     		cbz	r3, .L52
+ 706              	.L46:
+ 169:Core/Src/leds.c ****     {
+ 170:Core/Src/leds.c ****         for(uint8_t tmp = 0; tmp < 6; tmp++){
+ 171:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 1){
+ 172:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 173:Core/Src/leds.c ****                 ledStateData[2][tmp] = 0;
+ 174:Core/Src/leds.c ****                 SET_BIT(GPIOB->BSRR, 1UL << ledPins[tmp]);
+ 175:Core/Src/leds.c ****             }
+ 176:Core/Src/leds.c ****         }
+ 177:Core/Src/leds.c ****         isState2Flag = 1;
+ 178:Core/Src/leds.c ****     }
+ 179:Core/Src/leds.c **** }
+ 707              		.loc 1 179 1 view .LVU173
+ 708 001e 38BD     		pop	{r3, r4, r5, pc}
+ 709              	.LVL11:
+ 710              	.L49:
+ 711              	.LBB4:
+ 158:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 0){
+ 712              		.loc 1 158 42 is_stmt 1 discriminator 2 view .LVU174
+ 713 0020 0132     		adds	r2, r2, #1
+ 714              	.LVL12:
+ 158:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 0){
+ 715              		.loc 1 158 42 is_stmt 0 discriminator 2 view .LVU175
+ 716 0022 D2B2     		uxtb	r2, r2
+ 717              	.LVL13:
+ 718              	.L48:
+ 158:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 0){
+ 719              		.loc 1 158 34 is_stmt 1 discriminator 1 view .LVU176
+ 720 0024 052A     		cmp	r2, #5
+ 721 0026 24D8     		bhi	.L57
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 17
+
+
+ 159:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 722              		.loc 1 159 13 view .LVU177
+ 159:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 723              		.loc 1 159 32 is_stmt 0 view .LVU178
+ 724 0028 9646     		mov	lr, r2
+ 725 002a 2A4B     		ldr	r3, .L59+8
+ 726 002c 33F81200 		ldrh	r0, [r3, r2, lsl #1]
+ 159:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 727              		.loc 1 159 56 view .LVU179
+ 728 0030 02F1060C 		add	ip, r2, #6
+ 729 0034 33F81C30 		ldrh	r3, [r3, ip, lsl #1]
+ 159:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 730              		.loc 1 159 16 view .LVU180
+ 731 0038 9842     		cmp	r0, r3
+ 732 003a F1D3     		bcc	.L49
+ 159:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 733              		.loc 1 159 80 discriminator 1 view .LVU181
+ 734 003c 02F10C03 		add	r3, r2, #12
+ 735 0040 2448     		ldr	r0, .L59+8
+ 736 0042 30F81330 		ldrh	r3, [r0, r3, lsl #1]
+ 159:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 737              		.loc 1 159 62 discriminator 1 view .LVU182
+ 738 0046 002B     		cmp	r3, #0
+ 739 0048 EAD1     		bne	.L49
+ 160:Core/Src/leds.c ****                 ledStateData[2][tmp] = 1;
+ 740              		.loc 1 160 17 is_stmt 1 view .LVU183
+ 160:Core/Src/leds.c ****                 ledStateData[2][tmp] = 1;
+ 741              		.loc 1 160 38 is_stmt 0 view .LVU184
+ 742 004a 20F81230 		strh	r3, [r0, r2, lsl #1]	@ movhi
+ 161:Core/Src/leds.c ****                 SET_BIT(GPIOB->BSRR, (1UL << ledPins[tmp]) << 16U);
+ 743              		.loc 1 161 17 is_stmt 1 view .LVU185
+ 161:Core/Src/leds.c ****                 SET_BIT(GPIOB->BSRR, (1UL << ledPins[tmp]) << 16U);
+ 744              		.loc 1 161 38 is_stmt 0 view .LVU186
+ 745 004e 02F10C04 		add	r4, r2, #12
+ 746 0052 0123     		movs	r3, #1
+ 747 0054 20F81430 		strh	r3, [r0, r4, lsl #1]	@ movhi
+ 162:Core/Src/leds.c ****             }
+ 748              		.loc 1 162 17 is_stmt 1 view .LVU187
+ 749 0058 1F4C     		ldr	r4, .L59+12
+ 750 005a A069     		ldr	r0, [r4, #24]
+ 751 005c 1F4D     		ldr	r5, .L59+16
+ 752 005e 15F802C0 		ldrb	ip, [r5, r2]	@ zero_extendqisi2
+ 753 0062 03FA0CF3 		lsl	r3, r3, ip
+ 754 0066 40EA0343 		orr	r3, r0, r3, lsl #16
+ 755 006a A361     		str	r3, [r4, #24]
+ 756 006c D8E7     		b	.L49
+ 757              	.LVL14:
+ 758              	.L55:
+ 158:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 0){
+ 759              		.loc 1 158 21 is_stmt 0 view .LVU188
+ 760 006e 0A46     		mov	r2, r1
+ 761 0070 D8E7     		b	.L48
+ 762              	.LVL15:
+ 763              	.L57:
+ 158:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 0){
+ 764              		.loc 1 158 21 view .LVU189
+ 765              	.LBE4:
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 18
+
+
+ 165:Core/Src/leds.c ****     }
+ 766              		.loc 1 165 9 is_stmt 1 view .LVU190
+ 165:Core/Src/leds.c ****     }
+ 767              		.loc 1 165 22 is_stmt 0 view .LVU191
+ 768 0072 174B     		ldr	r3, .L59+4
+ 769 0074 0022     		movs	r2, #0
+ 770              	.LVL16:
+ 165:Core/Src/leds.c ****     }
+ 771              		.loc 1 165 22 view .LVU192
+ 772 0076 1A70     		strb	r2, [r3]
+ 773 0078 CDE7     		b	.L47
+ 774              	.LVL17:
+ 775              	.L53:
+ 776              	.LBB5:
+ 170:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 1){
+ 777              		.loc 1 170 42 is_stmt 1 discriminator 2 view .LVU193
+ 778 007a 0133     		adds	r3, r3, #1
+ 779              	.LVL18:
+ 170:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 1){
+ 780              		.loc 1 170 42 is_stmt 0 discriminator 2 view .LVU194
+ 781 007c DBB2     		uxtb	r3, r3
+ 782              	.LVL19:
+ 783              	.L52:
+ 170:Core/Src/leds.c ****             if (ledStateData[0][tmp] >= ledStateData[1][tmp] && ledStateData[2][tmp] == 1){
+ 784              		.loc 1 170 34 is_stmt 1 discriminator 1 view .LVU195
+ 785 007e 052B     		cmp	r3, #5
+ 786 0080 1FD8     		bhi	.L58
+ 171:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 787              		.loc 1 171 13 view .LVU196
+ 171:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 788              		.loc 1 171 32 is_stmt 0 view .LVU197
+ 789 0082 144A     		ldr	r2, .L59+8
+ 790 0084 32F81310 		ldrh	r1, [r2, r3, lsl #1]
+ 171:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 791              		.loc 1 171 56 view .LVU198
+ 792 0088 981D     		adds	r0, r3, #6
+ 793 008a 32F81020 		ldrh	r2, [r2, r0, lsl #1]
+ 171:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 794              		.loc 1 171 16 view .LVU199
+ 795 008e 9142     		cmp	r1, r2
+ 796 0090 F3D3     		bcc	.L53
+ 171:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 797              		.loc 1 171 80 discriminator 1 view .LVU200
+ 798 0092 03F10C02 		add	r2, r3, #12
+ 799 0096 0F49     		ldr	r1, .L59+8
+ 800 0098 31F81220 		ldrh	r2, [r1, r2, lsl #1]
+ 171:Core/Src/leds.c ****                 ledStateData[0][tmp] = 0;
+ 801              		.loc 1 171 62 discriminator 1 view .LVU201
+ 802 009c 012A     		cmp	r2, #1
+ 803 009e ECD1     		bne	.L53
+ 172:Core/Src/leds.c ****                 ledStateData[2][tmp] = 0;
+ 804              		.loc 1 172 17 is_stmt 1 view .LVU202
+ 172:Core/Src/leds.c ****                 ledStateData[2][tmp] = 0;
+ 805              		.loc 1 172 38 is_stmt 0 view .LVU203
+ 806 00a0 0A46     		mov	r2, r1
+ 807 00a2 0021     		movs	r1, #0
+ 808 00a4 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 19
+
+
+ 173:Core/Src/leds.c ****                 SET_BIT(GPIOB->BSRR, 1UL << ledPins[tmp]);
+ 809              		.loc 1 173 17 is_stmt 1 view .LVU204
+ 173:Core/Src/leds.c ****                 SET_BIT(GPIOB->BSRR, 1UL << ledPins[tmp]);
+ 810              		.loc 1 173 38 is_stmt 0 view .LVU205
+ 811 00a8 03F10C00 		add	r0, r3, #12
+ 812 00ac 22F81010 		strh	r1, [r2, r0, lsl #1]	@ movhi
+ 174:Core/Src/leds.c ****             }
+ 813              		.loc 1 174 17 is_stmt 1 view .LVU206
+ 814 00b0 0948     		ldr	r0, .L59+12
+ 815 00b2 8269     		ldr	r2, [r0, #24]
+ 816 00b4 0949     		ldr	r1, .L59+16
+ 817 00b6 CC5C     		ldrb	r4, [r1, r3]	@ zero_extendqisi2
+ 818 00b8 0121     		movs	r1, #1
+ 819 00ba A140     		lsls	r1, r1, r4
+ 820 00bc 0A43     		orrs	r2, r2, r1
+ 821 00be 8261     		str	r2, [r0, #24]
+ 822 00c0 DBE7     		b	.L53
+ 823              	.L58:
+ 824              	.LBE5:
+ 177:Core/Src/leds.c ****     }
+ 825              		.loc 1 177 9 view .LVU207
+ 177:Core/Src/leds.c ****     }
+ 826              		.loc 1 177 22 is_stmt 0 view .LVU208
+ 827 00c2 034B     		ldr	r3, .L59+4
+ 828              	.LVL20:
+ 177:Core/Src/leds.c ****     }
+ 829              		.loc 1 177 22 view .LVU209
+ 830 00c4 0122     		movs	r2, #1
+ 831 00c6 1A70     		strb	r2, [r3]
+ 832              		.loc 1 179 1 view .LVU210
+ 833 00c8 A9E7     		b	.L46
+ 834              	.L60:
+ 835 00ca 00BF     		.align	2
+ 836              	.L59:
+ 837 00cc 00000000 		.word	isFlagUp2
+ 838 00d0 00000000 		.word	isState2Flag
+ 839 00d4 00000000 		.word	ledStateData
+ 840 00d8 00040240 		.word	1073873920
+ 841 00dc 00000000 		.word	ledPins
+ 842              		.cfi_endproc
+ 843              	.LFE137:
+ 845              		.global	tmp_counter
+ 846              		.section	.bss.tmp_counter,"aw",%nobits
+ 849              	tmp_counter:
+ 850 0000 00       		.space	1
+ 851              		.global	counter
+ 852              		.section	.bss.counter,"aw",%nobits
+ 855              	counter:
+ 856 0000 00       		.space	1
+ 857              		.global	p_b3_check
+ 858              		.section	.bss.p_b3_check,"aw",%nobits
+ 861              	p_b3_check:
+ 862 0000 00       		.space	1
+ 863              		.global	b3_check
+ 864              		.section	.bss.b3_check,"aw",%nobits
+ 867              	b3_check:
+ 868 0000 00       		.space	1
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 20
+
+
+ 869              		.global	p_b2_check
+ 870              		.section	.bss.p_b2_check,"aw",%nobits
+ 873              	p_b2_check:
+ 874 0000 00       		.space	1
+ 875              		.global	b2_check
+ 876              		.section	.bss.b2_check,"aw",%nobits
+ 879              	b2_check:
+ 880 0000 00       		.space	1
+ 881              		.section	.rodata.ledPins,"a"
+ 882              		.align	2
+ 885              	ledPins:
+ 886 0000 00070E0C 		.ascii	"\000\007\016\014\015\017"
+ 886      0D0F
+ 887              		.section	.bss.toggleFlag3,"aw",%nobits
+ 890              	toggleFlag3:
+ 891 0000 00       		.space	1
+ 892              		.section	.bss.toggleFlag2,"aw",%nobits
+ 895              	toggleFlag2:
+ 896 0000 00       		.space	1
+ 897              		.section	.bss.toggleFlag1,"aw",%nobits
+ 900              	toggleFlag1:
+ 901 0000 00       		.space	1
+ 902              		.text
+ 903              	.Letext0:
+ 904              		.file 2 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 905              		.file 3 "D:/huanjingbianliang/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc
+ 906              		.file 4 "CMSIS/Devices/Inc/stm32f429xx.h"
+ 907              		.file 5 "Core/Inc/globals.h"
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 21
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 leds.c
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:21     .text.handleButton1Press:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:27     .text.handleButton1Press:00000000 handleButton1Press
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:66     .text.handleButton1Press:00000028 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:900    .bss.toggleFlag1:00000000 toggleFlag1
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:73     .text.handleButton2Press:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:79     .text.handleButton2Press:00000000 handleButton2Press
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:118    .text.handleButton2Press:00000028 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:895    .bss.toggleFlag2:00000000 toggleFlag2
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:125    .text.handleButton3Press:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:131    .text.handleButton3Press:00000000 handleButton3Press
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:170    .text.handleButton3Press:00000028 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:890    .bss.toggleFlag3:00000000 toggleFlag3
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:177    .text.leds_state1:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:183    .text.leds_state1:00000000 leds_state1
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:339    .text.leds_state1:000000d0 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:885    .rodata.ledPins:00000000 ledPins
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:351    .text.leds_state_down:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:357    .text.leds_state_down:00000000 leds_state_down
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:456    .text.leds_state_down:00000060 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:468    .text.leds_state2_go_up:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:474    .text.leds_state2_go_up:00000000 leds_state2_go_up
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:536    .text.leds_state2_go_up:00000048 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:546    .text.button3_change:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:552    .text.button3_change:00000000 button3_change
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:649    .text.button3_change:00000074 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:867    .bss.b3_check:00000000 b3_check
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:861    .bss.p_b3_check:00000000 p_b3_check
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:879    .bss.b2_check:00000000 b2_check
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:873    .bss.p_b2_check:00000000 p_b2_check
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:662    .text.leds_state2:00000000 $t
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:668    .text.leds_state2:00000000 leds_state2
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:837    .text.leds_state2:000000cc $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:849    .bss.tmp_counter:00000000 tmp_counter
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:850    .bss.tmp_counter:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:855    .bss.counter:00000000 counter
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:856    .bss.counter:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:862    .bss.p_b3_check:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:868    .bss.b3_check:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:874    .bss.p_b2_check:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:880    .bss.b2_check:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:882    .rodata.ledPins:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:891    .bss.toggleFlag3:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:896    .bss.toggleFlag2:00000000 $d
+C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s:901    .bss.toggleFlag1:00000000 $d
+
+UNDEFINED SYMBOLS
+interruptTick1
+button1Clicks
+interruptTick2
+button2Clicks
+interruptTick3
+button3Clicks
+ledFrequencies
+globalTick
+ledIndex1
+ARM GAS  C:\Users\Sunne\AppData\Local\Temp\cc9wgWjf.s 			page 22
+
+
+ledIndex2
+isFlagUp2
+ledStateData
+isState2Flag
