@@ -1,4 +1,4 @@
-Build/main.o: Core/Src/main.c CMSIS/Devices/stm32f4xx.h \
+Build/it_handlers.o: Core/Src/it_handlers.c CMSIS/Devices/stm32f4xx.h \
  CMSIS/Devices/stm32f429xx.h CMSIS/Devices/../include/core_cm4.h \
  CMSIS/Devices/../include/cmsis_version.h \
  CMSIS/Devices/../include/cmsis_compiler.h \
