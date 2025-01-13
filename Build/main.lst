@@ -1,0 +1,773 @@
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** #include "it_handlers.h"
+   3:Core/Src/main.c **** #include "../../CMSIS/Devices/Inc/stm32f4xx.h"
+   4:Core/Src/main.c **** #include "../../CMSIS/Devices/Inc/stm32f429xx.h"
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** // Custom millisecond counter
+   7:Core/Src/main.c **** volatile uint32_t msTicks = 0;
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** void SysTick_Handler(void) {
+  29              		.loc 1 9 28 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  10:Core/Src/main.c ****     msTicks++;
+  34              		.loc 1 10 5 view .LVU1
+  35              		.loc 1 10 12 is_stmt 0 view .LVU2
+  36 0000 024A     		ldr	r2, .L2
+  37 0002 1368     		ldr	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1360     		str	r3, [r2]
+  11:Core/Src/main.c **** }
+  40              		.loc 1 11 1 view .LVU3
+  41 0008 7047     		bx	lr
+  42              	.L3:
+  43 000a 00BF     		.align	2
+  44              	.L2:
+  45 000c 00000000 		.word	msTicks
+  46              		.cfi_endproc
+  47              	.LFE130:
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 2
+
+
+  49              		.section	.text.getMillis,"ax",%progbits
+  50              		.align	1
+  51              		.global	getMillis
+  52              		.syntax unified
+  53              		.thumb
+  54              		.thumb_func
+  56              	getMillis:
+  57              	.LFB131:
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** uint32_t getMillis() {
+  58              		.loc 1 13 22 is_stmt 1 view -0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+  14:Core/Src/main.c ****     return msTicks;
+  63              		.loc 1 14 5 view .LVU5
+  64              		.loc 1 14 12 is_stmt 0 view .LVU6
+  65 0000 014B     		ldr	r3, .L5
+  66 0002 1868     		ldr	r0, [r3]
+  15:Core/Src/main.c **** }
+  67              		.loc 1 15 1 view .LVU7
+  68 0004 7047     		bx	lr
+  69              	.L6:
+  70 0006 00BF     		.align	2
+  71              	.L5:
+  72 0008 00000000 		.word	msTicks
+  73              		.cfi_endproc
+  74              	.LFE131:
+  76              		.section	.text.updateLEDs,"ax",%progbits
+  77              		.align	1
+  78              		.global	updateLEDs
+  79              		.syntax unified
+  80              		.thumb
+  81              		.thumb_func
+  83              	updateLEDs:
+  84              	.LFB132:
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** // LED and timing constants
+  18:Core/Src/main.c **** #define NUM_LEDS 6
+  19:Core/Src/main.c **** #define LONG_PRESS_TIME 2000 // 2 seconds
+  20:Core/Src/main.c **** #define SHORT_PRESS_TIME 50  // 50ms debounce
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c **** // Frequency ranges (in milliseconds)
+  23:Core/Src/main.c **** const uint16_t freqRanges[3][3] = {
+  24:Core/Src/main.c ****     {3333, 1000, 714},   // 0.3Hz, 1Hz, 1.4Hz
+  25:Core/Src/main.c ****     {2500, 833, 588},    // 0.4Hz, 1.2Hz, 1.7Hz
+  26:Core/Src/main.c ****     {2000, 625, 526}     // 0.5Hz, 1.6Hz, 1.9Hz
+  27:Core/Src/main.c **** };
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c **** // Global state variables
+  30:Core/Src/main.c **** uint16_t GlobalTickCount;      // Global timer
+  31:Core/Src/main.c **** uint8_t currentLED = 0;        // Currently selected LED (0-5)
+  32:Core/Src/main.c **** uint8_t ledStates = 0;         // Bitmask for LED states (1=on)
+  33:Core/Src/main.c **** uint8_t currentFreqRange = 0;  // Current frequency range index (0-2)
+  34:Core/Src/main.c **** uint8_t currentFreqIndex = 0;  // Current frequency index within range (0-2)
+  35:Core/Src/main.c **** uint32_t button1PressTime = 0; // Button 1 press timing
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 3
+
+
+  36:Core/Src/main.c **** uint32_t button2PressTime = 0; // Button 2 press timing
+  37:Core/Src/main.c **** uint8_t button1Pressed = 0;    // Button 1 pressed state
+  38:Core/Src/main.c **** uint8_t button2Pressed = 0;    // Button 2 pressed state
+  39:Core/Src/main.c **** 
+  40:Core/Src/main.c **** // Helper function to set LED states
+  41:Core/Src/main.c **** void updateLEDs()
+  42:Core/Src/main.c **** {
+  85              		.loc 1 42 1 is_stmt 1 view -0
+  86              		.cfi_startproc
+  87              		@ args = 0, pretend = 0, frame = 0
+  88              		@ frame_needed = 0, uses_anonymous_args = 0
+  89              		@ link register save eliminated.
+  43:Core/Src/main.c ****     for (uint8_t i = 0; i < NUM_LEDS; i++)
+  90              		.loc 1 43 5 view .LVU9
+  91              	.LBB2:
+  92              		.loc 1 43 10 view .LVU10
+  93              	.LVL0:
+  94              		.loc 1 43 18 is_stmt 0 view .LVU11
+  95 0000 0023     		movs	r3, #0
+  96              		.loc 1 43 5 view .LVU12
+  97 0002 0BE0     		b	.L8
+  98              	.LVL1:
+  99              	.L9:
+  44:Core/Src/main.c ****     {
+  45:Core/Src/main.c ****         if (ledStates & (1 << i))
+  46:Core/Src/main.c ****         {
+  47:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0 << (i * 7)); // Turn on LED
+  48:Core/Src/main.c ****         }
+  49:Core/Src/main.c ****         else
+  50:Core/Src/main.c ****         {
+  51:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0 << (i * 7)); // Turn off LED
+ 100              		.loc 1 51 13 is_stmt 1 view .LVU13
+ 101 0004 0F48     		ldr	r0, .L13
+ 102 0006 8269     		ldr	r2, [r0, #24]
+ 103 0008 C3EBC30C 		rsb	ip, r3, r3, lsl #3
+ 104 000c 4FF48031 		mov	r1, #65536
+ 105 0010 01FA0CF1 		lsl	r1, r1, ip
+ 106 0014 0A43     		orrs	r2, r2, r1
+ 107 0016 8261     		str	r2, [r0, #24]
+ 108              	.L10:
+  43:Core/Src/main.c ****     for (uint8_t i = 0; i < NUM_LEDS; i++)
+ 109              		.loc 1 43 40 discriminator 2 view .LVU14
+ 110 0018 0133     		adds	r3, r3, #1
+ 111              	.LVL2:
+  43:Core/Src/main.c ****     for (uint8_t i = 0; i < NUM_LEDS; i++)
+ 112              		.loc 1 43 40 is_stmt 0 discriminator 2 view .LVU15
+ 113 001a DBB2     		uxtb	r3, r3
+ 114              	.LVL3:
+ 115              	.L8:
+  43:Core/Src/main.c ****     for (uint8_t i = 0; i < NUM_LEDS; i++)
+ 116              		.loc 1 43 27 is_stmt 1 discriminator 1 view .LVU16
+ 117 001c 052B     		cmp	r3, #5
+ 118 001e 0FD8     		bhi	.L12
+  45:Core/Src/main.c ****         {
+ 119              		.loc 1 45 9 view .LVU17
+  45:Core/Src/main.c ****         {
+ 120              		.loc 1 45 13 is_stmt 0 view .LVU18
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 4
+
+
+ 121 0020 094A     		ldr	r2, .L13+4
+ 122 0022 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 123 0024 1A41     		asrs	r2, r2, r3
+  45:Core/Src/main.c ****         {
+ 124              		.loc 1 45 12 view .LVU19
+ 125 0026 12F0010F 		tst	r2, #1
+ 126 002a EBD0     		beq	.L9
+  47:Core/Src/main.c ****         }
+ 127              		.loc 1 47 13 is_stmt 1 view .LVU20
+ 128 002c 0548     		ldr	r0, .L13
+ 129 002e 8269     		ldr	r2, [r0, #24]
+ 130 0030 C3EBC30C 		rsb	ip, r3, r3, lsl #3
+ 131 0034 0121     		movs	r1, #1
+ 132 0036 01FA0CF1 		lsl	r1, r1, ip
+ 133 003a 0A43     		orrs	r2, r2, r1
+ 134 003c 8261     		str	r2, [r0, #24]
+ 135 003e EBE7     		b	.L10
+ 136              	.L12:
+ 137              	.LBE2:
+  52:Core/Src/main.c ****         }
+  53:Core/Src/main.c ****     }
+  54:Core/Src/main.c **** }
+ 138              		.loc 1 54 1 is_stmt 0 view .LVU21
+ 139 0040 7047     		bx	lr
+ 140              	.L14:
+ 141 0042 00BF     		.align	2
+ 142              	.L13:
+ 143 0044 00040240 		.word	1073873920
+ 144 0048 00000000 		.word	ledStates
+ 145              		.cfi_endproc
+ 146              	.LFE132:
+ 148              		.section	.text.handleButton1,"ax",%progbits
+ 149              		.align	1
+ 150              		.global	handleButton1
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 155              	handleButton1:
+ 156              	.LFB133:
+  55:Core/Src/main.c **** 
+  56:Core/Src/main.c **** // Helper function to handle button 1 presses
+  57:Core/Src/main.c **** void handleButton1()
+  58:Core/Src/main.c **** {
+ 157              		.loc 1 58 1 is_stmt 1 view -0
+ 158              		.cfi_startproc
+ 159              		@ args = 0, pretend = 0, frame = 0
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161 0000 08B5     		push	{r3, lr}
+ 162              	.LCFI0:
+ 163              		.cfi_def_cfa_offset 8
+ 164              		.cfi_offset 3, -8
+ 165              		.cfi_offset 14, -4
+  59:Core/Src/main.c ****     static uint32_t lastPressTime = 0;
+ 166              		.loc 1 59 5 view .LVU23
+  60:Core/Src/main.c ****     uint32_t currentTime = getMillis();
+ 167              		.loc 1 60 5 view .LVU24
+ 168              		.loc 1 60 28 is_stmt 0 view .LVU25
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 5
+
+
+ 169 0002 FFF7FEFF 		bl	getMillis
+ 170              	.LVL4:
+  61:Core/Src/main.c **** 
+  62:Core/Src/main.c ****     if (button1Pressed)
+ 171              		.loc 1 62 5 is_stmt 1 view .LVU26
+ 172              		.loc 1 62 9 is_stmt 0 view .LVU27
+ 173 0006 1C4B     		ldr	r3, .L22
+ 174 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 175              		.loc 1 62 8 view .LVU28
+ 176 000a 1BB3     		cbz	r3, .L16
+  63:Core/Src/main.c ****     {
+  64:Core/Src/main.c ****         if (currentTime - button1PressTime >= LONG_PRESS_TIME)
+ 177              		.loc 1 64 9 is_stmt 1 view .LVU29
+ 178              		.loc 1 64 25 is_stmt 0 view .LVU30
+ 179 000c 1B4B     		ldr	r3, .L22+4
+ 180 000e 1B68     		ldr	r3, [r3]
+ 181 0010 C31A     		subs	r3, r0, r3
+ 182              		.loc 1 64 12 view .LVU31
+ 183 0012 B3F5FA6F 		cmp	r3, #2000
+ 184 0016 18D3     		bcc	.L15
+  65:Core/Src/main.c ****         {
+  66:Core/Src/main.c ****             // Long press - cycle LEDs
+  67:Core/Src/main.c ****             if (ledStates == 0x3F)
+ 185              		.loc 1 67 13 is_stmt 1 view .LVU32
+ 186              		.loc 1 67 27 is_stmt 0 view .LVU33
+ 187 0018 194B     		ldr	r3, .L22+8
+ 188 001a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 189              		.loc 1 67 16 view .LVU34
+ 190 001c 3F2B     		cmp	r3, #63
+ 191 001e 15D0     		beq	.L21
+  68:Core/Src/main.c ****             {                  // All LEDs on
+  69:Core/Src/main.c ****                 ledStates = 0; // Turn all off
+  70:Core/Src/main.c ****             }
+  71:Core/Src/main.c ****             else
+  72:Core/Src/main.c ****             {
+  73:Core/Src/main.c ****                 ledStates |= (1 << currentLED); // Turn on next LED
+ 192              		.loc 1 73 17 is_stmt 1 view .LVU35
+ 193              		.loc 1 73 33 is_stmt 0 view .LVU36
+ 194 0020 1848     		ldr	r0, .L22+12
+ 195              	.LVL5:
+ 196              		.loc 1 73 33 view .LVU37
+ 197 0022 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+ 198 0024 0121     		movs	r1, #1
+ 199 0026 9140     		lsls	r1, r1, r2
+ 200              		.loc 1 73 27 view .LVU38
+ 201 0028 0B43     		orrs	r3, r3, r1
+ 202 002a 1549     		ldr	r1, .L22+8
+ 203 002c 0B70     		strb	r3, [r1]
+  74:Core/Src/main.c ****                 currentLED = (currentLED + 1) % NUM_LEDS;
+ 204              		.loc 1 74 17 is_stmt 1 view .LVU39
+ 205              		.loc 1 74 42 is_stmt 0 view .LVU40
+ 206 002e 0132     		adds	r2, r2, #1
+ 207              		.loc 1 74 47 view .LVU41
+ 208 0030 154B     		ldr	r3, .L22+16
+ 209 0032 83FB0213 		smull	r1, r3, r3, r2
+ 210 0036 03EB4303 		add	r3, r3, r3, lsl #1
+ 211 003a A2EB4303 		sub	r3, r2, r3, lsl #1
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 6
+
+
+ 212              		.loc 1 74 28 view .LVU42
+ 213 003e 0370     		strb	r3, [r0]
+ 214              	.L19:
+  75:Core/Src/main.c ****             }
+  76:Core/Src/main.c ****             updateLEDs();
+ 215              		.loc 1 76 13 is_stmt 1 view .LVU43
+ 216 0040 FFF7FEFF 		bl	updateLEDs
+ 217              	.LVL6:
+  77:Core/Src/main.c ****             button1Pressed = 0;
+ 218              		.loc 1 77 13 view .LVU44
+ 219              		.loc 1 77 28 is_stmt 0 view .LVU45
+ 220 0044 0C4B     		ldr	r3, .L22
+ 221 0046 0022     		movs	r2, #0
+ 222 0048 1A70     		strb	r2, [r3]
+ 223              	.L15:
+  78:Core/Src/main.c ****         }
+  79:Core/Src/main.c ****     }
+  80:Core/Src/main.c ****     else if (currentTime - lastPressTime > SHORT_PRESS_TIME)
+  81:Core/Src/main.c ****     {
+  82:Core/Src/main.c ****         // Short press - change frequency
+  83:Core/Src/main.c ****         currentFreqIndex = (currentFreqIndex + 1) % 3;
+  84:Core/Src/main.c ****         lastPressTime = currentTime;
+  85:Core/Src/main.c ****     }
+  86:Core/Src/main.c **** }
+ 224              		.loc 1 86 1 view .LVU46
+ 225 004a 08BD     		pop	{r3, pc}
+ 226              	.LVL7:
+ 227              	.L21:
+  69:Core/Src/main.c ****             }
+ 228              		.loc 1 69 17 is_stmt 1 view .LVU47
+  69:Core/Src/main.c ****             }
+ 229              		.loc 1 69 27 is_stmt 0 view .LVU48
+ 230 004c 0C4B     		ldr	r3, .L22+8
+ 231 004e 0022     		movs	r2, #0
+ 232 0050 1A70     		strb	r2, [r3]
+ 233 0052 F5E7     		b	.L19
+ 234              	.L16:
+  80:Core/Src/main.c ****     {
+ 235              		.loc 1 80 10 is_stmt 1 view .LVU49
+  80:Core/Src/main.c ****     {
+ 236              		.loc 1 80 26 is_stmt 0 view .LVU50
+ 237 0054 0D4B     		ldr	r3, .L22+20
+ 238 0056 1B68     		ldr	r3, [r3]
+ 239 0058 C31A     		subs	r3, r0, r3
+  80:Core/Src/main.c ****     {
+ 240              		.loc 1 80 13 view .LVU51
+ 241 005a 322B     		cmp	r3, #50
+ 242 005c F5D9     		bls	.L15
+  83:Core/Src/main.c ****         lastPressTime = currentTime;
+ 243              		.loc 1 83 9 is_stmt 1 view .LVU52
+  83:Core/Src/main.c ****         lastPressTime = currentTime;
+ 244              		.loc 1 83 46 is_stmt 0 view .LVU53
+ 245 005e 0C49     		ldr	r1, .L22+24
+ 246 0060 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 247 0062 0132     		adds	r2, r2, #1
+  83:Core/Src/main.c ****         lastPressTime = currentTime;
+ 248              		.loc 1 83 51 view .LVU54
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 7
+
+
+ 249 0064 0B4B     		ldr	r3, .L22+28
+ 250 0066 83FB02C3 		smull	ip, r3, r3, r2
+ 251 006a 03EB4303 		add	r3, r3, r3, lsl #1
+ 252 006e D31A     		subs	r3, r2, r3
+  83:Core/Src/main.c ****         lastPressTime = currentTime;
+ 253              		.loc 1 83 26 view .LVU55
+ 254 0070 0B70     		strb	r3, [r1]
+  84:Core/Src/main.c ****     }
+ 255              		.loc 1 84 9 is_stmt 1 view .LVU56
+  84:Core/Src/main.c ****     }
+ 256              		.loc 1 84 23 is_stmt 0 view .LVU57
+ 257 0072 064B     		ldr	r3, .L22+20
+ 258 0074 1860     		str	r0, [r3]
+ 259              		.loc 1 86 1 view .LVU58
+ 260 0076 E8E7     		b	.L15
+ 261              	.L23:
+ 262              		.align	2
+ 263              	.L22:
+ 264 0078 00000000 		.word	button1Pressed
+ 265 007c 00000000 		.word	button1PressTime
+ 266 0080 00000000 		.word	ledStates
+ 267 0084 00000000 		.word	currentLED
+ 268 0088 ABAAAA2A 		.word	715827883
+ 269 008c 00000000 		.word	lastPressTime.1
+ 270 0090 00000000 		.word	currentFreqIndex
+ 271 0094 56555555 		.word	1431655766
+ 272              		.cfi_endproc
+ 273              	.LFE133:
+ 275              		.section	.text.handleButton2,"ax",%progbits
+ 276              		.align	1
+ 277              		.global	handleButton2
+ 278              		.syntax unified
+ 279              		.thumb
+ 280              		.thumb_func
+ 282              	handleButton2:
+ 283              	.LFB134:
+  87:Core/Src/main.c **** 
+  88:Core/Src/main.c **** // Helper function to handle button 2 presses
+  89:Core/Src/main.c **** void handleButton2()
+  90:Core/Src/main.c **** {
+ 284              		.loc 1 90 1 is_stmt 1 view -0
+ 285              		.cfi_startproc
+ 286              		@ args = 0, pretend = 0, frame = 0
+ 287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288 0000 08B5     		push	{r3, lr}
+ 289              	.LCFI1:
+ 290              		.cfi_def_cfa_offset 8
+ 291              		.cfi_offset 3, -8
+ 292              		.cfi_offset 14, -4
+  91:Core/Src/main.c ****     static uint32_t lastPressTime = 0;
+ 293              		.loc 1 91 5 view .LVU60
+  92:Core/Src/main.c ****     uint32_t currentTime = getMillis();
+ 294              		.loc 1 92 5 view .LVU61
+ 295              		.loc 1 92 28 is_stmt 0 view .LVU62
+ 296 0002 FFF7FEFF 		bl	getMillis
+ 297              	.LVL8:
+  93:Core/Src/main.c **** 
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 8
+
+
+  94:Core/Src/main.c ****     if (button2Pressed)
+ 298              		.loc 1 94 5 is_stmt 1 view .LVU63
+ 299              		.loc 1 94 9 is_stmt 0 view .LVU64
+ 300 0006 154B     		ldr	r3, .L28
+ 301 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 302              		.loc 1 94 8 view .LVU65
+ 303 000a A3B1     		cbz	r3, .L25
+  95:Core/Src/main.c ****     {
+  96:Core/Src/main.c ****         if (currentTime - button2PressTime >= LONG_PRESS_TIME)
+ 304              		.loc 1 96 9 is_stmt 1 view .LVU66
+ 305              		.loc 1 96 25 is_stmt 0 view .LVU67
+ 306 000c 144B     		ldr	r3, .L28+4
+ 307 000e 1B68     		ldr	r3, [r3]
+ 308 0010 C31A     		subs	r3, r0, r3
+ 309              		.loc 1 96 12 view .LVU68
+ 310 0012 B3F5FA6F 		cmp	r3, #2000
+ 311 0016 0DD3     		bcc	.L24
+  97:Core/Src/main.c ****         {
+  98:Core/Src/main.c ****             // Long press - change LED selection
+  99:Core/Src/main.c ****             currentLED = (currentLED + 1) % NUM_LEDS;
+ 312              		.loc 1 99 13 is_stmt 1 view .LVU69
+ 313              		.loc 1 99 38 is_stmt 0 view .LVU70
+ 314 0018 1249     		ldr	r1, .L28+8
+ 315 001a 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 316 001c 0132     		adds	r2, r2, #1
+ 317              		.loc 1 99 43 view .LVU71
+ 318 001e 124B     		ldr	r3, .L28+12
+ 319 0020 83FB0203 		smull	r0, r3, r3, r2
+ 320              	.LVL9:
+ 321              		.loc 1 99 43 view .LVU72
+ 322 0024 03EB4303 		add	r3, r3, r3, lsl #1
+ 323 0028 A2EB4303 		sub	r3, r2, r3, lsl #1
+ 324              		.loc 1 99 24 view .LVU73
+ 325 002c 0B70     		strb	r3, [r1]
+ 100:Core/Src/main.c ****             button2Pressed = 0;
+ 326              		.loc 1 100 13 is_stmt 1 view .LVU74
+ 327              		.loc 1 100 28 is_stmt 0 view .LVU75
+ 328 002e 0B4B     		ldr	r3, .L28
+ 329 0030 0022     		movs	r2, #0
+ 330 0032 1A70     		strb	r2, [r3]
+ 331              	.L24:
+ 101:Core/Src/main.c ****         }
+ 102:Core/Src/main.c ****     }
+ 103:Core/Src/main.c ****     else if (currentTime - lastPressTime > SHORT_PRESS_TIME)
+ 104:Core/Src/main.c ****     {
+ 105:Core/Src/main.c ****         // Short press - change frequency range
+ 106:Core/Src/main.c ****         currentFreqRange = (currentFreqRange + 1) % 3;
+ 107:Core/Src/main.c ****         lastPressTime = currentTime;
+ 108:Core/Src/main.c ****     }
+ 109:Core/Src/main.c **** }
+ 332              		.loc 1 109 1 view .LVU76
+ 333 0034 08BD     		pop	{r3, pc}
+ 334              	.LVL10:
+ 335              	.L25:
+ 103:Core/Src/main.c ****     {
+ 336              		.loc 1 103 10 is_stmt 1 view .LVU77
+ 103:Core/Src/main.c ****     {
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 9
+
+
+ 337              		.loc 1 103 26 is_stmt 0 view .LVU78
+ 338 0036 0D4B     		ldr	r3, .L28+16
+ 339 0038 1B68     		ldr	r3, [r3]
+ 340 003a C31A     		subs	r3, r0, r3
+ 103:Core/Src/main.c ****     {
+ 341              		.loc 1 103 13 view .LVU79
+ 342 003c 322B     		cmp	r3, #50
+ 343 003e F9D9     		bls	.L24
+ 106:Core/Src/main.c ****         lastPressTime = currentTime;
+ 344              		.loc 1 106 9 is_stmt 1 view .LVU80
+ 106:Core/Src/main.c ****         lastPressTime = currentTime;
+ 345              		.loc 1 106 46 is_stmt 0 view .LVU81
+ 346 0040 0B49     		ldr	r1, .L28+20
+ 347 0042 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 348 0044 0132     		adds	r2, r2, #1
+ 106:Core/Src/main.c ****         lastPressTime = currentTime;
+ 349              		.loc 1 106 51 view .LVU82
+ 350 0046 0B4B     		ldr	r3, .L28+24
+ 351 0048 83FB02C3 		smull	ip, r3, r3, r2
+ 352 004c 03EB4303 		add	r3, r3, r3, lsl #1
+ 353 0050 D31A     		subs	r3, r2, r3
+ 106:Core/Src/main.c ****         lastPressTime = currentTime;
+ 354              		.loc 1 106 26 view .LVU83
+ 355 0052 0B70     		strb	r3, [r1]
+ 107:Core/Src/main.c ****     }
+ 356              		.loc 1 107 9 is_stmt 1 view .LVU84
+ 107:Core/Src/main.c ****     }
+ 357              		.loc 1 107 23 is_stmt 0 view .LVU85
+ 358 0054 054B     		ldr	r3, .L28+16
+ 359 0056 1860     		str	r0, [r3]
+ 360              		.loc 1 109 1 view .LVU86
+ 361 0058 ECE7     		b	.L24
+ 362              	.L29:
+ 363 005a 00BF     		.align	2
+ 364              	.L28:
+ 365 005c 00000000 		.word	button2Pressed
+ 366 0060 00000000 		.word	button2PressTime
+ 367 0064 00000000 		.word	currentLED
+ 368 0068 ABAAAA2A 		.word	715827883
+ 369 006c 00000000 		.word	lastPressTime.0
+ 370 0070 00000000 		.word	currentFreqRange
+ 371 0074 56555555 		.word	1431655766
+ 372              		.cfi_endproc
+ 373              	.LFE134:
+ 375              		.section	.text.main,"ax",%progbits
+ 376              		.align	1
+ 377              		.global	main
+ 378              		.syntax unified
+ 379              		.thumb
+ 380              		.thumb_func
+ 382              	main:
+ 383              	.LFB135:
+ 110:Core/Src/main.c **** 
+ 111:Core/Src/main.c **** int main(void)
+ 112:Core/Src/main.c **** {
+ 384              		.loc 1 112 1 is_stmt 1 view -0
+ 385              		.cfi_startproc
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 10
+
+
+ 386              		@ args = 0, pretend = 0, frame = 0
+ 387              		@ frame_needed = 0, uses_anonymous_args = 0
+ 388 0000 08B5     		push	{r3, lr}
+ 389              	.LCFI2:
+ 390              		.cfi_def_cfa_offset 8
+ 391              		.cfi_offset 3, -8
+ 392              		.cfi_offset 14, -4
+ 113:Core/Src/main.c ****     GPIO_Ini();     // Initialize GPIO
+ 393              		.loc 1 113 5 view .LVU88
+ 394 0002 FFF7FEFF 		bl	GPIO_Ini
+ 395              	.LVL11:
+ 114:Core/Src/main.c ****     RCC_Ini();      // Initialize RCC clock
+ 396              		.loc 1 114 5 view .LVU89
+ 397 0006 FFF7FEFF 		bl	RCC_Ini
+ 398              	.LVL12:
+ 115:Core/Src/main.c ****     EXTI_ITR_Ini(); // Initialize interrupt controller
+ 399              		.loc 1 115 5 view .LVU90
+ 400 000a FFF7FEFF 		bl	EXTI_ITR_Ini
+ 401              	.LVL13:
+ 116:Core/Src/main.c ****     SysTick_Init(); // Initialize system timer
+ 402              		.loc 1 116 5 view .LVU91
+ 403 000e FFF7FEFF 		bl	SysTick_Init
+ 404              	.LVL14:
+ 405              	.L31:
+ 117:Core/Src/main.c **** 
+ 118:Core/Src/main.c ****     while (1)
+ 406              		.loc 1 118 5 view .LVU92
+ 407              	.LBB3:
+ 119:Core/Src/main.c ****     {
+ 120:Core/Src/main.c ****         // Handle button presses
+ 121:Core/Src/main.c ****         handleButton1();
+ 408              		.loc 1 121 9 view .LVU93
+ 409 0012 FFF7FEFF 		bl	handleButton1
+ 410              	.LVL15:
+ 122:Core/Src/main.c ****         handleButton2();
+ 411              		.loc 1 122 9 view .LVU94
+ 412 0016 FFF7FEFF 		bl	handleButton2
+ 413              	.LVL16:
+ 123:Core/Src/main.c **** 
+ 124:Core/Src/main.c ****         // Update LED blinking based on current frequency
+ 125:Core/Src/main.c ****         uint16_t currentPeriod = freqRanges[currentFreqRange][currentFreqIndex];
+ 414              		.loc 1 125 9 view .LVU95
+ 415              		.loc 1 125 62 is_stmt 0 view .LVU96
+ 416 001a 0E4B     		ldr	r3, .L34
+ 417 001c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 418 001e 0E4A     		ldr	r2, .L34+4
+ 419 0020 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 420              		.loc 1 125 18 view .LVU97
+ 421 0022 03EB4303 		add	r3, r3, r3, lsl #1
+ 422 0026 1344     		add	r3, r3, r2
+ 423 0028 0C4A     		ldr	r2, .L34+8
+ 424 002a 32F81330 		ldrh	r3, [r2, r3, lsl #1]
+ 425              	.LVL17:
+ 126:Core/Src/main.c ****         if (GlobalTickCount >= currentPeriod)
+ 426              		.loc 1 126 9 is_stmt 1 view .LVU98
+ 427              		.loc 1 126 29 is_stmt 0 view .LVU99
+ 428 002e 0C4A     		ldr	r2, .L34+12
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 11
+
+
+ 429 0030 1288     		ldrh	r2, [r2]
+ 430              		.loc 1 126 12 view .LVU100
+ 431 0032 9A42     		cmp	r2, r3
+ 432 0034 EDD3     		bcc	.L31
+ 127:Core/Src/main.c ****         {
+ 128:Core/Src/main.c ****             GlobalTickCount = 0;
+ 433              		.loc 1 128 13 is_stmt 1 view .LVU101
+ 434              		.loc 1 128 29 is_stmt 0 view .LVU102
+ 435 0036 0A4B     		ldr	r3, .L34+12
+ 436 0038 0022     		movs	r2, #0
+ 437 003a 1A80     		strh	r2, [r3]	@ movhi
+ 129:Core/Src/main.c ****             ledStates ^= (1 << currentLED); // Toggle current LED
+ 438              		.loc 1 129 13 is_stmt 1 view .LVU103
+ 439              		.loc 1 129 29 is_stmt 0 view .LVU104
+ 440 003c 094B     		ldr	r3, .L34+16
+ 441 003e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 442 0040 0122     		movs	r2, #1
+ 443 0042 9A40     		lsls	r2, r2, r3
+ 444              		.loc 1 129 23 view .LVU105
+ 445 0044 0849     		ldr	r1, .L34+20
+ 446 0046 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 447 0048 5340     		eors	r3, r3, r2
+ 448 004a 0B70     		strb	r3, [r1]
+ 130:Core/Src/main.c ****             updateLEDs();
+ 449              		.loc 1 130 13 is_stmt 1 view .LVU106
+ 450 004c FFF7FEFF 		bl	updateLEDs
+ 451              	.LVL18:
+ 452              		.loc 1 130 13 is_stmt 0 view .LVU107
+ 453 0050 DFE7     		b	.L31
+ 454              	.L35:
+ 455 0052 00BF     		.align	2
+ 456              	.L34:
+ 457 0054 00000000 		.word	currentFreqRange
+ 458 0058 00000000 		.word	currentFreqIndex
+ 459 005c 00000000 		.word	freqRanges
+ 460 0060 00000000 		.word	GlobalTickCount
+ 461 0064 00000000 		.word	currentLED
+ 462 0068 00000000 		.word	ledStates
+ 463              	.LBE3:
+ 464              		.cfi_endproc
+ 465              	.LFE135:
+ 467              		.section	.bss.lastPressTime.0,"aw",%nobits
+ 468              		.align	2
+ 471              	lastPressTime.0:
+ 472 0000 00000000 		.space	4
+ 473              		.section	.bss.lastPressTime.1,"aw",%nobits
+ 474              		.align	2
+ 477              	lastPressTime.1:
+ 478 0000 00000000 		.space	4
+ 479              		.global	button2Pressed
+ 480              		.section	.bss.button2Pressed,"aw",%nobits
+ 483              	button2Pressed:
+ 484 0000 00       		.space	1
+ 485              		.global	button1Pressed
+ 486              		.section	.bss.button1Pressed,"aw",%nobits
+ 489              	button1Pressed:
+ 490 0000 00       		.space	1
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 12
+
+
+ 491              		.global	button2PressTime
+ 492              		.section	.bss.button2PressTime,"aw",%nobits
+ 493              		.align	2
+ 496              	button2PressTime:
+ 497 0000 00000000 		.space	4
+ 498              		.global	button1PressTime
+ 499              		.section	.bss.button1PressTime,"aw",%nobits
+ 500              		.align	2
+ 503              	button1PressTime:
+ 504 0000 00000000 		.space	4
+ 505              		.global	currentFreqIndex
+ 506              		.section	.bss.currentFreqIndex,"aw",%nobits
+ 509              	currentFreqIndex:
+ 510 0000 00       		.space	1
+ 511              		.global	currentFreqRange
+ 512              		.section	.bss.currentFreqRange,"aw",%nobits
+ 515              	currentFreqRange:
+ 516 0000 00       		.space	1
+ 517              		.global	ledStates
+ 518              		.section	.bss.ledStates,"aw",%nobits
+ 521              	ledStates:
+ 522 0000 00       		.space	1
+ 523              		.global	currentLED
+ 524              		.section	.bss.currentLED,"aw",%nobits
+ 527              	currentLED:
+ 528 0000 00       		.space	1
+ 529              		.global	GlobalTickCount
+ 530              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 531              		.align	1
+ 534              	GlobalTickCount:
+ 535 0000 0000     		.space	2
+ 536              		.global	freqRanges
+ 537              		.section	.rodata.freqRanges,"a"
+ 538              		.align	2
+ 541              	freqRanges:
+ 542 0000 050D     		.short	3333
+ 543 0002 E803     		.short	1000
+ 544 0004 CA02     		.short	714
+ 545 0006 C409     		.short	2500
+ 546 0008 4103     		.short	833
+ 547 000a 4C02     		.short	588
+ 548 000c D007     		.short	2000
+ 549 000e 7102     		.short	625
+ 550 0010 0E02     		.short	526
+ 551              		.global	msTicks
+ 552              		.section	.bss.msTicks,"aw",%nobits
+ 553              		.align	2
+ 556              	msTicks:
+ 557 0000 00000000 		.space	4
+ 558              		.text
+ 559              	.Letext0:
+ 560              		.file 2 "C:/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 561              		.file 3 "C:/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 562              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ 563              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\36525\AppData\Local\Temp\ccsebS91.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:45     .text.SysTick_Handler:0000000c $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:556    .bss.msTicks:00000000 msTicks
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:50     .text.getMillis:00000000 $t
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:56     .text.getMillis:00000000 getMillis
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:72     .text.getMillis:00000008 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:77     .text.updateLEDs:00000000 $t
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:83     .text.updateLEDs:00000000 updateLEDs
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:143    .text.updateLEDs:00000044 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:521    .bss.ledStates:00000000 ledStates
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:149    .text.handleButton1:00000000 $t
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:155    .text.handleButton1:00000000 handleButton1
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:264    .text.handleButton1:00000078 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:489    .bss.button1Pressed:00000000 button1Pressed
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:503    .bss.button1PressTime:00000000 button1PressTime
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:527    .bss.currentLED:00000000 currentLED
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:477    .bss.lastPressTime.1:00000000 lastPressTime.1
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:509    .bss.currentFreqIndex:00000000 currentFreqIndex
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:276    .text.handleButton2:00000000 $t
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:282    .text.handleButton2:00000000 handleButton2
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:365    .text.handleButton2:0000005c $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:483    .bss.button2Pressed:00000000 button2Pressed
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:496    .bss.button2PressTime:00000000 button2PressTime
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:471    .bss.lastPressTime.0:00000000 lastPressTime.0
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:515    .bss.currentFreqRange:00000000 currentFreqRange
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:376    .text.main:00000000 $t
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:382    .text.main:00000000 main
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:457    .text.main:00000054 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:541    .rodata.freqRanges:00000000 freqRanges
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:534    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:468    .bss.lastPressTime.0:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:474    .bss.lastPressTime.1:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:484    .bss.button2Pressed:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:490    .bss.button1Pressed:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:493    .bss.button2PressTime:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:500    .bss.button1PressTime:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:510    .bss.currentFreqIndex:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:516    .bss.currentFreqRange:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:522    .bss.ledStates:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:528    .bss.currentLED:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:531    .bss.GlobalTickCount:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:538    .rodata.freqRanges:00000000 $d
+C:\Users\36525\AppData\Local\Temp\ccsebS91.s:553    .bss.msTicks:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
+RCC_Ini
+EXTI_ITR_Ini
+SysTick_Init

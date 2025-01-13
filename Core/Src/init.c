@@ -1,0 +1,88 @@
+#include "init.h"
+
+void RCC_Ini(void) {
+    /* 初始化 RCC */
+    MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U); // 配置内部振荡器
+    CLEAR_REG(RCC->CFGR);
+    while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
+    CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
+    while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
+
+    /* 启动外部晶振 */
+    SET_BIT(RCC->CR, RCC_CR_HSEON);
+    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);
+    CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
+    SET_BIT(RCC->CR, RCC_CR_CSSON); // 启用时钟检测器
+
+    /* 配置PLL */
+    CLEAR_REG(RCC->PLLCFGR);
+    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE); // 设置PLL时钟源为HSE
+    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2);
+    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4);
+    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk);
+
+    /* 启动PLL */
+    SET_BIT(RCC->CR, RCC_CR_PLLON);
+    while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
+
+    /* 设置系统时钟 */
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4);
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2);
+
+    /* 配置FLASH延迟 */
+    MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
+}
+
+void GPIO_Ini(void) {
+    /* 启用GPIOB和GPIOC时钟 */
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+
+    /* 配置GPIOB引脚（LED1到LED6） */
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0 | GPIO_MODER_MODE7_0 | GPIO_MODER_MODE14_0 |
+                            GPIO_MODER_MODE3_0 | GPIO_MODER_MODE4_0 | GPIO_MODER_MODE5_0);
+
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0 | GPIO_OTYPER_OT_7 | GPIO_OTYPER_OT_14 |
+                              GPIO_OTYPER_OT_3 | GPIO_OTYPER_OT_4 | GPIO_OTYPER_OT_5);
+
+    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0 | GPIO_OSPEEDER_OSPEEDR7 | GPIO_OSPEEDER_OSPEEDR14 |
+                            GPIO_OSPEEDER_OSPEEDR3 | GPIO_OSPEEDER_OSPEEDR4 | GPIO_OSPEEDER_OSPEEDR5);
+
+    /* 配置GPIOC引脚（按钮1和按钮2） */
+    CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE13 | GPIO_MODER_MODE14); // PC13 and PC14 as input
+    SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1 | GPIO_PUPDR_PUPD14_1); // Pull-down resistors
+}
+
+void EXTI_ITR_Ini(void) {
+    /* 配置中断 */
+    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
+    
+    // Configure EXTI13 (Button 1) and EXTI14 (Button 2)
+    MODIFY_REG(SYSCFG->EXTICR[3], 
+              SYSCFG_EXTICR4_EXTI13_Msk | SYSCFG_EXTICR4_EXTI14_Msk,
+              SYSCFG_EXTICR4_EXTI13_PC | SYSCFG_EXTICR4_EXTI14_PC);
+    
+    // Enable interrupts for both buttons
+    SET_BIT(EXTI->IMR, EXTI_IMR_MR13 | EXTI_IMR_MR14);
+    
+    // Configure both rising and falling edge detection
+    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13 | EXTI_RTSR_TR14); // Rising edge
+    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13 | EXTI_FTSR_TR14); // Falling edge
+    
+    // Set interrupt priorities
+    NVIC_SetPriority(EXTI15_10_IRQn, 0);
+    NVIC_SetPriority(EXTI9_5_IRQn, 1);
+    
+    // Enable both interrupts
+    NVIC_EnableIRQ(EXTI15_10_IRQn);
+    NVIC_EnableIRQ(EXTI9_5_IRQn);
+}
+
+void SysTick_Init(void) {
+    CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);
+    SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk);
+    SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk);
+    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, 179999 << SysTick_LOAD_RELOAD_Pos);
+    SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);
+}
