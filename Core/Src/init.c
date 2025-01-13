@@ -85,13 +85,3 @@ NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка 0 �
     NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10 
 } 
  
-void SysTick_Init(void){ 
-    CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); //На всякий случай предварительно выключим счётчик 
- SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk); //Разрешаем прерывание по системному таймеру 
- SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk); //Источник тактирования будет идти из AHB без деления 
- MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, 
-   179999 << SysTick_LOAD_RELOAD_Pos); //Будет тикать с частотой 1 кГц и вызывать прерывания 
- MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, 
-   179999 << SysTick_VAL_CURRENT_Pos); //Начнём считать со значения 179 999 
- SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); //Включим счётчик 
-}
