@@ -1,0 +1,606 @@
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.HandleLEDs,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	HandleLEDs:
+  27              	.LVL0:
+  28              	.LFB132:
+   1:Core/Src/main.c **** 
+   2:Core/Src/main.c **** #include "init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** /* Simple delay function */
+   5:Core/Src/main.c **** void DelayLoop(volatile uint32_t cycleCount)
+   6:Core/Src/main.c **** {
+   7:Core/Src/main.c ****     while (cycleCount--)
+   8:Core/Src/main.c ****     {
+   9:Core/Src/main.c ****         /* Intentional empty loop for delay */
+  10:Core/Src/main.c ****     }
+  11:Core/Src/main.c **** }
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** static uint8_t s_ledQuantity    = 1;    /* Indicates how many LEDs will be lit on Button2 action */
+  14:Core/Src/main.c **** static uint8_t s_activeLedIndex = 0;    /* Tracks which LED is currently lit */
+  15:Core/Src/main.c **** static uint32_t s_ledMapping[]  = { LED1_ON, LED2_ON, LED3_ON };
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** static uint8_t s_toggleMode     = 0;    /* When in 3-LED mode, this variable toggles the LED state 
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c **** static uint8_t s_button1State;
+  20:Core/Src/main.c **** static uint8_t s_button2State;
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c **** /* Forward declaration for LED handling */
+  23:Core/Src/main.c **** static void HandleLEDs(uint8_t ledIndex, uint8_t ledCount);
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c **** int main(void)
+  26:Core/Src/main.c **** {
+  27:Core/Src/main.c ****     InitializeGPIOSelf();
+  28:Core/Src/main.c ****     InitializeGPIOCMSIS();
+  29:Core/Src/main.c **** 
+  30:Core/Src/main.c ****     uint8_t button1PreviouslyPressed = 0;
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 2
+
+
+  31:Core/Src/main.c ****     uint8_t button2PreviouslyPressed = 0;
+  32:Core/Src/main.c **** 
+  33:Core/Src/main.c ****     while (1)
+  34:Core/Src/main.c ****     {
+  35:Core/Src/main.c ****         /* Refresh button states (for demonstration, though not strictly necessary) */
+  36:Core/Src/main.c ****         s_button1State = !button1PreviouslyPressed;
+  37:Core/Src/main.c ****         s_button2State = !button2PreviouslyPressed;
+  38:Core/Src/main.c **** 
+  39:Core/Src/main.c ****         /*******************************************************************
+  40:Core/Src/main.c ****          * Button 1 logic
+  41:Core/Src/main.c ****          * - If 3 LEDs are active, toggle them all on or off.
+  42:Core/Src/main.c ****          * - Otherwise, rotate which LED is lit.
+  43:Core/Src/main.c ****          ******************************************************************/
+  44:Core/Src/main.c ****         if ( !(READ_BIT_SELF(GPIOC_IDR, GPIO_PIN_13) != 0) )
+  45:Core/Src/main.c ****         {
+  46:Core/Src/main.c ****             if (!button1PreviouslyPressed)
+  47:Core/Src/main.c ****             {
+  48:Core/Src/main.c ****                 button1PreviouslyPressed = 1;
+  49:Core/Src/main.c **** 
+  50:Core/Src/main.c ****                 if (s_ledQuantity == 3)
+  51:Core/Src/main.c ****                 {
+  52:Core/Src/main.c ****                     /* Toggle all LEDs if we are in the 3-LED mode */
+  53:Core/Src/main.c ****                     s_toggleMode = !s_toggleMode;
+  54:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+  55:Core/Src/main.c ****                 }
+  56:Core/Src/main.c ****                 else
+  57:Core/Src/main.c ****                 {
+  58:Core/Src/main.c ****                     /* Cycle to the next LED if fewer than 3 are on */
+  59:Core/Src/main.c ****                     s_activeLedIndex = (s_activeLedIndex + 1) % 3;
+  60:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+  61:Core/Src/main.c ****                 }
+  62:Core/Src/main.c ****             }
+  63:Core/Src/main.c ****         }
+  64:Core/Src/main.c ****         else
+  65:Core/Src/main.c ****         {
+  66:Core/Src/main.c ****             button1PreviouslyPressed = 0;
+  67:Core/Src/main.c ****         }
+  68:Core/Src/main.c **** 
+  69:Core/Src/main.c ****         /*******************************************************************
+  70:Core/Src/main.c ****          * Button 2 logic
+  71:Core/Src/main.c ****          * - Cycles through LED counts: 1 -> 2 -> 3 -> 1 ...
+  72:Core/Src/main.c ****          * - Invokes HandleLEDs to update lighting.
+  73:Core/Src/main.c ****          ******************************************************************/
+  74:Core/Src/main.c ****         if ( !(READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) != 0) )
+  75:Core/Src/main.c ****         {
+  76:Core/Src/main.c ****             if (!button2PreviouslyPressed)
+  77:Core/Src/main.c ****             {
+  78:Core/Src/main.c ****                 button2PreviouslyPressed = 1;
+  79:Core/Src/main.c ****                 s_ledQuantity = (s_ledQuantity % 3) + 1; 
+  80:Core/Src/main.c ****                 HandleLEDs(s_activeLedIndex, s_ledQuantity);
+  81:Core/Src/main.c ****             }
+  82:Core/Src/main.c ****         }
+  83:Core/Src/main.c ****         else
+  84:Core/Src/main.c ****         {
+  85:Core/Src/main.c ****             button2PreviouslyPressed = 0;
+  86:Core/Src/main.c ****         }
+  87:Core/Src/main.c **** 
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 3
+
+
+  88:Core/Src/main.c ****         /* Debounce delay */
+  89:Core/Src/main.c ****         DelayLoop(1000);
+  90:Core/Src/main.c ****     }
+  91:Core/Src/main.c **** }
+  92:Core/Src/main.c **** 
+  93:Core/Src/main.c **** /****************************************************************************
+  94:Core/Src/main.c ****  *  @brief   Updates LED states based on index and count
+  95:Core/Src/main.c ****  ****************************************************************************/
+  96:Core/Src/main.c **** static void HandleLEDs(uint8_t ledIndex, uint8_t ledCount)
+  97:Core/Src/main.c **** {
+  29              		.loc 1 97 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  98:Core/Src/main.c ****     /* Turn off all LEDs first */
+  99:Core/Src/main.c ****     GPIOB->BSRR = (LED1_ON | LED2_ON | LED3_ON) << 16;
+  34              		.loc 1 99 5 view .LVU1
+  35              		.loc 1 99 17 is_stmt 0 view .LVU2
+  36 0000 154B     		ldr	r3, .L12
+  37 0002 164A     		ldr	r2, .L12+4
+  38 0004 9A61     		str	r2, [r3, #24]
+ 100:Core/Src/main.c **** 
+ 101:Core/Src/main.c ****     /* If the count is 3 and toggleMode is set, turn them all on */
+ 102:Core/Src/main.c ****     if (ledCount == 3)
+  39              		.loc 1 102 5 is_stmt 1 view .LVU3
+  40              		.loc 1 102 8 is_stmt 0 view .LVU4
+  41 0006 0329     		cmp	r1, #3
+  42 0008 1BD0     		beq	.L10
+  43              	.LBB2:
+ 103:Core/Src/main.c ****     {
+ 104:Core/Src/main.c ****         if (s_toggleMode)
+ 105:Core/Src/main.c ****         {
+ 106:Core/Src/main.c ****             GPIOB->BSRR = LED1_ON | LED2_ON | LED3_ON;
+ 107:Core/Src/main.c ****         }
+ 108:Core/Src/main.c ****     }
+ 109:Core/Src/main.c ****     else
+ 110:Core/Src/main.c ****     {
+ 111:Core/Src/main.c ****         /* Light up the specified number of consecutive LEDs */
+ 112:Core/Src/main.c ****         for (uint8_t i = 0; i < ledCount; i++)
+  44              		.loc 1 112 22 view .LVU5
+  45 000a 0022     		movs	r2, #0
+  46              	.LVL1:
+  47              		.loc 1 112 31 is_stmt 1 discriminator 1 view .LVU6
+  48 000c 8A42     		cmp	r2, r1
+  49 000e 20D2     		bcs	.L11
+  50              	.LBE2:
+  97:Core/Src/main.c ****     /* Turn off all LEDs first */
+  51              		.loc 1 97 1 is_stmt 0 view .LVU7
+  52 0010 10B4     		push	{r4}
+  53              	.LCFI0:
+  54              		.cfi_def_cfa_offset 4
+  55              		.cfi_offset 4, -4
+  56              	.L4:
+  57              	.LBB4:
+  58              	.LBB3:
+ 113:Core/Src/main.c ****         {
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 4
+
+
+ 114:Core/Src/main.c ****             uint8_t idx = (ledIndex + i) % 3;
+  59              		.loc 1 114 13 is_stmt 1 view .LVU8
+  60              		.loc 1 114 37 is_stmt 0 view .LVU9
+  61 0012 00EB020C 		add	ip, r0, r2
+  62              		.loc 1 114 42 view .LVU10
+  63 0016 124B     		ldr	r3, .L12+8
+  64 0018 83FB0C43 		smull	r4, r3, r3, ip
+  65 001c A3EBEC73 		sub	r3, r3, ip, asr #31
+  66 0020 03EB4303 		add	r3, r3, r3, lsl #1
+  67 0024 ACEB0303 		sub	r3, ip, r3
+  68              	.LVL2:
+ 115:Core/Src/main.c ****             GPIOB->BSRR = s_ledMapping[idx];
+  69              		.loc 1 115 13 is_stmt 1 view .LVU11
+  70              		.loc 1 115 39 is_stmt 0 view .LVU12
+  71 0028 DBB2     		uxtb	r3, r3
+  72              		.loc 1 115 39 view .LVU13
+  73 002a 0E4C     		ldr	r4, .L12+12
+  74 002c 54F82340 		ldr	r4, [r4, r3, lsl #2]
+  75              		.loc 1 115 25 view .LVU14
+  76 0030 094B     		ldr	r3, .L12
+  77              	.LVL3:
+  78              		.loc 1 115 25 view .LVU15
+  79 0032 9C61     		str	r4, [r3, #24]
+  80              	.LBE3:
+ 112:Core/Src/main.c ****         {
+  81              		.loc 1 112 44 is_stmt 1 discriminator 3 view .LVU16
+  82 0034 0132     		adds	r2, r2, #1
+  83              	.LVL4:
+ 112:Core/Src/main.c ****         {
+  84              		.loc 1 112 44 is_stmt 0 discriminator 3 view .LVU17
+  85 0036 D2B2     		uxtb	r2, r2
+  86              	.LVL5:
+ 112:Core/Src/main.c ****         {
+  87              		.loc 1 112 31 is_stmt 1 discriminator 1 view .LVU18
+  88 0038 8A42     		cmp	r2, r1
+  89 003a EAD3     		bcc	.L4
+  90              	.LBE4:
+ 116:Core/Src/main.c ****         }
+ 117:Core/Src/main.c ****     }
+ 118:Core/Src/main.c **** }
+  91              		.loc 1 118 1 is_stmt 0 view .LVU19
+  92 003c 5DF8044B 		ldr	r4, [sp], #4
+  93              	.LCFI1:
+  94              		.cfi_restore 4
+  95              		.cfi_def_cfa_offset 0
+  96 0040 7047     		bx	lr
+  97              	.LVL6:
+  98              	.L10:
+ 104:Core/Src/main.c ****         {
+  99              		.loc 1 104 9 is_stmt 1 view .LVU20
+ 104:Core/Src/main.c ****         {
+ 100              		.loc 1 104 13 is_stmt 0 view .LVU21
+ 101 0042 094B     		ldr	r3, .L12+16
+ 102 0044 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 104:Core/Src/main.c ****         {
+ 103              		.loc 1 104 12 view .LVU22
+ 104 0046 2BB1     		cbz	r3, .L7
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 5
+
+
+ 106:Core/Src/main.c ****         }
+ 105              		.loc 1 106 13 is_stmt 1 view .LVU23
+ 106:Core/Src/main.c ****         }
+ 106              		.loc 1 106 25 is_stmt 0 view .LVU24
+ 107 0048 034B     		ldr	r3, .L12
+ 108 004a 44F28102 		movw	r2, #16513
+ 109 004e 9A61     		str	r2, [r3, #24]
+ 110 0050 7047     		bx	lr
+ 111              	.LVL7:
+ 112              	.L11:
+ 106:Core/Src/main.c ****         }
+ 113              		.loc 1 106 25 view .LVU25
+ 114 0052 7047     		bx	lr
+ 115              	.LVL8:
+ 116              	.L7:
+ 106:Core/Src/main.c ****         }
+ 117              		.loc 1 106 25 view .LVU26
+ 118 0054 7047     		bx	lr
+ 119              	.L13:
+ 120 0056 00BF     		.align	2
+ 121              	.L12:
+ 122 0058 00040240 		.word	1073873920
+ 123 005c 00008140 		.word	1082195968
+ 124 0060 56555555 		.word	1431655766
+ 125 0064 00000000 		.word	s_ledMapping
+ 126 0068 00000000 		.word	s_toggleMode
+ 127              		.cfi_endproc
+ 128              	.LFE132:
+ 130              		.section	.text.DelayLoop,"ax",%progbits
+ 131              		.align	1
+ 132              		.global	DelayLoop
+ 133              		.syntax unified
+ 134              		.thumb
+ 135              		.thumb_func
+ 137              	DelayLoop:
+ 138              	.LVL9:
+ 139              	.LFB130:
+   6:Core/Src/main.c ****     while (cycleCount--)
+ 140              		.loc 1 6 1 is_stmt 1 view -0
+ 141              		.cfi_startproc
+ 142              		@ args = 0, pretend = 0, frame = 8
+ 143              		@ frame_needed = 0, uses_anonymous_args = 0
+ 144              		@ link register save eliminated.
+   6:Core/Src/main.c ****     while (cycleCount--)
+ 145              		.loc 1 6 1 is_stmt 0 view .LVU28
+ 146 0000 82B0     		sub	sp, sp, #8
+ 147              	.LCFI2:
+ 148              		.cfi_def_cfa_offset 8
+ 149 0002 0190     		str	r0, [sp, #4]
+   7:Core/Src/main.c ****     {
+ 150              		.loc 1 7 5 is_stmt 1 view .LVU29
+ 151              	.L15:
+  10:Core/Src/main.c **** }
+ 152              		.loc 1 10 5 view .LVU30
+   7:Core/Src/main.c ****     {
+ 153              		.loc 1 7 12 discriminator 1 view .LVU31
+   7:Core/Src/main.c ****     {
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 6
+
+
+ 154              		.loc 1 7 22 is_stmt 0 discriminator 1 view .LVU32
+ 155 0004 019B     		ldr	r3, [sp, #4]
+ 156 0006 5A1E     		subs	r2, r3, #1
+ 157 0008 0192     		str	r2, [sp, #4]
+   7:Core/Src/main.c ****     {
+ 158              		.loc 1 7 12 discriminator 1 view .LVU33
+ 159 000a 002B     		cmp	r3, #0
+ 160 000c FAD1     		bne	.L15
+  11:Core/Src/main.c **** 
+ 161              		.loc 1 11 1 view .LVU34
+ 162 000e 02B0     		add	sp, sp, #8
+ 163              	.LCFI3:
+ 164              		.cfi_def_cfa_offset 0
+ 165              		@ sp needed
+ 166 0010 7047     		bx	lr
+ 167              		.cfi_endproc
+ 168              	.LFE130:
+ 170              		.section	.text.main,"ax",%progbits
+ 171              		.align	1
+ 172              		.global	main
+ 173              		.syntax unified
+ 174              		.thumb
+ 175              		.thumb_func
+ 177              	main:
+ 178              	.LFB131:
+  26:Core/Src/main.c ****     InitializeGPIOSelf();
+ 179              		.loc 1 26 1 is_stmt 1 view -0
+ 180              		.cfi_startproc
+ 181              		@ args = 0, pretend = 0, frame = 0
+ 182              		@ frame_needed = 0, uses_anonymous_args = 0
+ 183 0000 38B5     		push	{r3, r4, r5, lr}
+ 184              	.LCFI4:
+ 185              		.cfi_def_cfa_offset 16
+ 186              		.cfi_offset 3, -16
+ 187              		.cfi_offset 4, -12
+ 188              		.cfi_offset 5, -8
+ 189              		.cfi_offset 14, -4
+  27:Core/Src/main.c ****     InitializeGPIOCMSIS();
+ 190              		.loc 1 27 5 view .LVU36
+ 191 0002 FFF7FEFF 		bl	InitializeGPIOSelf
+ 192              	.LVL10:
+  28:Core/Src/main.c **** 
+ 193              		.loc 1 28 5 view .LVU37
+ 194 0006 FFF7FEFF 		bl	InitializeGPIOCMSIS
+ 195              	.LVL11:
+  30:Core/Src/main.c ****     uint8_t button2PreviouslyPressed = 0;
+ 196              		.loc 1 30 5 view .LVU38
+  31:Core/Src/main.c **** 
+ 197              		.loc 1 31 5 view .LVU39
+  31:Core/Src/main.c **** 
+ 198              		.loc 1 31 13 is_stmt 0 view .LVU40
+ 199 000a 0025     		movs	r5, #0
+  30:Core/Src/main.c ****     uint8_t button2PreviouslyPressed = 0;
+ 200              		.loc 1 30 13 view .LVU41
+ 201 000c 2C46     		mov	r4, r5
+ 202 000e 28E0     		b	.L21
+ 203              	.LVL12:
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 7
+
+
+ 204              	.L25:
+  53:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 205              		.loc 1 53 21 is_stmt 1 view .LVU42
+  53:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 206              		.loc 1 53 36 is_stmt 0 view .LVU43
+ 207 0010 264A     		ldr	r2, .L26
+ 208 0012 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 209 0014 B3FA83F3 		clz	r3, r3
+ 210 0018 5B09     		lsrs	r3, r3, #5
+  53:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 211              		.loc 1 53 34 view .LVU44
+ 212 001a 1370     		strb	r3, [r2]
+  54:Core/Src/main.c ****                 }
+ 213              		.loc 1 54 21 is_stmt 1 view .LVU45
+ 214 001c 244B     		ldr	r3, .L26+4
+ 215 001e 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 216 0020 FFF7FEFF 		bl	HandleLEDs
+ 217              	.LVL13:
+  48:Core/Src/main.c **** 
+ 218              		.loc 1 48 42 is_stmt 0 view .LVU46
+ 219 0024 0124     		movs	r4, #1
+ 220 0026 00E0     		b	.L18
+ 221              	.LVL14:
+ 222              	.L22:
+  66:Core/Src/main.c ****         }
+ 223              		.loc 1 66 38 view .LVU47
+ 224 0028 0024     		movs	r4, #0
+ 225              	.LVL15:
+ 226              	.L18:
+  74:Core/Src/main.c ****         {
+ 227              		.loc 1 74 9 is_stmt 1 view .LVU48
+  74:Core/Src/main.c ****         {
+ 228              		.loc 1 74 16 is_stmt 0 view .LVU49
+ 229 002a 224B     		ldr	r3, .L26+8
+ 230 002c 1B69     		ldr	r3, [r3, #16]
+  74:Core/Src/main.c ****         {
+ 231              		.loc 1 74 12 view .LVU50
+ 232 002e 13F0400F 		tst	r3, #64
+ 233 0032 39D1     		bne	.L23
+  76:Core/Src/main.c ****             {
+ 234              		.loc 1 76 13 is_stmt 1 view .LVU51
+  76:Core/Src/main.c ****             {
+ 235              		.loc 1 76 16 is_stmt 0 view .LVU52
+ 236 0034 8DB9     		cbnz	r5, .L20
+  78:Core/Src/main.c ****                 s_ledQuantity = (s_ledQuantity % 3) + 1; 
+ 237              		.loc 1 78 17 is_stmt 1 view .LVU53
+ 238              	.LVL16:
+  79:Core/Src/main.c ****                 HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 239              		.loc 1 79 17 view .LVU54
+  79:Core/Src/main.c ****                 HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 240              		.loc 1 79 53 is_stmt 0 view .LVU55
+ 241 0036 2048     		ldr	r0, .L26+12
+ 242 0038 0178     		ldrb	r1, [r0]	@ zero_extendqisi2
+ 243 003a 204B     		ldr	r3, .L26+16
+ 244 003c A3FB0123 		umull	r2, r3, r3, r1
+ 245 0040 03F0FE02 		and	r2, r3, #254
+ 246 0044 02EB5303 		add	r3, r2, r3, lsr #1
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 8
+
+
+ 247 0048 C91A     		subs	r1, r1, r3
+ 248 004a 0131     		adds	r1, r1, #1
+ 249 004c C9B2     		uxtb	r1, r1
+  79:Core/Src/main.c ****                 HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 250              		.loc 1 79 31 view .LVU56
+ 251 004e 0170     		strb	r1, [r0]
+  80:Core/Src/main.c ****             }
+ 252              		.loc 1 80 17 is_stmt 1 view .LVU57
+ 253 0050 174B     		ldr	r3, .L26+4
+ 254 0052 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 255 0054 FFF7FEFF 		bl	HandleLEDs
+ 256              	.LVL17:
+  78:Core/Src/main.c ****                 s_ledQuantity = (s_ledQuantity % 3) + 1; 
+ 257              		.loc 1 78 42 is_stmt 0 view .LVU58
+ 258 0058 0125     		movs	r5, #1
+ 259              	.LVL18:
+ 260              	.L20:
+  89:Core/Src/main.c ****     }
+ 261              		.loc 1 89 9 is_stmt 1 view .LVU59
+ 262 005a 4FF47A70 		mov	r0, #1000
+ 263 005e FFF7FEFF 		bl	DelayLoop
+ 264              	.LVL19:
+  33:Core/Src/main.c ****     {
+ 265              		.loc 1 33 11 view .LVU60
+ 266              	.L21:
+  33:Core/Src/main.c ****     {
+ 267              		.loc 1 33 5 view .LVU61
+  36:Core/Src/main.c ****         s_button2State = !button2PreviouslyPressed;
+ 268              		.loc 1 36 9 view .LVU62
+  36:Core/Src/main.c ****         s_button2State = !button2PreviouslyPressed;
+ 269              		.loc 1 36 26 is_stmt 0 view .LVU63
+ 270 0062 84F00103 		eor	r3, r4, #1
+  36:Core/Src/main.c ****         s_button2State = !button2PreviouslyPressed;
+ 271              		.loc 1 36 24 view .LVU64
+ 272 0066 164A     		ldr	r2, .L26+20
+ 273 0068 1370     		strb	r3, [r2]
+  37:Core/Src/main.c **** 
+ 274              		.loc 1 37 9 is_stmt 1 view .LVU65
+  37:Core/Src/main.c **** 
+ 275              		.loc 1 37 26 is_stmt 0 view .LVU66
+ 276 006a 85F00103 		eor	r3, r5, #1
+  37:Core/Src/main.c **** 
+ 277              		.loc 1 37 24 view .LVU67
+ 278 006e 154A     		ldr	r2, .L26+24
+ 279 0070 1370     		strb	r3, [r2]
+  44:Core/Src/main.c ****         {
+ 280              		.loc 1 44 9 is_stmt 1 view .LVU68
+  44:Core/Src/main.c ****         {
+ 281              		.loc 1 44 16 is_stmt 0 view .LVU69
+ 282 0072 154B     		ldr	r3, .L26+28
+ 283 0074 D3F81038 		ldr	r3, [r3, #2064]
+  44:Core/Src/main.c ****         {
+ 284              		.loc 1 44 12 view .LVU70
+ 285 0078 13F4005F 		tst	r3, #8192
+ 286 007c D4D1     		bne	.L22
+  46:Core/Src/main.c ****             {
+ 287              		.loc 1 46 13 is_stmt 1 view .LVU71
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 9
+
+
+  46:Core/Src/main.c ****             {
+ 288              		.loc 1 46 16 is_stmt 0 view .LVU72
+ 289 007e 002C     		cmp	r4, #0
+ 290 0080 D3D1     		bne	.L18
+  48:Core/Src/main.c **** 
+ 291              		.loc 1 48 17 is_stmt 1 view .LVU73
+ 292              	.LVL20:
+  50:Core/Src/main.c ****                 {
+ 293              		.loc 1 50 17 view .LVU74
+  50:Core/Src/main.c ****                 {
+ 294              		.loc 1 50 35 is_stmt 0 view .LVU75
+ 295 0082 0D4B     		ldr	r3, .L26+12
+ 296 0084 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  50:Core/Src/main.c ****                 {
+ 297              		.loc 1 50 20 view .LVU76
+ 298 0086 0329     		cmp	r1, #3
+ 299 0088 C2D0     		beq	.L25
+  59:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 300              		.loc 1 59 21 is_stmt 1 view .LVU77
+  59:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 301              		.loc 1 59 58 is_stmt 0 view .LVU78
+ 302 008a 094A     		ldr	r2, .L26+4
+ 303 008c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 304 008e 0133     		adds	r3, r3, #1
+  59:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 305              		.loc 1 59 63 view .LVU79
+ 306 0090 0E48     		ldr	r0, .L26+32
+ 307 0092 80FB0340 		smull	r4, r0, r0, r3
+ 308 0096 00EB4000 		add	r0, r0, r0, lsl #1
+ 309 009a 181A     		subs	r0, r3, r0
+  59:Core/Src/main.c ****                     HandleLEDs(s_activeLedIndex, s_ledQuantity);
+ 310              		.loc 1 59 38 view .LVU80
+ 311 009c C0B2     		uxtb	r0, r0
+ 312 009e 1070     		strb	r0, [r2]
+  60:Core/Src/main.c ****                 }
+ 313              		.loc 1 60 21 is_stmt 1 view .LVU81
+ 314 00a0 FFF7FEFF 		bl	HandleLEDs
+ 315              	.LVL21:
+  48:Core/Src/main.c **** 
+ 316              		.loc 1 48 42 is_stmt 0 view .LVU82
+ 317 00a4 0124     		movs	r4, #1
+ 318 00a6 C0E7     		b	.L18
+ 319              	.LVL22:
+ 320              	.L23:
+  85:Core/Src/main.c ****         }
+ 321              		.loc 1 85 38 view .LVU83
+ 322 00a8 0025     		movs	r5, #0
+ 323              	.LVL23:
+  85:Core/Src/main.c ****         }
+ 324              		.loc 1 85 38 view .LVU84
+ 325 00aa D6E7     		b	.L20
+ 326              	.L27:
+ 327              		.align	2
+ 328              	.L26:
+ 329 00ac 00000000 		.word	s_toggleMode
+ 330 00b0 00000000 		.word	s_activeLedIndex
+ 331 00b4 00080240 		.word	1073874944
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 10
+
+
+ 332 00b8 00000000 		.word	s_ledQuantity
+ 333 00bc ABAAAAAA 		.word	-1431655765
+ 334 00c0 00000000 		.word	s_button1State
+ 335 00c4 00000000 		.word	s_button2State
+ 336 00c8 00000240 		.word	1073872896
+ 337 00cc 56555555 		.word	1431655766
+ 338              		.cfi_endproc
+ 339              	.LFE131:
+ 341              		.section	.bss.s_button2State,"aw",%nobits
+ 344              	s_button2State:
+ 345 0000 00       		.space	1
+ 346              		.section	.bss.s_button1State,"aw",%nobits
+ 349              	s_button1State:
+ 350 0000 00       		.space	1
+ 351              		.section	.bss.s_toggleMode,"aw",%nobits
+ 354              	s_toggleMode:
+ 355 0000 00       		.space	1
+ 356              		.section	.rodata.s_ledMapping,"a"
+ 357              		.align	2
+ 360              	s_ledMapping:
+ 361 0000 00400000 		.word	16384
+ 362 0004 80000000 		.word	128
+ 363 0008 01000000 		.word	1
+ 364              		.section	.bss.s_activeLedIndex,"aw",%nobits
+ 367              	s_activeLedIndex:
+ 368 0000 00       		.space	1
+ 369              		.section	.data.s_ledQuantity,"aw"
+ 372              	s_ledQuantity:
+ 373 0000 01       		.byte	1
+ 374              		.text
+ 375              	.Letext0:
+ 376              		.file 2 "C:/SysGCC/arm-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 377              		.file 3 "C:/SysGCC/arm-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 378              		.file 4 "Core/Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 379              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\28607\AppData\Local\Temp\cctbw9gj.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:21     .text.HandleLEDs:00000000 $t
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:26     .text.HandleLEDs:00000000 HandleLEDs
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:122    .text.HandleLEDs:00000058 $d
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:360    .rodata.s_ledMapping:00000000 s_ledMapping
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:354    .bss.s_toggleMode:00000000 s_toggleMode
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:131    .text.DelayLoop:00000000 $t
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:137    .text.DelayLoop:00000000 DelayLoop
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:171    .text.main:00000000 $t
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:177    .text.main:00000000 main
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:329    .text.main:000000ac $d
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:367    .bss.s_activeLedIndex:00000000 s_activeLedIndex
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:372    .data.s_ledQuantity:00000000 s_ledQuantity
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:349    .bss.s_button1State:00000000 s_button1State
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:344    .bss.s_button2State:00000000 s_button2State
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:345    .bss.s_button2State:00000000 $d
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:350    .bss.s_button1State:00000000 $d
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:355    .bss.s_toggleMode:00000000 $d
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:357    .rodata.s_ledMapping:00000000 $d
+C:\Users\28607\AppData\Local\Temp\cctbw9gj.s:368    .bss.s_activeLedIndex:00000000 $d
+
+UNDEFINED SYMBOLS
+InitializeGPIOSelf
+InitializeGPIOCMSIS
