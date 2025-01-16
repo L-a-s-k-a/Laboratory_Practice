@@ -1,14 +1,17 @@
 #include "init.h"
-void GPIO_Ini(void){
 
- RCC_GPIO_EN |= RCC_GPIOB_EN + RCC_GPIOC_EN;
- 
- GPIOB_MODER |= GPIOB_MODE_PIN7_OUT;
+void GPIO_Init(void) {
+    RCC_AHB1ENR |= (1UL << 6) | (1UL << 5) | (1UL << 4) | (1UL << 3);
 
- GPIOB_OTYPER |= GPIOB_OTYPE_PIN7_PP;
+    GPIOG_MODER &= ~((3UL << (9 * 2)) | (3UL << (14 * 2)));
+    GPIOG_MODER |= ((1UL << (9 * 2)) | (1UL << (14 * 2)));
+    GPIOF_MODER &= ~((3UL << (15 * 2)) | (3UL << (14 * 2)));
+    GPIOF_MODER |= ((1UL << (15 * 2)) | (1UL << (14 * 2)));
+    GPIOE_MODER &= ~((3UL << (13 * 2)) | (3UL << (11 * 2)));
+    GPIOE_MODER |= ((1UL << (13 * 2)) | (1UL << (11 * 2)));
 
- GPIOB_OSPEEDR |= GPIOB_OSPEED_PIN7_MID;
-
- GPIOB_PUPDR |= GPIOB_PUPDR_PIN7_NOPUPD;
-
+    GPIOF_MODER &= ~(3UL << (12 * 2));
+    GPIOD_MODER &= ~(3UL << (15 * 2));
+    GPIOF_PUPDR |= (2UL << (12 * 2));
+    GPIOD_PUPDR |= (2UL << (15 * 2));
 }
