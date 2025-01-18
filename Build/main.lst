@@ -1,0 +1,352 @@
+ARM GAS  C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** int main(void) 
+   4:Core/Src/main.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 00B5     		push	{lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 4
+  36              		.cfi_offset 14, -4
+  37 0002 83B0     		sub	sp, sp, #12
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 16
+   5:Core/Src/main.c ****     GPIO_Ini();  // 初始化 GPIO
+  40              		.loc 1 5 5 view .LVU1
+  41 0004 FFF7FEFF 		bl	GPIO_Ini
+  42              	.LVL0:
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c ****     uint8_t ledIndex = 0; // 当前点亮的 LED 索引
+  43              		.loc 1 7 5 view .LVU2
+   8:Core/Src/main.c ****     uint8_t buttonPressCount = 0; // 按钮按下计数
+  44              		.loc 1 8 5 view .LVU3
+  45              		.loc 1 8 13 is_stmt 0 view .LVU4
+  46 0008 0021     		movs	r1, #0
+   7:Core/Src/main.c ****     uint8_t buttonPressCount = 0; // 按钮按下计数
+  47              		.loc 1 7 13 view .LVU5
+  48 000a 0846     		mov	r0, r1
+  49 000c 1EE0     		b	.L3
+ARM GAS  C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s 			page 2
+
+
+  50              	.LVL1:
+  51              	.L5:
+  52              	.LBB2:
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c ****     while(1)
+  11:Core/Src/main.c ****     {
+  12:Core/Src/main.c ****         // 检测按钮是否按下
+  13:Core/Src/main.c ****         if (READ_GPIO_C13 == 0) {
+  14:Core/Src/main.c ****             // 简单去抖动
+  15:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++);  // 延时
+  53              		.loc 1 15 51 is_stmt 1 discriminator 3 view .LVU6
+  54 000e 019B     		ldr	r3, [sp, #4]
+  55 0010 0133     		adds	r3, r3, #1
+  56 0012 0193     		str	r3, [sp, #4]
+  57              	.L4:
+  58              		.loc 1 15 40 discriminator 1 view .LVU7
+  59 0014 019A     		ldr	r2, [sp, #4]
+  60 0016 384B     		ldr	r3, .L21
+  61 0018 9A42     		cmp	r2, r3
+  62 001a F8DD     		ble	.L5
+  63              	.L6:
+  64              	.LBE2:
+  16:Core/Src/main.c ****             while (READ_GPIO_C13 == 0);  // 等待按钮释放
+  65              		.loc 1 16 34 discriminator 1 view .LVU8
+  66              		.loc 1 16 20 is_stmt 0 discriminator 1 view .LVU9
+  67 001c 374B     		ldr	r3, .L21+4
+  68 001e D3F81038 		ldr	r3, [r3, #2064]
+  69              		.loc 1 16 34 discriminator 1 view .LVU10
+  70 0022 13F4005F 		tst	r3, #8192
+  71 0026 F9D0     		beq	.L6
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c ****             buttonPressCount++;  // 增加按钮按下计数
+  72              		.loc 1 18 13 is_stmt 1 view .LVU11
+  73              		.loc 1 18 29 is_stmt 0 view .LVU12
+  74 0028 0131     		adds	r1, r1, #1
+  75              	.LVL2:
+  76              		.loc 1 18 29 view .LVU13
+  77 002a C9B2     		uxtb	r1, r1
+  78              	.LVL3:
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c ****             // 按钮按下次数控制 LED
+  21:Core/Src/main.c ****             if (buttonPressCount <= 4) {
+  79              		.loc 1 21 13 is_stmt 1 view .LVU14
+  80              		.loc 1 21 16 is_stmt 0 view .LVU15
+  81 002c 0429     		cmp	r1, #4
+  82 002e 27D8     		bhi	.L7
+  22:Core/Src/main.c ****                 // 点亮下一个 LED
+  23:Core/Src/main.c ****                 if (ledIndex < 4) {
+  83              		.loc 1 23 17 is_stmt 1 view .LVU16
+  84              		.loc 1 23 20 is_stmt 0 view .LVU17
+  85 0030 0328     		cmp	r0, #3
+  86 0032 0BD8     		bhi	.L3
+  24:Core/Src/main.c ****                     // 根据 ledIndex 点亮对应的 LED
+  25:Core/Src/main.c ****                     switch (ledIndex) {
+  87              		.loc 1 25 21 is_stmt 1 view .LVU18
+  88 0034 0328     		cmp	r0, #3
+  89 0036 07D8     		bhi	.L9
+ARM GAS  C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s 			page 3
+
+
+  90 0038 DFE800F0 		tbb	[pc, r0]
+  91              	.L11:
+  92 003c 02       		.byte	(.L14-.L11)/2
+  93 003d 11       		.byte	(.L13-.L11)/2
+  94 003e 16       		.byte	(.L12-.L11)/2
+  95 003f 1C       		.byte	(.L10-.L11)/2
+  96              		.p2align 1
+  97              	.L14:
+  26:Core/Src/main.c ****                         case 0:
+  27:Core/Src/main.c ****                             SET_GPIO_B(0);  // PB0
+  98              		.loc 1 27 29 view .LVU19
+  99 0040 2E4B     		ldr	r3, .L21+4
+ 100 0042 0122     		movs	r2, #1
+ 101 0044 C3F81824 		str	r2, [r3, #1048]
+  28:Core/Src/main.c ****                             break;
+ 102              		.loc 1 28 29 view .LVU20
+ 103              	.L9:
+  29:Core/Src/main.c ****                         case 1:
+  30:Core/Src/main.c ****                             SET_GPIO_B(7);  // PB7
+  31:Core/Src/main.c ****                             break;
+  32:Core/Src/main.c ****                         case 2:
+  33:Core/Src/main.c ****                             SET_GPIO_B(14); // PB14
+  34:Core/Src/main.c ****                             break;
+  35:Core/Src/main.c ****                         case 3:
+  36:Core/Src/main.c ****                             SET_GPIO_B(15); // PB15
+  37:Core/Src/main.c ****                             break;
+  38:Core/Src/main.c ****                         default:
+  39:Core/Src/main.c ****                             break;
+  40:Core/Src/main.c ****                     }
+  41:Core/Src/main.c ****                     ledIndex++;  // 更新当前 LED 索引
+ 104              		.loc 1 41 21 view .LVU21
+ 105              		.loc 1 41 29 is_stmt 0 view .LVU22
+ 106 0048 0130     		adds	r0, r0, #1
+ 107              	.LVL4:
+ 108              		.loc 1 41 29 view .LVU23
+ 109 004a C0B2     		uxtb	r0, r0
+ 110              	.LVL5:
+ 111              	.L3:
+  10:Core/Src/main.c ****     {
+ 112              		.loc 1 10 5 is_stmt 1 view .LVU24
+  13:Core/Src/main.c ****             // 简单去抖动
+ 113              		.loc 1 13 9 view .LVU25
+  13:Core/Src/main.c ****             // 简单去抖动
+ 114              		.loc 1 13 13 is_stmt 0 view .LVU26
+ 115 004c 2B4B     		ldr	r3, .L21+4
+ 116 004e D3F81038 		ldr	r3, [r3, #2064]
+  13:Core/Src/main.c ****             // 简单去抖动
+ 117              		.loc 1 13 12 view .LVU27
+ 118 0052 13F4005F 		tst	r3, #8192
+ 119 0056 F9D1     		bne	.L3
+  15:Core/Src/main.c ****             while (READ_GPIO_C13 == 0);  // 等待按钮释放
+ 120              		.loc 1 15 13 is_stmt 1 view .LVU28
+ 121              	.LBB3:
+  15:Core/Src/main.c ****             while (READ_GPIO_C13 == 0);  // 等待按钮释放
+ 122              		.loc 1 15 18 view .LVU29
+  15:Core/Src/main.c ****             while (READ_GPIO_C13 == 0);  // 等待按钮释放
+ 123              		.loc 1 15 31 is_stmt 0 view .LVU30
+ARM GAS  C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s 			page 4
+
+
+ 124 0058 0023     		movs	r3, #0
+ 125 005a 0193     		str	r3, [sp, #4]
+  15:Core/Src/main.c ****             while (READ_GPIO_C13 == 0);  // 等待按钮释放
+ 126              		.loc 1 15 13 view .LVU31
+ 127 005c DAE7     		b	.L4
+ 128              	.L13:
+  15:Core/Src/main.c ****             while (READ_GPIO_C13 == 0);  // 等待按钮释放
+ 129              		.loc 1 15 13 view .LVU32
+ 130              	.LBE3:
+  30:Core/Src/main.c ****                             break;
+ 131              		.loc 1 30 29 is_stmt 1 view .LVU33
+ 132 005e 274B     		ldr	r3, .L21+4
+ 133 0060 8022     		movs	r2, #128
+ 134 0062 C3F81824 		str	r2, [r3, #1048]
+  31:Core/Src/main.c ****                         case 2:
+ 135              		.loc 1 31 29 view .LVU34
+ 136 0066 EFE7     		b	.L9
+ 137              	.L12:
+  33:Core/Src/main.c ****                             break;
+ 138              		.loc 1 33 29 view .LVU35
+ 139 0068 244B     		ldr	r3, .L21+4
+ 140 006a 4FF48042 		mov	r2, #16384
+ 141 006e C3F81824 		str	r2, [r3, #1048]
+  34:Core/Src/main.c ****                         case 3:
+ 142              		.loc 1 34 29 view .LVU36
+ 143 0072 E9E7     		b	.L9
+ 144              	.L10:
+  36:Core/Src/main.c ****                             break;
+ 145              		.loc 1 36 29 view .LVU37
+ 146 0074 214B     		ldr	r3, .L21+4
+ 147 0076 4FF40042 		mov	r2, #32768
+ 148 007a C3F81824 		str	r2, [r3, #1048]
+  37:Core/Src/main.c ****                         default:
+ 149              		.loc 1 37 29 view .LVU38
+ 150 007e E3E7     		b	.L9
+ 151              	.L7:
+  42:Core/Src/main.c ****                 }
+  43:Core/Src/main.c ****             } 
+  44:Core/Src/main.c ****             else if (buttonPressCount == 5) {
+ 152              		.loc 1 44 18 view .LVU39
+ 153              		.loc 1 44 21 is_stmt 0 view .LVU40
+ 154 0080 0529     		cmp	r1, #5
+ 155 0082 15D0     		beq	.L19
+  45:Core/Src/main.c ****                 // 熄灭所有 LED
+  46:Core/Src/main.c ****                 RESET_GPIO_B(0);   // PB0
+  47:Core/Src/main.c ****                 RESET_GPIO_B(7);   // PB7
+  48:Core/Src/main.c ****                 RESET_GPIO_B(14);  // PB14
+  49:Core/Src/main.c ****                 RESET_GPIO_B(15);  // PB15 (外接 LED)
+  50:Core/Src/main.c ****                 ledIndex = 0; // 重置 LED 索引
+  51:Core/Src/main.c ****             } 
+  52:Core/Src/main.c ****             else if (buttonPressCount == 6) {
+ 156              		.loc 1 52 18 is_stmt 1 view .LVU41
+ 157              		.loc 1 52 21 is_stmt 0 view .LVU42
+ 158 0084 0629     		cmp	r1, #6
+ 159 0086 26D0     		beq	.L20
+  53:Core/Src/main.c ****                 // 点亮所有 LED
+  54:Core/Src/main.c ****                 SET_GPIO_B(0);   // PB0
+ARM GAS  C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s 			page 5
+
+
+  55:Core/Src/main.c ****                 SET_GPIO_B(7);   // PB7
+  56:Core/Src/main.c ****                 SET_GPIO_B(14);  // PB14
+  57:Core/Src/main.c ****                 SET_GPIO_B(15);  // PB15 (外接 LED)
+  58:Core/Src/main.c ****             } 
+  59:Core/Src/main.c ****             else {
+  60:Core/Src/main.c ****                 // 超过六次按下，重置计数
+  61:Core/Src/main.c ****                 buttonPressCount = 0;
+ 160              		.loc 1 61 17 is_stmt 1 view .LVU43
+ 161              	.LVL6:
+  62:Core/Src/main.c ****                 RESET_GPIO_B(0);   // PB0
+ 162              		.loc 1 62 17 view .LVU44
+ 163 0088 1C4B     		ldr	r3, .L21+4
+ 164 008a 4FF48032 		mov	r2, #65536
+ 165 008e C3F81824 		str	r2, [r3, #1048]
+  63:Core/Src/main.c ****                 RESET_GPIO_B(7);   // PB7
+ 166              		.loc 1 63 17 view .LVU45
+ 167 0092 4FF40002 		mov	r2, #8388608
+ 168 0096 C3F81824 		str	r2, [r3, #1048]
+  64:Core/Src/main.c ****                 RESET_GPIO_B(14);  // PB14
+ 169              		.loc 1 64 17 view .LVU46
+ 170 009a 4FF08042 		mov	r2, #1073741824
+ 171 009e C3F81824 		str	r2, [r3, #1048]
+  65:Core/Src/main.c ****                 RESET_GPIO_B(15);  // PB15 (外接 LED)
+ 172              		.loc 1 65 17 view .LVU47
+ 173 00a2 4FF00042 		mov	r2, #-2147483648
+ 174 00a6 C3F81824 		str	r2, [r3, #1048]
+  66:Core/Src/main.c ****                 ledIndex = 0;  // 重置 LED 索引
+ 175              		.loc 1 66 17 view .LVU48
+ 176              	.LVL7:
+  61:Core/Src/main.c ****                 RESET_GPIO_B(0);   // PB0
+ 177              		.loc 1 61 34 is_stmt 0 view .LVU49
+ 178 00aa 0021     		movs	r1, #0
+ 179              		.loc 1 66 26 view .LVU50
+ 180 00ac 0846     		mov	r0, r1
+ 181 00ae CDE7     		b	.L3
+ 182              	.LVL8:
+ 183              	.L19:
+  46:Core/Src/main.c ****                 RESET_GPIO_B(7);   // PB7
+ 184              		.loc 1 46 17 is_stmt 1 view .LVU51
+ 185 00b0 124B     		ldr	r3, .L21+4
+ 186 00b2 4FF48032 		mov	r2, #65536
+ 187 00b6 C3F81824 		str	r2, [r3, #1048]
+  47:Core/Src/main.c ****                 RESET_GPIO_B(14);  // PB14
+ 188              		.loc 1 47 17 view .LVU52
+ 189 00ba 4FF40002 		mov	r2, #8388608
+ 190 00be C3F81824 		str	r2, [r3, #1048]
+  48:Core/Src/main.c ****                 RESET_GPIO_B(15);  // PB15 (外接 LED)
+ 191              		.loc 1 48 17 view .LVU53
+ 192 00c2 4FF08042 		mov	r2, #1073741824
+ 193 00c6 C3F81824 		str	r2, [r3, #1048]
+  49:Core/Src/main.c ****                 ledIndex = 0; // 重置 LED 索引
+ 194              		.loc 1 49 17 view .LVU54
+ 195 00ca 4FF00042 		mov	r2, #-2147483648
+ 196 00ce C3F81824 		str	r2, [r3, #1048]
+  50:Core/Src/main.c ****             } 
+ 197              		.loc 1 50 17 view .LVU55
+ 198              	.LVL9:
+ARM GAS  C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s 			page 6
+
+
+  50:Core/Src/main.c ****             } 
+ 199              		.loc 1 50 26 is_stmt 0 view .LVU56
+ 200 00d2 0020     		movs	r0, #0
+ 201 00d4 BAE7     		b	.L3
+ 202              	.LVL10:
+ 203              	.L20:
+  54:Core/Src/main.c ****                 SET_GPIO_B(7);   // PB7
+ 204              		.loc 1 54 17 is_stmt 1 view .LVU57
+ 205 00d6 094B     		ldr	r3, .L21+4
+ 206 00d8 0122     		movs	r2, #1
+ 207 00da C3F81824 		str	r2, [r3, #1048]
+  55:Core/Src/main.c ****                 SET_GPIO_B(14);  // PB14
+ 208              		.loc 1 55 17 view .LVU58
+ 209 00de 8022     		movs	r2, #128
+ 210 00e0 C3F81824 		str	r2, [r3, #1048]
+  56:Core/Src/main.c ****                 SET_GPIO_B(15);  // PB15 (外接 LED)
+ 211              		.loc 1 56 17 view .LVU59
+ 212 00e4 4FF48042 		mov	r2, #16384
+ 213 00e8 C3F81824 		str	r2, [r3, #1048]
+  57:Core/Src/main.c ****             } 
+ 214              		.loc 1 57 17 view .LVU60
+ 215 00ec 4FF40042 		mov	r2, #32768
+ 216 00f0 C3F81824 		str	r2, [r3, #1048]
+ 217 00f4 AAE7     		b	.L3
+ 218              	.L22:
+ 219 00f6 00BF     		.align	2
+ 220              	.L21:
+ 221 00f8 9F860100 		.word	99999
+ 222 00fc 00000240 		.word	1073872896
+ 223              		.cfi_endproc
+ 224              	.LFE130:
+ 226              		.text
+ 227              	.Letext0:
+ 228              		.file 2 "E:/TPU_Work/one_chip_computer/first_homework/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1-win
+ 229              		.file 3 "E:/TPU_Work/one_chip_computer/first_homework/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1-win
+ 230              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s:21     .text.main:00000000 $t
+C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s:27     .text.main:00000000 main
+C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s:92     .text.main:0000003c $d
+C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s:96     .text.main:00000040 $t
+C:\Users\admin\AppData\Local\Temp\ccCVK5pa.s:221    .text.main:000000f8 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
