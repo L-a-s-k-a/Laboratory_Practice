@@ -1,0 +1,220 @@
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccawrXJu.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "stm32f4xx.h"
+   2:Core/Src/main.c **** #include "init.h"
+   3:Core/Src/main.c **** #include <stdint.h>
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** //=== 全局变量 / extern ===
+   6:Core/Src/main.c **** uint8_t LedOn[6] = {0,0,0,0,0,0};
+   7:Core/Src/main.c **** uint8_t NumLedOn = 0;
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** uint32_t BlinkPeriods[3] = {2500, 909, 526};
+  10:Core/Src/main.c **** uint8_t  FreqIndex = 0;
+  11:Core/Src/main.c **** uint32_t CurrentPeriod = 2500; // 初始=0.4Hz
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** typedef enum {
+  14:Core/Src/main.c ****     MODE_BLINK=0,
+  15:Core/Src/main.c ****     MODE_CONSTANT
+  16:Core/Src/main.c **** } WorkMode_t;
+  17:Core/Src/main.c **** volatile WorkMode_t CurrentMode = MODE_BLINK;
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c **** //=== SysTick 计数 ===
+  20:Core/Src/main.c **** volatile uint32_t GlobalTickCount=0;
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c **** //=== 函数声明 ===
+  23:Core/Src/main.c **** static void SetLed(uint8_t index, uint8_t on);
+  24:Core/Src/main.c **** static void ToggleLed(uint8_t index);
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c **** int main(void)
+  27:Core/Src/main.c **** {
+  29              		.loc 1 27 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccawrXJu.s 			page 2
+
+
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  28:Core/Src/main.c **** //     // 1. 初始化系统
+  29:Core/Src/main.c ****     SystemClock_Config();
+  38              		.loc 1 29 5 view .LVU1
+  39 0002 FFF7FEFF 		bl	SystemClock_Config
+  40              	.LVL0:
+  30:Core/Src/main.c **** //     SysTick_Init(SystemCoreClock/1000); // 1ms
+  31:Core/Src/main.c **** //     GPIO_Init_All();
+  32:Core/Src/main.c **** //     EXTI_Init_All();
+  33:Core/Src/main.c **** 
+  34:Core/Src/main.c **** //     uint32_t blinkCounter=0;
+  35:Core/Src/main.c **** 
+  36:Core/Src/main.c **** //     while(1)
+  37:Core/Src/main.c **** //     {
+  38:Core/Src/main.c **** //         if(CurrentMode == MODE_BLINK)
+  39:Core/Src/main.c **** //         {
+  40:Core/Src/main.c **** //             // 周期翻转
+  41:Core/Src/main.c **** //             if(blinkCounter >= (CurrentPeriod/2))
+  42:Core/Src/main.c **** //             {
+  43:Core/Src/main.c **** //                 blinkCounter=0;
+  44:Core/Src/main.c **** //                 // 对所有 LedOn[i]==1 的灯做翻转
+  45:Core/Src/main.c **** //                 for(int i=0;i<6;i++){
+  46:Core/Src/main.c **** //                     if(LedOn[i]==1) ToggleLed(i);
+  47:Core/Src/main.c **** //                 }
+  48:Core/Src/main.c **** //             }
+  49:Core/Src/main.c **** //             else
+  50:Core/Src/main.c **** //             {
+  51:Core/Src/main.c **** //                 blinkCounter++;
+  52:Core/Src/main.c **** //                 User_Delay(1);
+  53:Core/Src/main.c **** //             }
+  54:Core/Src/main.c **** //         }
+  55:Core/Src/main.c **** //         else
+  56:Core/Src/main.c **** //         {
+  57:Core/Src/main.c **** //             // 常亮
+  58:Core/Src/main.c **** //             for(int i=0;i<6;i++){
+  59:Core/Src/main.c **** //                 if(LedOn[i]==1) SetLed(i,1);
+  60:Core/Src/main.c **** //                 else            SetLed(i,0);
+  61:Core/Src/main.c **** //             }
+  62:Core/Src/main.c **** //             User_Delay(50);
+  63:Core/Src/main.c **** //         }
+  64:Core/Src/main.c **** //     }
+  65:Core/Src/main.c **** // }
+  66:Core/Src/main.c **** 
+  67:Core/Src/main.c **** // //=== 函数实现: SetLed / ToggleLed ===
+  68:Core/Src/main.c **** 
+  69:Core/Src/main.c **** // // 你提到 6个LED分别是 PB0, PB1, PB2, PB6, PB7, PB14 => 需用一个数组
+  70:Core/Src/main.c **** // static uint8_t LedPin[6] = {0,1,2,6,7,14};
+  71:Core/Src/main.c **** 
+  72:Core/Src/main.c **** // static void SetLed(uint8_t index, uint8_t on)
+  73:Core/Src/main.c **** // {
+  74:Core/Src/main.c **** //     // index => 0..5 => PB( LedPin[index] )
+  75:Core/Src/main.c **** //     uint8_t pin = LedPin[index];
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccawrXJu.s 			page 3
+
+
+  76:Core/Src/main.c **** //     if(on)
+  77:Core/Src/main.c **** //     {
+  78:Core/Src/main.c **** //         GPIOB->BSRR = (1 << pin);  // 置位 => 输出高
+  79:Core/Src/main.c **** //     }
+  80:Core/Src/main.c **** //     else
+  81:Core/Src/main.c **** //     {
+  82:Core/Src/main.c **** //         GPIOB->BSRR = (1 << (pin+16)); // 复位 => 输出低
+  83:Core/Src/main.c **** //     }
+  84:Core/Src/main.c **** // }
+  85:Core/Src/main.c **** 
+  86:Core/Src/main.c **** // static void ToggleLed(uint8_t index)
+  87:Core/Src/main.c **** // {
+  88:Core/Src/main.c **** //     uint8_t pin = LedPin[index];
+  89:Core/Src/main.c **** //     uint32_t odrVal = (GPIOB->ODR >> pin) & 1;
+  90:Core/Src/main.c **** //     if(odrVal == 1)
+  91:Core/Src/main.c **** //     {
+  92:Core/Src/main.c **** //         // 灯目前是亮 => 设置为灭
+  93:Core/Src/main.c **** //         GPIOB->BSRR = (1<<(pin+16));
+  94:Core/Src/main.c **** //     }
+  95:Core/Src/main.c **** //     else
+  96:Core/Src/main.c **** //     {
+  97:Core/Src/main.c **** //         // 灯灭 => 亮
+  98:Core/Src/main.c **** //         GPIOB->BSRR = (1<<pin);
+  99:Core/Src/main.c **** //     }
+ 100:Core/Src/main.c **** }
+  41              		.loc 1 100 1 is_stmt 0 view .LVU2
+  42 0006 0020     		movs	r0, #0
+  43 0008 08BD     		pop	{r3, pc}
+  44              		.cfi_endproc
+  45              	.LFE130:
+  47              		.global	GlobalTickCount
+  48              		.section	.bss.GlobalTickCount,"aw",%nobits
+  49              		.align	2
+  52              	GlobalTickCount:
+  53 0000 00000000 		.space	4
+  54              		.global	CurrentMode
+  55              		.section	.bss.CurrentMode,"aw",%nobits
+  58              	CurrentMode:
+  59 0000 00       		.space	1
+  60              		.global	CurrentPeriod
+  61              		.section	.data.CurrentPeriod,"aw"
+  62              		.align	2
+  65              	CurrentPeriod:
+  66 0000 C4090000 		.word	2500
+  67              		.global	FreqIndex
+  68              		.section	.bss.FreqIndex,"aw",%nobits
+  71              	FreqIndex:
+  72 0000 00       		.space	1
+  73              		.global	BlinkPeriods
+  74              		.section	.data.BlinkPeriods,"aw"
+  75              		.align	2
+  78              	BlinkPeriods:
+  79 0000 C4090000 		.word	2500
+  80 0004 8D030000 		.word	909
+  81 0008 0E020000 		.word	526
+  82              		.global	NumLedOn
+  83              		.section	.bss.NumLedOn,"aw",%nobits
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccawrXJu.s 			page 4
+
+
+  86              	NumLedOn:
+  87 0000 00       		.space	1
+  88              		.global	LedOn
+  89              		.section	.bss.LedOn,"aw",%nobits
+  90              		.align	2
+  93              	LedOn:
+  94 0000 00000000 		.space	6
+  94      0000
+  95              		.text
+  96              	.Letext0:
+  97              		.file 2 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+  98              		.file 3 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+  99              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccawrXJu.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:21     .text.main:00000000 $t
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:27     .text.main:00000000 main
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:52     .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:49     .bss.GlobalTickCount:00000000 $d
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:58     .bss.CurrentMode:00000000 CurrentMode
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:59     .bss.CurrentMode:00000000 $d
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:65     .data.CurrentPeriod:00000000 CurrentPeriod
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:62     .data.CurrentPeriod:00000000 $d
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:71     .bss.FreqIndex:00000000 FreqIndex
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:72     .bss.FreqIndex:00000000 $d
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:78     .data.BlinkPeriods:00000000 BlinkPeriods
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:75     .data.BlinkPeriods:00000000 $d
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:86     .bss.NumLedOn:00000000 NumLedOn
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:87     .bss.NumLedOn:00000000 $d
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:93     .bss.LedOn:00000000 LedOn
+C:\Users\mono\AppData\Local\Temp\ccawrXJu.s:90     .bss.LedOn:00000000 $d
+
+UNDEFINED SYMBOLS
+SystemClock_Config

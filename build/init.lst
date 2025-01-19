@@ -1,0 +1,98 @@
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccKmwEDC.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.SystemClock_Config,"ax",%progbits
+  21              		.align	1
+  22              		.global	SystemClock_Config
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SystemClock_Config:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** //===== 1) SystemClock_Config =====
+   4:Core/Src/init.c **** void SystemClock_Config(void)
+   5:Core/Src/init.c **** {
+  29              		.loc 1 5 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   6:Core/Src/init.c ****     // 简化示例：使用 HSI=16MHz，不启用PLL
+   7:Core/Src/init.c ****     RCC->CR |= RCC_CR_HSION;              // 打开HSI
+  34              		.loc 1 7 5 view .LVU1
+  35              		.loc 1 7 8 is_stmt 0 view .LVU2
+  36 0000 064A     		ldr	r2, .L3
+  37 0002 1368     		ldr	r3, [r2]
+  38              		.loc 1 7 13 view .LVU3
+  39 0004 43F00103 		orr	r3, r3, #1
+  40 0008 1360     		str	r3, [r2]
+   8:Core/Src/init.c ****     while(!(RCC->CR & RCC_CR_HSIRDY));    // 等待HSI就绪
+  41              		.loc 1 8 5 is_stmt 1 view .LVU4
+  42              	.L2:
+  43              		.loc 1 8 11 discriminator 1 view .LVU5
+  44              		.loc 1 8 16 is_stmt 0 discriminator 1 view .LVU6
+  45 000a 044B     		ldr	r3, .L3
+  46 000c 1B68     		ldr	r3, [r3]
+  47              		.loc 1 8 11 discriminator 1 view .LVU7
+  48 000e 13F0020F 		tst	r3, #2
+  49 0012 FAD0     		beq	.L2
+   9:Core/Src/init.c **** 
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccKmwEDC.s 			page 2
+
+
+  10:Core/Src/init.c ****     // 如果不想用PLL，就这样保持 SystemCoreClock=16MHz
+  11:Core/Src/init.c ****     SystemCoreClock = 16000000U;
+  50              		.loc 1 11 5 is_stmt 1 view .LVU8
+  51              		.loc 1 11 21 is_stmt 0 view .LVU9
+  52 0014 024B     		ldr	r3, .L3+4
+  53 0016 034A     		ldr	r2, .L3+8
+  54 0018 1A60     		str	r2, [r3]
+  12:Core/Src/init.c **** }
+  55              		.loc 1 12 1 view .LVU10
+  56 001a 7047     		bx	lr
+  57              	.L4:
+  58              		.align	2
+  59              	.L3:
+  60 001c 00380240 		.word	1073887232
+  61 0020 00000000 		.word	SystemCoreClock
+  62 0024 0024F400 		.word	16000000
+  63              		.cfi_endproc
+  64              	.LFE130:
+  66              		.text
+  67              	.Letext0:
+  68              		.file 2 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+  69              		.file 3 "D:/STM_32/gcc_download/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+  70              		.file 4 "CMSIS/Devices/stm32f429xx.h"
+  71              		.file 5 "CMSIS/Devices/system_stm32f4xx.h"
+ARM GAS  C:\Users\mono\AppData\Local\Temp\ccKmwEDC.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\mono\AppData\Local\Temp\ccKmwEDC.s:21     .text.SystemClock_Config:00000000 $t
+C:\Users\mono\AppData\Local\Temp\ccKmwEDC.s:27     .text.SystemClock_Config:00000000 SystemClock_Config
+C:\Users\mono\AppData\Local\Temp\ccKmwEDC.s:60     .text.SystemClock_Config:0000001c $d
+
+UNDEFINED SYMBOLS
+SystemCoreClock
