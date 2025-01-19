@@ -96,6 +96,7 @@ AS_INCLUDES =
 C_INCLUDES =  \
 -ICore/Inc \
 -ICMSIS/Devices/STM32F4xx/Inc \
+-ICMSIS/Devices/STM32F4xx/Inc/STM32F411VE \
 -ICMSIS/Include \
 
 
