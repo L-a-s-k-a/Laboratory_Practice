@@ -1,87 +1,86 @@
-#include <init.h>
+#include "init.h"
 
-// void GPIO_1(void){
+//===== 1) SystemClock_Config =====
+void SystemClock_Config(void)
+{
+    // 简化示例：使用 HSI=16MHz，不启用PLL
+    RCC->CR |= RCC_CR_HSION;              // 打开HSI
+    while(!(RCC->CR & RCC_CR_HSIRDY));    // 等待HSI就绪
 
-//       SET_BIT(RCC_GPIO_EN,RCC_GPIOB_EN | RCC_GPIOC_EN | RCC_GPIOC_EN);
-//    // *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x06; //Включение тактирования портов GPIOB и GPIOC 
-//      SET_BIT(GPIOB_MODER,GPIOB_MODE_PIN7_OUT | GPIOB_MODE_PIN14_OUT);
-//     //*(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000; //Настройка работы 7-го пина GPIOB в режиме вывода сигнала (Output mode)
-//       SET_BIT(GPIOB_OTYPER,GPIOB_OTYPE_PIN7_PP | GPIOB_OTYPE_PIN14_PP );
-//     //*(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; //Настройка на PushPull работу 7-го пина GPIOB (Output Push-Pull) 
-//     SET_BIT(GPIOB_OSPEEDR, GPIOB_OSPEED_PIN7_MID | GPIOB_OSPEED_PIN14_MID);
-//     //*(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000; //Настройка скорости работы 7-го пина GPIOB на среднюю 
-//     SET_BIT(GPIOB_PUPDR,GPIOB_PUPDR_PIN7_NOPUPD | GPIOB_PUPDR_PIN14_NOPUPD);
-    
-//     //*(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00; //Отключение PU/PD резисторов для 7-го пина GPIOB 
-// }
-
-void Init_GPIO(void) {
-    // 开启GPIOB和GPIOC时钟
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN;
-
-    // 配置GPIOB输出引脚（PB2, PB6, PB1, PB3, PB5, PB12）
-    GPIOB->MODER |= (GPIO_MODER_MODE0_0 | GPIO_MODER_MODE7_0 | GPIO_MODER_MODE14_0 |
-                     GPIO_MODER_MODE3_0 | GPIO_MODER_MODE5_0 | GPIO_MODER_MODE4_0);
-    // GPIOB->OTYPER &= ~(GPIO_OTYPER_OT2 | GPIO_OTYPER_OT6 | GPIO_OTYPER_OT1 |
-    //                    GPIO_OTYPER_OT3 | GPIO_OTYPER_OT5 | GPIO_OTYPER_OT12);
-    GPIOB->OSPEEDR |= (GPIO_OSPEEDER_OSPEEDR0_1 | GPIO_OSPEEDER_OSPEEDR7_1 |
-                       GPIO_OSPEEDER_OSPEEDR14_1 | GPIO_OSPEEDER_OSPEEDR3_1 |
-                       GPIO_OSPEEDER_OSPEEDR15_1 | GPIO_OSPEEDER_OSPEEDR4_1);
-    // GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD2 | GPIO_PUPDR_PUPD6 | GPIO_PUPDR_PUPD1 |
-    //                   GPIO_PUPDR_PUPD3 | GPIO_PUPDR_PUPD5 | GPIO_PUPDR_PUPD12);
-
-    // 配置GPIOC输入引脚（PC13, PC12）
-    GPIOC->MODER &= ~(GPIO_MODER_MODE13 | GPIO_MODER_MODE12);
-    // GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPD13 | GPIO_PUPDR_PUPD12);
+    // 如果不想用PLL，就这样保持 SystemCoreClock=16MHz
+    SystemCoreClock = 16000000U;
 }
 
-void ProcessButtons(void) {
-    // 检测按钮1 (PC13) - 设置同时点亮的LED数量
-    if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0) {
-        for (volatile int i = 0; i < 100000; i++); // 简单去抖动
-        if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID13) != 0) {
-            led_count++;
-            if (led_count > 6) led_count = 1; // 循环回到1
+//===== 2) SysTick_Init =====
+void SysTick_Init(uint32_t ticks)
+{
+    SysTick->LOAD  = ticks - 1; 
+    SysTick->VAL   = 0; 
+    SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk 
+                   | SysTick_CTRL_TICKINT_Msk 
+                   | SysTick_CTRL_ENABLE_Msk;
+}
+
+//===== GPIO_Init_All =====
+void GPIO_Init_All(void)
+{
+    // 打开 GPIOB (LED) / GPIOC (按键) 时钟
+    RCC->AHB1ENR |= (1 << 1); // bit1 => GPIOB
+    RCC->AHB1ENR |= (1 << 2); // bit2 => GPIOC
+
+    //===== 配置 PB0, PB1, PB2, PB6, PB7, PB14 => 输出(推挽) =====
+    GPIOB->MODER &= ~(
+        (3 << (0*2)) | (3 << (1*2)) | (3 << (2*2)) |
+        (3 << (6*2)) | (3 << (7*2)) | (3 << (14*2))
+    );
+    GPIOB->MODER |= (
+        (1 << (0*2)) | (1 << (1*2)) | (1 << (2*2)) |
+        (1 << (6*2)) | (1 << (7*2)) | (1 << (14*2))
+    );
+
+    // 默认全部灭（输出低）
+    GPIOB->BSRR = (
+        (1 << (0+16)) | (1 << (1+16)) | (1 << (2+16)) |
+        (1 << (6+16)) | (1 << (7+16)) | (1 << (14+16))
+    );
+
+    //===== 配置 PC13 => 输入 =====
+    GPIOC->MODER &= ~(3 << (13*2));  // PC13 -> 输入模式
+
+    // 其他按键(若有)...
+
+    // LED/按键初始化完毕
+}
+
+//===== EXTI_Init_All =====
+void EXTI_Init_All(void)
+{
+    // 使能 SYSCFG
+    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+
+    // PC13 => EXTI13 => EXTICR[3], (13-12)=1 => bits[7:4]
+    SYSCFG->EXTICR[3] &= ~(0xF << (4*(13-12)));
+    SYSCFG->EXTICR[3] |=  (0x2 << (4*(13-12))); // PC=2
+
+    EXTI->IMR  |=  (1 << 13);
+    // 按下=1 => 上升沿，松开=0 => 下降沿
+    EXTI->RTSR |=  (1 << 13); // 上升沿
+    EXTI->FTSR |=  (1 << 13); // 下降沿
+
+    // 使能 EXTI15_10_IRQn
+    NVIC_EnableIRQ(EXTI15_10_IRQn);
+    NVIC_SetPriority(EXTI15_10_IRQn, 2);
+}
+
+//===== 3) User_Delay =====
+void User_Delay(volatile uint32_t ms)
+{
+    // 简单阻塞
+    for(uint32_t i=0; i<ms; i++)
+    {
+        for(volatile uint32_t j=0; j<2000; j++)
+        {
+            __NOP();
         }
     }
-
-    // 检测按钮2 (PC12) - 控制LED点亮/熄灭
-    if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID12) != 0) {
-        for (volatile int i = 0; i < 100000; i++); // 简单去抖动
-        if (READ_BIT(GPIOC->IDR,GPIO_IDR_ID12) != 0) {
-            current_led += led_count;
-            if (current_led >= 6) {
-                current_led = 0; // 重置状态
-                GPIOB->BSRR = (GPIO_BSRR_BR0 | GPIO_BSRR_BR7 | GPIO_BSRR_BR14 |
-                               GPIO_BSRR_BR3 | GPIO_BSRR_BR5 | GPIO_BSRR_BR4); // 熄灭所有LED
-            } else {
-                UpdateLEDs(current_led); // 更新点亮状态
-            }
-        }
-    }
 }
-
-void UpdateLEDs(uint8_t count) {
-    // 熄灭所有LED
-    GPIOB->BSRR = (GPIO_BSRR_BR0 | GPIO_BSRR_BR7 | GPIO_BSRR_BR14 |
-                    GPIO_BSRR_BR3 | GPIO_BSRR_BR5 | GPIO_BSRR_BR4);
-
-    // 点亮指定数量的LED
-    if (count >= 1) GPIOB->BSRR = GPIO_BSRR_BS14;  // 点亮LED1
-    if (count >= 2) GPIOB->BSRR = GPIO_BSRR_BS7;  // 点亮LED2
-    if (count >= 3) GPIOB->BSRR = GPIO_BSRR_BS0;  // 点亮LED3
-    if (count >= 4) GPIOB->BSRR = GPIO_BSRR_BS3;  // 点亮LED4
-    if (count >= 5) GPIOB->BSRR = GPIO_BSRR_BS5;  // 点亮LED5
-    if (count >= 6) GPIOB->BSRR = GPIO_BSRR_BS4; // 点亮LED6
-}
-
-// #include "init.h" 
-
-// void GPIO_Ini_1(void){
-//     SET_BIT(RCC_GPIO_EN, RCC_GPIOB_EN | RCC_GPIOC_EN); // 开启GPIO B, GPIO C
-//     SET_BIT(GPIOB_MODER, GPIOB_MODE_PIN7_OUT | GPIOB_MODE_PIN0_OUT | GPIOB_MODE_PIN14_OUT); // 设置为输出模式
-//     SET_BIT(GPIOB_OTYPER, GPIOB_OTYPE_PIN7_PP | GPIOB_OTYPE_PIN0_PP | GPIOB_OTYPE_PIN14_PP); // 设置为推挽输出
-//     SET_BIT(GPIOB_OSPEEDR, GPIOB_OSPEED_PIN7_MID | GPIOB_OSPEED_PIN0_MID | GPIOB_OSPEED_PIN14_MID); // 设置速度为中等
-//     SET_BIT(GPIOB_PUPDR, GPIOB_PUPDR_PIN7_NOPUPD | GPIOB_PUPDR_PIN0_NOPUPD | GPIOB_PUPDR_PIN14_NOPUPD); // 禁用上拉/下拉电阻
-
-// }

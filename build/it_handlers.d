@@ -1,10 +1,12 @@
-build/main.o: Core/Src/main.c CMSIS/Devices/stm32f4xx.h \
- CMSIS/Devices/stm32f429xx.h CMSIS/Devices/../include/core_cm4.h \
+build/it_handlers.o: Core/Src/it_handlers.c Core/Inc/it_handlers.h \
+ Core/Inc/init.h CMSIS/Devices/stm32f4xx.h CMSIS/Devices/stm32f429xx.h \
+ CMSIS/Devices/../include/core_cm4.h \
  CMSIS/Devices/../include/cmsis_version.h \
  CMSIS/Devices/../include/cmsis_compiler.h \
  CMSIS/Devices/../include/cmsis_gcc.h \
- CMSIS/Devices/../include/mpu_armv7.h CMSIS/Devices/system_stm32f4xx.h \
- Core/Inc/init.h
+ CMSIS/Devices/../include/mpu_armv7.h CMSIS/Devices/system_stm32f4xx.h
+Core/Inc/it_handlers.h:
+Core/Inc/init.h:
 CMSIS/Devices/stm32f4xx.h:
 CMSIS/Devices/stm32f429xx.h:
 CMSIS/Devices/../include/core_cm4.h:
@@ -13,4 +15,3 @@ CMSIS/Devices/../include/cmsis_compiler.h:
 CMSIS/Devices/../include/cmsis_gcc.h:
 CMSIS/Devices/../include/mpu_armv7.h:
 CMSIS/Devices/system_stm32f4xx.h:
-Core/Inc/init.h:
