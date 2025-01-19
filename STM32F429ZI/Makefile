@@ -95,7 +95,7 @@ AS_INCLUDES =
 C_INCLUDES =  \
 -ICore/Inc \
 -ICMSIS/Devices/STM32F4xx/Inc \
--ICMSIS/Include
+-ICMSIS/Include \
 
 
 # compile gcc flags
