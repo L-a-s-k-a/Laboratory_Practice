@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = F429ZI_CMSIS
+TARGET = LABORATORY_PRACTICE
 
 
 ######################################
@@ -36,6 +36,7 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
+CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \
 Core/Src/main.c \
 
 
@@ -85,10 +86,7 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
--DSTM32F429xx
-#-DUSE_HAL_DRIVER \
-
-
+-DSTM32F429xx \
 
 # AS includes
 AS_INCLUDES = 
@@ -96,7 +94,7 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
--ICMSIS/Devices \
+-ICMSIS/Devices/STM32F4xx/Inc \
 -ICMSIS/Include
 
 
