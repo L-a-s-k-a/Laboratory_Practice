@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = LABORATORY_PRACTICE
+TARGET = Laboratory_Practice
 
 
 ######################################
@@ -37,6 +37,7 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
+Core/Src/init.c 
 
 
 # ASM sources
@@ -91,7 +92,7 @@ C_DEFS =  \
 
 
 # AS includes
-AS_INCLUDES =  
+AS_INCLUDES = 
 
 # C includes
 C_INCLUDES =  \
@@ -162,7 +163,7 @@ $(BUILD_DIR):
 # clean up
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	-rmdir /S /Q $(BUILD_DIR)
   
 #######################################
 # openocd

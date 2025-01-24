@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\cctUByR7.s 			page 1
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,30 +27,706 @@ ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\cctUByR7.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void){
-  29              		.loc 1 1 15 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** // Вариант 1
+   2:Core/Src/main.c **** // Собрать схему с включением 3-х светодиодов и 2-х кнопо
+   3:Core/Src/main.c **** // 1) Каждое нажатие включает следующий светодиод, пред�
+   4:Core/Src/main.c **** // выключается.
+   5:Core/Src/main.c **** // 2) Каждое нажатие устанавливает количество одноврем�
+   6:Core/Src/main.c **** // включаемых светодиодов
+   7:Core/Src/main.c **** // 3) Использовать три метода общения с МК - напрямую, с п
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** #include "init.h"
+  11:Core/Src/main.c **** #include <stdint.h>
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** uint32_t led_pin = 1;
+  14:Core/Src/main.c **** uint32_t led_mode = 1;
+  15:Core/Src/main.c **** uint8_t led1 = 0;
+  16:Core/Src/main.c **** uint8_t led2 = 0;
+  17:Core/Src/main.c **** uint8_t led3 = 0;
+  18:Core/Src/main.c **** uint8_t but1 = 0;
+  19:Core/Src/main.c **** uint8_t but2 = 0;
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c **** int main(void) 
+  22:Core/Src/main.c **** {
+  29              		.loc 1 22 1 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){}
-  36              		.loc 1 2 5 view .LVU1
-  37              		.loc 1 2 14 view .LVU2
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\cctUByR7.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 2
+
+
+  37              		.cfi_offset 14, -4
+  23:Core/Src/main.c ****   GPIO_Init();
+  38              		.loc 1 23 3 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Init
+  40              	.LVL0:
+  41 0006 BDE0     		b	.L2
+  42              	.L28:
+  24:Core/Src/main.c ****   while(1) 
+  25:Core/Src/main.c ****   {
+  26:Core/Src/main.c ****     if(BIT_READ(GPIOB_IDR, GPIOB_IDR_PIN11) == 0) 
+  27:Core/Src/main.c ****     {
+  28:Core/Src/main.c ****       but1 = 1;                                                           
+  43              		.loc 1 28 7 view .LVU2
+  44              		.loc 1 28 12 is_stmt 0 view .LVU3
+  45 0008 944B     		ldr	r3, .L32
+  46 000a 0122     		movs	r2, #1
+  47 000c 1A70     		strb	r2, [r3]
+  29:Core/Src/main.c ****       for(int i = 0; i < 1000000; i++) {}   //delay
+  48              		.loc 1 29 7 is_stmt 1 view .LVU4
+  49              	.LBB2:
+  50              		.loc 1 29 11 view .LVU5
+  51              	.LVL1:
+  52              		.loc 1 29 15 is_stmt 0 view .LVU6
+  53 000e 0023     		movs	r3, #0
+  54              		.loc 1 29 7 view .LVU7
+  55 0010 00E0     		b	.L4
+  56              	.LVL2:
+  57              	.L5:
+  58              		.loc 1 29 41 is_stmt 1 discriminator 3 view .LVU8
+  59              		.loc 1 29 36 discriminator 3 view .LVU9
+  60 0012 0133     		adds	r3, r3, #1
+  61              	.LVL3:
+  62              	.L4:
+  63              		.loc 1 29 24 discriminator 1 view .LVU10
+  64 0014 924A     		ldr	r2, .L32+4
+  65 0016 9342     		cmp	r3, r2
+  66 0018 FBDD     		ble	.L5
+  67              	.LBE2:
+  30:Core/Src/main.c ****       led_pin++;
+  68              		.loc 1 30 7 view .LVU11
+  69              		.loc 1 30 14 is_stmt 0 view .LVU12
+  70 001a 924A     		ldr	r2, .L32+8
+  71 001c 1368     		ldr	r3, [r2]
+  72              	.LVL4:
+  73              		.loc 1 30 14 view .LVU13
+  74 001e 0133     		adds	r3, r3, #1
+  75 0020 1360     		str	r3, [r2]
+  31:Core/Src/main.c ****       if(led_pin >= 4 || (led_mode == 3 && led_pin >=3)) 
+  76              		.loc 1 31 7 is_stmt 1 view .LVU14
+  77              		.loc 1 31 9 is_stmt 0 view .LVU15
+  78 0022 032B     		cmp	r3, #3
+  79 0024 07D8     		bhi	.L6
+  80              		.loc 1 31 36 discriminator 1 view .LVU16
+  81 0026 904A     		ldr	r2, .L32+12
+  82 0028 1268     		ldr	r2, [r2]
+  83              		.loc 1 31 23 discriminator 1 view .LVU17
+  84 002a 032A     		cmp	r2, #3
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 3
+
+
+  85 002c 40F0B480 		bne	.L7
+  86              		.loc 1 31 41 discriminator 2 view .LVU18
+  87 0030 022B     		cmp	r3, #2
+  88 0032 40F2B180 		bls	.L7
+  89              	.L6:
+  32:Core/Src/main.c ****       {
+  33:Core/Src/main.c ****         led_pin = 1;
+  90              		.loc 1 33 9 is_stmt 1 view .LVU19
+  91              		.loc 1 33 17 is_stmt 0 view .LVU20
+  92 0036 8B4B     		ldr	r3, .L32+8
+  93 0038 0122     		movs	r2, #1
+  94 003a 1A60     		str	r2, [r3]
+  95 003c ACE0     		b	.L7
+  96              	.LVL5:
+  97              	.L10:
+  98              	.LBB3:
+  34:Core/Src/main.c ****       }
+  35:Core/Src/main.c ****     }
+  36:Core/Src/main.c ****     else {
+  37:Core/Src/main.c ****       but1 = 0;
+  38:Core/Src/main.c ****     }
+  39:Core/Src/main.c **** 
+  40:Core/Src/main.c ****     if(BIT_READ(GPIOB_IDR, GPIOB_IDR_PIN12) == 0) 
+  41:Core/Src/main.c ****     {                                          
+  42:Core/Src/main.c ****       for(int i = 0; i < 1000000; i++) {}  //delay
+  99              		.loc 1 42 41 is_stmt 1 discriminator 3 view .LVU21
+ 100              		.loc 1 42 36 discriminator 3 view .LVU22
+ 101 003e 0133     		adds	r3, r3, #1
+ 102              	.LVL6:
+ 103              	.L8:
+ 104              		.loc 1 42 24 discriminator 1 view .LVU23
+ 105 0040 874A     		ldr	r2, .L32+4
+ 106 0042 9342     		cmp	r3, r2
+ 107 0044 FBDD     		ble	.L10
+ 108              	.LBE3:
+  43:Core/Src/main.c ****       led_mode++;
+ 109              		.loc 1 43 7 view .LVU24
+ 110              		.loc 1 43 15 is_stmt 0 view .LVU25
+ 111 0046 884A     		ldr	r2, .L32+12
+ 112 0048 1368     		ldr	r3, [r2]
+ 113              	.LVL7:
+ 114              		.loc 1 43 15 view .LVU26
+ 115 004a 0133     		adds	r3, r3, #1
+ 116 004c 1360     		str	r3, [r2]
+  44:Core/Src/main.c ****       if(led_mode >= 4) 
+ 117              		.loc 1 44 7 is_stmt 1 view .LVU27
+ 118              		.loc 1 44 9 is_stmt 0 view .LVU28
+ 119 004e 032B     		cmp	r3, #3
+ 120 0050 02D9     		bls	.L11
+  45:Core/Src/main.c ****       {
+  46:Core/Src/main.c ****         led_mode = 1;
+ 121              		.loc 1 46 9 is_stmt 1 view .LVU29
+ 122              		.loc 1 46 18 is_stmt 0 view .LVU30
+ 123 0052 1346     		mov	r3, r2
+ 124 0054 0122     		movs	r2, #1
+ 125 0056 1A60     		str	r2, [r3]
+ 126              	.L11:
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 4
+
+
+  47:Core/Src/main.c ****       }
+  48:Core/Src/main.c ****       but2 = 1;
+ 127              		.loc 1 48 7 is_stmt 1 view .LVU31
+ 128              		.loc 1 48 12 is_stmt 0 view .LVU32
+ 129 0058 844B     		ldr	r3, .L32+16
+ 130 005a 0122     		movs	r2, #1
+ 131 005c 1A70     		strb	r2, [r3]
+ 132 005e A5E0     		b	.L12
+ 133              	.LVL8:
+ 134              	.L29:
+ 135              	.LBB4:
+  42:Core/Src/main.c ****       led_mode++;
+ 136              		.loc 1 42 15 view .LVU33
+ 137 0060 0023     		movs	r3, #0
+ 138 0062 EDE7     		b	.L8
+ 139              	.L30:
+ 140              	.LBE4:
+  49:Core/Src/main.c ****     }
+  50:Core/Src/main.c ****     else {
+  51:Core/Src/main.c ****       but2 = 0;
+  52:Core/Src/main.c ****     }
+  53:Core/Src/main.c **** 
+  54:Core/Src/main.c ****     switch (led_mode)
+  55:Core/Src/main.c ****     {
+  56:Core/Src/main.c ****     case 1:
+  57:Core/Src/main.c ****       if(led_pin == 1) 
+  58:Core/Src/main.c ****       {
+  59:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN8_SET);
+ 141              		.loc 1 59 9 is_stmt 1 view .LVU34
+ 142 0064 824A     		ldr	r2, .L32+20
+ 143 0066 D2F81834 		ldr	r3, [r2, #1048]
+ 144 006a 43F48071 		orr	r1, r3, #256
+ 145 006e C2F81814 		str	r1, [r2, #1048]
+  60:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_RESET);
+ 146              		.loc 1 60 9 view .LVU35
+ 147 0072 43F00071 		orr	r1, r3, #33554432
+ 148 0076 41F48071 		orr	r1, r1, #256
+ 149 007a C2F81814 		str	r1, [r2, #1048]
+  61:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_RESET);
+ 150              		.loc 1 61 9 view .LVU36
+ 151 007e 43F0C063 		orr	r3, r3, #100663296
+ 152 0082 43F48073 		orr	r3, r3, #256
+ 153 0086 C2F81834 		str	r3, [r2, #1048]
+  62:Core/Src/main.c ****         led1 = 1;
+ 154              		.loc 1 62 9 view .LVU37
+ 155              		.loc 1 62 14 is_stmt 0 view .LVU38
+ 156 008a 7A4B     		ldr	r3, .L32+24
+ 157 008c 0122     		movs	r2, #1
+ 158 008e 1A70     		strb	r2, [r3]
+  63:Core/Src/main.c ****         led2 = 0;
+ 159              		.loc 1 63 9 is_stmt 1 view .LVU39
+ 160              		.loc 1 63 14 is_stmt 0 view .LVU40
+ 161 0090 0023     		movs	r3, #0
+ 162 0092 794A     		ldr	r2, .L32+28
+ 163 0094 1370     		strb	r3, [r2]
+  64:Core/Src/main.c ****         led3 = 0;
+ 164              		.loc 1 64 9 is_stmt 1 view .LVU41
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 5
+
+
+ 165              		.loc 1 64 14 is_stmt 0 view .LVU42
+ 166 0096 794A     		ldr	r2, .L32+32
+ 167 0098 1370     		strb	r3, [r2]
+ 168 009a 73E0     		b	.L2
+ 169              	.L31:
+  65:Core/Src/main.c ****       }
+  66:Core/Src/main.c ****       else if(led_pin == 2) 
+  67:Core/Src/main.c ****       {
+  68:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN8_RESET);
+ 170              		.loc 1 68 9 is_stmt 1 view .LVU43
+ 171 009c 744A     		ldr	r2, .L32+20
+ 172 009e D2F81834 		ldr	r3, [r2, #1048]
+ 173 00a2 43F08071 		orr	r1, r3, #16777216
+ 174 00a6 C2F81814 		str	r1, [r2, #1048]
+  69:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_SET);
+ 175              		.loc 1 69 9 view .LVU44
+ 176 00aa 41F40071 		orr	r1, r1, #512
+ 177 00ae C2F81814 		str	r1, [r2, #1048]
+  70:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_RESET);
+ 178              		.loc 1 70 9 view .LVU45
+ 179 00b2 43F0A063 		orr	r3, r3, #83886080
+ 180 00b6 43F40073 		orr	r3, r3, #512
+ 181 00ba C2F81834 		str	r3, [r2, #1048]
+  71:Core/Src/main.c ****         led1 = 0;
+ 182              		.loc 1 71 9 view .LVU46
+ 183              		.loc 1 71 14 is_stmt 0 view .LVU47
+ 184 00be 0023     		movs	r3, #0
+ 185 00c0 6C4A     		ldr	r2, .L32+24
+ 186 00c2 1370     		strb	r3, [r2]
+  72:Core/Src/main.c ****         led2 = 1;
+ 187              		.loc 1 72 9 is_stmt 1 view .LVU48
+ 188              		.loc 1 72 14 is_stmt 0 view .LVU49
+ 189 00c4 6C4A     		ldr	r2, .L32+28
+ 190 00c6 0121     		movs	r1, #1
+ 191 00c8 1170     		strb	r1, [r2]
+  73:Core/Src/main.c ****         led3 = 0;
+ 192              		.loc 1 73 9 is_stmt 1 view .LVU50
+ 193              		.loc 1 73 14 is_stmt 0 view .LVU51
+ 194 00ca 6C4A     		ldr	r2, .L32+32
+ 195 00cc 1370     		strb	r3, [r2]
+ 196 00ce 59E0     		b	.L2
+ 197              	.L13:
+  74:Core/Src/main.c ****       }
+  75:Core/Src/main.c ****       else if(led_pin == 3) 
+  76:Core/Src/main.c ****       {
+  77:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN8_RESET);
+  78:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_RESET);
+  79:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_SET);
+  80:Core/Src/main.c ****         led1 = 0;
+  81:Core/Src/main.c ****         led2 = 0;
+  82:Core/Src/main.c ****         led3 = 1;
+  83:Core/Src/main.c ****       }
+  84:Core/Src/main.c ****       break;
+  85:Core/Src/main.c ****     case 2:
+  86:Core/Src/main.c ****       if(led_pin == 1) 
+ 198              		.loc 1 86 7 is_stmt 1 view .LVU52
+ 199              		.loc 1 86 18 is_stmt 0 view .LVU53
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 6
+
+
+ 200 00d0 644B     		ldr	r3, .L32+8
+ 201 00d2 1B68     		ldr	r3, [r3]
+ 202              		.loc 1 86 9 view .LVU54
+ 203 00d4 012B     		cmp	r3, #1
+ 204 00d6 1DD0     		beq	.L24
+  87:Core/Src/main.c ****       {
+  88:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN8_SET);
+  89:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_SET);
+  90:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_RESET);
+  91:Core/Src/main.c ****         led1 = 1;
+  92:Core/Src/main.c ****         led2 = 1;
+  93:Core/Src/main.c ****         led3 = 0;
+  94:Core/Src/main.c ****       }
+  95:Core/Src/main.c ****       else if(led_pin == 2) 
+ 205              		.loc 1 95 12 is_stmt 1 view .LVU55
+ 206              		.loc 1 95 14 is_stmt 0 view .LVU56
+ 207 00d8 022B     		cmp	r3, #2
+ 208 00da 35D0     		beq	.L25
+  96:Core/Src/main.c ****       {
+  97:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN8_RESET);
+  98:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_SET);
+  99:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_SET);
+ 100:Core/Src/main.c ****         led1 = 0;
+ 101:Core/Src/main.c ****         led2 = 1;
+ 102:Core/Src/main.c ****         led3 = 1;
+ 103:Core/Src/main.c ****       }
+ 104:Core/Src/main.c ****       else if(led_pin == 3) 
+ 209              		.loc 1 104 12 is_stmt 1 view .LVU57
+ 210              		.loc 1 104 14 is_stmt 0 view .LVU58
+ 211 00dc 032B     		cmp	r3, #3
+ 212 00de 51D1     		bne	.L2
+ 105:Core/Src/main.c ****       {
+ 106:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN8_SET);
+ 213              		.loc 1 106 9 is_stmt 1 view .LVU59
+ 214 00e0 634A     		ldr	r2, .L32+20
+ 215 00e2 D2F81834 		ldr	r3, [r2, #1048]
+ 216 00e6 43F48071 		orr	r1, r3, #256
+ 217 00ea C2F81814 		str	r1, [r2, #1048]
+ 107:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_RESET);
+ 218              		.loc 1 107 9 view .LVU60
+ 219 00ee 43F00073 		orr	r3, r3, #33554432
+ 220 00f2 43F48071 		orr	r1, r3, #256
+ 221 00f6 C2F81814 		str	r1, [r2, #1048]
+ 108:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_SET);
+ 222              		.loc 1 108 9 view .LVU61
+ 223 00fa 43F4A063 		orr	r3, r3, #1280
+ 224 00fe C2F81834 		str	r3, [r2, #1048]
+ 109:Core/Src/main.c ****         led1 = 1;
+ 225              		.loc 1 109 9 view .LVU62
+ 226              		.loc 1 109 14 is_stmt 0 view .LVU63
+ 227 0102 0123     		movs	r3, #1
+ 228 0104 5B4A     		ldr	r2, .L32+24
+ 229 0106 1370     		strb	r3, [r2]
+ 110:Core/Src/main.c ****         led2 = 0;
+ 230              		.loc 1 110 9 is_stmt 1 view .LVU64
+ 231              		.loc 1 110 14 is_stmt 0 view .LVU65
+ 232 0108 5B4A     		ldr	r2, .L32+28
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 7
+
+
+ 233 010a 0021     		movs	r1, #0
+ 234 010c 1170     		strb	r1, [r2]
+ 111:Core/Src/main.c ****         led3 = 1;
+ 235              		.loc 1 111 9 is_stmt 1 view .LVU66
+ 236              		.loc 1 111 14 is_stmt 0 view .LVU67
+ 237 010e 5B4A     		ldr	r2, .L32+32
+ 238 0110 1370     		strb	r3, [r2]
+ 239 0112 37E0     		b	.L2
+ 240              	.L24:
+  88:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_SET);
+ 241              		.loc 1 88 9 is_stmt 1 view .LVU68
+ 242 0114 564A     		ldr	r2, .L32+20
+ 243 0116 D2F81834 		ldr	r3, [r2, #1048]
+ 244 011a 43F48071 		orr	r1, r3, #256
+ 245 011e C2F81814 		str	r1, [r2, #1048]
+  89:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_RESET);
+ 246              		.loc 1 89 9 view .LVU69
+ 247 0122 43F44071 		orr	r1, r3, #768
+ 248 0126 C2F81814 		str	r1, [r2, #1048]
+  90:Core/Src/main.c ****         led1 = 1;
+ 249              		.loc 1 90 9 view .LVU70
+ 250 012a 43F08063 		orr	r3, r3, #67108864
+ 251 012e 43F44073 		orr	r3, r3, #768
+ 252 0132 C2F81834 		str	r3, [r2, #1048]
+  91:Core/Src/main.c ****         led2 = 1;
+ 253              		.loc 1 91 9 view .LVU71
+  91:Core/Src/main.c ****         led2 = 1;
+ 254              		.loc 1 91 14 is_stmt 0 view .LVU72
+ 255 0136 0123     		movs	r3, #1
+ 256 0138 4E4A     		ldr	r2, .L32+24
+ 257 013a 1370     		strb	r3, [r2]
+  92:Core/Src/main.c ****         led3 = 0;
+ 258              		.loc 1 92 9 is_stmt 1 view .LVU73
+  92:Core/Src/main.c ****         led3 = 0;
+ 259              		.loc 1 92 14 is_stmt 0 view .LVU74
+ 260 013c 4E4A     		ldr	r2, .L32+28
+ 261 013e 1370     		strb	r3, [r2]
+  93:Core/Src/main.c ****       }
+ 262              		.loc 1 93 9 is_stmt 1 view .LVU75
+  93:Core/Src/main.c ****       }
+ 263              		.loc 1 93 14 is_stmt 0 view .LVU76
+ 264 0140 4E4B     		ldr	r3, .L32+32
+ 265 0142 0022     		movs	r2, #0
+ 266 0144 1A70     		strb	r2, [r3]
+ 267 0146 1DE0     		b	.L2
+ 268              	.L25:
+  97:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_SET);
+ 269              		.loc 1 97 9 is_stmt 1 view .LVU77
+ 270 0148 494A     		ldr	r2, .L32+20
+ 271 014a D2F81834 		ldr	r3, [r2, #1048]
+ 272 014e 43F08073 		orr	r3, r3, #16777216
+ 273 0152 C2F81834 		str	r3, [r2, #1048]
+  98:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_SET);
+ 274              		.loc 1 98 9 view .LVU78
+ 275 0156 43F40071 		orr	r1, r3, #512
+ 276 015a C2F81814 		str	r1, [r2, #1048]
+  99:Core/Src/main.c ****         led1 = 0;
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 8
+
+
+ 277              		.loc 1 99 9 view .LVU79
+ 278 015e 43F4C063 		orr	r3, r3, #1536
+ 279 0162 C2F81834 		str	r3, [r2, #1048]
+ 100:Core/Src/main.c ****         led2 = 1;
+ 280              		.loc 1 100 9 view .LVU80
+ 100:Core/Src/main.c ****         led2 = 1;
+ 281              		.loc 1 100 14 is_stmt 0 view .LVU81
+ 282 0166 434B     		ldr	r3, .L32+24
+ 283 0168 0022     		movs	r2, #0
+ 284 016a 1A70     		strb	r2, [r3]
+ 101:Core/Src/main.c ****         led3 = 1;
+ 285              		.loc 1 101 9 is_stmt 1 view .LVU82
+ 101:Core/Src/main.c ****         led3 = 1;
+ 286              		.loc 1 101 14 is_stmt 0 view .LVU83
+ 287 016c 0123     		movs	r3, #1
+ 288 016e 424A     		ldr	r2, .L32+28
+ 289 0170 1370     		strb	r3, [r2]
+ 102:Core/Src/main.c ****       }
+ 290              		.loc 1 102 9 is_stmt 1 view .LVU84
+ 102:Core/Src/main.c ****       }
+ 291              		.loc 1 102 14 is_stmt 0 view .LVU85
+ 292 0172 424A     		ldr	r2, .L32+32
+ 293 0174 1370     		strb	r3, [r2]
+ 294 0176 05E0     		b	.L2
+ 295              	.L14:
+ 112:Core/Src/main.c ****       }
+ 113:Core/Src/main.c ****       break;
+ 114:Core/Src/main.c ****     case 3:
+ 115:Core/Src/main.c ****       if(led_pin == 1) 
+ 296              		.loc 1 115 7 is_stmt 1 view .LVU86
+ 297              		.loc 1 115 18 is_stmt 0 view .LVU87
+ 298 0178 3A4B     		ldr	r3, .L32+8
+ 299 017a 1B68     		ldr	r3, [r3]
+ 300              		.loc 1 115 9 view .LVU88
+ 301 017c 012B     		cmp	r3, #1
+ 302 017e 3FD0     		beq	.L26
+ 116:Core/Src/main.c ****       {
+ 117:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN8_SET);
+ 118:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_SET);
+ 119:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_SET);
+ 120:Core/Src/main.c ****         led1 = 1;
+ 121:Core/Src/main.c ****         led2 = 1;
+ 122:Core/Src/main.c ****         led3 = 1;
+ 123:Core/Src/main.c ****       }
+ 124:Core/Src/main.c ****       else if(led_pin == 2) 
+ 303              		.loc 1 124 12 is_stmt 1 view .LVU89
+ 304              		.loc 1 124 14 is_stmt 0 view .LVU90
+ 305 0180 022B     		cmp	r3, #2
+ 306 0182 54D0     		beq	.L27
+ 307              	.L2:
+  24:Core/Src/main.c ****   {
+ 308              		.loc 1 24 3 is_stmt 1 view .LVU91
+  26:Core/Src/main.c ****     {
+ 309              		.loc 1 26 5 view .LVU92
+  26:Core/Src/main.c ****     {
+ 310              		.loc 1 26 8 is_stmt 0 view .LVU93
+ 311 0184 3A4B     		ldr	r3, .L32+20
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 9
+
+
+ 312 0186 D3F81034 		ldr	r3, [r3, #1040]
+  26:Core/Src/main.c ****     {
+ 313              		.loc 1 26 7 view .LVU94
+ 314 018a 13F4006F 		tst	r3, #2048
+ 315 018e 3FF43BAF 		beq	.L28
+  37:Core/Src/main.c ****     }
+ 316              		.loc 1 37 7 is_stmt 1 view .LVU95
+  37:Core/Src/main.c ****     }
+ 317              		.loc 1 37 12 is_stmt 0 view .LVU96
+ 318 0192 324B     		ldr	r3, .L32
+ 319 0194 0022     		movs	r2, #0
+ 320 0196 1A70     		strb	r2, [r3]
+ 321              	.L7:
+  40:Core/Src/main.c ****     {                                          
+ 322              		.loc 1 40 5 is_stmt 1 view .LVU97
+  40:Core/Src/main.c ****     {                                          
+ 323              		.loc 1 40 8 is_stmt 0 view .LVU98
+ 324 0198 354B     		ldr	r3, .L32+20
+ 325 019a D3F81034 		ldr	r3, [r3, #1040]
+  40:Core/Src/main.c ****     {                                          
+ 326              		.loc 1 40 7 view .LVU99
+ 327 019e 13F4805F 		tst	r3, #4096
+ 328 01a2 3FF45DAF 		beq	.L29
+  51:Core/Src/main.c ****     }
+ 329              		.loc 1 51 7 is_stmt 1 view .LVU100
+  51:Core/Src/main.c ****     }
+ 330              		.loc 1 51 12 is_stmt 0 view .LVU101
+ 331 01a6 314B     		ldr	r3, .L32+16
+ 332 01a8 0022     		movs	r2, #0
+ 333 01aa 1A70     		strb	r2, [r3]
+ 334              	.L12:
+  54:Core/Src/main.c ****     {
+ 335              		.loc 1 54 5 is_stmt 1 view .LVU102
+ 336 01ac 2E4B     		ldr	r3, .L32+12
+ 337 01ae 1B68     		ldr	r3, [r3]
+ 338 01b0 022B     		cmp	r3, #2
+ 339 01b2 8DD0     		beq	.L13
+ 340 01b4 032B     		cmp	r3, #3
+ 341 01b6 DFD0     		beq	.L14
+ 342 01b8 012B     		cmp	r3, #1
+ 343 01ba E3D1     		bne	.L2
+  57:Core/Src/main.c ****       {
+ 344              		.loc 1 57 7 view .LVU103
+  57:Core/Src/main.c ****       {
+ 345              		.loc 1 57 18 is_stmt 0 view .LVU104
+ 346 01bc 294B     		ldr	r3, .L32+8
+ 347 01be 1B68     		ldr	r3, [r3]
+  57:Core/Src/main.c ****       {
+ 348              		.loc 1 57 9 view .LVU105
+ 349 01c0 012B     		cmp	r3, #1
+ 350 01c2 3FF44FAF 		beq	.L30
+  66:Core/Src/main.c ****       {
+ 351              		.loc 1 66 12 is_stmt 1 view .LVU106
+  66:Core/Src/main.c ****       {
+ 352              		.loc 1 66 14 is_stmt 0 view .LVU107
+ 353 01c6 022B     		cmp	r3, #2
+ 354 01c8 3FF468AF 		beq	.L31
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 10
+
+
+  75:Core/Src/main.c ****       {
+ 355              		.loc 1 75 12 is_stmt 1 view .LVU108
+  75:Core/Src/main.c ****       {
+ 356              		.loc 1 75 14 is_stmt 0 view .LVU109
+ 357 01cc 032B     		cmp	r3, #3
+ 358 01ce D9D1     		bne	.L2
+  77:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_RESET);
+ 359              		.loc 1 77 9 is_stmt 1 view .LVU110
+ 360 01d0 274A     		ldr	r2, .L32+20
+ 361 01d2 D2F81834 		ldr	r3, [r2, #1048]
+ 362 01d6 43F08071 		orr	r1, r3, #16777216
+ 363 01da C2F81814 		str	r1, [r2, #1048]
+  78:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_SET);
+ 364              		.loc 1 78 9 view .LVU111
+ 365 01de 43F04073 		orr	r3, r3, #50331648
+ 366 01e2 C2F81834 		str	r3, [r2, #1048]
+  79:Core/Src/main.c ****         led1 = 0;
+ 367              		.loc 1 79 9 view .LVU112
+ 368 01e6 43F48063 		orr	r3, r3, #1024
+ 369 01ea C2F81834 		str	r3, [r2, #1048]
+  80:Core/Src/main.c ****         led2 = 0;
+ 370              		.loc 1 80 9 view .LVU113
+  80:Core/Src/main.c ****         led2 = 0;
+ 371              		.loc 1 80 14 is_stmt 0 view .LVU114
+ 372 01ee 0023     		movs	r3, #0
+ 373 01f0 204A     		ldr	r2, .L32+24
+ 374 01f2 1370     		strb	r3, [r2]
+  81:Core/Src/main.c ****         led3 = 1;
+ 375              		.loc 1 81 9 is_stmt 1 view .LVU115
+  81:Core/Src/main.c ****         led3 = 1;
+ 376              		.loc 1 81 14 is_stmt 0 view .LVU116
+ 377 01f4 204A     		ldr	r2, .L32+28
+ 378 01f6 1370     		strb	r3, [r2]
+  82:Core/Src/main.c ****       }
+ 379              		.loc 1 82 9 is_stmt 1 view .LVU117
+  82:Core/Src/main.c ****       }
+ 380              		.loc 1 82 14 is_stmt 0 view .LVU118
+ 381 01f8 204B     		ldr	r3, .L32+32
+ 382 01fa 0122     		movs	r2, #1
+ 383 01fc 1A70     		strb	r2, [r3]
+ 384 01fe C1E7     		b	.L2
+ 385              	.L26:
+ 117:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_SET);
+ 386              		.loc 1 117 9 is_stmt 1 view .LVU119
+ 387 0200 1B4A     		ldr	r2, .L32+20
+ 388 0202 D2F81834 		ldr	r3, [r2, #1048]
+ 389 0206 43F48071 		orr	r1, r3, #256
+ 390 020a C2F81814 		str	r1, [r2, #1048]
+ 118:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_SET);
+ 391              		.loc 1 118 9 view .LVU120
+ 392 020e 43F44071 		orr	r1, r3, #768
+ 393 0212 C2F81814 		str	r1, [r2, #1048]
+ 119:Core/Src/main.c ****         led1 = 1;
+ 394              		.loc 1 119 9 view .LVU121
+ 395 0216 43F4E063 		orr	r3, r3, #1792
+ 396 021a C2F81834 		str	r3, [r2, #1048]
+ 120:Core/Src/main.c ****         led2 = 1;
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 11
+
+
+ 397              		.loc 1 120 9 view .LVU122
+ 120:Core/Src/main.c ****         led2 = 1;
+ 398              		.loc 1 120 14 is_stmt 0 view .LVU123
+ 399 021e 0123     		movs	r3, #1
+ 400 0220 144A     		ldr	r2, .L32+24
+ 401 0222 1370     		strb	r3, [r2]
+ 121:Core/Src/main.c ****         led3 = 1;
+ 402              		.loc 1 121 9 is_stmt 1 view .LVU124
+ 121:Core/Src/main.c ****         led3 = 1;
+ 403              		.loc 1 121 14 is_stmt 0 view .LVU125
+ 404 0224 144A     		ldr	r2, .L32+28
+ 405 0226 1370     		strb	r3, [r2]
+ 122:Core/Src/main.c ****       }
+ 406              		.loc 1 122 9 is_stmt 1 view .LVU126
+ 122:Core/Src/main.c ****       }
+ 407              		.loc 1 122 14 is_stmt 0 view .LVU127
+ 408 0228 144A     		ldr	r2, .L32+32
+ 409 022a 1370     		strb	r3, [r2]
+ 410 022c AAE7     		b	.L2
+ 411              	.L27:
+ 125:Core/Src/main.c ****       {
+ 126:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN8_RESET);
+ 412              		.loc 1 126 9 is_stmt 1 view .LVU128
+ 413 022e 104A     		ldr	r2, .L32+20
+ 414 0230 D2F81834 		ldr	r3, [r2, #1048]
+ 415 0234 43F08071 		orr	r1, r3, #16777216
+ 416 0238 C2F81814 		str	r1, [r2, #1048]
+ 127:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN9_RESET);
+ 417              		.loc 1 127 9 view .LVU129
+ 418 023c 43F04071 		orr	r1, r3, #50331648
+ 419 0240 C2F81814 		str	r1, [r2, #1048]
+ 128:Core/Src/main.c ****         BIT_SET(GPIOB_BSRR, GPIOB_BSRR_PIN10_RESET);
+ 420              		.loc 1 128 9 view .LVU130
+ 421 0244 43F0E063 		orr	r3, r3, #117440512
+ 422 0248 C2F81834 		str	r3, [r2, #1048]
+ 129:Core/Src/main.c ****         led1 = 0;
+ 423              		.loc 1 129 9 view .LVU131
+ 424              		.loc 1 129 14 is_stmt 0 view .LVU132
+ 425 024c 0023     		movs	r3, #0
+ 426 024e 094A     		ldr	r2, .L32+24
+ 427 0250 1370     		strb	r3, [r2]
+ 130:Core/Src/main.c ****         led2 = 0;
+ 428              		.loc 1 130 9 is_stmt 1 view .LVU133
+ 429              		.loc 1 130 14 is_stmt 0 view .LVU134
+ 430 0252 094A     		ldr	r2, .L32+28
+ 431 0254 1370     		strb	r3, [r2]
+ 131:Core/Src/main.c ****         led3 = 0;
+ 432              		.loc 1 131 9 is_stmt 1 view .LVU135
+ 433              		.loc 1 131 14 is_stmt 0 view .LVU136
+ 434 0256 094A     		ldr	r2, .L32+32
+ 435 0258 1370     		strb	r3, [r2]
+ 436 025a 93E7     		b	.L2
+ 437              	.L33:
+ 438              		.align	2
+ 439              	.L32:
+ 440 025c 00000000 		.word	but1
+ 441 0260 3F420F00 		.word	999999
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 12
+
+
+ 442 0264 00000000 		.word	led_pin
+ 443 0268 00000000 		.word	led_mode
+ 444 026c 00000000 		.word	but2
+ 445 0270 00000240 		.word	1073872896
+ 446 0274 00000000 		.word	led1
+ 447 0278 00000000 		.word	led2
+ 448 027c 00000000 		.word	led3
+ 449              		.cfi_endproc
+ 450              	.LFE130:
+ 452              		.global	but2
+ 453              		.section	.bss.but2,"aw",%nobits
+ 456              	but2:
+ 457 0000 00       		.space	1
+ 458              		.global	but1
+ 459              		.section	.bss.but1,"aw",%nobits
+ 462              	but1:
+ 463 0000 00       		.space	1
+ 464              		.global	led3
+ 465              		.section	.bss.led3,"aw",%nobits
+ 468              	led3:
+ 469 0000 00       		.space	1
+ 470              		.global	led2
+ 471              		.section	.bss.led2,"aw",%nobits
+ 474              	led2:
+ 475 0000 00       		.space	1
+ 476              		.global	led1
+ 477              		.section	.bss.led1,"aw",%nobits
+ 480              	led1:
+ 481 0000 00       		.space	1
+ 482              		.global	led_mode
+ 483              		.section	.data.led_mode,"aw"
+ 484              		.align	2
+ 487              	led_mode:
+ 488 0000 01000000 		.word	1
+ 489              		.global	led_pin
+ 490              		.section	.data.led_pin,"aw"
+ 491              		.align	2
+ 494              	led_pin:
+ 495 0000 01000000 		.word	1
+ 496              		.text
+ 497              	.Letext0:
+ 498              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 499              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 500              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s 			page 13
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\IGNITE~1\AppData\Local\Temp\cctUByR7.s:21     .text.main:00000000 $t
-C:\Users\IGNITE~1\AppData\Local\Temp\cctUByR7.s:27     .text.main:00000000 main
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:21     .text.main:00000000 $t
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:27     .text.main:00000000 main
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:440    .text.main:0000025c $d
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:462    .bss.but1:00000000 but1
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:494    .data.led_pin:00000000 led_pin
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:487    .data.led_mode:00000000 led_mode
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:456    .bss.but2:00000000 but2
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:480    .bss.led1:00000000 led1
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:474    .bss.led2:00000000 led2
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:468    .bss.led3:00000000 led3
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:457    .bss.but2:00000000 $d
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:463    .bss.but1:00000000 $d
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:469    .bss.led3:00000000 $d
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:475    .bss.led2:00000000 $d
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:481    .bss.led1:00000000 $d
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:484    .data.led_mode:00000000 $d
+C:\Users\IGNITE~1\AppData\Local\Temp\ccirVBar.s:491    .data.led_pin:00000000 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Init
