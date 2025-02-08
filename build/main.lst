@@ -1,522 +1,1044 @@
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 1
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 1
 
 
    1              		.cpu cortex-m4
    2              		.arch armv7e-m
-   3              		.fpu fpv4-sp-d16
-   4              		.eabi_attribute 27, 1
-   5              		.eabi_attribute 28, 1
-   6              		.eabi_attribute 20, 1
-   7              		.eabi_attribute 21, 1
-   8              		.eabi_attribute 23, 3
-   9              		.eabi_attribute 24, 1
-  10              		.eabi_attribute 25, 1
-  11              		.eabi_attribute 26, 1
-  12              		.eabi_attribute 30, 1
-  13              		.eabi_attribute 34, 1
-  14              		.eabi_attribute 18, 4
-  15              		.file	"main.c"
-  16              		.text
-  17              	.Ltext0:
-  18              		.cfi_sections	.debug_frame
-  19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.main,"ax",%progbits
-  21              		.align	1
-  22              		.global	main
-  23              		.syntax unified
-  24              		.thumb
-  25              		.thumb_func
-  27              	main:
-  28              	.LFB130:
-   1:Core/Src/main.c **** #include <stdint.h> 
-   2:Core/Src/main.c **** #include <init.h>
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/main.c"
+  18              		.section	.text.Led_light,"ax",%progbits
+  19              		.align	1
+  20              		.global	Led_light
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	Led_light:
+  26              	.LFB131:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** #include "../Inc/it_handlers.h"
    3:Core/Src/main.c **** 
-   4:Core/Src/main.c **** volatile uint8_t led_states[4] = {0, 0, 0, 0}; // 记录每个 LED 的状态
-   5:Core/Src/main.c **** volatile uint8_t button_count = 0;            // 按钮按下次数
-   6:Core/Src/main.c **** volatile uint8_t button_flag = 0;
-   7:Core/Src/main.c **** 
-   8:Core/Src/main.c **** int main(void) {
-  29              		.loc 1 8 16 view -0
-  30              		.cfi_startproc
-  31              		@ args = 0, pretend = 0, frame = 8
-  32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33 0000 10B5     		push	{r4, lr}
-  34              	.LCFI0:
-  35              		.cfi_def_cfa_offset 8
-  36              		.cfi_offset 4, -8
-  37              		.cfi_offset 14, -4
-  38 0002 82B0     		sub	sp, sp, #8
-  39              	.LCFI1:
-  40              		.cfi_def_cfa_offset 16
-   9:Core/Src/main.c ****     uint8_t button_pressed = 0; // 按钮状态
-  41              		.loc 1 9 5 view .LVU1
-  42              	.LVL0:
-  10:Core/Src/main.c ****     GPIO_Ini();                 // 初始化 GPIO
-  43              		.loc 1 10 5 view .LVU2
-  44 0004 FFF7FEFF 		bl	GPIO_Ini
-  45              	.LVL1:
-   9:Core/Src/main.c ****     uint8_t button_pressed = 0; // 按钮状态
-  46              		.loc 1 9 13 is_stmt 0 view .LVU3
-  47 0008 0024     		movs	r4, #0
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 2
-
-
-  48 000a 00E0     		b	.L3
-  49              	.LVL2:
-  50              	.L20:
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** uint16_t DelayTickCount = 0;
+   6:Core/Src/main.c **** uint32_t GlobalTickBut1Wait = 0;
+   7:Core/Src/main.c **** uint32_t  GlobalTickBut2Wait = 0;
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** uint16_t CurrentLedFrequency = 0;
+  10:Core/Src/main.c **** 
   11:Core/Src/main.c **** 
-  12:Core/Src/main.c ****     while (1) {
-  13:Core/Src/main.c ****         // 更新按钮状态
-  14:Core/Src/main.c ****         button_flag = READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) ? 1 : 0;
-  15:Core/Src/main.c **** 
-  16:Core/Src/main.c ****         // 检测按钮是否按下
-  17:Core/Src/main.c ****         if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) != 0) { // 按钮按下
-  18:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
-  19:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
-  20:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
-  21:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
-  22:Core/Src/main.c **** 
-  23:Core/Src/main.c ****                 // 根据按钮按下次数控制灯
-  24:Core/Src/main.c ****                 if (button_count >= 1 && button_count <= 4) {
-  25:Core/Src/main.c ****                     // 点亮指定数量的 LED
-  26:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
-  27:Core/Src/main.c ****                         if (i < button_count) {
-  28:Core/Src/main.c ****                             ToggleLED(i + 1, 1); // 打开 LED
-  29:Core/Src/main.c ****                             led_states[i] = 1;  // 更新状态
-  30:Core/Src/main.c ****                         } else {
-  31:Core/Src/main.c ****                             ToggleLED(i + 1, 0); // 关闭 LED
-  32:Core/Src/main.c ****                             led_states[i] = 0;  // 更新状态
-  33:Core/Src/main.c ****                         }
-  34:Core/Src/main.c ****                     }
-  35:Core/Src/main.c ****                 } else if (button_count == 5) {
-  36:Core/Src/main.c ****                     // 关闭所有 LED
-  37:Core/Src/main.c ****                     TurnOffAllLEDs();
-  38:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
-  39:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
-  40:Core/Src/main.c ****                     }
-  41:Core/Src/main.c ****                 } else if (button_count == 6) {
-  42:Core/Src/main.c ****                     // 点亮所有 LED
-  43:Core/Src/main.c ****                     TurnOnAllLEDs();
-  44:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
-  45:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
-  46:Core/Src/main.c ****                     }
-  47:Core/Src/main.c ****                 } else if (button_count > 6) {
-  48:Core/Src/main.c ****                     // 重置逻辑并重新开始
-  49:Core/Src/main.c ****                     TurnOffAllLEDs();
-  50:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
-  51:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
-  52:Core/Src/main.c ****                     }
-  53:Core/Src/main.c ****                     button_count = 0; // 重置计数
-  54:Core/Src/main.c ****                 }
+  12:Core/Src/main.c **** const uint8_t Led_Off_set[6] = {0U, 7U, 14U, 8U, 9U, 10U};
+  13:Core/Src/main.c **** uint8_t Current_state = 6;
+  14:Core/Src/main.c **** uint8_t Current_led = 0;
+  15:Core/Src/main.c **** uint8_t Numb = 0;
+  16:Core/Src/main.c **** uint8_t counterbut1 = 0;
+  17:Core/Src/main.c **** uint8_t counterbut2 = 0;
+  18:Core/Src/main.c **** uint8_t flagbut1 = 0, flagbut2 = 0;
+  19:Core/Src/main.c **** uint8_t flagbut1long = 0, flagbut2long = 0;
+  20:Core/Src/main.c **** uint16_t led_freq_range[3][3] = {{1250, 384, 250},{833, 312, 227},{625, 263, 200}};
+  21:Core/Src/main.c **** uint8_t Current_freq[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
+  22:Core/Src/main.c **** uint16_t Led_load[6] = {0, 0, 0, 0, 0, 0};
+  23:Core/Src/main.c **** uint16_t Led_count[6] = {0, 0, 0, 0, 0, 0};
+  24:Core/Src/main.c **** uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 0}};
+  25:Core/Src/main.c **** uint8_t Led1flag = 0;
+  26:Core/Src/main.c **** uint8_t Led2flag = 0;
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c **** void LedVal_Init();
+  29:Core/Src/main.c **** void Led_light();
+  30:Core/Src/main.c **** 
+  31:Core/Src/main.c **** int main(void) 
+  32:Core/Src/main.c **** { 
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 2
+
+
+  33:Core/Src/main.c ****     GPIO_Init();
+  34:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
+  35:Core/Src/main.c ****     EXTI_ITR_Init();// Инициализация прерываний  
+  36:Core/Src/main.c ****     SysTick_Init();
+  37:Core/Src/main.c ****     LedVal_Init();
+  38:Core/Src/main.c ****     while (1) 
+  39:Core/Src/main.c ****     {
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+  41:Core/Src/main.c ****             if (Led_count[i] >= Led_load[i])
+  42:Core/Src/main.c ****             {
+  43:Core/Src/main.c ****                 Led_count[i] = 0;
+  44:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
+  45:Core/Src/main.c ****                 {         
+  46:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+  47:Core/Src/main.c ****                 }
+  48:Core/Src/main.c ****                 else
+  49:Core/Src/main.c ****                 {
+  50:Core/Src/main.c ****                     Ledflag[1][i] = 1;
+  51:Core/Src/main.c ****                 }
+  52:Core/Src/main.c ****                 //
+  53:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+  54:Core/Src/main.c ****                 Led2flag = Ledflag[1][1];
   55:Core/Src/main.c ****             }
-  56:Core/Src/main.c ****         } else {
-  57:Core/Src/main.c ****             button_pressed = 0; // 按钮释放
-  51              		.loc 1 57 28 view .LVU4
-  52 000c 0024     		movs	r4, #0
-  53              	.LVL3:
-  54              	.L3:
-  12:Core/Src/main.c ****         // 更新按钮状态
-  55              		.loc 1 12 5 is_stmt 1 view .LVU5
-  14:Core/Src/main.c **** 
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 3
+  56:Core/Src/main.c **** 
+  57:Core/Src/main.c ****         }
+  58:Core/Src/main.c ****         Numb = Current_state%7;
+  59:Core/Src/main.c ****         if (Numb != 0)
+  60:Core/Src/main.c ****         {
+  61:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+  62:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+  63:Core/Src/main.c ****             }
+  64:Core/Src/main.c ****         }
+  65:Core/Src/main.c ****         else
+  66:Core/Src/main.c ****         {
+  67:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+  68:Core/Src/main.c ****             {
+  69:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+  70:Core/Src/main.c ****             }
+  71:Core/Src/main.c ****             Current_state = 0;
+  72:Core/Src/main.c ****         }
+  73:Core/Src/main.c ****         if(flagbut1long == 1){ 
+  74:Core/Src/main.c ****             if (Current_freq[Current_led][0] >= 3)
+  75:Core/Src/main.c ****             {
+  76:Core/Src/main.c ****                 Current_freq[Current_led][0] = 0;
+  77:Core/Src/main.c ****             }
+  78:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+  79:Core/Src/main.c ****             //Led_load[Current_led%6] = led_freq_range[counterbut2][counterbut1 % 3];
+  80:Core/Src/main.c ****             flagbut1long = 0;
+  81:Core/Src/main.c ****         } 
+  82:Core/Src/main.c **** 
+  83:Core/Src/main.c **** 
+  84:Core/Src/main.c ****         if(flagbut2long == 1){     
+  85:Core/Src/main.c ****             if (Current_freq[Current_led][1] >= 3)
+  86:Core/Src/main.c ****             {
+  87:Core/Src/main.c ****                 Current_freq[Current_led][1] = 0;
+  88:Core/Src/main.c ****             }
+  89:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 3
 
 
-  56              		.loc 1 14 9 view .LVU6
-  14:Core/Src/main.c **** 
-  57              		.loc 1 14 23 is_stmt 0 view .LVU7
-  58 000e 3E4A     		ldr	r2, .L28
-  59 0010 D2F81038 		ldr	r3, [r2, #2064]
-  14:Core/Src/main.c **** 
-  60              		.loc 1 14 86 view .LVU8
-  61 0014 C3F34033 		ubfx	r3, r3, #13, #1
-  14:Core/Src/main.c **** 
-  62              		.loc 1 14 21 view .LVU9
-  63 0018 3C49     		ldr	r1, .L28+4
-  64 001a 0B70     		strb	r3, [r1]
-  17:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
-  65              		.loc 1 17 9 is_stmt 1 view .LVU10
-  17:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
-  66              		.loc 1 17 13 is_stmt 0 view .LVU11
-  67 001c D2F81038 		ldr	r3, [r2, #2064]
-  17:Core/Src/main.c ****             for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
-  68              		.loc 1 17 12 view .LVU12
-  69 0020 13F4005F 		tst	r3, #8192
-  70 0024 F2D0     		beq	.L20
-  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
-  71              		.loc 1 18 13 is_stmt 1 view .LVU13
-  72              	.LBB2:
-  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
-  73              		.loc 1 18 18 view .LVU14
-  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
-  74              		.loc 1 18 31 is_stmt 0 view .LVU15
-  75 0026 0023     		movs	r3, #0
-  76 0028 0193     		str	r3, [sp, #4]
-  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
-  77              		.loc 1 18 13 view .LVU16
-  78 002a 02E0     		b	.L4
-  79              	.L5:
-  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
-  80              		.loc 1 18 51 is_stmt 1 discriminator 3 view .LVU17
-  81 002c 019B     		ldr	r3, [sp, #4]
-  82 002e 0133     		adds	r3, r3, #1
-  83 0030 0193     		str	r3, [sp, #4]
-  84              	.L4:
-  18:Core/Src/main.c ****             if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed =
-  85              		.loc 1 18 40 discriminator 1 view .LVU18
-  86 0032 019A     		ldr	r2, [sp, #4]
-  87 0034 364B     		ldr	r3, .L28+8
-  88 0036 9A42     		cmp	r2, r3
-  89 0038 F8DD     		ble	.L5
-  90              	.LBE2:
-  19:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
-  91              		.loc 1 19 13 view .LVU19
-  19:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
-  92              		.loc 1 19 17 is_stmt 0 view .LVU20
-  93 003a 334B     		ldr	r3, .L28
-  94 003c D3F81038 		ldr	r3, [r3, #2064]
-  19:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
-  95              		.loc 1 19 16 view .LVU21
-  96 0040 13F4005F 		tst	r3, #8192
-  97 0044 E3D1     		bne	.L3
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 4
+  90:Core/Src/main.c **** 
+  91:Core/Src/main.c ****             flagbut2long = 0;
+  92:Core/Src/main.c ****         }
+  93:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+  94:Core/Src/main.c ****             flagbut1 = 0;
+  95:Core/Src/main.c ****         }  
+  96:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+  97:Core/Src/main.c ****             flagbut2 = 0;
+  98:Core/Src/main.c ****         }  
+  99:Core/Src/main.c ****         Led_light();
+ 100:Core/Src/main.c ****     } 
+ 101:Core/Src/main.c **** 
+ 102:Core/Src/main.c **** 
+ 103:Core/Src/main.c **** 
+ 104:Core/Src/main.c **** } 
+ 105:Core/Src/main.c **** 
+ 106:Core/Src/main.c **** 
+ 107:Core/Src/main.c **** void Led_light()
+ 108:Core/Src/main.c **** {
+  27              		.loc 1 108 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 109:Core/Src/main.c ****     uint32_t ODR_clear = 0x0UL;
+  32              		.loc 1 109 5 view .LVU1
+  33              	.LVL0:
+ 110:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
+  34              		.loc 1 110 5 view .LVU2
+ 111:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+  35              		.loc 1 111 5 view .LVU3
+  36              	.LBB2:
+  37              		.loc 1 111 10 view .LVU4
+  38              		.loc 1 111 18 is_stmt 0 view .LVU5
+  39 0000 0023     		movs	r3, #0
+  40              	.LBE2:
+ 110:Core/Src/main.c ****     uint32_t ODR_set = 0x0UL;
+  41              		.loc 1 110 14 view .LVU6
+  42 0002 9C46     		mov	ip, r3
+ 109:Core/Src/main.c ****     uint32_t ODR_clear = 0x0UL;
+  43              		.loc 1 109 14 view .LVU7
+  44 0004 1946     		mov	r1, r3
+  45              	.LBB3:
+  46              		.loc 1 111 5 view .LVU8
+  47 0006 06E0     		b	.L2
+  48              	.LVL1:
+  49              	.L3:
+ 112:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+ 113:Core/Src/main.c ****             ODR_set = ODR_set + (0x1UL<<(Led_Off_set[i]));
+ 114:Core/Src/main.c ****         }
+ 115:Core/Src/main.c ****         else{
+ 116:Core/Src/main.c ****             ODR_clear = ODR_clear + (0x1UL<<(Led_Off_set[i]));
+  50              		.loc 1 116 13 is_stmt 1 view .LVU9
+  51              		.loc 1 116 57 is_stmt 0 view .LVU10
+  52 0008 1048     		ldr	r0, .L7
+  53 000a 805C     		ldrb	r0, [r0, r2]	@ zero_extendqisi2
+  54              		.loc 1 116 43 view .LVU11
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 4
 
 
-  19:Core/Src/main.c ****                 button_pressed = 1; // 标记按钮已经按下
-  98              		.loc 1 19 81 discriminator 1 view .LVU22
-  99 0046 002C     		cmp	r4, #0
- 100 0048 E1D1     		bne	.L3
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 101              		.loc 1 20 17 is_stmt 1 view .LVU23
- 102              	.LVL4:
-  21:Core/Src/main.c **** 
- 103              		.loc 1 21 17 view .LVU24
-  21:Core/Src/main.c **** 
- 104              		.loc 1 21 29 is_stmt 0 view .LVU25
- 105 004a 324A     		ldr	r2, .L28+12
- 106 004c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 107 004e 0133     		adds	r3, r3, #1
- 108 0050 DBB2     		uxtb	r3, r3
- 109 0052 1370     		strb	r3, [r2]
-  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
- 110              		.loc 1 24 17 is_stmt 1 view .LVU26
-  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
- 111              		.loc 1 24 34 is_stmt 0 view .LVU27
- 112 0054 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
- 113              		.loc 1 24 20 view .LVU28
- 114 0056 1BB1     		cbz	r3, .L7
-  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
- 115              		.loc 1 24 55 discriminator 1 view .LVU29
- 116 0058 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 117 005a DBB2     		uxtb	r3, r3
-  24:Core/Src/main.c ****                     // 点亮指定数量的 LED
- 118              		.loc 1 24 39 discriminator 1 view .LVU30
- 119 005c 042B     		cmp	r3, #4
- 120 005e 1AD9     		bls	.L8
- 121              	.L7:
-  35:Core/Src/main.c ****                     // 关闭所有 LED
- 122              		.loc 1 35 24 is_stmt 1 view .LVU31
-  35:Core/Src/main.c ****                     // 关闭所有 LED
- 123              		.loc 1 35 41 is_stmt 0 view .LVU32
- 124 0060 2C4B     		ldr	r3, .L28+12
- 125 0062 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 126 0064 DBB2     		uxtb	r3, r3
-  35:Core/Src/main.c ****                     // 关闭所有 LED
- 127              		.loc 1 35 27 view .LVU33
- 128 0066 052B     		cmp	r3, #5
- 129 0068 27D0     		beq	.L23
-  41:Core/Src/main.c ****                     // 点亮所有 LED
- 130              		.loc 1 41 24 is_stmt 1 view .LVU34
-  41:Core/Src/main.c ****                     // 点亮所有 LED
- 131              		.loc 1 41 41 is_stmt 0 view .LVU35
- 132 006a 2A4B     		ldr	r3, .L28+12
- 133 006c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 134 006e DBB2     		uxtb	r3, r3
-  41:Core/Src/main.c ****                     // 点亮所有 LED
- 135              		.loc 1 41 27 view .LVU36
- 136 0070 062B     		cmp	r3, #6
- 137 0072 2ED0     		beq	.L24
-  47:Core/Src/main.c ****                     // 重置逻辑并重新开始
- 138              		.loc 1 47 24 is_stmt 1 view .LVU37
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 5
+  55 000c 0122     		movs	r2, #1
+  56 000e 8240     		lsls	r2, r2, r0
+  57              		.loc 1 116 23 view .LVU12
+  58 0010 1144     		add	r1, r1, r2
+  59              	.LVL2:
+  60              	.L4:
+ 111:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+  61              		.loc 1 111 33 is_stmt 1 discriminator 2 view .LVU13
+  62 0012 0133     		adds	r3, r3, #1
+  63              	.LVL3:
+ 111:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+  64              		.loc 1 111 33 is_stmt 0 discriminator 2 view .LVU14
+  65 0014 DBB2     		uxtb	r3, r3
+  66              	.LVL4:
+  67              	.L2:
+ 111:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+  68              		.loc 1 111 27 is_stmt 1 discriminator 1 view .LVU15
+  69 0016 052B     		cmp	r3, #5
+  70 0018 0FD8     		bhi	.L6
+ 112:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  71              		.loc 1 112 9 view .LVU16
+ 112:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  72              		.loc 1 112 24 is_stmt 0 view .LVU17
+  73 001a 1A46     		mov	r2, r3
+  74 001c 0C48     		ldr	r0, .L7+4
+  75 001e C05C     		ldrb	r0, [r0, r3]	@ zero_extendqisi2
+ 112:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  76              		.loc 1 112 12 view .LVU18
+  77 0020 0128     		cmp	r0, #1
+  78 0022 F1D1     		bne	.L3
+ 112:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  79              		.loc 1 112 48 discriminator 1 view .LVU19
+  80 0024 0A48     		ldr	r0, .L7+4
+  81 0026 1844     		add	r0, r0, r3
+  82 0028 8079     		ldrb	r0, [r0, #6]	@ zero_extendqisi2
+ 112:Core/Src/main.c ****         if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+  83              		.loc 1 112 34 discriminator 1 view .LVU20
+  84 002a 0128     		cmp	r0, #1
+  85 002c ECD1     		bne	.L3
+ 113:Core/Src/main.c ****         }
+  86              		.loc 1 113 13 is_stmt 1 view .LVU21
+ 113:Core/Src/main.c ****         }
+  87              		.loc 1 113 53 is_stmt 0 view .LVU22
+  88 002e 0748     		ldr	r0, .L7
+  89 0030 C05C     		ldrb	r0, [r0, r3]	@ zero_extendqisi2
+ 113:Core/Src/main.c ****         }
+  90              		.loc 1 113 39 view .LVU23
+  91 0032 0122     		movs	r2, #1
+  92 0034 8240     		lsls	r2, r2, r0
+ 113:Core/Src/main.c ****         }
+  93              		.loc 1 113 21 view .LVU24
+  94 0036 9444     		add	ip, ip, r2
+  95              	.LVL5:
+ 113:Core/Src/main.c ****         }
+  96              		.loc 1 113 21 view .LVU25
+  97 0038 EBE7     		b	.L4
+  98              	.L6:
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 5
 
 
-  47:Core/Src/main.c ****                     // 重置逻辑并重新开始
- 139              		.loc 1 47 41 is_stmt 0 view .LVU38
- 140 0074 274B     		ldr	r3, .L28+12
- 141 0076 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 142 0078 DBB2     		uxtb	r3, r3
-  47:Core/Src/main.c ****                     // 重置逻辑并重新开始
- 143              		.loc 1 47 27 view .LVU39
- 144 007a 062B     		cmp	r3, #6
- 145 007c 35D8     		bhi	.L25
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 146              		.loc 1 20 32 view .LVU40
- 147 007e 0124     		movs	r4, #1
- 148 0080 C5E7     		b	.L3
- 149              	.LVL5:
- 150              	.L9:
- 151              	.LBB3:
-  31:Core/Src/main.c ****                             led_states[i] = 0;  // 更新状态
- 152              		.loc 1 31 29 is_stmt 1 view .LVU41
- 153 0082 601C     		adds	r0, r4, #1
- 154 0084 0021     		movs	r1, #0
- 155 0086 C0B2     		uxtb	r0, r0
- 156 0088 FFF7FEFF 		bl	ToggleLED
- 157              	.LVL6:
-  32:Core/Src/main.c ****                         }
- 158              		.loc 1 32 29 view .LVU42
-  32:Core/Src/main.c ****                         }
- 159              		.loc 1 32 43 is_stmt 0 view .LVU43
- 160 008c 224B     		ldr	r3, .L28+16
- 161 008e 0022     		movs	r2, #0
- 162 0090 1A55     		strb	r2, [r3, r4]
- 163              	.L10:
-  26:Core/Src/main.c ****                         if (i < button_count) {
- 164              		.loc 1 26 49 is_stmt 1 discriminator 2 view .LVU44
- 165 0092 0134     		adds	r4, r4, #1
- 166              	.LVL7:
-  26:Core/Src/main.c ****                         if (i < button_count) {
- 167              		.loc 1 26 49 is_stmt 0 discriminator 2 view .LVU45
- 168 0094 E4B2     		uxtb	r4, r4
- 169              	.LVL8:
- 170              	.L8:
-  26:Core/Src/main.c ****                         if (i < button_count) {
- 171              		.loc 1 26 43 is_stmt 1 discriminator 1 view .LVU46
- 172 0096 032C     		cmp	r4, #3
- 173 0098 0DD8     		bhi	.L26
-  27:Core/Src/main.c ****                             ToggleLED(i + 1, 1); // 打开 LED
- 174              		.loc 1 27 25 view .LVU47
-  27:Core/Src/main.c ****                             ToggleLED(i + 1, 1); // 打开 LED
- 175              		.loc 1 27 31 is_stmt 0 view .LVU48
- 176 009a 1E4B     		ldr	r3, .L28+12
- 177 009c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 178 009e DBB2     		uxtb	r3, r3
-  27:Core/Src/main.c ****                             ToggleLED(i + 1, 1); // 打开 LED
- 179              		.loc 1 27 28 view .LVU49
- 180 00a0 A342     		cmp	r3, r4
- 181 00a2 EED9     		bls	.L9
-  28:Core/Src/main.c ****                             led_states[i] = 1;  // 更新状态
- 182              		.loc 1 28 29 is_stmt 1 view .LVU50
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 6
+ 113:Core/Src/main.c ****         }
+  99              		.loc 1 113 21 view .LVU26
+ 100              	.LBE3:
+ 117:Core/Src/main.c ****         }
+ 118:Core/Src/main.c ****     }
+ 119:Core/Src/main.c ****     MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
+ 101              		.loc 1 119 5 is_stmt 1 view .LVU27
+ 102 003a 064A     		ldr	r2, .L7+8
+ 103 003c 5369     		ldr	r3, [r2, #20]
+ 104              	.LVL6:
+ 105              		.loc 1 119 5 is_stmt 0 view .LVU28
+ 106 003e 23EA0103 		bic	r3, r3, r1
+ 107 0042 43EA0C03 		orr	r3, r3, ip
+ 108 0046 5361     		str	r3, [r2, #20]
+ 120:Core/Src/main.c **** }
+ 109              		.loc 1 120 1 view .LVU29
+ 110 0048 7047     		bx	lr
+ 111              	.L8:
+ 112 004a 00BF     		.align	2
+ 113              	.L7:
+ 114 004c 00000000 		.word	Led_Off_set
+ 115 0050 00000000 		.word	Ledflag
+ 116 0054 00040240 		.word	1073873920
+ 117              		.cfi_endproc
+ 118              	.LFE131:
+ 120              		.section	.text.LedVal_Init,"ax",%progbits
+ 121              		.align	1
+ 122              		.global	LedVal_Init
+ 123              		.syntax unified
+ 124              		.thumb
+ 125              		.thumb_func
+ 127              	LedVal_Init:
+ 128              	.LFB132:
+ 121:Core/Src/main.c **** 
+ 122:Core/Src/main.c **** void LedVal_Init()
+ 123:Core/Src/main.c **** {
+ 129              		.loc 1 123 1 is_stmt 1 view -0
+ 130              		.cfi_startproc
+ 131              		@ args = 0, pretend = 0, frame = 0
+ 132              		@ frame_needed = 0, uses_anonymous_args = 0
+ 133              		@ link register save eliminated.
+ 124:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+ 134              		.loc 1 124 5 view .LVU31
+ 135              	.LBB4:
+ 136              		.loc 1 124 10 view .LVU32
+ 137              	.LVL7:
+ 138              		.loc 1 124 18 is_stmt 0 view .LVU33
+ 139 0000 0023     		movs	r3, #0
+ 140              		.loc 1 124 5 view .LVU34
+ 141 0002 13E0     		b	.L10
+ 142              	.LVL8:
+ 143              	.L11:
+ 125:Core/Src/main.c ****         Led_load[i] = led_freq_range[Current_freq[i][0]][Current_freq[i][1]];
+ 144              		.loc 1 125 9 is_stmt 1 view .LVU35
+ 145              		.loc 1 125 53 is_stmt 0 view .LVU36
+ 146 0004 0B49     		ldr	r1, .L12
+ 147 0006 11F81320 		ldrb	r2, [r1, r3, lsl #1]	@ zero_extendqisi2
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 6
 
 
- 183 00a4 601C     		adds	r0, r4, #1
- 184 00a6 0121     		movs	r1, #1
- 185 00a8 C0B2     		uxtb	r0, r0
- 186 00aa FFF7FEFF 		bl	ToggleLED
- 187              	.LVL9:
-  29:Core/Src/main.c ****                         } else {
- 188              		.loc 1 29 29 view .LVU51
-  29:Core/Src/main.c ****                         } else {
- 189              		.loc 1 29 43 is_stmt 0 view .LVU52
- 190 00ae 1A4B     		ldr	r3, .L28+16
- 191 00b0 0122     		movs	r2, #1
- 192 00b2 1A55     		strb	r2, [r3, r4]
- 193 00b4 EDE7     		b	.L10
- 194              	.L26:
- 195              	.LBE3:
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 196              		.loc 1 20 32 view .LVU53
- 197 00b6 0124     		movs	r4, #1
- 198              	.LVL10:
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 199              		.loc 1 20 32 view .LVU54
- 200 00b8 A9E7     		b	.L3
- 201              	.LVL11:
- 202              	.L23:
-  37:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
- 203              		.loc 1 37 21 is_stmt 1 view .LVU55
- 204 00ba FFF7FEFF 		bl	TurnOffAllLEDs
- 205              	.LVL12:
-  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 206              		.loc 1 38 21 view .LVU56
- 207              	.LBB4:
-  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 208              		.loc 1 38 26 view .LVU57
- 209              	.L13:
-  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 210              		.loc 1 38 43 discriminator 1 view .LVU58
- 211 00be 032C     		cmp	r4, #3
- 212 00c0 05D8     		bhi	.L27
-  39:Core/Src/main.c ****                     }
- 213              		.loc 1 39 25 view .LVU59
-  39:Core/Src/main.c ****                     }
- 214              		.loc 1 39 39 is_stmt 0 view .LVU60
- 215 00c2 154B     		ldr	r3, .L28+16
- 216 00c4 0022     		movs	r2, #0
- 217 00c6 1A55     		strb	r2, [r3, r4]
-  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 218              		.loc 1 38 49 is_stmt 1 discriminator 3 view .LVU61
- 219 00c8 0134     		adds	r4, r4, #1
- 220              	.LVL13:
-  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 221              		.loc 1 38 49 is_stmt 0 discriminator 3 view .LVU62
- 222 00ca E4B2     		uxtb	r4, r4
- 223              	.LVL14:
-  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 224              		.loc 1 38 49 discriminator 3 view .LVU63
- 225 00cc F7E7     		b	.L13
- 226              	.L27:
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 7
+ 148              		.loc 1 125 73 view .LVU37
+ 149 000a 01EB4301 		add	r1, r1, r3, lsl #1
+ 150 000e 4978     		ldrb	r1, [r1, #1]	@ zero_extendqisi2
+ 151              		.loc 1 125 57 view .LVU38
+ 152 0010 02EB4202 		add	r2, r2, r2, lsl #1
+ 153 0014 0A44     		add	r2, r2, r1
+ 154 0016 0849     		ldr	r1, .L12+4
+ 155 0018 31F81220 		ldrh	r2, [r1, r2, lsl #1]
+ 156              		.loc 1 125 21 view .LVU39
+ 157 001c 0749     		ldr	r1, .L12+8
+ 158 001e 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
+ 126:Core/Src/main.c ****         Led_count[i] = Led_load[i];
+ 159              		.loc 1 126 9 is_stmt 1 view .LVU40
+ 160              		.loc 1 126 22 is_stmt 0 view .LVU41
+ 161 0022 0749     		ldr	r1, .L12+12
+ 162 0024 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
+ 124:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+ 163              		.loc 1 124 33 is_stmt 1 discriminator 3 view .LVU42
+ 164 0028 0133     		adds	r3, r3, #1
+ 165              	.LVL9:
+ 124:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+ 166              		.loc 1 124 33 is_stmt 0 discriminator 3 view .LVU43
+ 167 002a DBB2     		uxtb	r3, r3
+ 168              	.LVL10:
+ 169              	.L10:
+ 124:Core/Src/main.c ****     for (uint8_t i = 0; i < 6; i++){
+ 170              		.loc 1 124 27 is_stmt 1 discriminator 1 view .LVU44
+ 171 002c 052B     		cmp	r3, #5
+ 172 002e E9D9     		bls	.L11
+ 173              	.LBE4:
+ 127:Core/Src/main.c ****     }
+ 128:Core/Src/main.c **** }...
+ 174              		.loc 1 128 1 is_stmt 0 view .LVU45
+ 175 0030 7047     		bx	lr
+ 176              	.L13:
+ 177 0032 00BF     		.align	2
+ 178              	.L12:
+ 179 0034 00000000 		.word	Current_freq
+ 180 0038 00000000 		.word	led_freq_range
+ 181 003c 00000000 		.word	Led_load
+ 182 0040 00000000 		.word	Led_count
+ 183              		.cfi_endproc
+ 184              	.LFE132:
+ 186              		.section	.text.main,"ax",%progbits
+ 187              		.align	1
+ 188              		.global	main
+ 189              		.syntax unified
+ 190              		.thumb
+ 191              		.thumb_func
+ 193              	main:
+ 194              	.LFB130:
+  32:Core/Src/main.c **** { 
+ 195              		.loc 1 32 1 is_stmt 1 view -0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 0
+ 198              		@ frame_needed = 0, uses_anonymous_args = 0
+ 199 0000 08B5     		push	{r3, lr}
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 7
 
 
-  38:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 227              		.loc 1 38 49 discriminator 3 view .LVU64
- 228              	.LBE4:
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 229              		.loc 1 20 32 view .LVU65
- 230 00ce 0124     		movs	r4, #1
- 231              	.LVL15:
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 232              		.loc 1 20 32 view .LVU66
- 233 00d0 9DE7     		b	.L3
- 234              	.LVL16:
- 235              	.L24:
-  43:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
- 236              		.loc 1 43 21 is_stmt 1 view .LVU67
- 237 00d2 FFF7FEFF 		bl	TurnOnAllLEDs
- 238              	.LVL17:
-  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
- 239              		.loc 1 44 21 view .LVU68
- 240              	.LBB5:
-  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
- 241              		.loc 1 44 26 view .LVU69
-  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
- 242              		.loc 1 44 21 is_stmt 0 view .LVU70
- 243 00d6 04E0     		b	.L16
- 244              	.LVL18:
- 245              	.L17:
-  45:Core/Src/main.c ****                     }
- 246              		.loc 1 45 25 is_stmt 1 view .LVU71
-  45:Core/Src/main.c ****                     }
- 247              		.loc 1 45 39 is_stmt 0 view .LVU72
- 248 00d8 0F4B     		ldr	r3, .L28+16
- 249 00da 0122     		movs	r2, #1
- 250 00dc 1A55     		strb	r2, [r3, r4]
-  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
- 251              		.loc 1 44 49 is_stmt 1 discriminator 3 view .LVU73
- 252 00de 1444     		add	r4, r4, r2
- 253              	.LVL19:
-  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
- 254              		.loc 1 44 49 is_stmt 0 discriminator 3 view .LVU74
- 255 00e0 E4B2     		uxtb	r4, r4
- 256              	.LVL20:
- 257              	.L16:
-  44:Core/Src/main.c ****                         led_states[i] = 1; // 更新状态
- 258              		.loc 1 44 43 is_stmt 1 discriminator 1 view .LVU75
- 259 00e2 032C     		cmp	r4, #3
- 260 00e4 F8D9     		bls	.L17
- 261              	.LBE5:
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 262              		.loc 1 20 32 is_stmt 0 view .LVU76
- 263 00e6 0124     		movs	r4, #1
- 264              	.LVL21:
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 265              		.loc 1 20 32 view .LVU77
- 266 00e8 91E7     		b	.L3
- 267              	.LVL22:
- 268              	.L25:
-  49:Core/Src/main.c ****                     for (uint8_t i = 0; i < 4; i++) {
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 8
+ 200              	.LCFI0:
+ 201              		.cfi_def_cfa_offset 8
+ 202              		.cfi_offset 3, -8
+ 203              		.cfi_offset 14, -4
+  33:Core/Src/main.c ****     GPIO_Init();
+ 204              		.loc 1 33 5 view .LVU47
+ 205 0002 FFF7FEFF 		bl	GPIO_Init
+ 206              	.LVL11:
+  34:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
+ 207              		.loc 1 34 5 view .LVU48
+ 208 0006 FFF7FEFF 		bl	RCC_Init
+ 209              	.LVL12:
+  35:Core/Src/main.c ****     EXTI_ITR_Init();// Инициализация прерываний  
+ 210              		.loc 1 35 5 view .LVU49
+ 211 000a FFF7FEFF 		bl	EXTI_ITR_Init
+ 212              	.LVL13:
+  36:Core/Src/main.c ****     SysTick_Init();
+ 213              		.loc 1 36 5 view .LVU50
+ 214 000e FFF7FEFF 		bl	SysTick_Init
+ 215              	.LVL14:
+  37:Core/Src/main.c ****     LedVal_Init();
+ 216              		.loc 1 37 5 view .LVU51
+ 217 0012 FFF7FEFF 		bl	LedVal_Init
+ 218              	.LVL15:
+ 219 0016 65E0     		b	.L31
+ 220              	.LVL16:
+ 221              	.L35:
+ 222              	.LBB5:
+  46:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+ 223              		.loc 1 46 21 view .LVU52
+  46:Core/Src/main.c ****                     Ledflag[1][i] = 0;
+ 224              		.loc 1 46 35 is_stmt 0 view .LVU53
+ 225 0018 624A     		ldr	r2, .L40
+ 226 001a 1A44     		add	r2, r2, r3
+ 227 001c 9171     		strb	r1, [r2, #6]
+ 228              	.L18:
+  53:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+ 229              		.loc 1 53 17 is_stmt 1 view .LVU54
+  53:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+ 230              		.loc 1 53 38 is_stmt 0 view .LVU55
+ 231 001e 614A     		ldr	r2, .L40
+ 232 0020 9079     		ldrb	r0, [r2, #6]	@ zero_extendqisi2
+  53:Core/Src/main.c ****                 Led1flag = Ledflag[1][0];
+ 233              		.loc 1 53 26 view .LVU56
+ 234 0022 6149     		ldr	r1, .L40+4
+ 235 0024 0870     		strb	r0, [r1]
+  54:Core/Src/main.c ****                 Led2flag = Ledflag[1][1];
+ 236              		.loc 1 54 17 is_stmt 1 view .LVU57
+  54:Core/Src/main.c ****                 Led2flag = Ledflag[1][1];
+ 237              		.loc 1 54 38 is_stmt 0 view .LVU58
+ 238 0026 D179     		ldrb	r1, [r2, #7]	@ zero_extendqisi2
+  54:Core/Src/main.c ****                 Led2flag = Ledflag[1][1];
+ 239              		.loc 1 54 26 view .LVU59
+ 240 0028 604A     		ldr	r2, .L40+8
+ 241 002a 1170     		strb	r1, [r2]
+ 242              	.L16:
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 8
 
 
- 269              		.loc 1 49 21 is_stmt 1 view .LVU78
- 270 00ea FFF7FEFF 		bl	TurnOffAllLEDs
- 271              	.LVL23:
-  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 272              		.loc 1 50 21 view .LVU79
- 273              	.LBB6:
-  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 274              		.loc 1 50 26 view .LVU80
-  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 275              		.loc 1 50 21 is_stmt 0 view .LVU81
- 276 00ee 04E0     		b	.L18
- 277              	.LVL24:
- 278              	.L19:
-  51:Core/Src/main.c ****                     }
- 279              		.loc 1 51 25 is_stmt 1 view .LVU82
-  51:Core/Src/main.c ****                     }
- 280              		.loc 1 51 39 is_stmt 0 view .LVU83
- 281 00f0 094B     		ldr	r3, .L28+16
- 282 00f2 0022     		movs	r2, #0
- 283 00f4 1A55     		strb	r2, [r3, r4]
-  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 284              		.loc 1 50 49 is_stmt 1 discriminator 3 view .LVU84
- 285 00f6 0134     		adds	r4, r4, #1
- 286              	.LVL25:
-  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 287              		.loc 1 50 49 is_stmt 0 discriminator 3 view .LVU85
- 288 00f8 E4B2     		uxtb	r4, r4
- 289              	.LVL26:
- 290              	.L18:
-  50:Core/Src/main.c ****                         led_states[i] = 0; // 更新状态
- 291              		.loc 1 50 43 is_stmt 1 discriminator 1 view .LVU86
- 292 00fa 032C     		cmp	r4, #3
- 293 00fc F8D9     		bls	.L19
- 294              	.LBE6:
-  53:Core/Src/main.c ****                 }
- 295              		.loc 1 53 21 view .LVU87
-  53:Core/Src/main.c ****                 }
- 296              		.loc 1 53 34 is_stmt 0 view .LVU88
- 297 00fe 054B     		ldr	r3, .L28+12
- 298 0100 0022     		movs	r2, #0
- 299 0102 1A70     		strb	r2, [r3]
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 300              		.loc 1 20 32 view .LVU89
- 301 0104 0124     		movs	r4, #1
- 302              	.LVL27:
-  20:Core/Src/main.c ****                 button_count++;     // 增加按钮按下次数
- 303              		.loc 1 20 32 view .LVU90
- 304 0106 82E7     		b	.L3
- 305              	.L29:
- 306              		.align	2
- 307              	.L28:
- 308 0108 00000240 		.word	1073872896
- 309 010c 00000000 		.word	button_flag
- 310 0110 9F860100 		.word	99999
- 311 0114 00000000 		.word	button_count
- 312 0118 00000000 		.word	led_states
- 313              		.cfi_endproc
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 9
+ 243              		.loc 1 40 37 is_stmt 1 discriminator 2 view .LVU60
+ 244 002c 0133     		adds	r3, r3, #1
+ 245              	.LVL17:
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 246              		.loc 1 40 37 is_stmt 0 discriminator 2 view .LVU61
+ 247 002e DBB2     		uxtb	r3, r3
+ 248              	.LVL18:
+ 249              	.L15:
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 250              		.loc 1 40 31 is_stmt 1 discriminator 1 view .LVU62
+ 251 0030 052B     		cmp	r3, #5
+ 252 0032 15D8     		bhi	.L34
+  41:Core/Src/main.c ****             if (Led_count[i] >= Led_load[i])
+ 253              		.loc 1 41 13 view .LVU63
+  41:Core/Src/main.c ****             if (Led_count[i] >= Led_load[i])
+ 254              		.loc 1 41 26 is_stmt 0 view .LVU64
+ 255 0034 5E4A     		ldr	r2, .L40+12
+ 256 0036 32F81310 		ldrh	r1, [r2, r3, lsl #1]
+  41:Core/Src/main.c ****             if (Led_count[i] >= Led_load[i])
+ 257              		.loc 1 41 41 view .LVU65
+ 258 003a 5E4A     		ldr	r2, .L40+16
+ 259 003c 32F81320 		ldrh	r2, [r2, r3, lsl #1]
+  41:Core/Src/main.c ****             if (Led_count[i] >= Led_load[i])
+ 260              		.loc 1 41 16 view .LVU66
+ 261 0040 9142     		cmp	r1, r2
+ 262 0042 F3D3     		bcc	.L16
+  43:Core/Src/main.c ****                 Led_count[i] = 0;
+ 263              		.loc 1 43 17 is_stmt 1 view .LVU67
+  43:Core/Src/main.c ****                 Led_count[i] = 0;
+ 264              		.loc 1 43 30 is_stmt 0 view .LVU68
+ 265 0044 5A4A     		ldr	r2, .L40+12
+ 266 0046 0021     		movs	r1, #0
+ 267 0048 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
+  44:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
+ 268              		.loc 1 44 17 is_stmt 1 view .LVU69
+  44:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
+ 269              		.loc 1 44 31 is_stmt 0 view .LVU70
+ 270 004c 554A     		ldr	r2, .L40
+ 271 004e 1A44     		add	r2, r2, r3
+ 272 0050 9279     		ldrb	r2, [r2, #6]	@ zero_extendqisi2
+  44:Core/Src/main.c ****                 if (Ledflag[1][i] == 1)
+ 273              		.loc 1 44 20 view .LVU71
+ 274 0052 012A     		cmp	r2, #1
+ 275 0054 E0D0     		beq	.L35
+  50:Core/Src/main.c ****                     Ledflag[1][i] = 1;
+ 276              		.loc 1 50 21 is_stmt 1 view .LVU72
+  50:Core/Src/main.c ****                     Ledflag[1][i] = 1;
+ 277              		.loc 1 50 35 is_stmt 0 view .LVU73
+ 278 0056 534A     		ldr	r2, .L40
+ 279 0058 1A44     		add	r2, r2, r3
+ 280 005a 0121     		movs	r1, #1
+ 281 005c 9171     		strb	r1, [r2, #6]
+ 282 005e DEE7     		b	.L18
+ 283              	.L34:
+ 284              	.LBE5:
+  58:Core/Src/main.c ****         Numb = Current_state%7;
+ 285              		.loc 1 58 9 is_stmt 1 view .LVU74
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 9
 
 
- 314              	.LFE130:
- 316              		.global	button_flag
- 317              		.section	.bss.button_flag,"aw",%nobits
- 320              	button_flag:
- 321 0000 00       		.space	1
- 322              		.global	button_count
- 323              		.section	.bss.button_count,"aw",%nobits
- 326              	button_count:
- 327 0000 00       		.space	1
- 328              		.global	led_states
- 329              		.section	.bss.led_states,"aw",%nobits
- 330              		.align	2
- 333              	led_states:
- 334 0000 00000000 		.space	4
- 335              		.text
- 336              	.Letext0:
- 337              		.file 2 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
- 338              		.file 3 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
- 339              		.file 4 "Core/Inc/init.h"
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s 			page 10
+  58:Core/Src/main.c ****         Numb = Current_state%7;
+ 286              		.loc 1 58 14 is_stmt 0 view .LVU75
+ 287 0060 554B     		ldr	r3, .L40+20
+ 288              	.LVL19:
+  58:Core/Src/main.c ****         Numb = Current_state%7;
+ 289              		.loc 1 58 14 view .LVU76
+ 290 0062 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 291 0064 554A     		ldr	r2, .L40+24
+ 292 0066 A2FB0312 		umull	r1, r2, r2, r3
+ 293 006a 991A     		subs	r1, r3, r2
+ 294 006c 02EB5102 		add	r2, r2, r1, lsr #1
+ 295 0070 9208     		lsrs	r2, r2, #2
+ 296 0072 C2EBC202 		rsb	r2, r2, r2, lsl #3
+ 297 0076 9B1A     		subs	r3, r3, r2
+ 298 0078 DBB2     		uxtb	r3, r3
+ 299 007a 514A     		ldr	r2, .L40+28
+ 300 007c 1370     		strb	r3, [r2]
+  59:Core/Src/main.c ****         if (Numb != 0)
+ 301              		.loc 1 59 9 is_stmt 1 view .LVU77
+  59:Core/Src/main.c ****         if (Numb != 0)
+ 302              		.loc 1 59 12 is_stmt 0 view .LVU78
+ 303 007e 3BB9     		cbnz	r3, .L32
+ 304              	.L21:
+ 305              	.LVL20:
+ 306              	.LBB6:
+  67:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 307              		.loc 1 67 35 is_stmt 1 discriminator 1 view .LVU79
+ 308 0080 052B     		cmp	r3, #5
+ 309 0082 0ED8     		bhi	.L36
+  69:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 310              		.loc 1 69 17 view .LVU80
+  69:Core/Src/main.c ****                 Ledflag[0][i] = 0;
+ 311              		.loc 1 69 31 is_stmt 0 view .LVU81
+ 312 0084 474A     		ldr	r2, .L40
+ 313 0086 0021     		movs	r1, #0
+ 314 0088 D154     		strb	r1, [r2, r3]
+  67:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 315              		.loc 1 67 41 is_stmt 1 discriminator 3 view .LVU82
+ 316 008a 0133     		adds	r3, r3, #1
+ 317              	.LVL21:
+  67:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 318              		.loc 1 67 41 is_stmt 0 discriminator 3 view .LVU83
+ 319 008c DBB2     		uxtb	r3, r3
+ 320              	.LVL22:
+  67:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 321              		.loc 1 67 41 discriminator 3 view .LVU84
+ 322 008e F7E7     		b	.L21
+ 323              	.LVL23:
+ 324              	.L32:
+  67:Core/Src/main.c ****             for (uint8_t i = 0; i < 6; i++)
+ 325              		.loc 1 67 41 discriminator 3 view .LVU85
+ 326              	.LBE6:
+ 327              	.LBB7:
+  61:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 328              		.loc 1 61 26 view .LVU86
+ 329 0090 0022     		movs	r2, #0
+ 330              	.L20:
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 10
+
+
+ 331              	.LVL24:
+  61:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 332              		.loc 1 61 35 is_stmt 1 discriminator 1 view .LVU87
+ 333 0092 9342     		cmp	r3, r2
+ 334 0094 08D9     		bls	.L23
+  62:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 335              		.loc 1 62 17 view .LVU88
+  62:Core/Src/main.c ****                 Ledflag[0][i] = 1;
+ 336              		.loc 1 62 31 is_stmt 0 view .LVU89
+ 337 0096 4349     		ldr	r1, .L40
+ 338 0098 0120     		movs	r0, #1
+ 339 009a 8854     		strb	r0, [r1, r2]
+  61:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 340              		.loc 1 61 44 is_stmt 1 discriminator 3 view .LVU90
+ 341 009c 0244     		add	r2, r2, r0
+ 342              	.LVL25:
+  61:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 343              		.loc 1 61 44 is_stmt 0 discriminator 3 view .LVU91
+ 344 009e D2B2     		uxtb	r2, r2
+ 345              	.LVL26:
+  61:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 346              		.loc 1 61 44 discriminator 3 view .LVU92
+ 347 00a0 F7E7     		b	.L20
+ 348              	.LVL27:
+ 349              	.L36:
+  61:Core/Src/main.c ****             for (uint8_t i = 0; i < Numb; i++){
+ 350              		.loc 1 61 44 discriminator 3 view .LVU93
+ 351              	.LBE7:
+  71:Core/Src/main.c ****             Current_state = 0;
+ 352              		.loc 1 71 13 is_stmt 1 view .LVU94
+  71:Core/Src/main.c ****             Current_state = 0;
+ 353              		.loc 1 71 27 is_stmt 0 view .LVU95
+ 354 00a2 454B     		ldr	r3, .L40+20
+ 355              	.LVL28:
+  71:Core/Src/main.c ****             Current_state = 0;
+ 356              		.loc 1 71 27 view .LVU96
+ 357 00a4 0022     		movs	r2, #0
+ 358 00a6 1A70     		strb	r2, [r3]
+ 359              	.LVL29:
+ 360              	.L23:
+  73:Core/Src/main.c ****         if(flagbut1long == 1){ 
+ 361              		.loc 1 73 9 is_stmt 1 view .LVU97
+  73:Core/Src/main.c ****         if(flagbut1long == 1){ 
+ 362              		.loc 1 73 25 is_stmt 0 view .LVU98
+ 363 00a8 464B     		ldr	r3, .L40+32
+ 364 00aa 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  73:Core/Src/main.c ****         if(flagbut1long == 1){ 
+ 365              		.loc 1 73 11 view .LVU99
+ 366 00ac 012B     		cmp	r3, #1
+ 367 00ae 1BD0     		beq	.L37
+ 368              	.L25:
+  84:Core/Src/main.c ****         if(flagbut2long == 1){     
+ 369              		.loc 1 84 9 is_stmt 1 view .LVU100
+  84:Core/Src/main.c ****         if(flagbut2long == 1){     
+ 370              		.loc 1 84 25 is_stmt 0 view .LVU101
+ 371 00b0 454B     		ldr	r3, .L40+36
+ 372 00b2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 11
+
+
+  84:Core/Src/main.c ****         if(flagbut2long == 1){     
+ 373              		.loc 1 84 11 view .LVU102
+ 374 00b4 012B     		cmp	r3, #1
+ 375 00b6 3ED0     		beq	.L38
+ 376              	.L27:
+  93:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 377              		.loc 1 93 9 is_stmt 1 view .LVU103
+  93:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 378              		.loc 1 93 21 is_stmt 0 view .LVU104
+ 379 00b8 444B     		ldr	r3, .L40+40
+ 380 00ba 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  93:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 381              		.loc 1 93 11 view .LVU105
+ 382 00bc 012B     		cmp	r3, #1
+ 383 00be 63D0     		beq	.L39
+ 384              	.L29:
+  96:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+ 385              		.loc 1 96 9 is_stmt 1 view .LVU106
+  96:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+ 386              		.loc 1 96 21 is_stmt 0 view .LVU107
+ 387 00c0 434B     		ldr	r3, .L40+44
+ 388 00c2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  96:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+ 389              		.loc 1 96 11 view .LVU108
+ 390 00c4 012B     		cmp	r3, #1
+ 391 00c6 0BD1     		bne	.L30
+  96:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+ 392              		.loc 1 96 29 discriminator 1 view .LVU109
+ 393 00c8 424B     		ldr	r3, .L40+48
+ 394 00ca 1B69     		ldr	r3, [r3, #16]
+  96:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+ 395              		.loc 1 96 26 discriminator 1 view .LVU110
+ 396 00cc 13F4806F 		tst	r3, #1024
+ 397 00d0 06D1     		bne	.L30
+  96:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+ 398              		.loc 1 96 92 discriminator 2 view .LVU111
+ 399 00d2 414B     		ldr	r3, .L40+52
+ 400 00d4 1B68     		ldr	r3, [r3]
+  96:Core/Src/main.c ****         if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+ 401              		.loc 1 96 70 discriminator 2 view .LVU112
+ 402 00d6 312B     		cmp	r3, #49
+ 403 00d8 02D9     		bls	.L30
+  97:Core/Src/main.c ****             flagbut2 = 0;
+ 404              		.loc 1 97 13 is_stmt 1 view .LVU113
+  97:Core/Src/main.c ****             flagbut2 = 0;
+ 405              		.loc 1 97 22 is_stmt 0 view .LVU114
+ 406 00da 3D4B     		ldr	r3, .L40+44
+ 407 00dc 0022     		movs	r2, #0
+ 408 00de 1A70     		strb	r2, [r3]
+ 409              	.L30:
+  99:Core/Src/main.c ****         Led_light();
+ 410              		.loc 1 99 9 is_stmt 1 view .LVU115
+ 411 00e0 FFF7FEFF 		bl	Led_light
+ 412              	.LVL30:
+  38:Core/Src/main.c ****     while (1) 
+ 413              		.loc 1 38 11 view .LVU116
+ 414              	.L31:
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 12
+
+
+  38:Core/Src/main.c ****     while (1) 
+ 415              		.loc 1 38 5 view .LVU117
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 416              		.loc 1 40 9 view .LVU118
+ 417              	.LBB8:
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 418              		.loc 1 40 14 view .LVU119
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 419              		.loc 1 40 22 is_stmt 0 view .LVU120
+ 420 00e4 0023     		movs	r3, #0
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 421              		.loc 1 40 9 view .LVU121
+ 422 00e6 A3E7     		b	.L15
+ 423              	.LVL31:
+ 424              	.L37:
+  40:Core/Src/main.c ****         for (uint8_t i = 0; i < 6; i++){
+ 425              		.loc 1 40 9 view .LVU122
+ 426              	.LBE8:
+  74:Core/Src/main.c ****             if (Current_freq[Current_led][0] >= 3)
+ 427              		.loc 1 74 13 is_stmt 1 view .LVU123
+  74:Core/Src/main.c ****             if (Current_freq[Current_led][0] >= 3)
+ 428              		.loc 1 74 42 is_stmt 0 view .LVU124
+ 429 00e8 3C4B     		ldr	r3, .L40+56
+ 430 00ea 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 431 00ec 3C4A     		ldr	r2, .L40+60
+ 432 00ee 12F81320 		ldrb	r2, [r2, r3, lsl #1]	@ zero_extendqisi2
+  74:Core/Src/main.c ****             if (Current_freq[Current_led][0] >= 3)
+ 433              		.loc 1 74 16 view .LVU125
+ 434 00f2 022A     		cmp	r2, #2
+ 435 00f4 03D9     		bls	.L26
+  76:Core/Src/main.c ****                 Current_freq[Current_led][0] = 0;
+ 436              		.loc 1 76 17 is_stmt 1 view .LVU126
+  76:Core/Src/main.c ****                 Current_freq[Current_led][0] = 0;
+ 437              		.loc 1 76 46 is_stmt 0 view .LVU127
+ 438 00f6 3A4A     		ldr	r2, .L40+60
+ 439 00f8 0021     		movs	r1, #0
+ 440 00fa 02F81310 		strb	r1, [r2, r3, lsl #1]
+ 441              	.L26:
+  78:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 442              		.loc 1 78 13 is_stmt 1 view .LVU128
+  78:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 443              		.loc 1 78 79 is_stmt 0 view .LVU129
+ 444 00fe 384A     		ldr	r2, .L40+60
+ 445 0100 02EB4301 		add	r1, r2, r3, lsl #1
+ 446 0104 4978     		ldrb	r1, [r1, #1]	@ zero_extendqisi2
+  78:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 447              		.loc 1 78 109 view .LVU130
+ 448 0106 12F813C0 		ldrb	ip, [r2, r3, lsl #1]	@ zero_extendqisi2
+  78:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 449              		.loc 1 78 33 view .LVU131
+ 450 010a 364A     		ldr	r2, .L40+64
+ 451 010c A2FB0302 		umull	r0, r2, r2, r3
+ 452 0110 9208     		lsrs	r2, r2, #2
+ 453 0112 02EB4202 		add	r2, r2, r2, lsl #1
+ 454 0116 5000     		lsls	r0, r2, #1
+ 455 0118 1B1A     		subs	r3, r3, r0
+ 456 011a DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 13
+
+
+  78:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 457              		.loc 1 78 83 view .LVU132
+ 458 011c 01EB4101 		add	r1, r1, r1, lsl #1
+ 459 0120 6144     		add	r1, r1, ip
+ 460 0122 314A     		ldr	r2, .L40+68
+ 461 0124 32F81110 		ldrh	r1, [r2, r1, lsl #1]
+  78:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 462              		.loc 1 78 37 view .LVU133
+ 463 0128 224A     		ldr	r2, .L40+16
+ 464 012a 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
+  80:Core/Src/main.c ****             flagbut1long = 0;
+ 465              		.loc 1 80 13 is_stmt 1 view .LVU134
+  80:Core/Src/main.c ****             flagbut1long = 0;
+ 466              		.loc 1 80 26 is_stmt 0 view .LVU135
+ 467 012e 254B     		ldr	r3, .L40+32
+ 468 0130 0022     		movs	r2, #0
+ 469 0132 1A70     		strb	r2, [r3]
+ 470 0134 BCE7     		b	.L25
+ 471              	.L38:
+  85:Core/Src/main.c ****             if (Current_freq[Current_led][1] >= 3)
+ 472              		.loc 1 85 13 is_stmt 1 view .LVU136
+  85:Core/Src/main.c ****             if (Current_freq[Current_led][1] >= 3)
+ 473              		.loc 1 85 42 is_stmt 0 view .LVU137
+ 474 0136 294B     		ldr	r3, .L40+56
+ 475 0138 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 476 013a 294A     		ldr	r2, .L40+60
+ 477 013c 02EB4302 		add	r2, r2, r3, lsl #1
+ 478 0140 5278     		ldrb	r2, [r2, #1]	@ zero_extendqisi2
+  85:Core/Src/main.c ****             if (Current_freq[Current_led][1] >= 3)
+ 479              		.loc 1 85 16 view .LVU138
+ 480 0142 022A     		cmp	r2, #2
+ 481 0144 04D9     		bls	.L28
+  87:Core/Src/main.c ****                 Current_freq[Current_led][1] = 0;
+ 482              		.loc 1 87 17 is_stmt 1 view .LVU139
+  87:Core/Src/main.c ****                 Current_freq[Current_led][1] = 0;
+ 483              		.loc 1 87 46 is_stmt 0 view .LVU140
+ 484 0146 264A     		ldr	r2, .L40+60
+ 485 0148 02EB4302 		add	r2, r2, r3, lsl #1
+ 486 014c 0021     		movs	r1, #0
+ 487 014e 5170     		strb	r1, [r2, #1]
+ 488              	.L28:
+  89:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 489              		.loc 1 89 13 is_stmt 1 view .LVU141
+  89:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 490              		.loc 1 89 79 is_stmt 0 view .LVU142
+ 491 0150 234A     		ldr	r2, .L40+60
+ 492 0152 02EB4301 		add	r1, r2, r3, lsl #1
+ 493 0156 4978     		ldrb	r1, [r1, #1]	@ zero_extendqisi2
+  89:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 494              		.loc 1 89 109 view .LVU143
+ 495 0158 12F813C0 		ldrb	ip, [r2, r3, lsl #1]	@ zero_extendqisi2
+  89:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 496              		.loc 1 89 33 view .LVU144
+ 497 015c 214A     		ldr	r2, .L40+64
+ 498 015e A2FB0302 		umull	r0, r2, r2, r3
+ 499 0162 9208     		lsrs	r2, r2, #2
+ 500 0164 02EB4202 		add	r2, r2, r2, lsl #1
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 14
+
+
+ 501 0168 5000     		lsls	r0, r2, #1
+ 502 016a 1B1A     		subs	r3, r3, r0
+ 503 016c DBB2     		uxtb	r3, r3
+  89:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 504              		.loc 1 89 83 view .LVU145
+ 505 016e 01EB4101 		add	r1, r1, r1, lsl #1
+ 506 0172 6144     		add	r1, r1, ip
+ 507 0174 1C4A     		ldr	r2, .L40+68
+ 508 0176 32F81110 		ldrh	r1, [r2, r1, lsl #1]
+  89:Core/Src/main.c ****             Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Cur
+ 509              		.loc 1 89 37 view .LVU146
+ 510 017a 0E4A     		ldr	r2, .L40+16
+ 511 017c 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
+  91:Core/Src/main.c ****             flagbut2long = 0;
+ 512              		.loc 1 91 13 is_stmt 1 view .LVU147
+  91:Core/Src/main.c ****             flagbut2long = 0;
+ 513              		.loc 1 91 26 is_stmt 0 view .LVU148
+ 514 0180 114B     		ldr	r3, .L40+36
+ 515 0182 0022     		movs	r2, #0
+ 516 0184 1A70     		strb	r2, [r3]
+ 517 0186 97E7     		b	.L27
+ 518              	.L39:
+  93:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 519              		.loc 1 93 29 discriminator 1 view .LVU149
+ 520 0188 124B     		ldr	r3, .L40+48
+ 521 018a 1B69     		ldr	r3, [r3, #16]
+  93:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 522              		.loc 1 93 26 discriminator 1 view .LVU150
+ 523 018c 13F0400F 		tst	r3, #64
+ 524 0190 96D1     		bne	.L29
+  93:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 525              		.loc 1 93 92 discriminator 2 view .LVU151
+ 526 0192 164B     		ldr	r3, .L40+72
+ 527 0194 1B68     		ldr	r3, [r3]
+  93:Core/Src/main.c ****         if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+ 528              		.loc 1 93 70 discriminator 2 view .LVU152
+ 529 0196 312B     		cmp	r3, #49
+ 530 0198 92D9     		bls	.L29
+  94:Core/Src/main.c ****             flagbut1 = 0;
+ 531              		.loc 1 94 13 is_stmt 1 view .LVU153
+  94:Core/Src/main.c ****             flagbut1 = 0;
+ 532              		.loc 1 94 22 is_stmt 0 view .LVU154
+ 533 019a 0C4B     		ldr	r3, .L40+40
+ 534 019c 0022     		movs	r2, #0
+ 535 019e 1A70     		strb	r2, [r3]
+ 536 01a0 8EE7     		b	.L29
+ 537              	.L41:
+ 538 01a2 00BF     		.align	2
+ 539              	.L40:
+ 540 01a4 00000000 		.word	Ledflag
+ 541 01a8 00000000 		.word	Led1flag
+ 542 01ac 00000000 		.word	Led2flag
+ 543 01b0 00000000 		.word	Led_count
+ 544 01b4 00000000 		.word	Led_load
+ 545 01b8 00000000 		.word	Current_state
+ 546 01bc 25499224 		.word	613566757
+ 547 01c0 00000000 		.word	Numb
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 15
+
+
+ 548 01c4 00000000 		.word	flagbut1long
+ 549 01c8 00000000 		.word	flagbut2long
+ 550 01cc 00000000 		.word	flagbut1
+ 551 01d0 00000000 		.word	flagbut2
+ 552 01d4 00080240 		.word	1073874944
+ 553 01d8 00000000 		.word	GlobalTickBut2Wait
+ 554 01dc 00000000 		.word	Current_led
+ 555 01e0 00000000 		.word	Current_freq
+ 556 01e4 ABAAAAAA 		.word	-1431655765
+ 557 01e8 00000000 		.word	led_freq_range
+ 558 01ec 00000000 		.word	GlobalTickBut1Wait
+ 559              		.cfi_endproc
+ 560              	.LFE130:
+ 562              		.global	Led2flag
+ 563              		.section	.bss.Led2flag,"aw",%nobits
+ 566              	Led2flag:
+ 567 0000 00       		.space	1
+ 568              		.global	Led1flag
+ 569              		.section	.bss.Led1flag,"aw",%nobits
+ 572              	Led1flag:
+ 573 0000 00       		.space	1
+ 574              		.global	Ledflag
+ 575              		.section	.data.Ledflag,"aw"
+ 576              		.align	2
+ 579              	Ledflag:
+ 580 0000 01010101 		.ascii	"\001\001\001\001\001\001"
+ 580      0101
+ 581 0006 00000000 		.ascii	"\000\000\000\000\000\000"
+ 581      0000
+ 582              		.global	Led_count
+ 583              		.section	.bss.Led_count,"aw",%nobits
+ 584              		.align	2
+ 587              	Led_count:
+ 588 0000 00000000 		.space	12
+ 588      00000000 
+ 588      00000000 
+ 589              		.global	Led_load
+ 590              		.section	.bss.Led_load,"aw",%nobits
+ 591              		.align	2
+ 594              	Led_load:
+ 595 0000 00000000 		.space	12
+ 595      00000000 
+ 595      00000000 
+ 596              		.global	Current_freq
+ 597              		.section	.bss.Current_freq,"aw",%nobits
+ 598              		.align	2
+ 601              	Current_freq:
+ 602 0000 00000000 		.space	12
+ 602      00000000 
+ 602      00000000 
+ 603              		.global	led_freq_range
+ 604              		.section	.data.led_freq_range,"aw"
+ 605              		.align	2
+ 608              	led_freq_range:
+ 609 0000 E204     		.short	1250
+ 610 0002 8001     		.short	384
+ 611 0004 FA00     		.short	250
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 16
+
+
+ 612 0006 4103     		.short	833
+ 613 0008 3801     		.short	312
+ 614 000a E300     		.short	227
+ 615 000c 7102     		.short	625
+ 616 000e 0701     		.short	263
+ 617 0010 C800     		.short	200
+ 618              		.global	flagbut2long
+ 619              		.section	.bss.flagbut2long,"aw",%nobits
+ 622              	flagbut2long:
+ 623 0000 00       		.space	1
+ 624              		.global	flagbut1long
+ 625              		.section	.bss.flagbut1long,"aw",%nobits
+ 628              	flagbut1long:
+ 629 0000 00       		.space	1
+ 630              		.global	flagbut2
+ 631              		.section	.bss.flagbut2,"aw",%nobits
+ 634              	flagbut2:
+ 635 0000 00       		.space	1
+ 636              		.global	flagbut1
+ 637              		.section	.bss.flagbut1,"aw",%nobits
+ 640              	flagbut1:
+ 641 0000 00       		.space	1
+ 642              		.global	counterbut2
+ 643              		.section	.bss.counterbut2,"aw",%nobits
+ 646              	counterbut2:
+ 647 0000 00       		.space	1
+ 648              		.global	counterbut1
+ 649              		.section	.bss.counterbut1,"aw",%nobits
+ 652              	counterbut1:
+ 653 0000 00       		.space	1
+ 654              		.global	Numb
+ 655              		.section	.bss.Numb,"aw",%nobits
+ 658              	Numb:
+ 659 0000 00       		.space	1
+ 660              		.global	Current_led
+ 661              		.section	.bss.Current_led,"aw",%nobits
+ 664              	Current_led:
+ 665 0000 00       		.space	1
+ 666              		.global	Current_state
+ 667              		.section	.data.Current_state,"aw"
+ 670              	Current_state:
+ 671 0000 06       		.byte	6
+ 672              		.global	Led_Off_set
+ 673              		.section	.rodata.Led_Off_set,"a"
+ 674              		.align	2
+ 677              	Led_Off_set:
+ 678 0000 00070E08 		.ascii	"\000\007\016\010\011\012"
+ 678      090A
+ 679              		.global	CurrentLedFrequency
+ 680              		.section	.bss.CurrentLedFrequency,"aw",%nobits
+ 681              		.align	1
+ 684              	CurrentLedFrequency:
+ 685 0000 0000     		.space	2
+ 686              		.global	GlobalTickBut2Wait
+ 687              		.section	.bss.GlobalTickBut2Wait,"aw",%nobits
+ 688              		.align	2
+ 691              	GlobalTickBut2Wait:
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 17
+
+
+ 692 0000 00000000 		.space	4
+ 693              		.global	GlobalTickBut1Wait
+ 694              		.section	.bss.GlobalTickBut1Wait,"aw",%nobits
+ 695              		.align	2
+ 698              	GlobalTickBut1Wait:
+ 699 0000 00000000 		.space	4
+ 700              		.global	DelayTickCount
+ 701              		.section	.bss.DelayTickCount,"aw",%nobits
+ 702              		.align	1
+ 705              	DelayTickCount:
+ 706 0000 0000     		.space	2
+ 707              		.text
+ 708              	.Letext0:
+ 709              		.file 2 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
+ 710              		.file 3 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
+ 711              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ 712              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 18
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:21     .text.main:00000000 $t
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:27     .text.main:00000000 main
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:308    .text.main:00000108 $d
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:320    .bss.button_flag:00000000 button_flag
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:326    .bss.button_count:00000000 button_count
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:333    .bss.led_states:00000000 led_states
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:321    .bss.button_flag:00000000 $d
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:327    .bss.button_count:00000000 $d
-C:\Users\25084\AppData\Local\Temp\ccNFPVqi.s:330    .bss.led_states:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:19     .text.Led_light:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:25     .text.Led_light:00000000 Led_light
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:114    .text.Led_light:0000004c $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:677    .rodata.Led_Off_set:00000000 Led_Off_set
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:579    .data.Ledflag:00000000 Ledflag
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:121    .text.LedVal_Init:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:127    .text.LedVal_Init:00000000 LedVal_Init
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:179    .text.LedVal_Init:00000034 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:601    .bss.Current_freq:00000000 Current_freq
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:608    .data.led_freq_range:00000000 led_freq_range
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:594    .bss.Led_load:00000000 Led_load
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:587    .bss.Led_count:00000000 Led_count
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:187    .text.main:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:193    .text.main:00000000 main
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:540    .text.main:000001a4 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:572    .bss.Led1flag:00000000 Led1flag
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:566    .bss.Led2flag:00000000 Led2flag
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:670    .data.Current_state:00000000 Current_state
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:658    .bss.Numb:00000000 Numb
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:628    .bss.flagbut1long:00000000 flagbut1long
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:622    .bss.flagbut2long:00000000 flagbut2long
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:640    .bss.flagbut1:00000000 flagbut1
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:634    .bss.flagbut2:00000000 flagbut2
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:691    .bss.GlobalTickBut2Wait:00000000 GlobalTickBut2Wait
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:664    .bss.Current_led:00000000 Current_led
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:698    .bss.GlobalTickBut1Wait:00000000 GlobalTickBut1Wait
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:567    .bss.Led2flag:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:573    .bss.Led1flag:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:576    .data.Ledflag:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:584    .bss.Led_count:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:591    .bss.Led_load:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:598    .bss.Current_freq:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:605    .data.led_freq_range:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:623    .bss.flagbut2long:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:629    .bss.flagbut1long:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:635    .bss.flagbut2:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:641    .bss.flagbut1:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:646    .bss.counterbut2:00000000 counterbut2
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:647    .bss.counterbut2:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:652    .bss.counterbut1:00000000 counterbut1
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:653    .bss.counterbut1:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:659    .bss.Numb:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:665    .bss.Current_led:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:674    .rodata.Led_Off_set:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:684    .bss.CurrentLedFrequency:00000000 CurrentLedFrequency
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:681    .bss.CurrentLedFrequency:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:688    .bss.GlobalTickBut2Wait:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:695    .bss.GlobalTickBut1Wait:00000000 $d
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:705    .bss.DelayTickCount:00000000 DelayTickCount
+C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s:702    .bss.DelayTickCount:00000000 $d
 
 UNDEFINED SYMBOLS
-GPIO_Ini
-ToggleLED
-TurnOffAllLEDs
-TurnOnAllLEDs
+GPIO_Init
+RCC_Init
+EXTI_ITR_Init
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccYuxKgl.s 			page 19
+
+
+SysTick_Init
