@@ -1,159 +1,126 @@
-#include "init.h"
+#include "../Inc/init.h"
+#include "../Inc/it_handlers.h"
+
+
+uint16_t DelayTickCount = 0;
+uint32_t GlobalTickBut1Wait = 0;
+uint32_t  GlobalTickBut2Wait = 0;
+
+uint16_t CurrentLedFrequency = 0;
+
+const uint8_t Led_Off_set[6] = {0U, 7U, 14U, 12U, 13U, 15U}; // LED 引脚设置
+uint8_t Current_state = 6;
+uint8_t Current_led = 0;
+uint8_t Numb = 0;
+uint8_t counterbut1 = 0;
+uint8_t counterbut2 = 0;
+uint8_t flagbut1 = 0, flagbut2 = 0;
+uint8_t flagbut1long = 0, flagbut2long = 0;
+uint16_t led_freq_range[3][3] = {{1250, 384, 250},{833, 312, 227},{625, 263, 200}};
+uint8_t Current_freq[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
+uint16_t Led_load[6] = {0, 0, 0, 0, 0, 0};
+uint16_t Led_count[6] = {0, 0, 0, 0, 0, 0};
+uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 0}};
+uint8_t Led1flag = 0;
+uint8_t Led2flag = 0;
+
+void LedVal_Init();
+void Led_light();
 
 int main(void) 
-{
-    GPIO_Ini();  // 初始化 GPIO
-
-    uint8_t ledIndex = 0; // 当前点亮的 LED 索引
-    uint8_t buttonPressCount = 0; // 按钮按下计数
-
-    while(1)
+{ 
+    GPIO_Init();
+    RCC_Init(); // 系统时钟初始化 
+    EXTI_ITR_Init();// 初始化中断  
+    SysTick_Init();
+    LedVal_Init();
+    while (1) 
     {
-        // 检测按钮是否按下
-        if (READ_GPIO_C13 == 0) {
-            // 简单去抖动
-            for (volatile int i = 0; i < 100000; i++);  // 延时
-            while (READ_GPIO_C13 == 0);  // 等待按钮释放
-
-            buttonPressCount++;  // 增加按钮按下计数
-
-            // 按钮按下次数控制 LED
-            if (buttonPressCount <= 4) {
-                // 点亮下一个 LED
-                if (ledIndex < 4) {
-                    // 根据 ledIndex 点亮对应的 LED
-                    switch (ledIndex) {
-                        case 0:
-                            SET_GPIO_B(0);  // PB0
-                            break;
-                        case 1:
-                            SET_GPIO_B(7);  // PB7
-                            break;
-                        case 2:
-                            SET_GPIO_B(14); // PB14
-                            break;
-                        case 3:
-                            SET_GPIO_B(15); // PB15
-                            break;
-                        default:
-                            break;
-                    }
-                    ledIndex++;  // 更新当前 LED 索引
+        for (uint8_t i = 0; i < 6; i++){
+            if (Led_count[i] >= Led_load[i])
+            {
+                Led_count[i] = 0;
+                if (Ledflag[1][i] == 1)
+                {         
+                    Ledflag[1][i] = 0;
                 }
-            } 
-            else if (buttonPressCount == 5) {
-                // 熄灭所有 LED
-                RESET_GPIO_B(0);   // PB0
-                RESET_GPIO_B(7);   // PB7
-                RESET_GPIO_B(14);  // PB14
-                RESET_GPIO_B(15);  // PB15 (外接 LED)
-                ledIndex = 0; // 重置 LED 索引
-            } 
-            else if (buttonPressCount == 6) {
-                // 点亮所有 LED
-                SET_GPIO_B(0);   // PB0
-                SET_GPIO_B(7);   // PB7
-                SET_GPIO_B(14);  // PB14
-                SET_GPIO_B(15);  // PB15 (外接 LED)
-            } 
-            else {
-                // 超过六次按下，重置计数
-                buttonPressCount = 0;
-                RESET_GPIO_B(0);   // PB0
-                RESET_GPIO_B(7);   // PB7
-                RESET_GPIO_B(14);  // PB14
-                RESET_GPIO_B(15);  // PB15 (外接 LED)
-                ledIndex = 0;  // 重置 LED 索引
+                else
+                {
+                    Ledflag[1][i] = 1;
+                }
+                //
+                Led1flag = Ledflag[1][0];
+                Led2flag = Ledflag[1][1];
+            }
+
+        }
+        Numb = Current_state%7;
+        if (Numb != 0)
+        {
+            for (uint8_t i = 0; i < Numb; i++){
+                Ledflag[0][i] = 1;
             }
         }
+        else
+        {
+            for (uint8_t i = 0; i < 6; i++)
+            {
+                Ledflag[0][i] = 0;
+            }
+            Current_state = 0;
+        }
+        if(flagbut1long == 1){ 
+            if (Current_freq[Current_led][0] >= 3)
+            {
+                Current_freq[Current_led][0] = 0;
+            }
+            Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Current_led][0]];
+            flagbut1long = 0;
+        } 
+
+
+        if(flagbut2long == 1){     
+            if (Current_freq[Current_led][1] >= 3)
+            {
+                Current_freq[Current_led][1] = 0;
+            }
+            Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Current_led][0]];
+
+            flagbut2long = 0;
+        }
+        if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+            flagbut1 = 0;
+        }  
+        if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+            flagbut2 = 0;
+        }  
+        Led_light();
+    } 
+
+
+
+} 
+
+
+void Led_light()
+{
+    uint32_t ODR_clear = 0x0UL;
+    uint32_t ODR_set = 0x0UL;
+    for (uint8_t i = 0; i < 6; i++){
+        if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+            ODR_set = ODR_set + (0x1UL<<(Led_Off_set[i]));
+        }
+        else{
+            ODR_clear = ODR_clear + (0x1UL<<(Led_Off_set[i]));
+        }
     }
+    MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
 }
 
-
-// #include "init.h"
-// #include <stdint.h>  // 包含标准类型定义
-
-// uint8_t flag;  // 用于标记系统的当前状态
-// uint8_t ledIndex = 0;  // 当前点亮的 LED 索引
-// uint8_t buttonPressCount = 0;  // 按钮按下计数
-
-// int main(void)
-// {
-//     // 初始化 GPIO
-//     GPIO_Ini();
-
-//     // 确保所有 LED 灯初始时都是熄灭的
-//     RESET_GPIO_B(0);   // PB0
-//     RESET_GPIO_B(7);   // PB7
-//     RESET_GPIO_B(14);  // PB14
-//     RESET_GPIO_B(15);  // PB15
-
-//     // 初始状态：没有 LED 灯亮，flag 设置为 0
-//     flag = 0;
-
-//     while(1)
-//     {
-//         // 检测按钮是否按下
-//         if (READ_GPIO_C13 == 0) {
-//             // 简单去抖动
-//             for (volatile int i = 0; i < 100000; i++);  // 延时
-//             while (READ_GPIO_C13 == 0);  // 等待按钮释放
-
-//             buttonPressCount++;  // 增加按钮按下计数
-
-//             // 按钮按下次数控制 LED
-//             if (buttonPressCount <= 4) {
-//                 // 点亮下一个 LED
-//                 if (ledIndex < 4) {
-//                     // 根据 ledIndex 点亮对应的 LED
-//                     switch (ledIndex) {
-//                         case 0:
-//                             SET_GPIO_B(0);  // PB0
-//                             break;
-//                         case 1:
-//                             SET_GPIO_B(7);  // PB7
-//                             break;
-//                         case 2:
-//                             SET_GPIO_B(14); // PB14
-//                             break;
-//                         case 3:
-//                             SET_GPIO_B(15); // PB15
-//                             break;
-//                         default:
-//                             break;
-//                     }
-//                     ledIndex++;  // 更新当前 LED 索引
-//                 }
-//                 flag = 1;  // 设置 flag 表示 LED 已点亮
-//             } 
-//             else if (buttonPressCount == 5) {
-//                 // 熄灭所有 LED
-//                 RESET_GPIO_B(0);   // PB0
-//                 RESET_GPIO_B(7);   // PB7
-//                 RESET_GPIO_B(14);  // PB14
-//                 RESET_GPIO_B(15);  // PB15 (外接 LED)
-//                 ledIndex = 0; // 重置 LED 索引
-//                 flag = 0; // 重置 flag 为 0
-//             } 
-//             else if (buttonPressCount == 6) {
-//                 // 点亮所有 LED
-//                 SET_GPIO_B(0);   // PB0
-//                 SET_GPIO_B(7);   // PB7
-//                 SET_GPIO_B(14);  // PB14
-//                 SET_GPIO_B(15);  // PB15 (外接 LED)
-//                 ledIndex = 4;  // 显式设置 ledIndex 为 4，表示所有 LED 已点亮
-//                 flag = 2; // 设置 flag 表示所有 LED 已点亮
-//             } 
-//             else {
-//                 // 超过六次按下，重置计数
-//                 buttonPressCount = 0;
-//                 RESET_GPIO_B(0);   // PB0
-//                 RESET_GPIO_B(7);   // PB7
-//                 RESET_GPIO_B(14);  // PB14
-//                 RESET_GPIO_B(15);  // PB15 (外接 LED)
-//                 ledIndex = 0;  // 重置 LED 索引
-//                 flag = 0; // 重置 flag 为 0
-//             }
-//         }
-//     }
-// }
+void LedVal_Init()
+{
+    for (uint8_t i = 0; i < 6; i++){
+        Led_load[i] = led_freq_range[Current_freq[i][0]][Current_freq[i][1]];
+        Led_count[i] = Led_load[i];
+    }
+}
