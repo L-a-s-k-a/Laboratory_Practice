@@ -1,108 +1,35 @@
-#include "../Inc/init.h"
+#include <init.h>
 
-void GPIO_Init(void)
-{
-    //设置 LED 引脚
-    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);  // LED 1 (PB0)
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);  // LED 2 (PB7)
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0); // LED 3 (PB14)
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE12_0); // LED 4 (PB12)
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE13_0); // LED 5 (PB13)
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE15_0); // LED 6 (PB15)
-
-    //配置 LED 引脚为推挽输出
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7);
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_12);
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_13);
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_15);
-
-    //配置 LED 引脚的速度为低速
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR12_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR13_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0);
-
-    //配置 LED 引脚为无上下拉电阻
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR12_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR13_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR15_0);
-
-    //配置按钮为输入，并启用下拉电阻
-    SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1); // 设置 PC13（按钮1）为下拉输入
-    SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD12_1); // 设置 PC12（按钮2）为下拉输入
+// GPIO 初始化
+void GPIO_Ini(void) {
+    SET_BIT(*(volatile uint32_t *)RCC_GPIO_EN, RCC_GPIOB_EN | RCC_GPIOC_EN);
+    *(volatile uint32_t *)GPIOB_MODER |= GPIOB_MODE_PIN0_OUT | GPIOB_MODE_PIN7_OUT | GPIOB_MODE_PIN14_OUT | GPIOB_MODE_PIN10_OUT;
 }
 
-
-void RCC_Init(void){
-    //清除设置中涉及的所有位
-    MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
-    CLEAR_REG(RCC->CFGR);
-    while(READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
-    CLEAR_BIT(RCC->CR, RCC_CR_PLLON); 
-    while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON); 
-    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET); 
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
-
-    //设置 RCC 主寄存器
-    SET_BIT(RCC->CR, RCC_CR_HSEON); //运行外部石英谐振器 
-    while(READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET); //等待启动 
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP); //若有东西突然停下，则将外部时钟旁路位重置为 0 
-    SET_BIT(RCC->CR, RCC_CR_CSSON); //时钟探测器（时钟安全系统）
-
-    CLEAR_REG(RCC->PLLCFGR);
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
-    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2); //将输入分频 PLL 设置为 4
-    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7); //设置将除法后得到的频率（VCO 频率）乘以180
-    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); //调整乘法后所得频率的除法器。或者，我们可以得到 PLL 的最终频率 
-    SET_BIT(RCC->CR, RCC_CR_PLLON); //运行 PLL 
-    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY)); //Ждём запуска PLL
-
-    //设置 RCC_CFGR 寄存器
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL); //选择 PLL 作为系统时钟 
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1); //不带分线器的 AHB 分线器
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4); //预分器 APB1，除以 4 
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2); //预分器 APB2，除以 2 
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk); //MCO2 输出预分频器 (PC9) = 5  
-    CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2); //设置为输出 MCO2 - 系统时钟
-    //每 6 个 CPU 周期的内存延迟周期数
-    MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS); 
+// 切换 LED 状态
+void ToggleLED(uint8_t led_index, uint8_t state) {
+    switch (led_index) {
+        case 1:
+            *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN0_SET : GPIOB_BSRR_PIN0_RESET;
+            break;
+        case 2:
+            *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN7_SET : GPIOB_BSRR_PIN7_RESET;
+            break;
+        case 3:
+            *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN14_SET : GPIOB_BSRR_PIN14_RESET;
+            break;
+        case 4:
+            *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN10_SET : GPIOB_BSRR_PIN10_RESET;
+            break;
+    }
 }
 
-void EXTI_ITR_Init(void){ 
-    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //启用 SYSCFG 外设时钟
-    NVIC_SetPriorityGrouping(0); //设置无子优先级的分组类型
+// 关闭所有 LED
+void TurnOffAllLEDs(void) {
+    *(volatile uint32_t *)GPIOB_BSRR = GPIOB_BSRR_PIN0_RESET | GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET | GPIOB_BSRR_PIN10_RESET;
+}
 
-    //为 PC10 设置 EXTI
-    MODIFY_REG(SYSCFG->EXTICR[2], SYSCFG_EXTICR3_EXTI10_Msk, SYSCFG_EXTICR3_EXTI10_PC); // PC10 转至 EXTI10
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR10); // 第 10 行的掩码
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR10); // 上升沿检测
-    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR10); // 减少边缘检测
-    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0));
-    NVIC_EnableIRQ(EXTI15_10_IRQn);
-
-    MODIFY_REG(SYSCFG->EXTICR[1], SYSCFG_EXTICR2_EXTI6_Msk, SYSCFG_EXTICR2_EXTI6_PC); //设置多路复用器，在 PC6 上输出 EXTI13 中断行 
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR6); //设置第 6 行的屏蔽 
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR6); //设置 6 号线的上升沿检测 
-    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR6); //设置 6 号线的下降沿检测 
-    NVIC_SetPriority(EXTI9_5_IRQn , NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0)); //为向量 EXTI9_5 设置 2 个中断优先级 
-    NVIC_EnableIRQ(EXTI9_5_IRQn); //通过向量 EXTI9_5 启用中断
-} 
-
-void SysTick_Init(void) {
-    //配置 SysTick 系统计时器
-    CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);          // 关闭仪表
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk);           // 中断授权
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk);         // AHB 时钟源
-    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, 179999); // 中断频率 1 kHz
-    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, 179999);  // 设置当前值
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);            // 打开计数器
+// 点亮所有 LED
+void TurnOnAllLEDs(void) {
+    *(volatile uint32_t *)GPIOB_BSRR = GPIOB_BSRR_PIN0_SET | GPIOB_BSRR_PIN7_SET | GPIOB_BSRR_PIN14_SET | GPIOB_BSRR_PIN10_SET;
 }
