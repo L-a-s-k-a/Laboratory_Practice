@@ -1,60 +1,124 @@
-#include <stdint.h> 
-#include <init.h>
+#include "../Inc/init.h"
+#include "../Inc/it_handlers.h"
 
-volatile uint8_t led_states[4] = {0, 0, 0, 0}; // 记录每个 LED 的状态
-volatile uint8_t button_count = 0;            // 按钮按下次数
-volatile uint8_t button_flag = 0;
 
-int main(void) {
-    uint8_t button_pressed = 0; // 按钮状态
-    GPIO_Ini();                 // 初始化 GPIO
+uint16_t DelayTickCount = 0;
+uint32_t GlobalTickBut1Wait = 0;
+uint32_t  GlobalTickBut2Wait = 0;
 
-    while (1) {
-        // 更新按钮状态
-        button_flag = READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) ? 1 : 0;
+uint16_t CurrentLedFrequency = 0;
 
-        // 检测按钮是否按下
-        if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) != 0) { // 按钮按下
-            for (volatile int i = 0; i < 100000; i++); // 简单延时，用于消抖
-            if (READ_BIT(*(volatile uint32_t *)GPIOC_IDR, GPIOC_IDR_PIN13) == 0 && button_pressed == 0) {
-                button_pressed = 1; // 标记按钮已经按下
-                button_count++;     // 增加按钮按下次数
+const uint8_t Led_Off_set[6] = {0U, 7U, 14U, 12U, 13U, 15U}; // LED 引脚设置
+uint8_t Current_state = 6;
+uint8_t Current_led = 0;
+uint8_t Numb = 0;
+uint8_t counterbut1 = 0;
+uint8_t counterbut2 = 0;
+uint8_t flagbut1 = 0, flagbut2 = 0;
+uint8_t flagbut1long = 0, flagbut2long = 0;
+uint16_t led_freq_range[3][3] = {{1250, 384, 250},{833, 312, 227},{625, 263, 200}};
+uint8_t Current_freq[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
+uint16_t Led_load[6] = {0, 0, 0, 0, 0, 0};
+uint16_t Led_count[6] = {0, 0, 0, 0, 0, 0};
+uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 0}};
+uint8_t Led1flag = 0;
+uint8_t Led2flag = 0;
 
-                // 根据按钮按下次数控制灯
-                if (button_count >= 1 && button_count <= 4) {
-                    // 点亮指定数量的 LED
-                    for (uint8_t i = 0; i < 4; i++) {
-                        if (i < button_count) {
-                            ToggleLED(i + 1, 1); // 打开 LED
-                            led_states[i] = 1;  // 更新状态
-                        } else {
-                            ToggleLED(i + 1, 0); // 关闭 LED
-                            led_states[i] = 0;  // 更新状态
-                        }
-                    }
-                } else if (button_count == 5) {
-                    // 关闭所有 LED
-                    TurnOffAllLEDs();
-                    for (uint8_t i = 0; i < 4; i++) {
-                        led_states[i] = 0; // 更新状态
-                    }
-                } else if (button_count == 6) {
-                    // 点亮所有 LED
-                    TurnOnAllLEDs();
-                    for (uint8_t i = 0; i < 4; i++) {
-                        led_states[i] = 1; // 更新状态
-                    }
-                } else if (button_count > 6) {
-                    // 重置逻辑并重新开始
-                    TurnOffAllLEDs();
-                    for (uint8_t i = 0; i < 4; i++) {
-                        led_states[i] = 0; // 更新状态
-                    }
-                    button_count = 0; // 重置计数
+void LedVal_Init();
+void Led_light();
+
+int main(void) 
+{ 
+    GPIO_Init();
+    RCC_Init(); // 初始化系统时钟
+    EXTI_ITR_Init(); // 中断初始化
+    SysTick_Init();
+    LedVal_Init();
+    while (1) 
+    {
+        for (uint8_t i = 0; i < 6; i++){
+            if (Led_count[i] >= Led_load[i])
+            {
+                Led_count[i] = 0;
+                if (Ledflag[1][i] == 1)
+                {         
+                    Ledflag[1][i] = 0;
                 }
+                else
+                {
+                    Ledflag[1][i] = 1;
+                }
+                Led1flag = Ledflag[1][0];
+                Led2flag = Ledflag[1][1];
             }
-        } else {
-            button_pressed = 0; // 按钮释放
+
         }
+        Numb = Current_state%7;
+        if (Numb != 0)
+        {
+            for (uint8_t i = 0; i < Numb; i++){
+                Ledflag[0][i] = 1;
+            }
+        }
+        else
+        {
+            for (uint8_t i = 0; i < 6; i++)
+            {
+                Ledflag[0][i] = 0;
+            }
+            Current_state = 0;
+        }
+        if(flagbut1long == 1){ 
+            if (Current_freq[Current_led][0] >= 3)
+            {
+                Current_freq[Current_led][0] = 0;
+            }
+            Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Current_led][0]];
+            flagbut1long = 0;
+        } 
+
+        if(flagbut2long == 1){     
+            if (Current_freq[Current_led][1] >= 3)
+            {
+                Current_freq[Current_led][1] = 0;
+            }
+            Led_load[Current_led%6] = led_freq_range[Current_freq[Current_led][1]][Current_freq[Current_led][0]];
+
+            flagbut2long = 0;
+        }
+        if(flagbut1 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) == 0  && GlobalTickBut1Wait >= 50){ 
+            flagbut1 = 0;
+        }  
+        if(flagbut2 == 1 && READ_BIT(GPIOC->IDR, GPIO_IDR_ID10) == 0 && GlobalTickBut2Wait >= 50){ 
+            flagbut2 = 0;
+        }  
+        Led_light();
+    } 
+
+
+
+} 
+
+
+void Led_light()
+{
+    uint32_t ODR_clear = 0x0UL;
+    uint32_t ODR_set = 0x0UL;
+    for (uint8_t i = 0; i < 6; i++){
+        if ((Ledflag[0][i] == 1) && (Ledflag[1][i] == 1)){
+            ODR_set = ODR_set + (0x1UL<<(Led_Off_set[i]));
+        }
+        else{
+            ODR_clear = ODR_clear + (0x1UL<<(Led_Off_set[i]));
+        }
+    }
+    MODIFY_REG(GPIOB->ODR,ODR_clear,ODR_set);
+}
+
+void LedVal_Init()
+{
+    for (uint8_t i = 0; i < 6; i++){
+        Led_load[i] = led_freq_range[Current_freq[i][0]][Current_freq[i][1]];
+        Led_count[i] = Led_load[i];
     }
 }
