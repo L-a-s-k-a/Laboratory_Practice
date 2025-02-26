@@ -1,111 +1,148 @@
-#include "../Inc/init.h"
+// #include "../Inc/init.h"
 
-void GPIO_Init(void)
-{
-    // 开启 GPIOB 和 GPIOC 的时钟
-    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);  // 设置GPIOB 0号引脚为输出
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);  // 设置GPIOB 7号引脚为输出
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0); // 设置GPIOB 14号引脚为输出
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0);  // 设置GPIOB 8号引脚为输出
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0);  // 设置GPIOB 9号引脚为输出
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0); // 设置GPIOB 10号引脚为输出
+// void GPIO_Init(void)
+// {
+//     // 开启 GPIOB 和 GPIOC 的时钟
+//     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);  // 设置GPIOB 0号引脚为输出
+//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);  // 设置GPIOB 7号引脚为输出
+//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0); // 设置GPIOB 14号引脚为输出
+//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0);  // 设置GPIOB 8号引脚为输出
+//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0);  // 设置GPIOB 9号引脚为输出
+//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0); // 设置GPIOB 10号引脚为输出
 
-    // 设置输出类型为推挽模式
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0); 
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7); 
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14); 
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_8); 
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_9); 
-    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_10);
+//     // 设置输出类型为推挽模式
+//     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0); 
+//     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_7); 
+//     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14); 
+//     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_8); 
+//     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_9); 
+//     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_10);
 
-    // 设置输出速度为最高
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR8_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR9_0);
-    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR10_0);
+//     // 设置输出速度为最高
+//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
+//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);
+//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
+//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR8_0);
+//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR9_0);
+//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR10_0);
 
-    // 设置输入引脚为下拉模式
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR8_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR9_0);
-    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR10_0);
+//     // 设置输入引脚为下拉模式
+//     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
+//     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);
+//     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
+//     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR8_0);
+//     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR9_0);
+//     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR10_0);
 
-    // 配置 GPIOC 的 PC6 和 PC13 为输入模式，带下拉电阻
-   SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD6_1); // PC6 下拉
-   SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1); // PC13 下拉
+//     // 配置 GPIOC 的 PC6 和 PC13 为输入模式，带下拉电阻
+//    SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD6_1); // PC6 下拉
+//    SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1); // PC13 下拉
+// }
+
+
+// // RCC初始化函数
+// void RCC_Init(void){
+//     // 清除所有配置相关的位
+//     MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
+//     CLEAR_REG(RCC->CFGR);
+//     while(READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);  // 等待系统时钟源切换完成
+//     CLEAR_BIT(RCC->CR, RCC_CR_PLLON); // 关闭PLL
+//     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET); // 等待PLL关闭
+//     CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON); // 关闭HSE和时钟安全系统
+//     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET); // 等待HSE稳定
+//     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
+
+//     // 启动外部HSE晶体振荡器
+//     SET_BIT(RCC->CR, RCC_CR_HSEON); 
+//     while(READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);  // 等待HSE稳定
+//     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP); // 关闭HSE旁路
+//     SET_BIT(RCC->CR, RCC_CR_CSSON); // 启动时钟安全系统
+
+//     // 配置PLL时钟源为HSE并设置相关参数
+//     CLEAR_REG(RCC->PLLCFGR);
+//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
+//     MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2); // 设置PLL输入分频
+//     MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7); // 设置PLL倍频
+//     CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); // 设置PLL输出分频
+//     SET_BIT(RCC->CR, RCC_CR_PLLON); // 启动PLL
+//     while(READ_BIT(RCC->CR, RCC_CR_PLLRDY)); // 等待PLL稳定
+
+//     // 配置系统时钟源为PLL
+//     MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL); 
+//     MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1); // AHB时钟无分频
+//     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4); // APB1时钟分频4
+//     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2); // APB2时钟分频2
+//     CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2); // 取消MCO2输出设置
+//     MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk); // 设置MCO2输出频率为5
+//     MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS); // 设置Flash等待周期为5
+// }
+
+// void EXTI_ITR_Init(void){ 
+//     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); // 使能 SYSCFG 时钟
+//     NVIC_SetPriorityGrouping(0);
+
+//     // 配置 PC13 作为 EXTI13
+//     MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, SYSCFG_EXTICR4_EXTI13_PC);
+//     SET_BIT(EXTI->IMR, EXTI_IMR_MR13);
+//     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13);
+//     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13);
+//     NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0));
+//     NVIC_EnableIRQ(EXTI15_10_IRQn); 
+
+//     /* 配置 EXTI 中断线 PC6 */
+//     MODIFY_REG(SYSCFG->EXTICR[1], SYSCFG_EXTICR2_EXTI6_Msk, SYSCFG_EXTICR2_EXTI6_PC); // 选择 PC6 为 EXTI6
+//     SET_BIT(EXTI->IMR, EXTI_IMR_MR6);           // 使能 EXTI6 中断
+//     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR6);         // 配置为上升沿触发
+//     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR6);         // 配置为下降沿触发
+//     NVIC_SetPriority(EXTI9_5_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0)); // 设置 EXTI9_5_IRQn 中断优先级
+//     NVIC_EnableIRQ(EXTI9_5_IRQn);               // 使能 EXTI9_5 中断
+// }
+
+// void SysTick_Init(void)
+// {
+//     /* 配置 SysTick 系统定时器 */
+//     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);          // 禁用 SysTick
+//     SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk);           // 允许 SysTick 中断
+//     SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk);         // 使用 AHB 时钟作为 SysTick 时钟源
+//     MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, 179999); // 设置重载值以获得 1kHz 的中断频率
+//     MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, 179999);  // 设置当前值
+//     SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);            // 启用 SysTick
+// }
+
+
+#include <init.h>
+
+// GPIO 初始化
+void GPIO_Ini(void) {
+    SET_BIT(*(volatile uint32_t *)RCC_GPIO_EN, RCC_GPIOB_EN | RCC_GPIOC_EN);
+    *(volatile uint32_t *)GPIOB_MODER |= GPIOB_MODE_PIN0_OUT | GPIOB_MODE_PIN7_OUT | GPIOB_MODE_PIN14_OUT | GPIOB_MODE_PIN10_OUT;
 }
 
-
-// RCC初始化函数
-void RCC_Init(void){
-    // 清除所有配置相关的位
-    MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
-    CLEAR_REG(RCC->CFGR);
-    while(READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);  // 等待系统时钟源切换完成
-    CLEAR_BIT(RCC->CR, RCC_CR_PLLON); // 关闭PLL
-    while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET); // 等待PLL关闭
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON); // 关闭HSE和时钟安全系统
-    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET); // 等待HSE稳定
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
-
-    // 启动外部HSE晶体振荡器
-    SET_BIT(RCC->CR, RCC_CR_HSEON); 
-    while(READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);  // 等待HSE稳定
-    CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP); // 关闭HSE旁路
-    SET_BIT(RCC->CR, RCC_CR_CSSON); // 启动时钟安全系统
-
-    // 配置PLL时钟源为HSE并设置相关参数
-    CLEAR_REG(RCC->PLLCFGR);
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
-    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2); // 设置PLL输入分频
-    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7); // 设置PLL倍频
-    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); // 设置PLL输出分频
-    SET_BIT(RCC->CR, RCC_CR_PLLON); // 启动PLL
-    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY)); // 等待PLL稳定
-
-    // 配置系统时钟源为PLL
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL); 
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1); // AHB时钟无分频
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4); // APB1时钟分频4
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2); // APB2时钟分频2
-    CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2); // 取消MCO2输出设置
-    MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk); // 设置MCO2输出频率为5
-    MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS); // 设置Flash等待周期为5
+// 切换 LED 状态
+void ToggleLED(uint8_t led_index, uint8_t state) {
+    switch (led_index) {
+        case 1:
+            *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN0_SET : GPIOB_BSRR_PIN0_RESET;
+            break;
+        case 2:
+            *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN7_SET : GPIOB_BSRR_PIN7_RESET;
+            break;
+        case 3:
+            *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN14_SET : GPIOB_BSRR_PIN14_RESET;
+            break;
+        case 4:
+            *(volatile uint32_t *)GPIOB_BSRR = state ? GPIOB_BSRR_PIN10_SET : GPIOB_BSRR_PIN10_RESET;
+            break;
+    }
 }
 
-void EXTI_ITR_Init(void){ 
-    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); // 使能 SYSCFG 时钟
-    NVIC_SetPriorityGrouping(0);
-
-    // 配置 PC13 作为 EXTI13
-    MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, SYSCFG_EXTICR4_EXTI13_PC);
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR13);
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13);
-    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13);
-    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0));
-    NVIC_EnableIRQ(EXTI15_10_IRQn); 
-
-    /* 配置 EXTI 中断线 PC6 */
-    MODIFY_REG(SYSCFG->EXTICR[1], SYSCFG_EXTICR2_EXTI6_Msk, SYSCFG_EXTICR2_EXTI6_PC); // 选择 PC6 为 EXTI6
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR6);           // 使能 EXTI6 中断
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR6);         // 配置为上升沿触发
-    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR6);         // 配置为下降沿触发
-    NVIC_SetPriority(EXTI9_5_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0)); // 设置 EXTI9_5_IRQn 中断优先级
-    NVIC_EnableIRQ(EXTI9_5_IRQn);               // 使能 EXTI9_5 中断
+// 关闭所有 LED
+void TurnOffAllLEDs(void) {
+    *(volatile uint32_t *)GPIOB_BSRR = GPIOB_BSRR_PIN0_RESET | GPIOB_BSRR_PIN7_RESET | GPIOB_BSRR_PIN14_RESET | GPIOB_BSRR_PIN10_RESET;
 }
 
-void SysTick_Init(void)
-{
-    /* 配置 SysTick 系统定时器 */
-    CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);          // 禁用 SysTick
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk);           // 允许 SysTick 中断
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk);         // 使用 AHB 时钟作为 SysTick 时钟源
-    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, 179999); // 设置重载值以获得 1kHz 的中断频率
-    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, 179999);  // 设置当前值
-    SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);            // 启用 SysTick
+// 点亮所有 LED
+void TurnOnAllLEDs(void) {
+    *(volatile uint32_t *)GPIOB_BSRR = GPIOB_BSRR_PIN0_SET | GPIOB_BSRR_PIN7_SET | GPIOB_BSRR_PIN14_SET | GPIOB_BSRR_PIN10_SET;
 }
