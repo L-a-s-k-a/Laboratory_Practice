@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccJZJiBK.s 			page 1
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -18,11 +18,584 @@ ARM GAS  C:\Users\25084\AppData\Local\Temp\ccJZJiBK.s 			page 1
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
   17              		.file 1 "Core/Src/it_handlers.c"
-  18              	.Letext0:
-ARM GAS  C:\Users\25084\AppData\Local\Temp\ccJZJiBK.s 			page 2
+  18              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+  19              		.align	1
+  20              		.global	EXTI9_5_IRQHandler
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	EXTI9_5_IRQHandler:
+  26              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "../Inc/it_handlers.h"
+   2:Core/Src/it_handlers.c **** 
+   3:Core/Src/it_handlers.c **** // 外部变量声明
+   4:Core/Src/it_handlers.c **** extern uint16_t DelayTickCount;             // 延迟计数器
+   5:Core/Src/it_handlers.c **** extern uint16_t Led_count[6];               // 6个LED的计数器
+   6:Core/Src/it_handlers.c **** extern uint32_t GlobalTickBut1Wait, GlobalTickBut2Wait; // 按钮1和按钮2的等待计数器
+   7:Core/Src/it_handlers.c **** extern uint8_t flagbut1, flagbut2;          // 按钮1和按钮2的状态标志
+   8:Core/Src/it_handlers.c **** extern uint8_t flagbut1long, flagbut2long;  // 按钮1和按钮2的长按标志
+   9:Core/Src/it_handlers.c **** extern uint8_t Current_state;               // 当前状态
+  10:Core/Src/it_handlers.c **** extern uint8_t Current_led;                 // 当前LED编号
+  11:Core/Src/it_handlers.c **** extern uint8_t Current_freq[6][2];          // 存储每个LED的频率
+  12:Core/Src/it_handlers.c **** 
+  13:Core/Src/it_handlers.c **** // 处理 PC6 的外部中断（按键 1）
+  14:Core/Src/it_handlers.c **** void EXTI9_5_IRQHandler(void) 
+  15:Core/Src/it_handlers.c **** {
+  27              		.loc 1 15 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  16:Core/Src/it_handlers.c ****     // 判断 PC6 是否被按下（低电平）
+  17:Core/Src/it_handlers.c ****     if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID6) != 0)
+  32              		.loc 1 17 5 view .LVU1
+  33              		.loc 1 17 8 is_stmt 0 view .LVU2
+  34 0000 1D4B     		ldr	r3, .L7
+  35 0002 1B69     		ldr	r3, [r3, #16]
+  36              		.loc 1 17 7 view .LVU3
+  37 0004 13F0400F 		tst	r3, #64
+  38 0008 09D0     		beq	.L2
+  18:Core/Src/it_handlers.c ****     {
+  19:Core/Src/it_handlers.c ****         // 如果按钮1未被按下，则设置按钮1为按下状态并清零等待计数器
+  20:Core/Src/it_handlers.c ****         if(flagbut1 == 0){
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 2
+
+
+  39              		.loc 1 20 9 is_stmt 1 view .LVU4
+  40              		.loc 1 20 21 is_stmt 0 view .LVU5
+  41 000a 1C4B     		ldr	r3, .L7+4
+  42 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  43              		.loc 1 20 11 view .LVU6
+  44 000e 63B9     		cbnz	r3, .L3
+  21:Core/Src/it_handlers.c ****             flagbut1 = 1;             // 按钮1状态设置为按下
+  45              		.loc 1 21 13 is_stmt 1 view .LVU7
+  46              		.loc 1 21 22 is_stmt 0 view .LVU8
+  47 0010 1A4B     		ldr	r3, .L7+4
+  48 0012 0122     		movs	r2, #1
+  49 0014 1A70     		strb	r2, [r3]
+  22:Core/Src/it_handlers.c ****             GlobalTickBut1Wait = 0;   // 重置按钮1的等待时间
+  50              		.loc 1 22 13 is_stmt 1 view .LVU9
+  51              		.loc 1 22 32 is_stmt 0 view .LVU10
+  52 0016 1A4B     		ldr	r3, .L7+8
+  53 0018 0022     		movs	r2, #0
+  54 001a 1A60     		str	r2, [r3]
+  55 001c 05E0     		b	.L3
+  56              	.L2:
+  23:Core/Src/it_handlers.c ****         }
+  24:Core/Src/it_handlers.c ****     }
+  25:Core/Src/it_handlers.c ****     else{
+  26:Core/Src/it_handlers.c ****         // 如果按钮1被长按超过预定时间，设置长按标志，并增加当前LED的频
+  27:Core/Src/it_handlers.c ****         if (flagbut1 == 1 && GlobalTickBut1Wait >= LONG_PRESS_TIME)
+  57              		.loc 1 27 9 is_stmt 1 view .LVU11
+  58              		.loc 1 27 22 is_stmt 0 view .LVU12
+  59 001e 174B     		ldr	r3, .L7+4
+  60 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  61              		.loc 1 27 12 view .LVU13
+  62 0022 012B     		cmp	r3, #1
+  63 0024 07D0     		beq	.L5
+  64              	.L4:
+  28:Core/Src/it_handlers.c ****         {
+  29:Core/Src/it_handlers.c ****             flagbut1long = 1;                // 设置按钮1为长按状态
+  30:Core/Src/it_handlers.c ****             Current_freq[Current_led][0]++;  // 当前LED的频率+1
+  31:Core/Src/it_handlers.c **** 
+  32:Core/Src/it_handlers.c ****             flagbut1 = 0;                    // 重置按钮1状态
+  33:Core/Src/it_handlers.c ****         }
+  34:Core/Src/it_handlers.c ****         // 如果按钮1被短按，则切换到下一个状态
+  35:Core/Src/it_handlers.c ****         else if (flagbut1 == 1 && GlobalTickBut1Wait >= SHORT_PRESS_TIME)
+  65              		.loc 1 35 14 is_stmt 1 view .LVU14
+  66              		.loc 1 35 17 is_stmt 0 view .LVU15
+  67 0026 012B     		cmp	r3, #1
+  68 0028 19D0     		beq	.L6
+  69              	.L3:
+  36:Core/Src/it_handlers.c ****         {
+  37:Core/Src/it_handlers.c ****             flagbut1 = 0;            // 重置按钮1状态
+  38:Core/Src/it_handlers.c ****             Current_state++;         // 切换到下一个状态
+  39:Core/Src/it_handlers.c ****         }
+  40:Core/Src/it_handlers.c ****     }
+  41:Core/Src/it_handlers.c ****     // 清除 EXTI 中断标志位，表示中断处理完成
+  42:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR6); 
+  70              		.loc 1 42 5 is_stmt 1 view .LVU16
+  71 002a 164A     		ldr	r2, .L7+12
+  72 002c 5369     		ldr	r3, [r2, #20]
+  73 002e 43F04003 		orr	r3, r3, #64
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 3
+
+
+  74 0032 5361     		str	r3, [r2, #20]
+  43:Core/Src/it_handlers.c **** }
+  75              		.loc 1 43 1 is_stmt 0 view .LVU17
+  76 0034 7047     		bx	lr
+  77              	.L5:
+  27:Core/Src/it_handlers.c ****         {
+  78              		.loc 1 27 49 discriminator 1 view .LVU18
+  79 0036 124A     		ldr	r2, .L7+8
+  80 0038 1268     		ldr	r2, [r2]
+  27:Core/Src/it_handlers.c ****         {
+  81              		.loc 1 27 27 discriminator 1 view .LVU19
+  82 003a B2F5FA6F 		cmp	r2, #2000
+  83 003e F2D3     		bcc	.L4
+  29:Core/Src/it_handlers.c ****             Current_freq[Current_led][0]++;  // 当前LED的频率+1
+  84              		.loc 1 29 13 is_stmt 1 view .LVU20
+  29:Core/Src/it_handlers.c ****             Current_freq[Current_led][0]++;  // 当前LED的频率+1
+  85              		.loc 1 29 26 is_stmt 0 view .LVU21
+  86 0040 114B     		ldr	r3, .L7+16
+  87 0042 0122     		movs	r2, #1
+  88 0044 1A70     		strb	r2, [r3]
+  30:Core/Src/it_handlers.c **** 
+  89              		.loc 1 30 13 is_stmt 1 view .LVU22
+  30:Core/Src/it_handlers.c **** 
+  90              		.loc 1 30 38 is_stmt 0 view .LVU23
+  91 0046 114B     		ldr	r3, .L7+20
+  92 0048 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  93 004a 114A     		ldr	r2, .L7+24
+  94 004c 12F81130 		ldrb	r3, [r2, r1, lsl #1]	@ zero_extendqisi2
+  30:Core/Src/it_handlers.c **** 
+  95              		.loc 1 30 41 view .LVU24
+  96 0050 0133     		adds	r3, r3, #1
+  97 0052 02F81130 		strb	r3, [r2, r1, lsl #1]
+  32:Core/Src/it_handlers.c ****         }
+  98              		.loc 1 32 13 is_stmt 1 view .LVU25
+  32:Core/Src/it_handlers.c ****         }
+  99              		.loc 1 32 22 is_stmt 0 view .LVU26
+ 100 0056 094B     		ldr	r3, .L7+4
+ 101 0058 0022     		movs	r2, #0
+ 102 005a 1A70     		strb	r2, [r3]
+ 103 005c E5E7     		b	.L3
+ 104              	.L6:
+  35:Core/Src/it_handlers.c ****         {
+ 105              		.loc 1 35 54 discriminator 1 view .LVU27
+ 106 005e 084B     		ldr	r3, .L7+8
+ 107 0060 1B68     		ldr	r3, [r3]
+  35:Core/Src/it_handlers.c ****         {
+ 108              		.loc 1 35 32 discriminator 1 view .LVU28
+ 109 0062 1D2B     		cmp	r3, #29
+ 110 0064 E1D9     		bls	.L3
+  37:Core/Src/it_handlers.c ****             Current_state++;         // 切换到下一个状态
+ 111              		.loc 1 37 13 is_stmt 1 view .LVU29
+  37:Core/Src/it_handlers.c ****             Current_state++;         // 切换到下一个状态
+ 112              		.loc 1 37 22 is_stmt 0 view .LVU30
+ 113 0066 054B     		ldr	r3, .L7+4
+ 114 0068 0022     		movs	r2, #0
+ 115 006a 1A70     		strb	r2, [r3]
+  38:Core/Src/it_handlers.c ****         }
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 4
+
+
+ 116              		.loc 1 38 13 is_stmt 1 view .LVU31
+  38:Core/Src/it_handlers.c ****         }
+ 117              		.loc 1 38 26 is_stmt 0 view .LVU32
+ 118 006c 094A     		ldr	r2, .L7+28
+ 119 006e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 120 0070 0133     		adds	r3, r3, #1
+ 121 0072 1370     		strb	r3, [r2]
+ 122 0074 D9E7     		b	.L3
+ 123              	.L8:
+ 124 0076 00BF     		.align	2
+ 125              	.L7:
+ 126 0078 00080240 		.word	1073874944
+ 127 007c 00000000 		.word	flagbut1
+ 128 0080 00000000 		.word	GlobalTickBut1Wait
+ 129 0084 003C0140 		.word	1073822720
+ 130 0088 00000000 		.word	flagbut1long
+ 131 008c 00000000 		.word	Current_led
+ 132 0090 00000000 		.word	Current_freq
+ 133 0094 00000000 		.word	Current_state
+ 134              		.cfi_endproc
+ 135              	.LFE130:
+ 137              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ 138              		.align	1
+ 139              		.global	EXTI15_10_IRQHandler
+ 140              		.syntax unified
+ 141              		.thumb
+ 142              		.thumb_func
+ 144              	EXTI15_10_IRQHandler:
+ 145              	.LFB131:
+  44:Core/Src/it_handlers.c **** 
+  45:Core/Src/it_handlers.c **** // 处理 PC13 的外部中断（按键 2）
+  46:Core/Src/it_handlers.c **** void EXTI15_10_IRQHandler(void) 
+  47:Core/Src/it_handlers.c **** {
+ 146              		.loc 1 47 1 is_stmt 1 view -0
+ 147              		.cfi_startproc
+ 148              		@ args = 0, pretend = 0, frame = 0
+ 149              		@ frame_needed = 0, uses_anonymous_args = 0
+ 150              		@ link register save eliminated.
+  48:Core/Src/it_handlers.c ****     // 判断 PC13 是否被按下（低电平）
+  49:Core/Src/it_handlers.c ****     if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) != 0)
+ 151              		.loc 1 49 5 view .LVU34
+ 152              		.loc 1 49 8 is_stmt 0 view .LVU35
+ 153 0000 204B     		ldr	r3, .L15
+ 154 0002 1B69     		ldr	r3, [r3, #16]
+ 155              		.loc 1 49 7 view .LVU36
+ 156 0004 13F4005F 		tst	r3, #8192
+ 157 0008 09D0     		beq	.L10
+  50:Core/Src/it_handlers.c ****     {
+  51:Core/Src/it_handlers.c ****         // 如果按钮2未被按下，则设置按钮2为按下状态并清零等待计数器
+  52:Core/Src/it_handlers.c ****         if(flagbut2 == 0){
+ 158              		.loc 1 52 9 is_stmt 1 view .LVU37
+ 159              		.loc 1 52 21 is_stmt 0 view .LVU38
+ 160 000a 1F4B     		ldr	r3, .L15+4
+ 161 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 162              		.loc 1 52 11 view .LVU39
+ 163 000e 63B9     		cbnz	r3, .L11
+  53:Core/Src/it_handlers.c ****             flagbut2 = 1;             // 按钮2状态设置为按下
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 5
+
+
+ 164              		.loc 1 53 13 is_stmt 1 view .LVU40
+ 165              		.loc 1 53 22 is_stmt 0 view .LVU41
+ 166 0010 1D4B     		ldr	r3, .L15+4
+ 167 0012 0122     		movs	r2, #1
+ 168 0014 1A70     		strb	r2, [r3]
+  54:Core/Src/it_handlers.c ****             GlobalTickBut2Wait = 0;   // 重置按钮2的等待时间
+ 169              		.loc 1 54 13 is_stmt 1 view .LVU42
+ 170              		.loc 1 54 32 is_stmt 0 view .LVU43
+ 171 0016 1D4B     		ldr	r3, .L15+8
+ 172 0018 0022     		movs	r2, #0
+ 173 001a 1A60     		str	r2, [r3]
+ 174 001c 05E0     		b	.L11
+ 175              	.L10:
+  55:Core/Src/it_handlers.c ****         }
+  56:Core/Src/it_handlers.c ****     }
+  57:Core/Src/it_handlers.c ****     else{
+  58:Core/Src/it_handlers.c ****         // 如果按钮2被长按超过预定时间，设置长按标志，并增加当前LED的频
+  59:Core/Src/it_handlers.c ****         if (flagbut2 == 1 && GlobalTickBut2Wait >= LONG_PRESS_TIME)
+ 176              		.loc 1 59 9 is_stmt 1 view .LVU44
+ 177              		.loc 1 59 22 is_stmt 0 view .LVU45
+ 178 001e 1A4B     		ldr	r3, .L15+4
+ 179 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 180              		.loc 1 59 12 view .LVU46
+ 181 0022 012B     		cmp	r3, #1
+ 182 0024 07D0     		beq	.L13
+ 183              	.L12:
+  60:Core/Src/it_handlers.c ****         {
+  61:Core/Src/it_handlers.c ****             flagbut2long = 1;                // 设置按钮2为长按状态
+  62:Core/Src/it_handlers.c ****             Current_freq[Current_led][1]++;  // 当前LED的频率+1
+  63:Core/Src/it_handlers.c ****             flagbut2 = 0;                    // 重置按钮2状态
+  64:Core/Src/it_handlers.c ****         }
+  65:Core/Src/it_handlers.c ****         // 如果按钮2被短按，则切换到下一个LED
+  66:Core/Src/it_handlers.c ****         else if (flagbut2 == 1 && GlobalTickBut2Wait >= SHORT_PRESS_TIME)
+ 184              		.loc 1 66 14 is_stmt 1 view .LVU47
+ 185              		.loc 1 66 17 is_stmt 0 view .LVU48
+ 186 0026 012B     		cmp	r3, #1
+ 187 0028 19D0     		beq	.L14
+ 188              	.L11:
+  67:Core/Src/it_handlers.c ****         {
+  68:Core/Src/it_handlers.c ****             flagbut2 = 0;            // 重置按钮2状态
+  69:Core/Src/it_handlers.c ****             Current_led++;           // 切换到下一个LED
+  70:Core/Src/it_handlers.c ****             if (Current_led >= 6)    // 如果当前LED超出范围，则返回第一个LED
+  71:Core/Src/it_handlers.c ****             {
+  72:Core/Src/it_handlers.c ****                 Current_led = 0;
+  73:Core/Src/it_handlers.c ****             }
+  74:Core/Src/it_handlers.c ****         }
+  75:Core/Src/it_handlers.c ****     }
+  76:Core/Src/it_handlers.c ****     // 清除 EXTI 中断标志位，表示中断处理完成
+  77:Core/Src/it_handlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13); 
+ 189              		.loc 1 77 5 is_stmt 1 view .LVU49
+ 190 002a 194A     		ldr	r2, .L15+12
+ 191 002c 5369     		ldr	r3, [r2, #20]
+ 192 002e 43F40053 		orr	r3, r3, #8192
+ 193 0032 5361     		str	r3, [r2, #20]
+  78:Core/Src/it_handlers.c **** }
+ 194              		.loc 1 78 1 is_stmt 0 view .LVU50
+ 195 0034 7047     		bx	lr
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 6
+
+
+ 196              	.L13:
+  59:Core/Src/it_handlers.c ****         {
+ 197              		.loc 1 59 49 discriminator 1 view .LVU51
+ 198 0036 154A     		ldr	r2, .L15+8
+ 199 0038 1268     		ldr	r2, [r2]
+  59:Core/Src/it_handlers.c ****         {
+ 200              		.loc 1 59 27 discriminator 1 view .LVU52
+ 201 003a B2F5FA6F 		cmp	r2, #2000
+ 202 003e F2D3     		bcc	.L12
+  61:Core/Src/it_handlers.c ****             Current_freq[Current_led][1]++;  // 当前LED的频率+1
+ 203              		.loc 1 61 13 is_stmt 1 view .LVU53
+  61:Core/Src/it_handlers.c ****             Current_freq[Current_led][1]++;  // 当前LED的频率+1
+ 204              		.loc 1 61 26 is_stmt 0 view .LVU54
+ 205 0040 144B     		ldr	r3, .L15+16
+ 206 0042 0122     		movs	r2, #1
+ 207 0044 1A70     		strb	r2, [r3]
+  62:Core/Src/it_handlers.c ****             flagbut2 = 0;                    // 重置按钮2状态
+ 208              		.loc 1 62 13 is_stmt 1 view .LVU55
+  62:Core/Src/it_handlers.c ****             flagbut2 = 0;                    // 重置按钮2状态
+ 209              		.loc 1 62 38 is_stmt 0 view .LVU56
+ 210 0046 144B     		ldr	r3, .L15+20
+ 211 0048 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 212 004a 144B     		ldr	r3, .L15+24
+ 213 004c 03EB4203 		add	r3, r3, r2, lsl #1
+ 214 0050 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+  62:Core/Src/it_handlers.c ****             flagbut2 = 0;                    // 重置按钮2状态
+ 215              		.loc 1 62 41 view .LVU57
+ 216 0052 0132     		adds	r2, r2, #1
+ 217 0054 5A70     		strb	r2, [r3, #1]
+  63:Core/Src/it_handlers.c ****         }
+ 218              		.loc 1 63 13 is_stmt 1 view .LVU58
+  63:Core/Src/it_handlers.c ****         }
+ 219              		.loc 1 63 22 is_stmt 0 view .LVU59
+ 220 0056 0C4B     		ldr	r3, .L15+4
+ 221 0058 0022     		movs	r2, #0
+ 222 005a 1A70     		strb	r2, [r3]
+ 223 005c E5E7     		b	.L11
+ 224              	.L14:
+  66:Core/Src/it_handlers.c ****         {
+ 225              		.loc 1 66 54 discriminator 1 view .LVU60
+ 226 005e 0B4B     		ldr	r3, .L15+8
+ 227 0060 1B68     		ldr	r3, [r3]
+  66:Core/Src/it_handlers.c ****         {
+ 228              		.loc 1 66 32 discriminator 1 view .LVU61
+ 229 0062 1D2B     		cmp	r3, #29
+ 230 0064 E1D9     		bls	.L11
+  68:Core/Src/it_handlers.c ****             Current_led++;           // 切换到下一个LED
+ 231              		.loc 1 68 13 is_stmt 1 view .LVU62
+  68:Core/Src/it_handlers.c ****             Current_led++;           // 切换到下一个LED
+ 232              		.loc 1 68 22 is_stmt 0 view .LVU63
+ 233 0066 084B     		ldr	r3, .L15+4
+ 234 0068 0022     		movs	r2, #0
+ 235 006a 1A70     		strb	r2, [r3]
+  69:Core/Src/it_handlers.c ****             if (Current_led >= 6)    // 如果当前LED超出范围，则返回第一个LED
+ 236              		.loc 1 69 13 is_stmt 1 view .LVU64
+  69:Core/Src/it_handlers.c ****             if (Current_led >= 6)    // 如果当前LED超出范围，则返回第一个LED
+ 237              		.loc 1 69 24 is_stmt 0 view .LVU65
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 7
+
+
+ 238 006c 0A4A     		ldr	r2, .L15+20
+ 239 006e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 240 0070 0133     		adds	r3, r3, #1
+ 241 0072 DBB2     		uxtb	r3, r3
+ 242 0074 1370     		strb	r3, [r2]
+  70:Core/Src/it_handlers.c ****             {
+ 243              		.loc 1 70 13 is_stmt 1 view .LVU66
+  70:Core/Src/it_handlers.c ****             {
+ 244              		.loc 1 70 16 is_stmt 0 view .LVU67
+ 245 0076 052B     		cmp	r3, #5
+ 246 0078 D7D9     		bls	.L11
+  72:Core/Src/it_handlers.c ****             }
+ 247              		.loc 1 72 17 is_stmt 1 view .LVU68
+  72:Core/Src/it_handlers.c ****             }
+ 248              		.loc 1 72 29 is_stmt 0 view .LVU69
+ 249 007a 1346     		mov	r3, r2
+ 250 007c 0022     		movs	r2, #0
+ 251 007e 1A70     		strb	r2, [r3]
+ 252 0080 D3E7     		b	.L11
+ 253              	.L16:
+ 254 0082 00BF     		.align	2
+ 255              	.L15:
+ 256 0084 00080240 		.word	1073874944
+ 257 0088 00000000 		.word	flagbut2
+ 258 008c 00000000 		.word	GlobalTickBut2Wait
+ 259 0090 003C0140 		.word	1073822720
+ 260 0094 00000000 		.word	flagbut2long
+ 261 0098 00000000 		.word	Current_led
+ 262 009c 00000000 		.word	Current_freq
+ 263              		.cfi_endproc
+ 264              	.LFE131:
+ 266              		.section	.text.SysTick_Handler,"ax",%progbits
+ 267              		.align	1
+ 268              		.global	SysTick_Handler
+ 269              		.syntax unified
+ 270              		.thumb
+ 271              		.thumb_func
+ 273              	SysTick_Handler:
+ 274              	.LFB132:
+  79:Core/Src/it_handlers.c **** 
+  80:Core/Src/it_handlers.c **** // SysTick 中断处理程序，1ms 定时器
+  81:Core/Src/it_handlers.c **** void SysTick_Handler(void) 
+  82:Core/Src/it_handlers.c **** {  
+ 275              		.loc 1 82 1 is_stmt 1 view -0
+ 276              		.cfi_startproc
+ 277              		@ args = 0, pretend = 0, frame = 0
+ 278              		@ frame_needed = 0, uses_anonymous_args = 0
+ 279              		@ link register save eliminated.
+  83:Core/Src/it_handlers.c ****     DelayTickCount++; // 每次 SysTick 中断时增加延迟计数器
+ 280              		.loc 1 83 5 view .LVU71
+ 281              		.loc 1 83 19 is_stmt 0 view .LVU72
+ 282 0000 114A     		ldr	r2, .L24
+ 283 0002 1388     		ldrh	r3, [r2]
+ 284 0004 0133     		adds	r3, r3, #1
+ 285 0006 1380     		strh	r3, [r2]	@ movhi
+  84:Core/Src/it_handlers.c ****     // 如果按钮1被按下，则增加按钮1的等待时间
+  85:Core/Src/it_handlers.c ****     if(flagbut1 == 1){
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 8
+
+
+ 286              		.loc 1 85 5 is_stmt 1 view .LVU73
+ 287              		.loc 1 85 17 is_stmt 0 view .LVU74
+ 288 0008 104B     		ldr	r3, .L24+4
+ 289 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 290              		.loc 1 85 7 view .LVU75
+ 291 000c 012B     		cmp	r3, #1
+ 292 000e 05D0     		beq	.L22
+ 293              	.L18:
+  86:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
+  87:Core/Src/it_handlers.c ****     }
+  88:Core/Src/it_handlers.c ****     // 如果按钮2被按下，则增加按钮2的等待时间
+  89:Core/Src/it_handlers.c ****     if(flagbut2 == 1){
+ 294              		.loc 1 89 5 is_stmt 1 view .LVU76
+ 295              		.loc 1 89 17 is_stmt 0 view .LVU77
+ 296 0010 0F4B     		ldr	r3, .L24+8
+ 297 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 298              		.loc 1 89 7 view .LVU78
+ 299 0014 012B     		cmp	r3, #1
+ 300 0016 06D0     		beq	.L23
+ 301              	.L19:
+  82:Core/Src/it_handlers.c ****     DelayTickCount++; // 每次 SysTick 中断时增加延迟计数器
+ 302              		.loc 1 82 1 view .LVU79
+ 303 0018 0023     		movs	r3, #0
+ 304 001a 11E0     		b	.L20
+ 305              	.L22:
+  86:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
+ 306              		.loc 1 86 9 is_stmt 1 view .LVU80
+  86:Core/Src/it_handlers.c ****         GlobalTickBut1Wait++;
+ 307              		.loc 1 86 27 is_stmt 0 view .LVU81
+ 308 001c 0D4A     		ldr	r2, .L24+12
+ 309 001e 1368     		ldr	r3, [r2]
+ 310 0020 0133     		adds	r3, r3, #1
+ 311 0022 1360     		str	r3, [r2]
+ 312 0024 F4E7     		b	.L18
+ 313              	.L23:
+  90:Core/Src/it_handlers.c ****         GlobalTickBut2Wait++;
+ 314              		.loc 1 90 9 is_stmt 1 view .LVU82
+ 315              		.loc 1 90 27 is_stmt 0 view .LVU83
+ 316 0026 0C4A     		ldr	r2, .L24+16
+ 317 0028 1368     		ldr	r3, [r2]
+ 318 002a 0133     		adds	r3, r3, #1
+ 319 002c 1360     		str	r3, [r2]
+ 320 002e F3E7     		b	.L19
+ 321              	.LVL0:
+ 322              	.L21:
+ 323              	.LBB2:
+  91:Core/Src/it_handlers.c ****     }
+  92:Core/Src/it_handlers.c ****     // 增加所有LED的计数器
+  93:Core/Src/it_handlers.c ****     for (uint8_t i = 0; i < 6; i++)
+  94:Core/Src/it_handlers.c ****     {
+  95:Core/Src/it_handlers.c ****         Led_count[i]++; // 每个LED计数器加1
+ 324              		.loc 1 95 9 is_stmt 1 view .LVU84
+ 325              		.loc 1 95 18 is_stmt 0 view .LVU85
+ 326 0030 0A49     		ldr	r1, .L24+20
+ 327 0032 31F81320 		ldrh	r2, [r1, r3, lsl #1]
+ 328              		.loc 1 95 21 view .LVU86
+ 329 0036 0132     		adds	r2, r2, #1
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 9
+
+
+ 330 0038 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
+  93:Core/Src/it_handlers.c ****     {
+ 331              		.loc 1 93 33 is_stmt 1 discriminator 3 view .LVU87
+ 332 003c 0133     		adds	r3, r3, #1
+ 333              	.LVL1:
+  93:Core/Src/it_handlers.c ****     {
+ 334              		.loc 1 93 33 is_stmt 0 discriminator 3 view .LVU88
+ 335 003e DBB2     		uxtb	r3, r3
+ 336              	.LVL2:
+ 337              	.L20:
+  93:Core/Src/it_handlers.c ****     {
+ 338              		.loc 1 93 27 is_stmt 1 discriminator 1 view .LVU89
+ 339 0040 052B     		cmp	r3, #5
+ 340 0042 F5D9     		bls	.L21
+ 341              	.LBE2:
+  96:Core/Src/it_handlers.c ****     }
+  97:Core/Src/it_handlers.c **** } 
+ 342              		.loc 1 97 1 is_stmt 0 view .LVU90
+ 343 0044 7047     		bx	lr
+ 344              	.L25:
+ 345 0046 00BF     		.align	2
+ 346              	.L24:
+ 347 0048 00000000 		.word	DelayTickCount
+ 348 004c 00000000 		.word	flagbut1
+ 349 0050 00000000 		.word	flagbut2
+ 350 0054 00000000 		.word	GlobalTickBut1Wait
+ 351 0058 00000000 		.word	GlobalTickBut2Wait
+ 352 005c 00000000 		.word	Led_count
+ 353              		.cfi_endproc
+ 354              	.LFE132:
+ 356              		.section	.text.User_Delay,"ax",%progbits
+ 357              		.align	1
+ 358              		.global	User_Delay
+ 359              		.syntax unified
+ 360              		.thumb
+ 361              		.thumb_func
+ 363              	User_Delay:
+ 364              	.LVL3:
+ 365              	.LFB133:
+  98:Core/Src/it_handlers.c **** 
+  99:Core/Src/it_handlers.c **** // 自定义延时函数，基于 SysTick 计时
+ 100:Core/Src/it_handlers.c **** void User_Delay(uint32_t delay)  
+ 101:Core/Src/it_handlers.c **** {
+ 366              		.loc 1 101 1 is_stmt 1 view -0
+ 367              		.cfi_startproc
+ 368              		@ args = 0, pretend = 0, frame = 0
+ 369              		@ frame_needed = 0, uses_anonymous_args = 0
+ 370              		@ link register save eliminated.
+ 102:Core/Src/it_handlers.c ****     // 如果延迟计数器超过所需延迟时间，则重置计数器
+ 103:Core/Src/it_handlers.c ****     if(DelayTickCount >= delay) DelayTickCount = 0;
+ 371              		.loc 1 103 5 view .LVU92
+ 372              		.loc 1 103 23 is_stmt 0 view .LVU93
+ 373 0000 054B     		ldr	r3, .L29
+ 374 0002 1B88     		ldrh	r3, [r3]
+ 375              		.loc 1 103 7 view .LVU94
+ 376 0004 8342     		cmp	r3, r0
+ 377 0006 02D3     		bcc	.L28
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 10
+
+
+ 378              		.loc 1 103 33 is_stmt 1 discriminator 1 view .LVU95
+ 379              		.loc 1 103 48 is_stmt 0 discriminator 1 view .LVU96
+ 380 0008 034B     		ldr	r3, .L29
+ 381 000a 0022     		movs	r2, #0
+ 382 000c 1A80     		strh	r2, [r3]	@ movhi
+ 383              	.L28:
+ 104:Core/Src/it_handlers.c ****     // 在延迟时间内保持等待
+ 105:Core/Src/it_handlers.c ****     while(DelayTickCount < delay){} // 程序通过循环实现延时
+ 384              		.loc 1 105 35 is_stmt 1 discriminator 1 view .LVU97
+ 385              		.loc 1 105 26 discriminator 1 view .LVU98
+ 386 000e 024B     		ldr	r3, .L29
+ 387 0010 1B88     		ldrh	r3, [r3]
+ 388 0012 8342     		cmp	r3, r0
+ 389 0014 FBD3     		bcc	.L28
+ 106:Core/Src/it_handlers.c **** }
+ 390              		.loc 1 106 1 is_stmt 0 view .LVU99
+ 391 0016 7047     		bx	lr
+ 392              	.L30:
+ 393              		.align	2
+ 394              	.L29:
+ 395 0018 00000000 		.word	DelayTickCount
+ 396              		.cfi_endproc
+ 397              	.LFE133:
+ 399              		.text
+ 400              	.Letext0:
+ 401              		.file 2 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
+ 402              		.file 3 "C:/dog/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1/ar
+ 403              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/stm32f429xx.h"
+ARM GAS  C:\Users\25084\AppData\Local\Temp\ccyoLih3.s 			page 11
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 it_handlers.c
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:19     .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:25     .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:126    .text.EXTI9_5_IRQHandler:00000078 $d
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:138    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:144    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:256    .text.EXTI15_10_IRQHandler:00000084 $d
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:267    .text.SysTick_Handler:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:273    .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:347    .text.SysTick_Handler:00000048 $d
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:357    .text.User_Delay:00000000 $t
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:363    .text.User_Delay:00000000 User_Delay
+C:\Users\25084\AppData\Local\Temp\ccyoLih3.s:395    .text.User_Delay:00000018 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+flagbut1
+GlobalTickBut1Wait
+flagbut1long
+Current_led
+Current_freq
+Current_state
+flagbut2
+GlobalTickBut2Wait
+flagbut2long
+DelayTickCount
+Led_count
