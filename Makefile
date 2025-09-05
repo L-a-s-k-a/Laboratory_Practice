@@ -13,8 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = LABORATORY_PRACTICE
-
+TARGET = STM32F429ZI
 
 ######################################
 # building variables
@@ -31,18 +30,76 @@ OPT = -Og
 # Build path
 BUILD_DIR = build
 
+# $(BUILD_DIR):
+# 	mkdir -p $(BUILD_DIR)	
+######################################
+# selecting source
+######################################
+# C sources
+
+ifeq ($(TARGET), STM32F103C8Tx)
+SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f1xx.c
+ASM = STM32F411ZI/startup_stm32f103xb.s
+CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
+CMSIS_INC_UNIT = CMSIS/Devices/STM32F1xx/Inc
+CMSIS_INC = CMSIS/Include
+LD = STM32F103C8Tx/STM32F103C8Tx_FLASH.ld
+DEF = STM32F103xB
+MCPU = cortex-m3
+MFPU = NONE
+TRGT_CFG = stm32f1x
+endif
+
+ifeq ($(TARGET), STM32F103x6)
+SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f1xx.c
+ASM = STM32F411ZI/startup_stm32f103x6.s
+CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
+CMSIS_INC_UNIT = CMSIS/Devices/STM32F1xx/Inc
+CMSIS_INC = CMSIS/Include
+LD = STM32F103x6/STM32F103X6_FLASH.ld
+DEF = STM32F103x6
+MCPU = cortex-m3
+MFPU = NONE
+TRGT_CFG = stm32f1x
+endif
+
+ifeq ($(TARGET), STM32F411VET)
+SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c
+ASM = STM32F411ZI/startup_stm32f411xe.s
+CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
+CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F411VE
+CMSIS_INC = CMSIS/Include
+LD = STM32F411VET/STM32F411VETx_FLASH.ld
+DEF = STM32F411xE
+MCPU = cortex-m4
+MFPU = fpv4-sp-d16
+TRGT_CFG = stm32f4x
+endif
+
+ifeq ($(TARGET), STM32F429ZI)
+SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c
+ASM = STM32F429ZI/startup_stm32f429xx.s
+CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
+CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI
+CMSIS_INC = CMSIS/Include
+LD = STM32F429ZI/STM32F429ZITx_FLASH.ld
+DEF = STM32F429xx
+MCPU = cortex-m4
+MFPU = fpv4-sp-d16  #dobavit "v" k "fpv4" = "vfpv4-d16"
+TRGT_CFG = stm32f4x
+endif
+
 ######################################
 # source
 ######################################
 # C sources
 C_SOURCES =  \
-CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \
+$(SYS) \
 Core/Src/main.c \
-
 
 # ASM sources
 ASM_SOURCES =  \
-startup_stm32f429xx.s
+$(ASM)
 
 
 #######################################
@@ -69,13 +126,14 @@ BIN = $(CP) -O binary -S
 # CFLAGS
 #######################################
 # cpu
-CPU = -mcpu=cortex-m4
+CPU = -mcpu=$(MCPU)
 
+ifneq ($(MFPU), NONE)
 # fpu
-FPU = -mfpu=fpv4-sp-d16
-
+FPU = -mfpu=$(MFPU)
 # float-abi
 FLOAT-ABI = -mfloat-abi=hard
+endif
 
 # mcu
 MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
@@ -86,18 +144,17 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
--DSTM32F429xx \
+-D$(DEF) \
 
 # AS includes
 AS_INCLUDES = 
 
 # C includes
 C_INCLUDES =  \
+-I$(CMSIS_INC_DEV) \
+-I$(CMSIS_INC_UNIT) \
+-I$(CMSIS_INC) \
 -ICore/Inc \
--ICMSIS/Devices/STM32F4xx/Inc \
--ICMSIS/Devices/STM32F4xx/Inc/STM32F429ZI \
--ICMSIS/Include \
-
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
@@ -117,7 +174,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32F429ZITx_FLASH.ld
+LDSCRIPT = $(LD)
 
 # libraries
 LIBS = -lc -lm -lnosys 
@@ -125,7 +182,7 @@ LIBDIR =
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
 
 
 #######################################
@@ -137,6 +194,8 @@ vpath %.c $(sort $(dir $(C_SOURCES)))
 # list of ASM program objects
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
+
+
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
@@ -167,7 +226,7 @@ clean:
 # openocd
 #######################################
 flash: all
-	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
+	openocd -f interface/stlink.cfg -f target/$(TRGT_CFG).cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
 
 #######################################
 # dependencies
