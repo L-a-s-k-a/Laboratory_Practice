@@ -1,5 +1,5 @@
 - [Описание на русском](#ru_description) 
-      - [Описание файлов](#file_ru_description)
+- [Описание файлов](#file_ru_description)
 ***
 - [Description in English](#en_description)  
       - [File description](#file_en_description)  
