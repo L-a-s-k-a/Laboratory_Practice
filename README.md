@@ -43,7 +43,7 @@
 ## <a name="en_description"></a> Microcontroller Programming Lab Workshop
 Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. In addition, this project allows you to program microcontrollers of other series.
 
-#### <a name="file_ru_description"></a> List of supported controllers
+#### <a name="mk_list_en"></a> List of supported controllers
 - STM32F429ZI
 - STM32F411VE
 - STM32F103C8
