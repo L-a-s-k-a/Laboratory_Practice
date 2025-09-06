@@ -3,6 +3,7 @@
       - [Описание файлов](#file_ru_description)
 ***
 - [Description in English](#en_description)  
+      - [List of supported controllers](#mk_list_en)
       - [File description](#file_en_description)  
 <br/>
 
@@ -17,14 +18,15 @@
 #### <a name="file_ru_description"></a> Описание файлов содержащихся в проекте  
 **NAME.svd** - для каждого устройства уникален, находится в папках с устройствами, имеет расширение .svd, необходим для просмотра памяти устройства через VSCode.
 
-**Makefile** - не имеет расширения, является инструкцией для сборщика/компилятора. В нём уже прописано всё необходимое для работы с микроконтроллерами представленными выше, за исключением исполняемых файлов проекта. Для каждого нового исполняемого файла в проекте потребуется
+**Makefile** - не имеет расширения, является инструкцией для сборщика/компилятора. В нём уже прописано всё необходимое для работы с микроконтроллерами представленными выше, за исключением исполняемых файлов проекта. 
 
-> В строке 228 прописывается инструкция для загрузки исполняемых файлов в память микроконтроллера с помощью *openOCD*  
+>Для каждого нового исполняемого файла в проекте потребуется прописывать дирректорию, в которойй он нахоится. Это можно сделать в блоке **C sources** в переменной *C_SOURCES*.
+><br/> Строка 16 указывает на проект, который собирается (*TARGET*). По умолчанию поле заполняется значением "*STM32F429ZI*". Чтобы переключить сборку под другую серию микроконтроллера необходимо заполнить это поле соответствующим названием из [списка поддерживаемых контроллеров](#mk_list_ru).
+><br/> Строка 31 указывает на директорию, в которую будет собираться проект (*BUILD_DIR*). По умолчанию имеет значение "*build*".
+>В строке 228 прописывается инструкция для загрузки исполняемых файлов в память микроконтроллера с помощью *openOCD*  
 > Запись осуществляется с помощью следующей инструкции:
 ><br/> **flash: all**
 ><br/> **openocd -f interface/stlink.cfg -f target/$(TRGT_CFG).cfg -c "program $(*BUILD_DIR*)/$(*TARGET*).elf verify reset exit"**
-><br/> Строка 16 указывает на проект, который собирается (*TARGET*). По умолчанию поле заполняется значением "*STM32F429ZI*". Чтобы переключить сборку под другую серию микроконтроллера необходимо заполнить это поле соответствующим названием из [списка поддерживаемых контроллеров](#mk_list_ru).
-><br/> Строка 31 указывает на директорию, в которую будет собираться проект (*BUILD_DIR*). По умолчанию имеет значение "*build*"
   
 **startup_stm32fYYxx.s** - имеет расшщирение .s, является ассемблерным фалом, в котором прописаны все возможные вектора прерываний для микроконтроллеров приведенных выше. Он необходим для отслеживания прерываний и вызова их обработчиков.  
 
@@ -38,7 +40,13 @@
 <br/>
 
 ## <a name="en_description"></a> Microcontroller Programming Lab Workshop
-Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. 
+Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. In addition, this project allows you to program microcontrollers of other series.
+
+#### <a name="file_ru_description"></a> List of supported controllers
+- STM32F429ZI
+- STM32F411VE
+- STM32F103C8
+- STM32F103C6
 
 #### <a name="file_en_description"></a> Description of files contained in the project   
 **STM32F429ZI.svd** - has extension .svd, it is necessary for viewing the device memory via VSCode.  
