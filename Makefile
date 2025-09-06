@@ -23,15 +23,12 @@ DEBUG = 1
 # optimization
 OPT = -Og
 
-
 #######################################
 # paths
 #######################################
 # Build path
 BUILD_DIR = build
-
-# $(BUILD_DIR):
-# 	mkdir -p $(BUILD_DIR)	
+	
 ######################################
 # selecting source
 ######################################
@@ -101,7 +98,6 @@ Core/Src/main.c \
 ASM_SOURCES =  \
 $(ASM)
 
-
 #######################################
 # binaries
 #######################################
@@ -165,10 +161,8 @@ ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
 endif
 
-
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
-
 
 #######################################
 # LDFLAGS
@@ -183,7 +177,9 @@ LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BU
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
-
+	@echo "==========================================="
+	@echo "|| The build was completed successfully! ||"
+	@echo "==========================================="
 
 #######################################
 # build the application
@@ -194,8 +190,6 @@ vpath %.c $(sort $(dir $(C_SOURCES)))
 # list of ASM program objects
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
-
-
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
@@ -212,9 +206,10 @@ $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
-	
-$(BUILD_DIR):
-	mkdir $@		
+
+$(shell mkdir -p $(BUILD_DIR))
+# | $(BUILD_DIR):
+# 	mkdir -p $@		
 
 #######################################
 # clean up
@@ -227,6 +222,9 @@ clean:
 #######################################
 flash: all
 	openocd -f interface/stlink.cfg -f target/$(TRGT_CFG).cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
+	@echo "=================================="
+	@echo "|| The download was successful! ||"
+	@echo "=================================="
 
 #######################################
 # dependencies
