@@ -25,7 +25,7 @@
 > - В строке 228 прописывается инструкция для загрузки исполняемых файлов в память микроконтроллера с помощью *openOCD*  
 > Запись осуществляется с помощью следующей инструкции:  
 > **flash: all**  
-> **openocd -f interface/stlink.cfg -f target/$(*TRGT_CFG*).cfg -c "program $(*BUILD_DIR*)/$(*TARGET*).elf verify reset exit"**
+>        **openocd -f interface/stlink.cfg -f target/$(*TRGT_CFG*).cfg -c "program $(*BUILD_DIR*)/$(*TARGET*).elf verify reset exit"**
 
 **NAME.svd** - для каждого устройства уникален, находится в папках с устройствами, имеет расширение .svd, необходим для просмотра памяти устройства через VSCode.
 
