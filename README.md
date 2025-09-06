@@ -45,5 +45,3 @@ Here will be the starting project for programming the Nucleo-144 lab bench based
 **startup_stm32f429xx.s** - has the extension .s, is an assembler file that contains all possible interrupt vectors for the STM32F429ZI microcontroller. It is necessary for tracking interrupts and calling their handlers.
 
 **system_stm32f4xx.c** - a file describing system settings.
-***
-<br/>
