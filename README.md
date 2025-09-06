@@ -1,5 +1,5 @@
 - [Описание на русском](#ru_description)  
-      - [Список поддерживаемых контроллеров](#mk_list_ru)
+      - [Список поддерживаемых контроллеров](#mk_list_ru)  
       - [Описание файлов](#file_ru_description)
 ***
 - [Description in English](#en_description)  
