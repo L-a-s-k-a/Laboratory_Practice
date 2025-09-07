@@ -27,63 +27,64 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-BUILD_DIR = build
-	
+ifeq ($(TARGET), STM32F103C8Tx)
+	BUILD_DIR = build_F103C8Tx
+else ifeq ($(TARGET), STM32F103x6)
+	BUILD_DIR = build_F103x6
+else ifeq ($(TARGET), STM32F411VET)
+	BUILD_DIR = build_F411VET
+else ifeq ($(TARGET), STM32F429ZI)
+	BUILD_DIR = build_F429ZI
+endif
 ######################################
 # selecting source
 ######################################
 # C sources
 
 ifeq ($(TARGET), STM32F103C8Tx)
-SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f1xx.c
-ASM = STM32F411ZI/startup_stm32f103xb.s
-CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
-CMSIS_INC_UNIT = CMSIS/Devices/STM32F1xx/Inc
-CMSIS_INC = CMSIS/Include
-LD = STM32F103C8Tx/STM32F103C8Tx_FLASH.ld
-DEF = STM32F103xB
-MCPU = cortex-m3
-MFPU = NONE
-TRGT_CFG = stm32f1x
-endif
-
-ifeq ($(TARGET), STM32F103x6)
-SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f1xx.c
-ASM = STM32F411ZI/startup_stm32f103x6.s
-CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
-CMSIS_INC_UNIT = CMSIS/Devices/STM32F1xx/Inc
-CMSIS_INC = CMSIS/Include
-LD = STM32F103x6/STM32F103X6_FLASH.ld
-DEF = STM32F103x6
-MCPU = cortex-m3
-MFPU = NONE
-TRGT_CFG = stm32f1x
-endif
-
-ifeq ($(TARGET), STM32F411VET)
-SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c
-ASM = STM32F411ZI/startup_stm32f411xe.s
-CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
-CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F411VE
-CMSIS_INC = CMSIS/Include
-LD = STM32F411VET/STM32F411VETx_FLASH.ld
-DEF = STM32F411xE
-MCPU = cortex-m4
-MFPU = fpv4-sp-d16
-TRGT_CFG = stm32f4x
-endif
-
-ifeq ($(TARGET), STM32F429ZI)
-SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c
-ASM = STM32F429ZI/startup_stm32f429xx.s
-CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
-CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI
-CMSIS_INC = CMSIS/Include
-LD = STM32F429ZI/STM32F429ZITx_FLASH.ld
-DEF = STM32F429xx
-MCPU = cortex-m4
-MFPU = fpv4-sp-d16  #dobavit "v" k "fpv4" = "vfpv4-d16"
-TRGT_CFG = stm32f4x
+	SYS = CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	ASM = STM32F103C8Tx/startup_stm32f103xb.s
+	CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F1xx/Inc/STM32f103xB
+	CMSIS_INC = CMSIS/Include
+	LD = STM32F103C8Tx/STM32F103C8Tx_FLASH.ld
+	DEF = STM32F103xB
+	MCPU = cortex-m3
+	MFPU = NONE
+	TRGT_CFG = stm32f1x
+else ifeq ($(TARGET), STM32F103x6)
+	SYS = CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	ASM = STM32F103x6/startup_stm32f103x6.s
+	CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F1xx/Inc/STM32f103x6
+	CMSIS_INC = CMSIS/Include
+	LD = STM32F103x6/STM32F103X6_FLASH.ld
+	DEF = STM32F103x6
+	MCPU = cortex-m3
+	MFPU = NONE
+	TRGT_CFG = stm32f1x
+else ifeq ($(TARGET), STM32F411VET)
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	ASM = STM32F411VET/startup_stm32f411xe.s
+	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F411VE
+	CMSIS_INC = CMSIS/Include
+	LD = STM32F411VET/STM32F411VETx_FLASH.ld
+	DEF = STM32F411xE
+	MCPU = cortex-m4
+	MFPU = fpv4-sp-d16
+	TRGT_CFG = stm32f4x
+else ifeq ($(TARGET), STM32F429ZI)
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	ASM = STM32F429ZI/startup_stm32f429xx.s
+	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI
+	CMSIS_INC = CMSIS/Include
+	LD = STM32F429ZI/STM32F429ZITx_FLASH.ld
+	DEF = STM32F429xx
+	MCPU = cortex-m4
+	MFPU = fpv4-sp-d16  #dobavit "v" k "fpv4" = "vfpv4-d16"
+	TRGT_CFG = stm32f4x
 endif
 
 ######################################
@@ -105,15 +106,15 @@ PREFIX = arm-none-eabi-
 # The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
 # either it can be added to the PATH environment variable.
 ifdef GCC_PATH
-CC = $(GCC_PATH)/$(PREFIX)gcc
-AS = $(GCC_PATH)/$(PREFIX)gcc -x assembler-with-cpp
-CP = $(GCC_PATH)/$(PREFIX)objcopy
-SZ = $(GCC_PATH)/$(PREFIX)size
+	CC = $(GCC_PATH)/$(PREFIX)gcc
+	AS = $(GCC_PATH)/$(PREFIX)gcc -x assembler-with-cpp
+	CP = $(GCC_PATH)/$(PREFIX)objcopy
+	SZ = $(GCC_PATH)/$(PREFIX)size
 else
-CC = $(PREFIX)gcc
-AS = $(PREFIX)gcc -x assembler-with-cpp
-CP = $(PREFIX)objcopy
-SZ = $(PREFIX)size
+	CC = $(PREFIX)gcc
+	AS = $(PREFIX)gcc -x assembler-with-cpp
+	CP = $(PREFIX)objcopy
+	SZ = $(PREFIX)size
 endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
@@ -125,10 +126,10 @@ BIN = $(CP) -O binary -S
 CPU = -mcpu=$(MCPU)
 
 ifneq ($(MFPU), NONE)
-# fpu
-FPU = -mfpu=$(MFPU)
-# float-abi
-FLOAT-ABI = -mfloat-abi=hard
+	# fpu
+	FPU = -mfpu=$(MFPU)
+	# float-abi
+	FLOAT-ABI = -mfloat-abi=hard
 endif
 
 # mcu
@@ -158,7 +159,7 @@ ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffuncti
 CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
-CFLAGS += -g -gdwarf-2
+	CFLAGS += -g -gdwarf-2
 endif
 
 # Generate dependency information
@@ -168,8 +169,10 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = $(LD)
-
+LDSCRIPT = $(LD) -Wl,--no-warn-rwx-segment # "-Wl,--no-warn-rwx-segment" - отключает вывод предупреждения о том,
+#										   # что .elf содержит сегмент LOAD с правами RWX (Read, Write, X)
+#										   # Нужно разбораться с этой проблемой  
+#										   #
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
@@ -197,25 +200,27 @@ $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
-	$(SZ) $@
-
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) $< $@
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
 
-$(shell mkdir -p $(BUILD_DIR))
-# | $(BUILD_DIR):
-# 	mkdir -p $@		
+$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+	@echo "---------------------   SIZE   ----------------------"
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@  -Wl,--print-memory-usage
+	@echo "" 
+	@$(SZ) $@
+	@echo "-----------------------------------------------------"	
+
+$(BUILD_DIR):
+	"mkdir" -p $@
 
 #######################################
 # clean up
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	@"rm" -fR $(BUILD_DIR)
   
 #######################################
 # openocd
