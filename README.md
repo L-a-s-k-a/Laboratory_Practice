@@ -12,6 +12,7 @@
 #### <a name="mk_list_ru"></a> Список поддерживаемых контроллеров
 - STM32F429ZI
 - STM32F411VE
+- STM32F407VE
 - STM32F103C8
 - STM32F103C6
 
@@ -46,6 +47,7 @@ Here will be the starting project for programming the Nucleo-144 lab bench based
 #### <a name="mk_list_en"></a> List of supported controllers
 - STM32F429ZI
 - STM32F411VE
+- STM32F407VE
 - STM32F103C8
 - STM32F103C6
 
