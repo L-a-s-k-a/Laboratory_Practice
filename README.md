@@ -2,9 +2,6 @@
       - [Список поддерживаемых контроллеров](#mk_list_ru)  
       - [Описание файлов](#file_ru_description)
 ***
-- [Description in English](#en_description)  
-      - [List of supported controllers](#mk_list_en)  
-      - [File description](#file_en_description)  
 <br/>
 
 ## <a name="ru_description"></a> Лабораторный практикум по программированию микроконтроллеров
@@ -40,37 +37,3 @@
 <br/>
 
 **system_stm32fYxx.c** - файл с описанием настроек системы. В данном файле находится описание двух функций SystemInit() и SystemCoreClockUpdate(), котрые необходимы для корректной настройки тактирования ядра и для аппаратного вычисления чисел с плавающей точкой (*только для контроллеров, в которых присутствует аппаратный FPU*).
-
-## <a name="en_description"></a> Microcontroller Programming Lab Workshop
-Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. In addition, this project allows you to program microcontrollers of other series.
-
-#### <a name="mk_list_en"></a> List of supported controllers
-- STM32F429ZI
-- STM32F411VE
-- STM32F407VE
-- STM32F103C8
-- STM32F103C6
-
-#### <a name="file_en_description"></a> Description of files contained in the project     
-**Makefile** - has no extension, it is an instruction for the builder/compiler. It already contains everything you need to work with the microcontrollers presented above, with the exception of project executables. 
-
-> - For each new executable file in the project, you will need to specify the directory in which it is stored. This can be done in the **C sources** block in the *C_SOURCES* variable.
-> - Line 16 indicates the project that is being built (*TARGET*). By default, the field is filled with the value "*STM32F429ZI*". To switch the assembly to a different microcontroller series, fill in this field with the appropriate name from the [list of supported controllers](#mk_list_en).
-> - Line 31 indicates the directory where the project will be built (*BUILD_DIR*). The default value is "*build*".
-> - Line 228 contains instructions for loading executable files into the microcontroller's memory using *OpenOCD*  
-> The download is performed using the following instructions:  
-> **flash: all**  
-> **openocd -f interface/stlink.cfg -f target/$(*TRGT_CFG*).cfg -c "program $(*BUILD_DIR*)/$(*TARGET*).elf verify reset exit"**
-
-**NAME.svd** - is unique for each device, located in device folders, has the .svd extension, and is required to view device memory via VSCode.
-
-**startup_stm32fYYxx.s** - has the extension .s, is an assembler file that contains all possible interrupt vectors for the STM32F429ZI microcontroller. It is necessary for tracking interrupts and calling their handlers.
-
-**CMSIS/Include** - is a folder containing header files necessary for the correct operation of the microcontroller core.
-
-**CMSIS/Devices** - contains folders that have names corresponding to the names of the microcontroller series. In turn, these directories are divided into **Inc** and **Src**.<br/> 
-> - The **Src** contains executable files, one of which is described below **system_stm32fYxx.c**.<br/>
-> - The **Inc** contains the header files necessary for working with the devices included in the microcontroller (*Peripherals*). ***These files contain all the preprocessor directives needed to work with microcontrollers***
-<br/>
-
-**system_stm32f4xx.c** - a file describing system settings. This file contains a description of two functions SystemInit() and SystemCoreClockUpdate(), which are necessary for the correct setting of the core clock and for the hardware calculation of floating-point numbers (*only for controllers that have a hardware FPU*).
