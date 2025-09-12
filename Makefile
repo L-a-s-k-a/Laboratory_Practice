@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = STM32F407VET
+TARGET = STM32F429ZI
 
 ######################################
 # building variables
@@ -37,6 +37,8 @@ else ifeq ($(TARGET), STM32F411VET)
 	BUILD_DIR = build_F411VET
 else ifeq ($(TARGET), STM32F429ZI)
 	BUILD_DIR = build_F429ZI
+else ifeq ($(TARGET), STM32F446RET)
+	BUILD_DIR = build_F446RET
 endif
 ######################################
 # selecting source
@@ -74,7 +76,7 @@ else ifeq ($(TARGET), STM32F407VET)
 	LD = STM32F407VET/STM32F407VETx_FLASH.ld
 	DEF = STM32F407xx
 	MCPU = cortex-m4
-	MFPU = fpv4-sp-d16  #dobavit "v" k "fpv4" = "vfpv4-d16"
+	MFPU = fpv4-sp-d16 
 	TRGT_CFG = stm32f4x
 else ifeq ($(TARGET), STM32F411VET)
 	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
@@ -96,7 +98,18 @@ else ifeq ($(TARGET), STM32F429ZI)
 	LD = STM32F429ZI/STM32F429ZITx_FLASH.ld
 	DEF = STM32F429xx
 	MCPU = cortex-m4
-	MFPU = fpv4-sp-d16  #dobavit "v" k "fpv4" = "vfpv4-d16"
+	MFPU = fpv4-sp-d16  #"vfpv4-d16"
+	TRGT_CFG = stm32f4x
+else ifeq ($(TARGET), STM32F446RET)
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	ASM = STM32F446RET/startup_stm32f446xx.s
+	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F446RE
+	CMSIS_INC = CMSIS/Include
+	LD = STM32F446RET/STM32F446RETx_FLASH.ld
+	DEF = STM32F446xx
+	MCPU = cortex-m4
+	MFPU = fpv4-sp-d16
 	TRGT_CFG = stm32f4x
 endif
 
