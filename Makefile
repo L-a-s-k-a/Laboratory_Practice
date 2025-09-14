@@ -47,66 +47,66 @@ endif
 
 ifeq ($(TARGET), STM32F103C8Tx)
 	SYS = CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
-	ASM = STM32F103C8Tx/startup_stm32f103xb.s
+	ASM = STMDevices/STM32F103C8Tx/startup_stm32f103xb.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F1xx/Inc/STM32f103xB
 	CMSIS_INC = CMSIS/Include
-	LD = STM32F103C8Tx/STM32F103C8Tx_FLASH.ld
+	LD = STMDevices/STM32F103C8Tx/STM32F103C8Tx_FLASH.ld
 	DEF = STM32F103xB
 	MCPU = cortex-m3
 	MFPU = NONE
 	TRGT_CFG = stm32f1x
 else ifeq ($(TARGET), STM32F103x6)
 	SYS = CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
-	ASM = STM32F103x6/startup_stm32f103x6.s
+	ASM = STMDevices/STM32F103x6/startup_stm32f103x6.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F1xx/Inc/STM32f103x6
 	CMSIS_INC = CMSIS/Include
-	LD = STM32F103x6/STM32F103X6_FLASH.ld
+	LD = STMDevices/STM32F103x6/STM32F103X6_FLASH.ld
 	DEF = STM32F103x6
 	MCPU = cortex-m3
 	MFPU = NONE
 	TRGT_CFG = stm32f1x
 else ifeq ($(TARGET), STM32F407VET)
 	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
-	ASM = STM32F407VET/startup_stm32f407xx.s
+	ASM = STMDevices/STM32F407VET/startup_stm32f407xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F407VE
 	CMSIS_INC = CMSIS/Include
-	LD = STM32F407VET/STM32F407VETx_FLASH.ld
+	LD = STMDevices/STM32F407VET/STM32F407VETx_FLASH.ld
 	DEF = STM32F407xx
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16 
 	TRGT_CFG = stm32f4x
 else ifeq ($(TARGET), STM32F411VET)
 	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
-	ASM = STM32F411VET/startup_stm32f411xe.s
+	ASM = STMDevices/STM32F411VET/startup_stm32f411xe.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F411VE
 	CMSIS_INC = CMSIS/Include
-	LD = STM32F411VET/STM32F411VETx_FLASH.ld
+	LD = STMDevices/STM32F411VET/STM32F411VETx_FLASH.ld
 	DEF = STM32F411xE
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16
 	TRGT_CFG = stm32f4x
 else ifeq ($(TARGET), STM32F429ZI)
 	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
-	ASM = STM32F429ZI/startup_stm32f429xx.s
+	ASM = STMDevices/STM32F429ZI/startup_stm32f429xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI
 	CMSIS_INC = CMSIS/Include
-	LD = STM32F429ZI/STM32F429ZITx_FLASH.ld
+	LD = STMDevices/STM32F429ZI/STM32F429ZITx_FLASH.ld
 	DEF = STM32F429xx
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16  #"vfpv4-d16"
 	TRGT_CFG = stm32f4x
 else ifeq ($(TARGET), STM32F446RET)
 	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
-	ASM = STM32F446RET/startup_stm32f446xx.s
+	ASM = STMDevices/STM32F446RET/startup_stm32f446xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F446RE
 	CMSIS_INC = CMSIS/Include
-	LD = STM32F446RET/STM32F446RETx_FLASH.ld
+	LD = STMDevices/STM32F446RET/STM32F446RETx_FLASH.ld
 	DEF = STM32F446xx
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16
@@ -240,7 +240,7 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	@echo "-----------------------------------------------------"	
 
 $(BUILD_DIR):
-	"mkdir" -p $@
+	@"mkdir" -p $@
 
 #######################################
 # clean up
