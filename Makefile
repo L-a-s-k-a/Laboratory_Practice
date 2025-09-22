@@ -240,7 +240,7 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	@echo "-----------------------------------------------------"	
 
 $(BUILD_DIR):
-	@"mkdir" -p $@
+	@mkdir $@
 
 #######################################
 # clean up
