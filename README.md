@@ -10,19 +10,20 @@
 ## <a name="ru_description"></a> Лабораторный практикум по программированию микроконтроллеров
 Здесь будет находится стартовый проект для программирования лабораторного стенда Nucleo-144 на базе микроконтроллера STM32F429ZIT6. Помимо этого, данный проект позволяет программировать микроконтроллеры других серий.
 #### <a name="mk_list_ru"></a> Список поддерживаемых контроллеров
-- STM32F446RE
-- STM32F429ZI
-- STM32F411VE/CE
-- STM32F407VE
-- STM32F103C8
-- STM32F103C6
+- STM32F446RE        (Target series -> STM32F446 | Target version -> RE)
+- STM32F429ZI        (Target series -> STM32F429 | Target version -> ZI)
+- STM32F411VE/CE/RE  (Target series -> STM32F411 | Target version -> VE/CE/RE)
+- STM32F407VE        (Target series -> STM32F407 | Target version -> VE)
+- STM32F103C8        (Target series -> STM32F103 | Target version -> C8)
+- STM32F103C6        (Target series -> STM32F103 | Target version -> C6)
 
 #### <a name="file_ru_description"></a> Описание файлов содержащихся в проекте  
 
-**Makefile** - не имеет расширения, является инструкцией для сборщика/компилятора. В нём уже прописано всё необходимое для работы с микроконтроллерами представленными выше, за исключением исполняемых файлов проекта. 
+**Makefile** - не имеет расширения, является инструкцией для сборщика. В нём уже прописано всё необходимое для работы с микроконтроллерами представленными выше, за исключением исполняемых файлов проекта. 
 
 > - Для каждого нового исполняемого файла в проекте потребуется прописывать дирректорию, в которойй он нахоится. Это можно сделать в блоке **C sources** в переменной *C_SOURCES*.
-> - Строка 16 указывает на проект, который собирается (*TARGET*). По умолчанию поле заполняется значением "*STM32F429ZI*". Чтобы переключить сборку под другую серию микроконтроллера необходимо заполнить это поле соответствующим названием из [списка поддерживаемых контроллеров](#mk_list_ru).
+> - *TARGET_SERIES* указывает на серию микроконтроллера. В этом поле необходимо записывать серию и номер микроконтроллера, например STM32F103, STM32F407, STM32F411, STM32F446. По умолчанию поле заполняется значением "*STM32F429*". Чтобы переключить сборку под другую серию микроконтроллера необходимо заполнить это поле соответствующим названием из [списка поддерживаемых контроллеров](#mk_list_ru).
+> - *TARGET_VERSION* указывает на версию микроконтроллера. В этом поле необходимо записывать версию микроконтроллера, например RE, VE, ZI, CE, C8, C6. По умолчанию поле заполняется значением "*ZI*". Чтобы переключить сборку под другую версию микроконтроллера необходимо заполнить это поле соответствующим названием из [списка поддерживаемых контроллеров](#mk_list_ru).
 > - Строка 31 указывает на директорию, в которую будет собираться проект (*BUILD_DIR*). По умолчанию имеет значение "*build*".
 > - В строке 254 прописывается инструкция для загрузки исполняемых файлов в память микроконтроллера с помощью *openOCD*  
 > Загрузка осуществляется с помощью следующей инструкции:  
@@ -46,12 +47,12 @@
 Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. In addition, this project allows you to program microcontrollers of other series.
 
 #### <a name="mk_list_en"></a> List of supported controllers
-- STM32F446RE
-- STM32F429ZI
-- STM32F411VE/CE
-- STM32F407VE
-- STM32F103C8
-- STM32F103C6
+- STM32F446RE        (Target series -> STM32F446 | Target version -> RE)
+- STM32F429ZI        (Target series -> STM32F429 | Target version -> ZI)
+- STM32F411VE/CE/RE  (Target series -> STM32F411 | Target version -> VE/CE/RE)
+- STM32F407VE        (Target series -> STM32F407 | Target version -> VE)
+- STM32F103C8        (Target series -> STM32F103 | Target version -> C8)
+- STM32F103C6        (Target series -> STM32F103 | Target version -> C6)
 
 #### <a name="file_en_description"></a> Description of files contained in the project     
 **Makefile** - has no extension, it is an instruction for the builder/compiler. It already contains everything you need to work with the microcontrollers presented above, with the exception of project executables. 
