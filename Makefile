@@ -3,9 +3,10 @@
 # ------------------------------------------------
 # List of supported controllers:
 #	STM32F446RE -- Target -> STM32F446RET
-# 	STM32F429ZI -- Target -> STM32F429ZI
+# 	STM32F429ZI -- Target -> STM32F429ZIT
 # 	STM32F411VE -- Target -> STM32F411VET
 #	STM32F411CE -- Target -> STM32F411CEU
+#	STM32F411RE -- Target -> STM32F411RET
 # 	STM32F407VE -- Target -> STM32F407VET
 # 	STM32F103C8 -- Target -> STM32F103x6
 # 	STM32F103C6 -- Target -> STM32F103C8Tx
@@ -32,16 +33,18 @@ ifeq ($(TARGET), STM32F103C8Tx)
 	BUILD_DIR = build_F103C8Tx
 else ifeq ($(TARGET), STM32F103x6)
 	BUILD_DIR = build_F103x6
-else ifeq ($(TARGET), STM32F407VET)
-	BUILD_DIR = build_F407VET
-else ifeq ($(TARGET), STM32F411VET)
-	BUILD_DIR = build_F411VET
-else ifeq ($(TARGET), STM32F411CEU)
-	BUILD_DIR = build_F411CEU
+else ifeq ($(TARGET), STM32F407VE)
+	BUILD_DIR = build_F407VE
+else ifeq ($(TARGET), STM32F411VE)
+	BUILD_DIR = build_F411VE
+else ifeq ($(TARGET), STM32F411CE)
+	BUILD_DIR = build_F411CE
+else ifeq ($(TARGET), STM32F411RE)
+	BUILD_DIR = build_F411RE
 else ifeq ($(TARGET), STM32F429ZI)
 	BUILD_DIR = build_F429ZI
-else ifeq ($(TARGET), STM32F446RET)
-	BUILD_DIR = build_F446RET
+else ifeq ($(TARGET), STM32F446RE)
+	BUILD_DIR = build_F446RE
 endif
 ######################################
 # selecting source
@@ -70,7 +73,7 @@ else ifeq ($(TARGET), STM32F103x6)
 	MCPU = cortex-m3
 	MFPU = NONE
 	TRGT_CFG = stm32f1x
-else ifeq ($(TARGET), STM32F407VET)
+else ifeq ($(TARGET), STM32F407VE)
 	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F407xx/startup_stm32f407xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
@@ -81,16 +84,18 @@ else ifeq ($(TARGET), STM32F407VET)
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16 
 	TRGT_CFG = stm32f4x
-else ifeq ($(TARGET), STM32F411VET)
+else ifeq ($(TARGET), STM32F411)
 	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F411xe/startup_stm32f411xe.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F411xE
 	CMSIS_INC = CMSIS/Include
-	ifeq ($(TARGET), STM32F411VET)
+	ifeq ($(TARGET), STM32F411VE)
 		LD = STMDevices/STM32F411xe/STM32F411VETx_FLASH.ld
-	else ifeq ($(TARGET), STM32F411CEU)
+	else ifeq ($(TARGET), STM32F411CE)
 		LD = STMDevices/STM32F411xe/STM32F411CEUx_FLASH.ld
+	else ifeq ($(TARGET), STM32F411RE)
+		LD = STMDevices/STM32F411xe/STM32F411RETx_FLASH.ld
 	endif
 	DEF = STM32F411xE
 	MCPU = cortex-m4
@@ -107,7 +112,7 @@ else ifeq ($(TARGET), STM32F429ZI)
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16  #"vfpv4-d16"
 	TRGT_CFG = stm32f4x
-else ifeq ($(TARGET), STM32F446RET)
+else ifeq ($(TARGET), STM32F446RE)
 	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F446xx/startup_stm32f446xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
