@@ -1,0 +1,12 @@
+#include "Core/Inc/init.h"
+
+void GPIO_Init_CMSIS(void){
+
+SET_BIT(GPIOB->MODER, GPIO_MODER_MODER14_0);
+SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
+
+
+}
+
+
+
