@@ -1,19 +1,18 @@
 #include <stdint.h>
+#include "Core/Inc/init.h"
 
 int main(void)
 {
     *(uint32_t *)(0x40023800 + 0x30) |= 0x02;  //ТАКТИРОВАНИЕ
 
-    *(uint32_t *)(0x40020400 + 0x00) |= 0x4000;
-    *(uint32_t *)(0x40020400 + 0x04) |= 0x00;
-    *(uint32_t *)(0x40020400 + 0x08) |= 0x4000;
-
-    *(uint32_t *)(0x40020400 + 0x18) |= 0x800000;
-
-    while (1)
-    {
-        *(uint32_t *)(0x40020400 + 0xB) |= 0x80;
-    }
+    GPIO1 |= pin_2_out;
+    GPIO2 |= pin_6_out;
+    GPIO3 |= pin_11_out;
+    GPIO4 |= pin_12_out;
+    GPIO5 |= pin_13_out;
+    GPIO6 |= pin_2_out;
+    GPIO_BUT1 |= pin_2_in; // наверно ин
+    GPIO_BUT2 |= pin_3_in; // наверно ин
 }
 
 // *(uint32_t *)(0x40020C00 + 0xB) |= 0x40000 GPIOD 11
