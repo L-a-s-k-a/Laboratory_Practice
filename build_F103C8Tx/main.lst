@@ -1,0 +1,637 @@
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/main.c"
+  18              		.section	.text.GPIO_Ini,"ax",%progbits
+  19              		.align	1
+  20              		.global	GPIO_Ini
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	GPIO_Ini:
+  26              	.LFB65:
+  27              		.file 2 "Core/Src/Init.c"
+   1:Core/Src/Init.c **** #include "init.h"
+   2:Core/Src/Init.c **** #include "../../CMSIS/Devices/STM32F1xx/Inc/STM32f1xx.h"
+   3:Core/Src/Init.c **** #include "../../CMSIS/Devices/STM32F1xx/Inc/STM32f103xB/stm32f103xb.h"
+   4:Core/Src/Init.c **** 
+   5:Core/Src/Init.c **** void GPIO_Ini(void){
+  28              		.loc 2 5 20 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+   6:Core/Src/Init.c ****     
+   7:Core/Src/Init.c ****     //В начале идёт код, написанный на регистрах
+   8:Core/Src/Init.c ****     // Включаем тактирование порта A
+   9:Core/Src/Init.c ****     *(uint32_t*)(0x40021000 + 0x18) |= (1UL << 2UL); // IOPAEN = 1
+  33              		.loc 2 9 5 view .LVU1
+  34 0000 204A     		ldr	r2, .L2
+  35 0002 9369     		ldr	r3, [r2, #24]
+  36              		.loc 2 9 37 is_stmt 0 view .LVU2
+  37 0004 43F00403 		orr	r3, r3, #4
+  38 0008 9361     		str	r3, [r2, #24]
+  10:Core/Src/Init.c ****     
+  11:Core/Src/Init.c ****     // Настраиваем пины PA5–PA10 как выходы push-pull 2MHz
+  12:Core/Src/Init.c ****     // MODE=10 (2 MHz), CNF=00 (push-pull) → 0x2
+  13:Core/Src/Init.c ****     // PA5–PA7 находятся в CRL, PA8–PA10 — в CRH
+  14:Core/Src/Init.c ****     // CRL: PA5, PA6, PA7
+  15:Core/Src/Init.c ****     // Очистка всей конфигурации для конкретных пинов
+  16:Core/Src/Init.c ****     *(uint32_t*)(0x40010800 + 0x00) &= ~((0x3UL << (20UL)) |
+  39              		.loc 2 16 5 is_stmt 1 view .LVU3
+  40 000a A2F58832 		sub	r2, r2, #69632
+  41 000e D2F80038 		ldr	r3, [r2, #2048]
+  42              		.loc 2 16 37 is_stmt 0 view .LVU4
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 2
+
+
+  43 0012 C3F31303 		ubfx	r3, r3, #0, #20
+  44 0016 C2F80038 		str	r3, [r2, #2048]
+  17:Core/Src/Init.c ****                                      (0x3UL << (22UL)) |
+  18:Core/Src/Init.c ****                                      (0x3UL << (24UL)) |
+  19:Core/Src/Init.c **** 				                     (0x3UL << (26UL)) |
+  20:Core/Src/Init.c **** 				                     (0x3UL << (28UL)) |
+  21:Core/Src/Init.c **** 				                     (0x3UL << (30UL)));
+  22:Core/Src/Init.c **** 
+  23:Core/Src/Init.c ****     //Устанавливаем частоту PA5, PA6, PA7
+  24:Core/Src/Init.c ****     *(uint32_t*)(0x40010800) |=  ((0x2UL << (20UL)) |
+  45              		.loc 2 24 5 is_stmt 1 view .LVU5
+  46              		.loc 2 24 30 is_stmt 0 view .LVU6
+  47 001a 43F00853 		orr	r3, r3, #570425344
+  48 001e 43F40013 		orr	r3, r3, #2097152
+  49 0022 C2F80038 		str	r3, [r2, #2048]
+  25:Core/Src/Init.c ****                                    (0x2UL << (24UL)) |
+  26:Core/Src/Init.c ****                                    (0x2UL << (28UL)));
+  27:Core/Src/Init.c ****     
+  28:Core/Src/Init.c ****     //Затем идёт код написанный на #define
+  29:Core/Src/Init.c ****     //CRH: PA8, PA9, PA10
+  30:Core/Src/Init.c ****     GPIO_PORT_A_CRH &= ~(CRH_MODE_8  | 
+  50              		.loc 2 30 5 is_stmt 1 view .LVU7
+  51 0026 D2F80438 		ldr	r3, [r2, #2052]
+  52              		.loc 2 30 21 is_stmt 0 view .LVU8
+  53 002a 6FF30B03 		bfc	r3, #0, #12
+  54 002e C2F80438 		str	r3, [r2, #2052]
+  31:Core/Src/Init.c ****                          CRH_CNF_8   | 
+  32:Core/Src/Init.c ****                          CRH_MODE_9  |
+  33:Core/Src/Init.c ****                          CRH_CNF_9   |
+  34:Core/Src/Init.c ****                          CRH_MODE_10 |
+  35:Core/Src/Init.c ****                          CRH_CNF_10) ;
+  36:Core/Src/Init.c **** 
+  37:Core/Src/Init.c ****     //Устанавливаем частоту 2 МГц
+  38:Core/Src/Init.c ****     GPIO_PORT_A_CRH |= (CRH_MODE8_2  | 
+  55              		.loc 2 38 5 is_stmt 1 view .LVU9
+  56              		.loc 2 38 21 is_stmt 0 view .LVU10
+  57 0032 43F40873 		orr	r3, r3, #544
+  58 0036 43F00203 		orr	r3, r3, #2
+  59 003a C2F80438 		str	r3, [r2, #2052]
+  39:Core/Src/Init.c ****                         CRH_MODE9_2  | 
+  40:Core/Src/Init.c ****                         CRH_MODE10_2);
+  41:Core/Src/Init.c **** 
+  42:Core/Src/Init.c ****         
+  43:Core/Src/Init.c ****     //Дальше идёт код, написанный с использованием CMSIS
+  44:Core/Src/Init.c ****     //Настраиваем кнопки PA0, PA1 как входы с подтяжкой ввер
+  45:Core/Src/Init.c ****     CLEAR_BIT(GPIOA->CRL, GPIO_CRL_CNF0);
+  60              		.loc 2 45 5 is_stmt 1 view .LVU11
+  61 003e 124B     		ldr	r3, .L2+4
+  62 0040 1A68     		ldr	r2, [r3]
+  63 0042 22F00C02 		bic	r2, r2, #12
+  64 0046 1A60     		str	r2, [r3]
+  46:Core/Src/Init.c ****     CLEAR_BIT(GPIOA->CRL, GPIO_CRL_MODE0);
+  65              		.loc 2 46 5 view .LVU12
+  66 0048 1A68     		ldr	r2, [r3]
+  67 004a 22F00302 		bic	r2, r2, #3
+  68 004e 1A60     		str	r2, [r3]
+  47:Core/Src/Init.c ****     CLEAR_BIT(GPIOA->CRL, GPIO_CRL_CNF1);
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 3
+
+
+  69              		.loc 2 47 5 view .LVU13
+  70 0050 1A68     		ldr	r2, [r3]
+  71 0052 22F0C002 		bic	r2, r2, #192
+  72 0056 1A60     		str	r2, [r3]
+  48:Core/Src/Init.c ****     CLEAR_BIT(GPIOA->CRL, GPIO_CRL_MODE1);
+  73              		.loc 2 48 5 view .LVU14
+  74 0058 1A68     		ldr	r2, [r3]
+  75 005a 22F03002 		bic	r2, r2, #48
+  76 005e 1A60     		str	r2, [r3]
+  49:Core/Src/Init.c **** 
+  50:Core/Src/Init.c ****     SET_BIT(GPIOA->CRL, GPIO_CRL_CNF0_1);
+  77              		.loc 2 50 5 view .LVU15
+  78 0060 1A68     		ldr	r2, [r3]
+  79 0062 42F00802 		orr	r2, r2, #8
+  80 0066 1A60     		str	r2, [r3]
+  51:Core/Src/Init.c ****     SET_BIT(GPIOA->CRL, GPIO_CRL_CNF1_1);  // CNF=10, MODE=00
+  81              		.loc 2 51 5 view .LVU16
+  82 0068 1A68     		ldr	r2, [r3]
+  83 006a 42F08002 		orr	r2, r2, #128
+  84 006e 1A60     		str	r2, [r3]
+  52:Core/Src/Init.c **** 
+  53:Core/Src/Init.c ****     
+  54:Core/Src/Init.c ****                         
+  55:Core/Src/Init.c ****     SET_BIT(GPIOA->ODR, GPIO_ODR_ODR0);
+  85              		.loc 2 55 5 view .LVU17
+  86 0070 DA68     		ldr	r2, [r3, #12]
+  87 0072 42F00102 		orr	r2, r2, #1
+  88 0076 DA60     		str	r2, [r3, #12]
+  56:Core/Src/Init.c ****     SET_BIT(GPIOA->ODR, GPIO_ODR_ODR1); // подтяжка 
+  89              		.loc 2 56 5 view .LVU18
+  90 0078 DA68     		ldr	r2, [r3, #12]
+  91 007a 42F00202 		orr	r2, r2, #2
+  92 007e DA60     		str	r2, [r3, #12]
+  57:Core/Src/Init.c ****     //Подаём питание на при нажатии
+  58:Core/Src/Init.c **** }
+  93              		.loc 2 58 1 is_stmt 0 view .LVU19
+  94 0080 7047     		bx	lr
+  95              	.L3:
+  96 0082 00BF     		.align	2
+  97              	.L2:
+  98 0084 00100240 		.word	1073876992
+  99 0088 00080140 		.word	1073809408
+ 100              		.cfi_endproc
+ 101              	.LFE65:
+ 103              		.section	.text.main,"ax",%progbits
+ 104              		.align	1
+ 105              		.global	main
+ 106              		.syntax unified
+ 107              		.thumb
+ 108              		.thumb_func
+ 110              	main:
+ 111              	.LFB66:
+   1:Core/Src/main.c **** #include "Init.h"
+   2:Core/Src/main.c **** #include "Init.c"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** uint8_t flag;
+   5:Core/Src/main.c **** // Переменные
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 4
+
+
+   6:Core/Src/main.c **** int led_count = 1;     // сколько включается одновременно (1..6)
+   7:Core/Src/main.c **** int active_leds = 0;   // сколько сейчас включено
+   8:Core/Src/main.c **** uint8_t prev_btn1 = 1; // предыдущее состояние кнопок
+   9:Core/Src/main.c **** uint8_t prev_btn2 = 1;
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c **** int main(void) {
+ 112              		.loc 1 12 16 is_stmt 1 view -0
+ 113              		.cfi_startproc
+ 114              		@ args = 0, pretend = 0, frame = 0
+ 115              		@ frame_needed = 0, uses_anonymous_args = 0
+ 116 0000 70B5     		push	{r4, r5, r6, lr}
+ 117              	.LCFI0:
+ 118              		.cfi_def_cfa_offset 16
+ 119              		.cfi_offset 4, -16
+ 120              		.cfi_offset 5, -12
+ 121              		.cfi_offset 6, -8
+ 122              		.cfi_offset 14, -4
+  13:Core/Src/main.c ****     
+  14:Core/Src/main.c **** 
+  15:Core/Src/main.c ****     GPIO_Ini();
+ 123              		.loc 1 15 5 view .LVU21
+ 124 0002 FFF7FEFF 		bl	GPIO_Ini
+ 125              	.LVL0:
+ 126 0006 57E0     		b	.L17
+ 127              	.LVL1:
+ 128              	.L23:
+ 129              	.LBB2:
+  16:Core/Src/main.c ****    
+  17:Core/Src/main.c ****     while (1) {
+  18:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
+  19:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c ****         //Кнопка 1: задаёт количество одновременно включае
+  23:Core/Src/main.c ****         if (prev_btn1 == 1 && btn1 == 0) {
+ 130              		.loc 1 23 28 is_stmt 0 discriminator 1 view .LVU22
+ 131 0008 002A     		cmp	r2, #0
+ 132 000a 60D1     		bne	.L5
+  24:Core/Src/main.c ****             led_count++;
+ 133              		.loc 1 24 13 is_stmt 1 view .LVU23
+ 134              		.loc 1 24 22 is_stmt 0 view .LVU24
+ 135 000c 3A48     		ldr	r0, .L25
+ 136 000e 0168     		ldr	r1, [r0]
+ 137 0010 0131     		adds	r1, r1, #1
+ 138 0012 0160     		str	r1, [r0]
+  25:Core/Src/main.c ****             if (led_count > 6) led_count = 1;
+ 139              		.loc 1 25 13 is_stmt 1 view .LVU25
+ 140              		.loc 1 25 16 is_stmt 0 view .LVU26
+ 141 0014 0629     		cmp	r1, #6
+ 142 0016 5ADD     		ble	.L5
+ 143              		.loc 1 25 32 is_stmt 1 discriminator 1 view .LVU27
+ 144              		.loc 1 25 42 is_stmt 0 discriminator 1 view .LVU28
+ 145 0018 0146     		mov	r1, r0
+ 146 001a 0120     		movs	r0, #1
+ 147 001c 0860     		str	r0, [r1]
+ 148 001e 56E0     		b	.L5
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 5
+
+
+ 149              	.LVL2:
+ 150              	.L24:
+  26:Core/Src/main.c ****         }
+  27:Core/Src/main.c ****         prev_btn1 = btn1;
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c **** 
+  30:Core/Src/main.c ****         //Кнопка 2: включает следующие led_count светодиодов
+  31:Core/Src/main.c ****         if (prev_btn2 == 1 && btn2 == 0) {
+  32:Core/Src/main.c ****             if (led_count == 6) {
+  33:Core/Src/main.c ****                 flag = 1;
+ 151              		.loc 1 33 17 is_stmt 1 view .LVU29
+ 152              		.loc 1 33 22 is_stmt 0 view .LVU30
+ 153 0020 364A     		ldr	r2, .L25+4
+ 154 0022 0121     		movs	r1, #1
+ 155              		.loc 1 33 22 view .LVU31
+ 156 0024 1170     		strb	r1, [r2]
+  34:Core/Src/main.c ****                 // если выбрано 6 — просто включаем/выключаем �
+  35:Core/Src/main.c ****                 if (active_leds == 0) {
+ 157              		.loc 1 35 17 is_stmt 1 view .LVU32
+ 158              		.loc 1 35 33 is_stmt 0 view .LVU33
+ 159 0026 364A     		ldr	r2, .L25+8
+ 160 0028 1268     		ldr	r2, [r2]
+ 161              		.loc 1 35 20 view .LVU34
+ 162 002a 0AB9     		cbnz	r2, .L21
+ 163              	.LBB3:
+  36:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
+ 164              		.loc 1 36 30 view .LVU35
+ 165 002c 0522     		movs	r2, #5
+ 166 002e 08E0     		b	.L8
+ 167              	.L21:
+ 168              	.LBE3:
+ 169              	.LBB4:
+  37:Core/Src/main.c ****                         SET_BIT(GPIOA->BSRR, (1UL << i)); // включить
+  38:Core/Src/main.c ****                     }
+  39:Core/Src/main.c ****                     active_leds = 6;
+  40:Core/Src/main.c ****                 } else {
+  41:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
+ 170              		.loc 1 41 30 view .LVU36
+ 171 0030 0522     		movs	r2, #5
+ 172 0032 13E0     		b	.L9
+ 173              	.LVL3:
+ 174              	.L10:
+ 175              		.loc 1 41 30 view .LVU37
+ 176              	.LBE4:
+ 177              	.LBB5:
+  37:Core/Src/main.c ****                         SET_BIT(GPIOA->BSRR, (1UL << i)); // включить
+ 178              		.loc 1 37 25 is_stmt 1 view .LVU38
+ 179 0034 334C     		ldr	r4, .L25+12
+ 180 0036 2169     		ldr	r1, [r4, #16]
+ 181 0038 0120     		movs	r0, #1
+ 182 003a 9040     		lsls	r0, r0, r2
+ 183 003c 0143     		orrs	r1, r1, r0
+ 184 003e 2161     		str	r1, [r4, #16]
+  36:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
+ 185              		.loc 1 36 47 discriminator 3 view .LVU39
+ 186 0040 0132     		adds	r2, r2, #1
+ 187              	.LVL4:
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 6
+
+
+ 188              	.L8:
+  36:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
+ 189              		.loc 1 36 39 discriminator 1 view .LVU40
+ 190 0042 0A2A     		cmp	r2, #10
+ 191 0044 F6DD     		ble	.L10
+ 192              	.LBE5:
+  39:Core/Src/main.c ****                 } else {
+ 193              		.loc 1 39 21 view .LVU41
+  39:Core/Src/main.c ****                 } else {
+ 194              		.loc 1 39 33 is_stmt 0 view .LVU42
+ 195 0046 2E4A     		ldr	r2, .L25+8
+ 196              	.LVL5:
+  39:Core/Src/main.c ****                 } else {
+ 197              		.loc 1 39 33 view .LVU43
+ 198 0048 0621     		movs	r1, #6
+ 199 004a 1160     		str	r1, [r2]
+ 200 004c 32E0     		b	.L6
+ 201              	.LVL6:
+ 202              	.L11:
+ 203              	.LBB6:
+  42:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
+ 204              		.loc 1 42 25 is_stmt 1 view .LVU44
+ 205 004e 2D4C     		ldr	r4, .L25+12
+ 206 0050 6169     		ldr	r1, [r4, #20]
+ 207 0052 0120     		movs	r0, #1
+ 208 0054 9040     		lsls	r0, r0, r2
+ 209 0056 0143     		orrs	r1, r1, r0
+ 210 0058 6161     		str	r1, [r4, #20]
+  41:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
+ 211              		.loc 1 41 47 discriminator 3 view .LVU45
+ 212 005a 0132     		adds	r2, r2, #1
+ 213              	.LVL7:
+ 214              	.L9:
+  41:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
+ 215              		.loc 1 41 39 discriminator 1 view .LVU46
+ 216 005c 0A2A     		cmp	r2, #10
+ 217 005e F6DD     		ble	.L11
+ 218              	.LBE6:
+  43:Core/Src/main.c ****                     }
+  44:Core/Src/main.c ****                     active_leds = 0;
+ 219              		.loc 1 44 21 view .LVU47
+ 220              		.loc 1 44 33 is_stmt 0 view .LVU48
+ 221 0060 274A     		ldr	r2, .L25+8
+ 222              	.LVL8:
+ 223              		.loc 1 44 33 view .LVU49
+ 224 0062 0021     		movs	r1, #0
+ 225 0064 1160     		str	r1, [r2]
+ 226 0066 25E0     		b	.L6
+ 227              	.LVL9:
+ 228              	.L14:
+ 229              	.LBB7:
+  45:Core/Src/main.c ****                 }
+  46:Core/Src/main.c ****             } else {
+  47:Core/Src/main.c ****                 flag = 0;
+  48:Core/Src/main.c ****                 // иначе поэтапное включение групп
+  49:Core/Src/main.c ****                 if (active_leds < 6) {
+  50:Core/Src/main.c ****                     
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 7
+
+
+  51:Core/Src/main.c ****                     for (int i = 0; i < led_count; i++) {
+ 230              		.loc 1 51 53 is_stmt 1 discriminator 2 view .LVU50
+ 231 0068 0131     		adds	r1, r1, #1
+ 232              	.LVL10:
+ 233              	.L12:
+ 234              		.loc 1 51 39 discriminator 1 view .LVU51
+ 235 006a 8842     		cmp	r0, r1
+ 236 006c 0EDD     		ble	.L22
+ 237              	.LBB8:
+  52:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
+ 238              		.loc 1 52 25 view .LVU52
+ 239              		.loc 1 52 37 is_stmt 0 view .LVU53
+ 240 006e 6A1D     		adds	r2, r5, #5
+ 241              		.loc 1 52 29 view .LVU54
+ 242 0070 0A44     		add	r2, r2, r1
+ 243              	.LVL11:
+  53:Core/Src/main.c ****                         if (pin <= 10)
+ 244              		.loc 1 53 25 is_stmt 1 view .LVU55
+ 245              		.loc 1 53 28 is_stmt 0 view .LVU56
+ 246 0072 0A2A     		cmp	r2, #10
+ 247 0074 F8DC     		bgt	.L14
+  54:Core/Src/main.c ****                             SET_BIT(GPIOA->BSRR, (1UL << pin));
+ 248              		.loc 1 54 29 is_stmt 1 view .LVU57
+ 249 0076 234E     		ldr	r6, .L25+12
+ 250 0078 3469     		ldr	r4, [r6, #16]
+ 251 007a 4FF0010C 		mov	ip, #1
+ 252 007e 0CFA02F2 		lsl	r2, ip, r2
+ 253              	.LVL12:
+ 254              		.loc 1 54 29 is_stmt 0 view .LVU58
+ 255 0082 2243     		orrs	r2, r2, r4
+ 256 0084 3261     		str	r2, [r6, #16]
+ 257 0086 EFE7     		b	.L14
+ 258              	.LVL13:
+ 259              	.L19:
+ 260              		.loc 1 54 29 view .LVU59
+ 261              	.LBE8:
+  51:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
+ 262              		.loc 1 51 30 view .LVU60
+ 263 0088 0021     		movs	r1, #0
+ 264 008a EEE7     		b	.L12
+ 265              	.LVL14:
+ 266              	.L22:
+  51:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
+ 267              		.loc 1 51 30 view .LVU61
+ 268              	.LBE7:
+  55:Core/Src/main.c ****                     }
+  56:Core/Src/main.c ****                     active_leds += led_count;
+ 269              		.loc 1 56 21 is_stmt 1 view .LVU62
+ 270              		.loc 1 56 33 is_stmt 0 view .LVU63
+ 271 008c 2844     		add	r0, r0, r5
+ 272 008e 1C4A     		ldr	r2, .L25+8
+ 273 0090 1060     		str	r0, [r2]
+  57:Core/Src/main.c ****                     if (active_leds > 6) active_leds = 6;
+ 274              		.loc 1 57 21 is_stmt 1 view .LVU64
+ 275              		.loc 1 57 24 is_stmt 0 view .LVU65
+ 276 0092 0628     		cmp	r0, #6
+ 277 0094 0EDD     		ble	.L6
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 8
+
+
+ 278              		.loc 1 57 42 is_stmt 1 discriminator 1 view .LVU66
+ 279              		.loc 1 57 54 is_stmt 0 discriminator 1 view .LVU67
+ 280 0096 0621     		movs	r1, #6
+ 281              	.LVL15:
+ 282              		.loc 1 57 54 discriminator 1 view .LVU68
+ 283 0098 1160     		str	r1, [r2]
+ 284 009a 0BE0     		b	.L6
+ 285              	.LVL16:
+ 286              	.L16:
+ 287              	.LBB9:
+  58:Core/Src/main.c ****                 } else {
+  59:Core/Src/main.c ****                     // если уже все включены — выключаем все
+  60:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++)
+  61:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
+ 288              		.loc 1 61 25 is_stmt 1 view .LVU69
+ 289 009c 194C     		ldr	r4, .L25+12
+ 290 009e 6169     		ldr	r1, [r4, #20]
+ 291 00a0 0120     		movs	r0, #1
+ 292 00a2 9040     		lsls	r0, r0, r2
+ 293 00a4 0143     		orrs	r1, r1, r0
+ 294 00a6 6161     		str	r1, [r4, #20]
+  60:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
+ 295              		.loc 1 60 47 discriminator 3 view .LVU70
+ 296 00a8 0132     		adds	r2, r2, #1
+ 297              	.LVL17:
+ 298              	.L13:
+  60:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
+ 299              		.loc 1 60 39 discriminator 1 view .LVU71
+ 300 00aa 0A2A     		cmp	r2, #10
+ 301 00ac F6DD     		ble	.L16
+ 302              	.LBE9:
+  62:Core/Src/main.c ****                     active_leds = 0;
+ 303              		.loc 1 62 21 view .LVU72
+ 304              		.loc 1 62 33 is_stmt 0 view .LVU73
+ 305 00ae 144A     		ldr	r2, .L25+8
+ 306              	.LVL18:
+ 307              		.loc 1 62 33 view .LVU74
+ 308 00b0 0021     		movs	r1, #0
+ 309 00b2 1160     		str	r1, [r2]
+ 310              	.LVL19:
+ 311              	.L6:
+  63:Core/Src/main.c ****                 }
+  64:Core/Src/main.c ****             }
+  65:Core/Src/main.c ****         }
+  66:Core/Src/main.c ****         prev_btn2 = btn2;
+ 312              		.loc 1 66 9 is_stmt 1 view .LVU75
+ 313              		.loc 1 66 19 is_stmt 0 view .LVU76
+ 314 00b4 144A     		ldr	r2, .L25+16
+ 315 00b6 1370     		strb	r3, [r2]
+ 316              	.LBE2:
+  17:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
+ 317              		.loc 1 17 11 is_stmt 1 view .LVU77
+ 318              	.LVL20:
+ 319              	.L17:
+  17:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
+ 320              		.loc 1 17 5 view .LVU78
+ 321              	.LBB11:
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 9
+
+
+  18:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
+ 322              		.loc 1 18 9 view .LVU79
+  18:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
+ 323              		.loc 1 18 30 is_stmt 0 view .LVU80
+ 324 00b8 124B     		ldr	r3, .L25+12
+ 325 00ba 9A68     		ldr	r2, [r3, #8]
+  18:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
+ 326              		.loc 1 18 17 view .LVU81
+ 327 00bc 02F00102 		and	r2, r2, #1
+ 328              	.LVL21:
+  19:Core/Src/main.c **** 
+ 329              		.loc 1 19 9 is_stmt 1 view .LVU82
+  19:Core/Src/main.c **** 
+ 330              		.loc 1 19 30 is_stmt 0 view .LVU83
+ 331 00c0 9B68     		ldr	r3, [r3, #8]
+  19:Core/Src/main.c **** 
+ 332              		.loc 1 19 17 view .LVU84
+ 333 00c2 C3F34003 		ubfx	r3, r3, #1, #1
+ 334              	.LVL22:
+  23:Core/Src/main.c ****             led_count++;
+ 335              		.loc 1 23 9 is_stmt 1 view .LVU85
+  23:Core/Src/main.c ****             led_count++;
+ 336              		.loc 1 23 23 is_stmt 0 view .LVU86
+ 337 00c6 1149     		ldr	r1, .L25+20
+ 338 00c8 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+  23:Core/Src/main.c ****             led_count++;
+ 339              		.loc 1 23 12 view .LVU87
+ 340 00ca 0129     		cmp	r1, #1
+ 341 00cc 9CD0     		beq	.L23
+ 342              	.L5:
+  27:Core/Src/main.c **** 
+ 343              		.loc 1 27 9 is_stmt 1 view .LVU88
+  27:Core/Src/main.c **** 
+ 344              		.loc 1 27 19 is_stmt 0 view .LVU89
+ 345 00ce 0F49     		ldr	r1, .L25+20
+ 346 00d0 0A70     		strb	r2, [r1]
+  31:Core/Src/main.c ****             if (led_count == 6) {
+ 347              		.loc 1 31 9 is_stmt 1 view .LVU90
+  31:Core/Src/main.c ****             if (led_count == 6) {
+ 348              		.loc 1 31 23 is_stmt 0 view .LVU91
+ 349 00d2 0D4A     		ldr	r2, .L25+16
+ 350              	.LVL23:
+  31:Core/Src/main.c ****             if (led_count == 6) {
+ 351              		.loc 1 31 23 view .LVU92
+ 352 00d4 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  31:Core/Src/main.c ****             if (led_count == 6) {
+ 353              		.loc 1 31 12 view .LVU93
+ 354 00d6 012A     		cmp	r2, #1
+ 355 00d8 ECD1     		bne	.L6
+  31:Core/Src/main.c ****             if (led_count == 6) {
+ 356              		.loc 1 31 28 discriminator 1 view .LVU94
+ 357 00da 002B     		cmp	r3, #0
+ 358 00dc EAD1     		bne	.L6
+  32:Core/Src/main.c ****                 flag = 1;
+ 359              		.loc 1 32 13 is_stmt 1 view .LVU95
+  32:Core/Src/main.c ****                 flag = 1;
+ 360              		.loc 1 32 27 is_stmt 0 view .LVU96
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 10
+
+
+ 361 00de 064A     		ldr	r2, .L25
+ 362 00e0 1068     		ldr	r0, [r2]
+  32:Core/Src/main.c ****                 flag = 1;
+ 363              		.loc 1 32 16 view .LVU97
+ 364 00e2 0628     		cmp	r0, #6
+ 365 00e4 9CD0     		beq	.L24
+  47:Core/Src/main.c ****                 // иначе поэтапное включение групп
+ 366              		.loc 1 47 17 is_stmt 1 view .LVU98
+  47:Core/Src/main.c ****                 // иначе поэтапное включение групп
+ 367              		.loc 1 47 22 is_stmt 0 view .LVU99
+ 368 00e6 054A     		ldr	r2, .L25+4
+ 369 00e8 0021     		movs	r1, #0
+  47:Core/Src/main.c ****                 // иначе поэтапное включение групп
+ 370              		.loc 1 47 22 view .LVU100
+ 371 00ea 1170     		strb	r1, [r2]
+  49:Core/Src/main.c ****                     
+ 372              		.loc 1 49 17 is_stmt 1 view .LVU101
+  49:Core/Src/main.c ****                     
+ 373              		.loc 1 49 33 is_stmt 0 view .LVU102
+ 374 00ec 044A     		ldr	r2, .L25+8
+ 375 00ee 1568     		ldr	r5, [r2]
+  49:Core/Src/main.c ****                     
+ 376              		.loc 1 49 20 view .LVU103
+ 377 00f0 052D     		cmp	r5, #5
+ 378 00f2 C9DD     		ble	.L19
+ 379              	.LBB10:
+  60:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
+ 380              		.loc 1 60 30 view .LVU104
+ 381 00f4 0522     		movs	r2, #5
+ 382 00f6 D8E7     		b	.L13
+ 383              	.L26:
+ 384              		.align	2
+ 385              	.L25:
+ 386 00f8 00000000 		.word	led_count
+ 387 00fc 00000000 		.word	flag
+ 388 0100 00000000 		.word	active_leds
+ 389 0104 00080140 		.word	1073809408
+ 390 0108 00000000 		.word	prev_btn2
+ 391 010c 00000000 		.word	prev_btn1
+ 392              	.LBE10:
+ 393              	.LBE11:
+ 394              		.cfi_endproc
+ 395              	.LFE66:
+ 397              		.global	prev_btn2
+ 398              		.section	.data.prev_btn2,"aw"
+ 401              	prev_btn2:
+ 402 0000 01       		.byte	1
+ 403              		.global	prev_btn1
+ 404              		.section	.data.prev_btn1,"aw"
+ 407              	prev_btn1:
+ 408 0000 01       		.byte	1
+ 409              		.global	active_leds
+ 410              		.section	.bss.active_leds,"aw",%nobits
+ 411              		.align	2
+ 414              	active_leds:
+ 415 0000 00000000 		.space	4
+ 416              		.global	led_count
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 11
+
+
+ 417              		.section	.data.led_count,"aw"
+ 418              		.align	2
+ 421              	led_count:
+ 422 0000 01000000 		.word	1
+ 423              		.global	flag
+ 424              		.section	.bss.flag,"aw",%nobits
+ 427              	flag:
+ 428 0000 00       		.space	1
+ 429              		.text
+ 430              	.Letext0:
+ 431              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 432              		.file 4 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 433              		.file 5 "CMSIS/Devices/STM32F1xx/Inc/STM32f103xB/stm32f103xb.h"
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:19     .text.GPIO_Ini:00000000 $t
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:25     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:98     .text.GPIO_Ini:00000084 $d
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:104    .text.main:00000000 $t
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:110    .text.main:00000000 main
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:386    .text.main:000000f8 $d
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:421    .data.led_count:00000000 led_count
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:427    .bss.flag:00000000 flag
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:414    .bss.active_leds:00000000 active_leds
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:401    .data.prev_btn2:00000000 prev_btn2
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:407    .data.prev_btn1:00000000 prev_btn1
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:411    .bss.active_leds:00000000 $d
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:418    .data.led_count:00000000 $d
+C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:428    .bss.flag:00000000 $d
+
+NO UNDEFINED SYMBOLS

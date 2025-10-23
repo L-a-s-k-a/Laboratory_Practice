@@ -1,0 +1,626 @@
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"system_stm32f1xx.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c"
+  18              		.section	.text.SystemInit,"ax",%progbits
+  19              		.align	1
+  20              		.global	SystemInit
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	SystemInit:
+  26              	.LFB65:
+   1:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+   2:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   ******************************************************************************
+   3:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @file    system_stm32f1xx.c
+   4:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @author  MCD Application Team
+   5:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @brief   CMSIS Cortex-M3 Device Peripheral Access Layer System Source File.
+   6:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * 
+   7:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * 1.  This file provides two functions and one global variable to be called from 
+   8:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *     user application:
+   9:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *      - SystemInit(): Setups the system clock (System clock source, PLL Multiplier
+  10:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                      factors, AHB/APBx prescalers and Flash settings). 
+  11:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                      This function is called at startup just after reset and 
+  12:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                      before branch to main program. This call is made inside
+  13:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                      the "startup_stm32f1xx_xx.s" file.
+  14:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *
+  15:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *      - SystemCoreClock variable: Contains the core clock (HCLK), it can be used
+  16:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                                  by the user application to setup the SysTick 
+  17:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                                  timer or configure other parameters.
+  18:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                                     
+  19:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *      - SystemCoreClockUpdate(): Updates the variable SystemCoreClock and must
+  20:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                                 be called whenever the core clock is changed
+  21:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                                 during program execution.
+  22:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *
+  23:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * 2. After each device reset the HSI (8 MHz) is used as system clock source.
+  24:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *    Then SystemInit() function is called, in "startup_stm32f1xx_xx.s" file, to
+  25:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *    configure the system clock before to branch to main program.
+  26:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *
+  27:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * 4. The default value of HSE crystal is set to 8 MHz (or 25 MHz, depending on
+  28:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *    the product used), refer to "HSE_VALUE". 
+  29:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *    When HSE is used as system clock source, directly or through PLL, and you
+  30:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *    are using different crystal you have to adapt the HSE value to your own
+  31:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *    configuration.
+  32:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *        
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 2
+
+
+  33:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   ******************************************************************************
+  34:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @attention
+  35:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *
+  36:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * Copyright (c) 2017-2021 STMicroelectronics.
+  37:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * All rights reserved.
+  38:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *
+  39:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  40:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * in the root directory of this software component.
+  41:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  42:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *
+  43:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   ******************************************************************************
+  44:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+  45:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  46:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup CMSIS
+  47:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+  48:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+  49:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  50:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup stm32f1xx_system
+  51:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+  52:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */  
+  53:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   
+  54:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Includes
+  55:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+  56:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+  57:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  58:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #include "stm32f1xx.h"
+  59:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  60:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+  61:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @}
+  62:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+  63:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  64:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_TypesDefinitions
+  65:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+  66:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+  67:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  68:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+  69:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @}
+  70:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+  71:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  72:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Defines
+  73:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+  74:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+  75:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  76:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if !defined  (HSE_VALUE) 
+  77:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   #define HSE_VALUE               8000000U /*!< Default value of the External oscillator in Hz.
+  78:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****                                                 This value can be provided and adapted by the user 
+  79:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* HSE_VALUE */
+  80:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  81:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if !defined  (HSI_VALUE)
+  82:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   #define HSI_VALUE               8000000U /*!< Default value of the Internal oscillator in Hz.
+  83:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****                                                 This value can be provided and adapted by the user 
+  84:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* HSI_VALUE */
+  85:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  86:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /*!< Uncomment the following line if you need to use external SRAM  */ 
+  87:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) ||
+  88:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /* #define DATA_IN_ExtSRAM */
+  89:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* STM32F100xE || STM32F101xE || STM32F101xG || STM32F103xE || STM32F103xG */
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 3
+
+
+  90:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  91:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /* Note: Following vector table addresses must be defined in line with linker
+  92:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****          configuration. */
+  93:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /*!< Uncomment the following line if you need to relocate the vector table
+  94:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****      anywhere in Flash or Sram, else the vector table is kept at the automatic
+  95:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****      remap of boot address selected */
+  96:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /* #define USER_VECT_TAB_ADDRESS */
+  97:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+  98:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if defined(USER_VECT_TAB_ADDRESS)
+  99:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /*!< Uncomment the following line if you need to relocate your vector Table
+ 100:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****      in Sram else user remap will be done in Flash. */
+ 101:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /* #define VECT_TAB_SRAM */
+ 102:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if defined(VECT_TAB_SRAM)
+ 103:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #define VECT_TAB_BASE_ADDRESS   SRAM_BASE       /*!< Vector Table base address field.
+ 104:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****                                                      This value must be a multiple of 0x200. */
+ 105:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
+ 106:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****                                                      This value must be a multiple of 0x200. */
+ 107:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #else
+ 108:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #define VECT_TAB_BASE_ADDRESS   FLASH_BASE      /*!< Vector Table base address field.
+ 109:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****                                                      This value must be a multiple of 0x200. */
+ 110:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
+ 111:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****                                                      This value must be a multiple of 0x200. */
+ 112:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* VECT_TAB_SRAM */
+ 113:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* USER_VECT_TAB_ADDRESS */
+ 114:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 115:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /******************************************************************************/
+ 116:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 117:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+ 118:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @}
+ 119:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 120:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 121:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Macros
+ 122:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+ 123:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 124:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 125:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+ 126:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @}
+ 127:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 128:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 129:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Variables
+ 130:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+ 131:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 132:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 133:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   /* This variable is updated in three ways:
+ 134:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       1) by calling CMSIS function SystemCoreClockUpdate()
+ 135:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       2) by calling HAL API function HAL_RCC_GetHCLKFreq()
+ 136:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       3) each time HAL_RCC_ClockConfig() is called to configure the system clock frequency 
+ 137:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****          Note: If you use this function to configure the system clock; then there
+ 138:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****                is no need to call the 2 first functions listed above, since SystemCoreClock
+ 139:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****                variable is updated automatically.
+ 140:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 141:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** uint32_t SystemCoreClock = 16000000;
+ 142:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** const uint8_t AHBPrescTable[16U] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+ 143:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** const uint8_t APBPrescTable[8U] =  {0, 0, 0, 0, 1, 2, 3, 4};
+ 144:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 145:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+ 146:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @}
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 4
+
+
+ 147:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 148:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 149:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_FunctionPrototypes
+ 150:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+ 151:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 152:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 153:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) ||
+ 154:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #ifdef DATA_IN_ExtSRAM
+ 155:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   static void SystemInit_ExtMemCtl(void); 
+ 156:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* DATA_IN_ExtSRAM */
+ 157:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* STM32F100xE || STM32F101xE || STM32F101xG || STM32F103xE || STM32F103xG */
+ 158:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 159:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+ 160:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @}
+ 161:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 162:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 163:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /** @addtogroup STM32F1xx_System_Private_Functions
+ 164:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @{
+ 165:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 166:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 167:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+ 168:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @brief  Setup the microcontroller system
+ 169:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         Initialize the Embedded Flash Interface, the PLL and update the 
+ 170:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         SystemCoreClock variable.
+ 171:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @note   This function should be used only after reset.
+ 172:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @param  None
+ 173:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @retval None
+ 174:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 175:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** void SystemInit (void)
+ 176:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** {
+  27              		.loc 1 176 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 177:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) ||
+ 178:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   #ifdef DATA_IN_ExtSRAM
+ 179:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****     SystemInit_ExtMemCtl(); 
+ 180:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   #endif /* DATA_IN_ExtSRAM */
+ 181:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif 
+ 182:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 183:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   /* Configure the Vector Table location -------------------------------------*/
+ 184:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if defined(USER_VECT_TAB_ADDRESS)
+ 185:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM.
+ 186:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* USER_VECT_TAB_ADDRESS */
+ 187:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** }
+  32              		.loc 1 187 1 view .LVU1
+  33 0000 7047     		bx	lr
+  34              		.cfi_endproc
+  35              	.LFE65:
+  37              		.section	.text.SystemCoreClockUpdate,"ax",%progbits
+  38              		.align	1
+  39              		.global	SystemCoreClockUpdate
+  40              		.syntax unified
+  41              		.thumb
+  42              		.thumb_func
+  44              	SystemCoreClockUpdate:
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 5
+
+
+  45              	.LFB66:
+ 188:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 189:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** /**
+ 190:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @brief  Update SystemCoreClock variable according to Clock Register Values.
+ 191:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         The SystemCoreClock variable contains the core clock (HCLK), it can
+ 192:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         be used by the user application to setup the SysTick timer or configure
+ 193:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         other parameters.
+ 194:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *           
+ 195:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @note   Each time the core clock (HCLK) changes, this function must be called
+ 196:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         to update SystemCoreClock variable value. Otherwise, any configuration
+ 197:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         based on this variable will be incorrect.         
+ 198:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *     
+ 199:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @note   - The system frequency computed by this function is not the real 
+ 200:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *           frequency in the chip. It is calculated based on the predefined 
+ 201:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *           constant and the selected clock source:
+ 202:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *             
+ 203:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *           - If SYSCLK source is HSI, SystemCoreClock will contain the HSI_VALUE(*)
+ 204:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                                              
+ 205:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *           - If SYSCLK source is HSE, SystemCoreClock will contain the HSE_VALUE(**)
+ 206:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                          
+ 207:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *           - If SYSCLK source is PLL, SystemCoreClock will contain the HSE_VALUE(**) 
+ 208:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *             or HSI_VALUE(*) multiplied by the PLL factors.
+ 209:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         
+ 210:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         (*) HSI_VALUE is a constant defined in stm32f1xx.h file (default value
+ 211:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *             8 MHz) but the real value may vary depending on the variations
+ 212:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *             in voltage and temperature.   
+ 213:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *    
+ 214:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         (**) HSE_VALUE is a constant defined in stm32f1xx.h file (default value
+ 215:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *              8 MHz or 25 MHz, depending on the product used), user has to ensure
+ 216:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *              that HSE_VALUE is same as the real frequency of the crystal used.
+ 217:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *              Otherwise, this function may have wrong result.
+ 218:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *                
+ 219:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *         - The result of this function could be not correct when using fractional
+ 220:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   *           value for HSE crystal.
+ 221:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @param  None
+ 222:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   * @retval None
+ 223:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   */
+ 224:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** void SystemCoreClockUpdate (void)
+ 225:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** {
+  46              		.loc 1 225 1 view -0
+  47              		.cfi_startproc
+  48              		@ args = 0, pretend = 0, frame = 0
+  49              		@ frame_needed = 0, uses_anonymous_args = 0
+  50              		@ link register save eliminated.
+ 226:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   uint32_t tmp = 0U, pllmull = 0U, pllsource = 0U;
+  51              		.loc 1 226 3 view .LVU3
+  52              	.LVL0:
+ 227:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 228:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if defined(STM32F105xC) || defined(STM32F107xC)
+ 229:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   uint32_t prediv1source = 0U, prediv1factor = 0U, prediv2factor = 0U, pll2mull = 0U;
+ 230:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* STM32F105xC */
+ 231:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 232:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if defined(STM32F100xB) || defined(STM32F100xE)
+ 233:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   uint32_t prediv1factor = 0U;
+ 234:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* STM32F100xB or STM32F100xE */
+ 235:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****     
+ 236:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   /* Get SYSCLK source -------------------------------------------------------*/
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 6
+
+
+ 237:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   tmp = RCC->CFGR & RCC_CFGR_SWS;
+  53              		.loc 1 237 3 view .LVU4
+  54              		.loc 1 237 12 is_stmt 0 view .LVU5
+  55 0000 1F4B     		ldr	r3, .L9
+  56 0002 5B68     		ldr	r3, [r3, #4]
+  57              		.loc 1 237 7 view .LVU6
+  58 0004 03F00C03 		and	r3, r3, #12
+  59              	.LVL1:
+ 238:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   
+ 239:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   switch (tmp)
+  60              		.loc 1 239 3 is_stmt 1 view .LVU7
+  61 0008 042B     		cmp	r3, #4
+  62 000a 11D0     		beq	.L3
+  63 000c 082B     		cmp	r3, #8
+  64 000e 13D0     		beq	.L4
+  65 0010 002B     		cmp	r3, #0
+  66 0012 31D1     		bne	.L5
+ 240:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   {
+ 241:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****     case 0x00U:  /* HSI used as system clock */
+ 242:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       SystemCoreClock = HSI_VALUE;
+  67              		.loc 1 242 7 view .LVU8
+  68              		.loc 1 242 23 is_stmt 0 view .LVU9
+  69 0014 1B4B     		ldr	r3, .L9+4
+  70              	.LVL2:
+  71              		.loc 1 242 23 view .LVU10
+  72 0016 1C4A     		ldr	r2, .L9+8
+  73 0018 1A60     		str	r2, [r3]
+ 243:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+  74              		.loc 1 243 7 is_stmt 1 view .LVU11
+  75              	.LVL3:
+  76              	.L6:
+ 244:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****     case 0x04U:  /* HSE used as system clock */
+ 245:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       SystemCoreClock = HSE_VALUE;
+ 246:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+ 247:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****     case 0x08U:  /* PLL used as system clock */
+ 248:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 249:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       /* Get PLL clock source and multiplication factor ----------------------*/
+ 250:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       pllmull = RCC->CFGR & RCC_CFGR_PLLMULL;
+ 251:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+ 252:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       
+ 253:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #if !defined(STM32F105xC) && !defined(STM32F107xC)      
+ 254:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       pllmull = ( pllmull >> 18U) + 2U;
+ 255:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       
+ 256:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       if (pllsource == 0x00U)
+ 257:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       {
+ 258:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         /* HSI oscillator clock divided by 2 selected as PLL clock entry */
+ 259:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         SystemCoreClock = (HSI_VALUE >> 1U) * pllmull;
+ 260:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 261:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       else
+ 262:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       {
+ 263:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****  #if defined(STM32F100xB) || defined(STM32F100xE)
+ 264:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****        prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1U;
+ 265:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****        /* HSE oscillator clock selected as PREDIV1 clock entry */
+ 266:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****        SystemCoreClock = (HSE_VALUE / prediv1factor) * pllmull; 
+ 267:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****  #else
+ 268:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         /* HSE selected as PLL clock entry */
+ 269:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         if ((RCC->CFGR & RCC_CFGR_PLLXTPRE) != (uint32_t)RESET)
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 7
+
+
+ 270:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 271:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           SystemCoreClock = (HSE_VALUE >> 1U) * pllmull;
+ 272:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 273:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         else
+ 274:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         {
+ 275:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           SystemCoreClock = HSE_VALUE * pllmull;
+ 276:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 277:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****  #endif
+ 278:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 279:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #else
+ 280:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       pllmull = pllmull >> 18U;
+ 281:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       
+ 282:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       if (pllmull != 0x0DU)
+ 283:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       {
+ 284:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****          pllmull += 2U;
+ 285:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 286:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       else
+ 287:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       { /* PLL multiplication factor = PLL input clock * 6.5 */
+ 288:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         pllmull = 13U / 2U; 
+ 289:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 290:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****             
+ 291:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       if (pllsource == 0x00U)
+ 292:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       {
+ 293:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         /* HSI oscillator clock divided by 2 selected as PLL clock entry */
+ 294:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         SystemCoreClock = (HSI_VALUE >> 1U) * pllmull;
+ 295:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 296:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       else
+ 297:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       {/* PREDIV1 selected as PLL clock entry */
+ 298:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         
+ 299:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         /* Get PREDIV1 clock source and division factor */
+ 300:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         prediv1source = RCC->CFGR2 & RCC_CFGR2_PREDIV1SRC;
+ 301:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1U;
+ 302:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         
+ 303:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         if (prediv1source == 0U)
+ 304:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         { 
+ 305:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           /* HSE oscillator clock selected as PREDIV1 clock entry */
+ 306:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           SystemCoreClock = (HSE_VALUE / prediv1factor) * pllmull;          
+ 307:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 308:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         else
+ 309:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         {/* PLL2 clock selected as PREDIV1 clock entry */
+ 310:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           
+ 311:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           /* Get PREDIV2 division factor and PLL2 multiplication factor */
+ 312:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           prediv2factor = ((RCC->CFGR2 & RCC_CFGR2_PREDIV2) >> 4U) + 1U;
+ 313:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           pll2mull = ((RCC->CFGR2 & RCC_CFGR2_PLL2MUL) >> 8U) + 2U; 
+ 314:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****           SystemCoreClock = (((HSE_VALUE / prediv2factor) * pll2mull) / prediv1factor) * pllmull;  
+ 315:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 316:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 317:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** #endif /* STM32F105xC */ 
+ 318:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+ 319:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** 
+ 320:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****     default:
+ 321:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       SystemCoreClock = HSI_VALUE;
+ 322:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+ 323:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   }
+ 324:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   
+ 325:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   /* Compute HCLK clock frequency ----------------*/
+ 326:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   /* Get HCLK prescaler */
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 8
+
+
+ 327:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   tmp = AHBPrescTable[((RCC->CFGR & RCC_CFGR_HPRE) >> 4U)];
+  77              		.loc 1 327 3 view .LVU12
+  78              		.loc 1 327 28 is_stmt 0 view .LVU13
+  79 001a 194B     		ldr	r3, .L9
+  80 001c 5B68     		ldr	r3, [r3, #4]
+  81              		.loc 1 327 52 view .LVU14
+  82 001e C3F30313 		ubfx	r3, r3, #4, #4
+  83              		.loc 1 327 22 view .LVU15
+  84 0022 1A4A     		ldr	r2, .L9+12
+  85 0024 D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+  86              	.LVL4:
+ 328:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   /* HCLK clock frequency */
+ 329:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   SystemCoreClock >>= tmp;  
+  87              		.loc 1 329 3 is_stmt 1 view .LVU16
+  88              		.loc 1 329 19 is_stmt 0 view .LVU17
+  89 0026 174A     		ldr	r2, .L9+4
+  90 0028 1368     		ldr	r3, [r2]
+  91 002a CB40     		lsrs	r3, r3, r1
+  92 002c 1360     		str	r3, [r2]
+ 330:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c **** }
+  93              		.loc 1 330 1 view .LVU18
+  94 002e 7047     		bx	lr
+  95              	.LVL5:
+  96              	.L3:
+ 245:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+  97              		.loc 1 245 7 is_stmt 1 view .LVU19
+ 245:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+  98              		.loc 1 245 23 is_stmt 0 view .LVU20
+  99 0030 144B     		ldr	r3, .L9+4
+ 100              	.LVL6:
+ 245:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+ 101              		.loc 1 245 23 view .LVU21
+ 102 0032 154A     		ldr	r2, .L9+8
+ 103 0034 1A60     		str	r2, [r3]
+ 246:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****     case 0x08U:  /* PLL used as system clock */
+ 104              		.loc 1 246 7 is_stmt 1 view .LVU22
+ 105 0036 F0E7     		b	.L6
+ 106              	.LVL7:
+ 107              	.L4:
+ 250:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+ 108              		.loc 1 250 7 view .LVU23
+ 250:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+ 109              		.loc 1 250 20 is_stmt 0 view .LVU24
+ 110 0038 114A     		ldr	r2, .L9
+ 111 003a 5368     		ldr	r3, [r2, #4]
+ 112              	.LVL8:
+ 251:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       
+ 113              		.loc 1 251 7 is_stmt 1 view .LVU25
+ 251:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       
+ 114              		.loc 1 251 22 is_stmt 0 view .LVU26
+ 115 003c 5268     		ldr	r2, [r2, #4]
+ 116              	.LVL9:
+ 254:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       
+ 117              		.loc 1 254 7 is_stmt 1 view .LVU27
+ 254:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       
+ 118              		.loc 1 254 27 is_stmt 0 view .LVU28
+ 119 003e C3F38343 		ubfx	r3, r3, #18, #4
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 9
+
+
+ 120              	.LVL10:
+ 254:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       
+ 121              		.loc 1 254 15 view .LVU29
+ 122 0042 0233     		adds	r3, r3, #2
+ 123              	.LVL11:
+ 256:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       {
+ 124              		.loc 1 256 7 is_stmt 1 view .LVU30
+ 256:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       {
+ 125              		.loc 1 256 10 is_stmt 0 view .LVU31
+ 126 0044 12F4803F 		tst	r2, #65536
+ 127 0048 05D1     		bne	.L7
+ 259:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 128              		.loc 1 259 9 is_stmt 1 view .LVU32
+ 259:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 129              		.loc 1 259 45 is_stmt 0 view .LVU33
+ 130 004a 114A     		ldr	r2, .L9+16
+ 131              	.LVL12:
+ 259:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 132              		.loc 1 259 45 view .LVU34
+ 133 004c 02FB03F3 		mul	r3, r2, r3
+ 134              	.LVL13:
+ 259:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       }
+ 135              		.loc 1 259 25 view .LVU35
+ 136 0050 0C4A     		ldr	r2, .L9+4
+ 137 0052 1360     		str	r3, [r2]
+ 138 0054 E1E7     		b	.L6
+ 139              	.LVL14:
+ 140              	.L7:
+ 269:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 141              		.loc 1 269 9 is_stmt 1 view .LVU36
+ 269:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 142              		.loc 1 269 17 is_stmt 0 view .LVU37
+ 143 0056 0A4A     		ldr	r2, .L9
+ 144              	.LVL15:
+ 269:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 145              		.loc 1 269 17 view .LVU38
+ 146 0058 5268     		ldr	r2, [r2, #4]
+ 269:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         {/* HSE oscillator clock divided by 2 */
+ 147              		.loc 1 269 12 view .LVU39
+ 148 005a 12F4003F 		tst	r2, #131072
+ 149 005e 05D0     		beq	.L8
+ 271:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 150              		.loc 1 271 11 is_stmt 1 view .LVU40
+ 271:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 151              		.loc 1 271 47 is_stmt 0 view .LVU41
+ 152 0060 0B4A     		ldr	r2, .L9+16
+ 153 0062 02FB03F3 		mul	r3, r2, r3
+ 154              	.LVL16:
+ 271:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 155              		.loc 1 271 27 view .LVU42
+ 156 0066 074A     		ldr	r2, .L9+4
+ 157 0068 1360     		str	r3, [r2]
+ 158 006a D6E7     		b	.L6
+ 159              	.LVL17:
+ 160              	.L8:
+ 275:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 161              		.loc 1 275 11 is_stmt 1 view .LVU43
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 10
+
+
+ 275:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 162              		.loc 1 275 39 is_stmt 0 view .LVU44
+ 163 006c 064A     		ldr	r2, .L9+8
+ 164 006e 02FB03F3 		mul	r3, r2, r3
+ 165              	.LVL18:
+ 275:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****         }
+ 166              		.loc 1 275 27 view .LVU45
+ 167 0072 044A     		ldr	r2, .L9+4
+ 168 0074 1360     		str	r3, [r2]
+ 169 0076 D0E7     		b	.L6
+ 170              	.LVL19:
+ 171              	.L5:
+ 321:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+ 172              		.loc 1 321 7 is_stmt 1 view .LVU46
+ 321:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+ 173              		.loc 1 321 23 is_stmt 0 view .LVU47
+ 174 0078 024B     		ldr	r3, .L9+4
+ 175              	.LVL20:
+ 321:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****       break;
+ 176              		.loc 1 321 23 view .LVU48
+ 177 007a 034A     		ldr	r2, .L9+8
+ 178 007c 1A60     		str	r2, [r3]
+ 322:CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c ****   }
+ 179              		.loc 1 322 7 is_stmt 1 view .LVU49
+ 180 007e CCE7     		b	.L6
+ 181              	.L10:
+ 182              		.align	2
+ 183              	.L9:
+ 184 0080 00100240 		.word	1073876992
+ 185 0084 00000000 		.word	SystemCoreClock
+ 186 0088 00127A00 		.word	8000000
+ 187 008c 00000000 		.word	AHBPrescTable
+ 188 0090 00093D00 		.word	4000000
+ 189              		.cfi_endproc
+ 190              	.LFE66:
+ 192              		.global	APBPrescTable
+ 193              		.section	.rodata.APBPrescTable,"a"
+ 194              		.align	2
+ 197              	APBPrescTable:
+ 198 0000 00000000 		.ascii	"\000\000\000\000\001\002\003\004"
+ 198      01020304 
+ 199              		.global	AHBPrescTable
+ 200              		.section	.rodata.AHBPrescTable,"a"
+ 201              		.align	2
+ 204              	AHBPrescTable:
+ 205 0000 00000000 		.ascii	"\000\000\000\000\000\000\000\000\001\002\003\004\006"
+ 205      00000000 
+ 205      01020304 
+ 205      06
+ 206 000d 070809   		.ascii	"\007\010\011"
+ 207              		.global	SystemCoreClock
+ 208              		.section	.data.SystemCoreClock,"aw"
+ 209              		.align	2
+ 212              	SystemCoreClock:
+ 213 0000 0024F400 		.word	16000000
+ 214              		.text
+ 215              	.Letext0:
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 11
+
+
+ 216              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 217              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 218              		.file 4 "CMSIS/Devices/STM32F1xx/Inc/system_stm32f1xx.h"
+ 219              		.file 5 "CMSIS/Devices/STM32F1xx/Inc/STM32f103xB/stm32f103xb.h"
+ 220              		.file 6 "CMSIS/Devices/STM32F1xx/Inc/stm32f1xx.h"
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 system_stm32f1xx.c
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:19     .text.SystemInit:00000000 $t
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:25     .text.SystemInit:00000000 SystemInit
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:38     .text.SystemCoreClockUpdate:00000000 $t
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:44     .text.SystemCoreClockUpdate:00000000 SystemCoreClockUpdate
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:184    .text.SystemCoreClockUpdate:00000080 $d
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:212    .data.SystemCoreClock:00000000 SystemCoreClock
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:204    .rodata.AHBPrescTable:00000000 AHBPrescTable
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:197    .rodata.APBPrescTable:00000000 APBPrescTable
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:194    .rodata.APBPrescTable:00000000 $d
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:201    .rodata.AHBPrescTable:00000000 $d
+C:\Users\stepa\AppData\Local\Temp\ccioPSYY.s:209    .data.SystemCoreClock:00000000 $d
+
+NO UNDEFINED SYMBOLS
