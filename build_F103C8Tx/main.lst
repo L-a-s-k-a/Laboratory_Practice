@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 1
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 1
 
 
    1              		.cpu cortex-m3
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 1
   40 000a A2F58832 		sub	r2, r2, #69632
   41 000e D2F80038 		ldr	r3, [r2, #2048]
   42              		.loc 2 16 37 is_stmt 0 view .LVU4
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 2
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 2
 
 
   43 0012 C3F31303 		ubfx	r3, r3, #0, #20
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 1
   67 004a 22F00302 		bic	r2, r2, #3
   68 004e 1A60     		str	r2, [r3]
   47:Core/Src/Init.c ****     CLEAR_BIT(GPIOA->CRL, GPIO_CRL_CNF1);
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 3
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 3
 
 
   69              		.loc 2 47 5 view .LVU13
@@ -177,461 +177,518 @@ ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 1
    2:Core/Src/main.c **** #include "Init.c"
    3:Core/Src/main.c **** 
    4:Core/Src/main.c **** uint8_t flag;
-   5:Core/Src/main.c **** // Переменные
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 4
+   5:Core/Src/main.c **** 
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 4
 
 
-   6:Core/Src/main.c **** int led_count = 1;     // сколько включается одновременно (1..6)
-   7:Core/Src/main.c **** int active_leds = 0;   // сколько сейчас включено
-   8:Core/Src/main.c **** uint8_t prev_btn1 = 1; // предыдущее состояние кнопок
-   9:Core/Src/main.c **** uint8_t prev_btn2 = 1;
-  10:Core/Src/main.c **** 
-  11:Core/Src/main.c **** 
-  12:Core/Src/main.c **** int main(void) {
- 112              		.loc 1 12 16 is_stmt 1 view -0
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** uint8_t btn1_state_viewer = 1;
+   9:Core/Src/main.c **** uint8_t btn2_state_viewer = 1;
+  10:Core/Src/main.c **** uint8_t leds_active_viewer = 0;
+  11:Core/Src/main.c **** uint8_t led_count_viewer = 1;
+  12:Core/Src/main.c **** // Переменные
+  13:Core/Src/main.c **** int led_count = 1;     // сколько включается одновременно (1..6)
+  14:Core/Src/main.c **** int active_leds = 0;   // сколько сейчас включено
+  15:Core/Src/main.c **** uint8_t prev_btn1 = 1; // предыдущее состояние кнопок
+  16:Core/Src/main.c **** uint8_t prev_btn2 = 1;
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c **** int main(void) {
+ 112              		.loc 1 19 16 is_stmt 1 view -0
  113              		.cfi_startproc
  114              		@ args = 0, pretend = 0, frame = 0
  115              		@ frame_needed = 0, uses_anonymous_args = 0
- 116 0000 70B5     		push	{r4, r5, r6, lr}
+ 116 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
  117              	.LCFI0:
- 118              		.cfi_def_cfa_offset 16
- 119              		.cfi_offset 4, -16
- 120              		.cfi_offset 5, -12
- 121              		.cfi_offset 6, -8
- 122              		.cfi_offset 14, -4
-  13:Core/Src/main.c ****     
-  14:Core/Src/main.c **** 
-  15:Core/Src/main.c ****     GPIO_Ini();
- 123              		.loc 1 15 5 view .LVU21
- 124 0002 FFF7FEFF 		bl	GPIO_Ini
- 125              	.LVL0:
- 126 0006 57E0     		b	.L17
- 127              	.LVL1:
- 128              	.L23:
- 129              	.LBB2:
-  16:Core/Src/main.c ****    
-  17:Core/Src/main.c ****     while (1) {
-  18:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
-  19:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
-  20:Core/Src/main.c **** 
+ 118              		.cfi_def_cfa_offset 24
+ 119              		.cfi_offset 3, -24
+ 120              		.cfi_offset 4, -20
+ 121              		.cfi_offset 5, -16
+ 122              		.cfi_offset 6, -12
+ 123              		.cfi_offset 7, -8
+ 124              		.cfi_offset 14, -4
+  20:Core/Src/main.c ****     
   21:Core/Src/main.c **** 
-  22:Core/Src/main.c ****         //Кнопка 1: задаёт количество одновременно включае
-  23:Core/Src/main.c ****         if (prev_btn1 == 1 && btn1 == 0) {
- 130              		.loc 1 23 28 is_stmt 0 discriminator 1 view .LVU22
- 131 0008 002A     		cmp	r2, #0
- 132 000a 60D1     		bne	.L5
-  24:Core/Src/main.c ****             led_count++;
- 133              		.loc 1 24 13 is_stmt 1 view .LVU23
- 134              		.loc 1 24 22 is_stmt 0 view .LVU24
- 135 000c 3A48     		ldr	r0, .L25
- 136 000e 0168     		ldr	r1, [r0]
- 137 0010 0131     		adds	r1, r1, #1
- 138 0012 0160     		str	r1, [r0]
-  25:Core/Src/main.c ****             if (led_count > 6) led_count = 1;
- 139              		.loc 1 25 13 is_stmt 1 view .LVU25
- 140              		.loc 1 25 16 is_stmt 0 view .LVU26
- 141 0014 0629     		cmp	r1, #6
- 142 0016 5ADD     		ble	.L5
- 143              		.loc 1 25 32 is_stmt 1 discriminator 1 view .LVU27
- 144              		.loc 1 25 42 is_stmt 0 discriminator 1 view .LVU28
- 145 0018 0146     		mov	r1, r0
- 146 001a 0120     		movs	r0, #1
- 147 001c 0860     		str	r0, [r1]
- 148 001e 56E0     		b	.L5
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 5
-
-
- 149              	.LVL2:
- 150              	.L24:
-  26:Core/Src/main.c ****         }
-  27:Core/Src/main.c ****         prev_btn1 = btn1;
+  22:Core/Src/main.c ****     GPIO_Ini();
+ 125              		.loc 1 22 5 view .LVU21
+ 126 0002 FFF7FEFF 		bl	GPIO_Ini
+ 127              	.LVL0:
+ 128 0006 66E0     		b	.L17
+ 129              	.LVL1:
+ 130              	.L23:
+ 131              	.LBB2:
+  23:Core/Src/main.c ****    
+  24:Core/Src/main.c ****     while (1) {
+  25:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
+  26:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
+  27:Core/Src/main.c **** 
   28:Core/Src/main.c **** 
-  29:Core/Src/main.c **** 
-  30:Core/Src/main.c ****         //Кнопка 2: включает следующие led_count светодиодов
-  31:Core/Src/main.c ****         if (prev_btn2 == 1 && btn2 == 0) {
-  32:Core/Src/main.c ****             if (led_count == 6) {
-  33:Core/Src/main.c ****                 flag = 1;
- 151              		.loc 1 33 17 is_stmt 1 view .LVU29
- 152              		.loc 1 33 22 is_stmt 0 view .LVU30
- 153 0020 364A     		ldr	r2, .L25+4
- 154 0022 0121     		movs	r1, #1
- 155              		.loc 1 33 22 view .LVU31
- 156 0024 1170     		strb	r1, [r2]
-  34:Core/Src/main.c ****                 // если выбрано 6 — просто включаем/выключаем �
-  35:Core/Src/main.c ****                 if (active_leds == 0) {
- 157              		.loc 1 35 17 is_stmt 1 view .LVU32
- 158              		.loc 1 35 33 is_stmt 0 view .LVU33
- 159 0026 364A     		ldr	r2, .L25+8
+  29:Core/Src/main.c ****         //Кнопка 1: задаёт количество одновременно включае
+  30:Core/Src/main.c ****         if (prev_btn1 == 1 && btn1 == 0) {
+ 132              		.loc 1 30 28 is_stmt 0 discriminator 1 view .LVU22
+ 133 0008 0029     		cmp	r1, #0
+ 134 000a 6FD1     		bne	.L5
+  31:Core/Src/main.c ****             led_count++;
+ 135              		.loc 1 31 13 is_stmt 1 view .LVU23
+ 136              		.loc 1 31 22 is_stmt 0 view .LVU24
+ 137 000c 4248     		ldr	r0, .L25
+ 138 000e 0268     		ldr	r2, [r0]
+ 139 0010 0132     		adds	r2, r2, #1
+ 140 0012 0260     		str	r2, [r0]
+  32:Core/Src/main.c ****             if (led_count > 6) led_count = 1;
+ 141              		.loc 1 32 13 is_stmt 1 view .LVU25
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 5
+
+
+ 142              		.loc 1 32 16 is_stmt 0 view .LVU26
+ 143 0014 062A     		cmp	r2, #6
+ 144 0016 69DD     		ble	.L5
+ 145              		.loc 1 32 32 is_stmt 1 discriminator 1 view .LVU27
+ 146              		.loc 1 32 42 is_stmt 0 discriminator 1 view .LVU28
+ 147 0018 0246     		mov	r2, r0
+ 148 001a 0120     		movs	r0, #1
+ 149 001c 1060     		str	r0, [r2]
+ 150 001e 65E0     		b	.L5
+ 151              	.L24:
+  33:Core/Src/main.c ****         }
+  34:Core/Src/main.c ****         prev_btn1 = btn1;
+  35:Core/Src/main.c **** 
+  36:Core/Src/main.c **** 
+  37:Core/Src/main.c ****         //Кнопка 2: включает следующие led_count светодиодов
+  38:Core/Src/main.c ****         if (prev_btn2 == 1 && btn2 == 0) {
+  39:Core/Src/main.c ****             if (led_count == 6) {
+  40:Core/Src/main.c ****                 flag = 1;
+ 152              		.loc 1 40 17 is_stmt 1 view .LVU29
+ 153              		.loc 1 40 22 is_stmt 0 view .LVU30
+ 154 0020 3E4A     		ldr	r2, .L25+4
+ 155 0022 0120     		movs	r0, #1
+ 156 0024 1070     		strb	r0, [r2]
+  41:Core/Src/main.c ****                 // если выбрано 6 — просто включаем/выключаем �
+  42:Core/Src/main.c ****                 if (active_leds == 0) {
+ 157              		.loc 1 42 17 is_stmt 1 view .LVU31
+ 158              		.loc 1 42 33 is_stmt 0 view .LVU32
+ 159 0026 3E4A     		ldr	r2, .L25+8
  160 0028 1268     		ldr	r2, [r2]
- 161              		.loc 1 35 20 view .LVU34
+ 161              		.loc 1 42 20 view .LVU33
  162 002a 0AB9     		cbnz	r2, .L21
  163              	.LBB3:
-  36:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
- 164              		.loc 1 36 30 view .LVU35
+  43:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
+ 164              		.loc 1 43 30 view .LVU34
  165 002c 0522     		movs	r2, #5
  166 002e 08E0     		b	.L8
  167              	.L21:
  168              	.LBE3:
  169              	.LBB4:
-  37:Core/Src/main.c ****                         SET_BIT(GPIOA->BSRR, (1UL << i)); // включить
-  38:Core/Src/main.c ****                     }
-  39:Core/Src/main.c ****                     active_leds = 6;
-  40:Core/Src/main.c ****                 } else {
-  41:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
- 170              		.loc 1 41 30 view .LVU36
+  44:Core/Src/main.c ****                         SET_BIT(GPIOA->BSRR, (1UL << i)); // включить
+  45:Core/Src/main.c ****                     }
+  46:Core/Src/main.c ****                     active_leds = 6;
+  47:Core/Src/main.c ****                 } else {
+  48:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
+ 170              		.loc 1 48 30 view .LVU35
  171 0030 0522     		movs	r2, #5
  172 0032 13E0     		b	.L9
- 173              	.LVL3:
+ 173              	.LVL2:
  174              	.L10:
- 175              		.loc 1 41 30 view .LVU37
+ 175              		.loc 1 48 30 view .LVU36
  176              	.LBE4:
  177              	.LBB5:
-  37:Core/Src/main.c ****                         SET_BIT(GPIOA->BSRR, (1UL << i)); // включить
- 178              		.loc 1 37 25 is_stmt 1 view .LVU38
- 179 0034 334C     		ldr	r4, .L25+12
- 180 0036 2169     		ldr	r1, [r4, #16]
- 181 0038 0120     		movs	r0, #1
- 182 003a 9040     		lsls	r0, r0, r2
- 183 003c 0143     		orrs	r1, r1, r0
- 184 003e 2161     		str	r1, [r4, #16]
-  36:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
- 185              		.loc 1 36 47 discriminator 3 view .LVU39
+  44:Core/Src/main.c ****                         SET_BIT(GPIOA->BSRR, (1UL << i)); // включить
+ 178              		.loc 1 44 25 is_stmt 1 view .LVU37
+ 179 0034 3B4D     		ldr	r5, .L25+12
+ 180 0036 2869     		ldr	r0, [r5, #16]
+ 181 0038 0124     		movs	r4, #1
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 6
+
+
+ 182 003a 9440     		lsls	r4, r4, r2
+ 183 003c 2043     		orrs	r0, r0, r4
+ 184 003e 2861     		str	r0, [r5, #16]
+  43:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
+ 185              		.loc 1 43 47 discriminator 3 view .LVU38
  186 0040 0132     		adds	r2, r2, #1
- 187              	.LVL4:
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 6
-
-
+ 187              	.LVL3:
  188              	.L8:
-  36:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
- 189              		.loc 1 36 39 discriminator 1 view .LVU40
+  43:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++) {
+ 189              		.loc 1 43 39 discriminator 1 view .LVU39
  190 0042 0A2A     		cmp	r2, #10
  191 0044 F6DD     		ble	.L10
  192              	.LBE5:
-  39:Core/Src/main.c ****                 } else {
- 193              		.loc 1 39 21 view .LVU41
-  39:Core/Src/main.c ****                 } else {
- 194              		.loc 1 39 33 is_stmt 0 view .LVU42
- 195 0046 2E4A     		ldr	r2, .L25+8
- 196              	.LVL5:
-  39:Core/Src/main.c ****                 } else {
- 197              		.loc 1 39 33 view .LVU43
- 198 0048 0621     		movs	r1, #6
- 199 004a 1160     		str	r1, [r2]
- 200 004c 32E0     		b	.L6
- 201              	.LVL6:
+  46:Core/Src/main.c ****                 } else {
+ 193              		.loc 1 46 21 view .LVU40
+  46:Core/Src/main.c ****                 } else {
+ 194              		.loc 1 46 33 is_stmt 0 view .LVU41
+ 195 0046 364A     		ldr	r2, .L25+8
+ 196              	.LVL4:
+  46:Core/Src/main.c ****                 } else {
+ 197              		.loc 1 46 33 view .LVU42
+ 198 0048 0620     		movs	r0, #6
+ 199 004a 1060     		str	r0, [r2]
+ 200 004c 35E0     		b	.L6
+ 201              	.LVL5:
  202              	.L11:
  203              	.LBB6:
-  42:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
- 204              		.loc 1 42 25 is_stmt 1 view .LVU44
- 205 004e 2D4C     		ldr	r4, .L25+12
- 206 0050 6169     		ldr	r1, [r4, #20]
- 207 0052 0120     		movs	r0, #1
- 208 0054 9040     		lsls	r0, r0, r2
- 209 0056 0143     		orrs	r1, r1, r0
- 210 0058 6161     		str	r1, [r4, #20]
-  41:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
- 211              		.loc 1 41 47 discriminator 3 view .LVU45
+  49:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
+ 204              		.loc 1 49 25 is_stmt 1 view .LVU43
+ 205 004e 354D     		ldr	r5, .L25+12
+ 206 0050 6869     		ldr	r0, [r5, #20]
+ 207 0052 0124     		movs	r4, #1
+ 208 0054 9440     		lsls	r4, r4, r2
+ 209 0056 2043     		orrs	r0, r0, r4
+ 210 0058 6861     		str	r0, [r5, #20]
+  48:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
+ 211              		.loc 1 48 47 discriminator 3 view .LVU44
  212 005a 0132     		adds	r2, r2, #1
- 213              	.LVL7:
+ 213              	.LVL6:
  214              	.L9:
-  41:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
- 215              		.loc 1 41 39 discriminator 1 view .LVU46
+  48:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i)); // выключить
+ 215              		.loc 1 48 39 discriminator 1 view .LVU45
  216 005c 0A2A     		cmp	r2, #10
  217 005e F6DD     		ble	.L11
  218              	.LBE6:
-  43:Core/Src/main.c ****                     }
-  44:Core/Src/main.c ****                     active_leds = 0;
- 219              		.loc 1 44 21 view .LVU47
- 220              		.loc 1 44 33 is_stmt 0 view .LVU48
- 221 0060 274A     		ldr	r2, .L25+8
- 222              	.LVL8:
- 223              		.loc 1 44 33 view .LVU49
- 224 0062 0021     		movs	r1, #0
- 225 0064 1160     		str	r1, [r2]
- 226 0066 25E0     		b	.L6
- 227              	.LVL9:
+  50:Core/Src/main.c ****                     }
+  51:Core/Src/main.c ****                     active_leds = 0;
+ 219              		.loc 1 51 21 view .LVU46
+ 220              		.loc 1 51 33 is_stmt 0 view .LVU47
+ 221 0060 2F4A     		ldr	r2, .L25+8
+ 222              	.LVL7:
+ 223              		.loc 1 51 33 view .LVU48
+ 224 0062 0020     		movs	r0, #0
+ 225 0064 1060     		str	r0, [r2]
+ 226 0066 28E0     		b	.L6
+ 227              	.LVL8:
  228              	.L14:
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 7
+
+
  229              	.LBB7:
-  45:Core/Src/main.c ****                 }
-  46:Core/Src/main.c ****             } else {
-  47:Core/Src/main.c ****                 flag = 0;
-  48:Core/Src/main.c ****                 // иначе поэтапное включение групп
-  49:Core/Src/main.c ****                 if (active_leds < 6) {
-  50:Core/Src/main.c ****                     
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 7
-
-
-  51:Core/Src/main.c ****                     for (int i = 0; i < led_count; i++) {
- 230              		.loc 1 51 53 is_stmt 1 discriminator 2 view .LVU50
- 231 0068 0131     		adds	r1, r1, #1
- 232              	.LVL10:
+  52:Core/Src/main.c ****                 }
+  53:Core/Src/main.c ****             } else {
+  54:Core/Src/main.c ****                 flag = 0;
+  55:Core/Src/main.c ****                 // иначе поэтапное включение групп
+  56:Core/Src/main.c ****                 if (active_leds < 6) {
+  57:Core/Src/main.c ****                     
+  58:Core/Src/main.c ****                     for (int i = 0; i < led_count; i++) {
+ 230              		.loc 1 58 53 is_stmt 1 discriminator 2 view .LVU49
+ 231 0068 0130     		adds	r0, r0, #1
+ 232              	.LVL9:
  233              	.L12:
- 234              		.loc 1 51 39 discriminator 1 view .LVU51
- 235 006a 8842     		cmp	r0, r1
+ 234              		.loc 1 58 39 discriminator 1 view .LVU50
+ 235 006a 8442     		cmp	r4, r0
  236 006c 0EDD     		ble	.L22
  237              	.LBB8:
-  52:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
- 238              		.loc 1 52 25 view .LVU52
- 239              		.loc 1 52 37 is_stmt 0 view .LVU53
- 240 006e 6A1D     		adds	r2, r5, #5
- 241              		.loc 1 52 29 view .LVU54
- 242 0070 0A44     		add	r2, r2, r1
- 243              	.LVL11:
-  53:Core/Src/main.c ****                         if (pin <= 10)
- 244              		.loc 1 53 25 is_stmt 1 view .LVU55
- 245              		.loc 1 53 28 is_stmt 0 view .LVU56
+  59:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
+ 238              		.loc 1 59 25 view .LVU51
+ 239              		.loc 1 59 37 is_stmt 0 view .LVU52
+ 240 006e 721D     		adds	r2, r6, #5
+ 241              		.loc 1 59 29 view .LVU53
+ 242 0070 0244     		add	r2, r2, r0
+ 243              	.LVL10:
+  60:Core/Src/main.c ****                         if (pin <= 10)
+ 244              		.loc 1 60 25 is_stmt 1 view .LVU54
+ 245              		.loc 1 60 28 is_stmt 0 view .LVU55
  246 0072 0A2A     		cmp	r2, #10
  247 0074 F8DC     		bgt	.L14
-  54:Core/Src/main.c ****                             SET_BIT(GPIOA->BSRR, (1UL << pin));
- 248              		.loc 1 54 29 is_stmt 1 view .LVU57
- 249 0076 234E     		ldr	r6, .L25+12
- 250 0078 3469     		ldr	r4, [r6, #16]
+  61:Core/Src/main.c ****                             SET_BIT(GPIOA->BSRR, (1UL << pin));
+ 248              		.loc 1 61 29 is_stmt 1 view .LVU56
+ 249 0076 2B4F     		ldr	r7, .L25+12
+ 250 0078 3D69     		ldr	r5, [r7, #16]
  251 007a 4FF0010C 		mov	ip, #1
  252 007e 0CFA02F2 		lsl	r2, ip, r2
- 253              	.LVL12:
- 254              		.loc 1 54 29 is_stmt 0 view .LVU58
- 255 0082 2243     		orrs	r2, r2, r4
- 256 0084 3261     		str	r2, [r6, #16]
+ 253              	.LVL11:
+ 254              		.loc 1 61 29 is_stmt 0 view .LVU57
+ 255 0082 2A43     		orrs	r2, r2, r5
+ 256 0084 3A61     		str	r2, [r7, #16]
  257 0086 EFE7     		b	.L14
- 258              	.LVL13:
+ 258              	.LVL12:
  259              	.L19:
- 260              		.loc 1 54 29 view .LVU59
+ 260              		.loc 1 61 29 view .LVU58
  261              	.LBE8:
-  51:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
- 262              		.loc 1 51 30 view .LVU60
- 263 0088 0021     		movs	r1, #0
+  58:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
+ 262              		.loc 1 58 30 view .LVU59
+ 263 0088 0020     		movs	r0, #0
  264 008a EEE7     		b	.L12
- 265              	.LVL14:
+ 265              	.LVL13:
  266              	.L22:
-  51:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
- 267              		.loc 1 51 30 view .LVU61
+  58:Core/Src/main.c ****                         int pin = 5 + active_leds + i;
+ 267              		.loc 1 58 30 view .LVU60
  268              	.LBE7:
-  55:Core/Src/main.c ****                     }
-  56:Core/Src/main.c ****                     active_leds += led_count;
- 269              		.loc 1 56 21 is_stmt 1 view .LVU62
- 270              		.loc 1 56 33 is_stmt 0 view .LVU63
- 271 008c 2844     		add	r0, r0, r5
- 272 008e 1C4A     		ldr	r2, .L25+8
- 273 0090 1060     		str	r0, [r2]
-  57:Core/Src/main.c ****                     if (active_leds > 6) active_leds = 6;
- 274              		.loc 1 57 21 is_stmt 1 view .LVU64
- 275              		.loc 1 57 24 is_stmt 0 view .LVU65
- 276 0092 0628     		cmp	r0, #6
- 277 0094 0EDD     		ble	.L6
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 8
+  62:Core/Src/main.c ****                     }
+  63:Core/Src/main.c ****                     active_leds += led_count;
+ 269              		.loc 1 63 21 is_stmt 1 view .LVU61
+ 270              		.loc 1 63 33 is_stmt 0 view .LVU62
+ 271 008c 3444     		add	r4, r4, r6
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 8
 
 
- 278              		.loc 1 57 42 is_stmt 1 discriminator 1 view .LVU66
- 279              		.loc 1 57 54 is_stmt 0 discriminator 1 view .LVU67
- 280 0096 0621     		movs	r1, #6
- 281              	.LVL15:
- 282              		.loc 1 57 54 discriminator 1 view .LVU68
- 283 0098 1160     		str	r1, [r2]
- 284 009a 0BE0     		b	.L6
- 285              	.LVL16:
+ 272 008e 244A     		ldr	r2, .L25+8
+ 273 0090 1460     		str	r4, [r2]
+  64:Core/Src/main.c ****                     if (active_leds > 6) active_leds = 6;
+ 274              		.loc 1 64 21 is_stmt 1 view .LVU63
+ 275              		.loc 1 64 24 is_stmt 0 view .LVU64
+ 276 0092 062C     		cmp	r4, #6
+ 277 0094 11DD     		ble	.L6
+ 278              		.loc 1 64 42 is_stmt 1 discriminator 1 view .LVU65
+ 279              		.loc 1 64 54 is_stmt 0 discriminator 1 view .LVU66
+ 280 0096 0620     		movs	r0, #6
+ 281              	.LVL14:
+ 282              		.loc 1 64 54 discriminator 1 view .LVU67
+ 283 0098 1060     		str	r0, [r2]
+ 284 009a 0EE0     		b	.L6
+ 285              	.LVL15:
  286              	.L16:
  287              	.LBB9:
-  58:Core/Src/main.c ****                 } else {
-  59:Core/Src/main.c ****                     // если уже все включены — выключаем все
-  60:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++)
-  61:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
- 288              		.loc 1 61 25 is_stmt 1 view .LVU69
- 289 009c 194C     		ldr	r4, .L25+12
- 290 009e 6169     		ldr	r1, [r4, #20]
- 291 00a0 0120     		movs	r0, #1
- 292 00a2 9040     		lsls	r0, r0, r2
- 293 00a4 0143     		orrs	r1, r1, r0
- 294 00a6 6161     		str	r1, [r4, #20]
-  60:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
- 295              		.loc 1 60 47 discriminator 3 view .LVU70
- 296 00a8 0132     		adds	r2, r2, #1
- 297              	.LVL17:
+  65:Core/Src/main.c ****                 } else {
+  66:Core/Src/main.c ****                     // если уже все включены — выключаем все
+  67:Core/Src/main.c ****                     for (int i = 5; i <= 10; i++)
+  68:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
+ 288              		.loc 1 68 25 is_stmt 1 view .LVU68
+ 289 009c 214C     		ldr	r4, .L25+12
+ 290 009e 6069     		ldr	r0, [r4, #20]
+ 291 00a0 4FF0010C 		mov	ip, #1
+ 292 00a4 0CFA02FC 		lsl	ip, ip, r2
+ 293 00a8 40EA0C00 		orr	r0, r0, ip
+ 294 00ac 6061     		str	r0, [r4, #20]
+  67:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
+ 295              		.loc 1 67 47 discriminator 3 view .LVU69
+ 296 00ae 0132     		adds	r2, r2, #1
+ 297              	.LVL16:
  298              	.L13:
-  60:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
- 299              		.loc 1 60 39 discriminator 1 view .LVU71
- 300 00aa 0A2A     		cmp	r2, #10
- 301 00ac F6DD     		ble	.L16
+  67:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
+ 299              		.loc 1 67 39 discriminator 1 view .LVU70
+ 300 00b0 0A2A     		cmp	r2, #10
+ 301 00b2 F3DD     		ble	.L16
  302              	.LBE9:
-  62:Core/Src/main.c ****                     active_leds = 0;
- 303              		.loc 1 62 21 view .LVU72
- 304              		.loc 1 62 33 is_stmt 0 view .LVU73
- 305 00ae 144A     		ldr	r2, .L25+8
- 306              	.LVL18:
- 307              		.loc 1 62 33 view .LVU74
- 308 00b0 0021     		movs	r1, #0
- 309 00b2 1160     		str	r1, [r2]
- 310              	.LVL19:
+  69:Core/Src/main.c ****                     active_leds = 0;
+ 303              		.loc 1 69 21 view .LVU71
+ 304              		.loc 1 69 33 is_stmt 0 view .LVU72
+ 305 00b4 1A4A     		ldr	r2, .L25+8
+ 306              	.LVL17:
+ 307              		.loc 1 69 33 view .LVU73
+ 308 00b6 0020     		movs	r0, #0
+ 309 00b8 1060     		str	r0, [r2]
+ 310              	.LVL18:
  311              	.L6:
-  63:Core/Src/main.c ****                 }
-  64:Core/Src/main.c ****             }
-  65:Core/Src/main.c ****         }
-  66:Core/Src/main.c ****         prev_btn2 = btn2;
- 312              		.loc 1 66 9 is_stmt 1 view .LVU75
- 313              		.loc 1 66 19 is_stmt 0 view .LVU76
- 314 00b4 144A     		ldr	r2, .L25+16
- 315 00b6 1370     		strb	r3, [r2]
- 316              	.LBE2:
-  17:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
- 317              		.loc 1 17 11 is_stmt 1 view .LVU77
- 318              	.LVL20:
- 319              	.L17:
-  17:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
- 320              		.loc 1 17 5 view .LVU78
- 321              	.LBB11:
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 9
+  70:Core/Src/main.c ****                 }
+  71:Core/Src/main.c ****             }
+  72:Core/Src/main.c ****         }
+  73:Core/Src/main.c ****         prev_btn2 = btn2;
+ 312              		.loc 1 73 9 is_stmt 1 view .LVU74
+ 313              		.loc 1 73 19 is_stmt 0 view .LVU75
+ 314 00ba 1B4A     		ldr	r2, .L25+16
+ 315 00bc 1370     		strb	r3, [r2]
+  74:Core/Src/main.c **** 
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 9
 
 
-  18:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
- 322              		.loc 1 18 9 view .LVU79
-  18:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
- 323              		.loc 1 18 30 is_stmt 0 view .LVU80
- 324 00b8 124B     		ldr	r3, .L25+12
- 325 00ba 9A68     		ldr	r2, [r3, #8]
-  18:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
- 326              		.loc 1 18 17 view .LVU81
- 327 00bc 02F00102 		and	r2, r2, #1
- 328              	.LVL21:
-  19:Core/Src/main.c **** 
- 329              		.loc 1 19 9 is_stmt 1 view .LVU82
-  19:Core/Src/main.c **** 
- 330              		.loc 1 19 30 is_stmt 0 view .LVU83
- 331 00c0 9B68     		ldr	r3, [r3, #8]
-  19:Core/Src/main.c **** 
- 332              		.loc 1 19 17 view .LVU84
- 333 00c2 C3F34003 		ubfx	r3, r3, #1, #1
- 334              	.LVL22:
-  23:Core/Src/main.c ****             led_count++;
- 335              		.loc 1 23 9 is_stmt 1 view .LVU85
-  23:Core/Src/main.c ****             led_count++;
- 336              		.loc 1 23 23 is_stmt 0 view .LVU86
- 337 00c6 1149     		ldr	r1, .L25+20
- 338 00c8 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
-  23:Core/Src/main.c ****             led_count++;
- 339              		.loc 1 23 12 view .LVU87
- 340 00ca 0129     		cmp	r1, #1
- 341 00cc 9CD0     		beq	.L23
- 342              	.L5:
-  27:Core/Src/main.c **** 
- 343              		.loc 1 27 9 is_stmt 1 view .LVU88
-  27:Core/Src/main.c **** 
- 344              		.loc 1 27 19 is_stmt 0 view .LVU89
- 345 00ce 0F49     		ldr	r1, .L25+20
- 346 00d0 0A70     		strb	r2, [r1]
-  31:Core/Src/main.c ****             if (led_count == 6) {
- 347              		.loc 1 31 9 is_stmt 1 view .LVU90
-  31:Core/Src/main.c ****             if (led_count == 6) {
- 348              		.loc 1 31 23 is_stmt 0 view .LVU91
- 349 00d2 0D4A     		ldr	r2, .L25+16
- 350              	.LVL23:
-  31:Core/Src/main.c ****             if (led_count == 6) {
- 351              		.loc 1 31 23 view .LVU92
- 352 00d4 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
-  31:Core/Src/main.c ****             if (led_count == 6) {
- 353              		.loc 1 31 12 view .LVU93
- 354 00d6 012A     		cmp	r2, #1
- 355 00d8 ECD1     		bne	.L6
-  31:Core/Src/main.c ****             if (led_count == 6) {
- 356              		.loc 1 31 28 discriminator 1 view .LVU94
- 357 00da 002B     		cmp	r3, #0
- 358 00dc EAD1     		bne	.L6
-  32:Core/Src/main.c ****                 flag = 1;
- 359              		.loc 1 32 13 is_stmt 1 view .LVU95
-  32:Core/Src/main.c ****                 flag = 1;
- 360              		.loc 1 32 27 is_stmt 0 view .LVU96
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 10
+  75:Core/Src/main.c ****         btn1_state_viewer = btn1;
+ 316              		.loc 1 75 9 is_stmt 1 view .LVU76
+ 317              		.loc 1 75 27 is_stmt 0 view .LVU77
+ 318 00be 1B4A     		ldr	r2, .L25+20
+ 319 00c0 1170     		strb	r1, [r2]
+  76:Core/Src/main.c ****         btn2_state_viewer = btn2;
+ 320              		.loc 1 76 9 is_stmt 1 view .LVU78
+ 321              		.loc 1 76 27 is_stmt 0 view .LVU79
+ 322 00c2 1B4A     		ldr	r2, .L25+24
+ 323 00c4 1370     		strb	r3, [r2]
+  77:Core/Src/main.c ****         leds_active_viewer = active_leds;
+ 324              		.loc 1 77 9 is_stmt 1 view .LVU80
+ 325              		.loc 1 77 28 is_stmt 0 view .LVU81
+ 326 00c6 164B     		ldr	r3, .L25+8
+ 327              	.LVL19:
+ 328              		.loc 1 77 28 view .LVU82
+ 329 00c8 1A68     		ldr	r2, [r3]
+ 330 00ca 1A4B     		ldr	r3, .L25+28
+ 331 00cc 1A70     		strb	r2, [r3]
+  78:Core/Src/main.c ****         led_count_viewer = led_count;
+ 332              		.loc 1 78 9 is_stmt 1 view .LVU83
+ 333              		.loc 1 78 26 is_stmt 0 view .LVU84
+ 334 00ce 124B     		ldr	r3, .L25
+ 335 00d0 1A68     		ldr	r2, [r3]
+ 336 00d2 194B     		ldr	r3, .L25+32
+ 337 00d4 1A70     		strb	r2, [r3]
+ 338              	.LBE2:
+  24:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
+ 339              		.loc 1 24 11 is_stmt 1 view .LVU85
+ 340              	.LVL20:
+ 341              	.L17:
+  24:Core/Src/main.c ****         uint8_t btn1 = (GPIOA->IDR & GPIO_IDR_IDR0) >> 0;
+ 342              		.loc 1 24 5 view .LVU86
+ 343              	.LBB11:
+  25:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
+ 344              		.loc 1 25 9 view .LVU87
+  25:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
+ 345              		.loc 1 25 30 is_stmt 0 view .LVU88
+ 346 00d6 134B     		ldr	r3, .L25+12
+ 347 00d8 9968     		ldr	r1, [r3, #8]
+  25:Core/Src/main.c ****         uint8_t btn2 = (GPIOA->IDR & GPIO_IDR_IDR1) >> 1;
+ 348              		.loc 1 25 17 view .LVU89
+ 349 00da 01F00101 		and	r1, r1, #1
+ 350              	.LVL21:
+  26:Core/Src/main.c **** 
+ 351              		.loc 1 26 9 is_stmt 1 view .LVU90
+  26:Core/Src/main.c **** 
+ 352              		.loc 1 26 30 is_stmt 0 view .LVU91
+ 353 00de 9B68     		ldr	r3, [r3, #8]
+  26:Core/Src/main.c **** 
+ 354              		.loc 1 26 17 view .LVU92
+ 355 00e0 C3F34003 		ubfx	r3, r3, #1, #1
+ 356              	.LVL22:
+  30:Core/Src/main.c ****             led_count++;
+ 357              		.loc 1 30 9 is_stmt 1 view .LVU93
+  30:Core/Src/main.c ****             led_count++;
+ 358              		.loc 1 30 23 is_stmt 0 view .LVU94
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 10
 
 
- 361 00de 064A     		ldr	r2, .L25
- 362 00e0 1068     		ldr	r0, [r2]
-  32:Core/Src/main.c ****                 flag = 1;
- 363              		.loc 1 32 16 view .LVU97
- 364 00e2 0628     		cmp	r0, #6
- 365 00e4 9CD0     		beq	.L24
-  47:Core/Src/main.c ****                 // иначе поэтапное включение групп
- 366              		.loc 1 47 17 is_stmt 1 view .LVU98
-  47:Core/Src/main.c ****                 // иначе поэтапное включение групп
- 367              		.loc 1 47 22 is_stmt 0 view .LVU99
- 368 00e6 054A     		ldr	r2, .L25+4
- 369 00e8 0021     		movs	r1, #0
-  47:Core/Src/main.c ****                 // иначе поэтапное включение групп
- 370              		.loc 1 47 22 view .LVU100
- 371 00ea 1170     		strb	r1, [r2]
-  49:Core/Src/main.c ****                     
- 372              		.loc 1 49 17 is_stmt 1 view .LVU101
-  49:Core/Src/main.c ****                     
- 373              		.loc 1 49 33 is_stmt 0 view .LVU102
- 374 00ec 044A     		ldr	r2, .L25+8
- 375 00ee 1568     		ldr	r5, [r2]
-  49:Core/Src/main.c ****                     
- 376              		.loc 1 49 20 view .LVU103
- 377 00f0 052D     		cmp	r5, #5
- 378 00f2 C9DD     		ble	.L19
- 379              	.LBB10:
-  60:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
- 380              		.loc 1 60 30 view .LVU104
- 381 00f4 0522     		movs	r2, #5
- 382 00f6 D8E7     		b	.L13
- 383              	.L26:
- 384              		.align	2
- 385              	.L25:
- 386 00f8 00000000 		.word	led_count
- 387 00fc 00000000 		.word	flag
- 388 0100 00000000 		.word	active_leds
- 389 0104 00080140 		.word	1073809408
- 390 0108 00000000 		.word	prev_btn2
- 391 010c 00000000 		.word	prev_btn1
- 392              	.LBE10:
- 393              	.LBE11:
- 394              		.cfi_endproc
- 395              	.LFE66:
- 397              		.global	prev_btn2
- 398              		.section	.data.prev_btn2,"aw"
- 401              	prev_btn2:
- 402 0000 01       		.byte	1
- 403              		.global	prev_btn1
- 404              		.section	.data.prev_btn1,"aw"
- 407              	prev_btn1:
- 408 0000 01       		.byte	1
- 409              		.global	active_leds
- 410              		.section	.bss.active_leds,"aw",%nobits
- 411              		.align	2
- 414              	active_leds:
- 415 0000 00000000 		.space	4
- 416              		.global	led_count
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 11
+ 359 00e4 154A     		ldr	r2, .L25+36
+ 360 00e6 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  30:Core/Src/main.c ****             led_count++;
+ 361              		.loc 1 30 12 view .LVU95
+ 362 00e8 012A     		cmp	r2, #1
+ 363 00ea 8DD0     		beq	.L23
+ 364              	.L5:
+  34:Core/Src/main.c **** 
+ 365              		.loc 1 34 9 is_stmt 1 view .LVU96
+  34:Core/Src/main.c **** 
+ 366              		.loc 1 34 19 is_stmt 0 view .LVU97
+ 367 00ec 134A     		ldr	r2, .L25+36
+ 368 00ee 1170     		strb	r1, [r2]
+  38:Core/Src/main.c ****             if (led_count == 6) {
+ 369              		.loc 1 38 9 is_stmt 1 view .LVU98
+  38:Core/Src/main.c ****             if (led_count == 6) {
+ 370              		.loc 1 38 23 is_stmt 0 view .LVU99
+ 371 00f0 0D4A     		ldr	r2, .L25+16
+ 372 00f2 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  38:Core/Src/main.c ****             if (led_count == 6) {
+ 373              		.loc 1 38 12 view .LVU100
+ 374 00f4 012A     		cmp	r2, #1
+ 375 00f6 E0D1     		bne	.L6
+  38:Core/Src/main.c ****             if (led_count == 6) {
+ 376              		.loc 1 38 28 discriminator 1 view .LVU101
+ 377 00f8 002B     		cmp	r3, #0
+ 378 00fa DED1     		bne	.L6
+  39:Core/Src/main.c ****                 flag = 1;
+ 379              		.loc 1 39 13 is_stmt 1 view .LVU102
+  39:Core/Src/main.c ****                 flag = 1;
+ 380              		.loc 1 39 27 is_stmt 0 view .LVU103
+ 381 00fc 064A     		ldr	r2, .L25
+ 382 00fe 1468     		ldr	r4, [r2]
+  39:Core/Src/main.c ****                 flag = 1;
+ 383              		.loc 1 39 16 view .LVU104
+ 384 0100 062C     		cmp	r4, #6
+ 385 0102 8DD0     		beq	.L24
+  54:Core/Src/main.c ****                 // иначе поэтапное включение групп
+ 386              		.loc 1 54 17 is_stmt 1 view .LVU105
+  54:Core/Src/main.c ****                 // иначе поэтапное включение групп
+ 387              		.loc 1 54 22 is_stmt 0 view .LVU106
+ 388 0104 054A     		ldr	r2, .L25+4
+ 389 0106 0020     		movs	r0, #0
+ 390 0108 1070     		strb	r0, [r2]
+  56:Core/Src/main.c ****                     
+ 391              		.loc 1 56 17 is_stmt 1 view .LVU107
+  56:Core/Src/main.c ****                     
+ 392              		.loc 1 56 33 is_stmt 0 view .LVU108
+ 393 010a 054A     		ldr	r2, .L25+8
+ 394 010c 1668     		ldr	r6, [r2]
+  56:Core/Src/main.c ****                     
+ 395              		.loc 1 56 20 view .LVU109
+ 396 010e 052E     		cmp	r6, #5
+ 397 0110 BADD     		ble	.L19
+ 398              	.LBB10:
+  67:Core/Src/main.c ****                         SET_BIT(GPIOA->BRR, (1UL << i));
+ 399              		.loc 1 67 30 view .LVU110
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 11
 
 
- 417              		.section	.data.led_count,"aw"
- 418              		.align	2
- 421              	led_count:
- 422 0000 01000000 		.word	1
- 423              		.global	flag
- 424              		.section	.bss.flag,"aw",%nobits
- 427              	flag:
- 428 0000 00       		.space	1
- 429              		.text
- 430              	.Letext0:
- 431              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
- 432              		.file 4 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 433              		.file 5 "CMSIS/Devices/STM32F1xx/Inc/STM32f103xB/stm32f103xb.h"
-ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s 			page 12
+ 400 0112 0522     		movs	r2, #5
+ 401 0114 CCE7     		b	.L13
+ 402              	.L26:
+ 403 0116 00BF     		.align	2
+ 404              	.L25:
+ 405 0118 00000000 		.word	led_count
+ 406 011c 00000000 		.word	flag
+ 407 0120 00000000 		.word	active_leds
+ 408 0124 00080140 		.word	1073809408
+ 409 0128 00000000 		.word	prev_btn2
+ 410 012c 00000000 		.word	btn1_state_viewer
+ 411 0130 00000000 		.word	btn2_state_viewer
+ 412 0134 00000000 		.word	leds_active_viewer
+ 413 0138 00000000 		.word	led_count_viewer
+ 414 013c 00000000 		.word	prev_btn1
+ 415              	.LBE10:
+ 416              	.LBE11:
+ 417              		.cfi_endproc
+ 418              	.LFE66:
+ 420              		.global	prev_btn2
+ 421              		.section	.data.prev_btn2,"aw"
+ 424              	prev_btn2:
+ 425 0000 01       		.byte	1
+ 426              		.global	prev_btn1
+ 427              		.section	.data.prev_btn1,"aw"
+ 430              	prev_btn1:
+ 431 0000 01       		.byte	1
+ 432              		.global	active_leds
+ 433              		.section	.bss.active_leds,"aw",%nobits
+ 434              		.align	2
+ 437              	active_leds:
+ 438 0000 00000000 		.space	4
+ 439              		.global	led_count
+ 440              		.section	.data.led_count,"aw"
+ 441              		.align	2
+ 444              	led_count:
+ 445 0000 01000000 		.word	1
+ 446              		.global	led_count_viewer
+ 447              		.section	.data.led_count_viewer,"aw"
+ 450              	led_count_viewer:
+ 451 0000 01       		.byte	1
+ 452              		.global	leds_active_viewer
+ 453              		.section	.bss.leds_active_viewer,"aw",%nobits
+ 456              	leds_active_viewer:
+ 457 0000 00       		.space	1
+ 458              		.global	btn2_state_viewer
+ 459              		.section	.data.btn2_state_viewer,"aw"
+ 462              	btn2_state_viewer:
+ 463 0000 01       		.byte	1
+ 464              		.global	btn1_state_viewer
+ 465              		.section	.data.btn1_state_viewer,"aw"
+ 468              	btn1_state_viewer:
+ 469 0000 01       		.byte	1
+ 470              		.global	flag
+ 471              		.section	.bss.flag,"aw",%nobits
+ 474              	flag:
+ 475 0000 00       		.space	1
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 12
+
+
+ 476              		.text
+ 477              	.Letext0:
+ 478              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 479              		.file 4 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 480              		.file 5 "CMSIS/Devices/STM32F1xx/Inc/STM32f103xB/stm32f103xb.h"
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s 			page 13
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:19     .text.GPIO_Ini:00000000 $t
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:25     .text.GPIO_Ini:00000000 GPIO_Ini
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:98     .text.GPIO_Ini:00000084 $d
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:104    .text.main:00000000 $t
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:110    .text.main:00000000 main
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:386    .text.main:000000f8 $d
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:421    .data.led_count:00000000 led_count
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:427    .bss.flag:00000000 flag
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:414    .bss.active_leds:00000000 active_leds
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:401    .data.prev_btn2:00000000 prev_btn2
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:407    .data.prev_btn1:00000000 prev_btn1
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:411    .bss.active_leds:00000000 $d
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:418    .data.led_count:00000000 $d
-C:\Users\stepa\AppData\Local\Temp\ccPBMzaG.s:428    .bss.flag:00000000 $d
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:19     .text.GPIO_Ini:00000000 $t
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:25     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:98     .text.GPIO_Ini:00000084 $d
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:104    .text.main:00000000 $t
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:110    .text.main:00000000 main
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:405    .text.main:00000118 $d
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:444    .data.led_count:00000000 led_count
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:474    .bss.flag:00000000 flag
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:437    .bss.active_leds:00000000 active_leds
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:424    .data.prev_btn2:00000000 prev_btn2
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:468    .data.btn1_state_viewer:00000000 btn1_state_viewer
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:462    .data.btn2_state_viewer:00000000 btn2_state_viewer
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:456    .bss.leds_active_viewer:00000000 leds_active_viewer
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:450    .data.led_count_viewer:00000000 led_count_viewer
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:430    .data.prev_btn1:00000000 prev_btn1
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:434    .bss.active_leds:00000000 $d
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:441    .data.led_count:00000000 $d
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:457    .bss.leds_active_viewer:00000000 $d
+C:\Users\stepa\AppData\Local\Temp\ccDeSQ8s.s:475    .bss.flag:00000000 $d
 
 NO UNDEFINED SYMBOLS

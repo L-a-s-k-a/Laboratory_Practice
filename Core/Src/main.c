@@ -2,6 +2,13 @@
 #include "Init.c"
 
 uint8_t flag;
+
+
+
+uint8_t btn1_state_viewer = 1;
+uint8_t btn2_state_viewer = 1;
+uint8_t leds_active_viewer = 0;
+uint8_t led_count_viewer = 1;
 // Переменные
 int led_count = 1;     // сколько включается одновременно (1..6)
 int active_leds = 0;   // сколько сейчас включено
@@ -64,6 +71,11 @@ int main(void) {
             }
         }
         prev_btn2 = btn2;
+
+        btn1_state_viewer = btn1;
+        btn2_state_viewer = btn2;
+        leds_active_viewer = active_leds;
+        led_count_viewer = led_count;
 
     
     }
