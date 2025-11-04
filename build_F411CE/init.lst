@@ -1,0 +1,104 @@
+ARM GAS  C:\Users\Kirs\AppData\Local\Temp\ccDPip6a.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Init:
+  28              	.LFB0:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void GPIO_Init(void)
+   4:Core/Src/init.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****     // 1. Включение тактирования порта GPIOC (RCC_AHB1ENR, Bit 2)
+   6:Core/Src/init.c ****     *(uint32_t*)(RCC_AHB1ENR_ADDR) |= RCC_GPIOC_EN; 
+  34              		.loc 1 6 5 view .LVU1
+  35 0000 0F4A     		ldr	r2, .L2
+  36 0002 D2F83038 		ldr	r3, [r2, #2096]
+  37              		.loc 1 6 36 is_stmt 0 view .LVU2
+  38 0006 43F00403 		orr	r3, r3, #4
+  39 000a C2F83038 		str	r3, [r2, #2096]
+   7:Core/Src/init.c **** 
+   8:Core/Src/init.c ****     // 2. Настройка PC13 в режим вывода (Output mode: MODER13 = 01b)
+   9:Core/Src/init.c ****     *(uint32_t*)(GPIOC_BASE + GPIOC_MODER_OFFSET) &= ~GPIOC_MODER_CLEAR; 
+  40              		.loc 1 9 5 is_stmt 1 view .LVU3
+  41 000e 0D4B     		ldr	r3, .L2+4
+  42 0010 D3F80028 		ldr	r2, [r3, #2048]
+  43              		.loc 1 9 51 is_stmt 0 view .LVU4
+  44 0014 22F00C02 		bic	r2, r2, #12
+  45 0018 C3F80028 		str	r2, [r3, #2048]
+  10:Core/Src/init.c ****     *(uint32_t*)(GPIOC_BASE + GPIOC_MODER_OFFSET) |= GPIOC_MODER_OUTPUT; 
+  46              		.loc 1 10 5 is_stmt 1 view .LVU5
+  47              		.loc 1 10 51 is_stmt 0 view .LVU6
+  48 001c 42F08062 		orr	r2, r2, #67108864
+ARM GAS  C:\Users\Kirs\AppData\Local\Temp\ccDPip6a.s 			page 2
+
+
+  49 0020 C3F80028 		str	r2, [r3, #2048]
+  11:Core/Src/init.c **** 
+  12:Core/Src/init.c ****     // 3. Настройка на Push-Pull (OTYPER13 = 0b)
+  13:Core/Src/init.c ****     *(uint32_t*)(GPIOC_BASE + GPIOC_OTYPER_OFFSET) &= ~(1 << 13);
+  50              		.loc 1 13 5 is_stmt 1 view .LVU7
+  51 0024 D3F80428 		ldr	r2, [r3, #2052]
+  52              		.loc 1 13 52 is_stmt 0 view .LVU8
+  53 0028 22F40052 		bic	r2, r2, #8192
+  54 002c C3F80428 		str	r2, [r3, #2052]
+  14:Core/Src/init.c **** 
+  15:Core/Src/init.c ****     // 4. Отключение PU/PD резисторов (PUPDR13 = 00b)
+  16:Core/Src/init.c ****     *(uint32_t*)(GPIOC_BASE + GPIOC_PUPDR_OFFSET) &= ~GPIOC_MODER_CLEAR; 
+  55              		.loc 1 16 5 is_stmt 1 view .LVU9
+  56 0030 D3F80C28 		ldr	r2, [r3, #2060]
+  57              		.loc 1 16 51 is_stmt 0 view .LVU10
+  58 0034 22F00C02 		bic	r2, r2, #12
+  59 0038 C3F80C28 		str	r2, [r3, #2060]
+  17:Core/Src/init.c **** }
+  60              		.loc 1 17 1 view .LVU11
+  61 003c 7047     		bx	lr
+  62              	.L3:
+  63 003e 00BF     		.align	2
+  64              	.L2:
+  65 0040 00300240 		.word	1073885184
+  66 0044 00000240 		.word	1073872896
+  67              		.cfi_endproc
+  68              	.LFE0:
+  70              		.text
+  71              	.Letext0:
+  72              		.file 2 "D:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+  73              		.file 3 "D:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\Kirs\AppData\Local\Temp\ccDPip6a.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\Kirs\AppData\Local\Temp\ccDPip6a.s:21     .text.GPIO_Init:00000000 $t
+C:\Users\Kirs\AppData\Local\Temp\ccDPip6a.s:27     .text.GPIO_Init:00000000 GPIO_Init
+C:\Users\Kirs\AppData\Local\Temp\ccDPip6a.s:65     .text.GPIO_Init:00000040 $d
+
+NO UNDEFINED SYMBOLS
