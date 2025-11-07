@@ -1,14 +1,15 @@
 #include <stdint.h>
 
+
 // Адреса регистров
-// #define GPIOA_IDR  (*(uint32_t*)(0x40010808))
-// #define GPIOA_BSRR (*(uint32_t*)(0x40010810))
-// #define GPIOA_BRR  (*(uint32_t*)(0x40010814))
+#define GPIOA_IDR  (*(uint32_t*)(0x40010808))
+#define GPIOA_BSRR (*(uint32_t*)(0x40010810))
+#define GPIOA_BRR  (*(uint32_t*)(0x40010814))
 
 #define CRL1 (0x00)
 #define CRH1 (0x04)
-#define IDR11 (0x08)
-#define ODR11 (0x0C)
+#define IDR1 (0x08)
+#define ODR1 (0x0C)
 #define BSRR1 (0x10)
 #define BRR1 (0x14)
 
@@ -16,9 +17,9 @@
 #define IOPAEN ((1UL << 2UL))
 
 #define GPIO_PORT_A_CRL (*(uint32_t*)(0x40010800 + CRL1))
-#define GPIO_PORT_A_CRH1 (*(uint32_t*)(0x40010800 + CRH1))
-#define GPIO_PORT_A_IDR (*(uint32_t*)(0x40010800 + IDR11))
-#define GPIO_PORT_A_ODR (*(uint32_t*)(0x40010800 + ODR11))
+#define GPIO_PORT_A_CRH (*(uint32_t*)(0x40010800 + CRH1))
+#define GPIO_PORT_A_IDR (*(uint32_t*)(0x40010800 + IDR1))
+#define GPIO_PORT_A_ODR (*(uint32_t*)(0x40010800 + ODR1))
 #define GPIO_PORT_A_BSRR (*(uint32_t*)(0x40010800 + BSRR1))
 #define GPIO_PORT_A_BRR (*(uint32_t*)(0x40010800 + BRR1))
 
@@ -55,10 +56,11 @@
 #define CRL_CNF0_1 ((0x2UL << (2UL)))
 #define CRL_CNF1_1 ((0x2UL << (6UL)))
 
-#define ODR0 ((0x1UL << 0UL))
-#define ODR1 ((0x1UL << 1UL))
+#define ODR0_1 ((0x1UL << 0UL))
+#define ODR1_1 ((0x1UL << 1UL))
 
-#define IDR0 ((0x1UL << 0UL))
-#define IDR1 ((0x1UL << 1UL))
+#define IDR0_1 ((0x1UL << 0UL))
+#define IDR1_1 ((0x1UL << 1UL))
+
 
 void GPIO_Ini(void);

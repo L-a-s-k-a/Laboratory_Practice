@@ -1,7 +1,7 @@
 #include "init.h"
+
 #include "../../CMSIS/Devices/STM32F1xx/Inc/STM32f1xx.h"
 #include "../../CMSIS/Devices/STM32F1xx/Inc/STM32f103xB/stm32f103xb.h"
-
 
 void GPIO_Ini(void){
     
@@ -39,18 +39,17 @@ void GPIO_Ini(void){
     SET_BIT(GPIOA->CRH, GPIO_CRH_MODE10_1);
 
     //Настраиваем кнопки PA0, PA1 как входы с подтяжкой вверх
-    GPIO_PORT_A_CRL &= ~(CRL_MODE0 |
-                          CRL_CNF0 |
-                          CRL_MODE1|
-                          CRL_CNF1);
+    GPIO_PORT_A_CRL &= ~(CRH_MODE_8 |
+                                  CRH_CNF_8 |
+                                  CRH_MODE9_2 |
+                                  CRH_CNF_9);
 
     GPIO_PORT_A_CRL |=  (CRL_CNF0_1 |
-                         CRL_CNF1_1);  // CNF=10, MODE=00
-
+                                  CRL_CNF1_1);  // CNF=10, MODE=00
 
     
                         
-    GPIO_PORT_A_ODR |= (ODR0 | ODR1); // подтяжка 
+    GPIO_PORT_A_ODR |= (ODR0_1 | ODR1_1); // подтяжка 
     //Подаём питание на при нажатии
 
 
