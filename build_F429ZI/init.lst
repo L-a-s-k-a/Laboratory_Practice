@@ -1,0 +1,371 @@
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccImWAMg.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Init_PortA_Manual,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Init_PortA_Manual
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Init_PortA_Manual:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "../Inc/init.h"
+   2:Core/Src/init.c **** #include "init.h"
+   3:Core/Src/init.c **** 
+   4:Core/Src/init.c **** /* =========================================================
+   5:Core/Src/init.c ****  * PORT A — ВРУЧНУЮ ПО АБСОЛЮТНЫМ АДРЕСАМ (без переменных)
+   6:Core/Src/init.c ****  * PA0: Input Pull-Up (кнопка), PA5: Output PP Medium (LED)
+   7:Core/Src/init.c ****  * Управление LED через BSRR
+   8:Core/Src/init.c ****  * =========================================================
+   9:Core/Src/init.c ****  */
+  10:Core/Src/init.c **** 
+  11:Core/Src/init.c **** void GPIO_Init_PortA_Manual(void)
+  12:Core/Src/init.c **** {
+  29              		.loc 1 12 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  13:Core/Src/init.c ****     /* Тактирование GPIOA (бит0) */
+  14:Core/Src/init.c ****     *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x00000001UL;
+  34              		.loc 1 14 5 view .LVU1
+  35 0000 154A     		ldr	r2, .L2
+  36 0002 D2F83038 		ldr	r3, [r2, #2096]
+  37              		.loc 1 14 42 is_stmt 0 view .LVU2
+  38 0006 43F00103 		orr	r3, r3, #1
+  39 000a C2F83038 		str	r3, [r2, #2096]
+  15:Core/Src/init.c ****     /* === PA0: Input + Pull-Up === */
+  16:Core/Src/init.c ****     /* MODER0 = 00 */
+  17:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x00UL) &= ~0x00000003UL;
+  40              		.loc 1 17 5 is_stmt 1 view .LVU3
+  41 000e 134B     		ldr	r3, .L2+4
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccImWAMg.s 			page 2
+
+
+  42 0010 1968     		ldr	r1, [r3]
+  43              		.loc 1 17 42 is_stmt 0 view .LVU4
+  44 0012 21F00301 		bic	r1, r1, #3
+  45 0016 1960     		str	r1, [r3]
+  18:Core/Src/init.c ****     /* PUPDR0 = 01 */
+  19:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x0CUL) &= ~0x00000003UL;
+  46              		.loc 1 19 5 is_stmt 1 view .LVU5
+  47 0018 DA68     		ldr	r2, [r3, #12]
+  48              		.loc 1 19 42 is_stmt 0 view .LVU6
+  49 001a 22F00302 		bic	r2, r2, #3
+  50 001e DA60     		str	r2, [r3, #12]
+  20:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x0CUL) |= 0x00000001UL;
+  51              		.loc 1 20 5 is_stmt 1 view .LVU7
+  52              		.loc 1 20 42 is_stmt 0 view .LVU8
+  53 0020 42F00102 		orr	r2, r2, #1
+  54 0024 DA60     		str	r2, [r3, #12]
+  21:Core/Src/init.c ****     /* === PA5: Output, PP, Medium, NoPull === */
+  22:Core/Src/init.c ****     /* MODER5 = 01 */
+  23:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x00UL) &= ~0x00000C00UL;
+  55              		.loc 1 23 5 is_stmt 1 view .LVU9
+  56              		.loc 1 23 42 is_stmt 0 view .LVU10
+  57 0026 21F44061 		bic	r1, r1, #3072
+  58 002a 1960     		str	r1, [r3]
+  24:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x00UL) |= 0x00000400UL;
+  59              		.loc 1 24 5 is_stmt 1 view .LVU11
+  60              		.loc 1 24 42 is_stmt 0 view .LVU12
+  61 002c 41F48061 		orr	r1, r1, #1024
+  62 0030 1960     		str	r1, [r3]
+  25:Core/Src/init.c ****     /* OTYPER5 = 0 (PP) */
+  26:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x04UL) &= ~0x00000020UL;
+  63              		.loc 1 26 5 is_stmt 1 view .LVU13
+  64 0032 5968     		ldr	r1, [r3, #4]
+  65              		.loc 1 26 42 is_stmt 0 view .LVU14
+  66 0034 21F02001 		bic	r1, r1, #32
+  67 0038 5960     		str	r1, [r3, #4]
+  27:Core/Src/init.c ****     /* OSPEEDR5 = 01 */
+  28:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x08UL) &= ~0x00000C00UL;
+  68              		.loc 1 28 5 is_stmt 1 view .LVU15
+  69 003a 9968     		ldr	r1, [r3, #8]
+  70              		.loc 1 28 42 is_stmt 0 view .LVU16
+  71 003c 21F44061 		bic	r1, r1, #3072
+  72 0040 9960     		str	r1, [r3, #8]
+  29:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x08UL) |= 0x00000400UL;
+  73              		.loc 1 29 5 is_stmt 1 view .LVU17
+  74              		.loc 1 29 42 is_stmt 0 view .LVU18
+  75 0042 41F48061 		orr	r1, r1, #1024
+  76 0046 9960     		str	r1, [r3, #8]
+  30:Core/Src/init.c ****     /* PUPDR5 = 00 */
+  31:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x0CUL) &= ~0x00000C00UL;
+  77              		.loc 1 31 5 is_stmt 1 view .LVU19
+  78              		.loc 1 31 42 is_stmt 0 view .LVU20
+  79 0048 22F44062 		bic	r2, r2, #3072
+  80 004c DA60     		str	r2, [r3, #12]
+  32:Core/Src/init.c ****     /* Погасить PA5 через BSRR: BR5 (1<<(5+16)) */
+  33:Core/Src/init.c ****     *(uint32_t *)(0x40020000UL + 0x18UL) = 0x00200000UL;
+  81              		.loc 1 33 5 is_stmt 1 view .LVU21
+  82              		.loc 1 33 42 is_stmt 0 view .LVU22
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccImWAMg.s 			page 3
+
+
+  83 004e 4FF40012 		mov	r2, #2097152
+  84 0052 9A61     		str	r2, [r3, #24]
+  34:Core/Src/init.c **** }
+  85              		.loc 1 34 1 view .LVU23
+  86 0054 7047     		bx	lr
+  87              	.L3:
+  88 0056 00BF     		.align	2
+  89              	.L2:
+  90 0058 00300240 		.word	1073885184
+  91 005c 00000240 		.word	1073872896
+  92              		.cfi_endproc
+  93              	.LFE130:
+  95              		.section	.text.GPIO_Init_PortC_Macros,"ax",%progbits
+  96              		.align	1
+  97              		.global	GPIO_Init_PortC_Macros
+  98              		.syntax unified
+  99              		.thumb
+ 100              		.thumb_func
+ 102              	GPIO_Init_PortC_Macros:
+ 103              	.LFB131:
+  35:Core/Src/init.c **** 
+  36:Core/Src/init.c **** /* ======================================================
+  37:Core/Src/init.c ****  * PORT C — ЧЕРЕЗ ПРОСТЫЕ МАКРОСЫ (кнопка PC13)
+  38:Core/Src/init.c ****  * ======================================================
+  39:Core/Src/init.c ****  */
+  40:Core/Src/init.c **** void GPIO_Init_PortC_Macros(void)
+  41:Core/Src/init.c **** {
+ 104              		.loc 1 41 1 is_stmt 1 view -0
+ 105              		.cfi_startproc
+ 106              		@ args = 0, pretend = 0, frame = 0
+ 107              		@ frame_needed = 0, uses_anonymous_args = 0
+ 108              		@ link register save eliminated.
+  42:Core/Src/init.c ****     /* Тактирование GPIOC (бит2) */
+  43:Core/Src/init.c ****     BIT_SET(RCC_AHB1ENR_REG, 0x00000004UL);
+ 109              		.loc 1 43 5 view .LVU25
+ 110 0000 0C4A     		ldr	r2, .L5
+ 111 0002 D2F83038 		ldr	r3, [r2, #2096]
+ 112 0006 43F00403 		orr	r3, r3, #4
+ 113 000a C2F83038 		str	r3, [r2, #2096]
+  44:Core/Src/init.c ****     /* PC13: Input, без внутренних подтяжек (на плате — pull-down) */
+  45:Core/Src/init.c ****     BIT_CLEAR(GPIOC_MODER_REG, PC13_MODER_MASK); /* MODER13 = 00 */
+ 114              		.loc 1 45 5 view .LVU26
+ 115 000e 0A4B     		ldr	r3, .L5+4
+ 116 0010 D3F80028 		ldr	r2, [r3, #2048]
+ 117 0014 22F04062 		bic	r2, r2, #201326592
+ 118 0018 C3F80028 		str	r2, [r3, #2048]
+  46:Core/Src/init.c ****     BIT_CLEAR(GPIOC_PUPDR_REG, PC13_PUPDR_MASK); /* PUPDR13 = 00 */
+ 119              		.loc 1 46 5 view .LVU27
+ 120 001c D3F80C28 		ldr	r2, [r3, #2060]
+ 121 0020 22F04062 		bic	r2, r2, #201326592
+ 122 0024 C3F80C28 		str	r2, [r3, #2060]
+  47:Core/Src/init.c **** 
+  48:Core/Src/init.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1); // PUPDR13 = 10 pull-down
+ 123              		.loc 1 48 5 view .LVU28
+ 124 0028 044A     		ldr	r2, .L5+8
+ 125 002a D368     		ldr	r3, [r2, #12]
+ 126 002c 43F00063 		orr	r3, r3, #134217728
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccImWAMg.s 			page 4
+
+
+ 127 0030 D360     		str	r3, [r2, #12]
+  49:Core/Src/init.c **** }
+ 128              		.loc 1 49 1 is_stmt 0 view .LVU29
+ 129 0032 7047     		bx	lr
+ 130              	.L6:
+ 131              		.align	2
+ 132              	.L5:
+ 133 0034 00300240 		.word	1073885184
+ 134 0038 00000240 		.word	1073872896
+ 135 003c 00080240 		.word	1073874944
+ 136              		.cfi_endproc
+ 137              	.LFE131:
+ 139              		.section	.text.GPIO_Init_PortE_Macros,"ax",%progbits
+ 140              		.align	1
+ 141              		.global	GPIO_Init_PortE_Macros
+ 142              		.syntax unified
+ 143              		.thumb
+ 144              		.thumb_func
+ 146              	GPIO_Init_PortE_Macros:
+ 147              	.LFB132:
+  50:Core/Src/init.c **** 
+  51:Core/Src/init.c **** /* ======================================================
+  52:Core/Src/init.c ****  * PORT E — ЧЕРЕЗ ПРОСТЫЕ МАКРОСЫ (LED на PE0, BSRR)
+  53:Core/Src/init.c ****  * ======================================================
+  54:Core/Src/init.c ****  */
+  55:Core/Src/init.c **** void GPIO_Init_PortE_Macros(void)
+  56:Core/Src/init.c **** {
+ 148              		.loc 1 56 1 is_stmt 1 view -0
+ 149              		.cfi_startproc
+ 150              		@ args = 0, pretend = 0, frame = 0
+ 151              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152              		@ link register save eliminated.
+  57:Core/Src/init.c ****     /* Тактирование GPIOE (бит4) */
+  58:Core/Src/init.c ****     BIT_SET(RCC_AHB1ENR_REG, 0x00000010UL);
+ 153              		.loc 1 58 5 view .LVU31
+ 154 0000 114A     		ldr	r2, .L8
+ 155 0002 D2F83038 		ldr	r3, [r2, #2096]
+ 156 0006 43F01003 		orr	r3, r3, #16
+ 157 000a C2F83038 		str	r3, [r2, #2096]
+  59:Core/Src/init.c **** 
+  60:Core/Src/init.c ****     /* PE0: Output, PP, Medium, NoPull */
+  61:Core/Src/init.c ****     BIT_CLEAR(GPIOE_MODER_REG, PE0_MODER_CLR);
+ 158              		.loc 1 61 5 view .LVU32
+ 159 000e 0F4B     		ldr	r3, .L8+4
+ 160 0010 1A68     		ldr	r2, [r3]
+ 161 0012 22F00302 		bic	r2, r2, #3
+ 162 0016 1A60     		str	r2, [r3]
+  62:Core/Src/init.c ****     BIT_SET(GPIOE_MODER_REG, PE0_MODER_OUT01);
+ 163              		.loc 1 62 5 view .LVU33
+ 164 0018 1A68     		ldr	r2, [r3]
+ 165 001a 42F00102 		orr	r2, r2, #1
+ 166 001e 1A60     		str	r2, [r3]
+  63:Core/Src/init.c **** 
+  64:Core/Src/init.c ****     BIT_CLEAR(GPIOE_OTYPER_REG, PE0_OTYPER_BIT);
+ 167              		.loc 1 64 5 view .LVU34
+ 168 0020 5A68     		ldr	r2, [r3, #4]
+ 169 0022 22F00102 		bic	r2, r2, #1
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccImWAMg.s 			page 5
+
+
+ 170 0026 5A60     		str	r2, [r3, #4]
+  65:Core/Src/init.c ****     BIT_CLEAR(GPIOE_OSPEEDR_REG, PE0_OSPEEDR_CLR);
+ 171              		.loc 1 65 5 view .LVU35
+ 172 0028 9A68     		ldr	r2, [r3, #8]
+ 173 002a 22F00302 		bic	r2, r2, #3
+ 174 002e 9A60     		str	r2, [r3, #8]
+  66:Core/Src/init.c **** 
+  67:Core/Src/init.c ****     BIT_SET(GPIOE_OSPEEDR_REG, PE0_OSPEEDR_MED01);
+ 175              		.loc 1 67 5 view .LVU36
+ 176 0030 9A68     		ldr	r2, [r3, #8]
+ 177 0032 42F00102 		orr	r2, r2, #1
+ 178 0036 9A60     		str	r2, [r3, #8]
+  68:Core/Src/init.c ****     BIT_CLEAR(GPIOE_PUPDR_REG, PE0_PUPDR_CLR);
+ 179              		.loc 1 68 5 view .LVU37
+ 180 0038 DA68     		ldr	r2, [r3, #12]
+ 181 003a 22F00302 		bic	r2, r2, #3
+ 182 003e DA60     		str	r2, [r3, #12]
+  69:Core/Src/init.c **** 
+  70:Core/Src/init.c ****     /* Погасить PE0 через BSRR */
+  71:Core/Src/init.c ****     GPIOE_BSRR_REG = PE0_BSRR_RESET;
+ 183              		.loc 1 71 5 view .LVU38
+ 184              		.loc 1 71 20 is_stmt 0 view .LVU39
+ 185 0040 4FF48032 		mov	r2, #65536
+ 186 0044 9A61     		str	r2, [r3, #24]
+  72:Core/Src/init.c **** }
+ 187              		.loc 1 72 1 view .LVU40
+ 188 0046 7047     		bx	lr
+ 189              	.L9:
+ 190              		.align	2
+ 191              	.L8:
+ 192 0048 00300240 		.word	1073885184
+ 193 004c 00100240 		.word	1073876992
+ 194              		.cfi_endproc
+ 195              	.LFE132:
+ 197              		.section	.text.GPIO_Init_PortD_CMSIS,"ax",%progbits
+ 198              		.align	1
+ 199              		.global	GPIO_Init_PortD_CMSIS
+ 200              		.syntax unified
+ 201              		.thumb
+ 202              		.thumb_func
+ 204              	GPIO_Init_PortD_CMSIS:
+ 205              	.LFB133:
+  73:Core/Src/init.c **** 
+  74:Core/Src/init.c **** /* =========================================
+  75:Core/Src/init.c ****  * PORT D — PD12 (LED) — ЧЕРЕЗ CMSIS + BSRR
+  76:Core/Src/init.c ****  * =========================================
+  77:Core/Src/init.c ****  */
+  78:Core/Src/init.c **** void GPIO_Init_PortD_CMSIS(void)
+  79:Core/Src/init.c **** {
+ 206              		.loc 1 79 1 is_stmt 1 view -0
+ 207              		.cfi_startproc
+ 208              		@ args = 0, pretend = 0, frame = 0
+ 209              		@ frame_needed = 0, uses_anonymous_args = 0
+ 210              		@ link register save eliminated.
+  80:Core/Src/init.c ****     /* Тактирование GPIOD */
+  81:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIODEN);
+ 211              		.loc 1 81 5 view .LVU42
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccImWAMg.s 			page 6
+
+
+ 212 0000 0D4A     		ldr	r2, .L11
+ 213 0002 136B     		ldr	r3, [r2, #48]
+ 214 0004 43F00803 		orr	r3, r3, #8
+ 215 0008 1363     		str	r3, [r2, #48]
+  82:Core/Src/init.c **** 
+  83:Core/Src/init.c ****     /* PD12: Output, PP, Medium, NoPull */
+  84:Core/Src/init.c ****     SET_BIT(GPIOD->MODER, GPIO_MODER_MODE12_0);         /* 01 */
+ 216              		.loc 1 84 5 view .LVU43
+ 217 000a 0C4B     		ldr	r3, .L11+4
+ 218 000c 1A68     		ldr	r2, [r3]
+ 219 000e 42F08072 		orr	r2, r2, #16777216
+ 220 0012 1A60     		str	r2, [r3]
+  85:Core/Src/init.c ****     CLEAR_BIT(GPIOD->OTYPER, GPIO_OTYPER_OT12);         /* PP */
+ 221              		.loc 1 85 5 view .LVU44
+ 222 0014 5A68     		ldr	r2, [r3, #4]
+ 223 0016 22F48052 		bic	r2, r2, #4096
+ 224 001a 5A60     		str	r2, [r3, #4]
+  86:Core/Src/init.c ****     SET_BIT(GPIOD->OSPEEDR, GPIO_OSPEEDER_OSPEEDR12_0); /* 01 */
+ 225              		.loc 1 86 5 view .LVU45
+ 226 001c 9A68     		ldr	r2, [r3, #8]
+ 227 001e 42F08072 		orr	r2, r2, #16777216
+ 228 0022 9A60     		str	r2, [r3, #8]
+  87:Core/Src/init.c ****     CLEAR_BIT(GPIOD->PUPDR, GPIO_PUPDR_PUPD12);         /* 00 */
+ 229              		.loc 1 87 5 view .LVU46
+ 230 0024 DA68     		ldr	r2, [r3, #12]
+ 231 0026 22F04072 		bic	r2, r2, #50331648
+ 232 002a DA60     		str	r2, [r3, #12]
+  88:Core/Src/init.c **** 
+  89:Core/Src/init.c ****     /* Погасить PD12 через BSRR */
+  90:Core/Src/init.c ****     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR12);
+ 233              		.loc 1 90 5 view .LVU47
+ 234 002c 9A69     		ldr	r2, [r3, #24]
+ 235 002e 42F08052 		orr	r2, r2, #268435456
+ 236 0032 9A61     		str	r2, [r3, #24]
+  91:Core/Src/init.c **** }
+ 237              		.loc 1 91 1 is_stmt 0 view .LVU48
+ 238 0034 7047     		bx	lr
+ 239              	.L12:
+ 240 0036 00BF     		.align	2
+ 241              	.L11:
+ 242 0038 00380240 		.word	1073887232
+ 243 003c 000C0240 		.word	1073875968
+ 244              		.cfi_endproc
+ 245              	.LFE133:
+ 247              		.text
+ 248              	.Letext0:
+ 249              		.file 2 "C:/Users/user/Desktop/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/mach
+ 250              		.file 3 "C:/Users/user/Desktop/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/
+ 251              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI/stm32f429xx.h"
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccImWAMg.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:21     .text.GPIO_Init_PortA_Manual:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:27     .text.GPIO_Init_PortA_Manual:00000000 GPIO_Init_PortA_Manual
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:90     .text.GPIO_Init_PortA_Manual:00000058 $d
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:96     .text.GPIO_Init_PortC_Macros:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:102    .text.GPIO_Init_PortC_Macros:00000000 GPIO_Init_PortC_Macros
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:133    .text.GPIO_Init_PortC_Macros:00000034 $d
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:140    .text.GPIO_Init_PortE_Macros:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:146    .text.GPIO_Init_PortE_Macros:00000000 GPIO_Init_PortE_Macros
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:192    .text.GPIO_Init_PortE_Macros:00000048 $d
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:198    .text.GPIO_Init_PortD_CMSIS:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:204    .text.GPIO_Init_PortD_CMSIS:00000000 GPIO_Init_PortD_CMSIS
+C:\Users\user\AppData\Local\Temp\ccImWAMg.s:242    .text.GPIO_Init_PortD_CMSIS:00000038 $d
+
+NO UNDEFINED SYMBOLS
