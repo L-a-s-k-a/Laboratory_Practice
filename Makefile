@@ -15,8 +15,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F411
-TARGET_VERSION = RE
+TARGET_SERIES = STM32F407
+TARGET_VERSION = VE
 
 ######################################
 # building variables
@@ -135,6 +135,9 @@ endif
 C_SOURCES =  \
 $(SYS) \
 Core/Src/main.c \
+Core/Src/BoardInit.c \
+Core/Src/PinInit.c \
+Core/Src/task1.c \
 
 # ASM sources
 ASM_SOURCES =  \
