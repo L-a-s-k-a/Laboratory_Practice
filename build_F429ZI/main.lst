@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccETGRZl.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,40 +20,1250 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccETGRZl.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.main,"ax",%progbits
+  20              		.section	.text.SystemTick_Init,"ax",%progbits
   21              		.align	1
-  22              		.global	main
+  22              		.global	SystemTick_Init
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void){
-  29              		.loc 1 1 15 view -0
+  27              	SystemTick_Init:
+  28              	.LFB130:
+   1:Core/Src/main.c **** 
+   2:Core/Src/main.c **** #include "../Inc/init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** #include "init.h"
+   5:Core/Src/main.c **** #include <stdint.h>
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c **** // ==========================================================================
+   8:Core/Src/main.c **** // GLOBAL VARIABLES FOR SYSTEM STATE
+   9:Core/Src/main.c **** // ==========================================================================
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** // LED management
+  12:Core/Src/main.c **** uint8_t current_led_state = 0;        // Bitmask of currently lit LEDs
+  13:Core/Src/main.c **** uint8_t led_sequence_step = 0;        // Current step in LED sequence (0-6)
+  14:Core/Src/main.c **** const uint8_t LED_PINS[6] = {0, 7, 14, 1, 2, 3}; // PB0, PB7, PB14, PB1, PB2, PB3
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c **** // Blinking management for each LED
+  17:Core/Src/main.c **** uint8_t blink_mode[6] = {0, 0, 0, 0, 0, 0}; // Blink mode for each LED: 0=Constant ON, 1=Low, 2=Med
+  18:Core/Src/main.c **** uint32_t last_blink_time[6] = {0, 0, 0, 0, 0, 0}; // Last blink time for each LED
+  19:Core/Src/main.c **** uint8_t blink_state[6] = {0, 0, 0, 0, 0, 0}; // Current blink state for each LED (0=OFF, 1=ON)
+  20:Core/Src/main.c **** uint32_t blink_intervals[4] = {0, 1000, 500, 200}; // Blink intervals in ms (Constant ON, Low, Medi
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c **** // Button debouncing
+  23:Core/Src/main.c **** uint32_t last_button1_time = 0;       // Last time button 1 was pressed
+  24:Core/Src/main.c **** uint32_t last_button2_time = 0;       // Last time button 2 was pressed
+  25:Core/Src/main.c **** const uint32_t DEBOUNCE_DELAY = 200;  // Debounce delay in ms
+  26:Core/Src/main.c **** 
+  27:Core/Src/main.c **** // System timer
+  28:Core/Src/main.c **** volatile uint32_t system_tick = 0;    // System tick counter (incremented in SysTick_Handler)
+  29:Core/Src/main.c **** 
+  30:Core/Src/main.c **** // ==========================================================================
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 2
+
+
+  31:Core/Src/main.c **** // FUNCTION DECLARATIONS
+  32:Core/Src/main.c **** // ==========================================================================
+  33:Core/Src/main.c **** void update_leds(void);
+  34:Core/Src/main.c **** void handle_blinking(void);
+  35:Core/Src/main.c **** uint8_t is_button_pressed(GPIO_TypeDef* port, uint16_t pin, uint32_t* last_press_time);
+  36:Core/Src/main.c **** void SysTick_Handler(void);
+  37:Core/Src/main.c **** uint32_t get_current_time(void);
+  38:Core/Src/main.c **** 
+  39:Core/Src/main.c **** // ==========================================================================
+  40:Core/Src/main.c **** // SYSTEM INITIALIZATION
+  41:Core/Src/main.c **** // ==========================================================================
+  42:Core/Src/main.c **** 
+  43:Core/Src/main.c **** /**
+  44:Core/Src/main.c ****  * @brief Initialize System Tick timer for timing functions
+  45:Core/Src/main.c ****  * @param none
+  46:Core/Src/main.c ****  * @return none
+  47:Core/Src/main.c ****  */
+  48:Core/Src/main.c **** void SystemTick_Init(void) {
+  29              		.loc 1 48 28 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){
-  36              		.loc 1 2 5 view .LVU1
-   3:Core/Src/main.c ****         
-   4:Core/Src/main.c ****     }
-  37              		.loc 1 4 5 view .LVU2
-   2:Core/Src/main.c ****     while(1){
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccETGRZl.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  49:Core/Src/main.c ****     // Configure SysTick to generate interrupt every 1ms
+  50:Core/Src/main.c ****     // SystemCoreClock is typically 16MHz for HSI
+  51:Core/Src/main.c ****     SysTick->LOAD = (SystemCoreClock / 1000) - 1;  // Set reload value for 1ms
+  34              		.loc 1 51 5 view .LVU1
+  35              		.loc 1 51 38 is_stmt 0 view .LVU2
+  36 0000 074B     		ldr	r3, .L2
+  37 0002 1B68     		ldr	r3, [r3]
+  38 0004 074A     		ldr	r2, .L2+4
+  39 0006 A2FB0323 		umull	r2, r3, r2, r3
+  40 000a 9B09     		lsrs	r3, r3, #6
+  41              		.loc 1 51 46 view .LVU3
+  42 000c 013B     		subs	r3, r3, #1
+  43              		.loc 1 51 19 view .LVU4
+  44 000e 4FF0E022 		mov	r2, #-536813568
+  45 0012 5361     		str	r3, [r2, #20]
+  52:Core/Src/main.c ****     SysTick->VAL = 0;                              // Clear current value
+  46              		.loc 1 52 5 is_stmt 1 view .LVU5
+  47              		.loc 1 52 18 is_stmt 0 view .LVU6
+  48 0014 0023     		movs	r3, #0
+  49 0016 9361     		str	r3, [r2, #24]
+  53:Core/Src/main.c ****     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |   // Use processor clock
+  50              		.loc 1 53 5 is_stmt 1 view .LVU7
+  51              		.loc 1 53 19 is_stmt 0 view .LVU8
+  52 0018 0723     		movs	r3, #7
+  53 001a 1361     		str	r3, [r2, #16]
+  54:Core/Src/main.c ****                     SysTick_CTRL_TICKINT_Msk |     // Enable SysTick interrupt
+  55:Core/Src/main.c ****                     SysTick_CTRL_ENABLE_Msk;       // Enable SysTick
+  56:Core/Src/main.c **** }
+  54              		.loc 1 56 1 view .LVU9
+  55 001c 7047     		bx	lr
+  56              	.L3:
+  57 001e 00BF     		.align	2
+  58              	.L2:
+  59 0020 00000000 		.word	SystemCoreClock
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 3
+
+
+  60 0024 D34D6210 		.word	274877907
+  61              		.cfi_endproc
+  62              	.LFE130:
+  64              		.section	.text.SysTick_Handler,"ax",%progbits
+  65              		.align	1
+  66              		.global	SysTick_Handler
+  67              		.syntax unified
+  68              		.thumb
+  69              		.thumb_func
+  71              	SysTick_Handler:
+  72              	.LFB131:
+  57:Core/Src/main.c **** 
+  58:Core/Src/main.c **** /**
+  59:Core/Src/main.c ****  * @brief SysTick Interrupt Handler - called every 1ms
+  60:Core/Src/main.c ****  * @param none
+  61:Core/Src/main.c ****  * @return none
+  62:Core/Src/main.c ****  */
+  63:Core/Src/main.c **** void SysTick_Handler(void) {
+  73              		.loc 1 63 28 is_stmt 1 view -0
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 0
+  76              		@ frame_needed = 0, uses_anonymous_args = 0
+  77              		@ link register save eliminated.
+  64:Core/Src/main.c ****     system_tick++;  // Increment system tick counter
+  78              		.loc 1 64 5 view .LVU11
+  79              		.loc 1 64 16 is_stmt 0 view .LVU12
+  80 0000 024A     		ldr	r2, .L5
+  81 0002 1368     		ldr	r3, [r2]
+  82 0004 0133     		adds	r3, r3, #1
+  83 0006 1360     		str	r3, [r2]
+  65:Core/Src/main.c **** }
+  84              		.loc 1 65 1 view .LVU13
+  85 0008 7047     		bx	lr
+  86              	.L6:
+  87 000a 00BF     		.align	2
+  88              	.L5:
+  89 000c 00000000 		.word	system_tick
+  90              		.cfi_endproc
+  91              	.LFE131:
+  93              		.section	.text.get_current_time,"ax",%progbits
+  94              		.align	1
+  95              		.global	get_current_time
+  96              		.syntax unified
+  97              		.thumb
+  98              		.thumb_func
+ 100              	get_current_time:
+ 101              	.LFB132:
+  66:Core/Src/main.c **** 
+  67:Core/Src/main.c **** /**
+  68:Core/Src/main.c ****  * @brief Get current time in milliseconds
+  69:Core/Src/main.c ****  * @param none
+  70:Core/Src/main.c ****  * @return Current time in milliseconds
+  71:Core/Src/main.c ****  */
+  72:Core/Src/main.c **** uint32_t get_current_time(void) {
+ 102              		.loc 1 72 33 is_stmt 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 4
+
+
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106              		@ link register save eliminated.
+  73:Core/Src/main.c ****     return system_tick;
+ 107              		.loc 1 73 5 view .LVU15
+ 108              		.loc 1 73 12 is_stmt 0 view .LVU16
+ 109 0000 014B     		ldr	r3, .L8
+ 110 0002 1868     		ldr	r0, [r3]
+  74:Core/Src/main.c **** }
+ 111              		.loc 1 74 1 view .LVU17
+ 112 0004 7047     		bx	lr
+ 113              	.L9:
+ 114 0006 00BF     		.align	2
+ 115              	.L8:
+ 116 0008 00000000 		.word	system_tick
+ 117              		.cfi_endproc
+ 118              	.LFE132:
+ 120              		.section	.text.update_leds,"ax",%progbits
+ 121              		.align	1
+ 122              		.global	update_leds
+ 123              		.syntax unified
+ 124              		.thumb
+ 125              		.thumb_func
+ 127              	update_leds:
+ 128              	.LFB133:
+  75:Core/Src/main.c **** 
+  76:Core/Src/main.c **** // ==========================================================================
+  77:Core/Src/main.c **** // LED SEQUENCE FUNCTIONS
+  78:Core/Src/main.c **** // ==========================================================================
+  79:Core/Src/main.c **** 
+  80:Core/Src/main.c **** /**
+  81:Core/Src/main.c ****  * @brief Update physical LEDs based on current_led_state and blinking
+  82:Core/Src/main.c ****  * @param none
+  83:Core/Src/main.c ****  * @return none
+  84:Core/Src/main.c ****  */
+  85:Core/Src/main.c **** void update_leds(void) {
+ 129              		.loc 1 85 24 is_stmt 1 view -0
+ 130              		.cfi_startproc
+ 131              		@ args = 0, pretend = 0, frame = 0
+ 132              		@ frame_needed = 0, uses_anonymous_args = 0
+ 133              		@ link register save eliminated.
+  86:Core/Src/main.c ****     // Turn off all LEDs first
+  87:Core/Src/main.c ****     for (int i = 0; i < 6; i++) {
+ 134              		.loc 1 87 5 view .LVU19
+ 135              	.LBB2:
+ 136              		.loc 1 87 10 view .LVU20
+ 137              	.LVL0:
+ 138              		.loc 1 87 14 is_stmt 0 view .LVU21
+ 139 0000 0022     		movs	r2, #0
+ 140              		.loc 1 87 5 view .LVU22
+ 141 0002 07E0     		b	.L11
+ 142              	.LVL1:
+ 143              	.L12:
+  88:Core/Src/main.c ****         GPIOB->BSRR = (1UL << LED_PINS[i]) << 16;  // Turn OFF all LEDs
+ 144              		.loc 1 88 9 is_stmt 1 view .LVU23
+ 145              		.loc 1 88 39 is_stmt 0 view .LVU24
+ 146 0004 104B     		ldr	r3, .L17
+ 147 0006 995C     		ldrb	r1, [r3, r2]	@ zero_extendqisi2
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 5
+
+
+ 148              		.loc 1 88 28 view .LVU25
+ 149 0008 0123     		movs	r3, #1
+ 150 000a 8B40     		lsls	r3, r3, r1
+ 151              		.loc 1 88 44 view .LVU26
+ 152 000c 1B04     		lsls	r3, r3, #16
+ 153              		.loc 1 88 21 view .LVU27
+ 154 000e 0F49     		ldr	r1, .L17+4
+ 155 0010 8B61     		str	r3, [r1, #24]
+  87:Core/Src/main.c ****         GPIOB->BSRR = (1UL << LED_PINS[i]) << 16;  // Turn OFF all LEDs
+ 156              		.loc 1 87 29 is_stmt 1 discriminator 3 view .LVU28
+ 157 0012 0132     		adds	r2, r2, #1
+ 158              	.LVL2:
+ 159              	.L11:
+  87:Core/Src/main.c ****         GPIOB->BSRR = (1UL << LED_PINS[i]) << 16;  // Turn OFF all LEDs
+ 160              		.loc 1 87 23 discriminator 1 view .LVU29
+ 161 0014 052A     		cmp	r2, #5
+ 162 0016 F5DD     		ble	.L12
+ 163              	.LBE2:
+ 164              	.LBB3:
+  89:Core/Src/main.c ****     }
+  90:Core/Src/main.c ****     
+  91:Core/Src/main.c ****     // Then turn on LEDs that should be on (considering blinking)
+  92:Core/Src/main.c ****     for (int i = 0; i < 6; i++) {
+ 165              		.loc 1 92 14 is_stmt 0 view .LVU30
+ 166 0018 0023     		movs	r3, #0
+ 167 001a 00E0     		b	.L13
+ 168              	.LVL3:
+ 169              	.L14:
+ 170              		.loc 1 92 29 is_stmt 1 discriminator 2 view .LVU31
+ 171 001c 0133     		adds	r3, r3, #1
+ 172              	.LVL4:
+ 173              	.L13:
+ 174              		.loc 1 92 23 discriminator 1 view .LVU32
+ 175 001e 052B     		cmp	r3, #5
+ 176 0020 10DC     		bgt	.L16
+  93:Core/Src/main.c ****         if (current_led_state & (1 << i)) {
+ 177              		.loc 1 93 9 view .LVU33
+ 178              		.loc 1 93 13 is_stmt 0 view .LVU34
+ 179 0022 0B4A     		ldr	r2, .L17+8
+ 180 0024 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 181 0026 1A41     		asrs	r2, r2, r3
+ 182              		.loc 1 93 12 view .LVU35
+ 183 0028 12F0010F 		tst	r2, #1
+ 184 002c F6D0     		beq	.L14
+  94:Core/Src/main.c ****             // For LEDs with blinking mode > 0, they are controlled by handle_blinking()
+  95:Core/Src/main.c ****             if (blink_mode[i] > 0) {
+ 185              		.loc 1 95 13 is_stmt 1 view .LVU36
+ 186              		.loc 1 95 27 is_stmt 0 view .LVU37
+ 187 002e 094A     		ldr	r2, .L17+12
+ 188 0030 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 189              		.loc 1 95 16 view .LVU38
+ 190 0032 002A     		cmp	r2, #0
+ 191 0034 F2D1     		bne	.L14
+  96:Core/Src/main.c ****                 // This LED is controlled by blinking function - skip normal control
+  97:Core/Src/main.c ****                 continue;
+  98:Core/Src/main.c ****             }
+  99:Core/Src/main.c ****             // Turn ON this LED using BSRR set bits (bits 0-15) - Constant ON mode
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 6
+
+
+ 100:Core/Src/main.c ****             GPIOB->BSRR = (1UL << LED_PINS[i]);
+ 192              		.loc 1 100 13 is_stmt 1 view .LVU39
+ 193              		.loc 1 100 43 is_stmt 0 view .LVU40
+ 194 0036 044A     		ldr	r2, .L17
+ 195 0038 D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+ 196              		.loc 1 100 32 view .LVU41
+ 197 003a 0122     		movs	r2, #1
+ 198 003c 8A40     		lsls	r2, r2, r1
+ 199              		.loc 1 100 25 view .LVU42
+ 200 003e 0349     		ldr	r1, .L17+4
+ 201 0040 8A61     		str	r2, [r1, #24]
+ 202 0042 EBE7     		b	.L14
+ 203              	.L16:
+ 204              	.LBE3:
+ 101:Core/Src/main.c ****         }
+ 102:Core/Src/main.c ****     }
+ 103:Core/Src/main.c **** }
+ 205              		.loc 1 103 1 view .LVU43
+ 206 0044 7047     		bx	lr
+ 207              	.L18:
+ 208 0046 00BF     		.align	2
+ 209              	.L17:
+ 210 0048 00000000 		.word	LED_PINS
+ 211 004c 00040240 		.word	1073873920
+ 212 0050 00000000 		.word	current_led_state
+ 213 0054 00000000 		.word	blink_mode
+ 214              		.cfi_endproc
+ 215              	.LFE133:
+ 217              		.section	.text.handle_blinking,"ax",%progbits
+ 218              		.align	1
+ 219              		.global	handle_blinking
+ 220              		.syntax unified
+ 221              		.thumb
+ 222              		.thumb_func
+ 224              	handle_blinking:
+ 225              	.LFB134:
+ 104:Core/Src/main.c **** 
+ 105:Core/Src/main.c **** /**
+ 106:Core/Src/main.c ****  * @brief Handle LED blinking for all LEDs that have blinking enabled
+ 107:Core/Src/main.c ****  * @param none
+ 108:Core/Src/main.c ****  * @return none
+ 109:Core/Src/main.c ****  */
+ 110:Core/Src/main.c **** void handle_blinking(void) {
+ 226              		.loc 1 110 28 is_stmt 1 view -0
+ 227              		.cfi_startproc
+ 228              		@ args = 0, pretend = 0, frame = 0
+ 229              		@ frame_needed = 0, uses_anonymous_args = 0
+ 230 0000 10B5     		push	{r4, lr}
+ 231              	.LCFI0:
+ 232              		.cfi_def_cfa_offset 8
+ 233              		.cfi_offset 4, -8
+ 234              		.cfi_offset 14, -4
+ 111:Core/Src/main.c ****     uint32_t current_time = get_current_time();
+ 235              		.loc 1 111 5 view .LVU45
+ 236              		.loc 1 111 29 is_stmt 0 view .LVU46
+ 237 0002 FFF7FEFF 		bl	get_current_time
+ 238              	.LVL5:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 7
+
+
+ 112:Core/Src/main.c ****     
+ 113:Core/Src/main.c ****     for (int i = 0; i < 6; i++) {
+ 239              		.loc 1 113 5 is_stmt 1 view .LVU47
+ 240              	.LBB4:
+ 241              		.loc 1 113 10 view .LVU48
+ 242              		.loc 1 113 14 is_stmt 0 view .LVU49
+ 243 0006 0023     		movs	r3, #0
+ 244              		.loc 1 113 5 view .LVU50
+ 245 0008 07E0     		b	.L20
+ 246              	.LVL6:
+ 247              	.L22:
+ 114:Core/Src/main.c ****         // Only handle LEDs that are ON and have blinking enabled
+ 115:Core/Src/main.c ****         if ((current_led_state & (1 << i)) && (blink_mode[i] > 0)) {
+ 116:Core/Src/main.c ****             // Check if it's time to toggle this blinking LED
+ 117:Core/Src/main.c ****             if (current_time - last_blink_time[i] >= blink_intervals[blink_mode[i]]) {
+ 118:Core/Src/main.c ****                 last_blink_time[i] = current_time;
+ 119:Core/Src/main.c ****                 blink_state[i] = !blink_state[i];  // Toggle blink state for this LED
+ 120:Core/Src/main.c ****                 
+ 121:Core/Src/main.c ****                 if (blink_state[i]) {
+ 122:Core/Src/main.c ****                     GPIOB->BSRR = (1UL << LED_PINS[i]);  // Turn ON this LED
+ 123:Core/Src/main.c ****                 } else {
+ 124:Core/Src/main.c ****                     GPIOB->BSRR = (1UL << LED_PINS[i]) << 16;  // Turn OFF this LED
+ 248              		.loc 1 124 21 is_stmt 1 view .LVU51
+ 249              		.loc 1 124 51 is_stmt 0 view .LVU52
+ 250 000a 184A     		ldr	r2, .L26
+ 251 000c D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+ 252              		.loc 1 124 40 view .LVU53
+ 253 000e 0122     		movs	r2, #1
+ 254 0010 8A40     		lsls	r2, r2, r1
+ 255              		.loc 1 124 56 view .LVU54
+ 256 0012 1204     		lsls	r2, r2, #16
+ 257              		.loc 1 124 33 view .LVU55
+ 258 0014 1649     		ldr	r1, .L26+4
+ 259 0016 8A61     		str	r2, [r1, #24]
+ 260              	.L21:
+ 113:Core/Src/main.c ****         // Only handle LEDs that are ON and have blinking enabled
+ 261              		.loc 1 113 29 is_stmt 1 discriminator 2 view .LVU56
+ 262 0018 0133     		adds	r3, r3, #1
+ 263              	.LVL7:
+ 264              	.L20:
+ 113:Core/Src/main.c ****         // Only handle LEDs that are ON and have blinking enabled
+ 265              		.loc 1 113 23 discriminator 1 view .LVU57
+ 266 001a 052B     		cmp	r3, #5
+ 267 001c 24DC     		bgt	.L25
+ 115:Core/Src/main.c ****             // Check if it's time to toggle this blinking LED
+ 268              		.loc 1 115 9 view .LVU58
+ 115:Core/Src/main.c ****             // Check if it's time to toggle this blinking LED
+ 269              		.loc 1 115 13 is_stmt 0 view .LVU59
+ 270 001e 154A     		ldr	r2, .L26+8
+ 271 0020 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 272 0022 1A41     		asrs	r2, r2, r3
+ 115:Core/Src/main.c ****             // Check if it's time to toggle this blinking LED
+ 273              		.loc 1 115 12 view .LVU60
+ 274 0024 12F0010F 		tst	r2, #1
+ 275 0028 F6D0     		beq	.L21
+ 115:Core/Src/main.c ****             // Check if it's time to toggle this blinking LED
+ 276              		.loc 1 115 58 discriminator 1 view .LVU61
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 8
+
+
+ 277 002a 134A     		ldr	r2, .L26+12
+ 278 002c D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 115:Core/Src/main.c ****             // Check if it's time to toggle this blinking LED
+ 279              		.loc 1 115 44 discriminator 1 view .LVU62
+ 280 002e 002A     		cmp	r2, #0
+ 281 0030 F2D0     		beq	.L21
+ 117:Core/Src/main.c ****                 last_blink_time[i] = current_time;
+ 282              		.loc 1 117 13 is_stmt 1 view .LVU63
+ 117:Core/Src/main.c ****                 last_blink_time[i] = current_time;
+ 283              		.loc 1 117 47 is_stmt 0 view .LVU64
+ 284 0032 1249     		ldr	r1, .L26+16
+ 285 0034 51F82310 		ldr	r1, [r1, r3, lsl #2]
+ 117:Core/Src/main.c ****                 last_blink_time[i] = current_time;
+ 286              		.loc 1 117 30 view .LVU65
+ 287 0038 411A     		subs	r1, r0, r1
+ 117:Core/Src/main.c ****                 last_blink_time[i] = current_time;
+ 288              		.loc 1 117 69 view .LVU66
+ 289 003a 114C     		ldr	r4, .L26+20
+ 290 003c 54F82220 		ldr	r2, [r4, r2, lsl #2]
+ 117:Core/Src/main.c ****                 last_blink_time[i] = current_time;
+ 291              		.loc 1 117 16 view .LVU67
+ 292 0040 9142     		cmp	r1, r2
+ 293 0042 E9D3     		bcc	.L21
+ 118:Core/Src/main.c ****                 blink_state[i] = !blink_state[i];  // Toggle blink state for this LED
+ 294              		.loc 1 118 17 is_stmt 1 view .LVU68
+ 118:Core/Src/main.c ****                 blink_state[i] = !blink_state[i];  // Toggle blink state for this LED
+ 295              		.loc 1 118 36 is_stmt 0 view .LVU69
+ 296 0044 0D4A     		ldr	r2, .L26+16
+ 297 0046 42F82300 		str	r0, [r2, r3, lsl #2]
+ 119:Core/Src/main.c ****                 
+ 298              		.loc 1 119 17 is_stmt 1 view .LVU70
+ 119:Core/Src/main.c ****                 
+ 299              		.loc 1 119 46 is_stmt 0 view .LVU71
+ 300 004a 0E49     		ldr	r1, .L26+24
+ 301 004c CA5C     		ldrb	r2, [r1, r3]	@ zero_extendqisi2
+ 119:Core/Src/main.c ****                 
+ 302              		.loc 1 119 34 view .LVU72
+ 303 004e B2FA82F2 		clz	r2, r2
+ 304 0052 5209     		lsrs	r2, r2, #5
+ 119:Core/Src/main.c ****                 
+ 305              		.loc 1 119 32 view .LVU73
+ 306 0054 CA54     		strb	r2, [r1, r3]
+ 121:Core/Src/main.c ****                     GPIOB->BSRR = (1UL << LED_PINS[i]);  // Turn ON this LED
+ 307              		.loc 1 121 17 is_stmt 1 view .LVU74
+ 121:Core/Src/main.c ****                     GPIOB->BSRR = (1UL << LED_PINS[i]);  // Turn ON this LED
+ 308              		.loc 1 121 20 is_stmt 0 view .LVU75
+ 309 0056 002A     		cmp	r2, #0
+ 310 0058 D7D0     		beq	.L22
+ 122:Core/Src/main.c ****                 } else {
+ 311              		.loc 1 122 21 is_stmt 1 view .LVU76
+ 122:Core/Src/main.c ****                 } else {
+ 312              		.loc 1 122 51 is_stmt 0 view .LVU77
+ 313 005a 044A     		ldr	r2, .L26
+ 314 005c D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+ 122:Core/Src/main.c ****                 } else {
+ 315              		.loc 1 122 40 view .LVU78
+ 316 005e 0122     		movs	r2, #1
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 9
+
+
+ 317 0060 8A40     		lsls	r2, r2, r1
+ 122:Core/Src/main.c ****                 } else {
+ 318              		.loc 1 122 33 view .LVU79
+ 319 0062 0349     		ldr	r1, .L26+4
+ 320 0064 8A61     		str	r2, [r1, #24]
+ 321 0066 D7E7     		b	.L21
+ 322              	.L25:
+ 122:Core/Src/main.c ****                 } else {
+ 323              		.loc 1 122 33 view .LVU80
+ 324              	.LBE4:
+ 125:Core/Src/main.c ****                 }
+ 126:Core/Src/main.c ****             }
+ 127:Core/Src/main.c ****         }
+ 128:Core/Src/main.c ****     }
+ 129:Core/Src/main.c **** }
+ 325              		.loc 1 129 1 view .LVU81
+ 326 0068 10BD     		pop	{r4, pc}
+ 327              	.L27:
+ 328 006a 00BF     		.align	2
+ 329              	.L26:
+ 330 006c 00000000 		.word	LED_PINS
+ 331 0070 00040240 		.word	1073873920
+ 332 0074 00000000 		.word	current_led_state
+ 333 0078 00000000 		.word	blink_mode
+ 334 007c 00000000 		.word	last_blink_time
+ 335 0080 00000000 		.word	blink_intervals
+ 336 0084 00000000 		.word	blink_state
+ 337              		.cfi_endproc
+ 338              	.LFE134:
+ 340              		.section	.text.get_last_activated_led,"ax",%progbits
+ 341              		.align	1
+ 342              		.global	get_last_activated_led
+ 343              		.syntax unified
+ 344              		.thumb
+ 345              		.thumb_func
+ 347              	get_last_activated_led:
+ 348              	.LFB135:
+ 130:Core/Src/main.c **** 
+ 131:Core/Src/main.c **** /**
+ 132:Core/Src/main.c ****  * @brief Get the last activated LED index in the sequence
+ 133:Core/Src/main.c ****  * @param none
+ 134:Core/Src/main.c ****  * @return Index of the last activated LED (0-5)
+ 135:Core/Src/main.c ****  */
+ 136:Core/Src/main.c **** uint8_t get_last_activated_led(void) {
+ 349              		.loc 1 136 38 is_stmt 1 view -0
+ 350              		.cfi_startproc
+ 351              		@ args = 0, pretend = 0, frame = 0
+ 352              		@ frame_needed = 0, uses_anonymous_args = 0
+ 353              		@ link register save eliminated.
+ 137:Core/Src/main.c ****     // Find the highest index LED that is currently ON
+ 138:Core/Src/main.c ****     for (int i = 5; i >= 0; i--) {
+ 354              		.loc 1 138 5 view .LVU83
+ 355              	.LBB5:
+ 356              		.loc 1 138 10 view .LVU84
+ 357              	.LVL8:
+ 358              		.loc 1 138 14 is_stmt 0 view .LVU85
+ 359 0000 0520     		movs	r0, #5
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 10
+
+
+ 360              	.LVL9:
+ 361              	.L29:
+ 362              		.loc 1 138 23 is_stmt 1 discriminator 1 view .LVU86
+ 363 0002 0028     		cmp	r0, #0
+ 364 0004 09DB     		blt	.L33
+ 139:Core/Src/main.c ****         if (current_led_state & (1 << i)) {
+ 365              		.loc 1 139 9 view .LVU87
+ 366              		.loc 1 139 13 is_stmt 0 view .LVU88
+ 367 0006 064B     		ldr	r3, .L35
+ 368 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 369 000a 0341     		asrs	r3, r3, r0
+ 370              		.loc 1 139 12 view .LVU89
+ 371 000c 13F0010F 		tst	r3, #1
+ 372 0010 01D1     		bne	.L34
+ 138:Core/Src/main.c ****         if (current_led_state & (1 << i)) {
+ 373              		.loc 1 138 30 is_stmt 1 discriminator 2 view .LVU90
+ 374 0012 0138     		subs	r0, r0, #1
+ 375              	.LVL10:
+ 138:Core/Src/main.c ****         if (current_led_state & (1 << i)) {
+ 376              		.loc 1 138 30 is_stmt 0 discriminator 2 view .LVU91
+ 377 0014 F5E7     		b	.L29
+ 378              	.L34:
+ 140:Core/Src/main.c ****             return i;  // Return the highest index LED that is ON
+ 379              		.loc 1 140 13 is_stmt 1 view .LVU92
+ 380              		.loc 1 140 20 is_stmt 0 view .LVU93
+ 381 0016 C0B2     		uxtb	r0, r0
+ 382              	.LVL11:
+ 383              		.loc 1 140 20 view .LVU94
+ 384 0018 7047     		bx	lr
+ 385              	.LVL12:
+ 386              	.L33:
+ 387              		.loc 1 140 20 view .LVU95
+ 388              	.LBE5:
+ 141:Core/Src/main.c ****         }
+ 142:Core/Src/main.c ****     }
+ 143:Core/Src/main.c ****     return 0;  // Default to first LED if none are ON
+ 389              		.loc 1 143 12 view .LVU96
+ 390 001a 0020     		movs	r0, #0
+ 391              	.LVL13:
+ 144:Core/Src/main.c **** }
+ 392              		.loc 1 144 1 view .LVU97
+ 393 001c 7047     		bx	lr
+ 394              	.L36:
+ 395 001e 00BF     		.align	2
+ 396              	.L35:
+ 397 0020 00000000 		.word	current_led_state
+ 398              		.cfi_endproc
+ 399              	.LFE135:
+ 401              		.section	.text.next_led_sequence,"ax",%progbits
+ 402              		.align	1
+ 403              		.global	next_led_sequence
+ 404              		.syntax unified
+ 405              		.thumb
+ 406              		.thumb_func
+ 408              	next_led_sequence:
+ 409              	.LFB136:
+ 145:Core/Src/main.c **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 11
+
+
+ 146:Core/Src/main.c **** /**
+ 147:Core/Src/main.c ****  * @brief Advance to the next step in LED sequence
+ 148:Core/Src/main.c ****  * @param none
+ 149:Core/Src/main.c ****  * @return none
+ 150:Core/Src/main.c ****  */
+ 151:Core/Src/main.c **** void next_led_sequence(void) {
+ 410              		.loc 1 151 30 is_stmt 1 view -0
+ 411              		.cfi_startproc
+ 412              		@ args = 0, pretend = 0, frame = 0
+ 413              		@ frame_needed = 0, uses_anonymous_args = 0
+ 414 0000 08B5     		push	{r3, lr}
+ 415              	.LCFI1:
+ 416              		.cfi_def_cfa_offset 8
+ 417              		.cfi_offset 3, -8
+ 418              		.cfi_offset 14, -4
+ 152:Core/Src/main.c ****     led_sequence_step++;
+ 419              		.loc 1 152 5 view .LVU99
+ 420              		.loc 1 152 22 is_stmt 0 view .LVU100
+ 421 0002 0E4A     		ldr	r2, .L43
+ 422 0004 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 423 0006 0133     		adds	r3, r3, #1
+ 424 0008 DBB2     		uxtb	r3, r3
+ 425 000a 1370     		strb	r3, [r2]
+ 153:Core/Src/main.c ****     
+ 154:Core/Src/main.c ****     if (led_sequence_step > 6) {
+ 426              		.loc 1 154 5 is_stmt 1 view .LVU101
+ 427              		.loc 1 154 8 is_stmt 0 view .LVU102
+ 428 000c 062B     		cmp	r3, #6
+ 429 000e 0DD9     		bls	.L38
+ 155:Core/Src/main.c ****         // After step 6, reset to step 0 (all off)
+ 156:Core/Src/main.c ****         led_sequence_step = 0;
+ 430              		.loc 1 156 9 is_stmt 1 view .LVU103
+ 431              		.loc 1 156 27 is_stmt 0 view .LVU104
+ 432 0010 0023     		movs	r3, #0
+ 433 0012 1370     		strb	r3, [r2]
+ 157:Core/Src/main.c ****         current_led_state = 0;  // Turn all LEDs off
+ 434              		.loc 1 157 9 is_stmt 1 view .LVU105
+ 435              		.loc 1 157 27 is_stmt 0 view .LVU106
+ 436 0014 0A4A     		ldr	r2, .L43+4
+ 437 0016 1370     		strb	r3, [r2]
+ 158:Core/Src/main.c ****         
+ 159:Core/Src/main.c ****         // Reset all blinking modes when all LEDs are off
+ 160:Core/Src/main.c ****         for (int i = 0; i < 6; i++) {
+ 438              		.loc 1 160 9 is_stmt 1 view .LVU107
+ 439              	.LBB6:
+ 440              		.loc 1 160 14 view .LVU108
+ 441              	.LVL14:
+ 442              		.loc 1 160 9 is_stmt 0 view .LVU109
+ 443 0018 03E0     		b	.L39
+ 444              	.LVL15:
+ 445              	.L40:
+ 161:Core/Src/main.c ****             blink_mode[i] = 0;
+ 446              		.loc 1 161 13 is_stmt 1 view .LVU110
+ 447              		.loc 1 161 27 is_stmt 0 view .LVU111
+ 448 001a 0A4A     		ldr	r2, .L43+8
+ 449 001c 0021     		movs	r1, #0
+ 450 001e D154     		strb	r1, [r2, r3]
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 12
+
+
+ 160:Core/Src/main.c ****             blink_mode[i] = 0;
+ 451              		.loc 1 160 33 is_stmt 1 discriminator 3 view .LVU112
+ 452 0020 0133     		adds	r3, r3, #1
+ 453              	.LVL16:
+ 454              	.L39:
+ 160:Core/Src/main.c ****             blink_mode[i] = 0;
+ 455              		.loc 1 160 27 discriminator 1 view .LVU113
+ 456 0022 052B     		cmp	r3, #5
+ 457 0024 F9DD     		ble	.L40
+ 458              	.LVL17:
+ 459              	.L41:
+ 160:Core/Src/main.c ****             blink_mode[i] = 0;
+ 460              		.loc 1 160 27 is_stmt 0 discriminator 1 view .LVU114
+ 461              	.LBE6:
+ 162:Core/Src/main.c ****         }
+ 163:Core/Src/main.c ****     } else {
+ 164:Core/Src/main.c ****         // Turn on the current LED in sequence
+ 165:Core/Src/main.c ****         // Each step turns on one additional LED
+ 166:Core/Src/main.c ****         current_led_state = (1 << led_sequence_step) - 1;
+ 167:Core/Src/main.c ****         
+ 168:Core/Src/main.c ****         // New LEDs start with Constant ON mode (no blinking)
+ 169:Core/Src/main.c ****         // Existing LEDs keep their current blinking mode
+ 170:Core/Src/main.c ****     }
+ 171:Core/Src/main.c ****     
+ 172:Core/Src/main.c ****     update_leds();
+ 462              		.loc 1 172 5 is_stmt 1 view .LVU115
+ 463 0026 FFF7FEFF 		bl	update_leds
+ 464              	.LVL18:
+ 173:Core/Src/main.c **** }
+ 465              		.loc 1 173 1 is_stmt 0 view .LVU116
+ 466 002a 08BD     		pop	{r3, pc}
+ 467              	.L38:
+ 166:Core/Src/main.c ****         
+ 468              		.loc 1 166 9 is_stmt 1 view .LVU117
+ 166:Core/Src/main.c ****         
+ 469              		.loc 1 166 32 is_stmt 0 view .LVU118
+ 470 002c 0122     		movs	r2, #1
+ 471 002e 02FA03F3 		lsl	r3, r2, r3
+ 166:Core/Src/main.c ****         
+ 472              		.loc 1 166 54 view .LVU119
+ 473 0032 013B     		subs	r3, r3, #1
+ 166:Core/Src/main.c ****         
+ 474              		.loc 1 166 27 view .LVU120
+ 475 0034 024A     		ldr	r2, .L43+4
+ 476 0036 1370     		strb	r3, [r2]
+ 477 0038 F5E7     		b	.L41
+ 478              	.L44:
+ 479 003a 00BF     		.align	2
+ 480              	.L43:
+ 481 003c 00000000 		.word	led_sequence_step
+ 482 0040 00000000 		.word	current_led_state
+ 483 0044 00000000 		.word	blink_mode
+ 484              		.cfi_endproc
+ 485              	.LFE136:
+ 487              		.section	.text.next_blink_mode,"ax",%progbits
+ 488              		.align	1
+ 489              		.global	next_blink_mode
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 13
+
+
+ 490              		.syntax unified
+ 491              		.thumb
+ 492              		.thumb_func
+ 494              	next_blink_mode:
+ 495              	.LFB137:
+ 174:Core/Src/main.c **** 
+ 175:Core/Src/main.c **** /**
+ 176:Core/Src/main.c ****  * @brief Cycle to the next blinking frequency for the last activated LED
+ 177:Core/Src/main.c ****  * @param none
+ 178:Core/Src/main.c ****  * @return none
+ 179:Core/Src/main.c ****  */
+ 180:Core/Src/main.c **** void next_blink_mode(void) {
+ 496              		.loc 1 180 28 is_stmt 1 view -0
+ 497              		.cfi_startproc
+ 498              		@ args = 0, pretend = 0, frame = 0
+ 499              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181:Core/Src/main.c ****     // Only allow blinking if at least one LED is ON
+ 182:Core/Src/main.c ****     if (current_led_state == 0) {
+ 500              		.loc 1 182 5 view .LVU122
+ 501              		.loc 1 182 27 is_stmt 0 view .LVU123
+ 502 0000 0E4B     		ldr	r3, .L52
+ 503 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 504              		.loc 1 182 8 view .LVU124
+ 505 0004 C3B1     		cbz	r3, .L49
+ 180:Core/Src/main.c ****     // Only allow blinking if at least one LED is ON
+ 506              		.loc 1 180 28 view .LVU125
+ 507 0006 10B5     		push	{r4, lr}
+ 508              	.LCFI2:
+ 509              		.cfi_def_cfa_offset 8
+ 510              		.cfi_offset 4, -8
+ 511              		.cfi_offset 14, -4
+ 183:Core/Src/main.c ****         return;
+ 184:Core/Src/main.c ****     }
+ 185:Core/Src/main.c ****     
+ 186:Core/Src/main.c ****     // Get the last activated LED
+ 187:Core/Src/main.c ****     uint8_t last_led = get_last_activated_led();
+ 512              		.loc 1 187 5 is_stmt 1 view .LVU126
+ 513              		.loc 1 187 24 is_stmt 0 view .LVU127
+ 514 0008 FFF7FEFF 		bl	get_last_activated_led
+ 515              	.LVL19:
+ 516 000c 0446     		mov	r4, r0
+ 517              	.LVL20:
+ 188:Core/Src/main.c ****     
+ 189:Core/Src/main.c ****     // Cycle the blinking mode for this specific LED
+ 190:Core/Src/main.c ****     blink_mode[last_led]++;
+ 518              		.loc 1 190 5 is_stmt 1 view .LVU128
+ 519              		.loc 1 190 15 is_stmt 0 view .LVU129
+ 520 000e 0C4A     		ldr	r2, .L52+4
+ 521 0010 135C     		ldrb	r3, [r2, r0]	@ zero_extendqisi2
+ 522              		.loc 1 190 25 view .LVU130
+ 523 0012 0133     		adds	r3, r3, #1
+ 524 0014 DBB2     		uxtb	r3, r3
+ 525 0016 1354     		strb	r3, [r2, r0]
+ 191:Core/Src/main.c ****     if (blink_mode[last_led] > 3) {
+ 526              		.loc 1 191 5 is_stmt 1 view .LVU131
+ 527              		.loc 1 191 8 is_stmt 0 view .LVU132
+ 528 0018 032B     		cmp	r3, #3
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 14
+
+
+ 529 001a 02D9     		bls	.L47
+ 192:Core/Src/main.c ****         blink_mode[last_led] = 0;  // Cycle back to Constant ON
+ 530              		.loc 1 192 9 is_stmt 1 view .LVU133
+ 531              		.loc 1 192 30 is_stmt 0 view .LVU134
+ 532 001c 1346     		mov	r3, r2
+ 533 001e 0022     		movs	r2, #0
+ 534 0020 1A54     		strb	r2, [r3, r0]
+ 535              	.L47:
+ 193:Core/Src/main.c ****     }
+ 194:Core/Src/main.c ****     
+ 195:Core/Src/main.c ****     // Reset blinking timer for this LED
+ 196:Core/Src/main.c ****     last_blink_time[last_led] = get_current_time();
+ 536              		.loc 1 196 5 is_stmt 1 view .LVU135
+ 537              		.loc 1 196 33 is_stmt 0 view .LVU136
+ 538 0022 FFF7FEFF 		bl	get_current_time
+ 539              	.LVL21:
+ 540              		.loc 1 196 31 discriminator 1 view .LVU137
+ 541 0026 074B     		ldr	r3, .L52+8
+ 542 0028 43F82400 		str	r0, [r3, r4, lsl #2]
+ 197:Core/Src/main.c ****     blink_state[last_led] = 1;  // Start with LED ON
+ 543              		.loc 1 197 5 is_stmt 1 view .LVU138
+ 544              		.loc 1 197 27 is_stmt 0 view .LVU139
+ 545 002c 064B     		ldr	r3, .L52+12
+ 546 002e 0122     		movs	r2, #1
+ 547 0030 1A55     		strb	r2, [r3, r4]
+ 198:Core/Src/main.c ****     
+ 199:Core/Src/main.c ****     update_leds();
+ 548              		.loc 1 199 5 is_stmt 1 view .LVU140
+ 549 0032 FFF7FEFF 		bl	update_leds
+ 550              	.LVL22:
+ 200:Core/Src/main.c **** }
+ 551              		.loc 1 200 1 is_stmt 0 view .LVU141
+ 552 0036 10BD     		pop	{r4, pc}
+ 553              	.LVL23:
+ 554              	.L49:
+ 555              	.LCFI3:
+ 556              		.cfi_def_cfa_offset 0
+ 557              		.cfi_restore 4
+ 558              		.cfi_restore 14
+ 559              		.loc 1 200 1 view .LVU142
+ 560 0038 7047     		bx	lr
+ 561              	.L53:
+ 562 003a 00BF     		.align	2
+ 563              	.L52:
+ 564 003c 00000000 		.word	current_led_state
+ 565 0040 00000000 		.word	blink_mode
+ 566 0044 00000000 		.word	last_blink_time
+ 567 0048 00000000 		.word	blink_state
+ 568              		.cfi_endproc
+ 569              	.LFE137:
+ 571              		.section	.text.is_button_pressed,"ax",%progbits
+ 572              		.align	1
+ 573              		.global	is_button_pressed
+ 574              		.syntax unified
+ 575              		.thumb
+ 576              		.thumb_func
+ 578              	is_button_pressed:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 15
+
+
+ 579              	.LVL24:
+ 580              	.LFB138:
+ 201:Core/Src/main.c **** 
+ 202:Core/Src/main.c **** // ==========================================================================
+ 203:Core/Src/main.c **** // BUTTON HANDLING FUNCTIONS
+ 204:Core/Src/main.c **** // ==========================================================================
+ 205:Core/Src/main.c **** 
+ 206:Core/Src/main.c **** /**
+ 207:Core/Src/main.c ****  * @brief Check if button is pressed with debouncing
+ 208:Core/Src/main.c ****  * @param port: GPIO port where button is connected
+ 209:Core/Src/main.c ****  * @param pin: Pin number of the button
+ 210:Core/Src/main.c ****  * @param last_press_time: Pointer to variable storing last press time
+ 211:Core/Src/main.c ****  * @return 1 if button is pressed, 0 otherwise
+ 212:Core/Src/main.c ****  */
+ 213:Core/Src/main.c **** uint8_t is_button_pressed(GPIO_TypeDef* port, uint16_t pin, uint32_t* last_press_time) {
+ 581              		.loc 1 213 88 is_stmt 1 view -0
+ 582              		.cfi_startproc
+ 583              		@ args = 0, pretend = 0, frame = 0
+ 584              		@ frame_needed = 0, uses_anonymous_args = 0
+ 585              		.loc 1 213 88 is_stmt 0 view .LVU144
+ 586 0000 70B5     		push	{r4, r5, r6, lr}
+ 587              	.LCFI4:
+ 588              		.cfi_def_cfa_offset 16
+ 589              		.cfi_offset 4, -16
+ 590              		.cfi_offset 5, -12
+ 591              		.cfi_offset 6, -8
+ 592              		.cfi_offset 14, -4
+ 593 0002 0546     		mov	r5, r0
+ 594 0004 0C46     		mov	r4, r1
+ 595 0006 1646     		mov	r6, r2
+ 214:Core/Src/main.c ****     uint32_t current_time = get_current_time();
+ 596              		.loc 1 214 5 is_stmt 1 view .LVU145
+ 597              		.loc 1 214 29 is_stmt 0 view .LVU146
+ 598 0008 FFF7FEFF 		bl	get_current_time
+ 599              	.LVL25:
+ 215:Core/Src/main.c ****     
+ 216:Core/Src/main.c ****     // Check if button pin is HIGH (pressed) and debounce time has passed
+ 217:Core/Src/main.c ****     if (READ_BIT(port->IDR, (1UL << pin)) && 
+ 600              		.loc 1 217 5 is_stmt 1 view .LVU147
+ 601              		.loc 1 217 9 is_stmt 0 view .LVU148
+ 602 000c 2969     		ldr	r1, [r5, #16]
+ 603 000e E140     		lsrs	r1, r1, r4
+ 604              		.loc 1 217 8 view .LVU149
+ 605 0010 11F0010F 		tst	r1, #1
+ 606 0014 08D0     		beq	.L56
+ 218:Core/Src/main.c ****         (current_time - *last_press_time > DEBOUNCE_DELAY)) {
+ 607              		.loc 1 218 25 view .LVU150
+ 608 0016 3368     		ldr	r3, [r6]
+ 609              		.loc 1 218 23 view .LVU151
+ 610 0018 C31A     		subs	r3, r0, r3
+ 217:Core/Src/main.c ****         (current_time - *last_press_time > DEBOUNCE_DELAY)) {
+ 611              		.loc 1 217 43 discriminator 1 view .LVU152
+ 612 001a C82B     		cmp	r3, #200
+ 613 001c 01D8     		bhi	.L59
+ 219:Core/Src/main.c ****         *last_press_time = current_time;
+ 220:Core/Src/main.c ****         return 1;
+ 221:Core/Src/main.c ****     }
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 16
+
+
+ 222:Core/Src/main.c ****     
+ 223:Core/Src/main.c ****     return 0;
+ 614              		.loc 1 223 12 view .LVU153
+ 615 001e 0020     		movs	r0, #0
+ 616              	.LVL26:
+ 617              		.loc 1 223 12 view .LVU154
+ 618 0020 03E0     		b	.L55
+ 619              	.LVL27:
+ 620              	.L59:
+ 219:Core/Src/main.c ****         *last_press_time = current_time;
+ 621              		.loc 1 219 9 is_stmt 1 view .LVU155
+ 219:Core/Src/main.c ****         *last_press_time = current_time;
+ 622              		.loc 1 219 26 is_stmt 0 view .LVU156
+ 623 0022 3060     		str	r0, [r6]
+ 220:Core/Src/main.c ****     }
+ 624              		.loc 1 220 9 is_stmt 1 view .LVU157
+ 220:Core/Src/main.c ****     }
+ 625              		.loc 1 220 16 is_stmt 0 view .LVU158
+ 626 0024 0120     		movs	r0, #1
+ 627              	.LVL28:
+ 220:Core/Src/main.c ****     }
+ 628              		.loc 1 220 16 view .LVU159
+ 629 0026 00E0     		b	.L55
+ 630              	.LVL29:
+ 631              	.L56:
+ 632              		.loc 1 223 12 view .LVU160
+ 633 0028 0020     		movs	r0, #0
+ 634              	.LVL30:
+ 635              	.L55:
+ 224:Core/Src/main.c **** }
+ 636              		.loc 1 224 1 view .LVU161
+ 637 002a 70BD     		pop	{r4, r5, r6, pc}
+ 638              		.loc 1 224 1 view .LVU162
+ 639              		.cfi_endproc
+ 640              	.LFE138:
+ 642              		.section	.text.main,"ax",%progbits
+ 643              		.align	1
+ 644              		.global	main
+ 645              		.syntax unified
+ 646              		.thumb
+ 647              		.thumb_func
+ 649              	main:
+ 650              	.LFB139:
+ 225:Core/Src/main.c **** 
+ 226:Core/Src/main.c **** // ==========================================================================
+ 227:Core/Src/main.c **** // MAIN APPLICATION
+ 228:Core/Src/main.c **** // ==========================================================================
+ 229:Core/Src/main.c **** 
+ 230:Core/Src/main.c **** /**
+ 231:Core/Src/main.c ****  * @brief Main function - entry point of the application
+ 232:Core/Src/main.c ****  * @param none
+ 233:Core/Src/main.c ****  * @return int
+ 234:Core/Src/main.c ****  */
+ 235:Core/Src/main.c **** int main(void) {
+ 651              		.loc 1 235 16 is_stmt 1 view -0
+ 652              		.cfi_startproc
+ 653              		@ args = 0, pretend = 0, frame = 8
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 17
+
+
+ 654              		@ frame_needed = 0, uses_anonymous_args = 0
+ 655 0000 00B5     		push	{lr}
+ 656              	.LCFI5:
+ 657              		.cfi_def_cfa_offset 4
+ 658              		.cfi_offset 14, -4
+ 659 0002 83B0     		sub	sp, sp, #12
+ 660              	.LCFI6:
+ 661              		.cfi_def_cfa_offset 16
+ 236:Core/Src/main.c ****     // Initialize all GPIO pins (LEDs and buttons)
+ 237:Core/Src/main.c ****     GPIO_Ini();
+ 662              		.loc 1 237 5 view .LVU164
+ 663 0004 FFF7FEFF 		bl	GPIO_Ini
+ 664              	.LVL31:
+ 238:Core/Src/main.c ****     
+ 239:Core/Src/main.c ****     // Initialize system tick timer for timing functions
+ 240:Core/Src/main.c ****     SystemTick_Init();
+ 665              		.loc 1 240 5 view .LVU165
+ 666 0008 FFF7FEFF 		bl	SystemTick_Init
+ 667              	.LVL32:
+ 241:Core/Src/main.c ****     
+ 242:Core/Src/main.c ****     // Initial LED state - all OFF
+ 243:Core/Src/main.c ****     current_led_state = 0;
+ 668              		.loc 1 243 5 view .LVU166
+ 669              		.loc 1 243 23 is_stmt 0 view .LVU167
+ 670 000c 0023     		movs	r3, #0
+ 671 000e 154A     		ldr	r2, .L70
+ 672 0010 1370     		strb	r3, [r2]
+ 244:Core/Src/main.c ****     
+ 245:Core/Src/main.c ****     // Initialize all blinking modes to Constant ON
+ 246:Core/Src/main.c ****     for (int i = 0; i < 6; i++) {
+ 673              		.loc 1 246 5 is_stmt 1 view .LVU168
+ 674              	.LBB7:
+ 675              		.loc 1 246 10 view .LVU169
+ 676              	.LVL33:
+ 677              		.loc 1 246 5 is_stmt 0 view .LVU170
+ 678 0012 03E0     		b	.L61
+ 679              	.LVL34:
+ 680              	.L62:
+ 247:Core/Src/main.c ****         blink_mode[i] = 0;
+ 681              		.loc 1 247 9 is_stmt 1 view .LVU171
+ 682              		.loc 1 247 23 is_stmt 0 view .LVU172
+ 683 0014 144A     		ldr	r2, .L70+4
+ 684 0016 0021     		movs	r1, #0
+ 685 0018 D154     		strb	r1, [r2, r3]
+ 246:Core/Src/main.c ****         blink_mode[i] = 0;
+ 686              		.loc 1 246 29 is_stmt 1 discriminator 3 view .LVU173
+ 687 001a 0133     		adds	r3, r3, #1
+ 688              	.LVL35:
+ 689              	.L61:
+ 246:Core/Src/main.c ****         blink_mode[i] = 0;
+ 690              		.loc 1 246 23 discriminator 1 view .LVU174
+ 691 001c 052B     		cmp	r3, #5
+ 692 001e F9DD     		ble	.L62
+ 693              	.LBE7:
+ 248:Core/Src/main.c ****     }
+ 249:Core/Src/main.c ****     
+ 250:Core/Src/main.c ****     update_leds();
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 18
+
+
+ 694              		.loc 1 250 5 view .LVU175
+ 695 0020 FFF7FEFF 		bl	update_leds
+ 696              	.LVL36:
+ 697              		.loc 1 250 5 is_stmt 0 view .LVU176
+ 698 0024 0DE0     		b	.L67
+ 699              	.L63:
+ 251:Core/Src/main.c ****     
+ 252:Core/Src/main.c ****     // Main program loop
+ 253:Core/Src/main.c ****     while (1) {
+ 254:Core/Src/main.c ****         // ==================================================================
+ 255:Core/Src/main.c ****         // CHECK BUTTON 1 (PB4) - LED SEQUENCE CONTROL
+ 256:Core/Src/main.c ****         // ==================================================================
+ 257:Core/Src/main.c ****         if (is_button_pressed(GPIOB, 4, &last_button1_time)) {
+ 258:Core/Src/main.c ****             next_led_sequence();
+ 259:Core/Src/main.c ****         }
+ 260:Core/Src/main.c ****         
+ 261:Core/Src/main.c ****         // ==================================================================
+ 262:Core/Src/main.c ****         // CHECK BUTTON 2 (PB5) - BLINKING FREQUENCY CONTROL  
+ 263:Core/Src/main.c ****         // ==================================================================
+ 264:Core/Src/main.c ****         if (is_button_pressed(GPIOB, 5, &last_button2_time)) {
+ 700              		.loc 1 264 9 is_stmt 1 view .LVU177
+ 701              		.loc 1 264 13 is_stmt 0 view .LVU178
+ 702 0026 114A     		ldr	r2, .L70+8
+ 703 0028 0521     		movs	r1, #5
+ 704 002a 1148     		ldr	r0, .L70+12
+ 705 002c FFF7FEFF 		bl	is_button_pressed
+ 706              	.LVL37:
+ 707              		.loc 1 264 12 discriminator 1 view .LVU179
+ 708 0030 88B9     		cbnz	r0, .L69
+ 709              	.L64:
+ 265:Core/Src/main.c ****             next_blink_mode();
+ 266:Core/Src/main.c ****         }
+ 267:Core/Src/main.c ****         
+ 268:Core/Src/main.c ****         // ==================================================================
+ 269:Core/Src/main.c ****         // HANDLE BLINKING FOR ALL LEDs
+ 270:Core/Src/main.c ****         // ==================================================================
+ 271:Core/Src/main.c ****         handle_blinking();
+ 710              		.loc 1 271 9 is_stmt 1 view .LVU180
+ 711 0032 FFF7FEFF 		bl	handle_blinking
+ 712              	.LVL38:
+ 272:Core/Src/main.c ****         
+ 273:Core/Src/main.c ****         // ==================================================================
+ 274:Core/Src/main.c ****         // ADD SMALL DELAY TO REDUCE CPU USAGE
+ 275:Core/Src/main.c ****         // ==================================================================
+ 276:Core/Src/main.c ****         // Simple delay - in real application you might use timer instead
+ 277:Core/Src/main.c ****         for (volatile int i = 0; i < 1000; i++);
+ 713              		.loc 1 277 9 view .LVU181
+ 714              	.LBB8:
+ 715              		.loc 1 277 14 view .LVU182
+ 716              		.loc 1 277 27 is_stmt 0 view .LVU183
+ 717 0036 0023     		movs	r3, #0
+ 718 0038 0193     		str	r3, [sp, #4]
+ 719              	.L65:
+ 720              		.loc 1 277 36 is_stmt 1 discriminator 1 view .LVU184
+ 721 003a 019B     		ldr	r3, [sp, #4]
+ 722 003c B3F57A7F 		cmp	r3, #1000
+ 723 0040 0CDB     		blt	.L66
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 19
+
+
+ 724              	.L67:
+ 725              	.LBE8:
+ 253:Core/Src/main.c ****         // ==================================================================
+ 726              		.loc 1 253 5 view .LVU185
+ 257:Core/Src/main.c ****             next_led_sequence();
+ 727              		.loc 1 257 9 view .LVU186
+ 257:Core/Src/main.c ****             next_led_sequence();
+ 728              		.loc 1 257 13 is_stmt 0 view .LVU187
+ 729 0042 0C4A     		ldr	r2, .L70+16
+ 730 0044 0421     		movs	r1, #4
+ 731 0046 0A48     		ldr	r0, .L70+12
+ 732 0048 FFF7FEFF 		bl	is_button_pressed
+ 733              	.LVL39:
+ 257:Core/Src/main.c ****             next_led_sequence();
+ 734              		.loc 1 257 12 discriminator 1 view .LVU188
+ 735 004c 0028     		cmp	r0, #0
+ 736 004e EAD0     		beq	.L63
+ 258:Core/Src/main.c ****         }
+ 737              		.loc 1 258 13 is_stmt 1 view .LVU189
+ 738 0050 FFF7FEFF 		bl	next_led_sequence
+ 739              	.LVL40:
+ 740 0054 E7E7     		b	.L63
+ 741              	.L69:
+ 265:Core/Src/main.c ****         }
+ 742              		.loc 1 265 13 view .LVU190
+ 743 0056 FFF7FEFF 		bl	next_blink_mode
+ 744              	.LVL41:
+ 745 005a EAE7     		b	.L64
+ 746              	.L66:
+ 747              	.LBB9:
+ 748              		.loc 1 277 45 discriminator 3 view .LVU191
+ 749 005c 019B     		ldr	r3, [sp, #4]
+ 750 005e 0133     		adds	r3, r3, #1
+ 751 0060 0193     		str	r3, [sp, #4]
+ 752 0062 EAE7     		b	.L65
+ 753              	.L71:
+ 754              		.align	2
+ 755              	.L70:
+ 756 0064 00000000 		.word	current_led_state
+ 757 0068 00000000 		.word	blink_mode
+ 758 006c 00000000 		.word	last_button2_time
+ 759 0070 00040240 		.word	1073873920
+ 760 0074 00000000 		.word	last_button1_time
+ 761              	.LBE9:
+ 762              		.cfi_endproc
+ 763              	.LFE139:
+ 765              		.global	system_tick
+ 766              		.section	.bss.system_tick,"aw",%nobits
+ 767              		.align	2
+ 770              	system_tick:
+ 771 0000 00000000 		.space	4
+ 772              		.global	DEBOUNCE_DELAY
+ 773              		.section	.rodata.DEBOUNCE_DELAY,"a"
+ 774              		.align	2
+ 777              	DEBOUNCE_DELAY:
+ 778 0000 C8000000 		.word	200
+ 779              		.global	last_button2_time
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 20
+
+
+ 780              		.section	.bss.last_button2_time,"aw",%nobits
+ 781              		.align	2
+ 784              	last_button2_time:
+ 785 0000 00000000 		.space	4
+ 786              		.global	last_button1_time
+ 787              		.section	.bss.last_button1_time,"aw",%nobits
+ 788              		.align	2
+ 791              	last_button1_time:
+ 792 0000 00000000 		.space	4
+ 793              		.global	blink_intervals
+ 794              		.section	.data.blink_intervals,"aw"
+ 795              		.align	2
+ 798              	blink_intervals:
+ 799 0000 00000000 		.word	0
+ 800 0004 E8030000 		.word	1000
+ 801 0008 F4010000 		.word	500
+ 802 000c C8000000 		.word	200
+ 803              		.global	blink_state
+ 804              		.section	.bss.blink_state,"aw",%nobits
+ 805              		.align	2
+ 808              	blink_state:
+ 809 0000 00000000 		.space	6
+ 809      0000
+ 810              		.global	last_blink_time
+ 811              		.section	.bss.last_blink_time,"aw",%nobits
+ 812              		.align	2
+ 815              	last_blink_time:
+ 816 0000 00000000 		.space	24
+ 816      00000000 
+ 816      00000000 
+ 816      00000000 
+ 816      00000000 
+ 817              		.global	blink_mode
+ 818              		.section	.bss.blink_mode,"aw",%nobits
+ 819              		.align	2
+ 822              	blink_mode:
+ 823 0000 00000000 		.space	6
+ 823      0000
+ 824              		.global	LED_PINS
+ 825              		.section	.rodata.LED_PINS,"a"
+ 826              		.align	2
+ 829              	LED_PINS:
+ 830 0000 00070E01 		.ascii	"\000\007\016\001\002\003"
+ 830      0203
+ 831              		.global	led_sequence_step
+ 832              		.section	.bss.led_sequence_step,"aw",%nobits
+ 835              	led_sequence_step:
+ 836 0000 00       		.space	1
+ 837              		.global	current_led_state
+ 838              		.section	.bss.current_led_state,"aw",%nobits
+ 841              	current_led_state:
+ 842 0000 00       		.space	1
+ 843              		.text
+ 844              	.Letext0:
+ 845              		.file 2 "C:/tools_for_microcontrollers/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/ma
+ 846              		.file 3 "C:/tools_for_microcontrollers/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sy
+ 847              		.file 4 "CMSIS/Include/../include/core_cm4.h"
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 21
+
+
+ 848              		.file 5 "Core/Src/../Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 849              		.file 6 "CMSIS/Devices/STM32F4xx/Inc/system_stm32f4xx.h"
+ 850              		.file 7 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 22
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\User\AppData\Local\Temp\ccETGRZl.s:21     .text.main:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccETGRZl.s:27     .text.main:00000000 main
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:21     .text.SystemTick_Init:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:27     .text.SystemTick_Init:00000000 SystemTick_Init
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:59     .text.SystemTick_Init:00000020 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:65     .text.SysTick_Handler:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:71     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:89     .text.SysTick_Handler:0000000c $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:770    .bss.system_tick:00000000 system_tick
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:94     .text.get_current_time:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:100    .text.get_current_time:00000000 get_current_time
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:116    .text.get_current_time:00000008 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:121    .text.update_leds:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:127    .text.update_leds:00000000 update_leds
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:210    .text.update_leds:00000048 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:829    .rodata.LED_PINS:00000000 LED_PINS
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:841    .bss.current_led_state:00000000 current_led_state
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:822    .bss.blink_mode:00000000 blink_mode
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:218    .text.handle_blinking:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:224    .text.handle_blinking:00000000 handle_blinking
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:330    .text.handle_blinking:0000006c $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:815    .bss.last_blink_time:00000000 last_blink_time
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:798    .data.blink_intervals:00000000 blink_intervals
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:808    .bss.blink_state:00000000 blink_state
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:341    .text.get_last_activated_led:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:347    .text.get_last_activated_led:00000000 get_last_activated_led
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:397    .text.get_last_activated_led:00000020 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:402    .text.next_led_sequence:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:408    .text.next_led_sequence:00000000 next_led_sequence
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:481    .text.next_led_sequence:0000003c $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:835    .bss.led_sequence_step:00000000 led_sequence_step
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:488    .text.next_blink_mode:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:494    .text.next_blink_mode:00000000 next_blink_mode
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:564    .text.next_blink_mode:0000003c $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:572    .text.is_button_pressed:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:578    .text.is_button_pressed:00000000 is_button_pressed
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:643    .text.main:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:649    .text.main:00000000 main
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:756    .text.main:00000064 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:784    .bss.last_button2_time:00000000 last_button2_time
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:791    .bss.last_button1_time:00000000 last_button1_time
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:767    .bss.system_tick:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:777    .rodata.DEBOUNCE_DELAY:00000000 DEBOUNCE_DELAY
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:774    .rodata.DEBOUNCE_DELAY:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:781    .bss.last_button2_time:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:788    .bss.last_button1_time:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:795    .data.blink_intervals:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:805    .bss.blink_state:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:812    .bss.last_blink_time:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:819    .bss.blink_mode:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:826    .rodata.LED_PINS:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:836    .bss.led_sequence_step:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s:842    .bss.current_led_state:00000000 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+SystemCoreClock
+GPIO_Ini
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc5Lxp0V.s 			page 23
+
+

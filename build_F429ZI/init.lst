@@ -1,0 +1,349 @@
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccepPHks.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Ini,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "../Inc/init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** #include "init.h"
+   4:Core/Src/init.c **** 
+   5:Core/Src/init.c **** void GPIO_Ini(void)
+   6:Core/Src/init.c **** {
+  29              		.loc 1 6 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34 0000 10B4     		push	{r4}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 4
+  37              		.cfi_offset 4, -4
+   7:Core/Src/init.c ****     // ==========================================================================
+   8:Core/Src/init.c ****     // STEP 1: ENABLE CLOCKS FOR GPIO PORTS
+   9:Core/Src/init.c ****     // ==========================================================================
+  10:Core/Src/init.c ****     // Microcontroller needs clock signals to make GPIO ports work
+  11:Core/Src/init.c ****     // RCC->AHB1ENR controls clocks for GPIO ports B and C
+  12:Core/Src/init.c ****     // RCC_AHB1ENR_GPIOBEN enables clock for GPIO Port B (where LEDs are)
+  13:Core/Src/init.c ****     // RCC_AHB1ENR_GPIOCEN enables clock for GPIO Port C (where buttons are)
+  14:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+  38              		.loc 1 14 5 view .LVU1
+  39 0002 434A     		ldr	r2, .L10
+  40 0004 136B     		ldr	r3, [r2, #48]
+  41 0006 43F00603 		orr	r3, r3, #6
+  42 000a 1363     		str	r3, [r2, #48]
+  15:Core/Src/init.c ****     
+  16:Core/Src/init.c ****     // ==========================================================================
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccepPHks.s 			page 2
+
+
+  17:Core/Src/init.c ****     // STEP 2: CONFIGURE ON-BOARD LEDs (PB0, PB7, PB14)
+  18:Core/Src/init.c ****     // ==========================================================================
+  19:Core/Src/init.c ****     
+  20:Core/Src/init.c ****     // LED1 - PB0 (Green LED on Nucleo board)
+  21:Core/Src/init.c ****     // GPIO_MODER register sets pin mode: 00=Input, 01=Output, 10=Alternate, 11=Analog
+  22:Core/Src/init.c ****     CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODER0);   // Clear both mode bits first
+  43              		.loc 1 22 5 view .LVU2
+  44 000c 414B     		ldr	r3, .L10+4
+  45 000e 1A68     		ldr	r2, [r3]
+  46 0010 22F00302 		bic	r2, r2, #3
+  47 0014 1A60     		str	r2, [r3]
+  23:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER0_0);   // Set to 01 = Output mode
+  48              		.loc 1 23 5 view .LVU3
+  49 0016 1A68     		ldr	r2, [r3]
+  50 0018 42F00102 		orr	r2, r2, #1
+  51 001c 1A60     		str	r2, [r3]
+  24:Core/Src/init.c ****     
+  25:Core/Src/init.c ****     // LED2 - PB7 (Blue LED on Nucleo board)
+  26:Core/Src/init.c ****     CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODER7);   // Clear both mode bits
+  52              		.loc 1 26 5 view .LVU4
+  53 001e 1A68     		ldr	r2, [r3]
+  54 0020 22F44042 		bic	r2, r2, #49152
+  55 0024 1A60     		str	r2, [r3]
+  27:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER7_0);   // Set to 01 = Output mode
+  56              		.loc 1 27 5 view .LVU5
+  57 0026 1A68     		ldr	r2, [r3]
+  58 0028 42F48042 		orr	r2, r2, #16384
+  59 002c 1A60     		str	r2, [r3]
+  28:Core/Src/init.c ****     
+  29:Core/Src/init.c ****     // LED3 - PB14 (Red LED on Nucleo board)
+  30:Core/Src/init.c ****     CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODER14);  // Clear both mode bits
+  60              		.loc 1 30 5 view .LVU6
+  61 002e 1A68     		ldr	r2, [r3]
+  62 0030 22F04052 		bic	r2, r2, #805306368
+  63 0034 1A60     		str	r2, [r3]
+  31:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER14_0);  // Set to 01 = Output mode
+  64              		.loc 1 31 5 view .LVU7
+  65 0036 1A68     		ldr	r2, [r3]
+  66 0038 42F08052 		orr	r2, r2, #268435456
+  67 003c 1A60     		str	r2, [r3]
+  32:Core/Src/init.c ****     
+  33:Core/Src/init.c ****     // ==========================================================================
+  34:Core/Src/init.c ****     // STEP 3: CONFIGURE EXTERNAL LEDs (PB1, PB2, PB3)
+  35:Core/Src/init.c ****     // ==========================================================================
+  36:Core/Src/init.c ****     // These are the additional LEDs you need to connect externally
+  37:Core/Src/init.c ****     for (int pin = 1; pin <= 3; pin++) {
+  68              		.loc 1 37 5 view .LVU8
+  69              	.LBB2:
+  70              		.loc 1 37 10 view .LVU9
+  71              	.LVL0:
+  72              		.loc 1 37 14 is_stmt 0 view .LVU10
+  73 003e 0122     		movs	r2, #1
+  74              		.loc 1 37 5 view .LVU11
+  75 0040 0DE0     		b	.L2
+  76              	.LVL1:
+  77              	.L3:
+  38:Core/Src/init.c ****         // Clear both mode bits (make them 00)
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccepPHks.s 			page 3
+
+
+  39:Core/Src/init.c ****         CLEAR_BIT(GPIOB->MODER, (0x3UL << (pin * 2)));
+  78              		.loc 1 39 9 is_stmt 1 view .LVU12
+  79 0042 344B     		ldr	r3, .L10+4
+  80 0044 1968     		ldr	r1, [r3]
+  81 0046 5400     		lsls	r4, r2, #1
+  82 0048 0320     		movs	r0, #3
+  83 004a A040     		lsls	r0, r0, r4
+  84 004c 21EA0001 		bic	r1, r1, r0
+  85 0050 1960     		str	r1, [r3]
+  40:Core/Src/init.c ****         // Set to output mode (01)
+  41:Core/Src/init.c ****         SET_BIT(GPIOB->MODER, (0x1UL << (pin * 2)));
+  86              		.loc 1 41 9 view .LVU13
+  87 0052 1968     		ldr	r1, [r3]
+  88 0054 0120     		movs	r0, #1
+  89 0056 A040     		lsls	r0, r0, r4
+  90 0058 0143     		orrs	r1, r1, r0
+  91 005a 1960     		str	r1, [r3]
+  37:Core/Src/init.c ****         // Clear both mode bits (make them 00)
+  92              		.loc 1 37 36 discriminator 3 view .LVU14
+  93 005c 0132     		adds	r2, r2, #1
+  94              	.LVL2:
+  95              	.L2:
+  37:Core/Src/init.c ****         // Clear both mode bits (make them 00)
+  96              		.loc 1 37 27 discriminator 1 view .LVU15
+  97 005e 032A     		cmp	r2, #3
+  98 0060 EFDD     		ble	.L3
+  99              	.LBE2:
+ 100              	.LBB3:
+  42:Core/Src/init.c ****     }
+  43:Core/Src/init.c ****     
+  44:Core/Src/init.c ****     // ==========================================================================
+  45:Core/Src/init.c ****     // STEP 4: CONFIGURE ALL LED PROPERTIES
+  46:Core/Src/init.c ****     // ==========================================================================
+  47:Core/Src/init.c ****     for (int pin = 0; pin <= 15; pin++) {
+ 101              		.loc 1 47 14 is_stmt 0 view .LVU16
+ 102 0062 0023     		movs	r3, #0
+ 103 0064 1AE0     		b	.L4
+ 104              	.LVL3:
+ 105              	.L9:
+  48:Core/Src/init.c ****         // Only configure pins we're using: PB0, PB1, PB2, PB3, PB7, PB14
+  49:Core/Src/init.c ****         if (pin == 0 || pin == 1 || pin == 2 || pin == 3 || pin == 7 || pin == 14) {
+  50:Core/Src/init.c ****             // GPIO_OTYPER: Output Type Register
+  51:Core/Src/init.c ****             // 0 = Push-Pull (can drive HIGH and LOW strongly)
+  52:Core/Src/init.c ****             // 1 = Open-Drain (can only pull LOW, needs external resistor for HIGH)
+  53:Core/Src/init.c ****             CLEAR_BIT(GPIOB->OTYPER, (1UL << pin));  // Set to Push-Pull
+ 106              		.loc 1 53 13 is_stmt 1 view .LVU17
+ 107 0066 2B4A     		ldr	r2, .L10+4
+ 108 0068 5168     		ldr	r1, [r2, #4]
+ 109 006a 0120     		movs	r0, #1
+ 110 006c 00FA03F4 		lsl	r4, r0, r3
+ 111 0070 21EA0401 		bic	r1, r1, r4
+ 112 0074 5160     		str	r1, [r2, #4]
+  54:Core/Src/init.c ****             
+  55:Core/Src/init.c ****             // GPIO_OSPEEDR: Output Speed Register  
+  56:Core/Src/init.c ****             // 00 = Low speed (2 MHz), 01 = Medium speed (25-50 MHz)
+  57:Core/Src/init.c ****             // 10 = High speed (50-100 MHz), 11 = Very high speed (180 MHz)
+  58:Core/Src/init.c ****             CLEAR_BIT(GPIOB->OSPEEDR, (0x3UL << (pin * 2)));  // Clear speed bits
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccepPHks.s 			page 4
+
+
+ 113              		.loc 1 58 13 view .LVU18
+ 114 0076 9468     		ldr	r4, [r2, #8]
+ 115 0078 03FA00FC 		lsl	ip, r3, r0
+ 116 007c 0321     		movs	r1, #3
+ 117 007e 01FA0CF1 		lsl	r1, r1, ip
+ 118 0082 24EA0104 		bic	r4, r4, r1
+ 119 0086 9460     		str	r4, [r2, #8]
+  59:Core/Src/init.c ****             SET_BIT(GPIOB->OSPEEDR, (0x1UL << (pin * 2)));    // Set to Medium speed
+ 120              		.loc 1 59 13 view .LVU19
+ 121 0088 9468     		ldr	r4, [r2, #8]
+ 122 008a 00FA0CF0 		lsl	r0, r0, ip
+ 123 008e 2043     		orrs	r0, r0, r4
+ 124 0090 9060     		str	r0, [r2, #8]
+  60:Core/Src/init.c ****             
+  61:Core/Src/init.c ****             // GPIO_PUPDR: Pull-up/Pull-down Register
+  62:Core/Src/init.c ****             // 00 = No pull-up or pull-down, 01 = Pull-up, 10 = Pull-down
+  63:Core/Src/init.c ****             CLEAR_BIT(GPIOB->PUPDR, (0x3UL << (pin * 2)));    // No pull-up/pull-down
+ 125              		.loc 1 63 13 view .LVU20
+ 126 0092 D068     		ldr	r0, [r2, #12]
+ 127 0094 20EA0101 		bic	r1, r0, r1
+ 128 0098 D160     		str	r1, [r2, #12]
+ 129              	.L5:
+  47:Core/Src/init.c ****         // Only configure pins we're using: PB0, PB1, PB2, PB3, PB7, PB14
+ 130              		.loc 1 47 37 discriminator 2 view .LVU21
+ 131 009a 0133     		adds	r3, r3, #1
+ 132              	.LVL4:
+ 133              	.L4:
+  47:Core/Src/init.c ****         // Only configure pins we're using: PB0, PB1, PB2, PB3, PB7, PB14
+ 134              		.loc 1 47 27 discriminator 1 view .LVU22
+ 135 009c 0F2B     		cmp	r3, #15
+ 136 009e 08DC     		bgt	.L8
+  49:Core/Src/init.c ****             // GPIO_OTYPER: Output Type Register
+ 137              		.loc 1 49 9 view .LVU23
+ 138 00a0 0E2B     		cmp	r3, #14
+ 139 00a2 FAD8     		bhi	.L5
+ 140 00a4 44F28F02 		movw	r2, #16527
+ 141 00a8 DA40     		lsrs	r2, r2, r3
+ 142 00aa 12F0010F 		tst	r2, #1
+ 143 00ae DAD1     		bne	.L9
+ 144 00b0 F3E7     		b	.L5
+ 145              	.L8:
+ 146              	.LBE3:
+  64:Core/Src/init.c ****         }
+  65:Core/Src/init.c ****     }
+  66:Core/Src/init.c ****     
+  67:Core/Src/init.c ****     // ==========================================================================
+  68:Core/Src/init.c ****     // STEP 5: CONFIGURE BUTTON 1 (PB4 - EXTERNAL BUTTON)
+  69:Core/Src/init.c ****     // ==========================================================================
+  70:Core/Src/init.c ****     // CHANGED: From PC13 to PB4
+  71:Core/Src/init.c ****     // GPIO_MODER: Set to input mode (00)
+  72:Core/Src/init.c ****     CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODER4);
+ 147              		.loc 1 72 5 view .LVU24
+ 148 00b2 184B     		ldr	r3, .L10+4
+ 149              	.LVL5:
+ 150              		.loc 1 72 5 is_stmt 0 view .LVU25
+ 151 00b4 1A68     		ldr	r2, [r3]
+ 152 00b6 22F44072 		bic	r2, r2, #768
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccepPHks.s 			page 5
+
+
+ 153 00ba 1A60     		str	r2, [r3]
+  73:Core/Src/init.c ****     
+  74:Core/Src/init.c ****     // GPIO_PUPDR: Enable pull-down resistor
+  75:Core/Src/init.c ****     // When button is not pressed, pin reads 0 (LOW)
+  76:Core/Src/init.c ****     // When button is pressed, pin reads 1 (HIGH) because button connects to 3.3V
+  77:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR4_0);  // Clear first bit
+ 154              		.loc 1 77 5 is_stmt 1 view .LVU26
+ 155 00bc DA68     		ldr	r2, [r3, #12]
+ 156 00be 22F48072 		bic	r2, r2, #256
+ 157 00c2 DA60     		str	r2, [r3, #12]
+  78:Core/Src/init.c ****     SET_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR4_1);    // Set second bit = Pull-down
+ 158              		.loc 1 78 5 view .LVU27
+ 159 00c4 DA68     		ldr	r2, [r3, #12]
+ 160 00c6 42F40072 		orr	r2, r2, #512
+ 161 00ca DA60     		str	r2, [r3, #12]
+  79:Core/Src/init.c ****     
+  80:Core/Src/init.c ****     // ==========================================================================
+  81:Core/Src/init.c ****     // STEP 6: CONFIGURE BUTTON 2 (PB5 - EXTERNAL BUTTON)
+  82:Core/Src/init.c ****     // ==========================================================================
+  83:Core/Src/init.c ****     // CHANGED: From PC14 to PB5
+  84:Core/Src/init.c ****     // Same configuration as Button 1
+  85:Core/Src/init.c ****     CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODER5);    // Input mode
+ 162              		.loc 1 85 5 view .LVU28
+ 163 00cc 1A68     		ldr	r2, [r3]
+ 164 00ce 22F44062 		bic	r2, r2, #3072
+ 165 00d2 1A60     		str	r2, [r3]
+  86:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR5_0);  // Clear first bit  
+ 166              		.loc 1 86 5 view .LVU29
+ 167 00d4 DA68     		ldr	r2, [r3, #12]
+ 168 00d6 22F48062 		bic	r2, r2, #1024
+ 169 00da DA60     		str	r2, [r3, #12]
+  87:Core/Src/init.c ****     SET_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR5_1);    // Set second bit = Pull-down
+ 170              		.loc 1 87 5 view .LVU30
+ 171 00dc DA68     		ldr	r2, [r3, #12]
+ 172 00de 42F40062 		orr	r2, r2, #2048
+ 173 00e2 DA60     		str	r2, [r3, #12]
+  88:Core/Src/init.c ****     
+  89:Core/Src/init.c ****     // ==========================================================================
+  90:Core/Src/init.c ****     // STEP 7: INITIAL STATE - ALL LEDs OFF
+  91:Core/Src/init.c ****     // ==========================================================================
+  92:Core/Src/init.c ****     // GPIO_BSRR: Bit Set/Reset Register
+  93:Core/Src/init.c ****     // Writing 1 to lower 16 bits sets the pin HIGH (LED ON)
+  94:Core/Src/init.c ****     // Writing 1 to upper 16 bits sets the pin LOW (LED OFF)
+  95:Core/Src/init.c ****     // We use (1 << pin) << 16 to set the reset bit (turn LED OFF)
+  96:Core/Src/init.c ****     GPIOB->BSRR = (1UL << 0) << 16;   // PB0 OFF - Green LED
+ 174              		.loc 1 96 5 view .LVU31
+ 175              		.loc 1 96 17 is_stmt 0 view .LVU32
+ 176 00e4 4FF48032 		mov	r2, #65536
+ 177 00e8 9A61     		str	r2, [r3, #24]
+  97:Core/Src/init.c ****     GPIOB->BSRR = (1UL << 1) << 16;   // PB1 OFF - External LED 1
+ 178              		.loc 1 97 5 is_stmt 1 view .LVU33
+ 179              		.loc 1 97 17 is_stmt 0 view .LVU34
+ 180 00ea 4FF40032 		mov	r2, #131072
+ 181 00ee 9A61     		str	r2, [r3, #24]
+  98:Core/Src/init.c ****     GPIOB->BSRR = (1UL << 2) << 16;   // PB2 OFF - External LED 2
+ 182              		.loc 1 98 5 is_stmt 1 view .LVU35
+ 183              		.loc 1 98 17 is_stmt 0 view .LVU36
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccepPHks.s 			page 6
+
+
+ 184 00f0 4FF48022 		mov	r2, #262144
+ 185 00f4 9A61     		str	r2, [r3, #24]
+  99:Core/Src/init.c ****     GPIOB->BSRR = (1UL << 3) << 16;   // PB3 OFF - External LED 3
+ 186              		.loc 1 99 5 is_stmt 1 view .LVU37
+ 187              		.loc 1 99 17 is_stmt 0 view .LVU38
+ 188 00f6 4FF40022 		mov	r2, #524288
+ 189 00fa 9A61     		str	r2, [r3, #24]
+ 100:Core/Src/init.c ****     GPIOB->BSRR = (1UL << 7) << 16;   // PB7 OFF - Blue LED
+ 190              		.loc 1 100 5 is_stmt 1 view .LVU39
+ 191              		.loc 1 100 17 is_stmt 0 view .LVU40
+ 192 00fc 4FF40002 		mov	r2, #8388608
+ 193 0100 9A61     		str	r2, [r3, #24]
+ 101:Core/Src/init.c ****     GPIOB->BSRR = (1UL << 14) << 16;  // PB14 OFF - Red LED
+ 194              		.loc 1 101 5 is_stmt 1 view .LVU41
+ 195              		.loc 1 101 17 is_stmt 0 view .LVU42
+ 196 0102 4FF08042 		mov	r2, #1073741824
+ 197 0106 9A61     		str	r2, [r3, #24]
+ 102:Core/Src/init.c ****     }...
+ 198              		.loc 1 102 5 view .LVU43
+ 199 0108 5DF8044B 		ldr	r4, [sp], #4
+ 200              	.LCFI1:
+ 201              		.cfi_restore 4
+ 202              		.cfi_def_cfa_offset 0
+ 203 010c 7047     		bx	lr
+ 204              	.L11:
+ 205 010e 00BF     		.align	2
+ 206              	.L10:
+ 207 0110 00380240 		.word	1073887232
+ 208 0114 00040240 		.word	1073873920
+ 209              		.cfi_endproc
+ 210              	.LFE130:
+ 212              		.text
+ 213              	.Letext0:
+ 214              		.file 2 "C:/tools_for_microcontrollers/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/ma
+ 215              		.file 3 "C:/tools_for_microcontrollers/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sy
+ 216              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccepPHks.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\User\AppData\Local\Temp\ccepPHks.s:21     .text.GPIO_Ini:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccepPHks.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\User\AppData\Local\Temp\ccepPHks.s:207    .text.GPIO_Ini:00000110 $d
+
+NO UNDEFINED SYMBOLS
