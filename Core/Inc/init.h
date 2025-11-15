@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 #include "../../CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
 #include "../../CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
 #define RCC_GPIOС_TAKT (*(uint32_t *)(0x40023800UL + 0x30UL)) //Найстрока тактирования шины RCC
@@ -11,5 +12,5 @@
 #define GPIOC8_SPEED_MIDDLE 0x10000UL //Значение необходимое для задания средней скорости PC8
 #define GPIOС8_PUSH_PULL_OFF (*(uint32_t *)(0x40020800UL + 0x0CUL)) //Настройка PU/PD резистора порта GPIOC
 void GPIO_init(void);//Сигнатура функции настройки работы портов
-void GLAV_ZADANIE(uint8_t *led, uint8_t *un_led, uint8_t *button);//Сигнатура функции главного задания
-void DOP_ZADANIE(uint8_t *led, uint8_t *un_led, uint8_t *press);//Сигнатура функции дополнительного задания
+void GLAV_ZADANIE(uint8_t *led, volatile bool *un_led, volatile bool *button);//Сигнатура функции главного задания
+void DOP_ZADANIE(uint8_t *led, volatile bool *un_led, uint8_t *press);//Сигнатура функции дополнительного задания
