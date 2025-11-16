@@ -1,0 +1,141 @@
+ARM GAS  C:\Users\LENOVO~1\AppData\Local\Temp\ccCBC7Lu.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Ini,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** #include "C:/Users/Lenovo Legion/Desktop/Laboratory_Practice-main/Laboratory_Practice/Tools/xpack-a
+   3:Core/Src/init.c **** 
+   4:Core/Src/init.c **** void GPIO_Ini(void)
+   5:Core/Src/init.c **** {
+  29              		.loc 1 5 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   6:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN|RCC_AHB1ENR_GPIOCEN); //Включение такти
+  34              		.loc 1 6 5 view .LVU1
+  35 0000 1D4A     		ldr	r2, .L2
+  36 0002 136B     		ldr	r3, [r2, #48]
+  37 0004 43F00603 		orr	r3, r3, #6
+  38 0008 1363     		str	r3, [r2, #48]
+   7:Core/Src/init.c ****     //input 8
+   8:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, 0x0);
+  39              		.loc 1 8 5 view .LVU2
+  40 000a 1C4B     		ldr	r3, .L2+4
+  41 000c 1A68     		ldr	r2, [r3]
+  42 000e 1A60     		str	r2, [r3]
+   9:Core/Src/init.c ****     //9
+  10:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, 0x0);
+  43              		.loc 1 10 5 view .LVU3
+  44 0010 1A68     		ldr	r2, [r3]
+  45 0012 1A60     		str	r2, [r3]
+  11:Core/Src/init.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD8_0|GPIO_PUPDR_PUPD9_0); //Bключение PU/PD рез�
+  46              		.loc 1 11 5 view .LVU4
+  47 0014 DA68     		ldr	r2, [r3, #12]
+ARM GAS  C:\Users\LENOVO~1\AppData\Local\Temp\ccCBC7Lu.s 			page 2
+
+
+  48 0016 42F4A022 		orr	r2, r2, #327680
+  49 001a DA60     		str	r2, [r3, #12]
+  12:Core/Src/init.c ****     //output 7
+  13:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL+0x00UL)|=(0x01<<30); //moder15
+  50              		.loc 1 13 5 view .LVU5
+  51 001c A3F50063 		sub	r3, r3, #2048
+  52 0020 D3F80024 		ldr	r2, [r3, #1024]
+  53              		.loc 1 13 38 is_stmt 0 view .LVU6
+  54 0024 42F08042 		orr	r2, r2, #1073741824
+  55 0028 C3F80024 		str	r2, [r3, #1024]
+  14:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; //otyper15
+  56              		.loc 1 14 5 is_stmt 1 view .LVU7
+  15:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL + 0x08UL) |= (0x01<<30); //speedmed15
+  57              		.loc 1 15 5 view .LVU8
+  58 002c D3F80824 		ldr	r2, [r3, #1032]
+  59              		.loc 1 15 41 is_stmt 0 view .LVU9
+  60 0030 42F08042 		orr	r2, r2, #1073741824
+  61 0034 C3F80824 		str	r2, [r3, #1032]
+  16:Core/Src/init.c ****     *(uint32_t*)(0x40020400UL + 0x0CUL) |= (0x01<<30); //pup15
+  62              		.loc 1 16 5 is_stmt 1 view .LVU10
+  63 0038 D3F80C24 		ldr	r2, [r3, #1036]
+  64              		.loc 1 16 41 is_stmt 0 view .LVU11
+  65 003c 42F08042 		orr	r2, r2, #1073741824
+  66 0040 C3F80C24 		str	r2, [r3, #1036]
+  17:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE13_0|GPIO_MODER_MODE12_0|GPIO_MODER_MODE10_0|GPIO_MODER_MO
+  67              		.loc 1 17 5 is_stmt 1 view .LVU12
+  68 0044 03F58063 		add	r3, r3, #1024
+  69 0048 1A68     		ldr	r2, [r3]
+  70 004a 42F0AA62 		orr	r2, r2, #89128960
+  71 004e 42F00102 		orr	r2, r2, #1
+  72 0052 1A60     		str	r2, [r3]
+  18:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_13|GPIO_OTYPER_OT_12|GPIO_MODER_MODE10_0|GPIO_MODER_MOD
+  73              		.loc 1 18 5 view .LVU13
+  74 0054 5968     		ldr	r1, [r3, #4]
+  75 0056 0A4A     		ldr	r2, .L2+8
+  76 0058 0A40     		ands	r2, r2, r1
+  77 005a 5A60     		str	r2, [r3, #4]
+  19:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR13_0|GPIO_OSPEEDER_OSPEEDR12_0|GPIO_MODER_MODE10_0
+  78              		.loc 1 19 5 view .LVU14
+  79 005c 9A68     		ldr	r2, [r3, #8]
+  80 005e 42F0AA62 		orr	r2, r2, #89128960
+  81 0062 42F00102 		orr	r2, r2, #1
+  82 0066 9A60     		str	r2, [r3, #8]
+  20:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD13_0|GPIO_PUPDR_PUPD12_0|GPIO_MODER_MODE10_0|GPIO_MODER_
+  83              		.loc 1 20 5 view .LVU15
+  84 0068 DA68     		ldr	r2, [r3, #12]
+  85 006a 22F0AA62 		bic	r2, r2, #89128960
+  86 006e 22F00102 		bic	r2, r2, #1
+  87 0072 DA60     		str	r2, [r3, #12]
+  21:Core/Src/init.c **** }...
+  88              		.loc 1 21 1 is_stmt 0 view .LVU16
+  89 0074 7047     		bx	lr
+  90              	.L3:
+  91 0076 00BF     		.align	2
+  92              	.L2:
+  93 0078 00380240 		.word	1073887232
+  94 007c 00080240 		.word	1073874944
+ARM GAS  C:\Users\LENOVO~1\AppData\Local\Temp\ccCBC7Lu.s 			page 3
+
+
+  95 0080 FECFAFFF 		.word	-5255170
+  96              		.cfi_endproc
+  97              	.LFE130:
+  99              		.text
+ 100              	.Letext0:
+ 101              		.file 2 "C:/MK/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_typ
+ 102              		.file 3 "C:/MK/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 103              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\LENOVO~1\AppData\Local\Temp\ccCBC7Lu.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\LENOVO~1\AppData\Local\Temp\ccCBC7Lu.s:21     .text.GPIO_Ini:00000000 $t
+C:\Users\LENOVO~1\AppData\Local\Temp\ccCBC7Lu.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\LENOVO~1\AppData\Local\Temp\ccCBC7Lu.s:93     .text.GPIO_Ini:00000078 $d
+
+NO UNDEFINED SYMBOLS
