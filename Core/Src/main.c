@@ -59,51 +59,93 @@
 //     // // ======================================================
 //     *(uint32_t *)(0x40020800UL + 0x0CUL) |= 0x1000UL;
 
- #include "init.h"
- #include <stdint.h>
- int main(void){
+#include "init.h"
+#include <stdint.h>
+
+uint8_t mode = 0; // 0 = включаем, 1 = выключаем
+uint8_t step = 0; // шаг
+uint8_t But_on1 = 0;
+uint8_t But_on2 = 0;
+
+int main(void)
+{
     GPIO_Init();
-    uint8_t mode = 0; // 0 = включаем, 1 = выключаем
-    uint8_t step = 0; // шаг
+
     uint8_t prev_btn1 = 1;
     uint8_t prev_btn2 = 1;
-     while (1) {
-         uint8_t btn2 = READ_BUT_2 ? 1 : 0; 
-         if (prev_btn2 == 1 && btn2 == 0)
-         {
-             mode ^= 1; // переключить режим
-             step = 0;  // начать с начала при смене режима
-         }
-         prev_btn2 = btn2;
+
+    uint32_t Filter1 = 0;
+    uint32_t Filter2 = 0;
+
+    while (1)
+    {
+        // Фильтр от дребезга сигнала кнопки 2
+        if (READ_BUT_2)
+        {
+            Filter2 = 1000;
+            But_on2 = 1;
+        }
+        else if (Filter2 == 0)
+        {
+            But_on2 = 0;
+        }
+        else if (Filter2 > 0)
+        {
+            Filter2 = Filter2 - 1;
+        }
+
+        uint8_t btn2 = But_on2;
+
+        if (prev_btn2 == 1 && btn2 == 0)
+        {
+            mode ^= 1; // переключить режим
+            step = 0;  // начать с начала при смене режима
+        }
+        prev_btn2 = btn2;
+
+        // Фильтр от дребезга сигнала кнопки 1
+        if (READ_BUT_1)
+        {
+            Filter1 = 1000;
+            But_on1 = 1;
+        }
+        else if (Filter1 == 0)
+        {
+            But_on1 = 0;
+        }
+        else if (Filter1 > 0)
+        {
+            Filter1 = Filter1 - 1;
+        }
         // Кнопка 1 (PC7) — действие - включение светодиодов и наоборот
-         uint8_t btn1 = READ_BUT_1 ? 1 : 0;
-         if (prev_btn1 == 1 && btn1 == 0)
-         {
-             // ===== включение =====
-             if (mode == 0)
-             {
-                 if (step == 0)
-                     GPIOB_BSRR = LED_1_TURN_ON;
-                 else if (step == 1)
-                     GPIOB_BSRR = LED_2_TURN_ON;
-                 else if (step == 2)
-                     GPIOB_BSRR = LED_3_TURN_ON;
-                 if (step < 3)
-                     step++;
-             }
-             // ===== выключение =====
-             else
-             {
-                 if (step == 0)
-                     GPIOB_BSRR = LED_1_TURN_OFF;
-                 else if (step == 1)
-                     GPIOB_BSRR = LED_2_TURN_OFF;
-                 else if (step == 2)
-                     GPIOB_BSRR = LED_3_TURN_OFF;
-                 if (step < 3)
-                     step++;
-             }
-         }
-         prev_btn1 = btn1;
-     }
- }
+        uint8_t btn1 = But_on1;
+        if (prev_btn1 == 1 && btn1 == 0)
+        {
+            // ===== включение =====
+            if (mode == 0)
+            {
+                if (step == 0)
+                    GPIOB_BSRR = LED_1_TURN_ON;
+                else if (step == 1)
+                    GPIOB_BSRR = LED_2_TURN_ON;
+                else if (step == 2)
+                    GPIOB_BSRR = LED_3_TURN_ON;
+                if (step < 3)
+                    step++;
+            }
+            // ===== выключение =====
+            else
+            {
+                if (step == 0)
+                    GPIOB_BSRR = LED_1_TURN_OFF;
+                else if (step == 1)
+                    GPIOB_BSRR = LED_2_TURN_OFF;
+                else if (step == 2)
+                    GPIOB_BSRR = LED_3_TURN_OFF;
+                if (step < 3)
+                    step++;
+            }
+        }
+        prev_btn1 = btn1;
+    }
+}

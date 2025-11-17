@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 1
   28:Core/Src/main.c **** //     // // PB8  = биты 16:17 → 01 : маска 0x010000
   29:Core/Src/main.c **** //     // // PB5  = биты 10:11 → 01 : маска 0x0400
   30:Core/Src/main.c **** //     // // PB12 = биты 24:25 → 01 : маска 0x01000000
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 2
 
 
   31:Core/Src/main.c **** //     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x010000UL;
@@ -92,322 +92,482 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 1
   59:Core/Src/main.c **** //     // // ======================================================
   60:Core/Src/main.c **** //     *(uint32_t *)(0x40020800UL + 0x0CUL) |= 0x1000UL;
   61:Core/Src/main.c **** 
-  62:Core/Src/main.c ****  #include "init.h"
-  63:Core/Src/main.c ****  #include <stdint.h>
-  64:Core/Src/main.c ****  int main(void){
-  29              		.loc 1 64 16 view -0
+  62:Core/Src/main.c **** #include "init.h"
+  63:Core/Src/main.c **** #include <stdint.h>
+  64:Core/Src/main.c **** 
+  65:Core/Src/main.c **** uint8_t mode = 0; // 0 = включаем, 1 = выключаем
+  66:Core/Src/main.c **** uint8_t step = 0; // шаг
+  67:Core/Src/main.c **** uint8_t But_on1 = 0;
+  68:Core/Src/main.c **** uint8_t But_on2 = 0;
+  69:Core/Src/main.c **** 
+  70:Core/Src/main.c **** int main(void)
+  71:Core/Src/main.c **** {
+  29              		.loc 1 71 1 view -0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33 0000 38B5     		push	{r3, r4, r5, lr}
+  33 0000 70B5     		push	{r4, r5, r6, lr}
   34              	.LCFI0:
   35              		.cfi_def_cfa_offset 16
-  36              		.cfi_offset 3, -16
-  37              		.cfi_offset 4, -12
-  38              		.cfi_offset 5, -8
+  36              		.cfi_offset 4, -16
+  37              		.cfi_offset 5, -12
+  38              		.cfi_offset 6, -8
   39              		.cfi_offset 14, -4
-  65:Core/Src/main.c ****     GPIO_Init();
-  40              		.loc 1 65 5 view .LVU1
+  72:Core/Src/main.c ****     GPIO_Init();
+  40              		.loc 1 72 5 view .LVU1
   41 0002 FFF7FEFF 		bl	GPIO_Init
   42              	.LVL0:
-  66:Core/Src/main.c ****     uint8_t mode = 0; // 0 = включаем, 1 = выключаем
-  43              		.loc 1 66 5 view .LVU2
-  67:Core/Src/main.c ****     uint8_t step = 0; // шаг
-  44              		.loc 1 67 5 view .LVU3
-  68:Core/Src/main.c ****     uint8_t prev_btn1 = 1;
-  45              		.loc 1 68 5 view .LVU4
-  69:Core/Src/main.c ****     uint8_t prev_btn2 = 1;
-  46              		.loc 1 69 5 view .LVU5
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 3
+  73:Core/Src/main.c **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 3
 
 
-  47              		.loc 1 69 13 is_stmt 0 view .LVU6
-  48 0006 0121     		movs	r1, #1
-  68:Core/Src/main.c ****     uint8_t prev_btn1 = 1;
-  49              		.loc 1 68 13 view .LVU7
-  50 0008 0846     		mov	r0, r1
-  67:Core/Src/main.c ****     uint8_t step = 0; // шаг
-  51              		.loc 1 67 13 view .LVU8
-  52 000a 0024     		movs	r4, #0
-  66:Core/Src/main.c ****     uint8_t step = 0; // шаг
-  53              		.loc 1 66 13 view .LVU9
-  54 000c 2546     		mov	r5, r4
-  55 000e 13E0     		b	.L2
+  74:Core/Src/main.c ****     uint8_t prev_btn1 = 1;
+  43              		.loc 1 74 5 view .LVU2
+  75:Core/Src/main.c ****     uint8_t prev_btn2 = 1;
+  44              		.loc 1 75 5 view .LVU3
+  76:Core/Src/main.c **** 
+  77:Core/Src/main.c ****     uint32_t Filter1 = 0;
+  45              		.loc 1 77 5 view .LVU4
+  78:Core/Src/main.c ****     uint32_t Filter2 = 0;
+  46              		.loc 1 78 5 view .LVU5
+  47              		.loc 1 78 14 is_stmt 0 view .LVU6
+  48 0006 0024     		movs	r4, #0
+  77:Core/Src/main.c ****     uint32_t Filter2 = 0;
+  49              		.loc 1 77 14 view .LVU7
+  50 0008 2546     		mov	r5, r4
+  75:Core/Src/main.c **** 
+  51              		.loc 1 75 13 view .LVU8
+  52 000a 0121     		movs	r1, #1
+  74:Core/Src/main.c ****     uint8_t prev_btn2 = 1;
+  53              		.loc 1 74 13 view .LVU9
+  54 000c 0846     		mov	r0, r1
+  55 000e 15E0     		b	.L2
   56              	.LVL1:
-  57              	.L17:
+  57              	.L3:
   58              	.LBB2:
-  70:Core/Src/main.c ****      while (1) {
-  71:Core/Src/main.c ****          uint8_t btn2 = READ_BUT_2 ? 1 : 0; 
-  72:Core/Src/main.c ****          if (prev_btn2 == 1 && btn2 == 0)
-  59              		.loc 1 72 29 discriminator 1 view .LVU10
-  60 0010 CAB9     		cbnz	r2, .L3
-  73:Core/Src/main.c ****          {
-  74:Core/Src/main.c ****              mode ^= 1; // переключить режим
-  61              		.loc 1 74 14 is_stmt 1 view .LVU11
-  62              		.loc 1 74 19 is_stmt 0 view .LVU12
-  63 0012 85F00105 		eor	r5, r5, #1
-  64              	.LVL2:
-  75:Core/Src/main.c ****              step = 0;  // начать с начала при смене режима
-  65              		.loc 1 75 14 is_stmt 1 view .LVU13
-  66              		.loc 1 75 19 is_stmt 0 view .LVU14
-  67 0016 1446     		mov	r4, r2
-  68 0018 15E0     		b	.L3
-  69              	.LVL3:
-  70              	.L6:
-  76:Core/Src/main.c ****          }
-  77:Core/Src/main.c ****          prev_btn2 = btn2;
-  78:Core/Src/main.c ****         // Кнопка 1 (PC7) — действие - включение светодиодов и
-  79:Core/Src/main.c ****          uint8_t btn1 = READ_BUT_1 ? 1 : 0;
-  80:Core/Src/main.c ****          if (prev_btn1 == 1 && btn1 == 0)
-  81:Core/Src/main.c ****          {
-  82:Core/Src/main.c ****              // ===== включение =====
-  83:Core/Src/main.c ****              if (mode == 0)
-  84:Core/Src/main.c ****              {
-  85:Core/Src/main.c ****                  if (step == 0)
-  86:Core/Src/main.c ****                      GPIOB_BSRR = LED_1_TURN_ON;
-  87:Core/Src/main.c ****                  else if (step == 1)
-  71              		.loc 1 87 23 is_stmt 1 view .LVU15
-  72              		.loc 1 87 26 is_stmt 0 view .LVU16
-  73 001a 012C     		cmp	r4, #1
-  74 001c 04D0     		beq	.L15
-  88:Core/Src/main.c ****                      GPIOB_BSRR = LED_2_TURN_ON;
-  89:Core/Src/main.c ****                  else if (step == 2)
-  75              		.loc 1 89 23 is_stmt 1 view .LVU17
-  76              		.loc 1 89 26 is_stmt 0 view .LVU18
-  77 001e 022C     		cmp	r4, #2
-  78 0020 20D0     		beq	.L16
-  90:Core/Src/main.c ****                      GPIOB_BSRR = LED_3_TURN_ON;
-  91:Core/Src/main.c ****                  if (step < 3)
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 4
+  79:Core/Src/main.c **** 
+  80:Core/Src/main.c ****     while (1)
+  81:Core/Src/main.c ****     {
+  82:Core/Src/main.c ****         // Фильтр от дребезга сигнала кнопки 2
+  83:Core/Src/main.c ****         if (READ_BUT_2)
+  84:Core/Src/main.c ****         {
+  85:Core/Src/main.c ****             Filter2 = 1000;
+  86:Core/Src/main.c ****             But_on2 = 1;
+  87:Core/Src/main.c ****         }
+  88:Core/Src/main.c ****         else if (Filter2 == 0)
+  59              		.loc 1 88 14 is_stmt 1 view .LVU10
+  60              		.loc 1 88 17 is_stmt 0 view .LVU11
+  61 0010 04BB     		cbnz	r4, .L5
+  89:Core/Src/main.c ****         {
+  90:Core/Src/main.c ****             But_on2 = 0;
+  62              		.loc 1 90 13 is_stmt 1 view .LVU12
+  63              		.loc 1 90 21 is_stmt 0 view .LVU13
+  64 0012 3A4A     		ldr	r2, .L23
+  65 0014 0026     		movs	r6, #0
+  66 0016 1670     		strb	r6, [r2]
+  67              	.LVL2:
+  68              	.L4:
+  91:Core/Src/main.c ****         }
+  92:Core/Src/main.c ****         else if (Filter2 > 0)
+  93:Core/Src/main.c ****         {
+  94:Core/Src/main.c ****             Filter2 = Filter2 - 1;
+  95:Core/Src/main.c ****         }
+  96:Core/Src/main.c **** 
+  97:Core/Src/main.c ****         uint8_t btn2 = But_on2;
+  69              		.loc 1 97 9 is_stmt 1 view .LVU14
+  70              		.loc 1 97 17 is_stmt 0 view .LVU15
+  71 0018 384A     		ldr	r2, .L23
+  72 001a 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 4
 
 
-  79              		.loc 1 91 18 is_stmt 1 view .LVU19
-  80              		.loc 1 91 21 is_stmt 0 view .LVU20
-  81 0022 022C     		cmp	r4, #2
-  82 0024 06D8     		bhi	.L4
-  83 0026 03E0     		b	.L7
-  84              	.L15:
-  88:Core/Src/main.c ****                      GPIOB_BSRR = LED_2_TURN_ON;
-  85              		.loc 1 88 22 is_stmt 1 view .LVU21
-  88:Core/Src/main.c ****                      GPIOB_BSRR = LED_2_TURN_ON;
-  86              		.loc 1 88 33 is_stmt 0 view .LVU22
-  87 0028 1F49     		ldr	r1, .L20
-  88 002a 2020     		movs	r0, #32
-  89              	.LVL4:
-  88:Core/Src/main.c ****                      GPIOB_BSRR = LED_2_TURN_ON;
-  90              		.loc 1 88 33 view .LVU23
-  91 002c C1F81804 		str	r0, [r1, #1048]
-  92              		.loc 1 91 18 is_stmt 1 view .LVU24
-  93              	.L7:
-  92:Core/Src/main.c ****                      step++;
-  94              		.loc 1 92 22 view .LVU25
-  95              		.loc 1 92 26 is_stmt 0 view .LVU26
-  96 0030 0134     		adds	r4, r4, #1
-  97              	.LVL5:
-  98              		.loc 1 92 26 view .LVU27
-  99 0032 E4B2     		uxtb	r4, r4
- 100              	.LVL6:
- 101              	.L4:
- 102              		.loc 1 92 26 view .LVU28
- 103              	.LBE2:
-  64:Core/Src/main.c ****     GPIO_Init();
- 104              		.loc 1 64 16 view .LVU29
- 105 0034 1146     		mov	r1, r2
- 106 0036 1846     		mov	r0, r3
- 107              	.LVL7:
- 108              	.L2:
-  70:Core/Src/main.c ****          uint8_t btn2 = READ_BUT_2 ? 1 : 0; 
- 109              		.loc 1 70 6 is_stmt 1 view .LVU30
- 110              	.LBB3:
-  71:Core/Src/main.c ****          if (prev_btn2 == 1 && btn2 == 0)
- 111              		.loc 1 71 10 view .LVU31
-  71:Core/Src/main.c ****          if (prev_btn2 == 1 && btn2 == 0)
- 112              		.loc 1 71 25 is_stmt 0 view .LVU32
- 113 0038 1B4B     		ldr	r3, .L20
- 114 003a D3F81038 		ldr	r3, [r3, #2064]
-  71:Core/Src/main.c ****          if (prev_btn2 == 1 && btn2 == 0)
- 115              		.loc 1 71 18 view .LVU33
- 116 003e C3F38012 		ubfx	r2, r3, #6, #1
- 117              	.LVL8:
-  72:Core/Src/main.c ****          {
- 118              		.loc 1 72 10 is_stmt 1 view .LVU34
-  72:Core/Src/main.c ****          {
- 119              		.loc 1 72 13 is_stmt 0 view .LVU35
- 120 0042 0129     		cmp	r1, #1
- 121 0044 E4D0     		beq	.L17
- 122              	.LVL9:
- 123              	.L3:
-  77:Core/Src/main.c ****         // Кнопка 1 (PC7) — действие - включение светодиодов и
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 5
+  73              	.LVL3:
+  98:Core/Src/main.c **** 
+  99:Core/Src/main.c ****         if (prev_btn2 == 1 && btn2 == 0)
+  74              		.loc 1 99 9 is_stmt 1 view .LVU16
+  75              		.loc 1 99 12 is_stmt 0 view .LVU17
+  76 001c 0129     		cmp	r1, #1
+  77 001e 1BD0     		beq	.L19
+  78              	.LVL4:
+  79              	.L6:
+ 100:Core/Src/main.c ****         {
+ 101:Core/Src/main.c ****             mode ^= 1; // переключить режим
+ 102:Core/Src/main.c ****             step = 0;  // начать с начала при смене режима
+ 103:Core/Src/main.c ****         }
+ 104:Core/Src/main.c ****         prev_btn2 = btn2;
+  80              		.loc 1 104 9 is_stmt 1 view .LVU18
+ 105:Core/Src/main.c **** 
+ 106:Core/Src/main.c ****         // Фильтр от дребезга сигнала кнопки 1
+ 107:Core/Src/main.c ****         if (READ_BUT_1)
+  81              		.loc 1 107 9 view .LVU19
+  82              		.loc 1 107 12 is_stmt 0 view .LVU20
+  83 0020 13F0800F 		tst	r3, #128
+  84 0024 23D0     		beq	.L7
+ 108:Core/Src/main.c ****         {
+ 109:Core/Src/main.c ****             Filter1 = 1000;
+  85              		.loc 1 109 13 is_stmt 1 view .LVU21
+  86              	.LVL5:
+ 110:Core/Src/main.c ****             But_on1 = 1;
+  87              		.loc 1 110 13 view .LVU22
+  88              		.loc 1 110 21 is_stmt 0 view .LVU23
+  89 0026 364B     		ldr	r3, .L23+4
+  90 0028 0121     		movs	r1, #1
+  91 002a 1970     		strb	r1, [r3]
+ 109:Core/Src/main.c ****             But_on1 = 1;
+  92              		.loc 1 109 21 view .LVU24
+  93 002c 4FF47A75 		mov	r5, #1000
+  94              	.LVL6:
+  95              	.L8:
+ 111:Core/Src/main.c ****         }
+ 112:Core/Src/main.c ****         else if (Filter1 == 0)
+ 113:Core/Src/main.c ****         {
+ 114:Core/Src/main.c ****             But_on1 = 0;
+ 115:Core/Src/main.c ****         }
+ 116:Core/Src/main.c ****         else if (Filter1 > 0)
+ 117:Core/Src/main.c ****         {
+ 118:Core/Src/main.c ****             Filter1 = Filter1 - 1;
+ 119:Core/Src/main.c ****         }
+ 120:Core/Src/main.c ****         // Кнопка 1 (PC7) — действие - включение светодиодов и
+ 121:Core/Src/main.c ****         uint8_t btn1 = But_on1;
+  96              		.loc 1 121 9 is_stmt 1 view .LVU25
+  97              		.loc 1 121 17 is_stmt 0 view .LVU26
+  98 0030 334B     		ldr	r3, .L23+4
+  99 0032 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 100              	.LVL7:
+ 122:Core/Src/main.c ****         if (prev_btn1 == 1 && btn1 == 0)
+ 101              		.loc 1 122 9 is_stmt 1 view .LVU27
+ 102              		.loc 1 122 12 is_stmt 0 view .LVU28
+ 103 0034 0128     		cmp	r0, #1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 5
 
 
- 124              		.loc 1 77 10 is_stmt 1 view .LVU36
-  79:Core/Src/main.c ****          if (prev_btn1 == 1 && btn1 == 0)
- 125              		.loc 1 79 10 view .LVU37
-  79:Core/Src/main.c ****          if (prev_btn1 == 1 && btn1 == 0)
- 126              		.loc 1 79 18 is_stmt 0 view .LVU38
- 127 0046 C3F3C013 		ubfx	r3, r3, #7, #1
- 128              	.LVL10:
-  80:Core/Src/main.c ****          {
- 129              		.loc 1 80 10 is_stmt 1 view .LVU39
-  80:Core/Src/main.c ****          {
- 130              		.loc 1 80 13 is_stmt 0 view .LVU40
- 131 004a 0128     		cmp	r0, #1
- 132 004c F2D1     		bne	.L4
-  80:Core/Src/main.c ****          {
- 133              		.loc 1 80 29 discriminator 1 view .LVU41
- 134 004e 002B     		cmp	r3, #0
- 135 0050 F0D1     		bne	.L4
-  83:Core/Src/main.c ****              {
- 136              		.loc 1 83 14 is_stmt 1 view .LVU42
-  83:Core/Src/main.c ****              {
- 137              		.loc 1 83 17 is_stmt 0 view .LVU43
- 138 0052 6DB9     		cbnz	r5, .L5
-  85:Core/Src/main.c ****                      GPIOB_BSRR = LED_1_TURN_ON;
- 139              		.loc 1 85 18 is_stmt 1 view .LVU44
-  85:Core/Src/main.c ****                      GPIOB_BSRR = LED_1_TURN_ON;
- 140              		.loc 1 85 21 is_stmt 0 view .LVU45
- 141 0054 002C     		cmp	r4, #0
- 142 0056 E0D1     		bne	.L6
-  86:Core/Src/main.c ****                  else if (step == 1)
- 143              		.loc 1 86 22 is_stmt 1 view .LVU46
-  86:Core/Src/main.c ****                  else if (step == 1)
- 144              		.loc 1 86 33 is_stmt 0 view .LVU47
- 145 0058 1349     		ldr	r1, .L20
- 146 005a 4FF48070 		mov	r0, #256
- 147              	.LVL11:
-  86:Core/Src/main.c ****                  else if (step == 1)
- 148              		.loc 1 86 33 view .LVU48
- 149 005e C1F81804 		str	r0, [r1, #1048]
-  91:Core/Src/main.c ****                      step++;
- 150              		.loc 1 91 18 is_stmt 1 view .LVU49
- 151 0062 E5E7     		b	.L7
- 152              	.LVL12:
- 153              	.L16:
-  90:Core/Src/main.c ****                  if (step < 3)
- 154              		.loc 1 90 22 view .LVU50
-  90:Core/Src/main.c ****                  if (step < 3)
- 155              		.loc 1 90 33 is_stmt 0 view .LVU51
- 156 0064 1049     		ldr	r1, .L20
- 157 0066 4FF48050 		mov	r0, #4096
- 158              	.LVL13:
-  90:Core/Src/main.c ****                  if (step < 3)
- 159              		.loc 1 90 33 view .LVU52
- 160 006a C1F81804 		str	r0, [r1, #1048]
-  91:Core/Src/main.c ****                      step++;
- 161              		.loc 1 91 18 is_stmt 1 view .LVU53
- 162 006e DFE7     		b	.L7
- 163              	.LVL14:
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 6
+ 104 0036 21D0     		beq	.L20
+ 105              	.LVL8:
+ 106              	.L10:
+ 107              		.loc 1 122 12 view .LVU29
+ 108              	.LBE2:
+  71:Core/Src/main.c ****     GPIO_Init();
+ 109              		.loc 1 71 1 view .LVU30
+ 110 0038 1146     		mov	r1, r2
+ 111 003a 1846     		mov	r0, r3
+ 112              	.LVL9:
+ 113              	.L2:
+  80:Core/Src/main.c ****     {
+ 114              		.loc 1 80 5 is_stmt 1 view .LVU31
+ 115              	.LBB3:
+  83:Core/Src/main.c ****         {
+ 116              		.loc 1 83 9 view .LVU32
+  83:Core/Src/main.c ****         {
+ 117              		.loc 1 83 13 is_stmt 0 view .LVU33
+ 118 003c 314B     		ldr	r3, .L23+8
+ 119 003e D3F81038 		ldr	r3, [r3, #2064]
+  83:Core/Src/main.c ****         {
+ 120              		.loc 1 83 12 view .LVU34
+ 121 0042 13F0400F 		tst	r3, #64
+ 122 0046 E3D0     		beq	.L3
+  85:Core/Src/main.c ****             But_on2 = 1;
+ 123              		.loc 1 85 13 is_stmt 1 view .LVU35
+ 124              	.LVL10:
+  86:Core/Src/main.c ****         }
+ 125              		.loc 1 86 13 view .LVU36
+  86:Core/Src/main.c ****         }
+ 126              		.loc 1 86 21 is_stmt 0 view .LVU37
+ 127 0048 2C4A     		ldr	r2, .L23
+ 128 004a 0124     		movs	r4, #1
+ 129 004c 1470     		strb	r4, [r2]
+  85:Core/Src/main.c ****             But_on2 = 1;
+ 130              		.loc 1 85 21 view .LVU38
+ 131 004e 4FF47A74 		mov	r4, #1000
+ 132 0052 E1E7     		b	.L4
+ 133              	.LVL11:
+ 134              	.L5:
+  92:Core/Src/main.c ****         {
+ 135              		.loc 1 92 14 is_stmt 1 view .LVU39
+  94:Core/Src/main.c ****         }
+ 136              		.loc 1 94 13 view .LVU40
+  94:Core/Src/main.c ****         }
+ 137              		.loc 1 94 21 is_stmt 0 view .LVU41
+ 138 0054 013C     		subs	r4, r4, #1
+ 139              	.LVL12:
+  94:Core/Src/main.c ****         }
+ 140              		.loc 1 94 21 view .LVU42
+ 141 0056 DFE7     		b	.L4
+ 142              	.LVL13:
+ 143              	.L19:
+  99:Core/Src/main.c ****         {
+ 144              		.loc 1 99 28 discriminator 1 view .LVU43
+ 145 0058 002A     		cmp	r2, #0
+ 146 005a E1D1     		bne	.L6
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 6
 
 
- 164              	.L5:
-  93:Core/Src/main.c ****              }
-  94:Core/Src/main.c ****              // ===== выключение =====
-  95:Core/Src/main.c ****              else
-  96:Core/Src/main.c ****              {
-  97:Core/Src/main.c ****                  if (step == 0)
- 165              		.loc 1 97 18 view .LVU54
- 166              		.loc 1 97 21 is_stmt 0 view .LVU55
- 167 0070 3CB9     		cbnz	r4, .L10
-  98:Core/Src/main.c ****                      GPIOB_BSRR = LED_1_TURN_OFF;
- 168              		.loc 1 98 22 is_stmt 1 view .LVU56
- 169              		.loc 1 98 33 is_stmt 0 view .LVU57
- 170 0072 0D49     		ldr	r1, .L20
- 171 0074 4FF08070 		mov	r0, #16777216
- 172              	.LVL15:
- 173              		.loc 1 98 33 view .LVU58
- 174 0078 C1F81804 		str	r0, [r1, #1048]
-  99:Core/Src/main.c ****                  else if (step == 1)
- 100:Core/Src/main.c ****                      GPIOB_BSRR = LED_2_TURN_OFF;
- 101:Core/Src/main.c ****                  else if (step == 2)
- 102:Core/Src/main.c ****                      GPIOB_BSRR = LED_3_TURN_OFF;
- 103:Core/Src/main.c ****                  if (step < 3)
- 175              		.loc 1 103 18 is_stmt 1 view .LVU59
- 176              	.L11:
- 104:Core/Src/main.c ****                      step++;
- 177              		.loc 1 104 22 view .LVU60
- 178              		.loc 1 104 26 is_stmt 0 view .LVU61
- 179 007c 0134     		adds	r4, r4, #1
- 180              	.LVL16:
- 181              		.loc 1 104 26 view .LVU62
- 182 007e E4B2     		uxtb	r4, r4
- 183              	.LVL17:
- 184              		.loc 1 104 26 view .LVU63
- 185 0080 D8E7     		b	.L4
- 186              	.LVL18:
- 187              	.L10:
-  99:Core/Src/main.c ****                  else if (step == 1)
- 188              		.loc 1 99 23 is_stmt 1 view .LVU64
-  99:Core/Src/main.c ****                  else if (step == 1)
- 189              		.loc 1 99 26 is_stmt 0 view .LVU65
- 190 0082 012C     		cmp	r4, #1
- 191 0084 04D0     		beq	.L18
- 101:Core/Src/main.c ****                      GPIOB_BSRR = LED_3_TURN_OFF;
- 192              		.loc 1 101 23 is_stmt 1 view .LVU66
- 101:Core/Src/main.c ****                      GPIOB_BSRR = LED_3_TURN_OFF;
- 193              		.loc 1 101 26 is_stmt 0 view .LVU67
- 194 0086 022C     		cmp	r4, #2
- 195 0088 08D0     		beq	.L19
- 103:Core/Src/main.c ****                      step++;
- 196              		.loc 1 103 18 is_stmt 1 view .LVU68
- 103:Core/Src/main.c ****                      step++;
- 197              		.loc 1 103 21 is_stmt 0 view .LVU69
- 198 008a 022C     		cmp	r4, #2
- 199 008c D2D8     		bhi	.L4
- 200 008e F5E7     		b	.L11
- 201              	.L18:
- 100:Core/Src/main.c ****                  else if (step == 2)
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 7
+ 101:Core/Src/main.c ****             step = 0;  // начать с начала при смене режима
+ 147              		.loc 1 101 13 is_stmt 1 view .LVU44
+ 101:Core/Src/main.c ****             step = 0;  // начать с начала при смене режима
+ 148              		.loc 1 101 18 is_stmt 0 view .LVU45
+ 149 005c 2A4E     		ldr	r6, .L23+12
+ 150 005e 3178     		ldrb	r1, [r6]	@ zero_extendqisi2
+ 151              	.LVL14:
+ 101:Core/Src/main.c ****             step = 0;  // начать с начала при смене режима
+ 152              		.loc 1 101 18 view .LVU46
+ 153 0060 81F00101 		eor	r1, r1, #1
+ 154 0064 3170     		strb	r1, [r6]
+ 102:Core/Src/main.c ****         }
+ 155              		.loc 1 102 13 is_stmt 1 view .LVU47
+ 102:Core/Src/main.c ****         }
+ 156              		.loc 1 102 18 is_stmt 0 view .LVU48
+ 157 0066 2949     		ldr	r1, .L23+16
+ 158 0068 0026     		movs	r6, #0
+ 159 006a 0E70     		strb	r6, [r1]
+ 160 006c D8E7     		b	.L6
+ 161              	.LVL15:
+ 162              	.L7:
+ 112:Core/Src/main.c ****         {
+ 163              		.loc 1 112 14 is_stmt 1 view .LVU49
+ 112:Core/Src/main.c ****         {
+ 164              		.loc 1 112 17 is_stmt 0 view .LVU50
+ 165 006e 1DB9     		cbnz	r5, .L9
+ 114:Core/Src/main.c ****         }
+ 166              		.loc 1 114 13 is_stmt 1 view .LVU51
+ 114:Core/Src/main.c ****         }
+ 167              		.loc 1 114 21 is_stmt 0 view .LVU52
+ 168 0070 234B     		ldr	r3, .L23+4
+ 169 0072 0021     		movs	r1, #0
+ 170 0074 1970     		strb	r1, [r3]
+ 171 0076 DBE7     		b	.L8
+ 172              	.L9:
+ 116:Core/Src/main.c ****         {
+ 173              		.loc 1 116 14 is_stmt 1 view .LVU53
+ 118:Core/Src/main.c ****         }
+ 174              		.loc 1 118 13 view .LVU54
+ 118:Core/Src/main.c ****         }
+ 175              		.loc 1 118 21 is_stmt 0 view .LVU55
+ 176 0078 013D     		subs	r5, r5, #1
+ 177              	.LVL16:
+ 118:Core/Src/main.c ****         }
+ 178              		.loc 1 118 21 view .LVU56
+ 179 007a D9E7     		b	.L8
+ 180              	.LVL17:
+ 181              	.L20:
+ 182              		.loc 1 122 28 discriminator 1 view .LVU57
+ 183 007c 002B     		cmp	r3, #0
+ 184 007e DBD1     		bne	.L10
+ 123:Core/Src/main.c ****         {
+ 124:Core/Src/main.c ****             // ===== включение =====
+ 125:Core/Src/main.c ****             if (mode == 0)
+ 185              		.loc 1 125 13 is_stmt 1 view .LVU58
+ 186              		.loc 1 125 22 is_stmt 0 view .LVU59
+ 187 0080 2149     		ldr	r1, .L23+12
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 7
 
 
- 202              		.loc 1 100 22 is_stmt 1 view .LVU70
- 100:Core/Src/main.c ****                  else if (step == 2)
- 203              		.loc 1 100 33 is_stmt 0 view .LVU71
- 204 0090 0549     		ldr	r1, .L20
- 205 0092 4FF40010 		mov	r0, #2097152
- 206              	.LVL19:
- 100:Core/Src/main.c ****                  else if (step == 2)
- 207              		.loc 1 100 33 view .LVU72
- 208 0096 C1F81804 		str	r0, [r1, #1048]
- 103:Core/Src/main.c ****                      step++;
- 209              		.loc 1 103 18 is_stmt 1 view .LVU73
- 210 009a EFE7     		b	.L11
- 211              	.LVL20:
- 212              	.L19:
- 102:Core/Src/main.c ****                  if (step < 3)
- 213              		.loc 1 102 22 view .LVU74
- 102:Core/Src/main.c ****                  if (step < 3)
- 214              		.loc 1 102 33 is_stmt 0 view .LVU75
- 215 009c 0249     		ldr	r1, .L20
- 216 009e 4FF08050 		mov	r0, #268435456
- 217              	.LVL21:
- 102:Core/Src/main.c ****                  if (step < 3)
- 218              		.loc 1 102 33 view .LVU76
- 219 00a2 C1F81804 		str	r0, [r1, #1048]
- 103:Core/Src/main.c ****                      step++;
- 220              		.loc 1 103 18 is_stmt 1 view .LVU77
- 221 00a6 E9E7     		b	.L11
- 222              	.L21:
- 223              		.align	2
- 224              	.L20:
- 225 00a8 00000240 		.word	1073872896
- 226              	.LBE3:
- 227              		.cfi_endproc
- 228              	.LFE130:
- 230              		.text
- 231              	.Letext0:
- 232              		.file 2 "C:/Users/User/Desktop/Tools/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-
- 233              		.file 3 "C:/Users/User/Desktop/Tools/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-
- 234              		.file 4 "Core/Inc/init.h"
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccYEqisP.s 			page 8
+ 188 0082 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+ 189              		.loc 1 125 16 view .LVU60
+ 190 0084 E1B9     		cbnz	r1, .L11
+ 126:Core/Src/main.c ****             {
+ 127:Core/Src/main.c ****                 if (step == 0)
+ 191              		.loc 1 127 17 is_stmt 1 view .LVU61
+ 192              		.loc 1 127 26 is_stmt 0 view .LVU62
+ 193 0086 2149     		ldr	r1, .L23+16
+ 194 0088 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+ 195              		.loc 1 127 20 view .LVU63
+ 196 008a 51B9     		cbnz	r1, .L12
+ 128:Core/Src/main.c ****                     GPIOB_BSRR = LED_1_TURN_ON;
+ 197              		.loc 1 128 21 is_stmt 1 view .LVU64
+ 198              		.loc 1 128 32 is_stmt 0 view .LVU65
+ 199 008c 1D48     		ldr	r0, .L23+8
+ 200              	.LVL18:
+ 201              		.loc 1 128 32 view .LVU66
+ 202 008e 4FF48076 		mov	r6, #256
+ 203 0092 C0F81864 		str	r6, [r0, #1048]
+ 204              	.L13:
+ 129:Core/Src/main.c ****                 else if (step == 1)
+ 130:Core/Src/main.c ****                     GPIOB_BSRR = LED_2_TURN_ON;
+ 131:Core/Src/main.c ****                 else if (step == 2)
+ 132:Core/Src/main.c ****                     GPIOB_BSRR = LED_3_TURN_ON;
+ 133:Core/Src/main.c ****                 if (step < 3)
+ 205              		.loc 1 133 17 is_stmt 1 view .LVU67
+ 206              		.loc 1 133 20 is_stmt 0 view .LVU68
+ 207 0096 0229     		cmp	r1, #2
+ 208 0098 CED8     		bhi	.L10
+ 134:Core/Src/main.c ****                     step++;
+ 209              		.loc 1 134 21 is_stmt 1 view .LVU69
+ 210              		.loc 1 134 25 is_stmt 0 view .LVU70
+ 211 009a 0131     		adds	r1, r1, #1
+ 212 009c 1B48     		ldr	r0, .L23+16
+ 213 009e 0170     		strb	r1, [r0]
+ 214 00a0 CAE7     		b	.L10
+ 215              	.LVL19:
+ 216              	.L12:
+ 129:Core/Src/main.c ****                 else if (step == 1)
+ 217              		.loc 1 129 22 is_stmt 1 view .LVU71
+ 129:Core/Src/main.c ****                 else if (step == 1)
+ 218              		.loc 1 129 25 is_stmt 0 view .LVU72
+ 219 00a2 0129     		cmp	r1, #1
+ 220 00a4 07D0     		beq	.L21
+ 131:Core/Src/main.c ****                     GPIOB_BSRR = LED_3_TURN_ON;
+ 221              		.loc 1 131 22 is_stmt 1 view .LVU73
+ 131:Core/Src/main.c ****                     GPIOB_BSRR = LED_3_TURN_ON;
+ 222              		.loc 1 131 25 is_stmt 0 view .LVU74
+ 223 00a6 0229     		cmp	r1, #2
+ 224 00a8 F5D1     		bne	.L13
+ 132:Core/Src/main.c ****                 if (step < 3)
+ 225              		.loc 1 132 21 is_stmt 1 view .LVU75
+ 132:Core/Src/main.c ****                 if (step < 3)
+ 226              		.loc 1 132 32 is_stmt 0 view .LVU76
+ 227 00aa 1648     		ldr	r0, .L23+8
+ 228              	.LVL20:
+ 132:Core/Src/main.c ****                 if (step < 3)
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 8
+
+
+ 229              		.loc 1 132 32 view .LVU77
+ 230 00ac 4FF48056 		mov	r6, #4096
+ 231 00b0 C0F81864 		str	r6, [r0, #1048]
+ 232 00b4 EFE7     		b	.L13
+ 233              	.LVL21:
+ 234              	.L21:
+ 130:Core/Src/main.c ****                 else if (step == 2)
+ 235              		.loc 1 130 21 is_stmt 1 view .LVU78
+ 130:Core/Src/main.c ****                 else if (step == 2)
+ 236              		.loc 1 130 32 is_stmt 0 view .LVU79
+ 237 00b6 1348     		ldr	r0, .L23+8
+ 238              	.LVL22:
+ 130:Core/Src/main.c ****                 else if (step == 2)
+ 239              		.loc 1 130 32 view .LVU80
+ 240 00b8 2026     		movs	r6, #32
+ 241 00ba C0F81864 		str	r6, [r0, #1048]
+ 242 00be EAE7     		b	.L13
+ 243              	.LVL23:
+ 244              	.L11:
+ 135:Core/Src/main.c ****             }
+ 136:Core/Src/main.c ****             // ===== выключение =====
+ 137:Core/Src/main.c ****             else
+ 138:Core/Src/main.c ****             {
+ 139:Core/Src/main.c ****                 if (step == 0)
+ 245              		.loc 1 139 17 is_stmt 1 view .LVU81
+ 246              		.loc 1 139 26 is_stmt 0 view .LVU82
+ 247 00c0 1249     		ldr	r1, .L23+16
+ 248 00c2 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+ 249              		.loc 1 139 20 view .LVU83
+ 250 00c4 51B9     		cbnz	r1, .L15
+ 140:Core/Src/main.c ****                     GPIOB_BSRR = LED_1_TURN_OFF;
+ 251              		.loc 1 140 21 is_stmt 1 view .LVU84
+ 252              		.loc 1 140 32 is_stmt 0 view .LVU85
+ 253 00c6 0F48     		ldr	r0, .L23+8
+ 254              	.LVL24:
+ 255              		.loc 1 140 32 view .LVU86
+ 256 00c8 4FF08076 		mov	r6, #16777216
+ 257 00cc C0F81864 		str	r6, [r0, #1048]
+ 258              	.L16:
+ 141:Core/Src/main.c ****                 else if (step == 1)
+ 142:Core/Src/main.c ****                     GPIOB_BSRR = LED_2_TURN_OFF;
+ 143:Core/Src/main.c ****                 else if (step == 2)
+ 144:Core/Src/main.c ****                     GPIOB_BSRR = LED_3_TURN_OFF;
+ 145:Core/Src/main.c ****                 if (step < 3)
+ 259              		.loc 1 145 17 is_stmt 1 view .LVU87
+ 260              		.loc 1 145 20 is_stmt 0 view .LVU88
+ 261 00d0 0229     		cmp	r1, #2
+ 262 00d2 B1D8     		bhi	.L10
+ 146:Core/Src/main.c ****                     step++;
+ 263              		.loc 1 146 21 is_stmt 1 view .LVU89
+ 264              		.loc 1 146 25 is_stmt 0 view .LVU90
+ 265 00d4 0131     		adds	r1, r1, #1
+ 266 00d6 0D48     		ldr	r0, .L23+16
+ 267 00d8 0170     		strb	r1, [r0]
+ 268 00da ADE7     		b	.L10
+ 269              	.LVL25:
+ 270              	.L15:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 9
+
+
+ 141:Core/Src/main.c ****                 else if (step == 1)
+ 271              		.loc 1 141 22 is_stmt 1 view .LVU91
+ 141:Core/Src/main.c ****                 else if (step == 1)
+ 272              		.loc 1 141 25 is_stmt 0 view .LVU92
+ 273 00dc 0129     		cmp	r1, #1
+ 274 00de 07D0     		beq	.L22
+ 143:Core/Src/main.c ****                     GPIOB_BSRR = LED_3_TURN_OFF;
+ 275              		.loc 1 143 22 is_stmt 1 view .LVU93
+ 143:Core/Src/main.c ****                     GPIOB_BSRR = LED_3_TURN_OFF;
+ 276              		.loc 1 143 25 is_stmt 0 view .LVU94
+ 277 00e0 0229     		cmp	r1, #2
+ 278 00e2 F5D1     		bne	.L16
+ 144:Core/Src/main.c ****                 if (step < 3)
+ 279              		.loc 1 144 21 is_stmt 1 view .LVU95
+ 144:Core/Src/main.c ****                 if (step < 3)
+ 280              		.loc 1 144 32 is_stmt 0 view .LVU96
+ 281 00e4 0748     		ldr	r0, .L23+8
+ 282              	.LVL26:
+ 144:Core/Src/main.c ****                 if (step < 3)
+ 283              		.loc 1 144 32 view .LVU97
+ 284 00e6 4FF08056 		mov	r6, #268435456
+ 285 00ea C0F81864 		str	r6, [r0, #1048]
+ 286 00ee EFE7     		b	.L16
+ 287              	.LVL27:
+ 288              	.L22:
+ 142:Core/Src/main.c ****                 else if (step == 2)
+ 289              		.loc 1 142 21 is_stmt 1 view .LVU98
+ 142:Core/Src/main.c ****                 else if (step == 2)
+ 290              		.loc 1 142 32 is_stmt 0 view .LVU99
+ 291 00f0 0448     		ldr	r0, .L23+8
+ 292              	.LVL28:
+ 142:Core/Src/main.c ****                 else if (step == 2)
+ 293              		.loc 1 142 32 view .LVU100
+ 294 00f2 4FF40016 		mov	r6, #2097152
+ 295 00f6 C0F81864 		str	r6, [r0, #1048]
+ 296 00fa E9E7     		b	.L16
+ 297              	.L24:
+ 298              		.align	2
+ 299              	.L23:
+ 300 00fc 00000000 		.word	But_on2
+ 301 0100 00000000 		.word	But_on1
+ 302 0104 00000240 		.word	1073872896
+ 303 0108 00000000 		.word	mode
+ 304 010c 00000000 		.word	step
+ 305              	.LBE3:
+ 306              		.cfi_endproc
+ 307              	.LFE130:
+ 309              		.global	But_on2
+ 310              		.section	.bss.But_on2,"aw",%nobits
+ 313              	But_on2:
+ 314 0000 00       		.space	1
+ 315              		.global	But_on1
+ 316              		.section	.bss.But_on1,"aw",%nobits
+ 319              	But_on1:
+ 320 0000 00       		.space	1
+ 321              		.global	step
+ 322              		.section	.bss.step,"aw",%nobits
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 10
+
+
+ 325              	step:
+ 326 0000 00       		.space	1
+ 327              		.global	mode
+ 328              		.section	.bss.mode,"aw",%nobits
+ 331              	mode:
+ 332 0000 00       		.space	1
+ 333              		.text
+ 334              	.Letext0:
+ 335              		.file 2 "C:/Users/User/Desktop/Tools/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-
+ 336              		.file 3 "C:/Users/User/Desktop/Tools/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-
+ 337              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccIsmoI8.s 			page 11
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\User\AppData\Local\Temp\ccYEqisP.s:21     .text.main:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccYEqisP.s:27     .text.main:00000000 main
-C:\Users\User\AppData\Local\Temp\ccYEqisP.s:225    .text.main:000000a8 $d
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:21     .text.main:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:27     .text.main:00000000 main
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:300    .text.main:000000fc $d
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:313    .bss.But_on2:00000000 But_on2
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:319    .bss.But_on1:00000000 But_on1
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:331    .bss.mode:00000000 mode
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:325    .bss.step:00000000 step
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:314    .bss.But_on2:00000000 $d
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:320    .bss.But_on1:00000000 $d
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:326    .bss.step:00000000 $d
+C:\Users\User\AppData\Local\Temp\ccIsmoI8.s:332    .bss.mode:00000000 $d
 
 UNDEFINED SYMBOLS
 GPIO_Init
