@@ -65,9 +65,9 @@ void GPIO_Init_Memory(void){
     *pb0_bsrr = (1U << (0 + 16U));                                     // PB0输出低电平
 }
 
-/**
- * 设置PD4为输入模式+上拉（正常模式，用于按键检测）
- */
+
+//设置PD4为输入模式+上拉（正常模式，用于按键检测）
+
 
 void PD4_Set_Input_PullUp(void) {
     volatile uint32_t *pd4_moder = (volatile uint32_t *)(GPIOD_BASE_ADDR + MODER_OFFSET);
@@ -80,9 +80,9 @@ void PD4_Set_Input_PullUp(void) {
     // 更新PD4模式状态
     g_pd4_mode_state = 0;  // 输入上拉模式
 }
-/**
- * 设置PD4为输出模式+高电平
- */
+
+//设置PD4为输出模式+高电平
+
 void PD4_Set_Output_High(void) {
     volatile uint32_t *pd4_moder = (volatile uint32_t *)(GPIOD_BASE_ADDR + MODER_OFFSET);
     volatile uint32_t *pd4_otyper = (volatile uint32_t *)(GPIOD_BASE_ADDR + OTYPER_OFFSET);

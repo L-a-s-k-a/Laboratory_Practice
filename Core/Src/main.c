@@ -11,44 +11,38 @@ volatile uint8_t  g_pg3_pressed_flag  = 0;     // PG3按下标志位
 volatile uint8_t  g_system_mode = 0;           // 系统模式: 0=正常模式, 1=PD4输出模式
 volatile uint8_t  g_pd4_mode_state = 0;        // PD4引脚模式状态: 0=输入上拉, 1=输出高电平, 2=输入无上下拉
 
-/**
- * 简单延时函数（毫秒级）
- */
+
+//简单延时函数（毫秒级）
 static void delay_ms(uint32_t ms) {
     for (uint32_t i = 0; i < ms * 1000U; i++) { __NOP(); }
 }
 
-/**
- * LED控制宏函数 - 点亮指定GPIO的LED
- */
+
+//LED控制宏函数 - 点亮指定GPIO的LED
 static inline void led_on(GPIO_TypeDef* port, uint8_t pin)  { port->BSRR = (1U << pin); }
 
-/**
- * LED控制宏函数 - 熄灭指定GPIO的LED
- */
+
+//LED控制宏函数 - 熄灭指定GPIO的LED
 static inline void led_off(GPIO_TypeDef* port, uint8_t pin) { port->BSRR = (1U << (pin + 16U)); }
 
-/**
- * 专门控制PB0 LED的点亮函数 - 直接内存访问
- */
+
+//专门控制PB0 LED的点亮函数 - 直接内存访问
+
 static inline void pb0_led_on(void)  { *(volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET) = (1U << 0); }
 
-/**
- * 专门控制PB0 LED的熄灭函数 - 直接内存访问
- */
+
+//专门控制PB0 LED的熄灭函数 - 直接内存访问
 static inline void pb0_led_off(void) { *(volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET) = (1U << (0 + 16U)); }
 
-/**
- * 读取GPIO引脚电平
- */
+
+//读取GPIO引脚电平
 static inline uint32_t read_bit_idr(uint32_t gpio_base, uint8_t pin) {
     volatile uint32_t *idr = (volatile uint32_t *)(gpio_base + IDR_OFFSET);
     return (*idr) & (1U << pin);
 }
 
-/**
- * 更新PD4按钮状态到全局变量
- */
+
+//更新PD4按钮状态到全局变量
 static void update_pd4_button_status(uint32_t raw_value, uint8_t pressed) {
     g_pd4_raw_value = raw_value;
     // 内部上拉电阻: 低电平=按下，高电平=释放
@@ -59,9 +53,8 @@ static void update_pd4_button_status(uint32_t raw_value, uint8_t pressed) {
     }
 }
 
-/**
- * 更新PG3按钮状态到全局变量
- */
+
+//更新PG3按钮状态到全局变量
 static void update_pg3_button_status(uint32_t raw_value, uint8_t pressed) {
     // 内部上拉电阻: 低电平=按下，高电平=释放
     g_pg3_button_state = (raw_value == 0U) ? 1U : 0U;
@@ -73,9 +66,8 @@ static void update_pg3_button_status(uint32_t raw_value, uint8_t pressed) {
 
 //按键检测函数（带消抖处理）
 
-/**
- * 检测PD4按钮（带消抖，按下并释放后返回1）
- */
+//检测PD4按钮（带消抖，按下并释放后返回1）
+
 static uint8_t check_pd4_button(void) {
     // 如果系统处于PD4输出模式，PD4按键不工作
     if (g_system_mode == 1) {
@@ -107,9 +99,8 @@ static uint8_t check_pd4_button(void) {
     return result;
 }
 
-/**
- * 检测PG3按钮（带消抖，按下并释放后返回1）
- */
+
+//检测PG3按钮（带消抖，按下并释放后返回1）
 static uint8_t check_pg3_button(void) {
     uint8_t result = 0;
     uint32_t raw = read_bit_idr(GPIOG_BASE_ADDR, 3);
@@ -136,18 +127,17 @@ static uint8_t check_pg3_button(void) {
 
 //LED控制函数
 
-/**
- * 关闭所有工作LED（PB14, PB7, PB0）
- */
+//关闭所有工作LED（PB14, PB7, PB0）
+
 static void all_work_leds_off(void) {
     led_off(GPIOB, 14);  // 关闭PB14 LED
     PB7_LED_OFF();       // 关闭PB7 LED（宏函数）
     pb0_led_off();       // 关闭PB0 LED（直接内存访问）
 }
 
-/**
- * 点亮单个LED（熄灭其他所有LED）
- * 步进值: 0=全灭, 1=PB14, 2=PB7, 3=PB0
+/*
+点亮单个LED（熄灭其他所有LED）
+步进值: 0=全灭, 1=PB14, 2=PB7, 3=PB0
  */
 static void turn_on_single_led(uint8_t step) {
     // 先关闭所有LED
@@ -174,9 +164,8 @@ static void turn_on_single_led(uint8_t step) {
     }
 }
 
-/**
- * 切换系统模式
- */
+
+//切换系统模式
 static void toggle_system_mode(void) {
     if (g_system_mode == 0) {
         // 切换到PD4输出模式
