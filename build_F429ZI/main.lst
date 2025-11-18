@@ -1,0 +1,677 @@
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.delay,"ax",%progbits
+  21              		.align	1
+  22              		.global	delay
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	delay:
+  28              	.LVL0:
+  29              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** // 简单的软件延时函数 / Простая программная функция задерж�
+   4:Core/Src/main.c **** void delay(volatile int t)
+   5:Core/Src/main.c **** {
+  30              		.loc 1 5 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 8
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 5 1 is_stmt 0 view .LVU1
+  36 0000 82B0     		sub	sp, sp, #8
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39 0002 0190     		str	r0, [sp, #4]
+   6:Core/Src/main.c ****     while(t--) {}
+  40              		.loc 1 6 5 is_stmt 1 view .LVU2
+  41              	.L2:
+  42              		.loc 1 6 17 discriminator 1 view .LVU3
+  43              		.loc 1 6 11 discriminator 1 view .LVU4
+  44              		.loc 1 6 12 is_stmt 0 discriminator 1 view .LVU5
+  45 0004 019B     		ldr	r3, [sp, #4]
+  46 0006 5A1E     		subs	r2, r3, #1
+  47 0008 0192     		str	r2, [sp, #4]
+  48              		.loc 1 6 11 discriminator 1 view .LVU6
+  49 000a 002B     		cmp	r3, #0
+  50 000c FAD1     		bne	.L2
+   7:Core/Src/main.c **** }
+  51              		.loc 1 7 1 view .LVU7
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 2
+
+
+  52 000e 02B0     		add	sp, sp, #8
+  53              	.LCFI1:
+  54              		.cfi_def_cfa_offset 0
+  55              		@ sp needed
+  56 0010 7047     		bx	lr
+  57              		.cfi_endproc
+  58              	.LFE130:
+  60              		.section	.text.main,"ax",%progbits
+  61              		.align	1
+  62              		.global	main
+  63              		.syntax unified
+  64              		.thumb
+  65              		.thumb_func
+  67              	main:
+  68              	.LFB131:
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** // ========== 为STMViewer定义的全局系统状态变量 / Глобальные переменн
+  10:Core/Src/main.c **** // 这些变量将被STMViewer读取以实时显示系统状态 / Эти переменные бу�
+  11:Core/Src/main.c **** volatile uint8_t pc8_switch_state;      // PC8引脚当前电平状态 (0=低, 1=高) / Текущ�
+  12:Core/Src/main.c **** volatile uint8_t pc13_switch_state;     // PC13引脚当前电平状态 (0=低, 1=高) / Текущ
+  13:Core/Src/main.c **** volatile uint8_t operational_mode;      // 当前工作模式 (0=模式0, 1=模式1) / Текущи
+  14:Core/Src/main.c **** volatile uint8_t lighting_sequence;     // LED点亮序列 (0=全灭, 1=LED1亮, 2=LED2亮, 3=LED3�
+  15:Core/Src/main.c **** volatile uint8_t pc13_press_total;      // PC13按钮总按下次数 / Общее количест�
+  16:Core/Src/main.c **** volatile uint32_t switch_operation_count; // 模式切换总次数 / Общее количеств�
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** int main(void)
+  19:Core/Src/main.c **** {
+  69              		.loc 1 19 1 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  73 0000 2DE9F84F 		push	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  74              	.LCFI2:
+  75              		.cfi_def_cfa_offset 40
+  76              		.cfi_offset 3, -40
+  77              		.cfi_offset 4, -36
+  78              		.cfi_offset 5, -32
+  79              		.cfi_offset 6, -28
+  80              		.cfi_offset 7, -24
+  81              		.cfi_offset 8, -20
+  82              		.cfi_offset 9, -16
+  83              		.cfi_offset 10, -12
+  84              		.cfi_offset 11, -8
+  85              		.cfi_offset 14, -4
+  20:Core/Src/main.c ****     // 调用统一的初始化函数，包含所有GPIO的配置 / Вызов унифициров
+  21:Core/Src/main.c ****     GPIO_Init_Self_Def();
+  86              		.loc 1 21 5 view .LVU9
+  87 0004 FFF7FEFF 		bl	GPIO_Init_Self_Def
+  88              	.LVL1:
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c ****     // 初始化全局变量 / Инициализация глобальных переменных
+  24:Core/Src/main.c ****     pc8_switch_state = 1;       // 初始状态为高（未按下） / Начальное сост�
+  89              		.loc 1 24 5 view .LVU10
+  90              		.loc 1 24 22 is_stmt 0 view .LVU11
+  91 0008 0127     		movs	r7, #1
+  92 000a 524B     		ldr	r3, .L23
+  93 000c 1F70     		strb	r7, [r3]
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 3
+
+
+  25:Core/Src/main.c ****     pc13_switch_state = 0;      // 初始状态为低（未按下） / Начальное сост�
+  94              		.loc 1 25 5 is_stmt 1 view .LVU12
+  95              		.loc 1 25 23 is_stmt 0 view .LVU13
+  96 000e 0025     		movs	r5, #0
+  97 0010 514B     		ldr	r3, .L23+4
+  98 0012 1D70     		strb	r5, [r3]
+  26:Core/Src/main.c ****     operational_mode = 0;       // 初始进入模式0 / Начальный вход в режим 
+  99              		.loc 1 26 5 is_stmt 1 view .LVU14
+ 100              		.loc 1 26 22 is_stmt 0 view .LVU15
+ 101 0014 514B     		ldr	r3, .L23+8
+ 102 0016 1D70     		strb	r5, [r3]
+  27:Core/Src/main.c ****     lighting_sequence = 0;      // 初始所有LED熄灭 / Все светодиоды изнача
+ 103              		.loc 1 27 5 is_stmt 1 view .LVU16
+ 104              		.loc 1 27 23 is_stmt 0 view .LVU17
+ 105 0018 514B     		ldr	r3, .L23+12
+ 106 001a 1D70     		strb	r5, [r3]
+  28:Core/Src/main.c ****     pc13_press_total = 0;       // 总按压次数清零 / Обнуление общего коли
+ 107              		.loc 1 28 5 is_stmt 1 view .LVU18
+ 108              		.loc 1 28 22 is_stmt 0 view .LVU19
+ 109 001c 514B     		ldr	r3, .L23+16
+ 110 001e 1D70     		strb	r5, [r3]
+  29:Core/Src/main.c ****     switch_operation_count = 0; // 模式切换次数清零 / Обнуление количеств
+ 111              		.loc 1 29 5 is_stmt 1 view .LVU20
+ 112              		.loc 1 29 28 is_stmt 0 view .LVU21
+ 113 0020 514B     		ldr	r3, .L23+20
+ 114 0022 1D60     		str	r5, [r3]
+  30:Core/Src/main.c **** 
+  31:Core/Src/main.c ****     int mode = 0;                   // 当前模式 (0 或 1) / Текущий режим (0 или
+ 115              		.loc 1 31 5 is_stmt 1 view .LVU22
+ 116              	.LVL2:
+  32:Core/Src/main.c ****     int button1_last = 1;           // PC8 上一次状态 / Предыдущее состояни�
+ 117              		.loc 1 32 5 view .LVU23
+  33:Core/Src/main.c ****     int button2_last = 1;           // PC13 上一次状态 / Предыдущее состояни
+ 118              		.loc 1 33 5 view .LVU24
+  34:Core/Src/main.c ****     int button2_count = 0;          // PC13 连按次数 / Счетчик нажатий PC13
+ 119              		.loc 1 34 5 view .LVU25
+  35:Core/Src/main.c ****     int led_step = 0;               // LED 依次点亮计数 / Счетчик последоват
+ 120              		.loc 1 35 5 view .LVU26
+  36:Core/Src/main.c **** 
+  37:Core/Src/main.c ****     // 初始状态：PC8作为输入（检测按钮） / Начальное состояние: PC
+  38:Core/Src/main.c ****     set_PC8_as_input();
+ 121              		.loc 1 38 5 view .LVU27
+ 122 0024 FFF7FEFF 		bl	set_PC8_as_input
+ 123              	.LVL3:
+  35:Core/Src/main.c ****     int led_step = 0;               // LED 依次点亮计数 / Счетчик последоват
+ 124              		.loc 1 35 9 is_stmt 0 view .LVU28
+ 125 0028 A846     		mov	r8, r5
+  34:Core/Src/main.c ****     int led_step = 0;               // LED 依次点亮计数 / Счетчик последоват
+ 126              		.loc 1 34 9 view .LVU29
+ 127 002a A946     		mov	r9, r5
+  33:Core/Src/main.c ****     int button2_count = 0;          // PC13 连按次数 / Счетчик нажатий PC13
+ 128              		.loc 1 33 9 view .LVU30
+ 129 002c 3E46     		mov	r6, r7
+ 130 002e 4BE0     		b	.L5
+ 131              	.LVL4:
+ 132              	.L6:
+ 133              	.LBB2:
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 4
+
+
+  39:Core/Src/main.c **** 
+  40:Core/Src/main.c ****     while(1)
+  41:Core/Src/main.c ****     {
+  42:Core/Src/main.c ****         int btn1, btn2;
+  43:Core/Src/main.c ****         // 在模式0时，需要读取PC8按钮状态 / В режиме 0 необходимо с�
+  44:Core/Src/main.c ****         if(mode == 0)
+  45:Core/Src/main.c ****         {
+  46:Core/Src/main.c ****             set_PC8_as_input();
+  47:Core/Src/main.c ****             delay(10);  // 短暂延时确保模式切换稳定 / Краткая задержка �
+  48:Core/Src/main.c ****             btn1 = (GPIOC->IDR >> BUTTON1_PIN) & 1;
+  49:Core/Src/main.c ****             // 更新全局变量 / Обновление глобальной переменной
+  50:Core/Src/main.c ****             pc8_switch_state = btn1;
+  51:Core/Src/main.c ****         }
+  52:Core/Src/main.c ****         else
+  53:Core/Src/main.c ****         {
+  54:Core/Src/main.c ****             // 模式1时，PC8作为输出控制LED4 / В режиме 1 PC8 как выход у�
+  55:Core/Src/main.c ****             set_PC8_as_output();
+ 134              		.loc 1 55 13 is_stmt 1 view .LVU31
+ 135 0030 FFF7FEFF 		bl	set_PC8_as_output
+ 136              	.LVL5:
+  56:Core/Src/main.c ****             GPIOC->BSRR = (1 << BUTTON1_PIN);  // 输出高电平，点亮LED4 / Высокий у�
+ 137              		.loc 1 56 13 view .LVU32
+ 138              		.loc 1 56 25 is_stmt 0 view .LVU33
+ 139 0034 4D4B     		ldr	r3, .L23+24
+ 140 0036 4FF48072 		mov	r2, #256
+ 141 003a 9A61     		str	r2, [r3, #24]
+  57:Core/Src/main.c ****             btn1 = 1;  // 模式1时按钮状态设为1（未按下） / В режиме 1 сост
+ 142              		.loc 1 57 13 is_stmt 1 view .LVU34
+ 143              	.LVL6:
+  58:Core/Src/main.c ****             // 更新全局变量 / Обновление глобальной переменной
+  59:Core/Src/main.c ****             pc8_switch_state = 1;
+ 144              		.loc 1 59 13 view .LVU35
+ 145              		.loc 1 59 30 is_stmt 0 view .LVU36
+ 146 003c 0124     		movs	r4, #1
+ 147 003e 454B     		ldr	r3, .L23
+ 148 0040 1C70     		strb	r4, [r3]
+ 149 0042 4EE0     		b	.L7
+ 150              	.LVL7:
+ 151              	.L21:
+  60:Core/Src/main.c ****         }
+  61:Core/Src/main.c ****         // 读取PC13按钮（下拉配置，按下时为高电平） / Считывание кно
+  62:Core/Src/main.c ****         btn2 = (GPIOC->IDR >> BUTTON2_PIN) & 1;
+  63:Core/Src/main.c ****         // 更新全局变量 / Обновление глобальной переменной
+  64:Core/Src/main.c ****         pc13_switch_state = btn2;
+  65:Core/Src/main.c **** 
+  66:Core/Src/main.c ****         // ==========================
+  67:Core/Src/main.c ****         // 处理按钮 2 (PC13)：每按 5 次切换模式 / Обработка кнопки 2 (PC
+  68:Core/Src/main.c ****         // ==========================
+  69:Core/Src/main.c ****         if(btn2 == 1 && button2_last == 0)   // rising edge (下拉配置，按下为高) / фро�
+ 152              		.loc 1 69 22 discriminator 1 view .LVU37
+ 153 0044 002E     		cmp	r6, #0
+ 154 0046 56D1     		bne	.L8
+  70:Core/Src/main.c ****         {
+  71:Core/Src/main.c ****             button2_count++;
+ 155              		.loc 1 71 13 is_stmt 1 view .LVU38
+ 156              		.loc 1 71 26 is_stmt 0 view .LVU39
+ 157 0048 09F10109 		add	r9, r9, #1
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 5
+
+
+ 158              	.LVL8:
+  72:Core/Src/main.c ****             pc13_press_total++; // 增加总按压次数 / Увеличение общего кол
+ 159              		.loc 1 72 13 is_stmt 1 view .LVU40
+ 160              		.loc 1 72 29 is_stmt 0 view .LVU41
+ 161 004c 454A     		ldr	r2, .L23+16
+ 162 004e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 163 0050 0133     		adds	r3, r3, #1
+ 164 0052 DBB2     		uxtb	r3, r3
+ 165 0054 1370     		strb	r3, [r2]
+  73:Core/Src/main.c ****             if(button2_count >= 5)
+ 166              		.loc 1 73 13 is_stmt 1 view .LVU42
+ 167              		.loc 1 73 15 is_stmt 0 view .LVU43
+ 168 0056 B9F1040F 		cmp	r9, #4
+ 169 005a 4CDD     		ble	.L8
+  74:Core/Src/main.c ****             {
+  75:Core/Src/main.c ****                 mode ^= 1;           // 切换模式 / Переключение режима
+ 170              		.loc 1 75 17 is_stmt 1 view .LVU44
+ 171              		.loc 1 75 22 is_stmt 0 view .LVU45
+ 172 005c 85F0010B 		eor	fp, r5, #1
+ 173              	.LVL9:
+  76:Core/Src/main.c ****                 button2_count = 0;   // 清零计数 / Обнуление счетчика
+ 174              		.loc 1 76 17 is_stmt 1 view .LVU46
+  77:Core/Src/main.c ****                 led_step = 0;        // 重置LED步骤 / Сброс счетчика светод�
+ 175              		.loc 1 77 17 view .LVU47
+  78:Core/Src/main.c ****                 switch_operation_count++; // 增加模式切换次数 / Увеличение кол
+ 176              		.loc 1 78 17 view .LVU48
+ 177              		.loc 1 78 39 is_stmt 0 view .LVU49
+ 178 0060 414A     		ldr	r2, .L23+20
+ 179 0062 1368     		ldr	r3, [r2]
+ 180 0064 0133     		adds	r3, r3, #1
+ 181 0066 1360     		str	r3, [r2]
+  79:Core/Src/main.c ****                 if(mode == 1)
+ 182              		.loc 1 79 17 is_stmt 1 view .LVU50
+ 183              		.loc 1 79 19 is_stmt 0 view .LVU51
+ 184 0068 A5B9     		cbnz	r5, .L9
+  80:Core/Src/main.c ****                 {
+  81:Core/Src/main.c ****                     // 进入模式1：点亮LED4，关闭其他LED / Вход в режим 1: в�
+  82:Core/Src/main.c ****                     set_PC8_as_output();
+ 185              		.loc 1 82 21 is_stmt 1 view .LVU52
+ 186 006a FFF7FEFF 		bl	set_PC8_as_output
+ 187              	.LVL10:
+  83:Core/Src/main.c ****                     GPIOC->BSRR = (1 << BUTTON1_PIN);  // 点亮LED4 / Включение свет�
+ 188              		.loc 1 83 21 view .LVU53
+ 189              		.loc 1 83 33 is_stmt 0 view .LVU54
+ 190 006e 3F4B     		ldr	r3, .L23+24
+ 191 0070 4FF48072 		mov	r2, #256
+ 192 0074 9A61     		str	r2, [r3, #24]
+  84:Core/Src/main.c ****                     // 关闭PB0, PB7, PB14 / Выключение PB0, PB7, PB14
+  85:Core/Src/main.c ****                     GPIOB->BSRR = 
+ 193              		.loc 1 85 21 is_stmt 1 view .LVU55
+ 194              		.loc 1 85 33 is_stmt 0 view .LVU56
+ 195 0076 A3F58063 		sub	r3, r3, #1024
+ 196 007a 3D4A     		ldr	r2, .L23+28
+ 197 007c 9A61     		str	r2, [r3, #24]
+  86:Core/Src/main.c ****                         (1 << (LED1_PIN + 16)) |
+  87:Core/Src/main.c ****                         (1 << (LED2_PIN + 16)) |
+  88:Core/Src/main.c ****                         (1 << (LED3_PIN + 16));
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 6
+
+
+  89:Core/Src/main.c ****                     lighting_sequence = 0; // 所有LED熄灭 / Все светодиоды вык�
+ 198              		.loc 1 89 21 is_stmt 1 view .LVU57
+ 199              		.loc 1 89 39 is_stmt 0 view .LVU58
+ 200 007e 384B     		ldr	r3, .L23+12
+ 201 0080 0022     		movs	r2, #0
+ 202 0082 1A70     		strb	r2, [r3]
+ 203              	.L10:
+  90:Core/Src/main.c ****                 }
+  91:Core/Src/main.c ****                 else
+  92:Core/Src/main.c ****                 {
+  93:Core/Src/main.c ****                     // 进入模式0：熄灭LED4，PC8切换回输入模式 / Вход в режи
+  94:Core/Src/main.c ****                     set_PC8_as_input();
+  95:Core/Src/main.c ****                     // 确保LED4熄灭（如果之前是输出模式） / Гарантирован
+  96:Core/Src/main.c ****                     GPIOC->BSRR = (1 << (BUTTON1_PIN + 16));
+  97:Core/Src/main.c ****                     // 所有LED初始状态为熄灭 / Все светодиоды изначал�
+  98:Core/Src/main.c ****                     GPIOB->BSRR = 
+  99:Core/Src/main.c ****                         (1 << (LED1_PIN + 16)) |
+ 100:Core/Src/main.c ****                         (1 << (LED2_PIN + 16)) |
+ 101:Core/Src/main.c ****                         (1 << (LED3_PIN + 16));
+ 102:Core/Src/main.c ****                     lighting_sequence = 0; // 所有LED熄灭 / Все светодиоды вык�
+ 103:Core/Src/main.c ****                 }
+ 104:Core/Src/main.c ****                 // 更新全局变量 / Обновление глобальной переменн�
+ 105:Core/Src/main.c ****                 operational_mode = mode;
+ 204              		.loc 1 105 17 is_stmt 1 view .LVU59
+ 205              		.loc 1 105 34 is_stmt 0 view .LVU60
+ 206 0084 5FFA8BF2 		uxtb	r2, fp
+ 207 0088 344B     		ldr	r3, .L23+8
+ 208 008a 1A70     		strb	r2, [r3]
+  77:Core/Src/main.c ****                 switch_operation_count++; // 增加模式切换次数 / Увеличение кол
+ 209              		.loc 1 77 26 view .LVU61
+ 210 008c B046     		mov	r8, r6
+  76:Core/Src/main.c ****                 led_step = 0;        // 重置LED步骤 / Сброс счетчика светод�
+ 211              		.loc 1 76 31 view .LVU62
+ 212 008e B146     		mov	r9, r6
+  75:Core/Src/main.c ****                 button2_count = 0;   // 清零计数 / Обнуление счетчика
+ 213              		.loc 1 75 22 view .LVU63
+ 214 0090 5D46     		mov	r5, fp
+ 215 0092 30E0     		b	.L8
+ 216              	.L9:
+  94:Core/Src/main.c ****                     // 确保LED4熄灭（如果之前是输出模式） / Гарантирован
+ 217              		.loc 1 94 21 is_stmt 1 view .LVU64
+ 218 0094 FFF7FEFF 		bl	set_PC8_as_input
+ 219              	.LVL11:
+  96:Core/Src/main.c ****                     // 所有LED初始状态为熄灭 / Все светодиоды изначал�
+ 220              		.loc 1 96 21 view .LVU65
+  96:Core/Src/main.c ****                     // 所有LED初始状态为熄灭 / Все светодиоды изначал�
+ 221              		.loc 1 96 33 is_stmt 0 view .LVU66
+ 222 0098 344B     		ldr	r3, .L23+24
+ 223 009a 4FF08072 		mov	r2, #16777216
+ 224 009e 9A61     		str	r2, [r3, #24]
+  98:Core/Src/main.c ****                         (1 << (LED1_PIN + 16)) |
+ 225              		.loc 1 98 21 is_stmt 1 view .LVU67
+  98:Core/Src/main.c ****                         (1 << (LED1_PIN + 16)) |
+ 226              		.loc 1 98 33 is_stmt 0 view .LVU68
+ 227 00a0 A3F58063 		sub	r3, r3, #1024
+ 228 00a4 324A     		ldr	r2, .L23+28
+ 229 00a6 9A61     		str	r2, [r3, #24]
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 7
+
+
+ 102:Core/Src/main.c ****                 }
+ 230              		.loc 1 102 21 is_stmt 1 view .LVU69
+ 102:Core/Src/main.c ****                 }
+ 231              		.loc 1 102 39 is_stmt 0 view .LVU70
+ 232 00a8 2D4B     		ldr	r3, .L23+12
+ 233 00aa 0022     		movs	r2, #0
+ 234 00ac 1A70     		strb	r2, [r3]
+ 235 00ae E9E7     		b	.L10
+ 236              	.LVL12:
+ 237              	.L22:
+ 106:Core/Src/main.c ****             }
+ 107:Core/Src/main.c ****         }
+ 108:Core/Src/main.c ****         button2_last = btn2;
+ 109:Core/Src/main.c **** 
+ 110:Core/Src/main.c ****         // ==========================
+ 111:Core/Src/main.c ****         // 模式 1：按钮 1 禁用 + LED4亮起 / Режим 1: отключение кнопк�
+ 112:Core/Src/main.c ****         // ==========================
+ 113:Core/Src/main.c ****         if(mode == 1)
+ 114:Core/Src/main.c ****         {
+ 115:Core/Src/main.c ****             // LED4保持亮起，按钮1功能被禁用 / Светодиод LED4 остается
+ 116:Core/Src/main.c ****             delay(300000);
+ 238              		.loc 1 116 13 is_stmt 1 view .LVU71
+ 239 00b0 3048     		ldr	r0, .L23+32
+ 240 00b2 FFF7FEFF 		bl	delay
+ 241              	.LVL13:
+ 117:Core/Src/main.c ****             continue;
+ 242              		.loc 1 117 13 view .LVU72
+ 243 00b6 06E0     		b	.L12
+ 244              	.L14:
+ 118:Core/Src/main.c ****         }
+ 119:Core/Src/main.c **** 
+ 120:Core/Src/main.c ****         // ==========================
+ 121:Core/Src/main.c ****         // 模式 0：按钮 1 依次点亮 LED1-3，然后全灭，循环 / Режим 0: кноп
+ 122:Core/Src/main.c ****         // ==========================
+ 123:Core/Src/main.c ****         if(btn1 == 0 && button1_last == 1)   // falling edge (上拉配置，按下为低) / фро
+ 124:Core/Src/main.c ****         {
+ 125:Core/Src/main.c ****             // 每次按下时递增led_step，范围为1-4 / При каждом нажатии у
+ 126:Core/Src/main.c ****             led_step = (led_step % 4) + 1; // 1,2,3,4,1,2,3,4...
+ 127:Core/Src/main.c ****             // 更新全局变量 / Обновление глобальной переменной
+ 128:Core/Src/main.c ****             lighting_sequence = led_step;
+ 129:Core/Src/main.c ****             
+ 130:Core/Src/main.c ****             // 如果是第4步，关闭所有LED / Если это 4-й шаг, выключить
+ 131:Core/Src/main.c ****             if(led_step == 4) {
+ 132:Core/Src/main.c ****                 // 关闭所有LED / Выключить все светодиоды
+ 133:Core/Src/main.c ****                 GPIOB->BSRR = 
+ 245              		.loc 1 133 17 view .LVU73
+ 246              		.loc 1 133 29 is_stmt 0 view .LVU74
+ 247 00b8 2F4B     		ldr	r3, .L23+36
+ 248 00ba 2D4A     		ldr	r2, .L23+28
+ 249 00bc 9A61     		str	r2, [r3, #24]
+ 250              	.L13:
+ 134:Core/Src/main.c ****                     (1 << (LED1_PIN + 16)) |
+ 135:Core/Src/main.c ****                     (1 << (LED2_PIN + 16)) |
+ 136:Core/Src/main.c ****                     (1 << (LED3_PIN + 16));
+ 137:Core/Src/main.c ****             } 
+ 138:Core/Src/main.c ****             else 
+ 139:Core/Src/main.c ****             {
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 8
+
+
+ 140:Core/Src/main.c ****                 // 点亮对应的LED，不关闭之前的LED / Включить соответст
+ 141:Core/Src/main.c ****                 if(led_step == 1) {
+ 142:Core/Src/main.c ****                     GPIOB->BSRR = (1 << LED1_PIN);  // 点亮LED1 (PB0) / Включить LED1 (PB
+ 143:Core/Src/main.c ****                 }
+ 144:Core/Src/main.c ****                 else if(led_step == 2) {
+ 145:Core/Src/main.c ****                     GPIOB->BSRR = (1 << LED2_PIN);  // 点亮LED2 (PB7) / Включить LED2 (PB
+ 146:Core/Src/main.c ****                 }
+ 147:Core/Src/main.c ****                 else if(led_step == 3) {
+ 148:Core/Src/main.c ****                     GPIOB->BSRR = (1 << LED3_PIN);  // 点亮LED3 (PB14) / Включить LED3 (P
+ 149:Core/Src/main.c ****                 }
+ 150:Core/Src/main.c ****             }
+ 151:Core/Src/main.c ****         }
+ 152:Core/Src/main.c ****         button1_last = btn1;
+ 251              		.loc 1 152 9 is_stmt 1 view .LVU75
+ 252              	.LVL14:
+ 153:Core/Src/main.c ****         delay(300000);
+ 253              		.loc 1 153 9 view .LVU76
+ 254 00be 2D48     		ldr	r0, .L23+32
+ 255 00c0 FFF7FEFF 		bl	delay
+ 256              	.LVL15:
+ 152:Core/Src/main.c ****         delay(300000);
+ 257              		.loc 1 152 22 is_stmt 0 view .LVU77
+ 258 00c4 2746     		mov	r7, r4
+ 259              	.LVL16:
+ 260              	.L12:
+ 152:Core/Src/main.c ****         delay(300000);
+ 261              		.loc 1 152 22 view .LVU78
+ 262 00c6 5646     		mov	r6, r10
+ 263              	.LVL17:
+ 264              	.L5:
+ 152:Core/Src/main.c ****         delay(300000);
+ 265              		.loc 1 152 22 view .LVU79
+ 266              	.LBE2:
+  40:Core/Src/main.c ****     {
+ 267              		.loc 1 40 5 is_stmt 1 view .LVU80
+ 268              	.LBB3:
+  42:Core/Src/main.c ****         // 在模式0时，需要读取PC8按钮状态 / В режиме 0 необходимо с�
+ 269              		.loc 1 42 9 view .LVU81
+  44:Core/Src/main.c ****         {
+ 270              		.loc 1 44 9 view .LVU82
+  44:Core/Src/main.c ****         {
+ 271              		.loc 1 44 11 is_stmt 0 view .LVU83
+ 272 00c8 002D     		cmp	r5, #0
+ 273 00ca B1D1     		bne	.L6
+  46:Core/Src/main.c ****             delay(10);  // 短暂延时确保模式切换稳定 / Краткая задержка �
+ 274              		.loc 1 46 13 is_stmt 1 view .LVU84
+ 275 00cc FFF7FEFF 		bl	set_PC8_as_input
+ 276              	.LVL18:
+  47:Core/Src/main.c ****             btn1 = (GPIOC->IDR >> BUTTON1_PIN) & 1;
+ 277              		.loc 1 47 13 view .LVU85
+ 278 00d0 0A20     		movs	r0, #10
+ 279 00d2 FFF7FEFF 		bl	delay
+ 280              	.LVL19:
+  48:Core/Src/main.c ****             // 更新全局变量 / Обновление глобальной переменной
+ 281              		.loc 1 48 13 view .LVU86
+  48:Core/Src/main.c ****             // 更新全局变量 / Обновление глобальной переменной
+ 282              		.loc 1 48 26 is_stmt 0 view .LVU87
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 9
+
+
+ 283 00d6 254B     		ldr	r3, .L23+24
+ 284 00d8 1B69     		ldr	r3, [r3, #16]
+ 285 00da C3F30024 		ubfx	r4, r3, #8, #1
+ 286              	.LVL20:
+  50:Core/Src/main.c ****         }
+ 287              		.loc 1 50 13 is_stmt 1 view .LVU88
+  50:Core/Src/main.c ****         }
+ 288              		.loc 1 50 30 is_stmt 0 view .LVU89
+ 289 00de 1D4A     		ldr	r2, .L23
+ 290 00e0 1470     		strb	r4, [r2]
+ 291              	.LVL21:
+ 292              	.L7:
+  62:Core/Src/main.c ****         // 更新全局变量 / Обновление глобальной переменной
+ 293              		.loc 1 62 9 is_stmt 1 view .LVU90
+  62:Core/Src/main.c ****         // 更新全局变量 / Обновление глобальной переменной
+ 294              		.loc 1 62 22 is_stmt 0 view .LVU91
+ 295 00e2 224B     		ldr	r3, .L23+24
+ 296 00e4 1B69     		ldr	r3, [r3, #16]
+ 297 00e6 C3F3403A 		ubfx	r10, r3, #13, #1
+ 298              	.LVL22:
+  64:Core/Src/main.c **** 
+ 299              		.loc 1 64 9 is_stmt 1 view .LVU92
+  64:Core/Src/main.c **** 
+ 300              		.loc 1 64 27 is_stmt 0 view .LVU93
+ 301 00ea 1B4A     		ldr	r2, .L23+4
+ 302 00ec 82F800A0 		strb	r10, [r2]
+  69:Core/Src/main.c ****         {
+ 303              		.loc 1 69 9 is_stmt 1 view .LVU94
+  69:Core/Src/main.c ****         {
+ 304              		.loc 1 69 11 is_stmt 0 view .LVU95
+ 305 00f0 13F4005F 		tst	r3, #8192
+ 306 00f4 A6D1     		bne	.L21
+ 307              	.LVL23:
+ 308              	.L8:
+ 108:Core/Src/main.c **** 
+ 309              		.loc 1 108 9 is_stmt 1 view .LVU96
+ 113:Core/Src/main.c ****         {
+ 310              		.loc 1 113 9 view .LVU97
+ 113:Core/Src/main.c ****         {
+ 311              		.loc 1 113 11 is_stmt 0 view .LVU98
+ 312 00f6 012D     		cmp	r5, #1
+ 313 00f8 DAD0     		beq	.L22
+ 123:Core/Src/main.c ****         {
+ 314              		.loc 1 123 9 is_stmt 1 view .LVU99
+ 123:Core/Src/main.c ****         {
+ 315              		.loc 1 123 11 is_stmt 0 view .LVU100
+ 316 00fa 002C     		cmp	r4, #0
+ 317 00fc DFD1     		bne	.L13
+ 123:Core/Src/main.c ****         {
+ 318              		.loc 1 123 22 discriminator 1 view .LVU101
+ 319 00fe 012F     		cmp	r7, #1
+ 320 0100 DDD1     		bne	.L13
+ 126:Core/Src/main.c ****             // 更新全局变量 / Обновление глобальной переменной
+ 321              		.loc 1 126 13 is_stmt 1 view .LVU102
+ 126:Core/Src/main.c ****             // 更新全局变量 / Обновление глобальной переменной
+ 322              		.loc 1 126 34 is_stmt 0 view .LVU103
+ 323 0102 D8F10002 		rsbs	r2, r8, #0
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 10
+
+
+ 324 0106 08F00303 		and	r3, r8, #3
+ 325 010a 02F00302 		and	r2, r2, #3
+ 326 010e 58BF     		it	pl
+ 327 0110 5342     		rsbpl	r3, r2, #0
+ 126:Core/Src/main.c ****             // 更新全局变量 / Обновление глобальной переменной
+ 328              		.loc 1 126 22 view .LVU104
+ 329 0112 03F10108 		add	r8, r3, #1
+ 330              	.LVL24:
+ 128:Core/Src/main.c ****             
+ 331              		.loc 1 128 13 is_stmt 1 view .LVU105
+ 128:Core/Src/main.c ****             
+ 332              		.loc 1 128 31 is_stmt 0 view .LVU106
+ 333 0116 5FFA88F1 		uxtb	r1, r8
+ 334 011a 114A     		ldr	r2, .L23+12
+ 335 011c 1170     		strb	r1, [r2]
+ 131:Core/Src/main.c ****                 // 关闭所有LED / Выключить все светодиоды
+ 336              		.loc 1 131 13 is_stmt 1 view .LVU107
+ 337 011e 032B     		cmp	r3, #3
+ 338 0120 CDD8     		bhi	.L13
+ 339 0122 01A2     		adr	r2, .L15
+ 340 0124 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 341              		.p2align 2
+ 342              	.L15:
+ 343 0128 39010000 		.word	.L18+1
+ 344 012c 41010000 		.word	.L17+1
+ 345 0130 49010000 		.word	.L16+1
+ 346 0134 B9000000 		.word	.L14+1
+ 347              		.p2align 1
+ 348              	.L18:
+ 142:Core/Src/main.c ****                 }
+ 349              		.loc 1 142 21 view .LVU108
+ 142:Core/Src/main.c ****                 }
+ 350              		.loc 1 142 33 is_stmt 0 view .LVU109
+ 351 0138 0F4B     		ldr	r3, .L23+36
+ 352 013a 0122     		movs	r2, #1
+ 353 013c 9A61     		str	r2, [r3, #24]
+ 354 013e BEE7     		b	.L13
+ 355              	.L17:
+ 145:Core/Src/main.c ****                 }
+ 356              		.loc 1 145 21 is_stmt 1 view .LVU110
+ 145:Core/Src/main.c ****                 }
+ 357              		.loc 1 145 33 is_stmt 0 view .LVU111
+ 358 0140 0D4B     		ldr	r3, .L23+36
+ 359 0142 8022     		movs	r2, #128
+ 360 0144 9A61     		str	r2, [r3, #24]
+ 361 0146 BAE7     		b	.L13
+ 362              	.L16:
+ 148:Core/Src/main.c ****                 }
+ 363              		.loc 1 148 21 is_stmt 1 view .LVU112
+ 148:Core/Src/main.c ****                 }
+ 364              		.loc 1 148 33 is_stmt 0 view .LVU113
+ 365 0148 0B4B     		ldr	r3, .L23+36
+ 366 014a 4FF48042 		mov	r2, #16384
+ 367 014e 9A61     		str	r2, [r3, #24]
+ 368 0150 B5E7     		b	.L13
+ 369              	.L24:
+ 370 0152 00BF     		.align	2
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 11
+
+
+ 371              	.L23:
+ 372 0154 00000000 		.word	pc8_switch_state
+ 373 0158 00000000 		.word	pc13_switch_state
+ 374 015c 00000000 		.word	operational_mode
+ 375 0160 00000000 		.word	lighting_sequence
+ 376 0164 00000000 		.word	pc13_press_total
+ 377 0168 00000000 		.word	switch_operation_count
+ 378 016c 00080240 		.word	1073874944
+ 379 0170 00008140 		.word	1082195968
+ 380 0174 E0930400 		.word	300000
+ 381 0178 00040240 		.word	1073873920
+ 382              	.LBE3:
+ 383              		.cfi_endproc
+ 384              	.LFE131:
+ 386              		.global	switch_operation_count
+ 387              		.section	.bss.switch_operation_count,"aw",%nobits
+ 388              		.align	2
+ 391              	switch_operation_count:
+ 392 0000 00000000 		.space	4
+ 393              		.global	pc13_press_total
+ 394              		.section	.bss.pc13_press_total,"aw",%nobits
+ 397              	pc13_press_total:
+ 398 0000 00       		.space	1
+ 399              		.global	lighting_sequence
+ 400              		.section	.bss.lighting_sequence,"aw",%nobits
+ 403              	lighting_sequence:
+ 404 0000 00       		.space	1
+ 405              		.global	operational_mode
+ 406              		.section	.bss.operational_mode,"aw",%nobits
+ 409              	operational_mode:
+ 410 0000 00       		.space	1
+ 411              		.global	pc13_switch_state
+ 412              		.section	.bss.pc13_switch_state,"aw",%nobits
+ 415              	pc13_switch_state:
+ 416 0000 00       		.space	1
+ 417              		.global	pc8_switch_state
+ 418              		.section	.bss.pc8_switch_state,"aw",%nobits
+ 421              	pc8_switch_state:
+ 422 0000 00       		.space	1
+ 423              		.text
+ 424              	.Letext0:
+ 425              		.file 2 "D:/AAA_TOOL/ARM/2-1/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_def
+ 426              		.file 3 "D:/AAA_TOOL/ARM/2-1/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.
+ 427              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 428              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:21     .text.delay:00000000 $t
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:27     .text.delay:00000000 delay
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:61     .text.main:00000000 $t
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:67     .text.main:00000000 main
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:343    .text.main:00000128 $d
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:347    .text.main:00000138 $t
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:372    .text.main:00000154 $d
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:421    .bss.pc8_switch_state:00000000 pc8_switch_state
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:415    .bss.pc13_switch_state:00000000 pc13_switch_state
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:409    .bss.operational_mode:00000000 operational_mode
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:403    .bss.lighting_sequence:00000000 lighting_sequence
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:397    .bss.pc13_press_total:00000000 pc13_press_total
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:391    .bss.switch_operation_count:00000000 switch_operation_count
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:388    .bss.switch_operation_count:00000000 $d
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:398    .bss.pc13_press_total:00000000 $d
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:404    .bss.lighting_sequence:00000000 $d
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:410    .bss.operational_mode:00000000 $d
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:416    .bss.pc13_switch_state:00000000 $d
+C:\Users\ASUS\AppData\Local\Temp\ccBLlsGd.s:422    .bss.pc8_switch_state:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init_Self_Def
+set_PC8_as_input
+set_PC8_as_output

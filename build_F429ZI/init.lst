@@ -1,0 +1,367 @@
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.set_PC8_as_output,"ax",%progbits
+  21              		.align	1
+  22              		.global	set_PC8_as_output
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	set_PC8_as_output:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** // 设置PC8为输出模式（用于控制LED4）Настройка PC8 как выхода (для
+   4:Core/Src/init.c **** void set_PC8_as_output(void)
+   5:Core/Src/init.c **** {
+  29              		.loc 1 5 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   6:Core/Src/init.c ****     // 设置为输出模式 (01) Установка режима вывода(01)
+   7:Core/Src/init.c ****     MODIFY_REG(GPIOC->MODER, 
+  34              		.loc 1 7 5 view .LVU1
+  35 0000 0A4B     		ldr	r3, .L2
+  36 0002 1A68     		ldr	r2, [r3]
+  37 0004 22F44032 		bic	r2, r2, #196608
+  38 0008 42F48032 		orr	r2, r2, #65536
+  39 000c 1A60     		str	r2, [r3]
+   8:Core/Src/init.c ****                GPIO_MODER_MODE8,
+   9:Core/Src/init.c ****                GPIO_MODER_MODE8_0);
+  10:Core/Src/init.c ****     // 推挽输出 Режим push-pull
+  11:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_8);
+  40              		.loc 1 11 5 view .LVU2
+  41 000e 5A68     		ldr	r2, [r3, #4]
+  42 0010 22F48072 		bic	r2, r2, #256
+  43 0014 5A60     		str	r2, [r3, #4]
+  12:Core/Src/init.c ****     // 中等速度 Средняя скорость
+  13:Core/Src/init.c ****     MODIFY_REG(GPIOC->OSPEEDR,
+  44              		.loc 1 13 5 view .LVU3
+  45 0016 9A68     		ldr	r2, [r3, #8]
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s 			page 2
+
+
+  46 0018 22F44032 		bic	r2, r2, #196608
+  47 001c 42F40032 		orr	r2, r2, #131072
+  48 0020 9A60     		str	r2, [r3, #8]
+  14:Core/Src/init.c ****                GPIO_OSPEEDR_OSPEED8,
+  15:Core/Src/init.c ****                GPIO_OSPEEDR_OSPEED8_1);
+  16:Core/Src/init.c ****     // 无上拉/下拉
+  17:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD8);
+  49              		.loc 1 17 5 view .LVU4
+  50 0022 DA68     		ldr	r2, [r3, #12]
+  51 0024 22F44032 		bic	r2, r2, #196608
+  52 0028 DA60     		str	r2, [r3, #12]
+  18:Core/Src/init.c **** }
+  53              		.loc 1 18 1 is_stmt 0 view .LVU5
+  54 002a 7047     		bx	lr
+  55              	.L3:
+  56              		.align	2
+  57              	.L2:
+  58 002c 00080240 		.word	1073874944
+  59              		.cfi_endproc
+  60              	.LFE130:
+  62              		.section	.text.set_PC8_as_input,"ax",%progbits
+  63              		.align	1
+  64              		.global	set_PC8_as_input
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  69              	set_PC8_as_input:
+  70              	.LFB131:
+  19:Core/Src/init.c **** 
+  20:Core/Src/init.c **** // 设置PC8为输入模式（用于检测按钮）Настройка PC8 как входа (для
+  21:Core/Src/init.c **** void set_PC8_as_input(void)
+  22:Core/Src/init.c **** {
+  71              		.loc 1 22 1 is_stmt 1 view -0
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 0
+  74              		@ frame_needed = 0, uses_anonymous_args = 0
+  75              		@ link register save eliminated.
+  23:Core/Src/init.c ****     // 设置为输入模式 (00) Установка режима ввода (00)
+  24:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE8);
+  76              		.loc 1 24 5 view .LVU7
+  77 0000 064B     		ldr	r3, .L5
+  78 0002 1A68     		ldr	r2, [r3]
+  79 0004 22F44032 		bic	r2, r2, #196608
+  80 0008 1A60     		str	r2, [r3]
+  25:Core/Src/init.c ****     // 启用上拉 Включение подтяжки pull-up (сверху
+  26:Core/Src/init.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD8_0);
+  81              		.loc 1 26 5 view .LVU8
+  82 000a DA68     		ldr	r2, [r3, #12]
+  83 000c 42F48032 		orr	r2, r2, #65536
+  84 0010 DA60     		str	r2, [r3, #12]
+  27:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD8_1);
+  85              		.loc 1 27 5 view .LVU9
+  86 0012 DA68     		ldr	r2, [r3, #12]
+  87 0014 22F40032 		bic	r2, r2, #131072
+  88 0018 DA60     		str	r2, [r3, #12]
+  28:Core/Src/init.c **** }
+  89              		.loc 1 28 1 is_stmt 0 view .LVU10
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s 			page 3
+
+
+  90 001a 7047     		bx	lr
+  91              	.L6:
+  92              		.align	2
+  93              	.L5:
+  94 001c 00080240 		.word	1073874944
+  95              		.cfi_endproc
+  96              	.LFE131:
+  98              		.section	.text.GPIO_Init_Self_Def,"ax",%progbits
+  99              		.align	1
+ 100              		.global	GPIO_Init_Self_Def
+ 101              		.syntax unified
+ 102              		.thumb
+ 103              		.thumb_func
+ 105              	GPIO_Init_Self_Def:
+ 106              	.LFB132:
+  29:Core/Src/init.c **** 
+  30:Core/Src/init.c **** void GPIO_Init_Self_Def(void)
+  31:Core/Src/init.c **** {
+ 107              		.loc 1 31 1 is_stmt 1 view -0
+ 108              		.cfi_startproc
+ 109              		@ args = 0, pretend = 0, frame = 0
+ 110              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111              		@ link register save eliminated.
+  32:Core/Src/init.c ****     // 1. 使能GPIOB和GPIOC时钟 Включение тактирования GPIOB и GPIOC
+  33:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+ 112              		.loc 1 33 5 view .LVU12
+ 113 0000 314A     		ldr	r2, .L8
+ 114 0002 136B     		ldr	r3, [r2, #48]
+ 115 0004 43F00603 		orr	r3, r3, #6
+ 116 0008 1363     		str	r3, [r2, #48]
+  34:Core/Src/init.c **** 
+  35:Core/Src/init.c ****     // 2. 初始化PC8和PC13
+  36:Core/Src/init.c ****     // ---------- PC8 (按钮1 + LED4) ----------
+  37:Core/Src/init.c ****     // 初始化为输入模式（上拉），用于按钮检测
+  38:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE8);   // PC8 input
+ 117              		.loc 1 38 5 view .LVU13
+ 118 000a 304B     		ldr	r3, .L8+4
+ 119 000c 1A68     		ldr	r2, [r3]
+ 120 000e 22F44032 		bic	r2, r2, #196608
+ 121 0012 1A60     		str	r2, [r3]
+  39:Core/Src/init.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD8_0);   // 上拉电阻
+ 122              		.loc 1 39 5 view .LVU14
+ 123 0014 DA68     		ldr	r2, [r3, #12]
+ 124 0016 42F48032 		orr	r2, r2, #65536
+ 125 001a DA60     		str	r2, [r3, #12]
+  40:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD8_1);
+ 126              		.loc 1 40 5 view .LVU15
+ 127 001c DA68     		ldr	r2, [r3, #12]
+ 128 001e 22F40032 		bic	r2, r2, #131072
+ 129 0022 DA60     		str	r2, [r3, #12]
+  41:Core/Src/init.c **** 
+  42:Core/Src/init.c ****     // ---------- PC13 (按钮2) ----------
+  43:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE13);  // PC13 input
+ 130              		.loc 1 43 5 view .LVU16
+ 131 0024 1A68     		ldr	r2, [r3]
+ 132 0026 22F04062 		bic	r2, r2, #201326592
+ 133 002a 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s 			page 4
+
+
+  44:Core/Src/init.c ****     //  PC13应该使用下拉
+  45:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_0); // 
+ 134              		.loc 1 45 5 view .LVU17
+ 135 002c DA68     		ldr	r2, [r3, #12]
+ 136 002e 22F08062 		bic	r2, r2, #67108864
+ 137 0032 DA60     		str	r2, [r3, #12]
+  46:Core/Src/init.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13_1);   // 设置bit1，启用下拉 
+ 138              		.loc 1 46 5 view .LVU18
+ 139 0034 DA68     		ldr	r2, [r3, #12]
+ 140 0036 42F00062 		orr	r2, r2, #134217728
+ 141 003a DA60     		str	r2, [r3, #12]
+  47:Core/Src/init.c **** 
+  48:Core/Src/init.c ****     // 3. 直接内存访问配置 LED1 (PB0) Использование прямого досту�
+  49:Core/Src/init.c ****     // 配置 PB0 为输出模式 (01) -> MODER[1:0] = 01 Настройка PB0 как вывод 
+  50:Core/Src/init.c ****     uint32_t temp_mod = *(volatile uint32_t*)((uint32_t)GPIOB + 0x00); // 读取 MODER
+ 142              		.loc 1 50 5 view .LVU19
+ 143              		.loc 1 50 14 is_stmt 0 view .LVU20
+ 144 003c A3F50063 		sub	r3, r3, #2048
+ 145 0040 D3F80024 		ldr	r2, [r3, #1024]
+ 146              	.LVL0:
+  51:Core/Src/init.c ****     temp_mod &= ~(0x3UL << (2 * LED1_PIN)); // 清除 PB0 的 MODER 位 
+ 147              		.loc 1 51 5 is_stmt 1 view .LVU21
+ 148              		.loc 1 51 14 is_stmt 0 view .LVU22
+ 149 0044 22F00302 		bic	r2, r2, #3
+ 150              	.LVL1:
+  52:Core/Src/init.c ****     temp_mod |=  (0x1UL << (2 * LED1_PIN)); // 设置 PB0 为输出 
+ 151              		.loc 1 52 5 is_stmt 1 view .LVU23
+ 152              		.loc 1 52 14 is_stmt 0 view .LVU24
+ 153 0048 42F00102 		orr	r2, r2, #1
+ 154              	.LVL2:
+  53:Core/Src/init.c ****     *(volatile uint32_t*)((uint32_t)GPIOB + 0x00) = temp_mod; // 写回 MODER
+ 155              		.loc 1 53 5 is_stmt 1 view .LVU25
+ 156              		.loc 1 53 51 is_stmt 0 view .LVU26
+ 157 004c C3F80024 		str	r2, [r3, #1024]
+  54:Core/Src/init.c **** 
+  55:Core/Src/init.c ****     // 设置 PB0 为推挽输出 (OTYPER 默认为 0，已经是推挽，可选)
+  56:Core/Src/init.c ****     // CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0); // 这行可选，因为默认值是0
+  57:Core/Src/init.c **** 
+  58:Core/Src/init.c ****     // 设置 PB0 为中等速度 (OSPEEDER[1:0] = 01) -> OSPEEDR[1:0] = 01
+  59:Core/Src/init.c ****     uint32_t temp_spd = *(volatile uint32_t*)((uint32_t)GPIOB + 0x08); // 
+ 158              		.loc 1 59 5 is_stmt 1 view .LVU27
+ 159              		.loc 1 59 14 is_stmt 0 view .LVU28
+ 160 0050 D3F80824 		ldr	r2, [r3, #1032]
+ 161              	.LVL3:
+  60:Core/Src/init.c ****     temp_spd &= ~(0x3UL << (2 * LED1_PIN)); // 清除 PB0 的 OSPEEDER 位
+ 162              		.loc 1 60 5 is_stmt 1 view .LVU29
+ 163              		.loc 1 60 14 is_stmt 0 view .LVU30
+ 164 0054 22F00302 		bic	r2, r2, #3
+ 165              	.LVL4:
+  61:Core/Src/init.c ****     temp_spd |=  (0x1UL << (2 * LED1_PIN)); // 设置 PB0 为中等速度 
+ 166              		.loc 1 61 5 is_stmt 1 view .LVU31
+ 167              		.loc 1 61 14 is_stmt 0 view .LVU32
+ 168 0058 42F00102 		orr	r2, r2, #1
+ 169              	.LVL5:
+  62:Core/Src/init.c ****     *(volatile uint32_t*)((uint32_t)GPIOB + 0x08) = temp_spd; //
+ 170              		.loc 1 62 5 is_stmt 1 view .LVU33
+ 171              		.loc 1 62 51 is_stmt 0 view .LVU34
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s 			page 5
+
+
+ 172 005c C3F80824 		str	r2, [r3, #1032]
+ 173              	.LVL6:
+  63:Core/Src/init.c **** 
+  64:Core/Src/init.c ****     // 设置 PB0 无上拉/下拉 
+  65:Core/Src/init.c ****     uint32_t temp_pup = *(volatile uint32_t*)((uint32_t)GPIOB + 0x0C); // 
+ 174              		.loc 1 65 5 is_stmt 1 view .LVU35
+ 175              		.loc 1 65 14 is_stmt 0 view .LVU36
+ 176 0060 D3F80C24 		ldr	r2, [r3, #1036]
+ 177              	.LVL7:
+  66:Core/Src/init.c ****     temp_pup &= ~(0x3UL << (2 * LED1_PIN)); // 清除 PB0 的 PUPDR 位 (00)
+ 178              		.loc 1 66 5 is_stmt 1 view .LVU37
+ 179              		.loc 1 66 14 is_stmt 0 view .LVU38
+ 180 0064 22F00302 		bic	r2, r2, #3
+ 181              	.LVL8:
+  67:Core/Src/init.c ****     // 无需再或上值，因为清除后就是00
+  68:Core/Src/init.c ****     *(volatile uint32_t*)((uint32_t)GPIOB + 0x0C) = temp_pup; // 
+ 182              		.loc 1 68 5 is_stmt 1 view .LVU39
+ 183              		.loc 1 68 51 is_stmt 0 view .LVU40
+ 184 0068 C3F80C24 		str	r2, [r3, #1036]
+ 185              	.LVL9:
+  69:Core/Src/init.c **** 
+  70:Core/Src/init.c ****     // 4. 使用自定义宏和SET_BIT配置 LED2 (PB7) Использование пользова
+  71:Core/Src/init.c ****     // 配置 PB7 为输出模式 
+  72:Core/Src/init.c ****     // 1. 清除 PB7 的模式位 
+  73:Core/Src/init.c ****     CLEAR_BIT(GPIOB->MODER, (0x3UL << (LED2_PIN * 2U)));
+ 186              		.loc 1 73 5 is_stmt 1 view .LVU41
+ 187 006c 03F58063 		add	r3, r3, #1024
+ 188 0070 1A68     		ldr	r2, [r3]
+ 189              	.LVL10:
+ 190              		.loc 1 73 5 is_stmt 0 view .LVU42
+ 191 0072 22F44042 		bic	r2, r2, #49152
+ 192 0076 1A60     		str	r2, [r3]
+ 193              	.LVL11:
+  74:Core/Src/init.c ****     // 2. 设置 PB7 为输出模式 (MODE7_0 = 1) -> MODER[14] = 1
+  75:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, (0x1UL << (LED2_PIN * 2U)));
+ 194              		.loc 1 75 5 is_stmt 1 view .LVU43
+ 195 0078 1A68     		ldr	r2, [r3]
+ 196 007a 42F48042 		orr	r2, r2, #16384
+ 197 007e 1A60     		str	r2, [r3]
+  76:Core/Src/init.c **** 
+  77:Core/Src/init.c ****     // 配置 PB7 为推挽输出 (OTYPER[7] = 0) -> 默认值，可选设置
+  78:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, (0x1UL << LED2_PIN));
+ 198              		.loc 1 78 5 view .LVU44
+ 199 0080 5A68     		ldr	r2, [r3, #4]
+ 200 0082 22F08002 		bic	r2, r2, #128
+ 201 0086 5A60     		str	r2, [r3, #4]
+  79:Core/Src/init.c **** 
+  80:Core/Src/init.c ****     // 配置 PB7 为中等速度 (OSPEEDR[15:14] = 01) -> OSPEEDR[14] = 1
+  81:Core/Src/init.c ****     // 清除位
+  82:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OSPEEDR, (0x3UL << (LED2_PIN * 2U)));
+ 202              		.loc 1 82 5 view .LVU45
+ 203 0088 9A68     		ldr	r2, [r3, #8]
+ 204 008a 22F44042 		bic	r2, r2, #49152
+ 205 008e 9A60     		str	r2, [r3, #8]
+  83:Core/Src/init.c ****     // 设置位
+  84:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, (0x1UL << (LED2_PIN * 2U)));
+ 206              		.loc 1 84 5 view .LVU46
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s 			page 6
+
+
+ 207 0090 9A68     		ldr	r2, [r3, #8]
+ 208 0092 42F48042 		orr	r2, r2, #16384
+ 209 0096 9A60     		str	r2, [r3, #8]
+  85:Core/Src/init.c **** 
+  86:Core/Src/init.c ****     // 配置 PB7 无上拉/下拉 (PUPDR[15:14] = 00) -> PUPDR[14] = 0, PUPDR[15] = 0
+  87:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, (0x3UL << (LED2_PIN * 2U)));
+ 210              		.loc 1 87 5 view .LVU47
+ 211 0098 DA68     		ldr	r2, [r3, #12]
+ 212 009a 22F44042 		bic	r2, r2, #49152
+ 213 009e DA60     		str	r2, [r3, #12]
+  88:Core/Src/init.c **** 
+  89:Core/Src/init.c ****     // 5. 初始化 LED3 (PB14) 
+  90:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0); // PB14 output
+ 214              		.loc 1 90 5 view .LVU48
+ 215 00a0 1A68     		ldr	r2, [r3]
+ 216 00a2 42F08052 		orr	r2, r2, #268435456
+ 217 00a6 1A60     		str	r2, [r3]
+  91:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14); // push-pull
+ 218              		.loc 1 91 5 view .LVU49
+ 219 00a8 5A68     		ldr	r2, [r3, #4]
+ 220 00aa 22F48042 		bic	r2, r2, #16384
+ 221 00ae 5A60     		str	r2, [r3, #4]
+  92:Core/Src/init.c ****     MODIFY_REG(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED14, GPIO_OSPEEDR_OSPEED14_1); // medium speed
+ 222              		.loc 1 92 5 view .LVU50
+ 223 00b0 9A68     		ldr	r2, [r3, #8]
+ 224 00b2 22F04052 		bic	r2, r2, #805306368
+ 225 00b6 42F00052 		orr	r2, r2, #536870912
+ 226 00ba 9A60     		str	r2, [r3, #8]
+  93:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD14); // no pull-up/pull-down
+ 227              		.loc 1 93 5 view .LVU51
+ 228 00bc DA68     		ldr	r2, [r3, #12]
+ 229 00be 22F04052 		bic	r2, r2, #805306368
+ 230 00c2 DA60     		str	r2, [r3, #12]
+  94:Core/Src/init.c **** }...
+ 231              		.loc 1 94 1 is_stmt 0 view .LVU52
+ 232 00c4 7047     		bx	lr
+ 233              	.L9:
+ 234 00c6 00BF     		.align	2
+ 235              	.L8:
+ 236 00c8 00380240 		.word	1073887232
+ 237 00cc 00080240 		.word	1073874944
+ 238              		.cfi_endproc
+ 239              	.LFE132:
+ 241              		.text
+ 242              	.Letext0:
+ 243              		.file 2 "D:/AAA_TOOL/ARM/2-1/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_def
+ 244              		.file 3 "D:/AAA_TOOL/ARM/2-1/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.
+ 245              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:21     .text.set_PC8_as_output:00000000 $t
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:27     .text.set_PC8_as_output:00000000 set_PC8_as_output
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:58     .text.set_PC8_as_output:0000002c $d
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:63     .text.set_PC8_as_input:00000000 $t
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:69     .text.set_PC8_as_input:00000000 set_PC8_as_input
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:94     .text.set_PC8_as_input:0000001c $d
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:99     .text.GPIO_Init_Self_Def:00000000 $t
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:105    .text.GPIO_Init_Self_Def:00000000 GPIO_Init_Self_Def
+C:\Users\ASUS\AppData\Local\Temp\ccujq1sL.s:236    .text.GPIO_Init_Self_Def:000000c8 $d
+
+NO UNDEFINED SYMBOLS
