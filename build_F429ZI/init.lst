@@ -1,0 +1,294 @@
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Init_Memory,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Init_Memory
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Init_Memory:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"  
+   2:Core/Src/init.c **** // GPIO初始化函数 - 直接操作寄存器方式
+   3:Core/Src/init.c **** // 功能：配置所有使用的GPIO引脚，包括LED和按键
+   4:Core/Src/init.c **** void GPIO_Init_Memory(void){
+  29              		.loc 1 4 28 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****     //第一步：启用GPIO时钟 
+   6:Core/Src/init.c ****     // 获取RCC AHB1外设时钟使能寄存器的内存地址
+   7:Core/Src/init.c ****     volatile uint32_t *rcc_ahb1enr = (volatile uint32_t *)(RCC_BASE_ADDR + AHB1ENR_OFFSET);
+  34              		.loc 1 7 5 view .LVU1
+  35              	.LVL0:
+   8:Core/Src/init.c ****     // 设置GPIOB、GPIOC、GPIOD的时钟使能位（bit1、bit2、bit3）
+   9:Core/Src/init.c ****     *rcc_ahb1enr |= (1 << 1) | (1 << 2) | (1 << 3);  // 使能三个GPIO端口的时钟
+  36              		.loc 1 9 5 view .LVU2
+  37 0000 404A     		ldr	r2, .L2
+  38 0002 D2F83038 		ldr	r3, [r2, #2096]
+  39              		.loc 1 9 18 is_stmt 0 view .LVU3
+  40 0006 43F00E03 		orr	r3, r3, #14
+  41 000a C2F83038 		str	r3, [r2, #2096]
+  10:Core/Src/init.c ****     
+  11:Core/Src/init.c ****     //第二步：配置PD4 (LED1 + 按键)
+  12:Core/Src/init.c ****     // 获取PD4相关寄存器的内存地址
+  13:Core/Src/init.c ****     volatile uint32_t *pd4_moder = (volatile uint32_t *)(GPIOD_BASE_ADDR + MODER_OFFSET);
+  42              		.loc 1 13 5 is_stmt 1 view .LVU4
+  43              	.LVL1:
+  14:Core/Src/init.c ****     volatile uint32_t *pd4_otyper = (volatile uint32_t *)(GPIOD_BASE_ADDR + OTYPER_OFFSET);
+  44              		.loc 1 14 5 view .LVU5
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s 			page 2
+
+
+  15:Core/Src/init.c ****     volatile uint32_t *pd4_ospeedr = (volatile uint32_t *)(GPIOD_BASE_ADDR + OSPEEDR_OFFSET);
+  45              		.loc 1 15 5 view .LVU6
+  16:Core/Src/init.c ****     volatile uint32_t *pd4_pupdr = (volatile uint32_t *)(GPIOD_BASE_ADDR + PUPDR_OFFSET);
+  46              		.loc 1 16 5 view .LVU7
+  17:Core/Src/init.c ****     // 配置PD4引脚模式：先清除原来的设置，再设置为输出模式(01)
+  18:Core/Src/init.c ****     *pd4_moder = (*pd4_moder & ~(3 << (4 * 2))) | (1 << (4 * 2));      // 设置PD4为通用输出�
+  47              		.loc 1 18 5 view .LVU8
+  48              		.loc 1 18 19 is_stmt 0 view .LVU9
+  49 000e 3E4B     		ldr	r3, .L2+4
+  50 0010 D3F8002C 		ldr	r2, [r3, #3072]
+  51              		.loc 1 18 30 view .LVU10
+  52 0014 22F44072 		bic	r2, r2, #768
+  53              		.loc 1 18 49 view .LVU11
+  54 0018 42F48072 		orr	r2, r2, #256
+  55              		.loc 1 18 16 view .LVU12
+  56 001c C3F8002C 		str	r2, [r3, #3072]
+  19:Core/Src/init.c ****     // 配置PD4输出类型：清除第4位，设置为推挽输出(0)
+  20:Core/Src/init.c ****     *pd4_otyper &= ~(1 << 4);                                          // 设置PD4为推挽输出
+  57              		.loc 1 20 5 is_stmt 1 view .LVU13
+  58 0020 D3F8042C 		ldr	r2, [r3, #3076]
+  59              		.loc 1 20 17 is_stmt 0 view .LVU14
+  60 0024 22F01002 		bic	r2, r2, #16
+  61 0028 C3F8042C 		str	r2, [r3, #3076]
+  21:Core/Src/init.c ****     // 配置PD4输出速度：先清除原来的设置，再设置为高速模式(10)
+  22:Core/Src/init.c ****     *pd4_ospeedr = (*pd4_ospeedr & ~(3 << (4 * 2))) | (2 << (4 * 2));  // 设置PD4为高速输出
+  62              		.loc 1 22 5 is_stmt 1 view .LVU15
+  63              		.loc 1 22 21 is_stmt 0 view .LVU16
+  64 002c D3F8082C 		ldr	r2, [r3, #3080]
+  65              		.loc 1 22 34 view .LVU17
+  66 0030 22F44072 		bic	r2, r2, #768
+  67              		.loc 1 22 53 view .LVU18
+  68 0034 42F40072 		orr	r2, r2, #512
+  69              		.loc 1 22 18 view .LVU19
+  70 0038 C3F8082C 		str	r2, [r3, #3080]
+  23:Core/Src/init.c ****     // 配置PD4上拉下拉：先清除原来的设置，再设置为上拉模式(01)
+  24:Core/Src/init.c ****     *pd4_pupdr = (*pd4_pupdr & ~(3 << (4 * 2))) | (1 << (4 * 2));      // 设置PD4内部上拉电�
+  71              		.loc 1 24 5 is_stmt 1 view .LVU20
+  72              		.loc 1 24 19 is_stmt 0 view .LVU21
+  73 003c D3F80C2C 		ldr	r2, [r3, #3084]
+  74              		.loc 1 24 30 view .LVU22
+  75 0040 22F44072 		bic	r2, r2, #768
+  76              		.loc 1 24 49 view .LVU23
+  77 0044 42F48072 		orr	r2, r2, #256
+  78              		.loc 1 24 16 view .LVU24
+  79 0048 C3F80C2C 		str	r2, [r3, #3084]
+  25:Core/Src/init.c ****     
+  26:Core/Src/init.c ****     //第三步：配置PB14 (LED2)
+  27:Core/Src/init.c ****     // 获取PB14相关寄存器的内存地址
+  28:Core/Src/init.c ****     volatile uint32_t *pb14_moder = (volatile uint32_t *)(GPIOB_BASE_ADDR + MODER_OFFSET);
+  80              		.loc 1 28 5 is_stmt 1 view .LVU25
+  81              	.LVL2:
+  29:Core/Src/init.c ****     volatile uint32_t *pb14_otyper = (volatile uint32_t *)(GPIOB_BASE_ADDR + OTYPER_OFFSET);
+  82              		.loc 1 29 5 view .LVU26
+  30:Core/Src/init.c ****     volatile uint32_t *pb14_ospeedr = (volatile uint32_t *)(GPIOB_BASE_ADDR + OSPEEDR_OFFSET);
+  83              		.loc 1 30 5 view .LVU27
+  31:Core/Src/init.c ****     volatile uint32_t *pb14_pupdr = (volatile uint32_t *)(GPIOB_BASE_ADDR + PUPDR_OFFSET);
+  84              		.loc 1 31 5 view .LVU28
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s 			page 3
+
+
+  32:Core/Src/init.c ****     
+  33:Core/Src/init.c ****     // 配置PB14引脚模式：先清除原来的设置，再设置为输出模式(01)
+  34:Core/Src/init.c ****     *pb14_moder = (*pb14_moder & ~(3 << (14 * 2))) | (1 << (14 * 2));      // 设置PB14为通用�
+  85              		.loc 1 34 5 view .LVU29
+  86              		.loc 1 34 20 is_stmt 0 view .LVU30
+  87 004c D3F80024 		ldr	r2, [r3, #1024]
+  88              		.loc 1 34 32 view .LVU31
+  89 0050 22F04052 		bic	r2, r2, #805306368
+  90              		.loc 1 34 52 view .LVU32
+  91 0054 42F08052 		orr	r2, r2, #268435456
+  92              		.loc 1 34 17 view .LVU33
+  93 0058 C3F80024 		str	r2, [r3, #1024]
+  35:Core/Src/init.c ****     // 配置PB14输出类型：清除第14位，设置为推挽输出(0)
+  36:Core/Src/init.c ****     *pb14_otyper &= ~(1 << 14);                                            // 设置PB14为推挽�
+  94              		.loc 1 36 5 is_stmt 1 view .LVU34
+  95 005c D3F80424 		ldr	r2, [r3, #1028]
+  96              		.loc 1 36 18 is_stmt 0 view .LVU35
+  97 0060 22F48042 		bic	r2, r2, #16384
+  98 0064 C3F80424 		str	r2, [r3, #1028]
+  37:Core/Src/init.c ****     // 配置PB14输出速度：先清除原来的设置，再设置为高速模式(10)
+  38:Core/Src/init.c ****     *pb14_ospeedr = (*pb14_ospeedr & ~(3 << (14 * 2))) | (2 << (14 * 2));  // 设置PB14为高速�
+  99              		.loc 1 38 5 is_stmt 1 view .LVU36
+ 100              		.loc 1 38 22 is_stmt 0 view .LVU37
+ 101 0068 D3F80824 		ldr	r2, [r3, #1032]
+ 102              		.loc 1 38 36 view .LVU38
+ 103 006c 22F04052 		bic	r2, r2, #805306368
+ 104              		.loc 1 38 56 view .LVU39
+ 105 0070 42F00052 		orr	r2, r2, #536870912
+ 106              		.loc 1 38 19 view .LVU40
+ 107 0074 C3F80824 		str	r2, [r3, #1032]
+  39:Core/Src/init.c ****     // 配置PB14上拉下拉：清除第14位的上下拉设置，设置为无上下拉(00)
+  40:Core/Src/init.c ****     *pb14_pupdr &= ~(3 << (14 * 2));                                       // 禁用PB14内部上�
+ 108              		.loc 1 40 5 is_stmt 1 view .LVU41
+ 109 0078 D3F80C24 		ldr	r2, [r3, #1036]
+ 110              		.loc 1 40 17 is_stmt 0 view .LVU42
+ 111 007c 22F04052 		bic	r2, r2, #805306368
+ 112 0080 C3F80C24 		str	r2, [r3, #1036]
+  41:Core/Src/init.c ****     
+  42:Core/Src/init.c ****     // 第四步：配置PB7 (LED3)使用自定义宏
+  43:Core/Src/init.c ****     // 使用头文件中定义的自定义宏来配置PB7引脚
+  44:Core/Src/init.c ****     PB7_MODER_OUTPUT();        // 宏：设置PB7为输出模式
+ 113              		.loc 1 44 5 is_stmt 1 view .LVU43
+ 114 0084 214A     		ldr	r2, .L2+8
+ 115 0086 1168     		ldr	r1, [r2]
+ 116 0088 21F44041 		bic	r1, r1, #49152
+ 117 008c 41F48041 		orr	r1, r1, #16384
+ 118 0090 1160     		str	r1, [r2]
+  45:Core/Src/init.c ****     PB7_OTYPER_PUSHPULL();     // 宏：设置PB7为推挽输出
+ 119              		.loc 1 45 5 view .LVU44
+ 120 0092 5168     		ldr	r1, [r2, #4]
+ 121 0094 21F08001 		bic	r1, r1, #128
+ 122 0098 5160     		str	r1, [r2, #4]
+  46:Core/Src/init.c ****     PB7_OSPEEDR_HIGH();        // 宏：设置PB7为高速模式
+ 123              		.loc 1 46 5 view .LVU45
+ 124 009a 9168     		ldr	r1, [r2, #8]
+ 125 009c 21F44041 		bic	r1, r1, #49152
+ 126 00a0 41F40041 		orr	r1, r1, #32768
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s 			page 4
+
+
+ 127 00a4 9160     		str	r1, [r2, #8]
+  47:Core/Src/init.c ****     PB7_PUPDR_NOPULL();        // 宏：禁用PB7内部上下拉电阻
+ 128              		.loc 1 47 5 view .LVU46
+ 129 00a6 D168     		ldr	r1, [r2, #12]
+ 130 00a8 21F44041 		bic	r1, r1, #49152
+ 131 00ac D160     		str	r1, [r2, #12]
+  48:Core/Src/init.c ****     
+  49:Core/Src/init.c ****     // 第五步：配置PB0 (LED4) - 使用真正的直接内存访问
+  50:Core/Src/init.c ****     // 获取PB0相关寄存器的内存地址 - 使用硬编码基地址+偏移量的方式
+  51:Core/Src/init.c ****     volatile uint32_t *pb0_moder = (volatile uint32_t *)(GPIOB_BASE_ADDR + MODER_OFFSET);
+ 132              		.loc 1 51 5 view .LVU47
+ 133              	.LVL3:
+  52:Core/Src/init.c ****     volatile uint32_t *pb0_otyper = (volatile uint32_t *)(GPIOB_BASE_ADDR + OTYPER_OFFSET);
+ 134              		.loc 1 52 5 view .LVU48
+  53:Core/Src/init.c ****     volatile uint32_t *pb0_ospeedr = (volatile uint32_t *)(GPIOB_BASE_ADDR + OSPEEDR_OFFSET);
+ 135              		.loc 1 53 5 view .LVU49
+  54:Core/Src/init.c ****     volatile uint32_t *pb0_pupdr = (volatile uint32_t *)(GPIOB_BASE_ADDR + PUPDR_OFFSET);
+ 136              		.loc 1 54 5 view .LVU50
+  55:Core/Src/init.c ****     
+  56:Core/Src/init.c ****     // 直接内存访问配置PB0 - 不依赖任何库函数，直接操作寄存器
+  57:Core/Src/init.c ****     // 配置PB0引脚模式：先清除原来的设置，再设置为输出模式(01)
+  58:Core/Src/init.c ****     *pb0_moder = (*pb0_moder & ~(3 << (0 * 2))) | (1 << (0 * 2));      // 设置PB0为通用输出�
+ 137              		.loc 1 58 5 view .LVU51
+ 138              		.loc 1 58 19 is_stmt 0 view .LVU52
+ 139 00ae D3F80024 		ldr	r2, [r3, #1024]
+ 140              		.loc 1 58 30 view .LVU53
+ 141 00b2 22F00302 		bic	r2, r2, #3
+ 142              		.loc 1 58 49 view .LVU54
+ 143 00b6 42F00102 		orr	r2, r2, #1
+ 144              		.loc 1 58 16 view .LVU55
+ 145 00ba C3F80024 		str	r2, [r3, #1024]
+  59:Core/Src/init.c ****     // 配置PB0输出类型：清除第0位，设置为推挽输出(0)
+  60:Core/Src/init.c ****     *pb0_otyper &= ~(1 << 0);                                          // 设置PB0为推挽输出
+ 146              		.loc 1 60 5 is_stmt 1 view .LVU56
+ 147 00be D3F80424 		ldr	r2, [r3, #1028]
+ 148              		.loc 1 60 17 is_stmt 0 view .LVU57
+ 149 00c2 22F00102 		bic	r2, r2, #1
+ 150 00c6 C3F80424 		str	r2, [r3, #1028]
+  61:Core/Src/init.c ****     // 配置PB0输出速度：先清除原来的设置，再设置为高速模式(10)
+  62:Core/Src/init.c ****     *pb0_ospeedr = (*pb0_ospeedr & ~(3 << (0 * 2))) | (2 << (0 * 2));  // 设置PB0为高速输出
+ 151              		.loc 1 62 5 is_stmt 1 view .LVU58
+ 152              		.loc 1 62 21 is_stmt 0 view .LVU59
+ 153 00ca D3F80824 		ldr	r2, [r3, #1032]
+ 154              		.loc 1 62 34 view .LVU60
+ 155 00ce 22F00302 		bic	r2, r2, #3
+ 156              		.loc 1 62 53 view .LVU61
+ 157 00d2 42F00202 		orr	r2, r2, #2
+ 158              		.loc 1 62 18 view .LVU62
+ 159 00d6 C3F80824 		str	r2, [r3, #1032]
+  63:Core/Src/init.c ****     // 配置PB0上拉下拉：清除第0位的上下拉设置，设置为无上下拉(00)
+  64:Core/Src/init.c ****     *pb0_pupdr &= ~(3 << (0 * 2));                                     // 禁用PB0内部上下拉�
+ 160              		.loc 1 64 5 is_stmt 1 view .LVU63
+ 161 00da D3F80C24 		ldr	r2, [r3, #1036]
+ 162              		.loc 1 64 16 is_stmt 0 view .LVU64
+ 163 00de 22F00302 		bic	r2, r2, #3
+ 164 00e2 C3F80C24 		str	r2, [r3, #1036]
+  65:Core/Src/init.c ****     
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s 			page 5
+
+
+  66:Core/Src/init.c ****     //第六步：配置PC13 (按键引脚)
+  67:Core/Src/init.c ****     // 获取PC13相关寄存器的内存地址
+  68:Core/Src/init.c ****     volatile uint32_t *pc13_moder = (volatile uint32_t *)(GPIOC_BASE_ADDR + MODER_OFFSET);
+ 165              		.loc 1 68 5 is_stmt 1 view .LVU65
+ 166              	.LVL4:
+  69:Core/Src/init.c ****     volatile uint32_t *pc13_pupdr = (volatile uint32_t *)(GPIOC_BASE_ADDR + PUPDR_OFFSET);
+ 167              		.loc 1 69 5 view .LVU66
+  70:Core/Src/init.c ****     // 配置PC13引脚模式：清除原来的设置，设置为输入模式(00)
+  71:Core/Src/init.c ****     *pc13_moder &= ~(3 << (13 * 2));       // 设置PC13为输入模式
+ 168              		.loc 1 71 5 view .LVU67
+ 169 00e6 D3F80028 		ldr	r2, [r3, #2048]
+ 170              		.loc 1 71 17 is_stmt 0 view .LVU68
+ 171 00ea 22F04062 		bic	r2, r2, #201326592
+ 172 00ee C3F80028 		str	r2, [r3, #2048]
+  72:Core/Src/init.c ****     // 配置PC13上拉下拉：先清除原来的设置，再设置为下拉模式(10)
+  73:Core/Src/init.c ****     *pc13_pupdr = (*pc13_pupdr & ~(3 << (13 * 2))) | (2 << (13 * 2));  // 设置PC13内部下拉电
+ 173              		.loc 1 73 5 is_stmt 1 view .LVU69
+ 174              		.loc 1 73 20 is_stmt 0 view .LVU70
+ 175 00f2 D3F80C28 		ldr	r2, [r3, #2060]
+ 176              		.loc 1 73 32 view .LVU71
+ 177 00f6 22F04062 		bic	r2, r2, #201326592
+ 178              		.loc 1 73 52 view .LVU72
+ 179 00fa 42F00062 		orr	r2, r2, #134217728
+ 180              		.loc 1 73 17 view .LVU73
+ 181 00fe C3F80C28 		str	r2, [r3, #2060]
+  74:Core/Src/init.c **** }
+ 182              		.loc 1 74 1 view .LVU74
+ 183 0102 7047     		bx	lr
+ 184              	.L3:
+ 185              		.align	2
+ 186              	.L2:
+ 187 0104 00300240 		.word	1073885184
+ 188 0108 00000240 		.word	1073872896
+ 189 010c 00040240 		.word	1073873920
+ 190              		.cfi_endproc
+ 191              	.LFE130:
+ 193              		.text
+ 194              	.Letext0:
+ 195              		.file 2 "D:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 196              		.file 3 "D:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 197              		.file 4 "Core/Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s:21     .text.GPIO_Init_Memory:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s:27     .text.GPIO_Init_Memory:00000000 GPIO_Init_Memory
+C:\Users\Lenovo\AppData\Local\Temp\ccfQk0Ym.s:187    .text.GPIO_Init_Memory:00000104 $d
+
+NO UNDEFINED SYMBOLS

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccBmLoEl.s 			page 1
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,107 +20,859 @@ ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccBmLoEl.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.main,"ax",%progbits
+  20              		.section	.text.delay_ms,"ax",%progbits
   21              		.align	1
-  22              		.global	main
-  23              		.syntax unified
-  24              		.thumb
-  25              		.thumb_func
-  27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** 
-   2:Core/Src/main.c **** #include <stdint.h> 
-   3:Core/Src/main.c **** 
-   4:Core/Src/main.c **** int main(void)
-   5:Core/Src/main.c **** {
-  29              		.loc 1 5 1 view -0
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	delay_ms:
+  27              	.LVL0:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"  // 包含自定义初始化头文件，包含所有宏定义和寄存器地址�
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** static void delay_ms(uint32_t ms) {// 简单的软件延时函数
+  29              		.loc 1 3 35 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-   6:Core/Src/main.c ****     *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x06;    // Включение тактирования 
-  35              		.loc 1 6 5 view .LVU1
-  36 0000 144A     		ldr	r2, .L6
-  37 0002 D2F83038 		ldr	r3, [r2, #2096]
-  38              		.loc 1 6 41 is_stmt 0 view .LVU2
-  39 0006 43F00603 		orr	r3, r3, #6
-  40 000a C2F83038 		str	r3, [r2, #2096]
-   7:Core/Src/main.c **** 
-   8:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000;  // Настройка работы 7-го пи�
-  41              		.loc 1 8 5 is_stmt 1 view .LVU3
-  42 000e 124B     		ldr	r3, .L6+4
-  43 0010 D3F80024 		ldr	r2, [r3, #1024]
-  44              		.loc 1 8 41 is_stmt 0 view .LVU4
-  45 0014 42F48042 		orr	r2, r2, #16384
-  46 0018 C3F80024 		str	r2, [r3, #1024]
-   9:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00;    // Настройка на Push-Pull работ
-  47              		.loc 1 9 5 is_stmt 1 view .LVU5
-  10:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000;  // Настройка скорости рабо
-  48              		.loc 1 10 5 view .LVU6
-ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccBmLoEl.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   4:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000; i++) {  // 循环ms*1000次，每次循环约1微秒
+  34              		.loc 1 4 5 view .LVU1
+  35              	.LBB26:
+  36              		.loc 1 4 10 view .LVU2
+  37              		.loc 1 4 19 is_stmt 0 view .LVU3
+  38 0000 0022     		movs	r2, #0
+  39              		.loc 1 4 5 view .LVU4
+  40 0002 01E0     		b	.L2
+  41              	.LVL1:
+  42              	.L3:
+   5:Core/Src/main.c ****         __NOP();  // 不进行任何实际操作，只消耗CPU时间
+  43              		.loc 1 5 9 is_stmt 1 view .LVU5
+  44              		.syntax unified
+  45              	@ 5 "Core/Src/main.c" 1
+  46 0004 00BF     		nop
+  47              	@ 0 "" 2
+   4:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000; i++) {  // 循环ms*1000次，每次循环约1微秒
+  48              		.loc 1 4 42 discriminator 3 view .LVU6
+  49              		.thumb
+  50              		.syntax unified
+  51 0006 0132     		adds	r2, r2, #1
+  52              	.LVL2:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 2
 
 
-  49 001c D3F80824 		ldr	r2, [r3, #1032]
-  50              		.loc 1 10 41 is_stmt 0 view .LVU7
-  51 0020 42F48042 		orr	r2, r2, #16384
-  52 0024 C3F80824 		str	r2, [r3, #1032]
-  11:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00;    // Отключение PU/PD резистор�
-  53              		.loc 1 11 5 is_stmt 1 view .LVU8
-  54 0028 06E0     		b	.L2
-  55              	.L5:
-  12:Core/Src/main.c **** 
-  13:Core/Src/main.c ****     while (1)
-  14:Core/Src/main.c ****     {
-  15:Core/Src/main.c ****         if((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x2000UL) != 0){
-  16:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80;       // Установка единицы
-  56              		.loc 1 16 13 view .LVU9
-  57 002a 0B4A     		ldr	r2, .L6+4
-  58 002c D2F81834 		ldr	r3, [r2, #1048]
-  59              		.loc 1 16 49 is_stmt 0 view .LVU10
-  60 0030 43F08003 		orr	r3, r3, #128
-  61 0034 C2F81834 		str	r3, [r2, #1048]
-  62              	.L2:
-  13:Core/Src/main.c ****     {
-  63              		.loc 1 13 5 is_stmt 1 view .LVU11
-  15:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80;       // Установка единицы
-  64              		.loc 1 15 9 view .LVU12
-  15:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80;       // Установка единицы
-  65              		.loc 1 15 13 is_stmt 0 view .LVU13
-  66 0038 074B     		ldr	r3, .L6+4
-  67 003a D3F81038 		ldr	r3, [r3, #2064]
-  15:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80;       // Установка единицы
-  68              		.loc 1 15 11 view .LVU14
-  69 003e 13F4005F 		tst	r3, #8192
-  70 0042 F2D1     		bne	.L5
-  17:Core/Src/main.c ****         }
-  18:Core/Src/main.c ****         else{
-  19:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000;   // Установка нуля в 7-
-  71              		.loc 1 19 13 is_stmt 1 view .LVU15
-  72 0044 044A     		ldr	r2, .L6+4
-  73 0046 D2F81834 		ldr	r3, [r2, #1048]
-  74              		.loc 1 19 49 is_stmt 0 view .LVU16
-  75 004a 43F40003 		orr	r3, r3, #8388608
-  76 004e C2F81834 		str	r3, [r2, #1048]
-  77 0052 F1E7     		b	.L2
-  78              	.L7:
-  79              		.align	2
-  80              	.L6:
-  81 0054 00300240 		.word	1073885184
-  82 0058 00000240 		.word	1073872896
-  83              		.cfi_endproc
-  84              	.LFE0:
-  86              		.text
-  87              	.Letext0:
-  88              		.file 2 "D:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
-  89              		.file 3 "D:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
-ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccBmLoEl.s 			page 3
+  53              	.L2:
+   4:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000; i++) {  // 循环ms*1000次，每次循环约1微秒
+  54              		.loc 1 4 28 discriminator 1 view .LVU7
+   4:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000; i++) {  // 循环ms*1000次，每次循环约1微秒
+  55              		.loc 1 4 33 is_stmt 0 discriminator 1 view .LVU8
+  56 0008 4FF47A73 		mov	r3, #1000
+  57 000c 00FB03F3 		mul	r3, r0, r3
+   4:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000; i++) {  // 循环ms*1000次，每次循环约1微秒
+  58              		.loc 1 4 28 discriminator 1 view .LVU9
+  59 0010 9342     		cmp	r3, r2
+  60 0012 F7D8     		bhi	.L3
+  61              	.LBE26:
+   6:Core/Src/main.c ****     }
+   7:Core/Src/main.c **** }
+  62              		.loc 1 7 1 view .LVU10
+  63 0014 7047     		bx	lr
+  64              		.cfi_endproc
+  65              	.LFE130:
+  67              		.section	.text.check_pc13_button,"ax",%progbits
+  68              		.align	1
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	check_pc13_button:
+  74              	.LFB131:
+   8:Core/Src/main.c **** // 检测PC13按键状态函数
+   9:Core/Src/main.c **** // 返回值：1-按键被按下并释放，0-按键未被按下
+  10:Core/Src/main.c **** // PC13按键特性：按下时为高电平，未按下时为低电平（使用外部下拉电阻�
+  11:Core/Src/main.c **** static uint8_t check_pc13_button(void) {
+  75              		.loc 1 11 40 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79 0000 08B5     		push	{r3, lr}
+  80              	.LCFI0:
+  81              		.cfi_def_cfa_offset 8
+  82              		.cfi_offset 3, -8
+  83              		.cfi_offset 14, -4
+  12:Core/Src/main.c ****     // 获取PC13输入数据寄存器的内存地址（直接内存访问）
+  13:Core/Src/main.c ****     volatile uint32_t *pc13_idr = (volatile uint32_t *)(GPIOC_BASE_ADDR + IDR_OFFSET);
+  84              		.loc 1 13 5 view .LVU12
+  85              	.LVL3:
+  14:Core/Src/main.c ****     // 检测PC13引脚是否为高电平（按键按下）
+  15:Core/Src/main.c ****     if ((*pc13_idr & (1 << 13)) != 0) {
+  86              		.loc 1 15 5 view .LVU13
+  87              		.loc 1 15 10 is_stmt 0 view .LVU14
+  88 0002 0D4B     		ldr	r3, .L11
+  89 0004 D3F81038 		ldr	r3, [r3, #2064]
+  90              		.loc 1 15 8 view .LVU15
+  91 0008 13F4005F 		tst	r3, #8192
+  92 000c 01D1     		bne	.L10
+  16:Core/Src/main.c ****         delay_ms(20);  // 延时20毫秒进行按键消抖，消除机械抖动
+  17:Core/Src/main.c ****         if ((*pc13_idr & (1 << 13)) != 0) {
+  18:Core/Src/main.c ****             // 等待按键释放（保持检测直到引脚变为低电平）
+  19:Core/Src/main.c ****             while ((*pc13_idr & (1 << 13)) != 0);
+  20:Core/Src/main.c ****             return 1;  // 返回1表示检测到有效的按键按下并释放
+  21:Core/Src/main.c ****         }
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 3
+
+
+  22:Core/Src/main.c ****     }
+  23:Core/Src/main.c ****     return 0;  // 返回0表示没有检测到按键按下
+  93              		.loc 1 23 12 view .LVU16
+  94 000e 0020     		movs	r0, #0
+  95              	.L5:
+  24:Core/Src/main.c **** }
+  96              		.loc 1 24 1 view .LVU17
+  97 0010 08BD     		pop	{r3, pc}
+  98              	.L10:
+  16:Core/Src/main.c ****         delay_ms(20);  // 延时20毫秒进行按键消抖，消除机械抖动
+  99              		.loc 1 16 9 is_stmt 1 view .LVU18
+ 100 0012 1420     		movs	r0, #20
+ 101 0014 FFF7FEFF 		bl	delay_ms
+ 102              	.LVL4:
+  17:Core/Src/main.c ****             // 等待按键释放（保持检测直到引脚变为低电平）
+ 103              		.loc 1 17 9 view .LVU19
+  17:Core/Src/main.c ****             // 等待按键释放（保持检测直到引脚变为低电平）
+ 104              		.loc 1 17 14 is_stmt 0 view .LVU20
+ 105 0018 074B     		ldr	r3, .L11
+ 106 001a D3F81038 		ldr	r3, [r3, #2064]
+  17:Core/Src/main.c ****             // 等待按键释放（保持检测直到引脚变为低电平）
+ 107              		.loc 1 17 12 view .LVU21
+ 108 001e 13F4005F 		tst	r3, #8192
+ 109 0022 01D1     		bne	.L6
+  23:Core/Src/main.c **** }
+ 110              		.loc 1 23 12 view .LVU22
+ 111 0024 0020     		movs	r0, #0
+ 112 0026 F3E7     		b	.L5
+ 113              	.L6:
+  19:Core/Src/main.c ****             return 1;  // 返回1表示检测到有效的按键按下并释放
+ 114              		.loc 1 19 44 is_stmt 1 discriminator 1 view .LVU23
+  19:Core/Src/main.c ****             return 1;  // 返回1表示检测到有效的按键按下并释放
+ 115              		.loc 1 19 21 is_stmt 0 discriminator 1 view .LVU24
+ 116 0028 034B     		ldr	r3, .L11
+ 117 002a D3F81038 		ldr	r3, [r3, #2064]
+  19:Core/Src/main.c ****             return 1;  // 返回1表示检测到有效的按键按下并释放
+ 118              		.loc 1 19 44 discriminator 1 view .LVU25
+ 119 002e 13F4005F 		tst	r3, #8192
+ 120 0032 F9D1     		bne	.L6
+  20:Core/Src/main.c ****         }
+ 121              		.loc 1 20 20 view .LVU26
+ 122 0034 0120     		movs	r0, #1
+ 123 0036 EBE7     		b	.L5
+ 124              	.L12:
+ 125              		.align	2
+ 126              	.L11:
+ 127 0038 00000240 		.word	1073872896
+ 128              		.cfi_endproc
+ 129              	.LFE131:
+ 131              		.section	.text.check_pd4_button,"ax",%progbits
+ 132              		.align	1
+ 133              		.syntax unified
+ 134              		.thumb
+ 135              		.thumb_func
+ 137              	check_pd4_button:
+ 138              	.LFB132:
+  25:Core/Src/main.c **** 
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 4
+
+
+  26:Core/Src/main.c **** // 检测PD4按键状态函数
+  27:Core/Src/main.c **** // 返回值：1-按键被按下并释放，0-按键未被按下
+  28:Core/Src/main.c **** // PD4按键特性：按下时为低电平，未按下时为高电平（使用内部上拉电阻）
+  29:Core/Src/main.c **** // PD4同时连接LED和按键，需要临时切换模式
+  30:Core/Src/main.c **** static uint8_t check_pd4_button(void) {
+ 139              		.loc 1 30 39 is_stmt 1 view -0
+ 140              		.cfi_startproc
+ 141              		@ args = 0, pretend = 0, frame = 0
+ 142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 143 0000 10B5     		push	{r4, lr}
+ 144              	.LCFI1:
+ 145              		.cfi_def_cfa_offset 8
+ 146              		.cfi_offset 4, -8
+ 147              		.cfi_offset 14, -4
+  31:Core/Src/main.c ****     // 获取PD4模式寄存器的内存地址（直接内存访问）
+  32:Core/Src/main.c ****     volatile uint32_t *pd4_moder = (volatile uint32_t *)(GPIOD_BASE_ADDR + MODER_OFFSET);
+ 148              		.loc 1 32 5 view .LVU28
+ 149              	.LVL5:
+  33:Core/Src/main.c ****     // 临时将PD4切换为输入模式来检测按键（因为PD4默认是输出模式控制LED�
+  34:Core/Src/main.c ****     *pd4_moder &= ~(3 << (4 * 2));  // 清除PD4的模式位，设置为输入模式(00)
+ 150              		.loc 1 34 5 view .LVU29
+ 151 0002 164C     		ldr	r4, .L20
+ 152 0004 D4F8003C 		ldr	r3, [r4, #3072]
+ 153              		.loc 1 34 16 is_stmt 0 view .LVU30
+ 154 0008 23F44073 		bic	r3, r3, #768
+ 155 000c C4F8003C 		str	r3, [r4, #3072]
+  35:Core/Src/main.c ****     delay_ms(1);  // 短暂延时确保GPIO模式切换完成
+ 156              		.loc 1 35 5 is_stmt 1 view .LVU31
+ 157 0010 0120     		movs	r0, #1
+ 158 0012 FFF7FEFF 		bl	delay_ms
+ 159              	.LVL6:
+  36:Core/Src/main.c ****     
+  37:Core/Src/main.c ****     uint8_t result = 0;  // 初始化检测结果为0（未按下）
+ 160              		.loc 1 37 5 view .LVU32
+  38:Core/Src/main.c ****     
+  39:Core/Src/main.c ****     // 获取PD4输入数据寄存器的内存地址
+  40:Core/Src/main.c ****     volatile uint32_t *pd4_idr = (volatile uint32_t *)(GPIOD_BASE_ADDR + IDR_OFFSET);
+ 161              		.loc 1 40 5 view .LVU33
+  41:Core/Src/main.c ****     
+  42:Core/Src/main.c ****     // 检测PD4引脚是否为低电平（按键按下）
+  43:Core/Src/main.c ****     if ((*pd4_idr & (1 << 4)) == 0) {
+ 162              		.loc 1 43 5 view .LVU34
+ 163              		.loc 1 43 10 is_stmt 0 view .LVU35
+ 164 0016 D4F8103C 		ldr	r3, [r4, #3088]
+ 165              		.loc 1 43 8 view .LVU36
+ 166 001a 13F0100F 		tst	r3, #16
+ 167 001e 0AD0     		beq	.L19
+  37:Core/Src/main.c ****     
+ 168              		.loc 1 37 13 view .LVU37
+ 169 0020 0020     		movs	r0, #0
+ 170              	.L14:
+ 171              	.LVL7:
+  44:Core/Src/main.c ****         delay_ms(20);  // 延时20毫秒进行按键消抖
+  45:Core/Src/main.c ****         // 再次检测确认按键确实按下
+  46:Core/Src/main.c ****         if ((*pd4_idr & (1 << 4)) == 0) {
+  47:Core/Src/main.c ****             // 等待按键释放（保持检测直到引脚变为高电平）
+  48:Core/Src/main.c ****             while ((*pd4_idr & (1 << 4)) == 0);
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 5
+
+
+  49:Core/Src/main.c ****             result = 1;  // 设置结果为1表示检测到有效的按键按下
+  50:Core/Src/main.c ****         }
+  51:Core/Src/main.c ****     }
+  52:Core/Src/main.c ****     
+  53:Core/Src/main.c ****     // 恢复PD4为输出模式（用于控制LED）
+  54:Core/Src/main.c ****     *pd4_moder = (*pd4_moder & ~(3 << (4 * 2))) | (1 << (4 * 2));  // 设置PD4为输出模式(01)
+ 172              		.loc 1 54 5 is_stmt 1 view .LVU38
+ 173              		.loc 1 54 19 is_stmt 0 view .LVU39
+ 174 0022 0E4A     		ldr	r2, .L20
+ 175 0024 D2F8003C 		ldr	r3, [r2, #3072]
+ 176              		.loc 1 54 30 view .LVU40
+ 177 0028 23F44073 		bic	r3, r3, #768
+ 178              		.loc 1 54 49 view .LVU41
+ 179 002c 43F48073 		orr	r3, r3, #256
+ 180              		.loc 1 54 16 view .LVU42
+ 181 0030 C2F8003C 		str	r3, [r2, #3072]
+  55:Core/Src/main.c ****     return result;  // 返回按键检测结果
+ 182              		.loc 1 55 5 is_stmt 1 view .LVU43
+  56:Core/Src/main.c **** }
+ 183              		.loc 1 56 1 is_stmt 0 view .LVU44
+ 184 0034 10BD     		pop	{r4, pc}
+ 185              	.LVL8:
+ 186              	.L19:
+  44:Core/Src/main.c ****         delay_ms(20);  // 延时20毫秒进行按键消抖
+ 187              		.loc 1 44 9 is_stmt 1 view .LVU45
+ 188 0036 1420     		movs	r0, #20
+ 189 0038 FFF7FEFF 		bl	delay_ms
+ 190              	.LVL9:
+  46:Core/Src/main.c ****             // 等待按键释放（保持检测直到引脚变为高电平）
+ 191              		.loc 1 46 9 view .LVU46
+  46:Core/Src/main.c ****             // 等待按键释放（保持检测直到引脚变为高电平）
+ 192              		.loc 1 46 14 is_stmt 0 view .LVU47
+ 193 003c D4F8103C 		ldr	r3, [r4, #3088]
+  46:Core/Src/main.c ****             // 等待按键释放（保持检测直到引脚变为高电平）
+ 194              		.loc 1 46 12 view .LVU48
+ 195 0040 13F0100F 		tst	r3, #16
+ 196 0044 07D1     		bne	.L17
+ 197              	.L15:
+  48:Core/Src/main.c ****             result = 1;  // 设置结果为1表示检测到有效的按键按下
+ 198              		.loc 1 48 42 is_stmt 1 discriminator 1 view .LVU49
+  48:Core/Src/main.c ****             result = 1;  // 设置结果为1表示检测到有效的按键按下
+ 199              		.loc 1 48 21 is_stmt 0 discriminator 1 view .LVU50
+ 200 0046 054B     		ldr	r3, .L20
+ 201 0048 D3F8103C 		ldr	r3, [r3, #3088]
+  48:Core/Src/main.c ****             result = 1;  // 设置结果为1表示检测到有效的按键按下
+ 202              		.loc 1 48 42 discriminator 1 view .LVU51
+ 203 004c 13F0100F 		tst	r3, #16
+ 204 0050 F9D0     		beq	.L15
+  49:Core/Src/main.c ****         }
+ 205              		.loc 1 49 20 view .LVU52
+ 206 0052 0120     		movs	r0, #1
+ 207 0054 E5E7     		b	.L14
+ 208              	.L17:
+  37:Core/Src/main.c ****     
+ 209              		.loc 1 37 13 view .LVU53
+ 210 0056 0020     		movs	r0, #0
+ 211 0058 E3E7     		b	.L14
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 6
+
+
+ 212              	.L21:
+ 213 005a 00BF     		.align	2
+ 214              	.L20:
+ 215 005c 00000240 		.word	1073872896
+ 216              		.cfi_endproc
+ 217              	.LFE132:
+ 219              		.section	.text.main,"ax",%progbits
+ 220              		.align	1
+ 221              		.global	main
+ 222              		.syntax unified
+ 223              		.thumb
+ 224              		.thumb_func
+ 226              	main:
+ 227              	.LFB137:
+  57:Core/Src/main.c **** 
+  58:Core/Src/main.c **** // LED控制函数 - 点亮指定端口的LED
+  59:Core/Src/main.c **** // 参数：port - GPIO端口指针，pin - 引脚编号
+  60:Core/Src/main.c **** // 原理：设置BSRR寄存器的置位位来点亮LED
+  61:Core/Src/main.c **** static inline void led_on(GPIO_TypeDef* port, uint8_t pin) {
+  62:Core/Src/main.c ****     port->BSRR = (1 << pin);  // 设置BSRR寄存器的对应位，将引脚输出高电平
+  63:Core/Src/main.c **** }
+  64:Core/Src/main.c **** 
+  65:Core/Src/main.c **** // LED控制函数 - 熄灭指定端口的LED
+  66:Core/Src/main.c **** // 参数：port - GPIO端口指针，pin - 引脚编号
+  67:Core/Src/main.c **** // 原理：设置BSRR寄存器的高16位复位位来熄灭LED
+  68:Core/Src/main.c **** static inline void led_off(GPIO_TypeDef* port, uint8_t pin) {
+  69:Core/Src/main.c ****     port->BSRR = (1 << (pin + 16));  // 设置BSRR寄存器的高16位对应位，将引脚输出�
+  70:Core/Src/main.c **** }
+  71:Core/Src/main.c **** 
+  72:Core/Src/main.c **** // PB0 LED控制函数 使用真正的直接内存访问点亮LED 使用硬编码地址直接操作
+  73:Core/Src/main.c **** static inline void pb0_led_on(void) {
+  74:Core/Src/main.c ****     // 获取PB0位设置/复位寄存器的内存地址（直接硬编码地址访问）
+  75:Core/Src/main.c ****     volatile uint32_t *pb0_bsrr = (volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET);
+  76:Core/Src/main.c ****     *pb0_bsrr = (1 << 0);  // 设置BS0位，点亮PB0连接的LED
+  77:Core/Src/main.c **** }
+  78:Core/Src/main.c **** // PB0 LED控制函数 - 使用真正的直接内存访问熄灭LED
+  79:Core/Src/main.c **** static inline void pb0_led_off(void) {
+  80:Core/Src/main.c ****     // 获取PB0位设置/复位寄存器的内存地址（直接硬编码地址访问）
+  81:Core/Src/main.c ****     volatile uint32_t *pb0_bsrr = (volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET);
+  82:Core/Src/main.c ****     *pb0_bsrr = (1 << (0 + 16));  // 设置BR0位，熄灭PB0连接的LED
+  83:Core/Src/main.c **** }
+  84:Core/Src/main.c **** // 主函数
+  85:Core/Src/main.c **** int main(void) {
+ 228              		.loc 1 85 16 is_stmt 1 view -0
+ 229              		.cfi_startproc
+ 230              		@ args = 0, pretend = 0, frame = 0
+ 231              		@ frame_needed = 0, uses_anonymous_args = 0
+ 232 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 233              	.LCFI2:
+ 234              		.cfi_def_cfa_offset 24
+ 235              		.cfi_offset 4, -24
+ 236              		.cfi_offset 5, -20
+ 237              		.cfi_offset 6, -16
+ 238              		.cfi_offset 7, -12
+ 239              		.cfi_offset 8, -8
+ 240              		.cfi_offset 14, -4
+  86:Core/Src/main.c ****     // 初始化所有GPIO引脚（配置输入输出模式、速度、上下拉等）
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 7
+
+
+  87:Core/Src/main.c ****     GPIO_Init_Memory();
+ 241              		.loc 1 87 5 view .LVU55
+ 242 0004 FFF7FEFF 		bl	GPIO_Init_Memory
+ 243              	.LVL10:
+  88:Core/Src/main.c ****     
+  89:Core/Src/main.c ****     // 上电时关闭所有LED，确保初始状态为熄灭
+  90:Core/Src/main.c ****     led_off(GPIOD, 4);    // 熄灭PD4连接的LED（LED1）
+ 244              		.loc 1 90 5 view .LVU56
+ 245              	.LBB27:
+ 246              	.LBI27:
+  68:Core/Src/main.c ****     port->BSRR = (1 << (pin + 16));  // 设置BSRR寄存器的高16位对应位，将引脚输出�
+ 247              		.loc 1 68 20 view .LVU57
+ 248              	.LBB28:
+  69:Core/Src/main.c **** }
+ 249              		.loc 1 69 5 view .LVU58
+  69:Core/Src/main.c **** }
+ 250              		.loc 1 69 16 is_stmt 0 view .LVU59
+ 251 0008 3D4B     		ldr	r3, .L36
+ 252 000a 4FF48012 		mov	r2, #1048576
+ 253 000e 9A61     		str	r2, [r3, #24]
+ 254              	.LVL11:
+  69:Core/Src/main.c **** }
+ 255              		.loc 1 69 16 view .LVU60
+ 256              	.LBE28:
+ 257              	.LBE27:
+  91:Core/Src/main.c ****     led_off(GPIOB, 14);   // 熄灭PB14连接的LED（LED2）
+ 258              		.loc 1 91 5 is_stmt 1 view .LVU61
+ 259              	.LBB29:
+ 260              	.LBI29:
+  68:Core/Src/main.c ****     port->BSRR = (1 << (pin + 16));  // 设置BSRR寄存器的高16位对应位，将引脚输出�
+ 261              		.loc 1 68 20 view .LVU62
+ 262              	.LBB30:
+  69:Core/Src/main.c **** }
+ 263              		.loc 1 69 5 view .LVU63
+  69:Core/Src/main.c **** }
+ 264              		.loc 1 69 16 is_stmt 0 view .LVU64
+ 265 0010 A3F50063 		sub	r3, r3, #2048
+ 266 0014 4FF08042 		mov	r2, #1073741824
+ 267 0018 9A61     		str	r2, [r3, #24]
+ 268              	.LVL12:
+  69:Core/Src/main.c **** }
+ 269              		.loc 1 69 16 view .LVU65
+ 270              	.LBE30:
+ 271              	.LBE29:
+  92:Core/Src/main.c ****     PB7_LED_OFF();        // 使用宏熄灭PB7连接的LED（LED3） 使用自定义宏
+ 272              		.loc 1 92 5 is_stmt 1 view .LVU66
+ 273 001a 4FF40002 		mov	r2, #8388608
+ 274 001e 9A61     		str	r2, [r3, #24]
+  93:Core/Src/main.c ****     pb0_led_off();        // 使用直接内存访问熄灭PB0连接的LED（LED4） 使用直接�
+ 275              		.loc 1 93 5 view .LVU67
+ 276              	.LBB31:
+ 277              	.LBI31:
+  79:Core/Src/main.c ****     // 获取PB0位设置/复位寄存器的内存地址（直接硬编码地址访问）
+ 278              		.loc 1 79 20 view .LVU68
+ 279              	.LBB32:
+  81:Core/Src/main.c ****     *pb0_bsrr = (1 << (0 + 16));  // 设置BR0位，熄灭PB0连接的LED
+ 280              		.loc 1 81 5 view .LVU69
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 8
+
+
+ 281              	.LVL13:
+  82:Core/Src/main.c **** }
+ 282              		.loc 1 82 5 view .LVU70
+  82:Core/Src/main.c **** }
+ 283              		.loc 1 82 15 is_stmt 0 view .LVU71
+ 284 0020 A3F58063 		sub	r3, r3, #1024
+ 285 0024 4FF48032 		mov	r2, #65536
+ 286 0028 C3F81824 		str	r2, [r3, #1048]
+ 287              	.LBE32:
+ 288              	.LBE31:
+  94:Core/Src/main.c ****     
+  95:Core/Src/main.c ****     // 初始化状态变量
+  96:Core/Src/main.c ****     uint8_t mode = 0;         // 工作模式：0=正常模式，1=PD4按键模式
+ 289              		.loc 1 96 5 is_stmt 1 view .LVU72
+ 290              	.LVL14:
+  97:Core/Src/main.c ****     uint8_t pb14_enabled = 1; // PB14 LED使能状态：1=参与跑马灯，0=不参与
+ 291              		.loc 1 97 5 view .LVU73
+  98:Core/Src/main.c ****     uint8_t pb7_enabled = 1;  // PB7 LED使能状态：1=参与跑马灯，0=不参与
+ 292              		.loc 1 98 5 view .LVU74
+  99:Core/Src/main.c ****     uint8_t pd4_enabled = 1;  // PD4 LED使能状态：1=参与跑马灯，0=不参与
+ 293              		.loc 1 99 5 view .LVU75
+ 294              		.loc 1 99 13 is_stmt 0 view .LVU76
+ 295 002c 4FF00108 		mov	r8, #1
+  98:Core/Src/main.c ****     uint8_t pb7_enabled = 1;  // PB7 LED使能状态：1=参与跑马灯，0=不参与
+ 296              		.loc 1 98 13 view .LVU77
+ 297 0030 4746     		mov	r7, r8
+  97:Core/Src/main.c ****     uint8_t pb14_enabled = 1; // PB14 LED使能状态：1=参与跑马灯，0=不参与
+ 298              		.loc 1 97 13 view .LVU78
+ 299 0032 4646     		mov	r6, r8
+  96:Core/Src/main.c ****     uint8_t pb14_enabled = 1; // PB14 LED使能状态：1=参与跑马灯，0=不参与
+ 300              		.loc 1 96 13 view .LVU79
+ 301 0034 0025     		movs	r5, #0
+ 302 0036 3BE0     		b	.L33
+ 303              	.LVL15:
+ 304              	.L24:
+ 100:Core/Src/main.c **** 
+ 101:Core/Src/main.c ****     // 主循环 - 程序持续运行
+ 102:Core/Src/main.c ****     while (1) {
+ 103:Core/Src/main.c ****         // 检测PC13按键（用户输入）
+ 104:Core/Src/main.c ****         if (check_pc13_button()) {
+ 105:Core/Src/main.c ****             if (mode == 0) {
+ 106:Core/Src/main.c ****                 // 正常模式下：PC13按键切换PB14 LED的使能状态
+ 107:Core/Src/main.c ****                 pb14_enabled = !pb14_enabled;  // 取反使能状态
+ 108:Core/Src/main.c ****             } else {
+ 109:Core/Src/main.c ****                 // PD4按键模式下：PC13按键切换PB7 LED的使能状态
+ 110:Core/Src/main.c ****                 pb7_enabled = !pb7_enabled;    // 取反使能状态
+ 305              		.loc 1 110 17 is_stmt 1 view .LVU80
+ 306              		.loc 1 110 31 is_stmt 0 view .LVU81
+ 307 0038 87F00107 		eor	r7, r7, #1
+ 308              	.LVL16:
+ 309              		.loc 1 110 31 view .LVU82
+ 310 003c 3FE0     		b	.L23
+ 311              	.L25:
+ 111:Core/Src/main.c ****             }
+ 112:Core/Src/main.c ****         }
+ 113:Core/Src/main.c ****         
+ 114:Core/Src/main.c ****         // 检测PD4按键（模式切换）
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 9
+
+
+ 115:Core/Src/main.c ****         if (check_pd4_button()) {
+ 116:Core/Src/main.c ****             mode = !mode;  // 切换工作模式（0↔1）
+ 117:Core/Src/main.c ****             if (mode == 1) {
+ 118:Core/Src/main.c ****                 // 进入PD4按键模式：PD4 LED不参与跑马灯
+ 119:Core/Src/main.c ****                 pd4_enabled = 0;   // 禁用PD4参与跑马灯
+ 120:Core/Src/main.c ****                 led_off(GPIOD, 4); // 立即熄灭PD4 LED
+ 121:Core/Src/main.c ****             } else {
+ 122:Core/Src/main.c ****                 // 返回正常模式：PD4 LED参与跑马灯
+ 123:Core/Src/main.c ****                 pd4_enabled = 1;   // 启用PD4参与跑马灯
+ 124:Core/Src/main.c ****             }
+ 125:Core/Src/main.c ****         }
+ 126:Core/Src/main.c ****         
+ 127:Core/Src/main.c ****         //跑马灯循环开始
+ 128:Core/Src/main.c ****         
+ 129:Core/Src/main.c ****         // 第一步：控制PD4 LED（LED1）根据使能状态决定是否点亮
+ 130:Core/Src/main.c ****         if (pd4_enabled) {
+ 312              		.loc 1 130 9 is_stmt 1 view .LVU83
+ 313              		.loc 1 130 12 is_stmt 0 view .LVU84
+ 314 003e B8F1000F 		cmp	r8, #0
+ 315 0042 49D0     		beq	.L27
+ 316              	.LVL17:
+ 317              	.L26:
+ 131:Core/Src/main.c ****             led_on(GPIOD, 4);  // 点亮PD4 LED
+ 318              		.loc 1 131 13 is_stmt 1 view .LVU85
+ 319              	.LBB33:
+ 320              	.LBI33:
+  61:Core/Src/main.c ****     port->BSRR = (1 << pin);  // 设置BSRR寄存器的对应位，将引脚输出高电平
+ 321              		.loc 1 61 20 view .LVU86
+ 322              	.LBB34:
+  62:Core/Src/main.c **** }
+ 323              		.loc 1 62 5 view .LVU87
+  62:Core/Src/main.c **** }
+ 324              		.loc 1 62 16 is_stmt 0 view .LVU88
+ 325 0044 2E4B     		ldr	r3, .L36
+ 326 0046 1022     		movs	r2, #16
+ 327 0048 9A61     		str	r2, [r3, #24]
+ 328              	.LVL18:
+ 329              	.L28:
+  62:Core/Src/main.c **** }
+ 330              		.loc 1 62 16 view .LVU89
+ 331              	.LBE34:
+ 332              	.LBE33:
+ 132:Core/Src/main.c ****         } else {
+ 133:Core/Src/main.c ****             led_off(GPIOD, 4); // 熄灭PD4 LED
+ 134:Core/Src/main.c ****         }
+ 135:Core/Src/main.c ****         delay_ms(300);  // 保持当前状态300毫秒
+ 333              		.loc 1 135 9 is_stmt 1 view .LVU90
+ 334 004a 4FF49670 		mov	r0, #300
+ 335 004e FFF7FEFF 		bl	delay_ms
+ 336              	.LVL19:
+ 136:Core/Src/main.c ****         
+ 137:Core/Src/main.c ****         // 第二步：控制PB14 LED（LED2）- 根据使能状态决定是否点亮
+ 138:Core/Src/main.c ****         if (pb14_enabled) {
+ 337              		.loc 1 138 9 view .LVU91
+ 338              		.loc 1 138 12 is_stmt 0 view .LVU92
+ 339 0052 002E     		cmp	r6, #0
+ 340 0054 49D0     		beq	.L29
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 10
+
+
+ 139:Core/Src/main.c ****             led_on(GPIOB, 14);  // 点亮PB14 LED
+ 341              		.loc 1 139 13 is_stmt 1 view .LVU93
+ 342              	.LVL20:
+ 343              	.LBB35:
+ 344              	.LBI35:
+  61:Core/Src/main.c ****     port->BSRR = (1 << pin);  // 设置BSRR寄存器的对应位，将引脚输出高电平
+ 345              		.loc 1 61 20 view .LVU94
+ 346              	.LBB36:
+  62:Core/Src/main.c **** }
+ 347              		.loc 1 62 5 view .LVU95
+  62:Core/Src/main.c **** }
+ 348              		.loc 1 62 16 is_stmt 0 view .LVU96
+ 349 0056 2B4B     		ldr	r3, .L36+4
+ 350 0058 4FF48042 		mov	r2, #16384
+ 351 005c 9A61     		str	r2, [r3, #24]
+ 352              	.LVL21:
+ 353              	.L30:
+  62:Core/Src/main.c **** }
+ 354              		.loc 1 62 16 view .LVU97
+ 355              	.LBE36:
+ 356              	.LBE35:
+ 140:Core/Src/main.c ****         } else {
+ 141:Core/Src/main.c ****             led_off(GPIOB, 14); // 熄灭PB14 LED
+ 142:Core/Src/main.c ****         }
+ 143:Core/Src/main.c ****         delay_ms(300);  // 保持当前状态300毫秒
+ 357              		.loc 1 143 9 is_stmt 1 view .LVU98
+ 358 005e 4FF49670 		mov	r0, #300
+ 359 0062 FFF7FEFF 		bl	delay_ms
+ 360              	.LVL22:
+ 144:Core/Src/main.c ****         
+ 145:Core/Src/main.c ****         // 第三步：控制PB7 LED（LED3）- 根据使能状态决定是否点亮
+ 146:Core/Src/main.c ****         // 符合任务要求：使用自定义宏控制PB7 LED
+ 147:Core/Src/main.c ****         if (pb7_enabled) {
+ 361              		.loc 1 147 9 view .LVU99
+ 362              		.loc 1 147 12 is_stmt 0 view .LVU100
+ 363 0066 002F     		cmp	r7, #0
+ 364 0068 44D0     		beq	.L31
+ 148:Core/Src/main.c ****             PB7_LED_ON();   // 使用宏点亮PB7 LED
+ 365              		.loc 1 148 13 is_stmt 1 view .LVU101
+ 366 006a 264B     		ldr	r3, .L36+4
+ 367 006c 8022     		movs	r2, #128
+ 368 006e 9A61     		str	r2, [r3, #24]
+ 369              	.L32:
+ 149:Core/Src/main.c ****         } else {
+ 150:Core/Src/main.c ****             PB7_LED_OFF();  // 使用宏熄灭PB7 LED
+ 151:Core/Src/main.c ****         }
+ 152:Core/Src/main.c ****         delay_ms(300);  // 保持当前状态300毫秒
+ 370              		.loc 1 152 9 view .LVU102
+ 371 0070 4FF49670 		mov	r0, #300
+ 372 0074 FFF7FEFF 		bl	delay_ms
+ 373              	.LVL23:
+ 153:Core/Src/main.c ****         
+ 154:Core/Src/main.c ****         // 第四步：控制PB0 LED（LED4）- 始终参与跑马灯
+ 155:Core/Src/main.c ****         // 符合任务要求：使用直接内存访问控制PB0 LED
+ 156:Core/Src/main.c ****         pb0_led_on();   // 使用直接内存访问点亮PB0 LED
+ 374              		.loc 1 156 9 view .LVU103
+ 375              	.LBB37:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 11
+
+
+ 376              	.LBI37:
+  73:Core/Src/main.c ****     // 获取PB0位设置/复位寄存器的内存地址（直接硬编码地址访问）
+ 377              		.loc 1 73 20 view .LVU104
+ 378              	.LBB38:
+  75:Core/Src/main.c ****     *pb0_bsrr = (1 << 0);  // 设置BS0位，点亮PB0连接的LED
+ 379              		.loc 1 75 5 view .LVU105
+  76:Core/Src/main.c **** }
+ 380              		.loc 1 76 5 view .LVU106
+  76:Core/Src/main.c **** }
+ 381              		.loc 1 76 15 is_stmt 0 view .LVU107
+ 382 0078 234C     		ldr	r4, .L36+8
+ 383 007a 0123     		movs	r3, #1
+ 384 007c C4F81834 		str	r3, [r4, #1048]
+ 385              	.LBE38:
+ 386              	.LBE37:
+ 157:Core/Src/main.c ****         delay_ms(300);  // 保持当前状态300毫秒
+ 387              		.loc 1 157 9 is_stmt 1 view .LVU108
+ 388 0080 4FF49670 		mov	r0, #300
+ 389 0084 FFF7FEFF 		bl	delay_ms
+ 390              	.LVL24:
+ 158:Core/Src/main.c ****         
+ 159:Core/Src/main.c ****         // 全部熄灭阶段：关闭所有LED，形成跑马灯效果
+ 160:Core/Src/main.c ****         led_off(GPIOD, 4);   // 熄灭PD4 LED
+ 391              		.loc 1 160 9 view .LVU109
+ 392              	.LBB39:
+ 393              	.LBI39:
+  68:Core/Src/main.c ****     port->BSRR = (1 << (pin + 16));  // 设置BSRR寄存器的高16位对应位，将引脚输出�
+ 394              		.loc 1 68 20 view .LVU110
+ 395              	.LBB40:
+  69:Core/Src/main.c **** }
+ 396              		.loc 1 69 5 view .LVU111
+  69:Core/Src/main.c **** }
+ 397              		.loc 1 69 16 is_stmt 0 view .LVU112
+ 398 0088 1D4B     		ldr	r3, .L36
+ 399 008a 4FF48012 		mov	r2, #1048576
+ 400 008e 9A61     		str	r2, [r3, #24]
+ 401              	.LVL25:
+  69:Core/Src/main.c **** }
+ 402              		.loc 1 69 16 view .LVU113
+ 403              	.LBE40:
+ 404              	.LBE39:
+ 161:Core/Src/main.c ****         led_off(GPIOB, 14);  // 熄灭PB14 LED
+ 405              		.loc 1 161 9 is_stmt 1 view .LVU114
+ 406              	.LBB41:
+ 407              	.LBI41:
+  68:Core/Src/main.c ****     port->BSRR = (1 << (pin + 16));  // 设置BSRR寄存器的高16位对应位，将引脚输出�
+ 408              		.loc 1 68 20 view .LVU115
+ 409              	.LBB42:
+  69:Core/Src/main.c **** }
+ 410              		.loc 1 69 5 view .LVU116
+  69:Core/Src/main.c **** }
+ 411              		.loc 1 69 16 is_stmt 0 view .LVU117
+ 412 0090 A3F50063 		sub	r3, r3, #2048
+ 413 0094 4FF08042 		mov	r2, #1073741824
+ 414 0098 9A61     		str	r2, [r3, #24]
+ 415              	.LVL26:
+  69:Core/Src/main.c **** }
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 12
+
+
+ 416              		.loc 1 69 16 view .LVU118
+ 417              	.LBE42:
+ 418              	.LBE41:
+ 162:Core/Src/main.c ****         PB7_LED_OFF();       // 使用宏熄灭PB7 LED
+ 419              		.loc 1 162 9 is_stmt 1 view .LVU119
+ 420 009a 4FF40002 		mov	r2, #8388608
+ 421 009e 9A61     		str	r2, [r3, #24]
+ 163:Core/Src/main.c ****         pb0_led_off();       // 使用直接内存访问熄灭PB0 LED
+ 422              		.loc 1 163 9 view .LVU120
+ 423              	.LBB43:
+ 424              	.LBI43:
+  79:Core/Src/main.c ****     // 获取PB0位设置/复位寄存器的内存地址（直接硬编码地址访问）
+ 425              		.loc 1 79 20 view .LVU121
+ 426              	.LBB44:
+  81:Core/Src/main.c ****     *pb0_bsrr = (1 << (0 + 16));  // 设置BR0位，熄灭PB0连接的LED
+ 427              		.loc 1 81 5 view .LVU122
+ 428              	.LVL27:
+  82:Core/Src/main.c **** }
+ 429              		.loc 1 82 5 view .LVU123
+  82:Core/Src/main.c **** }
+ 430              		.loc 1 82 15 is_stmt 0 view .LVU124
+ 431 00a0 4FF48033 		mov	r3, #65536
+ 432 00a4 C4F81834 		str	r3, [r4, #1048]
+ 433              	.LBE44:
+ 434              	.LBE43:
+ 164:Core/Src/main.c ****         delay_ms(300);  // 保持全部熄灭状态300毫秒
+ 435              		.loc 1 164 9 is_stmt 1 view .LVU125
+ 436 00a8 4FF49670 		mov	r0, #300
+ 437 00ac FFF7FEFF 		bl	delay_ms
+ 438              	.LVL28:
+ 102:Core/Src/main.c ****         // 检测PC13按键（用户输入）
+ 439              		.loc 1 102 11 view .LVU126
+ 440              	.L33:
+ 102:Core/Src/main.c ****         // 检测PC13按键（用户输入）
+ 441              		.loc 1 102 5 view .LVU127
+ 104:Core/Src/main.c ****             if (mode == 0) {
+ 442              		.loc 1 104 9 view .LVU128
+ 104:Core/Src/main.c ****             if (mode == 0) {
+ 443              		.loc 1 104 13 is_stmt 0 view .LVU129
+ 444 00b0 FFF7FEFF 		bl	check_pc13_button
+ 445              	.LVL29:
+ 104:Core/Src/main.c ****             if (mode == 0) {
+ 446              		.loc 1 104 12 discriminator 1 view .LVU130
+ 447 00b4 18B1     		cbz	r0, .L23
+ 105:Core/Src/main.c ****                 // 正常模式下：PC13按键切换PB14 LED的使能状态
+ 448              		.loc 1 105 13 is_stmt 1 view .LVU131
+ 105:Core/Src/main.c ****                 // 正常模式下：PC13按键切换PB14 LED的使能状态
+ 449              		.loc 1 105 16 is_stmt 0 view .LVU132
+ 450 00b6 002D     		cmp	r5, #0
+ 451 00b8 BED1     		bne	.L24
+ 107:Core/Src/main.c ****             } else {
+ 452              		.loc 1 107 17 is_stmt 1 view .LVU133
+ 107:Core/Src/main.c ****             } else {
+ 453              		.loc 1 107 32 is_stmt 0 view .LVU134
+ 454 00ba 86F00106 		eor	r6, r6, #1
+ 455              	.LVL30:
+ 456              	.L23:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 13
+
+
+ 115:Core/Src/main.c ****             mode = !mode;  // 切换工作模式（0↔1）
+ 457              		.loc 1 115 9 is_stmt 1 view .LVU135
+ 115:Core/Src/main.c ****             mode = !mode;  // 切换工作模式（0↔1）
+ 458              		.loc 1 115 13 is_stmt 0 view .LVU136
+ 459 00be FFF7FEFF 		bl	check_pd4_button
+ 460              	.LVL31:
+ 115:Core/Src/main.c ****             mode = !mode;  // 切换工作模式（0↔1）
+ 461              		.loc 1 115 12 discriminator 1 view .LVU137
+ 462 00c2 0028     		cmp	r0, #0
+ 463 00c4 BBD0     		beq	.L25
+ 116:Core/Src/main.c ****             if (mode == 1) {
+ 464              		.loc 1 116 13 is_stmt 1 view .LVU138
+ 116:Core/Src/main.c ****             if (mode == 1) {
+ 465              		.loc 1 116 20 is_stmt 0 view .LVU139
+ 466 00c6 85F00103 		eor	r3, r5, #1
+ 467              	.LVL32:
+ 117:Core/Src/main.c ****                 // 进入PD4按键模式：PD4 LED不参与跑马灯
+ 468              		.loc 1 117 13 is_stmt 1 view .LVU140
+ 117:Core/Src/main.c ****                 // 进入PD4按键模式：PD4 LED不参与跑马灯
+ 469              		.loc 1 117 16 is_stmt 0 view .LVU141
+ 470 00ca 55B9     		cbnz	r5, .L34
+ 119:Core/Src/main.c ****                 led_off(GPIOD, 4); // 立即熄灭PD4 LED
+ 471              		.loc 1 119 17 is_stmt 1 view .LVU142
+ 472              	.LVL33:
+ 120:Core/Src/main.c ****             } else {
+ 473              		.loc 1 120 17 view .LVU143
+ 474              	.LBB45:
+ 475              	.LBI45:
+  68:Core/Src/main.c ****     port->BSRR = (1 << (pin + 16));  // 设置BSRR寄存器的高16位对应位，将引脚输出�
+ 476              		.loc 1 68 20 view .LVU144
+ 477              	.LBB46:
+  69:Core/Src/main.c **** }
+ 478              		.loc 1 69 5 view .LVU145
+  69:Core/Src/main.c **** }
+ 479              		.loc 1 69 16 is_stmt 0 view .LVU146
+ 480 00cc 0C4A     		ldr	r2, .L36
+ 481 00ce 4FF48011 		mov	r1, #1048576
+ 482 00d2 9161     		str	r1, [r2, #24]
+ 483              	.LVL34:
+  69:Core/Src/main.c **** }
+ 484              		.loc 1 69 16 view .LVU147
+ 485              	.LBE46:
+ 486              	.LBE45:
+ 130:Core/Src/main.c ****             led_on(GPIOD, 4);  // 点亮PD4 LED
+ 487              		.loc 1 130 9 is_stmt 1 view .LVU148
+ 119:Core/Src/main.c ****                 led_off(GPIOD, 4); // 立即熄灭PD4 LED
+ 488              		.loc 1 119 29 is_stmt 0 view .LVU149
+ 489 00d4 A846     		mov	r8, r5
+ 116:Core/Src/main.c ****             if (mode == 1) {
+ 490              		.loc 1 116 18 view .LVU150
+ 491 00d6 1D46     		mov	r5, r3
+ 492              	.LVL35:
+ 493              	.L27:
+ 133:Core/Src/main.c ****         }
+ 494              		.loc 1 133 13 is_stmt 1 view .LVU151
+ 495              	.LBB47:
+ 496              	.LBI47:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 14
+
+
+  68:Core/Src/main.c ****     port->BSRR = (1 << (pin + 16));  // 设置BSRR寄存器的高16位对应位，将引脚输出�
+ 497              		.loc 1 68 20 view .LVU152
+ 498              	.LBB48:
+  69:Core/Src/main.c **** }
+ 499              		.loc 1 69 5 view .LVU153
+  69:Core/Src/main.c **** }
+ 500              		.loc 1 69 16 is_stmt 0 view .LVU154
+ 501 00d8 094B     		ldr	r3, .L36
+ 502 00da 4FF48012 		mov	r2, #1048576
+ 503 00de 9A61     		str	r2, [r3, #24]
+ 504              	.LVL36:
+  70:Core/Src/main.c **** 
+ 505              		.loc 1 70 1 view .LVU155
+ 506 00e0 B3E7     		b	.L28
+ 507              	.LVL37:
+ 508              	.L34:
+  70:Core/Src/main.c **** 
+ 509              		.loc 1 70 1 view .LVU156
+ 510              	.LBE48:
+ 511              	.LBE47:
+ 116:Core/Src/main.c ****             if (mode == 1) {
+ 512              		.loc 1 116 18 view .LVU157
+ 513 00e2 1D46     		mov	r5, r3
+ 123:Core/Src/main.c ****             }
+ 514              		.loc 1 123 29 view .LVU158
+ 515 00e4 4FF00108 		mov	r8, #1
+ 516              	.LVL38:
+ 123:Core/Src/main.c ****             }
+ 517              		.loc 1 123 29 view .LVU159
+ 518 00e8 ACE7     		b	.L26
+ 519              	.LVL39:
+ 520              	.L29:
+ 141:Core/Src/main.c ****         }
+ 521              		.loc 1 141 13 is_stmt 1 view .LVU160
+ 522              	.LBB49:
+ 523              	.LBI49:
+  68:Core/Src/main.c ****     port->BSRR = (1 << (pin + 16));  // 设置BSRR寄存器的高16位对应位，将引脚输出�
+ 524              		.loc 1 68 20 view .LVU161
+ 525              	.LBB50:
+  69:Core/Src/main.c **** }
+ 526              		.loc 1 69 5 view .LVU162
+  69:Core/Src/main.c **** }
+ 527              		.loc 1 69 16 is_stmt 0 view .LVU163
+ 528 00ea 064B     		ldr	r3, .L36+4
+ 529 00ec 4FF08042 		mov	r2, #1073741824
+ 530 00f0 9A61     		str	r2, [r3, #24]
+ 531              	.LVL40:
+  70:Core/Src/main.c **** 
+ 532              		.loc 1 70 1 view .LVU164
+ 533 00f2 B4E7     		b	.L30
+ 534              	.L31:
+ 535              	.LBE50:
+ 536              	.LBE49:
+ 150:Core/Src/main.c ****         }
+ 537              		.loc 1 150 13 is_stmt 1 view .LVU165
+ 538 00f4 034B     		ldr	r3, .L36+4
+ 539 00f6 4FF40002 		mov	r2, #8388608
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 15
+
+
+ 540 00fa 9A61     		str	r2, [r3, #24]
+ 541 00fc B8E7     		b	.L32
+ 542              	.L37:
+ 543 00fe 00BF     		.align	2
+ 544              	.L36:
+ 545 0100 000C0240 		.word	1073875968
+ 546 0104 00040240 		.word	1073873920
+ 547 0108 00000240 		.word	1073872896
+ 548              		.cfi_endproc
+ 549              	.LFE137:
+ 551              		.text
+ 552              	.Letext0:
+ 553              		.file 2 "D:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 554              		.file 3 "D:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 555              		.file 4 "Core/Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 556              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s 			page 16
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Lenovo\AppData\Local\Temp\ccBmLoEl.s:21     .text.main:00000000 $t
-C:\Users\Lenovo\AppData\Local\Temp\ccBmLoEl.s:27     .text.main:00000000 main
-C:\Users\Lenovo\AppData\Local\Temp\ccBmLoEl.s:81     .text.main:00000054 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:21     .text.delay_ms:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:26     .text.delay_ms:00000000 delay_ms
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:68     .text.check_pc13_button:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:73     .text.check_pc13_button:00000000 check_pc13_button
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:127    .text.check_pc13_button:00000038 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:132    .text.check_pd4_button:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:137    .text.check_pd4_button:00000000 check_pd4_button
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:215    .text.check_pd4_button:0000005c $d
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:220    .text.main:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:226    .text.main:00000000 main
+C:\Users\Lenovo\AppData\Local\Temp\ccuOI3vh.s:545    .text.main:00000100 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+GPIO_Init_Memory
