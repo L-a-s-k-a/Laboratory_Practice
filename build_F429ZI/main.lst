@@ -1,0 +1,199 @@
+ARM GAS  C:\Users\Jcc\AppData\Local\Temp\ccXlvkEd.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** #include "../Inc/init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** int main(void)
+   5:Core/Src/main.c **** {
+  29              		.loc 1 5 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   6:Core/Src/main.c ****     
+   7:Core/Src/main.c ****         GPIO_Init_Memory();
+  39              		.loc 1 7 9 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Init_Memory
+  41              	.LVL0:
+   8:Core/Src/main.c ****         GPIO_Init_CMSIS();
+  42              		.loc 1 8 9 view .LVU2
+  43 0006 FFF7FEFF 		bl	GPIO_Init_CMSIS
+  44              	.LVL1:
+  45 000a 18E0     		b	.L2
+  46              	.L3:
+   9:Core/Src/main.c ****    
+  10:Core/Src/main.c ****     while(1){
+  11:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS6);
+  12:Core/Src/main.c ****        
+ARM GAS  C:\Users\Jcc\AppData\Local\Temp\ccXlvkEd.s 			page 2
+
+
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c **** 
+  15:Core/Src/main.c ****         if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID13))
+  16:Core/Src/main.c ****         {
+  17:Core/Src/main.c ****             *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80; // Установка единицы в 7
+  18:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);//выключение красного сведо
+  19:Core/Src/main.c ****         }
+  20:Core/Src/main.c ****         else
+  21:Core/Src/main.c ****         {
+  22:Core/Src/main.c ****             *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000; // Установкануля в 7 - 
+  47              		.loc 1 22 13 view .LVU3
+  48 000c 204A     		ldr	r2, .L9
+  49 000e D2F81834 		ldr	r3, [r2, #1048]
+  50              		.loc 1 22 50 is_stmt 0 view .LVU4
+  51 0012 43F40003 		orr	r3, r3, #8388608
+  52 0016 C2F81834 		str	r3, [r2, #1048]
+  23:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);//включение красного сведод
+  53              		.loc 1 23 13 is_stmt 1 view .LVU5
+  54 001a 02F58062 		add	r2, r2, #1024
+  55 001e 9369     		ldr	r3, [r2, #24]
+  56 0020 43F48043 		orr	r3, r3, #16384
+  57 0024 9361     		str	r3, [r2, #24]
+  58 0026 22E0     		b	.L4
+  59              	.L8:
+  24:Core/Src/main.c ****         }
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c ****         if(READ_BIT(GPIOG->IDR, GPIO_IDR_ID3))
+  27:Core/Src/main.c ****         {
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c **** 
+  30:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+  60              		.loc 1 30 13 view .LVU6
+  61 0028 1A4A     		ldr	r2, .L9+4
+  62 002a 9369     		ldr	r3, [r2, #24]
+  63 002c 43F00103 		orr	r3, r3, #1
+  64 0030 9361     		str	r3, [r2, #24]
+  31:Core/Src/main.c ****             SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);
+  65              		.loc 1 31 13 view .LVU7
+  66 0032 02F50062 		add	r2, r2, #2048
+  67 0036 9369     		ldr	r3, [r2, #24]
+  68 0038 43F40003 		orr	r3, r3, #8388608
+  69 003c 9361     		str	r3, [r2, #24]
+  70              	.L2:
+  10:Core/Src/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS6);
+  71              		.loc 1 10 5 view .LVU8
+  11:Core/Src/main.c ****        
+  72              		.loc 1 11 9 view .LVU9
+  73 003e 154A     		ldr	r2, .L9+4
+  74 0040 9369     		ldr	r3, [r2, #24]
+  75 0042 43F04003 		orr	r3, r3, #64
+  76 0046 9361     		str	r3, [r2, #24]
+  15:Core/Src/main.c ****         {
+  77              		.loc 1 15 9 view .LVU10
+  15:Core/Src/main.c ****         {
+  78              		.loc 1 15 13 is_stmt 0 view .LVU11
+  79 0048 134B     		ldr	r3, .L9+8
+  80 004a 1B69     		ldr	r3, [r3, #16]
+ARM GAS  C:\Users\Jcc\AppData\Local\Temp\ccXlvkEd.s 			page 3
+
+
+  15:Core/Src/main.c ****         {
+  81              		.loc 1 15 12 view .LVU12
+  82 004c 13F4005F 		tst	r3, #8192
+  83 0050 DCD0     		beq	.L3
+  17:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);//выключение красного сведо
+  84              		.loc 1 17 13 is_stmt 1 view .LVU13
+  85 0052 A2F58062 		sub	r2, r2, #1024
+  86 0056 D2F81834 		ldr	r3, [r2, #1048]
+  17:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);//выключение красного сведо
+  87              		.loc 1 17 50 is_stmt 0 view .LVU14
+  88 005a 43F08003 		orr	r3, r3, #128
+  89 005e C2F81834 		str	r3, [r2, #1048]
+  18:Core/Src/main.c ****         }
+  90              		.loc 1 18 13 is_stmt 1 view .LVU15
+  91 0062 02F58062 		add	r2, r2, #1024
+  92 0066 9369     		ldr	r3, [r2, #24]
+  93 0068 43F08043 		orr	r3, r3, #1073741824
+  94 006c 9361     		str	r3, [r2, #24]
+  95              	.L4:
+  26:Core/Src/main.c ****         {
+  96              		.loc 1 26 9 view .LVU16
+  26:Core/Src/main.c ****         {
+  97              		.loc 1 26 12 is_stmt 0 view .LVU17
+  98 006e 0B4B     		ldr	r3, .L9+12
+  99 0070 1B69     		ldr	r3, [r3, #16]
+  26:Core/Src/main.c ****         {
+ 100              		.loc 1 26 11 view .LVU18
+ 101 0072 13F0080F 		tst	r3, #8
+ 102 0076 D7D1     		bne	.L8
+  32:Core/Src/main.c **** 
+  33:Core/Src/main.c ****         }
+  34:Core/Src/main.c ****         else {
+  35:Core/Src/main.c **** 
+  36:Core/Src/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+ 103              		.loc 1 36 13 is_stmt 1 view .LVU19
+ 104 0078 064A     		ldr	r2, .L9+4
+ 105 007a 9369     		ldr	r3, [r2, #24]
+ 106 007c 43F48033 		orr	r3, r3, #65536
+ 107 0080 9361     		str	r3, [r2, #24]
+  37:Core/Src/main.c ****             SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS7);
+ 108              		.loc 1 37 13 view .LVU20
+ 109 0082 02F50062 		add	r2, r2, #2048
+ 110 0086 9369     		ldr	r3, [r2, #24]
+ 111 0088 43F08003 		orr	r3, r3, #128
+ 112 008c 9361     		str	r3, [r2, #24]
+ 113 008e D6E7     		b	.L2
+ 114              	.L10:
+ 115              		.align	2
+ 116              	.L9:
+ 117 0090 00000240 		.word	1073872896
+ 118 0094 00040240 		.word	1073873920
+ 119 0098 00080240 		.word	1073874944
+ 120 009c 00180240 		.word	1073879040
+ 121              		.cfi_endproc
+ 122              	.LFE130:
+ 124              		.text
+ 125              	.Letext0:
+ARM GAS  C:\Users\Jcc\AppData\Local\Temp\ccXlvkEd.s 			page 4
+
+
+ 126              		.file 2 "D:/app/mcu/tool/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default
+ 127              		.file 3 "D:/app/mcu/tool/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 128              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 129              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\Jcc\AppData\Local\Temp\ccXlvkEd.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Jcc\AppData\Local\Temp\ccXlvkEd.s:21     .text.main:00000000 $t
+C:\Users\Jcc\AppData\Local\Temp\ccXlvkEd.s:27     .text.main:00000000 main
+C:\Users\Jcc\AppData\Local\Temp\ccXlvkEd.s:117    .text.main:00000090 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init_Memory
+GPIO_Init_CMSIS
