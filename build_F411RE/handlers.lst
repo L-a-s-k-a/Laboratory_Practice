@@ -1,0 +1,307 @@
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxLLSic.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/handlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/handlers.c **** #include "handlers.h"
+   2:Core/Src/handlers.c **** 
+   3:Core/Src/handlers.c **** void SysTick_Handler(void) 
+   4:Core/Src/handlers.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/handlers.c ****     tick_count++; // Увеличиваем счетчик каждую 1 мс
+  34              		.loc 1 5 5 view .LVU1
+  35              		.loc 1 5 15 is_stmt 0 view .LVU2
+  36 0000 024A     		ldr	r2, .L2
+  37 0002 1368     		ldr	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1360     		str	r3, [r2]
+   6:Core/Src/handlers.c **** }
+  40              		.loc 1 6 1 view .LVU3
+  41 0008 7047     		bx	lr
+  42              	.L3:
+  43 000a 00BF     		.align	2
+  44              	.L2:
+  45 000c 00000000 		.word	tick_count
+  46              		.cfi_endproc
+  47              	.LFE130:
+  49              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+  50              		.align	1
+  51              		.global	EXTI9_5_IRQHandler
+  52              		.syntax unified
+  53              		.thumb
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxLLSic.s 			page 2
+
+
+  54              		.thumb_func
+  56              	EXTI9_5_IRQHandler:
+  57              	.LFB131:
+   7:Core/Src/handlers.c **** 
+   8:Core/Src/handlers.c **** void EXTI9_5_IRQHandler(void){
+  58              		.loc 1 8 30 is_stmt 1 view -0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+   9:Core/Src/handlers.c ****  uint32_t now = tick_count; 
+  63              		.loc 1 9 2 view .LVU5
+  64              		.loc 1 9 11 is_stmt 0 view .LVU6
+  65 0000 234B     		ldr	r3, .L12
+  66 0002 1B68     		ldr	r3, [r3]
+  67              	.LVL0:
+  10:Core/Src/handlers.c ****   if (EXTI->PR & EXTI_PR_PR8) {
+  68              		.loc 1 10 3 is_stmt 1 view .LVU7
+  69              		.loc 1 10 11 is_stmt 0 view .LVU8
+  70 0004 234A     		ldr	r2, .L12+4
+  71 0006 5269     		ldr	r2, [r2, #20]
+  72              		.loc 1 10 6 view .LVU9
+  73 0008 12F4807F 		tst	r2, #256
+  74 000c 0BD0     		beq	.L5
+  11:Core/Src/handlers.c ****         EXTI->PR = EXTI_PR_PR8;
+  75              		.loc 1 11 9 is_stmt 1 view .LVU10
+  76              		.loc 1 11 18 is_stmt 0 view .LVU11
+  77 000e 214A     		ldr	r2, .L12+4
+  78 0010 4FF48071 		mov	r1, #256
+  79 0014 5161     		str	r1, [r2, #20]
+  12:Core/Src/handlers.c **** 
+  13:Core/Src/handlers.c ****         // Если кнопка НАЖАТА (уровень = 0)
+  14:Core/Src/handlers.c ****         if (!(GPIOB->IDR & GPIO_IDR_ID8)) {
+  80              		.loc 1 14 9 is_stmt 1 view .LVU12
+  81              		.loc 1 14 20 is_stmt 0 view .LVU13
+  82 0016 02F54842 		add	r2, r2, #51200
+  83 001a 1269     		ldr	r2, [r2, #16]
+  84              		.loc 1 14 12 view .LVU14
+  85 001c 12F4807F 		tst	r2, #256
+  86 0020 13D1     		bne	.L6
+  15:Core/Src/handlers.c ****             // Запоминаем время только один раз
+  16:Core/Src/handlers.c ****             btn8_press_time = now;
+  87              		.loc 1 16 13 is_stmt 1 view .LVU15
+  88              		.loc 1 16 29 is_stmt 0 view .LVU16
+  89 0022 1D4A     		ldr	r2, .L12+8
+  90 0024 1360     		str	r3, [r2]
+  91              	.L5:
+  17:Core/Src/handlers.c ****         }
+  18:Core/Src/handlers.c ****         else { 
+  19:Core/Src/handlers.c ****             // Кнопка отпущена
+  20:Core/Src/handlers.c ****             uint32_t hold = now - btn8_press_time;
+  21:Core/Src/handlers.c ****             if ((now - btn8_press_time) >= 5) {   
+  22:Core/Src/handlers.c ****             if (hold >= 2000) {
+  23:Core/Src/handlers.c ****                 btn8_hold = 1;
+  24:Core/Src/handlers.c ****             } else if (hold >= 2) {
+  25:Core/Src/handlers.c ****                 btn8_pressed = 1;
+  26:Core/Src/handlers.c ****             }
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxLLSic.s 			page 3
+
+
+  27:Core/Src/handlers.c ****         }
+  28:Core/Src/handlers.c ****             // сброс
+  29:Core/Src/handlers.c ****             btn8_press_time = 0;
+  30:Core/Src/handlers.c ****         }
+  31:Core/Src/handlers.c ****     }
+  32:Core/Src/handlers.c **** 
+  33:Core/Src/handlers.c ****       if (EXTI->PR & EXTI_PR_PR9) {
+  92              		.loc 1 33 7 is_stmt 1 view .LVU17
+  93              		.loc 1 33 15 is_stmt 0 view .LVU18
+  94 0026 1B4A     		ldr	r2, .L12+4
+  95 0028 5269     		ldr	r2, [r2, #20]
+  96              		.loc 1 33 10 view .LVU19
+  97 002a 12F4007F 		tst	r2, #512
+  98 002e 2ED0     		beq	.L4
+  34:Core/Src/handlers.c ****         EXTI->PR = EXTI_PR_PR9;
+  99              		.loc 1 34 9 is_stmt 1 view .LVU20
+ 100              		.loc 1 34 18 is_stmt 0 view .LVU21
+ 101 0030 184A     		ldr	r2, .L12+4
+ 102 0032 4FF40071 		mov	r1, #512
+ 103 0036 5161     		str	r1, [r2, #20]
+  35:Core/Src/handlers.c **** 
+  36:Core/Src/handlers.c ****         // Если кнопка нажата
+  37:Core/Src/handlers.c ****         if (!(GPIOB->IDR & GPIO_IDR_ID9)) {
+ 104              		.loc 1 37 9 is_stmt 1 view .LVU22
+ 105              		.loc 1 37 20 is_stmt 0 view .LVU23
+ 106 0038 02F54842 		add	r2, r2, #51200
+ 107 003c 1269     		ldr	r2, [r2, #16]
+ 108              		.loc 1 37 12 view .LVU24
+ 109 003e 12F4007F 		tst	r2, #512
+ 110 0042 19D1     		bne	.L10
+  38:Core/Src/handlers.c ****             btn9_press_time = now;
+ 111              		.loc 1 38 13 is_stmt 1 view .LVU25
+ 112              		.loc 1 38 29 is_stmt 0 view .LVU26
+ 113 0044 154A     		ldr	r2, .L12+12
+ 114 0046 1360     		str	r3, [r2]
+ 115 0048 7047     		bx	lr
+ 116              	.L6:
+ 117              	.LBB2:
+  20:Core/Src/handlers.c ****             if ((now - btn8_press_time) >= 5) {   
+ 118              		.loc 1 20 13 is_stmt 1 view .LVU27
+  20:Core/Src/handlers.c ****             if ((now - btn8_press_time) >= 5) {   
+ 119              		.loc 1 20 33 is_stmt 0 view .LVU28
+ 120 004a 1348     		ldr	r0, .L12+8
+ 121 004c 0168     		ldr	r1, [r0]
+  20:Core/Src/handlers.c ****             if ((now - btn8_press_time) >= 5) {   
+ 122              		.loc 1 20 22 view .LVU29
+ 123 004e 591A     		subs	r1, r3, r1
+ 124              	.LVL1:
+  21:Core/Src/handlers.c ****             if (hold >= 2000) {
+ 125              		.loc 1 21 13 is_stmt 1 view .LVU30
+  21:Core/Src/handlers.c ****             if (hold >= 2000) {
+ 126              		.loc 1 21 22 is_stmt 0 view .LVU31
+ 127 0050 0268     		ldr	r2, [r0]
+ 128 0052 9A1A     		subs	r2, r3, r2
+  21:Core/Src/handlers.c ****             if (hold >= 2000) {
+ 129              		.loc 1 21 16 view .LVU32
+ 130 0054 042A     		cmp	r2, #4
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxLLSic.s 			page 4
+
+
+ 131 0056 05D9     		bls	.L7
+  22:Core/Src/handlers.c ****                 btn8_hold = 1;
+ 132              		.loc 1 22 13 is_stmt 1 view .LVU33
+  22:Core/Src/handlers.c ****                 btn8_hold = 1;
+ 133              		.loc 1 22 16 is_stmt 0 view .LVU34
+ 134 0058 B1F5FA6F 		cmp	r1, #2000
+ 135 005c 06D3     		bcc	.L8
+  23:Core/Src/handlers.c ****             } else if (hold >= 2) {
+ 136              		.loc 1 23 17 is_stmt 1 view .LVU35
+  23:Core/Src/handlers.c ****             } else if (hold >= 2) {
+ 137              		.loc 1 23 27 is_stmt 0 view .LVU36
+ 138 005e 104A     		ldr	r2, .L12+16
+ 139 0060 0121     		movs	r1, #1
+ 140              	.LVL2:
+  23:Core/Src/handlers.c ****             } else if (hold >= 2) {
+ 141              		.loc 1 23 27 view .LVU37
+ 142 0062 1170     		strb	r1, [r2]
+ 143              	.L7:
+  29:Core/Src/handlers.c ****         }
+ 144              		.loc 1 29 13 is_stmt 1 view .LVU38
+  29:Core/Src/handlers.c ****         }
+ 145              		.loc 1 29 29 is_stmt 0 view .LVU39
+ 146 0064 0C4A     		ldr	r2, .L12+8
+ 147 0066 0021     		movs	r1, #0
+ 148 0068 1160     		str	r1, [r2]
+ 149 006a DCE7     		b	.L5
+ 150              	.LVL3:
+ 151              	.L8:
+  24:Core/Src/handlers.c ****                 btn8_pressed = 1;
+ 152              		.loc 1 24 20 is_stmt 1 view .LVU40
+  24:Core/Src/handlers.c ****                 btn8_pressed = 1;
+ 153              		.loc 1 24 23 is_stmt 0 view .LVU41
+ 154 006c 0129     		cmp	r1, #1
+ 155 006e F9D9     		bls	.L7
+  25:Core/Src/handlers.c ****             }
+ 156              		.loc 1 25 17 is_stmt 1 view .LVU42
+  25:Core/Src/handlers.c ****             }
+ 157              		.loc 1 25 30 is_stmt 0 view .LVU43
+ 158 0070 0C4A     		ldr	r2, .L12+20
+ 159 0072 0121     		movs	r1, #1
+ 160              	.LVL4:
+  25:Core/Src/handlers.c ****             }
+ 161              		.loc 1 25 30 view .LVU44
+ 162 0074 1170     		strb	r1, [r2]
+ 163 0076 F5E7     		b	.L7
+ 164              	.LVL5:
+ 165              	.L10:
+  25:Core/Src/handlers.c ****             }
+ 166              		.loc 1 25 30 view .LVU45
+ 167              	.LBE2:
+  39:Core/Src/handlers.c ****         }
+  40:Core/Src/handlers.c ****         else {
+  41:Core/Src/handlers.c ****             // Кнопка отпущено
+  42:Core/Src/handlers.c ****             if ((now - btn9_press_time) >= 5) {
+ 168              		.loc 1 42 13 is_stmt 1 view .LVU46
+ 169              		.loc 1 42 22 is_stmt 0 view .LVU47
+ 170 0078 084A     		ldr	r2, .L12+12
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxLLSic.s 			page 5
+
+
+ 171 007a 1268     		ldr	r2, [r2]
+ 172 007c 9B1A     		subs	r3, r3, r2
+ 173              	.LVL6:
+ 174              		.loc 1 42 16 view .LVU48
+ 175 007e 042B     		cmp	r3, #4
+ 176 0080 02D9     		bls	.L11
+  43:Core/Src/handlers.c ****                 btn9_pressed = 1;
+ 177              		.loc 1 43 17 is_stmt 1 view .LVU49
+ 178              		.loc 1 43 30 is_stmt 0 view .LVU50
+ 179 0082 094B     		ldr	r3, .L12+24
+ 180 0084 0122     		movs	r2, #1
+ 181 0086 1A70     		strb	r2, [r3]
+ 182              	.L11:
+  44:Core/Src/handlers.c ****             }
+  45:Core/Src/handlers.c **** 
+  46:Core/Src/handlers.c ****             btn9_press_time = 0;
+ 183              		.loc 1 46 13 is_stmt 1 view .LVU51
+ 184              		.loc 1 46 29 is_stmt 0 view .LVU52
+ 185 0088 044B     		ldr	r3, .L12+12
+ 186 008a 0022     		movs	r2, #0
+ 187 008c 1A60     		str	r2, [r3]
+ 188              	.L4:
+  47:Core/Src/handlers.c ****         }
+  48:Core/Src/handlers.c ****     }
+  49:Core/Src/handlers.c **** }...
+ 189              		.loc 1 49 1 view .LVU53
+ 190 008e 7047     		bx	lr
+ 191              	.L13:
+ 192              		.align	2
+ 193              	.L12:
+ 194 0090 00000000 		.word	tick_count
+ 195 0094 003C0140 		.word	1073822720
+ 196 0098 00000000 		.word	btn8_press_time
+ 197 009c 00000000 		.word	btn9_press_time
+ 198 00a0 00000000 		.word	btn8_hold
+ 199 00a4 00000000 		.word	btn8_pressed
+ 200 00a8 00000000 		.word	btn9_pressed
+ 201              		.cfi_endproc
+ 202              	.LFE131:
+ 204              		.text
+ 205              	.Letext0:
+ 206              		.file 2 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 207              		.file 3 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 208              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 209              		.file 5 "Core/Inc/handlers.h"
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxLLSic.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 handlers.c
+C:\Users\Life\AppData\Local\Temp\ccxLLSic.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccxLLSic.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Life\AppData\Local\Temp\ccxLLSic.s:45     .text.SysTick_Handler:0000000c $d
+C:\Users\Life\AppData\Local\Temp\ccxLLSic.s:50     .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccxLLSic.s:56     .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\Life\AppData\Local\Temp\ccxLLSic.s:194    .text.EXTI9_5_IRQHandler:00000090 $d
+
+UNDEFINED SYMBOLS
+tick_count
+btn8_press_time
+btn9_press_time
+btn8_hold
+btn8_pressed
+btn9_pressed

@@ -1,0 +1,786 @@
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"task.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/task.c"
+  20              		.section	.text.task1,"ax",%progbits
+  21              		.align	1
+  22              		.global	task1
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	task1:
+  28              	.LFB130:
+   1:Core/Src/task.c **** #include "task.h"
+   2:Core/Src/task.c **** #include "handlers.h"
+   3:Core/Src/task.c **** 
+   4:Core/Src/task.c **** void task1(void){
+  29              		.loc 1 4 17 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/task.c ****     if(btn9_pressed){
+  34              		.loc 1 5 5 view .LVU1
+  35              		.loc 1 5 8 is_stmt 0 view .LVU2
+  36 0000 2A4B     		ldr	r3, .L5
+  37 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  38              		.loc 1 5 7 view .LVU3
+  39 0004 5BB3     		cbz	r3, .L2
+   6:Core/Src/task.c ****         counter1 = (counter1 + 1) % 7;
+  40              		.loc 1 6 9 is_stmt 1 view .LVU4
+  41              		.loc 1 6 30 is_stmt 0 view .LVU5
+  42 0006 2A49     		ldr	r1, .L5+4
+  43 0008 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+  44 000a 0132     		adds	r2, r2, #1
+  45              		.loc 1 6 35 view .LVU6
+  46 000c 294B     		ldr	r3, .L5+8
+  47 000e 83FB0203 		smull	r0, r3, r3, r2
+  48 0012 1344     		add	r3, r3, r2
+  49 0014 9B10     		asrs	r3, r3, #2
+  50 0016 C3EBC303 		rsb	r3, r3, r3, lsl #3
+  51 001a D31A     		subs	r3, r2, r3
+  52              		.loc 1 6 18 view .LVU7
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 2
+
+
+  53 001c DBB2     		uxtb	r3, r3
+  54 001e 0B70     		strb	r3, [r1]
+   7:Core/Src/task.c ****         SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR3);
+  55              		.loc 1 7 9 is_stmt 1 view .LVU8
+  56 0020 254B     		ldr	r3, .L5+12
+  57 0022 9A69     		ldr	r2, [r3, #24]
+  58 0024 42F40022 		orr	r2, r2, #524288
+  59 0028 9A61     		str	r2, [r3, #24]
+   8:Core/Src/task.c ****         SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR10);
+  60              		.loc 1 8 9 view .LVU9
+  61 002a 9A69     		ldr	r2, [r3, #24]
+  62 002c 42F08062 		orr	r2, r2, #67108864
+  63 0030 9A61     		str	r2, [r3, #24]
+   9:Core/Src/task.c ****         SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR11);
+  64              		.loc 1 9 9 view .LVU10
+  65 0032 9A69     		ldr	r2, [r3, #24]
+  66 0034 42F00062 		orr	r2, r2, #134217728
+  67 0038 9A61     		str	r2, [r3, #24]
+  10:Core/Src/task.c ****         SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR12);
+  68              		.loc 1 10 9 view .LVU11
+  69 003a 9A69     		ldr	r2, [r3, #24]
+  70 003c 42F08052 		orr	r2, r2, #268435456
+  71 0040 9A61     		str	r2, [r3, #24]
+  11:Core/Src/task.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  72              		.loc 1 11 9 view .LVU12
+  73 0042 1E4A     		ldr	r2, .L5+16
+  74 0044 9369     		ldr	r3, [r2, #24]
+  75 0046 43F40003 		orr	r3, r3, #8388608
+  76 004a 9361     		str	r3, [r2, #24]
+  12:Core/Src/task.c ****         SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR2);
+  77              		.loc 1 12 9 view .LVU13
+  78 004c 02F50062 		add	r2, r2, #2048
+  79 0050 9369     		ldr	r3, [r2, #24]
+  80 0052 43F48023 		orr	r3, r3, #262144
+  81 0056 9361     		str	r3, [r2, #24]
+  13:Core/Src/task.c ****         btn9_pressed=0;
+  82              		.loc 1 13 9 view .LVU14
+  83              		.loc 1 13 21 is_stmt 0 view .LVU15
+  84 0058 144B     		ldr	r3, .L5
+  85 005a 0022     		movs	r2, #0
+  86 005c 1A70     		strb	r2, [r3]
+  87              	.L2:
+  14:Core/Src/task.c ****     }
+  15:Core/Src/task.c ****     if(btn8_pressed){
+  88              		.loc 1 15 5 is_stmt 1 view .LVU16
+  89              		.loc 1 15 8 is_stmt 0 view .LVU17
+  90 005e 184B     		ldr	r3, .L5+20
+  91 0060 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  92              		.loc 1 15 7 view .LVU18
+  93 0062 B3B1     		cbz	r3, .L3
+  16:Core/Src/task.c ****              led_periods[counter1] = (led_periods[counter1] + 1) % 4;
+  94              		.loc 1 16 14 is_stmt 1 view .LVU19
+  95              		.loc 1 16 50 is_stmt 0 view .LVU20
+  96 0064 1248     		ldr	r0, .L5+4
+  97 0066 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+  98 0068 DBB2     		uxtb	r3, r3
+  99 006a 1649     		ldr	r1, .L5+24
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 3
+
+
+ 100 006c 31F81330 		ldrh	r3, [r1, r3, lsl #1]
+ 101 0070 9BB2     		uxth	r3, r3
+ 102              		.loc 1 16 61 view .LVU21
+ 103 0072 0133     		adds	r3, r3, #1
+ 104              		.loc 1 16 66 view .LVU22
+ 105 0074 5A42     		rsbs	r2, r3, #0
+ 106 0076 03F00303 		and	r3, r3, #3
+ 107 007a 02F00302 		and	r2, r2, #3
+ 108 007e 58BF     		it	pl
+ 109 0080 5342     		rsbpl	r3, r2, #0
+ 110              		.loc 1 16 25 view .LVU23
+ 111 0082 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+ 112 0084 D2B2     		uxtb	r2, r2
+ 113              		.loc 1 16 36 view .LVU24
+ 114 0086 9BB2     		uxth	r3, r3
+ 115 0088 21F81230 		strh	r3, [r1, r2, lsl #1]	@ movhi
+  17:Core/Src/task.c ****         btn8_pressed = 0;   
+ 116              		.loc 1 17 9 is_stmt 1 view .LVU25
+ 117              		.loc 1 17 22 is_stmt 0 view .LVU26
+ 118 008c 0C4B     		ldr	r3, .L5+20
+ 119 008e 0022     		movs	r2, #0
+ 120 0090 1A70     		strb	r2, [r3]
+ 121              	.L3:
+  18:Core/Src/task.c ****     }
+  19:Core/Src/task.c ****     if(btn8_hold){
+ 122              		.loc 1 19 5 is_stmt 1 view .LVU27
+ 123              		.loc 1 19 8 is_stmt 0 view .LVU28
+ 124 0092 0D4B     		ldr	r3, .L5+28
+ 125 0094 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 126              		.loc 1 19 7 view .LVU29
+ 127 0096 43B1     		cbz	r3, .L1
+  20:Core/Src/task.c ****         // Каждое удержание меняет режим работы
+  21:Core/Src/task.c ****         operation_mode = !operation_mode; // Инвертируем режим 
+ 128              		.loc 1 21 9 is_stmt 1 view .LVU30
+ 129              		.loc 1 21 26 is_stmt 0 view .LVU31
+ 130 0098 0C4A     		ldr	r2, .L5+32
+ 131 009a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 132 009c B3FA83F3 		clz	r3, r3
+ 133 00a0 5B09     		lsrs	r3, r3, #5
+ 134              		.loc 1 21 24 view .LVU32
+ 135 00a2 1370     		strb	r3, [r2]
+  22:Core/Src/task.c ****         btn8_hold = 0; // Сбрасываем флаг удержания
+ 136              		.loc 1 22 9 is_stmt 1 view .LVU33
+ 137              		.loc 1 22 19 is_stmt 0 view .LVU34
+ 138 00a4 084B     		ldr	r3, .L5+28
+ 139 00a6 0022     		movs	r2, #0
+ 140 00a8 1A70     		strb	r2, [r3]
+ 141              	.L1:
+  23:Core/Src/task.c ****     }    
+  24:Core/Src/task.c **** }
+ 142              		.loc 1 24 1 view .LVU35
+ 143 00aa 7047     		bx	lr
+ 144              	.L6:
+ 145              		.align	2
+ 146              	.L5:
+ 147 00ac 00000000 		.word	btn9_pressed
+ 148 00b0 00000000 		.word	counter1
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 4
+
+
+ 149 00b4 93244992 		.word	-1840700269
+ 150 00b8 00080240 		.word	1073874944
+ 151 00bc 00040240 		.word	1073873920
+ 152 00c0 00000000 		.word	btn8_pressed
+ 153 00c4 00000000 		.word	led_periods
+ 154 00c8 00000000 		.word	btn8_hold
+ 155 00cc 00000000 		.word	operation_mode
+ 156              		.cfi_endproc
+ 157              	.LFE130:
+ 159              		.section	.text.task2,"ax",%progbits
+ 160              		.align	1
+ 161              		.global	task2
+ 162              		.syntax unified
+ 163              		.thumb
+ 164              		.thumb_func
+ 166              	task2:
+ 167              	.LFB131:
+  25:Core/Src/task.c **** 
+  26:Core/Src/task.c **** void task2(void){
+ 168              		.loc 1 26 17 is_stmt 1 view -0
+ 169              		.cfi_startproc
+ 170              		@ args = 0, pretend = 0, frame = 0
+ 171              		@ frame_needed = 0, uses_anonymous_args = 0
+ 172              		@ link register save eliminated.
+  27:Core/Src/task.c ****     if(counter1 == 0) return;
+ 173              		.loc 1 27 5 view .LVU37
+ 174              		.loc 1 27 17 is_stmt 0 view .LVU38
+ 175 0000 884B     		ldr	r3, .L46
+ 176 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 177              		.loc 1 27 7 view .LVU39
+ 178 0004 002B     		cmp	r3, #0
+ 179 0006 00F03081 		beq	.L7
+  28:Core/Src/task.c **** 
+  29:Core/Src/task.c ****     // Берем частоту для текущего светодиода
+  30:Core/Src/task.c ****     uint8_t freq = led_periods[counter1];
+ 180              		.loc 1 30 5 is_stmt 1 view .LVU40
+ 181              		.loc 1 30 31 is_stmt 0 view .LVU41
+ 182 000a 864B     		ldr	r3, .L46
+ 183 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 184 000e DBB2     		uxtb	r3, r3
+ 185 0010 854A     		ldr	r2, .L46+4
+ 186 0012 32F81330 		ldrh	r3, [r2, r3, lsl #1]
+ 187              		.loc 1 30 13 view .LVU42
+ 188 0016 DBB2     		uxtb	r3, r3
+ 189              	.LVL0:
+  31:Core/Src/task.c ****     
+  32:Core/Src/task.c ****     // Определяем период мигания
+  33:Core/Src/task.c ****     uint16_t period = 0;
+ 190              		.loc 1 33 5 is_stmt 1 view .LVU43
+  34:Core/Src/task.c ****     // Определяем период мигания только для режима мерца
+  35:Core/Src/task.c ****     if(operation_mode == 0) { // Режим мерцания
+ 191              		.loc 1 35 5 view .LVU44
+ 192              		.loc 1 35 23 is_stmt 0 view .LVU45
+ 193 0018 844A     		ldr	r2, .L46+8
+ 194 001a 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 195              		.loc 1 35 7 view .LVU46
+ 196 001c 42B9     		cbnz	r2, .L39
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 5
+
+
+  36:Core/Src/task.c ****         switch(freq) {
+ 197              		.loc 1 36 9 is_stmt 1 view .LVU47
+ 198 001e 022B     		cmp	r3, #2
+ 199 0020 37D0     		beq	.L40
+ 200 0022 032B     		cmp	r3, #3
+ 201 0024 38D0     		beq	.L41
+ 202 0026 012B     		cmp	r3, #1
+ 203 0028 39D1     		bne	.L42
+  37:Core/Src/task.c ****             case 0: period = 0; break;      // Выкл
+  38:Core/Src/task.c ****             case 1: period = 2500; break;   //  0,2 Гц
+ 204              		.loc 1 38 28 is_stmt 0 view .LVU48
+ 205 002a 40F6C412 		movw	r2, #2500
+ 206 002e 00E0     		b	.L9
+ 207              	.L39:
+  39:Core/Src/task.c ****             case 2: period = 625; break;    // 0,8 Гц
+  40:Core/Src/task.c ****             case 3: period = 385; break;    // 1,3 Гц
+  41:Core/Src/task.c ****         }
+  42:Core/Src/task.c ****     } else { // Режим свечения - не мигаем
+  43:Core/Src/task.c ****         period = 0;
+ 208              		.loc 1 43 16 view .LVU49
+ 209 0030 0022     		movs	r2, #0
+ 210              	.L9:
+ 211              	.LVL1:
+  44:Core/Src/task.c ****     }
+  45:Core/Src/task.c **** 
+  46:Core/Src/task.c ****     if(operation_mode == 0) { 
+ 212              		.loc 1 46 5 is_stmt 1 view .LVU50
+ 213              		.loc 1 46 23 is_stmt 0 view .LVU51
+ 214 0032 7E4B     		ldr	r3, .L46+8
+ 215              	.LVL2:
+ 216              		.loc 1 46 23 view .LVU52
+ 217 0034 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 218              		.loc 1 46 7 view .LVU53
+ 219 0036 002B     		cmp	r3, #0
+ 220 0038 40F0D280 		bne	.L10
+  47:Core/Src/task.c ****     // Мигание
+  48:Core/Src/task.c ****     if(period > 0) {
+ 221              		.loc 1 48 5 is_stmt 1 view .LVU54
+ 222              		.loc 1 48 7 is_stmt 0 view .LVU55
+ 223 003c 002A     		cmp	r2, #0
+ 224 003e 00F09C80 		beq	.L11
+  49:Core/Src/task.c ****         if(tick_count - last_blink_time[counter1] >= period) {
+ 225              		.loc 1 49 9 is_stmt 1 view .LVU56
+ 226              		.loc 1 49 23 is_stmt 0 view .LVU57
+ 227 0042 7B4B     		ldr	r3, .L46+12
+ 228 0044 1B68     		ldr	r3, [r3]
+ 229              		.loc 1 49 40 view .LVU58
+ 230 0046 7749     		ldr	r1, .L46
+ 231 0048 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+ 232 004a C9B2     		uxtb	r1, r1
+ 233 004c 7948     		ldr	r0, .L46+16
+ 234 004e 50F82110 		ldr	r1, [r0, r1, lsl #2]
+ 235              		.loc 1 49 23 view .LVU59
+ 236 0052 5B1A     		subs	r3, r3, r1
+ 237              		.loc 1 49 11 view .LVU60
+ 238 0054 9342     		cmp	r3, r2
+ 239 0056 C0F00881 		bcc	.L7
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 6
+
+
+  50:Core/Src/task.c ****             last_blink_time[counter1] = tick_count;
+ 240              		.loc 1 50 13 is_stmt 1 view .LVU61
+ 241              		.loc 1 50 28 is_stmt 0 view .LVU62
+ 242 005a 724A     		ldr	r2, .L46
+ 243              	.LVL3:
+ 244              		.loc 1 50 28 view .LVU63
+ 245 005c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 246 005e DBB2     		uxtb	r3, r3
+ 247              		.loc 1 50 39 view .LVU64
+ 248 0060 7349     		ldr	r1, .L46+12
+ 249 0062 0868     		ldr	r0, [r1]
+ 250 0064 7349     		ldr	r1, .L46+16
+ 251 0066 41F82300 		str	r0, [r1, r3, lsl #2]
+  51:Core/Src/task.c ****             led_state[counter1] = !led_state[counter1];
+ 252              		.loc 1 51 13 is_stmt 1 view .LVU65
+ 253              		.loc 1 51 45 is_stmt 0 view .LVU66
+ 254 006a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 255 006c DBB2     		uxtb	r3, r3
+ 256 006e 7248     		ldr	r0, .L46+20
+ 257 0070 C35C     		ldrb	r3, [r0, r3]	@ zero_extendqisi2
+ 258              		.loc 1 51 22 view .LVU67
+ 259 0072 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 260 0074 C9B2     		uxtb	r1, r1
+ 261              		.loc 1 51 35 view .LVU68
+ 262 0076 B3FA83F3 		clz	r3, r3
+ 263 007a 5B09     		lsrs	r3, r3, #5
+ 264              		.loc 1 51 33 view .LVU69
+ 265 007c 4354     		strb	r3, [r0, r1]
+  52:Core/Src/task.c ****             
+  53:Core/Src/task.c ****             // Переключаем текущий светодиод
+  54:Core/Src/task.c ****             switch(counter1) {
+ 266              		.loc 1 54 13 is_stmt 1 view .LVU70
+ 267 007e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 268 0080 013B     		subs	r3, r3, #1
+ 269 0082 052B     		cmp	r3, #5
+ 270 0084 00F2F180 		bhi	.L7
+ 271 0088 DFE803F0 		tbb	[pc, r3]
+ 272              	.L13:
+ 273 008c 0B       		.byte	(.L18-.L13)/2
+ 274 008d 1D       		.byte	(.L17-.L13)/2
+ 275 008e 2F       		.byte	(.L16-.L13)/2
+ 276 008f 41       		.byte	(.L15-.L13)/2
+ 277 0090 53       		.byte	(.L14-.L13)/2
+ 278 0091 65       		.byte	(.L12-.L13)/2
+ 279              	.LVL4:
+ 280              		.p2align 1
+ 281              	.L40:
+  39:Core/Src/task.c ****             case 3: period = 385; break;    // 1,3 Гц
+ 282              		.loc 1 39 28 is_stmt 0 view .LVU71
+ 283 0092 40F27122 		movw	r2, #625
+ 284 0096 CCE7     		b	.L9
+ 285              	.L41:
+  40:Core/Src/task.c ****         }
+ 286              		.loc 1 40 28 view .LVU72
+ 287 0098 40F28112 		movw	r2, #385
+ 288 009c C9E7     		b	.L9
+ 289              	.L42:
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 7
+
+
+  36:Core/Src/task.c ****             case 0: period = 0; break;      // Выкл
+ 290              		.loc 1 36 9 view .LVU73
+ 291 009e 0022     		movs	r2, #0
+ 292 00a0 C7E7     		b	.L9
+ 293              	.LVL5:
+ 294              	.L18:
+  55:Core/Src/task.c ****                 case 1: 
+  56:Core/Src/task.c ****                     if(led_state[counter1]) SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR3);
+ 295              		.loc 1 56 21 is_stmt 1 view .LVU74
+ 296              		.loc 1 56 33 is_stmt 0 view .LVU75
+ 297 00a2 604B     		ldr	r3, .L46
+ 298 00a4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 299 00a6 DBB2     		uxtb	r3, r3
+ 300 00a8 634A     		ldr	r2, .L46+20
+ 301 00aa D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 302              		.loc 1 56 23 view .LVU76
+ 303 00ac 2BB1     		cbz	r3, .L19
+ 304              		.loc 1 56 45 is_stmt 1 discriminator 1 view .LVU77
+ 305 00ae 634A     		ldr	r2, .L46+24
+ 306 00b0 9369     		ldr	r3, [r2, #24]
+ 307 00b2 43F40023 		orr	r3, r3, #524288
+ 308 00b6 9361     		str	r3, [r2, #24]
+ 309 00b8 7047     		bx	lr
+ 310              	.L19:
+  57:Core/Src/task.c ****                     else SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS3);
+ 311              		.loc 1 57 26 view .LVU78
+ 312 00ba 604A     		ldr	r2, .L46+24
+ 313 00bc 9369     		ldr	r3, [r2, #24]
+ 314 00be 43F00803 		orr	r3, r3, #8
+ 315 00c2 9361     		str	r3, [r2, #24]
+ 316 00c4 7047     		bx	lr
+ 317              	.L17:
+  58:Core/Src/task.c ****                     break;
+  59:Core/Src/task.c ****                 case 2:
+  60:Core/Src/task.c ****                     if(led_state[counter1]) SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR10);
+ 318              		.loc 1 60 21 view .LVU79
+ 319              		.loc 1 60 33 is_stmt 0 view .LVU80
+ 320 00c6 574B     		ldr	r3, .L46
+ 321 00c8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 322 00ca DBB2     		uxtb	r3, r3
+ 323 00cc 5A4A     		ldr	r2, .L46+20
+ 324 00ce D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 325              		.loc 1 60 23 view .LVU81
+ 326 00d0 2BB1     		cbz	r3, .L20
+ 327              		.loc 1 60 45 is_stmt 1 discriminator 1 view .LVU82
+ 328 00d2 5A4A     		ldr	r2, .L46+24
+ 329 00d4 9369     		ldr	r3, [r2, #24]
+ 330 00d6 43F08063 		orr	r3, r3, #67108864
+ 331 00da 9361     		str	r3, [r2, #24]
+ 332 00dc 7047     		bx	lr
+ 333              	.L20:
+  61:Core/Src/task.c ****                     else SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS10);
+ 334              		.loc 1 61 26 view .LVU83
+ 335 00de 574A     		ldr	r2, .L46+24
+ 336 00e0 9369     		ldr	r3, [r2, #24]
+ 337 00e2 43F48063 		orr	r3, r3, #1024
+ 338 00e6 9361     		str	r3, [r2, #24]
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 8
+
+
+ 339 00e8 7047     		bx	lr
+ 340              	.L16:
+  62:Core/Src/task.c ****                     break;
+  63:Core/Src/task.c ****                 case 3:
+  64:Core/Src/task.c ****                     if(led_state[counter1]) SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR11);
+ 341              		.loc 1 64 21 view .LVU84
+ 342              		.loc 1 64 33 is_stmt 0 view .LVU85
+ 343 00ea 4E4B     		ldr	r3, .L46
+ 344 00ec 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 345 00ee DBB2     		uxtb	r3, r3
+ 346 00f0 514A     		ldr	r2, .L46+20
+ 347 00f2 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 348              		.loc 1 64 23 view .LVU86
+ 349 00f4 2BB1     		cbz	r3, .L21
+ 350              		.loc 1 64 45 is_stmt 1 discriminator 1 view .LVU87
+ 351 00f6 514A     		ldr	r2, .L46+24
+ 352 00f8 9369     		ldr	r3, [r2, #24]
+ 353 00fa 43F00063 		orr	r3, r3, #134217728
+ 354 00fe 9361     		str	r3, [r2, #24]
+ 355 0100 7047     		bx	lr
+ 356              	.L21:
+  65:Core/Src/task.c ****                     else SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS11);
+ 357              		.loc 1 65 26 view .LVU88
+ 358 0102 4E4A     		ldr	r2, .L46+24
+ 359 0104 9369     		ldr	r3, [r2, #24]
+ 360 0106 43F40063 		orr	r3, r3, #2048
+ 361 010a 9361     		str	r3, [r2, #24]
+ 362 010c 7047     		bx	lr
+ 363              	.L15:
+  66:Core/Src/task.c ****                     break;
+  67:Core/Src/task.c ****                 case 4:
+  68:Core/Src/task.c ****                     if(led_state[counter1]) SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR12);
+ 364              		.loc 1 68 21 view .LVU89
+ 365              		.loc 1 68 33 is_stmt 0 view .LVU90
+ 366 010e 454B     		ldr	r3, .L46
+ 367 0110 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 368 0112 DBB2     		uxtb	r3, r3
+ 369 0114 484A     		ldr	r2, .L46+20
+ 370 0116 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 371              		.loc 1 68 23 view .LVU91
+ 372 0118 2BB1     		cbz	r3, .L22
+ 373              		.loc 1 68 45 is_stmt 1 discriminator 1 view .LVU92
+ 374 011a 484A     		ldr	r2, .L46+24
+ 375 011c 9369     		ldr	r3, [r2, #24]
+ 376 011e 43F08053 		orr	r3, r3, #268435456
+ 377 0122 9361     		str	r3, [r2, #24]
+ 378 0124 7047     		bx	lr
+ 379              	.L22:
+  69:Core/Src/task.c ****                     else SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS12);
+ 380              		.loc 1 69 26 view .LVU93
+ 381 0126 454A     		ldr	r2, .L46+24
+ 382 0128 9369     		ldr	r3, [r2, #24]
+ 383 012a 43F48053 		orr	r3, r3, #4096
+ 384 012e 9361     		str	r3, [r2, #24]
+ 385 0130 7047     		bx	lr
+ 386              	.L14:
+  70:Core/Src/task.c ****                     break;
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 9
+
+
+  71:Core/Src/task.c ****                 case 5:
+  72:Core/Src/task.c ****                     if(led_state[counter1]) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+ 387              		.loc 1 72 21 view .LVU94
+ 388              		.loc 1 72 33 is_stmt 0 view .LVU95
+ 389 0132 3C4B     		ldr	r3, .L46
+ 390 0134 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 391 0136 DBB2     		uxtb	r3, r3
+ 392 0138 3F4A     		ldr	r2, .L46+20
+ 393 013a D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 394              		.loc 1 72 23 view .LVU96
+ 395 013c 2BB1     		cbz	r3, .L23
+ 396              		.loc 1 72 45 is_stmt 1 discriminator 1 view .LVU97
+ 397 013e 404A     		ldr	r2, .L46+28
+ 398 0140 9369     		ldr	r3, [r2, #24]
+ 399 0142 43F40003 		orr	r3, r3, #8388608
+ 400 0146 9361     		str	r3, [r2, #24]
+ 401 0148 7047     		bx	lr
+ 402              	.L23:
+  73:Core/Src/task.c ****                     else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+ 403              		.loc 1 73 26 view .LVU98
+ 404 014a 3D4A     		ldr	r2, .L46+28
+ 405 014c 9369     		ldr	r3, [r2, #24]
+ 406 014e 43F08003 		orr	r3, r3, #128
+ 407 0152 9361     		str	r3, [r2, #24]
+ 408 0154 7047     		bx	lr
+ 409              	.L12:
+  74:Core/Src/task.c ****                     break;
+  75:Core/Src/task.c ****                 case 6:
+  76:Core/Src/task.c ****                     if(led_state[counter1]) SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR2);
+ 410              		.loc 1 76 21 view .LVU99
+ 411              		.loc 1 76 33 is_stmt 0 view .LVU100
+ 412 0156 334B     		ldr	r3, .L46
+ 413 0158 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 414 015a DBB2     		uxtb	r3, r3
+ 415 015c 364A     		ldr	r2, .L46+20
+ 416 015e D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 417              		.loc 1 76 23 view .LVU101
+ 418 0160 2BB1     		cbz	r3, .L24
+ 419              		.loc 1 76 45 is_stmt 1 discriminator 1 view .LVU102
+ 420 0162 384A     		ldr	r2, .L46+32
+ 421 0164 9369     		ldr	r3, [r2, #24]
+ 422 0166 43F48023 		orr	r3, r3, #262144
+ 423 016a 9361     		str	r3, [r2, #24]
+ 424 016c 7047     		bx	lr
+ 425              	.L24:
+  77:Core/Src/task.c ****                     else SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS2);
+ 426              		.loc 1 77 26 view .LVU103
+ 427 016e 354A     		ldr	r2, .L46+32
+ 428 0170 9369     		ldr	r3, [r2, #24]
+ 429 0172 43F00403 		orr	r3, r3, #4
+ 430 0176 9361     		str	r3, [r2, #24]
+ 431 0178 7047     		bx	lr
+ 432              	.LVL6:
+ 433              	.L11:
+  78:Core/Src/task.c ****                     break;
+  79:Core/Src/task.c ****             }
+  80:Core/Src/task.c ****         }
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 10
+
+
+  81:Core/Src/task.c ****     } else 
+  82:Core/Src/task.c ****     {
+  83:Core/Src/task.c ****           led_state[counter1] = 0;
+ 434              		.loc 1 83 11 view .LVU104
+ 435              		.loc 1 83 20 is_stmt 0 view .LVU105
+ 436 017a 2A4A     		ldr	r2, .L46
+ 437              	.LVL7:
+ 438              		.loc 1 83 20 view .LVU106
+ 439 017c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 440 017e DBB2     		uxtb	r3, r3
+ 441              		.loc 1 83 31 view .LVU107
+ 442 0180 2D49     		ldr	r1, .L46+20
+ 443 0182 0020     		movs	r0, #0
+ 444 0184 C854     		strb	r0, [r1, r3]
+  84:Core/Src/task.c ****         switch(counter1) {
+ 445              		.loc 1 84 9 is_stmt 1 view .LVU108
+ 446 0186 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 447 0188 013B     		subs	r3, r3, #1
+ 448 018a 052B     		cmp	r3, #5
+ 449 018c 6DD8     		bhi	.L7
+ 450 018e DFE803F0 		tbb	[pc, r3]
+ 451              	.L26:
+ 452 0192 03       		.byte	(.L31-.L26)/2
+ 453 0193 09       		.byte	(.L30-.L26)/2
+ 454 0194 0F       		.byte	(.L29-.L26)/2
+ 455 0195 15       		.byte	(.L28-.L26)/2
+ 456 0196 1B       		.byte	(.L27-.L26)/2
+ 457 0197 21       		.byte	(.L25-.L26)/2
+ 458              		.p2align 1
+ 459              	.L31:
+  85:Core/Src/task.c ****             case 1: SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS3); break;
+ 460              		.loc 1 85 21 view .LVU109
+ 461 0198 284A     		ldr	r2, .L46+24
+ 462 019a 9369     		ldr	r3, [r2, #24]
+ 463 019c 43F00803 		orr	r3, r3, #8
+ 464 01a0 9361     		str	r3, [r2, #24]
+ 465              		.loc 1 85 58 view .LVU110
+ 466 01a2 7047     		bx	lr
+ 467              	.L30:
+  86:Core/Src/task.c ****             case 2: SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS10); break;
+ 468              		.loc 1 86 21 view .LVU111
+ 469 01a4 254A     		ldr	r2, .L46+24
+ 470 01a6 9369     		ldr	r3, [r2, #24]
+ 471 01a8 43F48063 		orr	r3, r3, #1024
+ 472 01ac 9361     		str	r3, [r2, #24]
+ 473              		.loc 1 86 59 view .LVU112
+ 474 01ae 7047     		bx	lr
+ 475              	.L29:
+  87:Core/Src/task.c ****             case 3: SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS11); break;
+ 476              		.loc 1 87 21 view .LVU113
+ 477 01b0 224A     		ldr	r2, .L46+24
+ 478 01b2 9369     		ldr	r3, [r2, #24]
+ 479 01b4 43F40063 		orr	r3, r3, #2048
+ 480 01b8 9361     		str	r3, [r2, #24]
+ 481              		.loc 1 87 59 view .LVU114
+ 482 01ba 7047     		bx	lr
+ 483              	.L28:
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 11
+
+
+  88:Core/Src/task.c ****             case 4: SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS12); break;
+ 484              		.loc 1 88 21 view .LVU115
+ 485 01bc 1F4A     		ldr	r2, .L46+24
+ 486 01be 9369     		ldr	r3, [r2, #24]
+ 487 01c0 43F48053 		orr	r3, r3, #4096
+ 488 01c4 9361     		str	r3, [r2, #24]
+ 489              		.loc 1 88 59 view .LVU116
+ 490 01c6 7047     		bx	lr
+ 491              	.L27:
+  89:Core/Src/task.c ****             case 5: SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); break;
+ 492              		.loc 1 89 21 view .LVU117
+ 493 01c8 1D4A     		ldr	r2, .L46+28
+ 494 01ca 9369     		ldr	r3, [r2, #24]
+ 495 01cc 43F08003 		orr	r3, r3, #128
+ 496 01d0 9361     		str	r3, [r2, #24]
+ 497              		.loc 1 89 58 view .LVU118
+ 498 01d2 7047     		bx	lr
+ 499              	.L25:
+  90:Core/Src/task.c ****             case 6: SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS2); break;
+ 500              		.loc 1 90 21 view .LVU119
+ 501 01d4 1B4A     		ldr	r2, .L46+32
+ 502 01d6 9369     		ldr	r3, [r2, #24]
+ 503 01d8 43F00403 		orr	r3, r3, #4
+ 504 01dc 9361     		str	r3, [r2, #24]
+ 505              		.loc 1 90 58 view .LVU120
+ 506 01de 7047     		bx	lr
+ 507              	.LVL8:
+ 508              	.L10:
+  91:Core/Src/task.c ****         }
+  92:Core/Src/task.c ****     }
+  93:Core/Src/task.c **** }
+  94:Core/Src/task.c **** else {
+  95:Core/Src/task.c ****          led_state[counter1] = 0;
+ 509              		.loc 1 95 10 view .LVU121
+ 510              		.loc 1 95 19 is_stmt 0 view .LVU122
+ 511 01e0 104A     		ldr	r2, .L46
+ 512              	.LVL9:
+ 513              		.loc 1 95 19 view .LVU123
+ 514 01e2 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 515 01e4 DBB2     		uxtb	r3, r3
+ 516              		.loc 1 95 30 view .LVU124
+ 517 01e6 1449     		ldr	r1, .L46+20
+ 518 01e8 0020     		movs	r0, #0
+ 519 01ea C854     		strb	r0, [r1, r3]
+  96:Core/Src/task.c ****         switch(counter1) {
+ 520              		.loc 1 96 9 is_stmt 1 view .LVU125
+ 521 01ec 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 522 01ee 013B     		subs	r3, r3, #1
+ 523 01f0 052B     		cmp	r3, #5
+ 524 01f2 3AD8     		bhi	.L7
+ 525 01f4 DFE803F0 		tbb	[pc, r3]
+ 526              	.L33:
+ 527 01f8 03       		.byte	(.L38-.L33)/2
+ 528 01f9 09       		.byte	(.L37-.L33)/2
+ 529 01fa 0F       		.byte	(.L36-.L33)/2
+ 530 01fb 28       		.byte	(.L35-.L33)/2
+ 531 01fc 2E       		.byte	(.L34-.L33)/2
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 12
+
+
+ 532 01fd 34       		.byte	(.L32-.L33)/2
+ 533              		.p2align 1
+ 534              	.L38:
+  97:Core/Src/task.c ****             case 1: SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS3); break;
+ 535              		.loc 1 97 21 view .LVU126
+ 536 01fe 0F4A     		ldr	r2, .L46+24
+ 537 0200 9369     		ldr	r3, [r2, #24]
+ 538 0202 43F00803 		orr	r3, r3, #8
+ 539 0206 9361     		str	r3, [r2, #24]
+ 540              		.loc 1 97 58 view .LVU127
+ 541 0208 7047     		bx	lr
+ 542              	.L37:
+  98:Core/Src/task.c ****             case 2: SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS10); break;
+ 543              		.loc 1 98 21 view .LVU128
+ 544 020a 0C4A     		ldr	r2, .L46+24
+ 545 020c 9369     		ldr	r3, [r2, #24]
+ 546 020e 43F48063 		orr	r3, r3, #1024
+ 547 0212 9361     		str	r3, [r2, #24]
+ 548              		.loc 1 98 59 view .LVU129
+ 549 0214 7047     		bx	lr
+ 550              	.L36:
+  99:Core/Src/task.c ****             case 3: SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS11); break;
+ 551              		.loc 1 99 21 view .LVU130
+ 552 0216 094A     		ldr	r2, .L46+24
+ 553 0218 9369     		ldr	r3, [r2, #24]
+ 554 021a 43F40063 		orr	r3, r3, #2048
+ 555 021e 9361     		str	r3, [r2, #24]
+ 556              		.loc 1 99 59 view .LVU131
+ 557 0220 7047     		bx	lr
+ 558              	.L47:
+ 559 0222 00BF     		.align	2
+ 560              	.L46:
+ 561 0224 00000000 		.word	counter1
+ 562 0228 00000000 		.word	led_periods
+ 563 022c 00000000 		.word	operation_mode
+ 564 0230 00000000 		.word	tick_count
+ 565 0234 00000000 		.word	last_blink_time
+ 566 0238 00000000 		.word	led_state
+ 567 023c 00080240 		.word	1073874944
+ 568 0240 00040240 		.word	1073873920
+ 569 0244 000C0240 		.word	1073875968
+ 570              	.L35:
+ 100:Core/Src/task.c ****             case 4: SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS12); break;
+ 571              		.loc 1 100 21 view .LVU132
+ 572 0248 084A     		ldr	r2, .L48
+ 573 024a 9369     		ldr	r3, [r2, #24]
+ 574 024c 43F48053 		orr	r3, r3, #4096
+ 575 0250 9361     		str	r3, [r2, #24]
+ 576              		.loc 1 100 59 view .LVU133
+ 577 0252 7047     		bx	lr
+ 578              	.L34:
+ 101:Core/Src/task.c ****             case 5: SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); break;
+ 579              		.loc 1 101 21 view .LVU134
+ 580 0254 064A     		ldr	r2, .L48+4
+ 581 0256 9369     		ldr	r3, [r2, #24]
+ 582 0258 43F08003 		orr	r3, r3, #128
+ 583 025c 9361     		str	r3, [r2, #24]
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 13
+
+
+ 584              		.loc 1 101 58 view .LVU135
+ 585 025e 7047     		bx	lr
+ 586              	.L32:
+ 102:Core/Src/task.c ****             case 6: SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS2); break;
+ 587              		.loc 1 102 21 view .LVU136
+ 588 0260 044A     		ldr	r2, .L48+8
+ 589 0262 9369     		ldr	r3, [r2, #24]
+ 590 0264 43F00403 		orr	r3, r3, #4
+ 591 0268 9361     		str	r3, [r2, #24]
+ 592              		.loc 1 102 58 view .LVU137
+ 593              	.LVL10:
+ 594              	.L7:
+ 103:Core/Src/task.c ****         }
+ 104:Core/Src/task.c ****     }
+ 105:Core/Src/task.c **** 
+ 106:Core/Src/task.c **** }...
+ 595              		.loc 1 106 1 is_stmt 0 view .LVU138
+ 596 026a 7047     		bx	lr
+ 597              	.L49:
+ 598              		.align	2
+ 599              	.L48:
+ 600 026c 00080240 		.word	1073874944
+ 601 0270 00040240 		.word	1073873920
+ 602 0274 000C0240 		.word	1073875968
+ 603              		.cfi_endproc
+ 604              	.LFE131:
+ 606              		.text
+ 607              	.Letext0:
+ 608              		.file 2 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 609              		.file 3 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 610              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 611              		.file 5 "Core/Inc/task.h"
+ 612              		.file 6 "Core/Inc/handlers.h"
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 task.c
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:21     .text.task1:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:27     .text.task1:00000000 task1
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:147    .text.task1:000000ac $d
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:160    .text.task2:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:166    .text.task2:00000000 task2
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:273    .text.task2:0000008c $d
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:280    .text.task2:00000092 $t
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:452    .text.task2:00000192 $d
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:458    .text.task2:00000198 $t
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:527    .text.task2:000001f8 $d
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:533    .text.task2:000001fe $t
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:561    .text.task2:00000224 $d
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:572    .text.task2:00000248 $t
+C:\Users\Life\AppData\Local\Temp\ccE09Wzx.s:600    .text.task2:0000026c $d
+
+UNDEFINED SYMBOLS
+btn9_pressed
+counter1
+btn8_pressed
+led_periods
+btn8_hold
+operation_mode
+tick_count
+last_blink_time
+led_state
