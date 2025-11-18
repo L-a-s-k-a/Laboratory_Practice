@@ -3,11 +3,13 @@
 
 #include "../../CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
 #include "../../CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+
 //硬编码地址定义真正的直接内存访问
 
 #define GPIOB_BASE_ADDR 0x40020400UL  // GPIOB端口基地址（AHB1总线）
 #define GPIOC_BASE_ADDR 0x40020800UL  // GPIOC端口基地址（AHB1总线）
 #define GPIOD_BASE_ADDR 0x40020C00UL  // GPIOD端口基地址（AHB1总线）
+#define GPIOG_BASE_ADDR 0x40021800UL  // GPIOG端口基地址（AHB1总线）
 #define RCC_BASE_ADDR   0x40023800UL  // RCC（复位和时钟控制）基地址
 
 //GPIO寄存器偏移量定义
@@ -34,17 +36,27 @@
 // 设置PB7无上拉下拉电阻（清除上下拉配置位）
 #define PB7_PUPDR_NOPULL()     (GPIOB->PUPDR &= ~GPIO_PUPDR_PUPD7)
 
-//PB7 LED控制宏
-
+// PB7 LED控制宏
 // 点亮PB7连接的LED（设置BSRR寄存器的BS7位）
 #define PB7_LED_ON()           (GPIOB->BSRR = GPIO_BSRR_BS_7)
 
 // 熄灭PB7连接的LED（设置BSRR寄存器的BR7位）
 #define PB7_LED_OFF()          (GPIOB->BSRR = GPIO_BSRR_BR_7)
 
+// 全局变量声明
+extern volatile uint8_t g_pd4_button_state;       // PD4按键状态
+extern volatile uint32_t g_pd4_raw_value;         // PD4原始引脚值
+extern volatile uint8_t g_pd4_pressed_flag;       // PD4按下标志
+extern volatile uint32_t g_button_debug_counter;  // 按键调试计数器
+extern volatile uint8_t g_led_step;               // LED点亮步骤: 0=全灭, 1=PB14, 2=PB7, 3=PB0
+extern volatile uint8_t g_pg3_button_state;       // PG3按键状态
+extern volatile uint8_t g_pg3_pressed_flag;       // PG3按下标志
+extern volatile uint8_t g_system_mode;            // 系统模式: 0=正常模式, 1=PD4输出模式
+extern volatile uint8_t g_pd4_mode_state;         // PD4引脚模式状态: 0=输入上拉, 1=输出高电平, 2=无上下拉
 
 // 函数声明
-void GPIO_Init_Memory(void);// GPIO初始化函数 - 使用直接内存访问方式配置GPIO
-void GPIO_Init_CMSIS(void);
+void GPIO_Init_Memory(void);  // GPIO初始化函数 - 使用直接内存访问方式配置GPIO
+void PD4_Set_Input_PullUp(void);     // 设置PD4为输入模式+上拉（正常模式）
+void PD4_Set_Output_High(void);      // 设置PD4为输出模式+高电平
 
 #endif
