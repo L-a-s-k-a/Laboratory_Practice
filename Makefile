@@ -135,6 +135,8 @@ endif
 C_SOURCES =  \
 $(SYS) \
 Core/Src/main.c \
+Core/Scr/init.c 
+
 
 # ASM sources
 ASM_SOURCES =  \
