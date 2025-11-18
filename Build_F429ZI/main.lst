@@ -1,0 +1,919 @@
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "stm32f4xx.h"
+   2:Core/Src/main.c **** #include "Init.h"
+   3:Core/Src/main.c **** #include "Interrupt.h"
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** /* Режимы */
+   6:Core/Src/main.c **** typedef enum {
+   7:Core/Src/main.c ****     MODE_1 = 0,
+   8:Core/Src/main.c ****     MODE_2
+   9:Core/Src/main.c **** } modes_t;
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** static modes_t current_mode = MODE_1;
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** /* Частоты */
+  14:Core/Src/main.c **** static const uint32_t mode1_periods_ms[3] = {1666U, 769U, 416U};
+  15:Core/Src/main.c **** static const uint32_t led_toggle_ms[3]   = {2500U, 555U, 333U};
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** static uint8_t mode1_freq_index = 0;
+  18:Core/Src/main.c **** static uint8_t mode2_freq_index[6] = {0,0,0,0,0,0};
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c **** /* Режим 1 */
+  21:Core/Src/main.c **** static uint8_t r1_active_led = 0;
+  22:Core/Src/main.c **** static uint32_t r1_last_switch_ms = 0;
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c **** /* Режим 2 */
+  25:Core/Src/main.c **** #define R2_DWELL_MS 3000U
+  26:Core/Src/main.c **** static uint8_t r2_num_on = 0;
+  27:Core/Src/main.c **** static uint32_t r2_last_dwell_ms = 0;
+  28:Core/Src/main.c **** static uint32_t r2_last_toggle_ms[6] = {0,0,0,0,0,0};
+  29:Core/Src/main.c **** static uint8_t r2_output_state[6] = {1,1,1,1,1,1};
+  30:Core/Src/main.c **** static uint8_t r2_selected_led = 0;
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 2
+
+
+  31:Core/Src/main.c **** 
+  32:Core/Src/main.c **** int main(void)
+  33:Core/Src/main.c **** {
+  29              		.loc 1 33 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 70B5     		push	{r4, r5, r6, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 4, -16
+  37              		.cfi_offset 5, -12
+  38              		.cfi_offset 6, -8
+  39              		.cfi_offset 14, -4
+  34:Core/Src/main.c ****     Clock_Init_HSE_PLL_168MHz();
+  40              		.loc 1 34 5 view .LVU1
+  41 0002 FFF7FEFF 		bl	Clock_Init_HSE_PLL_168MHz
+  42              	.LVL0:
+  35:Core/Src/main.c ****     SysTick_Init_1ms();
+  43              		.loc 1 35 5 view .LVU2
+  44 0006 FFF7FEFF 		bl	SysTick_Init_1ms
+  45              	.LVL1:
+  36:Core/Src/main.c ****     Buttons_GPIO_Init();
+  46              		.loc 1 36 5 view .LVU3
+  47 000a FFF7FEFF 		bl	Buttons_GPIO_Init
+  48              	.LVL2:
+  37:Core/Src/main.c ****     Buttons_EXTI_Init();
+  49              		.loc 1 37 5 view .LVU4
+  50 000e FFF7FEFF 		bl	Buttons_EXTI_Init
+  51              	.LVL3:
+  38:Core/Src/main.c ****     LEDs_GPIO_Init();
+  52              		.loc 1 38 5 view .LVU5
+  53 0012 FFF7FEFF 		bl	LEDs_GPIO_Init
+  54              	.LVL4:
+  39:Core/Src/main.c ****     ITR_Init();
+  55              		.loc 1 39 5 view .LVU6
+  56 0016 FFF7FEFF 		bl	ITR_Init
+  57              	.LVL5:
+  40:Core/Src/main.c **** 
+  41:Core/Src/main.c ****     LED_AllOff();
+  58              		.loc 1 41 5 view .LVU7
+  59 001a FFF7FEFF 		bl	LED_AllOff
+  60              	.LVL6:
+  42:Core/Src/main.c **** 
+  43:Core/Src/main.c ****     r1_last_switch_ms = system_time_ms;
+  61              		.loc 1 43 5 view .LVU8
+  62              		.loc 1 43 23 is_stmt 0 view .LVU9
+  63 001e 7E4B     		ldr	r3, .L25
+  64 0020 1968     		ldr	r1, [r3]
+  65 0022 7E4A     		ldr	r2, .L25+4
+  66 0024 1160     		str	r1, [r2]
+  44:Core/Src/main.c ****     r2_last_dwell_ms = system_time_ms;
+  67              		.loc 1 44 5 is_stmt 1 view .LVU10
+  68              		.loc 1 44 22 is_stmt 0 view .LVU11
+  69 0026 1A68     		ldr	r2, [r3]
+  70 0028 7D4B     		ldr	r3, .L25+8
+  71 002a 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 3
+
+
+  45:Core/Src/main.c ****     for(uint8_t i=0;i<6;i++) r2_last_toggle_ms[i]=system_time_ms;
+  72              		.loc 1 45 5 is_stmt 1 view .LVU12
+  73              	.LBB2:
+  74              		.loc 1 45 9 view .LVU13
+  75              	.LVL7:
+  76              		.loc 1 45 17 is_stmt 0 view .LVU14
+  77 002c 0023     		movs	r3, #0
+  78              		.loc 1 45 5 view .LVU15
+  79 002e 06E0     		b	.L2
+  80              	.LVL8:
+  81              	.L3:
+  82              		.loc 1 45 30 is_stmt 1 discriminator 3 view .LVU16
+  83              		.loc 1 45 50 is_stmt 0 discriminator 3 view .LVU17
+  84 0030 794A     		ldr	r2, .L25
+  85 0032 1168     		ldr	r1, [r2]
+  86 0034 7B4A     		ldr	r2, .L25+12
+  87 0036 42F82310 		str	r1, [r2, r3, lsl #2]
+  88              		.loc 1 45 26 is_stmt 1 discriminator 3 view .LVU18
+  89 003a 0133     		adds	r3, r3, #1
+  90              	.LVL9:
+  91              		.loc 1 45 26 is_stmt 0 discriminator 3 view .LVU19
+  92 003c DBB2     		uxtb	r3, r3
+  93              	.LVL10:
+  94              	.L2:
+  95              		.loc 1 45 22 is_stmt 1 discriminator 1 view .LVU20
+  96 003e 052B     		cmp	r3, #5
+  97 0040 F6D9     		bls	.L3
+  98              	.LBE2:
+  46:Core/Src/main.c **** 
+  47:Core/Src/main.c ****     r1_active_led = 0;
+  99              		.loc 1 47 5 view .LVU21
+ 100              		.loc 1 47 19 is_stmt 0 view .LVU22
+ 101 0042 0020     		movs	r0, #0
+ 102 0044 784B     		ldr	r3, .L25+16
+ 103              	.LVL11:
+ 104              		.loc 1 47 19 view .LVU23
+ 105 0046 1870     		strb	r0, [r3]
+  48:Core/Src/main.c ****     LED_SetActive(r1_active_led);
+ 106              		.loc 1 48 5 is_stmt 1 view .LVU24
+ 107 0048 FFF7FEFF 		bl	LED_SetActive
+ 108              	.LVL12:
+ 109 004c 7AE0     		b	.L4
+ 110              	.L23:
+  49:Core/Src/main.c **** 
+  50:Core/Src/main.c ****     for(;;)
+  51:Core/Src/main.c ****     {
+  52:Core/Src/main.c ****         /* ---------- Смена режима PA0 ---------- */
+  53:Core/Src/main.c ****         if(button1_pressed_flag)
+  54:Core/Src/main.c ****         {
+  55:Core/Src/main.c ****             button1_pressed_flag = 0;
+ 111              		.loc 1 55 13 view .LVU25
+ 112              		.loc 1 55 34 is_stmt 0 view .LVU26
+ 113 004e 0024     		movs	r4, #0
+ 114 0050 764B     		ldr	r3, .L25+20
+ 115 0052 1C70     		strb	r4, [r3]
+  56:Core/Src/main.c ****             current_mode = (current_mode==MODE_1) ? MODE_2 : MODE_1;
+ 116              		.loc 1 56 13 is_stmt 1 view .LVU27
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 4
+
+
+ 117              		.loc 1 56 60 is_stmt 0 view .LVU28
+ 118 0054 764A     		ldr	r2, .L25+24
+ 119 0056 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 120 0058 B3FA83F3 		clz	r3, r3
+ 121 005c 5B09     		lsrs	r3, r3, #5
+ 122              		.loc 1 56 26 view .LVU29
+ 123 005e 1370     		strb	r3, [r2]
+  57:Core/Src/main.c **** 
+  58:Core/Src/main.c ****             LED_AllOff();
+ 124              		.loc 1 58 13 is_stmt 1 view .LVU30
+ 125 0060 FFF7FEFF 		bl	LED_AllOff
+ 126              	.LVL13:
+  59:Core/Src/main.c **** 
+  60:Core/Src/main.c ****             /* reset mode 1 */
+  61:Core/Src/main.c ****             r1_active_led = 0;
+ 127              		.loc 1 61 13 view .LVU31
+ 128              		.loc 1 61 27 is_stmt 0 view .LVU32
+ 129 0064 704B     		ldr	r3, .L25+16
+ 130 0066 1C70     		strb	r4, [r3]
+  62:Core/Src/main.c ****             r1_last_switch_ms = system_time_ms;
+ 131              		.loc 1 62 13 is_stmt 1 view .LVU33
+ 132              		.loc 1 62 31 is_stmt 0 view .LVU34
+ 133 0068 6B4D     		ldr	r5, .L25
+ 134 006a 2A68     		ldr	r2, [r5]
+ 135 006c 6B4B     		ldr	r3, .L25+4
+ 136 006e 1A60     		str	r2, [r3]
+  63:Core/Src/main.c ****             LED_SetActive(r1_active_led);
+ 137              		.loc 1 63 13 is_stmt 1 view .LVU35
+ 138 0070 2046     		mov	r0, r4
+ 139 0072 FFF7FEFF 		bl	LED_SetActive
+ 140              	.LVL14:
+  64:Core/Src/main.c **** 
+  65:Core/Src/main.c ****             /* reset mode 2 */
+  66:Core/Src/main.c ****             LED_AllOff();
+ 141              		.loc 1 66 13 view .LVU36
+ 142 0076 FFF7FEFF 		bl	LED_AllOff
+ 143              	.LVL15:
+  67:Core/Src/main.c **** 
+  68:Core/Src/main.c ****             /* включаем первый диод сразу */
+  69:Core/Src/main.c ****             LED_On_Index(0);
+ 144              		.loc 1 69 13 view .LVU37
+ 145 007a 2046     		mov	r0, r4
+ 146 007c FFF7FEFF 		bl	LED_On_Index
+ 147              	.LVL16:
+  70:Core/Src/main.c **** 
+  71:Core/Src/main.c ****             r2_num_on = 1;                     // уже один включён
+ 148              		.loc 1 71 13 view .LVU38
+ 149              		.loc 1 71 23 is_stmt 0 view .LVU39
+ 150 0080 6C4B     		ldr	r3, .L25+28
+ 151 0082 0122     		movs	r2, #1
+ 152 0084 1A70     		strb	r2, [r3]
+  72:Core/Src/main.c ****             r2_last_dwell_ms = system_time_ms; // отсчёт до включения LED1
+ 153              		.loc 1 72 13 is_stmt 1 view .LVU40
+ 154              		.loc 1 72 30 is_stmt 0 view .LVU41
+ 155 0086 2A68     		ldr	r2, [r5]
+ 156 0088 654B     		ldr	r3, .L25+8
+ 157 008a 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 5
+
+
+  73:Core/Src/main.c **** 
+  74:Core/Src/main.c ****             for(uint8_t i=0;i<6;i++){
+ 158              		.loc 1 74 13 is_stmt 1 view .LVU42
+ 159              	.LBB3:
+ 160              		.loc 1 74 17 view .LVU43
+ 161              	.LVL17:
+ 162              		.loc 1 74 25 is_stmt 0 view .LVU44
+ 163 008c 2046     		mov	r0, r4
+ 164              		.loc 1 74 13 view .LVU45
+ 165 008e 0CE0     		b	.L6
+ 166              	.LVL18:
+ 167              	.L7:
+  75:Core/Src/main.c ****                 r2_last_toggle_ms[i] = system_time_ms;
+ 168              		.loc 1 75 17 is_stmt 1 view .LVU46
+ 169              		.loc 1 75 38 is_stmt 0 view .LVU47
+ 170 0090 614B     		ldr	r3, .L25
+ 171 0092 1A68     		ldr	r2, [r3]
+ 172 0094 634B     		ldr	r3, .L25+12
+ 173 0096 43F82020 		str	r2, [r3, r0, lsl #2]
+  76:Core/Src/main.c ****                 r2_output_state[i]   = 1;
+ 174              		.loc 1 76 17 is_stmt 1 view .LVU48
+ 175              		.loc 1 76 38 is_stmt 0 view .LVU49
+ 176 009a 674B     		ldr	r3, .L25+32
+ 177 009c 0122     		movs	r2, #1
+ 178 009e 1A54     		strb	r2, [r3, r0]
+  77:Core/Src/main.c ****                 mode2_freq_index[i]  = 0;
+ 179              		.loc 1 77 17 is_stmt 1 view .LVU50
+ 180              		.loc 1 77 38 is_stmt 0 view .LVU51
+ 181 00a0 664B     		ldr	r3, .L25+36
+ 182 00a2 0022     		movs	r2, #0
+ 183 00a4 1A54     		strb	r2, [r3, r0]
+  74:Core/Src/main.c ****                 r2_last_toggle_ms[i] = system_time_ms;
+ 184              		.loc 1 74 34 is_stmt 1 discriminator 3 view .LVU52
+ 185 00a6 0130     		adds	r0, r0, #1
+ 186              	.LVL19:
+  74:Core/Src/main.c ****                 r2_last_toggle_ms[i] = system_time_ms;
+ 187              		.loc 1 74 34 is_stmt 0 discriminator 3 view .LVU53
+ 188 00a8 C0B2     		uxtb	r0, r0
+ 189              	.LVL20:
+ 190              	.L6:
+  74:Core/Src/main.c ****                 r2_last_toggle_ms[i] = system_time_ms;
+ 191              		.loc 1 74 30 is_stmt 1 discriminator 1 view .LVU54
+ 192 00aa 0528     		cmp	r0, #5
+ 193 00ac F0D9     		bls	.L7
+ 194              	.LBE3:
+  78:Core/Src/main.c ****             }
+  79:Core/Src/main.c **** 
+  80:Core/Src/main.c ****             r2_selected_led = 0;
+ 195              		.loc 1 80 13 view .LVU55
+ 196              		.loc 1 80 29 is_stmt 0 view .LVU56
+ 197 00ae 644B     		ldr	r3, .L25+40
+ 198 00b0 0022     		movs	r2, #0
+ 199 00b2 1A70     		strb	r2, [r3]
+ 200 00b4 4AE0     		b	.L5
+ 201              	.LVL21:
+ 202              	.L24:
+ 203              	.LBB4:
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 6
+
+
+  81:Core/Src/main.c ****         }
+  82:Core/Src/main.c **** 
+  83:Core/Src/main.c **** 
+  84:Core/Src/main.c ****         /* ---------- РЕЖИМ 1 ---------- */
+  85:Core/Src/main.c ****         if(current_mode==MODE_1)
+  86:Core/Src/main.c ****         {
+  87:Core/Src/main.c ****             uint32_t now = system_time_ms;
+  88:Core/Src/main.c ****             uint32_t period = mode1_periods_ms[mode1_freq_index];
+  89:Core/Src/main.c **** 
+  90:Core/Src/main.c ****             if(now - r1_last_switch_ms >= period)
+  91:Core/Src/main.c ****             {
+  92:Core/Src/main.c ****                 r1_last_switch_ms = now;
+ 204              		.loc 1 92 17 is_stmt 1 view .LVU57
+ 205              		.loc 1 92 35 is_stmt 0 view .LVU58
+ 206 00b6 594B     		ldr	r3, .L25+4
+ 207 00b8 1A60     		str	r2, [r3]
+  93:Core/Src/main.c ****                 r1_active_led = (r1_active_led+1U) % 6U;
+ 208              		.loc 1 93 17 is_stmt 1 view .LVU59
+ 209              		.loc 1 93 47 is_stmt 0 view .LVU60
+ 210 00ba 5B4A     		ldr	r2, .L25+16
+ 211              	.LVL22:
+ 212              		.loc 1 93 47 view .LVU61
+ 213 00bc 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 214              		.loc 1 93 47 view .LVU62
+ 215 00be 0133     		adds	r3, r3, #1
+ 216              		.loc 1 93 52 view .LVU63
+ 217 00c0 6048     		ldr	r0, .L25+44
+ 218 00c2 A0FB0310 		umull	r1, r0, r0, r3
+ 219              	.LVL23:
+ 220              		.loc 1 93 52 view .LVU64
+ 221 00c6 8008     		lsrs	r0, r0, #2
+ 222 00c8 00EB4000 		add	r0, r0, r0, lsl #1
+ 223 00cc 4100     		lsls	r1, r0, #1
+ 224 00ce 581A     		subs	r0, r3, r1
+ 225              		.loc 1 93 31 view .LVU65
+ 226 00d0 C0B2     		uxtb	r0, r0
+ 227 00d2 1070     		strb	r0, [r2]
+  94:Core/Src/main.c ****                 LED_SetActive(r1_active_led);
+ 228              		.loc 1 94 17 is_stmt 1 view .LVU66
+ 229 00d4 FFF7FEFF 		bl	LED_SetActive
+ 230              	.LVL24:
+ 231              		.loc 1 94 17 is_stmt 0 view .LVU67
+ 232 00d8 48E0     		b	.L9
+ 233              	.LVL25:
+ 234              	.L8:
+ 235              		.loc 1 94 17 view .LVU68
+ 236              	.LBE4:
+ 237              	.LBB5:
+  95:Core/Src/main.c ****             }
+  96:Core/Src/main.c **** 
+  97:Core/Src/main.c ****             if(button2_press_event_flag)
+  98:Core/Src/main.c ****             {
+  99:Core/Src/main.c ****                 button2_press_event_flag = 0;
+ 100:Core/Src/main.c ****                 mode1_freq_index = (mode1_freq_index+1U) % 3U;
+ 101:Core/Src/main.c ****             }
+ 102:Core/Src/main.c ****         }
+ 103:Core/Src/main.c **** 
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 7
+
+
+ 104:Core/Src/main.c ****         /* ---------- РЕЖИМ 2 ---------- */
+ 105:Core/Src/main.c ****         else
+ 106:Core/Src/main.c ****         {
+ 107:Core/Src/main.c ****             uint32_t now = system_time_ms;
+ 238              		.loc 1 107 13 is_stmt 1 view .LVU69
+ 239              		.loc 1 107 22 is_stmt 0 view .LVU70
+ 240 00da 4F4B     		ldr	r3, .L25
+ 241 00dc 1D68     		ldr	r5, [r3]
+ 242              	.LVL26:
+ 108:Core/Src/main.c **** 
+ 109:Core/Src/main.c ****             /* (1) последовательно включаем */
+ 110:Core/Src/main.c ****             if (r2_num_on < 6U)
+ 243              		.loc 1 110 13 is_stmt 1 view .LVU71
+ 244              		.loc 1 110 27 is_stmt 0 view .LVU72
+ 245 00de 554B     		ldr	r3, .L25+28
+ 246 00e0 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 247              		.loc 1 110 16 view .LVU73
+ 248 00e2 0528     		cmp	r0, #5
+ 249 00e4 00F29580 		bhi	.L19
+ 111:Core/Src/main.c ****             {
+ 112:Core/Src/main.c ****                 if (now - r2_last_dwell_ms >= R2_DWELL_MS)
+ 250              		.loc 1 112 17 is_stmt 1 view .LVU74
+ 251              		.loc 1 112 25 is_stmt 0 view .LVU75
+ 252 00e8 4D4B     		ldr	r3, .L25+8
+ 253 00ea 1B68     		ldr	r3, [r3]
+ 254 00ec EB1A     		subs	r3, r5, r3
+ 255              		.loc 1 112 20 view .LVU76
+ 256 00ee 40F6B732 		movw	r2, #2999
+ 257 00f2 9342     		cmp	r3, r2
+ 258 00f4 4FD8     		bhi	.L22
+ 259              	.L12:
+ 113:Core/Src/main.c ****                 {
+ 114:Core/Src/main.c ****                     LED_On_Index(r2_num_on);
+ 115:Core/Src/main.c ****                     r2_num_on++;
+ 116:Core/Src/main.c ****                     r2_last_dwell_ms = now;
+ 117:Core/Src/main.c **** 
+ 118:Core/Src/main.c ****                     if (r2_num_on == 6U)
+ 119:Core/Src/main.c ****                     {
+ 120:Core/Src/main.c ****                         for(uint8_t i=0;i<6;i++){
+ 121:Core/Src/main.c ****                             r2_last_toggle_ms[i] = now;
+ 122:Core/Src/main.c ****                             r2_output_state[i] = 1;
+ 123:Core/Src/main.c ****                             mode2_freq_index[i] = 0;
+ 124:Core/Src/main.c ****                         }
+ 125:Core/Src/main.c ****                     }
+ 126:Core/Src/main.c ****                 }
+ 127:Core/Src/main.c ****             }
+ 128:Core/Src/main.c ****             else
+ 129:Core/Src/main.c ****             {
+ 130:Core/Src/main.c ****                 /* (2) мигаем всеми включёнными */
+ 131:Core/Src/main.c ****                 for (uint8_t i = 0; i < 6; i++)
+ 132:Core/Src/main.c ****                 {
+ 133:Core/Src/main.c ****                     uint32_t interval = led_toggle_ms[mode2_freq_index[i]];
+ 134:Core/Src/main.c **** 
+ 135:Core/Src/main.c ****                     if (now - r2_last_toggle_ms[i] >= interval)
+ 136:Core/Src/main.c ****                     {
+ 137:Core/Src/main.c ****                         r2_last_toggle_ms[i] = now;
+ 138:Core/Src/main.c **** 
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 8
+
+
+ 139:Core/Src/main.c ****                         if (r2_output_state[i])
+ 140:Core/Src/main.c ****                         {
+ 141:Core/Src/main.c ****                             LED_Off_Index(i);
+ 142:Core/Src/main.c ****                             r2_output_state[i] = 0;
+ 143:Core/Src/main.c ****                         }
+ 144:Core/Src/main.c ****                         else
+ 145:Core/Src/main.c ****                         {
+ 146:Core/Src/main.c ****                             LED_On_Index(i);
+ 147:Core/Src/main.c ****                             r2_output_state[i] = 1;
+ 148:Core/Src/main.c ****                         }
+ 149:Core/Src/main.c ****                     }
+ 150:Core/Src/main.c ****                 }
+ 151:Core/Src/main.c ****             }
+ 152:Core/Src/main.c **** 
+ 153:Core/Src/main.c ****             /* (3) изменение частоты выбранного */
+ 154:Core/Src/main.c ****             if (button2_press_event_flag)
+ 260              		.loc 1 154 13 is_stmt 1 view .LVU77
+ 261              		.loc 1 154 17 is_stmt 0 view .LVU78
+ 262 00f6 544B     		ldr	r3, .L25+48
+ 263 00f8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 264              		.loc 1 154 16 view .LVU79
+ 265 00fa 8BB1     		cbz	r3, .L18
+ 155:Core/Src/main.c ****             {
+ 156:Core/Src/main.c ****                 button2_press_event_flag = 0;
+ 266              		.loc 1 156 17 is_stmt 1 view .LVU80
+ 267              		.loc 1 156 42 is_stmt 0 view .LVU81
+ 268 00fc 524B     		ldr	r3, .L25+48
+ 269 00fe 0022     		movs	r2, #0
+ 270 0100 1A70     		strb	r2, [r3]
+ 157:Core/Src/main.c ****                 mode2_freq_index[r2_selected_led] =
+ 271              		.loc 1 157 17 is_stmt 1 view .LVU82
+ 158:Core/Src/main.c ****                     (mode2_freq_index[r2_selected_led] + 1U) % 3U;
+ 272              		.loc 1 158 38 is_stmt 0 view .LVU83
+ 273 0102 4F4B     		ldr	r3, .L25+40
+ 274 0104 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 275 0106 4D4C     		ldr	r4, .L25+36
+ 276 0108 235C     		ldrb	r3, [r4, r0]	@ zero_extendqisi2
+ 277              		.loc 1 158 56 view .LVU84
+ 278 010a 0133     		adds	r3, r3, #1
+ 279              		.loc 1 158 62 view .LVU85
+ 280 010c A2F15532 		sub	r2, r2, #1431655765
+ 281 0110 A2FB0312 		umull	r1, r2, r2, r3
+ 282 0114 02F4FF71 		and	r1, r2, #510
+ 283 0118 01EB5202 		add	r2, r1, r2, lsr #1
+ 284 011c 9B1A     		subs	r3, r3, r2
+ 157:Core/Src/main.c ****                 mode2_freq_index[r2_selected_led] =
+ 285              		.loc 1 157 51 view .LVU86
+ 286 011e 2354     		strb	r3, [r4, r0]
+ 287              	.L18:
+ 159:Core/Src/main.c ****             }
+ 160:Core/Src/main.c **** 
+ 161:Core/Src/main.c ****             /* (4) выбор диода */
+ 162:Core/Src/main.c ****             if (button3_press_event_flag)
+ 288              		.loc 1 162 13 is_stmt 1 view .LVU87
+ 289              		.loc 1 162 17 is_stmt 0 view .LVU88
+ 290 0120 4A4B     		ldr	r3, .L25+52
+ 291 0122 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 9
+
+
+ 292              		.loc 1 162 16 view .LVU89
+ 293 0124 73B1     		cbz	r3, .L4
+ 163:Core/Src/main.c ****             {
+ 164:Core/Src/main.c ****                 button3_press_event_flag = 0;
+ 294              		.loc 1 164 17 is_stmt 1 view .LVU90
+ 295              		.loc 1 164 42 is_stmt 0 view .LVU91
+ 296 0126 494B     		ldr	r3, .L25+52
+ 297 0128 0022     		movs	r2, #0
+ 298 012a 1A70     		strb	r2, [r3]
+ 165:Core/Src/main.c ****                 r2_selected_led = (r2_selected_led + 1U) % 6U;
+ 299              		.loc 1 165 17 is_stmt 1 view .LVU92
+ 300              		.loc 1 165 52 is_stmt 0 view .LVU93
+ 301 012c 4449     		ldr	r1, .L25+40
+ 302 012e 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 303 0130 0132     		adds	r2, r2, #1
+ 304              		.loc 1 165 58 view .LVU94
+ 305 0132 444B     		ldr	r3, .L25+44
+ 306 0134 A3FB0203 		umull	r0, r3, r3, r2
+ 307 0138 9B08     		lsrs	r3, r3, #2
+ 308 013a 03EB4303 		add	r3, r3, r3, lsl #1
+ 309 013e 5800     		lsls	r0, r3, #1
+ 310 0140 131A     		subs	r3, r2, r0
+ 311              		.loc 1 165 33 view .LVU95
+ 312 0142 0B70     		strb	r3, [r1]
+ 313              	.LVL27:
+ 314              	.L4:
+ 315              		.loc 1 165 33 view .LVU96
+ 316              	.LBE5:
+  50:Core/Src/main.c ****     {
+ 317              		.loc 1 50 5 is_stmt 1 view .LVU97
+  53:Core/Src/main.c ****         {
+ 318              		.loc 1 53 9 view .LVU98
+  53:Core/Src/main.c ****         {
+ 319              		.loc 1 53 12 is_stmt 0 view .LVU99
+ 320 0144 394B     		ldr	r3, .L25+20
+ 321 0146 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  53:Core/Src/main.c ****         {
+ 322              		.loc 1 53 11 view .LVU100
+ 323 0148 002B     		cmp	r3, #0
+ 324 014a 80D1     		bne	.L23
+ 325              	.L5:
+  85:Core/Src/main.c ****         {
+ 326              		.loc 1 85 9 is_stmt 1 view .LVU101
+  85:Core/Src/main.c ****         {
+ 327              		.loc 1 85 24 is_stmt 0 view .LVU102
+ 328 014c 384B     		ldr	r3, .L25+24
+ 329 014e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  85:Core/Src/main.c ****         {
+ 330              		.loc 1 85 11 view .LVU103
+ 331 0150 002B     		cmp	r3, #0
+ 332 0152 C2D1     		bne	.L8
+ 333              	.LBB10:
+  87:Core/Src/main.c ****             uint32_t period = mode1_periods_ms[mode1_freq_index];
+ 334              		.loc 1 87 13 is_stmt 1 view .LVU104
+  87:Core/Src/main.c ****             uint32_t period = mode1_periods_ms[mode1_freq_index];
+ 335              		.loc 1 87 22 is_stmt 0 view .LVU105
+ 336 0154 304B     		ldr	r3, .L25
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 10
+
+
+ 337 0156 1A68     		ldr	r2, [r3]
+ 338              	.LVL28:
+  88:Core/Src/main.c **** 
+ 339              		.loc 1 88 13 is_stmt 1 view .LVU106
+  88:Core/Src/main.c **** 
+ 340              		.loc 1 88 47 is_stmt 0 view .LVU107
+ 341 0158 3D4B     		ldr	r3, .L25+56
+ 342 015a 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  88:Core/Src/main.c **** 
+ 343              		.loc 1 88 22 view .LVU108
+ 344 015c 3D4B     		ldr	r3, .L25+60
+ 345 015e 53F82110 		ldr	r1, [r3, r1, lsl #2]
+ 346              	.LVL29:
+  90:Core/Src/main.c ****             {
+ 347              		.loc 1 90 13 is_stmt 1 view .LVU109
+  90:Core/Src/main.c ****             {
+ 348              		.loc 1 90 20 is_stmt 0 view .LVU110
+ 349 0162 2E4B     		ldr	r3, .L25+4
+ 350 0164 1B68     		ldr	r3, [r3]
+ 351 0166 D31A     		subs	r3, r2, r3
+  90:Core/Src/main.c ****             {
+ 352              		.loc 1 90 15 view .LVU111
+ 353 0168 8B42     		cmp	r3, r1
+ 354 016a A4D2     		bcs	.L24
+ 355              	.LVL30:
+ 356              	.L9:
+  97:Core/Src/main.c ****             {
+ 357              		.loc 1 97 13 is_stmt 1 view .LVU112
+  97:Core/Src/main.c ****             {
+ 358              		.loc 1 97 16 is_stmt 0 view .LVU113
+ 359 016c 364B     		ldr	r3, .L25+48
+ 360 016e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  97:Core/Src/main.c ****             {
+ 361              		.loc 1 97 15 view .LVU114
+ 362 0170 002B     		cmp	r3, #0
+ 363 0172 E7D0     		beq	.L4
+  99:Core/Src/main.c ****                 mode1_freq_index = (mode1_freq_index+1U) % 3U;
+ 364              		.loc 1 99 17 is_stmt 1 view .LVU115
+  99:Core/Src/main.c ****                 mode1_freq_index = (mode1_freq_index+1U) % 3U;
+ 365              		.loc 1 99 42 is_stmt 0 view .LVU116
+ 366 0174 344B     		ldr	r3, .L25+48
+ 367 0176 0022     		movs	r2, #0
+ 368 0178 1A70     		strb	r2, [r3]
+ 100:Core/Src/main.c ****             }
+ 369              		.loc 1 100 17 is_stmt 1 view .LVU117
+ 100:Core/Src/main.c ****             }
+ 370              		.loc 1 100 53 is_stmt 0 view .LVU118
+ 371 017a 3548     		ldr	r0, .L25+56
+ 372 017c 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 373 017e 0133     		adds	r3, r3, #1
+ 100:Core/Src/main.c ****             }
+ 374              		.loc 1 100 58 view .LVU119
+ 375 0180 A2F15532 		sub	r2, r2, #1431655765
+ 376 0184 A2FB0312 		umull	r1, r2, r2, r3
+ 377 0188 02F4FF71 		and	r1, r2, #510
+ 378 018c 01EB5202 		add	r2, r1, r2, lsr #1
+ 379 0190 9B1A     		subs	r3, r3, r2
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 11
+
+
+ 100:Core/Src/main.c ****             }
+ 380              		.loc 1 100 34 view .LVU120
+ 381 0192 0370     		strb	r3, [r0]
+ 382 0194 D6E7     		b	.L4
+ 383              	.LVL31:
+ 384              	.L22:
+ 100:Core/Src/main.c ****             }
+ 385              		.loc 1 100 34 view .LVU121
+ 386              	.LBE10:
+ 387              	.LBB11:
+ 114:Core/Src/main.c ****                     r2_num_on++;
+ 388              		.loc 1 114 21 is_stmt 1 view .LVU122
+ 389 0196 FFF7FEFF 		bl	LED_On_Index
+ 390              	.LVL32:
+ 115:Core/Src/main.c ****                     r2_last_dwell_ms = now;
+ 391              		.loc 1 115 21 view .LVU123
+ 115:Core/Src/main.c ****                     r2_last_dwell_ms = now;
+ 392              		.loc 1 115 30 is_stmt 0 view .LVU124
+ 393 019a 264A     		ldr	r2, .L25+28
+ 394 019c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 395 019e 0133     		adds	r3, r3, #1
+ 396 01a0 DBB2     		uxtb	r3, r3
+ 397 01a2 1370     		strb	r3, [r2]
+ 116:Core/Src/main.c **** 
+ 398              		.loc 1 116 21 is_stmt 1 view .LVU125
+ 116:Core/Src/main.c **** 
+ 399              		.loc 1 116 38 is_stmt 0 view .LVU126
+ 400 01a4 1E4A     		ldr	r2, .L25+8
+ 401 01a6 1560     		str	r5, [r2]
+ 118:Core/Src/main.c ****                     {
+ 402              		.loc 1 118 21 is_stmt 1 view .LVU127
+ 118:Core/Src/main.c ****                     {
+ 403              		.loc 1 118 24 is_stmt 0 view .LVU128
+ 404 01a8 062B     		cmp	r3, #6
+ 405 01aa A4D1     		bne	.L12
+ 406              	.LBB6:
+ 120:Core/Src/main.c ****                             r2_last_toggle_ms[i] = now;
+ 407              		.loc 1 120 37 view .LVU129
+ 408 01ac 0023     		movs	r3, #0
+ 409 01ae 0AE0     		b	.L13
+ 410              	.LVL33:
+ 411              	.L14:
+ 121:Core/Src/main.c ****                             r2_output_state[i] = 1;
+ 412              		.loc 1 121 29 is_stmt 1 view .LVU130
+ 121:Core/Src/main.c ****                             r2_output_state[i] = 1;
+ 413              		.loc 1 121 50 is_stmt 0 view .LVU131
+ 414 01b0 1C4A     		ldr	r2, .L25+12
+ 415 01b2 42F82350 		str	r5, [r2, r3, lsl #2]
+ 122:Core/Src/main.c ****                             mode2_freq_index[i] = 0;
+ 416              		.loc 1 122 29 is_stmt 1 view .LVU132
+ 122:Core/Src/main.c ****                             mode2_freq_index[i] = 0;
+ 417              		.loc 1 122 48 is_stmt 0 view .LVU133
+ 418 01b6 204A     		ldr	r2, .L25+32
+ 419 01b8 0121     		movs	r1, #1
+ 420 01ba D154     		strb	r1, [r2, r3]
+ 123:Core/Src/main.c ****                         }
+ 421              		.loc 1 123 29 is_stmt 1 view .LVU134
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 12
+
+
+ 123:Core/Src/main.c ****                         }
+ 422              		.loc 1 123 49 is_stmt 0 view .LVU135
+ 423 01bc 1F4A     		ldr	r2, .L25+36
+ 424 01be 0021     		movs	r1, #0
+ 425 01c0 D154     		strb	r1, [r2, r3]
+ 120:Core/Src/main.c ****                             r2_last_toggle_ms[i] = now;
+ 426              		.loc 1 120 46 is_stmt 1 discriminator 3 view .LVU136
+ 427 01c2 0133     		adds	r3, r3, #1
+ 428              	.LVL34:
+ 120:Core/Src/main.c ****                             r2_last_toggle_ms[i] = now;
+ 429              		.loc 1 120 46 is_stmt 0 discriminator 3 view .LVU137
+ 430 01c4 DBB2     		uxtb	r3, r3
+ 431              	.LVL35:
+ 432              	.L13:
+ 120:Core/Src/main.c ****                             r2_last_toggle_ms[i] = now;
+ 433              		.loc 1 120 42 is_stmt 1 discriminator 1 view .LVU138
+ 434 01c6 052B     		cmp	r3, #5
+ 435 01c8 F2D9     		bls	.L14
+ 436 01ca 94E7     		b	.L12
+ 437              	.LVL36:
+ 438              	.L16:
+ 120:Core/Src/main.c ****                             r2_last_toggle_ms[i] = now;
+ 439              		.loc 1 120 42 is_stmt 0 discriminator 1 view .LVU139
+ 440              	.LBE6:
+ 441              	.LBB7:
+ 442              	.LBB8:
+ 146:Core/Src/main.c ****                             r2_output_state[i] = 1;
+ 443              		.loc 1 146 29 is_stmt 1 view .LVU140
+ 444 01cc 2046     		mov	r0, r4
+ 445 01ce FFF7FEFF 		bl	LED_On_Index
+ 446              	.LVL37:
+ 147:Core/Src/main.c ****                         }
+ 447              		.loc 1 147 29 view .LVU141
+ 147:Core/Src/main.c ****                         }
+ 448              		.loc 1 147 48 is_stmt 0 view .LVU142
+ 449 01d2 194B     		ldr	r3, .L25+32
+ 450 01d4 0122     		movs	r2, #1
+ 451 01d6 1A55     		strb	r2, [r3, r4]
+ 452              	.L15:
+ 453              	.LBE8:
+ 131:Core/Src/main.c ****                 {
+ 454              		.loc 1 131 45 is_stmt 1 discriminator 2 view .LVU143
+ 455 01d8 0134     		adds	r4, r4, #1
+ 456              	.LVL38:
+ 131:Core/Src/main.c ****                 {
+ 457              		.loc 1 131 45 is_stmt 0 discriminator 2 view .LVU144
+ 458 01da E4B2     		uxtb	r4, r4
+ 459              	.LVL39:
+ 460              	.L11:
+ 131:Core/Src/main.c ****                 {
+ 461              		.loc 1 131 39 is_stmt 1 discriminator 1 view .LVU145
+ 462 01dc 052C     		cmp	r4, #5
+ 463 01de 8AD8     		bhi	.L12
+ 464              	.LBB9:
+ 133:Core/Src/main.c **** 
+ 465              		.loc 1 133 21 view .LVU146
+ 133:Core/Src/main.c **** 
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 13
+
+
+ 466              		.loc 1 133 71 is_stmt 0 view .LVU147
+ 467 01e0 164B     		ldr	r3, .L25+36
+ 468 01e2 1A5D     		ldrb	r2, [r3, r4]	@ zero_extendqisi2
+ 133:Core/Src/main.c **** 
+ 469              		.loc 1 133 30 view .LVU148
+ 470 01e4 1C4B     		ldr	r3, .L25+64
+ 471 01e6 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 472              	.LVL40:
+ 135:Core/Src/main.c ****                     {
+ 473              		.loc 1 135 21 is_stmt 1 view .LVU149
+ 135:Core/Src/main.c ****                     {
+ 474              		.loc 1 135 48 is_stmt 0 view .LVU150
+ 475 01ea 0E4B     		ldr	r3, .L25+12
+ 476 01ec 53F82430 		ldr	r3, [r3, r4, lsl #2]
+ 135:Core/Src/main.c ****                     {
+ 477              		.loc 1 135 29 view .LVU151
+ 478 01f0 EB1A     		subs	r3, r5, r3
+ 135:Core/Src/main.c ****                     {
+ 479              		.loc 1 135 24 view .LVU152
+ 480 01f2 9342     		cmp	r3, r2
+ 481 01f4 F0D3     		bcc	.L15
+ 137:Core/Src/main.c **** 
+ 482              		.loc 1 137 25 is_stmt 1 view .LVU153
+ 137:Core/Src/main.c **** 
+ 483              		.loc 1 137 46 is_stmt 0 view .LVU154
+ 484 01f6 0B4B     		ldr	r3, .L25+12
+ 485 01f8 43F82450 		str	r5, [r3, r4, lsl #2]
+ 139:Core/Src/main.c ****                         {
+ 486              		.loc 1 139 25 is_stmt 1 view .LVU155
+ 139:Core/Src/main.c ****                         {
+ 487              		.loc 1 139 44 is_stmt 0 view .LVU156
+ 488 01fc 0E4B     		ldr	r3, .L25+32
+ 489 01fe 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ 139:Core/Src/main.c ****                         {
+ 490              		.loc 1 139 28 view .LVU157
+ 491 0200 002B     		cmp	r3, #0
+ 492 0202 E3D0     		beq	.L16
+ 141:Core/Src/main.c ****                             r2_output_state[i] = 0;
+ 493              		.loc 1 141 29 is_stmt 1 view .LVU158
+ 494 0204 2046     		mov	r0, r4
+ 495 0206 FFF7FEFF 		bl	LED_Off_Index
+ 496              	.LVL41:
+ 142:Core/Src/main.c ****                         }
+ 497              		.loc 1 142 29 view .LVU159
+ 142:Core/Src/main.c ****                         }
+ 498              		.loc 1 142 48 is_stmt 0 view .LVU160
+ 499 020a 0B4B     		ldr	r3, .L25+32
+ 500 020c 0022     		movs	r2, #0
+ 501 020e 1A55     		strb	r2, [r3, r4]
+ 502 0210 E2E7     		b	.L15
+ 503              	.LVL42:
+ 504              	.L19:
+ 142:Core/Src/main.c ****                         }
+ 505              		.loc 1 142 48 view .LVU161
+ 506              	.LBE9:
+ 131:Core/Src/main.c ****                 {
+ 507              		.loc 1 131 30 view .LVU162
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 14
+
+
+ 508 0212 0024     		movs	r4, #0
+ 509 0214 E2E7     		b	.L11
+ 510              	.L26:
+ 511 0216 00BF     		.align	2
+ 512              	.L25:
+ 513 0218 00000000 		.word	system_time_ms
+ 514 021c 00000000 		.word	r1_last_switch_ms
+ 515 0220 00000000 		.word	r2_last_dwell_ms
+ 516 0224 00000000 		.word	r2_last_toggle_ms
+ 517 0228 00000000 		.word	r1_active_led
+ 518 022c 00000000 		.word	button1_pressed_flag
+ 519 0230 00000000 		.word	current_mode
+ 520 0234 00000000 		.word	r2_num_on
+ 521 0238 00000000 		.word	r2_output_state
+ 522 023c 00000000 		.word	mode2_freq_index
+ 523 0240 00000000 		.word	r2_selected_led
+ 524 0244 ABAAAAAA 		.word	-1431655765
+ 525 0248 00000000 		.word	button2_press_event_flag
+ 526 024c 00000000 		.word	button3_press_event_flag
+ 527 0250 00000000 		.word	mode1_freq_index
+ 528 0254 00000000 		.word	mode1_periods_ms
+ 529 0258 00000000 		.word	led_toggle_ms
+ 530              	.LBE7:
+ 531              	.LBE11:
+ 532              		.cfi_endproc
+ 533              	.LFE130:
+ 535              		.section	.bss.r2_selected_led,"aw",%nobits
+ 538              	r2_selected_led:
+ 539 0000 00       		.space	1
+ 540              		.section	.data.r2_output_state,"aw"
+ 541              		.align	2
+ 544              	r2_output_state:
+ 545 0000 01010101 		.ascii	"\001\001\001\001\001\001"
+ 545      0101
+ 546              		.section	.bss.r2_last_toggle_ms,"aw",%nobits
+ 547              		.align	2
+ 550              	r2_last_toggle_ms:
+ 551 0000 00000000 		.space	24
+ 551      00000000 
+ 551      00000000 
+ 551      00000000 
+ 551      00000000 
+ 552              		.section	.bss.r2_last_dwell_ms,"aw",%nobits
+ 553              		.align	2
+ 556              	r2_last_dwell_ms:
+ 557 0000 00000000 		.space	4
+ 558              		.section	.bss.r2_num_on,"aw",%nobits
+ 561              	r2_num_on:
+ 562 0000 00       		.space	1
+ 563              		.section	.bss.r1_last_switch_ms,"aw",%nobits
+ 564              		.align	2
+ 567              	r1_last_switch_ms:
+ 568 0000 00000000 		.space	4
+ 569              		.section	.bss.r1_active_led,"aw",%nobits
+ 572              	r1_active_led:
+ 573 0000 00       		.space	1
+ 574              		.section	.bss.mode2_freq_index,"aw",%nobits
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 15
+
+
+ 575              		.align	2
+ 578              	mode2_freq_index:
+ 579 0000 00000000 		.space	6
+ 579      0000
+ 580              		.section	.bss.mode1_freq_index,"aw",%nobits
+ 583              	mode1_freq_index:
+ 584 0000 00       		.space	1
+ 585              		.section	.rodata.led_toggle_ms,"a"
+ 586              		.align	2
+ 589              	led_toggle_ms:
+ 590 0000 C4090000 		.word	2500
+ 591 0004 2B020000 		.word	555
+ 592 0008 4D010000 		.word	333
+ 593              		.section	.rodata.mode1_periods_ms,"a"
+ 594              		.align	2
+ 597              	mode1_periods_ms:
+ 598 0000 82060000 		.word	1666
+ 599 0004 01030000 		.word	769
+ 600 0008 A0010000 		.word	416
+ 601              		.section	.bss.current_mode,"aw",%nobits
+ 604              	current_mode:
+ 605 0000 00       		.space	1
+ 606              		.text
+ 607              	.Letext0:
+ 608              		.file 2 "D:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 609              		.file 3 "D:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 610              		.file 4 "Core/Inc/Interrupt.h"
+ 611              		.file 5 "Core/Inc/Init.h"
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccgOCrWE.s 			page 16
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:21     .text.main:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:27     .text.main:00000000 main
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:513    .text.main:00000218 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:567    .bss.r1_last_switch_ms:00000000 r1_last_switch_ms
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:556    .bss.r2_last_dwell_ms:00000000 r2_last_dwell_ms
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:550    .bss.r2_last_toggle_ms:00000000 r2_last_toggle_ms
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:572    .bss.r1_active_led:00000000 r1_active_led
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:604    .bss.current_mode:00000000 current_mode
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:561    .bss.r2_num_on:00000000 r2_num_on
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:544    .data.r2_output_state:00000000 r2_output_state
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:578    .bss.mode2_freq_index:00000000 mode2_freq_index
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:538    .bss.r2_selected_led:00000000 r2_selected_led
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:583    .bss.mode1_freq_index:00000000 mode1_freq_index
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:597    .rodata.mode1_periods_ms:00000000 mode1_periods_ms
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:589    .rodata.led_toggle_ms:00000000 led_toggle_ms
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:539    .bss.r2_selected_led:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:541    .data.r2_output_state:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:547    .bss.r2_last_toggle_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:553    .bss.r2_last_dwell_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:562    .bss.r2_num_on:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:564    .bss.r1_last_switch_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:573    .bss.r1_active_led:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:575    .bss.mode2_freq_index:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:584    .bss.mode1_freq_index:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:586    .rodata.led_toggle_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:594    .rodata.mode1_periods_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccgOCrWE.s:605    .bss.current_mode:00000000 $d
+
+UNDEFINED SYMBOLS
+Clock_Init_HSE_PLL_168MHz
+SysTick_Init_1ms
+Buttons_GPIO_Init
+Buttons_EXTI_Init
+LEDs_GPIO_Init
+ITR_Init
+LED_AllOff
+LED_SetActive
+LED_On_Index
+LED_Off_Index
+system_time_ms
+button1_pressed_flag
+button2_press_event_flag
+button3_press_event_flag
