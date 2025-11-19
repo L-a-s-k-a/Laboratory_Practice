@@ -1,0 +1,214 @@
+ARM GAS  C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Ini_Self_Def,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini_Self_Def
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini_Self_Def:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** #include "../../CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
+   3:Core/Src/init.c **** #include "../../CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+   4:Core/Src/init.c **** 
+   5:Core/Src/init.c **** void GPIO_Ini_Self_Def(void)
+   6:Core/Src/init.c **** {
+  29              		.loc 1 6 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   7:Core/Src/init.c ****     // 使能GPIOB和GPIOC时钟
+   8:Core/Src/init.c ****     SET_BIT_SELF(RCC_AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+  34              		.loc 1 8 5 view .LVU1
+  35 0000 184A     		ldr	r2, .L2
+  36 0002 D2F83038 		ldr	r3, [r2, #2096]
+  37 0006 43F00603 		orr	r3, r3, #6
+  38 000a C2F83038 		str	r3, [r2, #2096]
+   9:Core/Src/init.c ****     
+  10:Core/Src/init.c ****     // 配置PB7为输出（蓝色LED）
+  11:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_MODER, GPIO_PIN_7_OUT);
+  39              		.loc 1 11 5 view .LVU2
+  40 000e 164B     		ldr	r3, .L2+4
+  41 0010 D3F80024 		ldr	r2, [r3, #1024]
+  42 0014 42F48042 		orr	r2, r2, #16384
+  43 0018 C3F80024 		str	r2, [r3, #1024]
+  12:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_OSPEEDR, GPIO_PIN_7_MED);
+  44              		.loc 1 12 5 view .LVU3
+  45 001c D3F80824 		ldr	r2, [r3, #1032]
+  46 0020 42F48042 		orr	r2, r2, #16384
+ARM GAS  C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s 			page 2
+
+
+  47 0024 C3F80824 		str	r2, [r3, #1032]
+  13:Core/Src/init.c ****     SET_BIT_SELF(GPIOB_BSRR, GPIO_PIN_7_RESET);
+  48              		.loc 1 13 5 view .LVU4
+  49 0028 D3F81824 		ldr	r2, [r3, #1048]
+  50 002c 42F40002 		orr	r2, r2, #8388608
+  51 0030 C3F81824 		str	r2, [r3, #1048]
+  14:Core/Src/init.c ****     
+  15:Core/Src/init.c ****     // PC6按键配置 - 内部上拉
+  16:Core/Src/init.c ****     GPIOC->MODER &= ~GPIO_MODER_MODER6;      // 输入模式
+  52              		.loc 1 16 5 view .LVU5
+  53              		.loc 1 16 10 is_stmt 0 view .LVU6
+  54 0034 03F50063 		add	r3, r3, #2048
+  55 0038 1A68     		ldr	r2, [r3]
+  56              		.loc 1 16 18 view .LVU7
+  57 003a 22F44052 		bic	r2, r2, #12288
+  58 003e 1A60     		str	r2, [r3]
+  17:Core/Src/init.c ****     GPIOC->PUPDR &= ~GPIO_PUPDR_PUPD6;       // 清除设置
+  59              		.loc 1 17 5 is_stmt 1 view .LVU8
+  60              		.loc 1 17 10 is_stmt 0 view .LVU9
+  61 0040 DA68     		ldr	r2, [r3, #12]
+  62              		.loc 1 17 18 view .LVU10
+  63 0042 22F44052 		bic	r2, r2, #12288
+  64 0046 DA60     		str	r2, [r3, #12]
+  18:Core/Src/init.c ****     GPIOC->PUPDR |= GPIO_PUPDR_PUPD6_0;      // 启用内部上拉
+  65              		.loc 1 18 5 is_stmt 1 view .LVU11
+  66              		.loc 1 18 10 is_stmt 0 view .LVU12
+  67 0048 DA68     		ldr	r2, [r3, #12]
+  68              		.loc 1 18 18 view .LVU13
+  69 004a 42F48052 		orr	r2, r2, #4096
+  70 004e DA60     		str	r2, [r3, #12]
+  19:Core/Src/init.c ****     
+  20:Core/Src/init.c ****     // PC13按键配置 - 外部下拉（浮空输入）
+  21:Core/Src/init.c ****     GPIOC->MODER &= ~GPIO_MODER_MODER13;     // 输入模式
+  71              		.loc 1 21 5 is_stmt 1 view .LVU14
+  72              		.loc 1 21 10 is_stmt 0 view .LVU15
+  73 0050 1A68     		ldr	r2, [r3]
+  74              		.loc 1 21 18 view .LVU16
+  75 0052 22F04062 		bic	r2, r2, #201326592
+  76 0056 1A60     		str	r2, [r3]
+  22:Core/Src/init.c ****     GPIOC->PUPDR &= ~GPIO_PUPDR_PUPD13;      // 00: 浮空输入（外部下拉）
+  77              		.loc 1 22 5 is_stmt 1 view .LVU17
+  78              		.loc 1 22 10 is_stmt 0 view .LVU18
+  79 0058 DA68     		ldr	r2, [r3, #12]
+  80              		.loc 1 22 18 view .LVU19
+  81 005a 22F04062 		bic	r2, r2, #201326592
+  82 005e DA60     		str	r2, [r3, #12]
+  23:Core/Src/init.c **** }
+  83              		.loc 1 23 1 view .LVU20
+  84 0060 7047     		bx	lr
+  85              	.L3:
+  86 0062 00BF     		.align	2
+  87              	.L2:
+  88 0064 00300240 		.word	1073885184
+  89 0068 00000240 		.word	1073872896
+  90              		.cfi_endproc
+  91              	.LFE130:
+  93              		.section	.text.GPIO_Ini_CMSIS,"ax",%progbits
+ARM GAS  C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s 			page 3
+
+
+  94              		.align	1
+  95              		.global	GPIO_Ini_CMSIS
+  96              		.syntax unified
+  97              		.thumb
+  98              		.thumb_func
+ 100              	GPIO_Ini_CMSIS:
+ 101              	.LFB131:
+  24:Core/Src/init.c **** 
+  25:Core/Src/init.c **** void GPIO_Ini_CMSIS(void)
+  26:Core/Src/init.c **** {
+ 102              		.loc 1 26 1 is_stmt 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106              		@ link register save eliminated.
+  27:Core/Src/init.c ****     /* 使用GPIOB点亮PB14红色LED和PB0绿色LED */
+  28:Core/Src/init.c ****     
+  29:Core/Src/init.c ****     // 配置PB14（红色LED）
+  30:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);        // 输出模式
+ 107              		.loc 1 30 5 view .LVU22
+ 108 0000 104B     		ldr	r3, .L5
+ 109 0002 1A68     		ldr	r2, [r3]
+ 110 0004 42F08052 		orr	r2, r2, #268435456
+ 111 0008 1A60     		str	r2, [r3]
+  31:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT14);        // 推挽输出
+ 112              		.loc 1 31 5 view .LVU23
+ 113 000a 5A68     		ldr	r2, [r3, #4]
+ 114 000c 22F48042 		bic	r2, r2, #16384
+ 115 0010 5A60     		str	r2, [r3, #4]
+  32:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0); // 中速
+ 116              		.loc 1 32 5 view .LVU24
+ 117 0012 9A68     		ldr	r2, [r3, #8]
+ 118 0014 42F08052 		orr	r2, r2, #268435456
+ 119 0018 9A60     		str	r2, [r3, #8]
+  33:Core/Src/init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);              // 初始关闭
+ 120              		.loc 1 33 5 view .LVU25
+ 121 001a 9A69     		ldr	r2, [r3, #24]
+ 122 001c 42F08042 		orr	r2, r2, #1073741824
+ 123 0020 9A61     		str	r2, [r3, #24]
+  34:Core/Src/init.c ****     
+  35:Core/Src/init.c ****     // 配置PB0（绿色LED）
+  36:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);         // 输出模式
+ 124              		.loc 1 36 5 view .LVU26
+ 125 0022 1A68     		ldr	r2, [r3]
+ 126 0024 42F00102 		orr	r2, r2, #1
+ 127 0028 1A60     		str	r2, [r3]
+  37:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT0);         // 推挽输出
+ 128              		.loc 1 37 5 view .LVU27
+ 129 002a 5A68     		ldr	r2, [r3, #4]
+ 130 002c 22F00102 		bic	r2, r2, #1
+ 131 0030 5A60     		str	r2, [r3, #4]
+  38:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0); // 中速
+ 132              		.loc 1 38 5 view .LVU28
+ 133 0032 9A68     		ldr	r2, [r3, #8]
+ 134 0034 42F00102 		orr	r2, r2, #1
+ 135 0038 9A60     		str	r2, [r3, #8]
+  39:Core/Src/init.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);             // 初始关闭
+ARM GAS  C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s 			page 4
+
+
+ 136              		.loc 1 39 5 view .LVU29
+ 137 003a 9A69     		ldr	r2, [r3, #24]
+ 138 003c 42F48032 		orr	r2, r2, #65536
+ 139 0040 9A61     		str	r2, [r3, #24]
+  40:Core/Src/init.c **** }
+ 140              		.loc 1 40 1 is_stmt 0 view .LVU30
+ 141 0042 7047     		bx	lr
+ 142              	.L6:
+ 143              		.align	2
+ 144              	.L5:
+ 145 0044 00040240 		.word	1073873920
+ 146              		.cfi_endproc
+ 147              	.LFE131:
+ 149              		.text
+ 150              	.Letext0:
+ 151              		.file 2 "D:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 152              		.file 3 "D:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 153              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s:21     .text.GPIO_Ini_Self_Def:00000000 $t
+C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s:27     .text.GPIO_Ini_Self_Def:00000000 GPIO_Ini_Self_Def
+C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s:88     .text.GPIO_Ini_Self_Def:00000064 $d
+C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s:94     .text.GPIO_Ini_CMSIS:00000000 $t
+C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s:100    .text.GPIO_Ini_CMSIS:00000000 GPIO_Ini_CMSIS
+C:\Users\dzhao\AppData\Local\Temp\ccUXCB1W.s:145    .text.GPIO_Ini_CMSIS:00000044 $d
+
+NO UNDEFINED SYMBOLS
