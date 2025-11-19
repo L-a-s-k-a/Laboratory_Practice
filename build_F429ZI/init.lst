@@ -1,0 +1,1339 @@
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.Onboard_Green_LED_On,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	Onboard_Green_LED_On:
+  27              	.LFB131:
+   1:Core/Src/init.c **** #include "E:/VSCode-file/Laboratory_Practice/Core/Inc/init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** // 全局监测变量定义 - 便于STMViewer监测
+   4:Core/Src/init.c **** SystemMonitor_t g_system_monitor = {
+   5:Core/Src/init.c ****     .current_mode = 1,
+   6:Core/Src/init.c ****     .pg3_press_count = 0,
+   7:Core/Src/init.c ****     .onboard_green_state = 0,
+   8:Core/Src/init.c ****     .onboard_blue_state = 0,
+   9:Core/Src/init.c ****     .onboard_red_state = 0,
+  10:Core/Src/init.c ****     .external_green_state = 0,
+  11:Core/Src/init.c ****     .external_blue_state = 0,
+  12:Core/Src/init.c ****     .external_red_state = 0,
+  13:Core/Src/init.c ****     .pg3_key_state = 1,      // 初始状态：未按下 (内部上拉)
+  14:Core/Src/init.c ****     .pc6_key_state = 1,      // 初始状态：未按下 (内部上拉)
+  15:Core/Src/init.c ****     .pc8_key_state = 1,      // 初始状态：未按下 (内部上拉)
+  16:Core/Src/init.c ****     .pc9_key_state = 1,      // 初始状态：未按下 (内部上拉)
+  17:Core/Src/init.c ****     .pg3_pressed_flag = 0,
+  18:Core/Src/init.c ****     .pc6_pressed_flag = 0,
+  19:Core/Src/init.c ****     .pc8_pressed_flag = 0,
+  20:Core/Src/init.c ****     .pc9_pressed_flag = 0,
+  21:Core/Src/init.c ****     .loop_counter = 0,
+  22:Core/Src/init.c ****     .last_mode_change = 0,
+  23:Core/Src/init.c ****     .pg3_pulse_counter = 0    // 新增：脉冲计数器初始化为0
+  24:Core/Src/init.c **** };
+  25:Core/Src/init.c **** 
+  26:Core/Src/init.c **** void GPIO_Init_Memory(void) {
+  27:Core/Src/init.c ****     // 启用GPIO时钟 - 直接内存访问 (使用CMSIS定义的RCC_BASE)
+  28:Core/Src/init.c ****     *((volatile uint32_t*)(RCC_BASE + AHB1ENR_OFFSET)) |= (1U << 1) | (1U << 2) | (1U << 6);
+  29:Core/Src/init.c **** 
+  30:Core/Src/init.c ****     // 配置PG3为输入模式+上拉 - 直接内存访问 (使用CMSIS定义的GPIOG_BASE)
+  31:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOG_BASE + MODER_OFFSET)) &= ~(3U << (KEY_MODE_PIN * 2));
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 2
+
+
+  32:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOG_BASE + PUPDR_OFFSET)) = 
+  33:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOG_BASE + PUPDR_OFFSET)) & ~(3U << (KEY_MODE_PIN * 2))) | 
+  34:Core/Src/init.c ****         (1U << (KEY_MODE_PIN * 2));
+  35:Core/Src/init.c **** 
+  36:Core/Src/init.c ****     // 配置PC6、PC8、PC9为输入模式+上拉 - 直接内存访问 (使用CMSIS定义的GPIOC_
+  37:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOC_BASE + MODER_OFFSET)) &= 
+  38:Core/Src/init.c ****         ~((3U << (KEY_CTRL1_PIN * 2)) | (3U << (KEY_CTRL2_PIN * 2)) | (3U << (KEY_CTRL3_PIN * 2)));
+  39:Core/Src/init.c ****     
+  40:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOC_BASE + PUPDR_OFFSET)) = 
+  41:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOC_BASE + PUPDR_OFFSET)) & 
+  42:Core/Src/init.c ****          ~((3U << (KEY_CTRL1_PIN * 2)) | (3U << (KEY_CTRL2_PIN * 2)) | (3U << (KEY_CTRL3_PIN * 2)))
+  43:Core/Src/init.c ****         ((1U << (KEY_CTRL1_PIN * 2)) | (1U << (KEY_CTRL2_PIN * 2)) | (1U << (KEY_CTRL3_PIN * 2)));
+  44:Core/Src/init.c **** 
+  45:Core/Src/init.c ****     // ====== 配置板载LED引脚 - 直接内存访问 (使用CMSIS定义的GPIOB_BASE) ======
+  46:Core/Src/init.c ****     // 板载绿色LED (PB0)
+  47:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) = 
+  48:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_GREEN_PIN * 2))) | 
+  49:Core/Src/init.c ****         (1U << (ONBOARD_GREEN_PIN * 2));
+  50:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OTYPER_OFFSET)) &= ~(1U << ONBOARD_GREEN_PIN);
+  51:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+  52:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_GREEN_PIN * 2))) |
+  53:Core/Src/init.c ****         (2U << (ONBOARD_GREEN_PIN * 2));
+  54:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + PUPDR_OFFSET)) &= ~(3U << (ONBOARD_GREEN_PIN * 2));
+  55:Core/Src/init.c **** 
+  56:Core/Src/init.c ****     // 板载蓝色LED (PB7)
+  57:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) = 
+  58:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_BLUE_PIN * 2))) | 
+  59:Core/Src/init.c ****         (1U << (ONBOARD_BLUE_PIN * 2));
+  60:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OTYPER_OFFSET)) &= ~(1U << ONBOARD_BLUE_PIN);
+  61:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+  62:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_BLUE_PIN * 2))) | 
+  63:Core/Src/init.c ****         (2U << (ONBOARD_BLUE_PIN * 2));
+  64:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + PUPDR_OFFSET)) &= ~(3U << (ONBOARD_BLUE_PIN * 2));
+  65:Core/Src/init.c **** 
+  66:Core/Src/init.c ****     // 板载红色LED (PB14)
+  67:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) = 
+  68:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_RED_PIN * 2))) | 
+  69:Core/Src/init.c ****         (1U << (ONBOARD_RED_PIN * 2));
+  70:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OTYPER_OFFSET)) &= ~(1U << ONBOARD_RED_PIN);
+  71:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+  72:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_RED_PIN * 2))) | 
+  73:Core/Src/init.c ****         (2U << (ONBOARD_RED_PIN * 2));
+  74:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + PUPDR_OFFSET)) &= ~(3U << (ONBOARD_RED_PIN * 2));
+  75:Core/Src/init.c **** 
+  76:Core/Src/init.c ****     // ====== 配置外接LED引脚 - 使用纯地址级宏定义 ======
+  77:Core/Src/init.c ****     EXTERNAL_GREEN_MODER_OUT();
+  78:Core/Src/init.c ****     EXTERNAL_GREEN_OTYPER_PP();
+  79:Core/Src/init.c ****     EXTERNAL_GREEN_OSPEEDR_HIGH();
+  80:Core/Src/init.c ****     EXTERNAL_GREEN_PUPDR_NOPULL();
+  81:Core/Src/init.c **** 
+  82:Core/Src/init.c ****     EXTERNAL_BLUE_MODER_OUT();
+  83:Core/Src/init.c ****     EXTERNAL_BLUE_OTYPER_PP();
+  84:Core/Src/init.c ****     EXTERNAL_BLUE_OSPEEDR_HIGH();
+  85:Core/Src/init.c ****     EXTERNAL_BLUE_PUPDR_NOPULL();
+  86:Core/Src/init.c **** 
+  87:Core/Src/init.c ****     EXTERNAL_RED_MODER_OUT();
+  88:Core/Src/init.c ****     EXTERNAL_RED_OTYPER_PP();
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 3
+
+
+  89:Core/Src/init.c ****     EXTERNAL_RED_OSPEEDR_HIGH();
+  90:Core/Src/init.c ****     EXTERNAL_RED_PUPDR_NOPULL();
+  91:Core/Src/init.c **** 
+  92:Core/Src/init.c ****     // 初始状态：所有LED熄灭
+  93:Core/Src/init.c ****     All_LEDs_Off();
+  94:Core/Src/init.c **** }
+  95:Core/Src/init.c **** 
+  96:Core/Src/init.c **** // 板载LED控制 - 直接内存访问
+  97:Core/Src/init.c **** static void Onboard_Green_LED_On(void) {
+  28              		.loc 1 97 40 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  98:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + BSRR_OFFSET)) = (1U << ONBOARD_GREEN_PIN);
+  33              		.loc 1 98 5 view .LVU1
+  34              		.loc 1 98 55 is_stmt 0 view .LVU2
+  35 0000 0123     		movs	r3, #1
+  36 0002 034A     		ldr	r2, .L2
+  37 0004 C2F81834 		str	r3, [r2, #1048]
+  99:Core/Src/init.c ****     g_system_monitor.onboard_green_state = 1;
+  38              		.loc 1 99 5 is_stmt 1 view .LVU3
+  39              		.loc 1 99 42 is_stmt 0 view .LVU4
+  40 0008 024A     		ldr	r2, .L2+4
+  41 000a 1372     		strb	r3, [r2, #8]
+ 100:Core/Src/init.c **** }
+  42              		.loc 1 100 1 view .LVU5
+  43 000c 7047     		bx	lr
+  44              	.L3:
+  45 000e 00BF     		.align	2
+  46              	.L2:
+  47 0010 00000240 		.word	1073872896
+  48 0014 00000000 		.word	g_system_monitor
+  49              		.cfi_endproc
+  50              	.LFE131:
+  52              		.section	.text.Onboard_Green_LED_Off,"ax",%progbits
+  53              		.align	1
+  54              		.syntax unified
+  55              		.thumb
+  56              		.thumb_func
+  58              	Onboard_Green_LED_Off:
+  59              	.LFB132:
+ 101:Core/Src/init.c **** 
+ 102:Core/Src/init.c **** static void Onboard_Green_LED_Off(void) {
+  60              		.loc 1 102 41 is_stmt 1 view -0
+  61              		.cfi_startproc
+  62              		@ args = 0, pretend = 0, frame = 0
+  63              		@ frame_needed = 0, uses_anonymous_args = 0
+  64              		@ link register save eliminated.
+ 103:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + BSRR_OFFSET)) = (1U << (ONBOARD_GREEN_PIN + 16U));
+  65              		.loc 1 103 5 view .LVU7
+  66              		.loc 1 103 55 is_stmt 0 view .LVU8
+  67 0000 044B     		ldr	r3, .L5
+  68 0002 4FF48032 		mov	r2, #65536
+  69 0006 C3F81824 		str	r2, [r3, #1048]
+ 104:Core/Src/init.c ****     g_system_monitor.onboard_green_state = 0;
+  70              		.loc 1 104 5 is_stmt 1 view .LVU9
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 4
+
+
+  71              		.loc 1 104 42 is_stmt 0 view .LVU10
+  72 000a 034B     		ldr	r3, .L5+4
+  73 000c 0022     		movs	r2, #0
+  74 000e 1A72     		strb	r2, [r3, #8]
+ 105:Core/Src/init.c **** }
+  75              		.loc 1 105 1 view .LVU11
+  76 0010 7047     		bx	lr
+  77              	.L6:
+  78 0012 00BF     		.align	2
+  79              	.L5:
+  80 0014 00000240 		.word	1073872896
+  81 0018 00000000 		.word	g_system_monitor
+  82              		.cfi_endproc
+  83              	.LFE132:
+  85              		.section	.text.Onboard_Blue_LED_On,"ax",%progbits
+  86              		.align	1
+  87              		.syntax unified
+  88              		.thumb
+  89              		.thumb_func
+  91              	Onboard_Blue_LED_On:
+  92              	.LFB133:
+ 106:Core/Src/init.c **** 
+ 107:Core/Src/init.c **** static void Onboard_Blue_LED_On(void) {
+  93              		.loc 1 107 39 is_stmt 1 view -0
+  94              		.cfi_startproc
+  95              		@ args = 0, pretend = 0, frame = 0
+  96              		@ frame_needed = 0, uses_anonymous_args = 0
+  97              		@ link register save eliminated.
+ 108:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + BSRR_OFFSET)) = (1U << ONBOARD_BLUE_PIN);
+  98              		.loc 1 108 5 view .LVU13
+  99              		.loc 1 108 55 is_stmt 0 view .LVU14
+ 100 0000 034B     		ldr	r3, .L8
+ 101 0002 8022     		movs	r2, #128
+ 102 0004 C3F81824 		str	r2, [r3, #1048]
+ 109:Core/Src/init.c ****     g_system_monitor.onboard_blue_state = 1;
+ 103              		.loc 1 109 5 is_stmt 1 view .LVU15
+ 104              		.loc 1 109 41 is_stmt 0 view .LVU16
+ 105 0008 024B     		ldr	r3, .L8+4
+ 106 000a 0122     		movs	r2, #1
+ 107 000c 5A72     		strb	r2, [r3, #9]
+ 110:Core/Src/init.c **** }
+ 108              		.loc 1 110 1 view .LVU17
+ 109 000e 7047     		bx	lr
+ 110              	.L9:
+ 111              		.align	2
+ 112              	.L8:
+ 113 0010 00000240 		.word	1073872896
+ 114 0014 00000000 		.word	g_system_monitor
+ 115              		.cfi_endproc
+ 116              	.LFE133:
+ 118              		.section	.text.Onboard_Blue_LED_Off,"ax",%progbits
+ 119              		.align	1
+ 120              		.syntax unified
+ 121              		.thumb
+ 122              		.thumb_func
+ 124              	Onboard_Blue_LED_Off:
+ 125              	.LFB134:
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 5
+
+
+ 111:Core/Src/init.c **** 
+ 112:Core/Src/init.c **** static void Onboard_Blue_LED_Off(void) {
+ 126              		.loc 1 112 40 is_stmt 1 view -0
+ 127              		.cfi_startproc
+ 128              		@ args = 0, pretend = 0, frame = 0
+ 129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 130              		@ link register save eliminated.
+ 113:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + BSRR_OFFSET)) = (1U << (ONBOARD_BLUE_PIN + 16U));
+ 131              		.loc 1 113 5 view .LVU19
+ 132              		.loc 1 113 55 is_stmt 0 view .LVU20
+ 133 0000 044B     		ldr	r3, .L11
+ 134 0002 4FF40002 		mov	r2, #8388608
+ 135 0006 C3F81824 		str	r2, [r3, #1048]
+ 114:Core/Src/init.c ****     g_system_monitor.onboard_blue_state = 0;
+ 136              		.loc 1 114 5 is_stmt 1 view .LVU21
+ 137              		.loc 1 114 41 is_stmt 0 view .LVU22
+ 138 000a 034B     		ldr	r3, .L11+4
+ 139 000c 0022     		movs	r2, #0
+ 140 000e 5A72     		strb	r2, [r3, #9]
+ 115:Core/Src/init.c **** }
+ 141              		.loc 1 115 1 view .LVU23
+ 142 0010 7047     		bx	lr
+ 143              	.L12:
+ 144 0012 00BF     		.align	2
+ 145              	.L11:
+ 146 0014 00000240 		.word	1073872896
+ 147 0018 00000000 		.word	g_system_monitor
+ 148              		.cfi_endproc
+ 149              	.LFE134:
+ 151              		.section	.text.Onboard_Red_LED_On,"ax",%progbits
+ 152              		.align	1
+ 153              		.syntax unified
+ 154              		.thumb
+ 155              		.thumb_func
+ 157              	Onboard_Red_LED_On:
+ 158              	.LFB135:
+ 116:Core/Src/init.c **** 
+ 117:Core/Src/init.c **** static void Onboard_Red_LED_On(void) {
+ 159              		.loc 1 117 38 is_stmt 1 view -0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163              		@ link register save eliminated.
+ 118:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + BSRR_OFFSET)) = (1U << ONBOARD_RED_PIN);
+ 164              		.loc 1 118 5 view .LVU25
+ 165              		.loc 1 118 55 is_stmt 0 view .LVU26
+ 166 0000 044B     		ldr	r3, .L14
+ 167 0002 4FF48042 		mov	r2, #16384
+ 168 0006 C3F81824 		str	r2, [r3, #1048]
+ 119:Core/Src/init.c ****     g_system_monitor.onboard_red_state = 1;
+ 169              		.loc 1 119 5 is_stmt 1 view .LVU27
+ 170              		.loc 1 119 40 is_stmt 0 view .LVU28
+ 171 000a 034B     		ldr	r3, .L14+4
+ 172 000c 0122     		movs	r2, #1
+ 173 000e 9A72     		strb	r2, [r3, #10]
+ 120:Core/Src/init.c **** }
+ 174              		.loc 1 120 1 view .LVU29
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 6
+
+
+ 175 0010 7047     		bx	lr
+ 176              	.L15:
+ 177 0012 00BF     		.align	2
+ 178              	.L14:
+ 179 0014 00000240 		.word	1073872896
+ 180 0018 00000000 		.word	g_system_monitor
+ 181              		.cfi_endproc
+ 182              	.LFE135:
+ 184              		.section	.text.Onboard_Red_LED_Off,"ax",%progbits
+ 185              		.align	1
+ 186              		.syntax unified
+ 187              		.thumb
+ 188              		.thumb_func
+ 190              	Onboard_Red_LED_Off:
+ 191              	.LFB136:
+ 121:Core/Src/init.c **** 
+ 122:Core/Src/init.c **** static void Onboard_Red_LED_Off(void) {
+ 192              		.loc 1 122 39 is_stmt 1 view -0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 196              		@ link register save eliminated.
+ 123:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + BSRR_OFFSET)) = (1U << (ONBOARD_RED_PIN + 16U));
+ 197              		.loc 1 123 5 view .LVU31
+ 198              		.loc 1 123 55 is_stmt 0 view .LVU32
+ 199 0000 044B     		ldr	r3, .L17
+ 200 0002 4FF08042 		mov	r2, #1073741824
+ 201 0006 C3F81824 		str	r2, [r3, #1048]
+ 124:Core/Src/init.c ****     g_system_monitor.onboard_red_state = 0;
+ 202              		.loc 1 124 5 is_stmt 1 view .LVU33
+ 203              		.loc 1 124 40 is_stmt 0 view .LVU34
+ 204 000a 034B     		ldr	r3, .L17+4
+ 205 000c 0022     		movs	r2, #0
+ 206 000e 9A72     		strb	r2, [r3, #10]
+ 125:Core/Src/init.c **** }
+ 207              		.loc 1 125 1 view .LVU35
+ 208 0010 7047     		bx	lr
+ 209              	.L18:
+ 210 0012 00BF     		.align	2
+ 211              	.L17:
+ 212 0014 00000240 		.word	1073872896
+ 213 0018 00000000 		.word	g_system_monitor
+ 214              		.cfi_endproc
+ 215              	.LFE136:
+ 217              		.section	.text.External_Green_LED_On,"ax",%progbits
+ 218              		.align	1
+ 219              		.syntax unified
+ 220              		.thumb
+ 221              		.thumb_func
+ 223              	External_Green_LED_On:
+ 224              	.LFB137:
+ 126:Core/Src/init.c **** 
+ 127:Core/Src/init.c **** // 外接LED控制 - 使用纯地址级宏定义
+ 128:Core/Src/init.c **** static void External_Green_LED_On(void) {
+ 225              		.loc 1 128 41 is_stmt 1 view -0
+ 226              		.cfi_startproc
+ 227              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 7
+
+
+ 228              		@ frame_needed = 0, uses_anonymous_args = 0
+ 229              		@ link register save eliminated.
+ 129:Core/Src/init.c ****     EXTERNAL_GREEN_ON();
+ 230              		.loc 1 129 5 view .LVU37
+ 231 0000 044B     		ldr	r3, .L20
+ 232 0002 4FF48072 		mov	r2, #256
+ 233 0006 C3F81824 		str	r2, [r3, #1048]
+ 130:Core/Src/init.c ****     g_system_monitor.external_green_state = 1;
+ 234              		.loc 1 130 5 view .LVU38
+ 235              		.loc 1 130 43 is_stmt 0 view .LVU39
+ 236 000a 034B     		ldr	r3, .L20+4
+ 237 000c 0122     		movs	r2, #1
+ 238 000e DA72     		strb	r2, [r3, #11]
+ 131:Core/Src/init.c **** }
+ 239              		.loc 1 131 1 view .LVU40
+ 240 0010 7047     		bx	lr
+ 241              	.L21:
+ 242 0012 00BF     		.align	2
+ 243              	.L20:
+ 244 0014 00000240 		.word	1073872896
+ 245 0018 00000000 		.word	g_system_monitor
+ 246              		.cfi_endproc
+ 247              	.LFE137:
+ 249              		.section	.text.External_Green_LED_Off,"ax",%progbits
+ 250              		.align	1
+ 251              		.syntax unified
+ 252              		.thumb
+ 253              		.thumb_func
+ 255              	External_Green_LED_Off:
+ 256              	.LFB138:
+ 132:Core/Src/init.c **** 
+ 133:Core/Src/init.c **** static void External_Green_LED_Off(void) {
+ 257              		.loc 1 133 42 is_stmt 1 view -0
+ 258              		.cfi_startproc
+ 259              		@ args = 0, pretend = 0, frame = 0
+ 260              		@ frame_needed = 0, uses_anonymous_args = 0
+ 261              		@ link register save eliminated.
+ 134:Core/Src/init.c ****     EXTERNAL_GREEN_OFF();
+ 262              		.loc 1 134 5 view .LVU42
+ 263 0000 044B     		ldr	r3, .L23
+ 264 0002 4FF08072 		mov	r2, #16777216
+ 265 0006 C3F81824 		str	r2, [r3, #1048]
+ 135:Core/Src/init.c ****     g_system_monitor.external_green_state = 0;
+ 266              		.loc 1 135 5 view .LVU43
+ 267              		.loc 1 135 43 is_stmt 0 view .LVU44
+ 268 000a 034B     		ldr	r3, .L23+4
+ 269 000c 0022     		movs	r2, #0
+ 270 000e DA72     		strb	r2, [r3, #11]
+ 136:Core/Src/init.c **** }
+ 271              		.loc 1 136 1 view .LVU45
+ 272 0010 7047     		bx	lr
+ 273              	.L24:
+ 274 0012 00BF     		.align	2
+ 275              	.L23:
+ 276 0014 00000240 		.word	1073872896
+ 277 0018 00000000 		.word	g_system_monitor
+ 278              		.cfi_endproc
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 8
+
+
+ 279              	.LFE138:
+ 281              		.section	.text.External_Blue_LED_On,"ax",%progbits
+ 282              		.align	1
+ 283              		.syntax unified
+ 284              		.thumb
+ 285              		.thumb_func
+ 287              	External_Blue_LED_On:
+ 288              	.LFB139:
+ 137:Core/Src/init.c **** 
+ 138:Core/Src/init.c **** static void External_Blue_LED_On(void) {
+ 289              		.loc 1 138 40 is_stmt 1 view -0
+ 290              		.cfi_startproc
+ 291              		@ args = 0, pretend = 0, frame = 0
+ 292              		@ frame_needed = 0, uses_anonymous_args = 0
+ 293              		@ link register save eliminated.
+ 139:Core/Src/init.c ****     EXTERNAL_BLUE_ON();
+ 294              		.loc 1 139 5 view .LVU47
+ 295 0000 044B     		ldr	r3, .L26
+ 296 0002 4FF40072 		mov	r2, #512
+ 297 0006 C3F81824 		str	r2, [r3, #1048]
+ 140:Core/Src/init.c ****     g_system_monitor.external_blue_state = 1;
+ 298              		.loc 1 140 5 view .LVU48
+ 299              		.loc 1 140 42 is_stmt 0 view .LVU49
+ 300 000a 034B     		ldr	r3, .L26+4
+ 301 000c 0122     		movs	r2, #1
+ 302 000e 1A73     		strb	r2, [r3, #12]
+ 141:Core/Src/init.c **** }
+ 303              		.loc 1 141 1 view .LVU50
+ 304 0010 7047     		bx	lr
+ 305              	.L27:
+ 306 0012 00BF     		.align	2
+ 307              	.L26:
+ 308 0014 00000240 		.word	1073872896
+ 309 0018 00000000 		.word	g_system_monitor
+ 310              		.cfi_endproc
+ 311              	.LFE139:
+ 313              		.section	.text.External_Blue_LED_Off,"ax",%progbits
+ 314              		.align	1
+ 315              		.syntax unified
+ 316              		.thumb
+ 317              		.thumb_func
+ 319              	External_Blue_LED_Off:
+ 320              	.LFB140:
+ 142:Core/Src/init.c **** 
+ 143:Core/Src/init.c **** static void External_Blue_LED_Off(void) {
+ 321              		.loc 1 143 41 is_stmt 1 view -0
+ 322              		.cfi_startproc
+ 323              		@ args = 0, pretend = 0, frame = 0
+ 324              		@ frame_needed = 0, uses_anonymous_args = 0
+ 325              		@ link register save eliminated.
+ 144:Core/Src/init.c ****     EXTERNAL_BLUE_OFF();
+ 326              		.loc 1 144 5 view .LVU52
+ 327 0000 044B     		ldr	r3, .L29
+ 328 0002 4FF00072 		mov	r2, #33554432
+ 329 0006 C3F81824 		str	r2, [r3, #1048]
+ 145:Core/Src/init.c ****     g_system_monitor.external_blue_state = 0;
+ 330              		.loc 1 145 5 view .LVU53
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 9
+
+
+ 331              		.loc 1 145 42 is_stmt 0 view .LVU54
+ 332 000a 034B     		ldr	r3, .L29+4
+ 333 000c 0022     		movs	r2, #0
+ 334 000e 1A73     		strb	r2, [r3, #12]
+ 146:Core/Src/init.c **** }
+ 335              		.loc 1 146 1 view .LVU55
+ 336 0010 7047     		bx	lr
+ 337              	.L30:
+ 338 0012 00BF     		.align	2
+ 339              	.L29:
+ 340 0014 00000240 		.word	1073872896
+ 341 0018 00000000 		.word	g_system_monitor
+ 342              		.cfi_endproc
+ 343              	.LFE140:
+ 345              		.section	.text.External_Red_LED_On,"ax",%progbits
+ 346              		.align	1
+ 347              		.syntax unified
+ 348              		.thumb
+ 349              		.thumb_func
+ 351              	External_Red_LED_On:
+ 352              	.LFB141:
+ 147:Core/Src/init.c **** 
+ 148:Core/Src/init.c **** static void External_Red_LED_On(void) {
+ 353              		.loc 1 148 39 is_stmt 1 view -0
+ 354              		.cfi_startproc
+ 355              		@ args = 0, pretend = 0, frame = 0
+ 356              		@ frame_needed = 0, uses_anonymous_args = 0
+ 357              		@ link register save eliminated.
+ 149:Core/Src/init.c ****     EXTERNAL_RED_ON();
+ 358              		.loc 1 149 5 view .LVU57
+ 359 0000 044B     		ldr	r3, .L32
+ 360 0002 4FF48062 		mov	r2, #1024
+ 361 0006 C3F81824 		str	r2, [r3, #1048]
+ 150:Core/Src/init.c ****     g_system_monitor.external_red_state = 1;
+ 362              		.loc 1 150 5 view .LVU58
+ 363              		.loc 1 150 41 is_stmt 0 view .LVU59
+ 364 000a 034B     		ldr	r3, .L32+4
+ 365 000c 0122     		movs	r2, #1
+ 366 000e 5A73     		strb	r2, [r3, #13]
+ 151:Core/Src/init.c **** }
+ 367              		.loc 1 151 1 view .LVU60
+ 368 0010 7047     		bx	lr
+ 369              	.L33:
+ 370 0012 00BF     		.align	2
+ 371              	.L32:
+ 372 0014 00000240 		.word	1073872896
+ 373 0018 00000000 		.word	g_system_monitor
+ 374              		.cfi_endproc
+ 375              	.LFE141:
+ 377              		.section	.text.External_Red_LED_Off,"ax",%progbits
+ 378              		.align	1
+ 379              		.syntax unified
+ 380              		.thumb
+ 381              		.thumb_func
+ 383              	External_Red_LED_Off:
+ 384              	.LFB142:
+ 152:Core/Src/init.c **** 
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 10
+
+
+ 153:Core/Src/init.c **** static void External_Red_LED_Off(void) {
+ 385              		.loc 1 153 40 is_stmt 1 view -0
+ 386              		.cfi_startproc
+ 387              		@ args = 0, pretend = 0, frame = 0
+ 388              		@ frame_needed = 0, uses_anonymous_args = 0
+ 389              		@ link register save eliminated.
+ 154:Core/Src/init.c ****     EXTERNAL_RED_OFF();
+ 390              		.loc 1 154 5 view .LVU62
+ 391 0000 044B     		ldr	r3, .L35
+ 392 0002 4FF08062 		mov	r2, #67108864
+ 393 0006 C3F81824 		str	r2, [r3, #1048]
+ 155:Core/Src/init.c ****     g_system_monitor.external_red_state = 0;
+ 394              		.loc 1 155 5 view .LVU63
+ 395              		.loc 1 155 41 is_stmt 0 view .LVU64
+ 396 000a 034B     		ldr	r3, .L35+4
+ 397 000c 0022     		movs	r2, #0
+ 398 000e 5A73     		strb	r2, [r3, #13]
+ 156:Core/Src/init.c **** }
+ 399              		.loc 1 156 1 view .LVU65
+ 400 0010 7047     		bx	lr
+ 401              	.L36:
+ 402 0012 00BF     		.align	2
+ 403              	.L35:
+ 404 0014 00000240 		.word	1073872896
+ 405 0018 00000000 		.word	g_system_monitor
+ 406              		.cfi_endproc
+ 407              	.LFE142:
+ 409              		.section	.text.Green_LEDs_On,"ax",%progbits
+ 410              		.align	1
+ 411              		.global	Green_LEDs_On
+ 412              		.syntax unified
+ 413              		.thumb
+ 414              		.thumb_func
+ 416              	Green_LEDs_On:
+ 417              	.LFB143:
+ 157:Core/Src/init.c **** 
+ 158:Core/Src/init.c **** // LED组控制函数
+ 159:Core/Src/init.c **** void Green_LEDs_On(void) {
+ 418              		.loc 1 159 26 is_stmt 1 view -0
+ 419              		.cfi_startproc
+ 420              		@ args = 0, pretend = 0, frame = 0
+ 421              		@ frame_needed = 0, uses_anonymous_args = 0
+ 422 0000 08B5     		push	{r3, lr}
+ 423              	.LCFI0:
+ 424              		.cfi_def_cfa_offset 8
+ 425              		.cfi_offset 3, -8
+ 426              		.cfi_offset 14, -4
+ 160:Core/Src/init.c ****     Onboard_Green_LED_On();
+ 427              		.loc 1 160 5 view .LVU67
+ 428 0002 FFF7FEFF 		bl	Onboard_Green_LED_On
+ 429              	.LVL0:
+ 161:Core/Src/init.c ****     External_Green_LED_On();
+ 430              		.loc 1 161 5 view .LVU68
+ 431 0006 FFF7FEFF 		bl	External_Green_LED_On
+ 432              	.LVL1:
+ 162:Core/Src/init.c **** }
+ 433              		.loc 1 162 1 is_stmt 0 view .LVU69
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 11
+
+
+ 434 000a 08BD     		pop	{r3, pc}
+ 435              		.cfi_endproc
+ 436              	.LFE143:
+ 438              		.section	.text.Green_LEDs_Off,"ax",%progbits
+ 439              		.align	1
+ 440              		.global	Green_LEDs_Off
+ 441              		.syntax unified
+ 442              		.thumb
+ 443              		.thumb_func
+ 445              	Green_LEDs_Off:
+ 446              	.LFB144:
+ 163:Core/Src/init.c **** 
+ 164:Core/Src/init.c **** void Green_LEDs_Off(void) {
+ 447              		.loc 1 164 27 is_stmt 1 view -0
+ 448              		.cfi_startproc
+ 449              		@ args = 0, pretend = 0, frame = 0
+ 450              		@ frame_needed = 0, uses_anonymous_args = 0
+ 451 0000 08B5     		push	{r3, lr}
+ 452              	.LCFI1:
+ 453              		.cfi_def_cfa_offset 8
+ 454              		.cfi_offset 3, -8
+ 455              		.cfi_offset 14, -4
+ 165:Core/Src/init.c ****     Onboard_Green_LED_Off();
+ 456              		.loc 1 165 5 view .LVU71
+ 457 0002 FFF7FEFF 		bl	Onboard_Green_LED_Off
+ 458              	.LVL2:
+ 166:Core/Src/init.c ****     External_Green_LED_Off();
+ 459              		.loc 1 166 5 view .LVU72
+ 460 0006 FFF7FEFF 		bl	External_Green_LED_Off
+ 461              	.LVL3:
+ 167:Core/Src/init.c **** }
+ 462              		.loc 1 167 1 is_stmt 0 view .LVU73
+ 463 000a 08BD     		pop	{r3, pc}
+ 464              		.cfi_endproc
+ 465              	.LFE144:
+ 467              		.section	.text.Blue_LEDs_On,"ax",%progbits
+ 468              		.align	1
+ 469              		.global	Blue_LEDs_On
+ 470              		.syntax unified
+ 471              		.thumb
+ 472              		.thumb_func
+ 474              	Blue_LEDs_On:
+ 475              	.LFB145:
+ 168:Core/Src/init.c **** 
+ 169:Core/Src/init.c **** void Blue_LEDs_On(void) {
+ 476              		.loc 1 169 25 is_stmt 1 view -0
+ 477              		.cfi_startproc
+ 478              		@ args = 0, pretend = 0, frame = 0
+ 479              		@ frame_needed = 0, uses_anonymous_args = 0
+ 480 0000 08B5     		push	{r3, lr}
+ 481              	.LCFI2:
+ 482              		.cfi_def_cfa_offset 8
+ 483              		.cfi_offset 3, -8
+ 484              		.cfi_offset 14, -4
+ 170:Core/Src/init.c ****     Onboard_Blue_LED_On();
+ 485              		.loc 1 170 5 view .LVU75
+ 486 0002 FFF7FEFF 		bl	Onboard_Blue_LED_On
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 12
+
+
+ 487              	.LVL4:
+ 171:Core/Src/init.c ****     External_Blue_LED_On();
+ 488              		.loc 1 171 5 view .LVU76
+ 489 0006 FFF7FEFF 		bl	External_Blue_LED_On
+ 490              	.LVL5:
+ 172:Core/Src/init.c **** }
+ 491              		.loc 1 172 1 is_stmt 0 view .LVU77
+ 492 000a 08BD     		pop	{r3, pc}
+ 493              		.cfi_endproc
+ 494              	.LFE145:
+ 496              		.section	.text.Blue_LEDs_Off,"ax",%progbits
+ 497              		.align	1
+ 498              		.global	Blue_LEDs_Off
+ 499              		.syntax unified
+ 500              		.thumb
+ 501              		.thumb_func
+ 503              	Blue_LEDs_Off:
+ 504              	.LFB146:
+ 173:Core/Src/init.c **** 
+ 174:Core/Src/init.c **** void Blue_LEDs_Off(void) {
+ 505              		.loc 1 174 26 is_stmt 1 view -0
+ 506              		.cfi_startproc
+ 507              		@ args = 0, pretend = 0, frame = 0
+ 508              		@ frame_needed = 0, uses_anonymous_args = 0
+ 509 0000 08B5     		push	{r3, lr}
+ 510              	.LCFI3:
+ 511              		.cfi_def_cfa_offset 8
+ 512              		.cfi_offset 3, -8
+ 513              		.cfi_offset 14, -4
+ 175:Core/Src/init.c ****     Onboard_Blue_LED_Off();
+ 514              		.loc 1 175 5 view .LVU79
+ 515 0002 FFF7FEFF 		bl	Onboard_Blue_LED_Off
+ 516              	.LVL6:
+ 176:Core/Src/init.c ****     External_Blue_LED_Off();
+ 517              		.loc 1 176 5 view .LVU80
+ 518 0006 FFF7FEFF 		bl	External_Blue_LED_Off
+ 519              	.LVL7:
+ 177:Core/Src/init.c **** }
+ 520              		.loc 1 177 1 is_stmt 0 view .LVU81
+ 521 000a 08BD     		pop	{r3, pc}
+ 522              		.cfi_endproc
+ 523              	.LFE146:
+ 525              		.section	.text.Red_LEDs_On,"ax",%progbits
+ 526              		.align	1
+ 527              		.global	Red_LEDs_On
+ 528              		.syntax unified
+ 529              		.thumb
+ 530              		.thumb_func
+ 532              	Red_LEDs_On:
+ 533              	.LFB147:
+ 178:Core/Src/init.c **** 
+ 179:Core/Src/init.c **** void Red_LEDs_On(void) {
+ 534              		.loc 1 179 24 is_stmt 1 view -0
+ 535              		.cfi_startproc
+ 536              		@ args = 0, pretend = 0, frame = 0
+ 537              		@ frame_needed = 0, uses_anonymous_args = 0
+ 538 0000 08B5     		push	{r3, lr}
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 13
+
+
+ 539              	.LCFI4:
+ 540              		.cfi_def_cfa_offset 8
+ 541              		.cfi_offset 3, -8
+ 542              		.cfi_offset 14, -4
+ 180:Core/Src/init.c ****     Onboard_Red_LED_On();
+ 543              		.loc 1 180 5 view .LVU83
+ 544 0002 FFF7FEFF 		bl	Onboard_Red_LED_On
+ 545              	.LVL8:
+ 181:Core/Src/init.c ****     External_Red_LED_On();
+ 546              		.loc 1 181 5 view .LVU84
+ 547 0006 FFF7FEFF 		bl	External_Red_LED_On
+ 548              	.LVL9:
+ 182:Core/Src/init.c **** }
+ 549              		.loc 1 182 1 is_stmt 0 view .LVU85
+ 550 000a 08BD     		pop	{r3, pc}
+ 551              		.cfi_endproc
+ 552              	.LFE147:
+ 554              		.section	.text.Red_LEDs_Off,"ax",%progbits
+ 555              		.align	1
+ 556              		.global	Red_LEDs_Off
+ 557              		.syntax unified
+ 558              		.thumb
+ 559              		.thumb_func
+ 561              	Red_LEDs_Off:
+ 562              	.LFB148:
+ 183:Core/Src/init.c **** 
+ 184:Core/Src/init.c **** void Red_LEDs_Off(void) {
+ 563              		.loc 1 184 25 is_stmt 1 view -0
+ 564              		.cfi_startproc
+ 565              		@ args = 0, pretend = 0, frame = 0
+ 566              		@ frame_needed = 0, uses_anonymous_args = 0
+ 567 0000 08B5     		push	{r3, lr}
+ 568              	.LCFI5:
+ 569              		.cfi_def_cfa_offset 8
+ 570              		.cfi_offset 3, -8
+ 571              		.cfi_offset 14, -4
+ 185:Core/Src/init.c ****     Onboard_Red_LED_Off();
+ 572              		.loc 1 185 5 view .LVU87
+ 573 0002 FFF7FEFF 		bl	Onboard_Red_LED_Off
+ 574              	.LVL10:
+ 186:Core/Src/init.c ****     External_Red_LED_Off();
+ 575              		.loc 1 186 5 view .LVU88
+ 576 0006 FFF7FEFF 		bl	External_Red_LED_Off
+ 577              	.LVL11:
+ 187:Core/Src/init.c **** }
+ 578              		.loc 1 187 1 is_stmt 0 view .LVU89
+ 579 000a 08BD     		pop	{r3, pc}
+ 580              		.cfi_endproc
+ 581              	.LFE148:
+ 583              		.section	.text.All_LEDs_Off,"ax",%progbits
+ 584              		.align	1
+ 585              		.global	All_LEDs_Off
+ 586              		.syntax unified
+ 587              		.thumb
+ 588              		.thumb_func
+ 590              	All_LEDs_Off:
+ 591              	.LFB149:
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 14
+
+
+ 188:Core/Src/init.c **** 
+ 189:Core/Src/init.c **** void All_LEDs_Off(void) {
+ 592              		.loc 1 189 25 is_stmt 1 view -0
+ 593              		.cfi_startproc
+ 594              		@ args = 0, pretend = 0, frame = 0
+ 595              		@ frame_needed = 0, uses_anonymous_args = 0
+ 596 0000 08B5     		push	{r3, lr}
+ 597              	.LCFI6:
+ 598              		.cfi_def_cfa_offset 8
+ 599              		.cfi_offset 3, -8
+ 600              		.cfi_offset 14, -4
+ 190:Core/Src/init.c ****     Green_LEDs_Off();
+ 601              		.loc 1 190 5 view .LVU91
+ 602 0002 FFF7FEFF 		bl	Green_LEDs_Off
+ 603              	.LVL12:
+ 191:Core/Src/init.c ****     Blue_LEDs_Off();
+ 604              		.loc 1 191 5 view .LVU92
+ 605 0006 FFF7FEFF 		bl	Blue_LEDs_Off
+ 606              	.LVL13:
+ 192:Core/Src/init.c ****     Red_LEDs_Off();
+ 607              		.loc 1 192 5 view .LVU93
+ 608 000a FFF7FEFF 		bl	Red_LEDs_Off
+ 609              	.LVL14:
+ 193:Core/Src/init.c **** }
+ 610              		.loc 1 193 1 is_stmt 0 view .LVU94
+ 611 000e 08BD     		pop	{r3, pc}
+ 612              		.cfi_endproc
+ 613              	.LFE149:
+ 615              		.section	.text.GPIO_Init_Memory,"ax",%progbits
+ 616              		.align	1
+ 617              		.global	GPIO_Init_Memory
+ 618              		.syntax unified
+ 619              		.thumb
+ 620              		.thumb_func
+ 622              	GPIO_Init_Memory:
+ 623              	.LFB130:
+  26:Core/Src/init.c ****     // 启用GPIO时钟 - 直接内存访问 (使用CMSIS定义的RCC_BASE)
+ 624              		.loc 1 26 29 is_stmt 1 view -0
+ 625              		.cfi_startproc
+ 626              		@ args = 0, pretend = 0, frame = 0
+ 627              		@ frame_needed = 0, uses_anonymous_args = 0
+ 628 0000 08B5     		push	{r3, lr}
+ 629              	.LCFI7:
+ 630              		.cfi_def_cfa_offset 8
+ 631              		.cfi_offset 3, -8
+ 632              		.cfi_offset 14, -4
+  28:Core/Src/init.c **** 
+ 633              		.loc 1 28 5 view .LVU96
+ 634 0002 684A     		ldr	r2, .L53
+ 635 0004 D2F83038 		ldr	r3, [r2, #2096]
+  28:Core/Src/init.c **** 
+ 636              		.loc 1 28 56 is_stmt 0 view .LVU97
+ 637 0008 43F04603 		orr	r3, r3, #70
+ 638 000c C2F83038 		str	r3, [r2, #2096]
+  31:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOG_BASE + PUPDR_OFFSET)) = 
+ 639              		.loc 1 31 5 is_stmt 1 view .LVU98
+ 640 0010 A2F50052 		sub	r2, r2, #8192
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 15
+
+
+ 641 0014 D2F80038 		ldr	r3, [r2, #2048]
+  31:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOG_BASE + PUPDR_OFFSET)) = 
+ 642              		.loc 1 31 56 is_stmt 0 view .LVU99
+ 643 0018 23F0C003 		bic	r3, r3, #192
+ 644 001c C2F80038 		str	r3, [r2, #2048]
+  32:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOG_BASE + PUPDR_OFFSET)) & ~(3U << (KEY_MODE_PIN * 2))) | 
+ 645              		.loc 1 32 5 is_stmt 1 view .LVU100
+  33:Core/Src/init.c ****         (1U << (KEY_MODE_PIN * 2));
+ 646              		.loc 1 33 10 is_stmt 0 view .LVU101
+ 647 0020 D2F80C38 		ldr	r3, [r2, #2060]
+  33:Core/Src/init.c ****         (1U << (KEY_MODE_PIN * 2));
+ 648              		.loc 1 33 61 view .LVU102
+ 649 0024 23F0C003 		bic	r3, r3, #192
+  33:Core/Src/init.c ****         (1U << (KEY_MODE_PIN * 2));
+ 650              		.loc 1 33 92 view .LVU103
+ 651 0028 43F04003 		orr	r3, r3, #64
+  32:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOG_BASE + PUPDR_OFFSET)) & ~(3U << (KEY_MODE_PIN * 2))) | 
+ 652              		.loc 1 32 56 view .LVU104
+ 653 002c C2F80C38 		str	r3, [r2, #2060]
+  37:Core/Src/init.c ****         ~((3U << (KEY_CTRL1_PIN * 2)) | (3U << (KEY_CTRL2_PIN * 2)) | (3U << (KEY_CTRL3_PIN * 2)));
+ 654              		.loc 1 37 5 is_stmt 1 view .LVU105
+ 655 0030 5D4B     		ldr	r3, .L53+4
+ 656 0032 D3F80028 		ldr	r2, [r3, #2048]
+  37:Core/Src/init.c ****         ~((3U << (KEY_CTRL1_PIN * 2)) | (3U << (KEY_CTRL2_PIN * 2)) | (3U << (KEY_CTRL3_PIN * 2)));
+ 657              		.loc 1 37 56 is_stmt 0 view .LVU106
+ 658 0036 22F47322 		bic	r2, r2, #995328
+ 659 003a C3F80028 		str	r2, [r3, #2048]
+  40:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOC_BASE + PUPDR_OFFSET)) & 
+ 660              		.loc 1 40 5 is_stmt 1 view .LVU107
+  41:Core/Src/init.c ****          ~((3U << (KEY_CTRL1_PIN * 2)) | (3U << (KEY_CTRL2_PIN * 2)) | (3U << (KEY_CTRL3_PIN * 2)))
+ 661              		.loc 1 41 10 is_stmt 0 view .LVU108
+ 662 003e D3F80C28 		ldr	r2, [r3, #2060]
+  41:Core/Src/init.c ****          ~((3U << (KEY_CTRL1_PIN * 2)) | (3U << (KEY_CTRL2_PIN * 2)) | (3U << (KEY_CTRL3_PIN * 2)))
+ 663              		.loc 1 41 61 view .LVU109
+ 664 0042 22F47322 		bic	r2, r2, #995328
+  42:Core/Src/init.c ****         ((1U << (KEY_CTRL1_PIN * 2)) | (1U << (KEY_CTRL2_PIN * 2)) | (1U << (KEY_CTRL3_PIN * 2)));
+ 665              		.loc 1 42 102 view .LVU110
+ 666 0046 42F4A222 		orr	r2, r2, #331776
+  40:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOC_BASE + PUPDR_OFFSET)) & 
+ 667              		.loc 1 40 56 view .LVU111
+ 668 004a C3F80C28 		str	r2, [r3, #2060]
+  47:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_GREEN_PIN * 2))) | 
+ 669              		.loc 1 47 5 is_stmt 1 view .LVU112
+  48:Core/Src/init.c ****         (1U << (ONBOARD_GREEN_PIN * 2));
+ 670              		.loc 1 48 10 is_stmt 0 view .LVU113
+ 671 004e D3F80024 		ldr	r2, [r3, #1024]
+  48:Core/Src/init.c ****         (1U << (ONBOARD_GREEN_PIN * 2));
+ 672              		.loc 1 48 61 view .LVU114
+ 673 0052 22F00302 		bic	r2, r2, #3
+  48:Core/Src/init.c ****         (1U << (ONBOARD_GREEN_PIN * 2));
+ 674              		.loc 1 48 97 view .LVU115
+ 675 0056 42F00102 		orr	r2, r2, #1
+  47:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_GREEN_PIN * 2))) | 
+ 676              		.loc 1 47 56 view .LVU116
+ 677 005a C3F80024 		str	r2, [r3, #1024]
+  50:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+ 678              		.loc 1 50 5 is_stmt 1 view .LVU117
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 16
+
+
+ 679 005e D3F80424 		ldr	r2, [r3, #1028]
+  50:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+ 680              		.loc 1 50 57 is_stmt 0 view .LVU118
+ 681 0062 22F00102 		bic	r2, r2, #1
+ 682 0066 C3F80424 		str	r2, [r3, #1028]
+  51:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_GREEN_PIN * 2))) |
+ 683              		.loc 1 51 5 is_stmt 1 view .LVU119
+  52:Core/Src/init.c ****         (2U << (ONBOARD_GREEN_PIN * 2));
+ 684              		.loc 1 52 10 is_stmt 0 view .LVU120
+ 685 006a D3F80824 		ldr	r2, [r3, #1032]
+  52:Core/Src/init.c ****         (2U << (ONBOARD_GREEN_PIN * 2));
+ 686              		.loc 1 52 63 view .LVU121
+ 687 006e 22F00302 		bic	r2, r2, #3
+  52:Core/Src/init.c ****         (2U << (ONBOARD_GREEN_PIN * 2));
+ 688              		.loc 1 52 99 view .LVU122
+ 689 0072 42F00202 		orr	r2, r2, #2
+  51:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_GREEN_PIN * 2))) |
+ 690              		.loc 1 51 58 view .LVU123
+ 691 0076 C3F80824 		str	r2, [r3, #1032]
+  54:Core/Src/init.c **** 
+ 692              		.loc 1 54 5 is_stmt 1 view .LVU124
+ 693 007a D3F80C24 		ldr	r2, [r3, #1036]
+  54:Core/Src/init.c **** 
+ 694              		.loc 1 54 56 is_stmt 0 view .LVU125
+ 695 007e 22F00302 		bic	r2, r2, #3
+ 696 0082 C3F80C24 		str	r2, [r3, #1036]
+  57:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_BLUE_PIN * 2))) | 
+ 697              		.loc 1 57 5 is_stmt 1 view .LVU126
+  58:Core/Src/init.c ****         (1U << (ONBOARD_BLUE_PIN * 2));
+ 698              		.loc 1 58 10 is_stmt 0 view .LVU127
+ 699 0086 D3F80024 		ldr	r2, [r3, #1024]
+  58:Core/Src/init.c ****         (1U << (ONBOARD_BLUE_PIN * 2));
+ 700              		.loc 1 58 61 view .LVU128
+ 701 008a 22F44042 		bic	r2, r2, #49152
+  58:Core/Src/init.c ****         (1U << (ONBOARD_BLUE_PIN * 2));
+ 702              		.loc 1 58 96 view .LVU129
+ 703 008e 42F48042 		orr	r2, r2, #16384
+  57:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_BLUE_PIN * 2))) | 
+ 704              		.loc 1 57 56 view .LVU130
+ 705 0092 C3F80024 		str	r2, [r3, #1024]
+  60:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+ 706              		.loc 1 60 5 is_stmt 1 view .LVU131
+ 707 0096 D3F80424 		ldr	r2, [r3, #1028]
+  60:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+ 708              		.loc 1 60 57 is_stmt 0 view .LVU132
+ 709 009a 22F08002 		bic	r2, r2, #128
+ 710 009e C3F80424 		str	r2, [r3, #1028]
+  61:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_BLUE_PIN * 2))) | 
+ 711              		.loc 1 61 5 is_stmt 1 view .LVU133
+  62:Core/Src/init.c ****         (2U << (ONBOARD_BLUE_PIN * 2));
+ 712              		.loc 1 62 10 is_stmt 0 view .LVU134
+ 713 00a2 D3F80824 		ldr	r2, [r3, #1032]
+  62:Core/Src/init.c ****         (2U << (ONBOARD_BLUE_PIN * 2));
+ 714              		.loc 1 62 63 view .LVU135
+ 715 00a6 22F44042 		bic	r2, r2, #49152
+  62:Core/Src/init.c ****         (2U << (ONBOARD_BLUE_PIN * 2));
+ 716              		.loc 1 62 98 view .LVU136
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 17
+
+
+ 717 00aa 42F40042 		orr	r2, r2, #32768
+  61:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_BLUE_PIN * 2))) | 
+ 718              		.loc 1 61 58 view .LVU137
+ 719 00ae C3F80824 		str	r2, [r3, #1032]
+  64:Core/Src/init.c **** 
+ 720              		.loc 1 64 5 is_stmt 1 view .LVU138
+ 721 00b2 D3F80C24 		ldr	r2, [r3, #1036]
+  64:Core/Src/init.c **** 
+ 722              		.loc 1 64 56 is_stmt 0 view .LVU139
+ 723 00b6 22F44042 		bic	r2, r2, #49152
+ 724 00ba C3F80C24 		str	r2, [r3, #1036]
+  67:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_RED_PIN * 2))) | 
+ 725              		.loc 1 67 5 is_stmt 1 view .LVU140
+  68:Core/Src/init.c ****         (1U << (ONBOARD_RED_PIN * 2));
+ 726              		.loc 1 68 10 is_stmt 0 view .LVU141
+ 727 00be D3F80024 		ldr	r2, [r3, #1024]
+  68:Core/Src/init.c ****         (1U << (ONBOARD_RED_PIN * 2));
+ 728              		.loc 1 68 61 view .LVU142
+ 729 00c2 22F04052 		bic	r2, r2, #805306368
+  68:Core/Src/init.c ****         (1U << (ONBOARD_RED_PIN * 2));
+ 730              		.loc 1 68 95 view .LVU143
+ 731 00c6 42F08052 		orr	r2, r2, #268435456
+  67:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + MODER_OFFSET)) & ~(3U << (ONBOARD_RED_PIN * 2))) | 
+ 732              		.loc 1 67 56 view .LVU144
+ 733 00ca C3F80024 		str	r2, [r3, #1024]
+  70:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+ 734              		.loc 1 70 5 is_stmt 1 view .LVU145
+ 735 00ce D3F80424 		ldr	r2, [r3, #1028]
+  70:Core/Src/init.c ****     *((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) = 
+ 736              		.loc 1 70 57 is_stmt 0 view .LVU146
+ 737 00d2 22F48042 		bic	r2, r2, #16384
+ 738 00d6 C3F80424 		str	r2, [r3, #1028]
+  71:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_RED_PIN * 2))) | 
+ 739              		.loc 1 71 5 is_stmt 1 view .LVU147
+  72:Core/Src/init.c ****         (2U << (ONBOARD_RED_PIN * 2));
+ 740              		.loc 1 72 10 is_stmt 0 view .LVU148
+ 741 00da D3F80824 		ldr	r2, [r3, #1032]
+  72:Core/Src/init.c ****         (2U << (ONBOARD_RED_PIN * 2));
+ 742              		.loc 1 72 63 view .LVU149
+ 743 00de 22F04052 		bic	r2, r2, #805306368
+  72:Core/Src/init.c ****         (2U << (ONBOARD_RED_PIN * 2));
+ 744              		.loc 1 72 97 view .LVU150
+ 745 00e2 42F00052 		orr	r2, r2, #536870912
+  71:Core/Src/init.c ****         (*((volatile uint32_t*)(GPIOB_BASE + OSPEEDR_OFFSET)) & ~(3U << (ONBOARD_RED_PIN * 2))) | 
+ 746              		.loc 1 71 58 view .LVU151
+ 747 00e6 C3F80824 		str	r2, [r3, #1032]
+  74:Core/Src/init.c **** 
+ 748              		.loc 1 74 5 is_stmt 1 view .LVU152
+ 749 00ea D3F80C24 		ldr	r2, [r3, #1036]
+  74:Core/Src/init.c **** 
+ 750              		.loc 1 74 56 is_stmt 0 view .LVU153
+ 751 00ee 22F04052 		bic	r2, r2, #805306368
+ 752 00f2 C3F80C24 		str	r2, [r3, #1036]
+  77:Core/Src/init.c ****     EXTERNAL_GREEN_OTYPER_PP();
+ 753              		.loc 1 77 5 is_stmt 1 view .LVU154
+ 754 00f6 D3F80024 		ldr	r2, [r3, #1024]
+ 755 00fa 22F44032 		bic	r2, r2, #196608
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 18
+
+
+ 756 00fe 42F48032 		orr	r2, r2, #65536
+ 757 0102 C3F80024 		str	r2, [r3, #1024]
+  78:Core/Src/init.c ****     EXTERNAL_GREEN_OSPEEDR_HIGH();
+ 758              		.loc 1 78 5 view .LVU155
+ 759 0106 D3F80424 		ldr	r2, [r3, #1028]
+ 760 010a 22F48072 		bic	r2, r2, #256
+ 761 010e C3F80424 		str	r2, [r3, #1028]
+  79:Core/Src/init.c ****     EXTERNAL_GREEN_PUPDR_NOPULL();
+ 762              		.loc 1 79 5 view .LVU156
+ 763 0112 D3F80824 		ldr	r2, [r3, #1032]
+ 764 0116 22F44032 		bic	r2, r2, #196608
+ 765 011a 42F40032 		orr	r2, r2, #131072
+ 766 011e C3F80824 		str	r2, [r3, #1032]
+  80:Core/Src/init.c **** 
+ 767              		.loc 1 80 5 view .LVU157
+ 768 0122 D3F80C24 		ldr	r2, [r3, #1036]
+ 769 0126 22F44032 		bic	r2, r2, #196608
+ 770 012a C3F80C24 		str	r2, [r3, #1036]
+  82:Core/Src/init.c ****     EXTERNAL_BLUE_OTYPER_PP();
+ 771              		.loc 1 82 5 view .LVU158
+ 772 012e D3F80024 		ldr	r2, [r3, #1024]
+ 773 0132 22F44022 		bic	r2, r2, #786432
+ 774 0136 42F48022 		orr	r2, r2, #262144
+ 775 013a C3F80024 		str	r2, [r3, #1024]
+  83:Core/Src/init.c ****     EXTERNAL_BLUE_OSPEEDR_HIGH();
+ 776              		.loc 1 83 5 view .LVU159
+ 777 013e D3F80424 		ldr	r2, [r3, #1028]
+ 778 0142 22F40072 		bic	r2, r2, #512
+ 779 0146 C3F80424 		str	r2, [r3, #1028]
+  84:Core/Src/init.c ****     EXTERNAL_BLUE_PUPDR_NOPULL();
+ 780              		.loc 1 84 5 view .LVU160
+ 781 014a D3F80824 		ldr	r2, [r3, #1032]
+ 782 014e 22F44022 		bic	r2, r2, #786432
+ 783 0152 42F40022 		orr	r2, r2, #524288
+ 784 0156 C3F80824 		str	r2, [r3, #1032]
+  85:Core/Src/init.c **** 
+ 785              		.loc 1 85 5 view .LVU161
+ 786 015a D3F80C24 		ldr	r2, [r3, #1036]
+ 787 015e 22F44022 		bic	r2, r2, #786432
+ 788 0162 C3F80C24 		str	r2, [r3, #1036]
+  87:Core/Src/init.c ****     EXTERNAL_RED_OTYPER_PP();
+ 789              		.loc 1 87 5 view .LVU162
+ 790 0166 D3F80024 		ldr	r2, [r3, #1024]
+ 791 016a 22F44012 		bic	r2, r2, #3145728
+ 792 016e 42F48012 		orr	r2, r2, #1048576
+ 793 0172 C3F80024 		str	r2, [r3, #1024]
+  88:Core/Src/init.c ****     EXTERNAL_RED_OSPEEDR_HIGH();
+ 794              		.loc 1 88 5 view .LVU163
+ 795 0176 D3F80424 		ldr	r2, [r3, #1028]
+ 796 017a 22F48062 		bic	r2, r2, #1024
+ 797 017e C3F80424 		str	r2, [r3, #1028]
+  89:Core/Src/init.c ****     EXTERNAL_RED_PUPDR_NOPULL();
+ 798              		.loc 1 89 5 view .LVU164
+ 799 0182 D3F80824 		ldr	r2, [r3, #1032]
+ 800 0186 22F44012 		bic	r2, r2, #3145728
+ 801 018a 42F40012 		orr	r2, r2, #2097152
+ 802 018e C3F80824 		str	r2, [r3, #1032]
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 19
+
+
+  90:Core/Src/init.c **** 
+ 803              		.loc 1 90 5 view .LVU165
+ 804 0192 D3F80C24 		ldr	r2, [r3, #1036]
+ 805 0196 22F44012 		bic	r2, r2, #3145728
+ 806 019a C3F80C24 		str	r2, [r3, #1036]
+  93:Core/Src/init.c **** }
+ 807              		.loc 1 93 5 view .LVU166
+ 808 019e FFF7FEFF 		bl	All_LEDs_Off
+ 809              	.LVL15:
+  94:Core/Src/init.c **** 
+ 810              		.loc 1 94 1 is_stmt 0 view .LVU167
+ 811 01a2 08BD     		pop	{r3, pc}
+ 812              	.L54:
+ 813              		.align	2
+ 814              	.L53:
+ 815 01a4 00300240 		.word	1073885184
+ 816 01a8 00000240 		.word	1073872896
+ 817              		.cfi_endproc
+ 818              	.LFE130:
+ 820              		.section	.text.Switch_Mode,"ax",%progbits
+ 821              		.align	1
+ 822              		.global	Switch_Mode
+ 823              		.syntax unified
+ 824              		.thumb
+ 825              		.thumb_func
+ 827              	Switch_Mode:
+ 828              	.LFB150:
+ 194:Core/Src/init.c **** 
+ 195:Core/Src/init.c **** void Switch_Mode(void) {
+ 829              		.loc 1 195 24 is_stmt 1 view -0
+ 830              		.cfi_startproc
+ 831              		@ args = 0, pretend = 0, frame = 0
+ 832              		@ frame_needed = 0, uses_anonymous_args = 0
+ 833              		@ link register save eliminated.
+ 196:Core/Src/init.c ****     if (g_system_monitor.current_mode == 1) {
+ 834              		.loc 1 196 5 view .LVU169
+ 835              		.loc 1 196 25 is_stmt 0 view .LVU170
+ 836 0000 104B     		ldr	r3, .L61
+ 837 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 838 0004 DBB2     		uxtb	r3, r3
+ 839              		.loc 1 196 8 view .LVU171
+ 840 0006 012B     		cmp	r3, #1
+ 841 0008 13D0     		beq	.L59
+ 197:Core/Src/init.c ****         g_system_monitor.current_mode = 2;
+ 198:Core/Src/init.c ****     } else if (g_system_monitor.current_mode == 2) {
+ 842              		.loc 1 198 12 is_stmt 1 view .LVU172
+ 843              		.loc 1 198 32 is_stmt 0 view .LVU173
+ 844 000a 0E4B     		ldr	r3, .L61
+ 845 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 846 000e DBB2     		uxtb	r3, r3
+ 847              		.loc 1 198 15 view .LVU174
+ 848 0010 022B     		cmp	r3, #2
+ 849 0012 12D0     		beq	.L60
+ 199:Core/Src/init.c ****         g_system_monitor.current_mode = 3;
+ 200:Core/Src/init.c ****     } else {
+ 201:Core/Src/init.c ****         g_system_monitor.current_mode = 1;
+ 850              		.loc 1 201 9 is_stmt 1 view .LVU175
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 20
+
+
+ 851              		.loc 1 201 39 is_stmt 0 view .LVU176
+ 852 0014 0B4B     		ldr	r3, .L61
+ 853 0016 0122     		movs	r2, #1
+ 854 0018 1A70     		strb	r2, [r3]
+ 855              	.L57:
+ 202:Core/Src/init.c ****     }
+ 203:Core/Src/init.c ****     g_system_monitor.pg3_press_count++;
+ 856              		.loc 1 203 5 is_stmt 1 view .LVU177
+ 857              		.loc 1 203 21 is_stmt 0 view .LVU178
+ 858 001a 0A4B     		ldr	r3, .L61
+ 859 001c 5A68     		ldr	r2, [r3, #4]
+ 860              		.loc 1 203 37 view .LVU179
+ 861 001e 0132     		adds	r2, r2, #1
+ 862 0020 5A60     		str	r2, [r3, #4]
+ 204:Core/Src/init.c ****     g_system_monitor.last_mode_change = g_system_monitor.loop_counter;
+ 863              		.loc 1 204 5 is_stmt 1 view .LVU180
+ 864              		.loc 1 204 57 is_stmt 0 view .LVU181
+ 865 0022 9A69     		ldr	r2, [r3, #24]
+ 866              		.loc 1 204 39 view .LVU182
+ 867 0024 DA61     		str	r2, [r3, #28]
+ 205:Core/Src/init.c ****     
+ 206:Core/Src/init.c ****     // 新增：设置脉冲标志和计数器
+ 207:Core/Src/init.c ****     g_system_monitor.pg3_pressed_flag = 1;      // 产生脉冲上升沿
+ 868              		.loc 1 207 5 is_stmt 1 view .LVU183
+ 869              		.loc 1 207 39 is_stmt 0 view .LVU184
+ 870 0026 0122     		movs	r2, #1
+ 871 0028 9A74     		strb	r2, [r3, #18]
+ 208:Core/Src/init.c ****     g_system_monitor.pg3_pulse_counter = 3;     // 设置脉冲持续时间（3个循环周期）
+ 872              		.loc 1 208 5 is_stmt 1 view .LVU185
+ 873              		.loc 1 208 40 is_stmt 0 view .LVU186
+ 874 002a 0322     		movs	r2, #3
+ 875 002c 83F82020 		strb	r2, [r3, #32]
+ 209:Core/Src/init.c **** }
+ 876              		.loc 1 209 1 view .LVU187
+ 877 0030 7047     		bx	lr
+ 878              	.L59:
+ 197:Core/Src/init.c ****     } else if (g_system_monitor.current_mode == 2) {
+ 879              		.loc 1 197 9 is_stmt 1 view .LVU188
+ 197:Core/Src/init.c ****     } else if (g_system_monitor.current_mode == 2) {
+ 880              		.loc 1 197 39 is_stmt 0 view .LVU189
+ 881 0032 044B     		ldr	r3, .L61
+ 882 0034 0222     		movs	r2, #2
+ 883 0036 1A70     		strb	r2, [r3]
+ 884 0038 EFE7     		b	.L57
+ 885              	.L60:
+ 199:Core/Src/init.c ****     } else {
+ 886              		.loc 1 199 9 is_stmt 1 view .LVU190
+ 199:Core/Src/init.c ****     } else {
+ 887              		.loc 1 199 39 is_stmt 0 view .LVU191
+ 888 003a 024B     		ldr	r3, .L61
+ 889 003c 0322     		movs	r2, #3
+ 890 003e 1A70     		strb	r2, [r3]
+ 891 0040 EBE7     		b	.L57
+ 892              	.L62:
+ 893 0042 00BF     		.align	2
+ 894              	.L61:
+ 895 0044 00000000 		.word	g_system_monitor
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 21
+
+
+ 896              		.cfi_endproc
+ 897              	.LFE150:
+ 899              		.section	.text.Get_PG3_Press_Count,"ax",%progbits
+ 900              		.align	1
+ 901              		.global	Get_PG3_Press_Count
+ 902              		.syntax unified
+ 903              		.thumb
+ 904              		.thumb_func
+ 906              	Get_PG3_Press_Count:
+ 907              	.LFB151:
+ 210:Core/Src/init.c **** 
+ 211:Core/Src/init.c **** uint32_t Get_PG3_Press_Count(void) {
+ 908              		.loc 1 211 36 is_stmt 1 view -0
+ 909              		.cfi_startproc
+ 910              		@ args = 0, pretend = 0, frame = 0
+ 911              		@ frame_needed = 0, uses_anonymous_args = 0
+ 912              		@ link register save eliminated.
+ 212:Core/Src/init.c ****     return g_system_monitor.pg3_press_count;
+ 913              		.loc 1 212 5 view .LVU193
+ 914              		.loc 1 212 28 is_stmt 0 view .LVU194
+ 915 0000 014B     		ldr	r3, .L64
+ 916 0002 5868     		ldr	r0, [r3, #4]
+ 213:Core/Src/init.c **** }
+ 917              		.loc 1 213 1 view .LVU195
+ 918 0004 7047     		bx	lr
+ 919              	.L65:
+ 920 0006 00BF     		.align	2
+ 921              	.L64:
+ 922 0008 00000000 		.word	g_system_monitor
+ 923              		.cfi_endproc
+ 924              	.LFE151:
+ 926              		.global	g_system_monitor
+ 927              		.section	.data.g_system_monitor,"aw"
+ 928              		.align	2
+ 931              	g_system_monitor:
+ 932 0000 01       		.byte	1
+ 933 0001 000000   		.space	3
+ 934 0004 00000000 		.word	0
+ 935 0008 00       		.byte	0
+ 936 0009 00       		.byte	0
+ 937 000a 00       		.byte	0
+ 938 000b 00       		.byte	0
+ 939 000c 00       		.byte	0
+ 940 000d 00       		.byte	0
+ 941 000e 01       		.byte	1
+ 942 000f 01       		.byte	1
+ 943 0010 01       		.byte	1
+ 944 0011 01       		.byte	1
+ 945 0012 00       		.byte	0
+ 946 0013 00       		.byte	0
+ 947 0014 00       		.byte	0
+ 948 0015 00       		.byte	0
+ 949 0016 0000     		.space	2
+ 950 0018 00000000 		.word	0
+ 951 001c 00000000 		.word	0
+ 952 0020 00       		.byte	0
+ 953 0021 000000   		.space	3
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 22
+
+
+ 954              		.text
+ 955              	.Letext0:
+ 956              		.file 2 "E:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 957              		.file 3 "E:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 958              		.file 4 "E:/VSCode-file/Laboratory_Practice/Core/Inc/init.h"
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 23
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:21     .text.Onboard_Green_LED_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:26     .text.Onboard_Green_LED_On:00000000 Onboard_Green_LED_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:47     .text.Onboard_Green_LED_On:00000010 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:931    .data.g_system_monitor:00000000 g_system_monitor
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:53     .text.Onboard_Green_LED_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:58     .text.Onboard_Green_LED_Off:00000000 Onboard_Green_LED_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:80     .text.Onboard_Green_LED_Off:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:86     .text.Onboard_Blue_LED_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:91     .text.Onboard_Blue_LED_On:00000000 Onboard_Blue_LED_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:113    .text.Onboard_Blue_LED_On:00000010 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:119    .text.Onboard_Blue_LED_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:124    .text.Onboard_Blue_LED_Off:00000000 Onboard_Blue_LED_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:146    .text.Onboard_Blue_LED_Off:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:152    .text.Onboard_Red_LED_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:157    .text.Onboard_Red_LED_On:00000000 Onboard_Red_LED_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:179    .text.Onboard_Red_LED_On:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:185    .text.Onboard_Red_LED_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:190    .text.Onboard_Red_LED_Off:00000000 Onboard_Red_LED_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:212    .text.Onboard_Red_LED_Off:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:218    .text.External_Green_LED_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:223    .text.External_Green_LED_On:00000000 External_Green_LED_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:244    .text.External_Green_LED_On:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:250    .text.External_Green_LED_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:255    .text.External_Green_LED_Off:00000000 External_Green_LED_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:276    .text.External_Green_LED_Off:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:282    .text.External_Blue_LED_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:287    .text.External_Blue_LED_On:00000000 External_Blue_LED_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:308    .text.External_Blue_LED_On:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:314    .text.External_Blue_LED_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:319    .text.External_Blue_LED_Off:00000000 External_Blue_LED_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:340    .text.External_Blue_LED_Off:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:346    .text.External_Red_LED_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:351    .text.External_Red_LED_On:00000000 External_Red_LED_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:372    .text.External_Red_LED_On:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:378    .text.External_Red_LED_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:383    .text.External_Red_LED_Off:00000000 External_Red_LED_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:404    .text.External_Red_LED_Off:00000014 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:410    .text.Green_LEDs_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:416    .text.Green_LEDs_On:00000000 Green_LEDs_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:439    .text.Green_LEDs_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:445    .text.Green_LEDs_Off:00000000 Green_LEDs_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:468    .text.Blue_LEDs_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:474    .text.Blue_LEDs_On:00000000 Blue_LEDs_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:497    .text.Blue_LEDs_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:503    .text.Blue_LEDs_Off:00000000 Blue_LEDs_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:526    .text.Red_LEDs_On:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:532    .text.Red_LEDs_On:00000000 Red_LEDs_On
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:555    .text.Red_LEDs_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:561    .text.Red_LEDs_Off:00000000 Red_LEDs_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:584    .text.All_LEDs_Off:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:590    .text.All_LEDs_Off:00000000 All_LEDs_Off
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:616    .text.GPIO_Init_Memory:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:622    .text.GPIO_Init_Memory:00000000 GPIO_Init_Memory
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:815    .text.GPIO_Init_Memory:000001a4 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:821    .text.Switch_Mode:00000000 $t
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s 			page 24
+
+
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:827    .text.Switch_Mode:00000000 Switch_Mode
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:895    .text.Switch_Mode:00000044 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:900    .text.Get_PG3_Press_Count:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:906    .text.Get_PG3_Press_Count:00000000 Get_PG3_Press_Count
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:922    .text.Get_PG3_Press_Count:00000008 $d
+C:\Users\ZJY\AppData\Local\Temp\ccc2UUBc.s:928    .data.g_system_monitor:00000000 $d
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,1556 @@
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.delay_ms,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	delay_ms:
+  27              	.LVL0:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "E:/VSCode-file/Laboratory_Practice/CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
+   2:Core/Src/main.c **** #include "E:/VSCode-file/Laboratory_Practice/Core/Inc/init.h" 
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** // 本地按键状态变量（用于消抖逻辑）
+   5:Core/Src/main.c **** static uint8_t last_pg3_raw_state = 1;
+   6:Core/Src/main.c **** static uint8_t last_pc6_raw_state = 1;
+   7:Core/Src/main.c **** static uint8_t last_pc8_raw_state = 1;
+   8:Core/Src/main.c **** static uint8_t last_pc9_raw_state = 1;
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** // 简单延时函数
+  11:Core/Src/main.c **** static void delay_ms(uint32_t ms) {
+  29              		.loc 1 11 35 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  12:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000U; i++) {
+  34              		.loc 1 12 5 view .LVU1
+  35              	.LBB2:
+  36              		.loc 1 12 10 view .LVU2
+  37              		.loc 1 12 19 is_stmt 0 view .LVU3
+  38 0000 0022     		movs	r2, #0
+  39              		.loc 1 12 5 view .LVU4
+  40 0002 01E0     		b	.L2
+  41              	.LVL1:
+  42              	.L3:
+  13:Core/Src/main.c ****         __NOP();
+  43              		.loc 1 13 9 is_stmt 1 view .LVU5
+  44              		.syntax unified
+  45              	@ 13 "Core/Src/main.c" 1
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 2
+
+
+  46 0004 00BF     		nop
+  47              	@ 0 "" 2
+  12:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000U; i++) {
+  48              		.loc 1 12 43 discriminator 3 view .LVU6
+  49              		.thumb
+  50              		.syntax unified
+  51 0006 0132     		adds	r2, r2, #1
+  52              	.LVL2:
+  53              	.L2:
+  12:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000U; i++) {
+  54              		.loc 1 12 28 discriminator 1 view .LVU7
+  12:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000U; i++) {
+  55              		.loc 1 12 33 is_stmt 0 discriminator 1 view .LVU8
+  56 0008 4FF47A73 		mov	r3, #1000
+  57 000c 00FB03F3 		mul	r3, r0, r3
+  12:Core/Src/main.c ****     for (uint32_t i = 0; i < ms * 1000U; i++) {
+  58              		.loc 1 12 28 discriminator 1 view .LVU9
+  59 0010 9342     		cmp	r3, r2
+  60 0012 F7D8     		bhi	.L3
+  61              	.LBE2:
+  14:Core/Src/main.c ****     }
+  15:Core/Src/main.c **** }
+  62              		.loc 1 15 1 view .LVU10
+  63 0014 7047     		bx	lr
+  64              		.cfi_endproc
+  65              	.LFE130:
+  67              		.section	.text.check_mode_button,"ax",%progbits
+  68              		.align	1
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	check_mode_button:
+  74              	.LFB131:
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** // 模式切换按键检测 - 纯地址级直接内存访问
+  18:Core/Src/main.c **** static uint8_t check_mode_button(void) {
+  75              		.loc 1 18 40 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79 0000 10B5     		push	{r4, lr}
+  80              	.LCFI0:
+  81              		.cfi_def_cfa_offset 8
+  82              		.cfi_offset 4, -8
+  83              		.cfi_offset 14, -4
+  19:Core/Src/main.c ****     // 读取PG3原始状态（内部上拉：1=未按下，0=按下）
+  20:Core/Src/main.c ****     uint8_t current_raw_state = (*((volatile uint32_t*)(GPIOG_BASE + IDR_OFFSET)) & (1U << KEY_MODE
+  84              		.loc 1 20 5 view .LVU12
+  85              		.loc 1 20 34 is_stmt 0 view .LVU13
+  86 0002 1B4B     		ldr	r3, .L11
+  87 0004 D3F81038 		ldr	r3, [r3, #2064]
+  88              		.loc 1 20 83 view .LVU14
+  89 0008 03F00803 		and	r3, r3, #8
+  90              		.loc 1 20 111 view .LVU15
+  91 000c 002B     		cmp	r3, #0
+  92 000e 14BF     		ite	ne
+  93 0010 0123     		movne	r3, #1
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 3
+
+
+  94 0012 0023     		moveq	r3, #0
+  95              	.LVL3:
+  21:Core/Src/main.c ****     
+  22:Core/Src/main.c ****     // 更新监测变量 - 直接反映引脚电平
+  23:Core/Src/main.c ****     g_system_monitor.pg3_key_state = current_raw_state;
+  96              		.loc 1 23 5 is_stmt 1 view .LVU16
+  97              		.loc 1 23 36 is_stmt 0 view .LVU17
+  98 0014 174A     		ldr	r2, .L11+4
+  99 0016 9373     		strb	r3, [r2, #14]
+  24:Core/Src/main.c ****     
+  25:Core/Src/main.c ****     // 检测下降沿（从1到0）
+  26:Core/Src/main.c ****     if (current_raw_state == 0 && last_pg3_raw_state == 1) {
+ 100              		.loc 1 26 5 is_stmt 1 view .LVU18
+ 101              		.loc 1 26 8 is_stmt 0 view .LVU19
+ 102 0018 03D1     		bne	.L5
+ 103              		.loc 1 26 54 discriminator 1 view .LVU20
+ 104 001a 174A     		ldr	r2, .L11+8
+ 105 001c 1478     		ldrb	r4, [r2]	@ zero_extendqisi2
+ 106              		.loc 1 26 32 discriminator 1 view .LVU21
+ 107 001e 012C     		cmp	r4, #1
+ 108 0020 04D0     		beq	.L10
+ 109              	.L5:
+  27:Core/Src/main.c ****         delay_ms(20);  // 消抖
+  28:Core/Src/main.c ****         current_raw_state = (*((volatile uint32_t*)(GPIOG_BASE + IDR_OFFSET)) & (1U << KEY_MODE_PIN
+  29:Core/Src/main.c ****         g_system_monitor.pg3_key_state = current_raw_state;  // 更新消抖后的状态
+  30:Core/Src/main.c ****         
+  31:Core/Src/main.c ****         if (current_raw_state == 0) {
+  32:Core/Src/main.c ****             // 等待按键释放
+  33:Core/Src/main.c ****             while ((*((volatile uint32_t*)(GPIOG_BASE + IDR_OFFSET)) & (1U << KEY_MODE_PIN)) == 0) 
+  34:Core/Src/main.c ****                 g_system_monitor.pg3_key_state = 0;  // 持续更新为按下状态
+  35:Core/Src/main.c ****             }
+  36:Core/Src/main.c ****             delay_ms(20);
+  37:Core/Src/main.c ****             
+  38:Core/Src/main.c ****             // 按键释放后更新状态
+  39:Core/Src/main.c ****             g_system_monitor.pg3_key_state = 1;  // 释放后回到未按下状态
+  40:Core/Src/main.c ****             last_pg3_raw_state = 1;
+  41:Core/Src/main.c ****             return 1;  // 返回有效按下
+  42:Core/Src/main.c ****         }
+  43:Core/Src/main.c ****     }
+  44:Core/Src/main.c ****     
+  45:Core/Src/main.c ****     last_pg3_raw_state = current_raw_state;
+ 110              		.loc 1 45 5 is_stmt 1 view .LVU22
+ 111              		.loc 1 45 24 is_stmt 0 view .LVU23
+ 112 0022 154A     		ldr	r2, .L11+8
+ 113 0024 1370     		strb	r3, [r2]
+  46:Core/Src/main.c ****     return 0;
+ 114              		.loc 1 46 5 is_stmt 1 view .LVU24
+ 115              		.loc 1 46 12 is_stmt 0 view .LVU25
+ 116 0026 0024     		movs	r4, #0
+ 117              	.LVL4:
+ 118              	.L8:
+  47:Core/Src/main.c **** }
+ 119              		.loc 1 47 1 view .LVU26
+ 120 0028 2046     		mov	r0, r4
+ 121 002a 10BD     		pop	{r4, pc}
+ 122              	.LVL5:
+ 123              	.L10:
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 4
+
+
+  27:Core/Src/main.c ****         delay_ms(20);  // 消抖
+ 124              		.loc 1 27 9 is_stmt 1 view .LVU27
+ 125 002c 1420     		movs	r0, #20
+ 126 002e FFF7FEFF 		bl	delay_ms
+ 127              	.LVL6:
+  28:Core/Src/main.c ****         g_system_monitor.pg3_key_state = current_raw_state;  // 更新消抖后的状态
+ 128              		.loc 1 28 9 view .LVU28
+  28:Core/Src/main.c ****         g_system_monitor.pg3_key_state = current_raw_state;  // 更新消抖后的状态
+ 129              		.loc 1 28 30 is_stmt 0 view .LVU29
+ 130 0032 0F4B     		ldr	r3, .L11
+ 131 0034 D3F81038 		ldr	r3, [r3, #2064]
+  28:Core/Src/main.c ****         g_system_monitor.pg3_key_state = current_raw_state;  // 更新消抖后的状态
+ 132              		.loc 1 28 79 view .LVU30
+ 133 0038 03F00803 		and	r3, r3, #8
+  28:Core/Src/main.c ****         g_system_monitor.pg3_key_state = current_raw_state;  // 更新消抖后的状态
+ 134              		.loc 1 28 107 view .LVU31
+ 135 003c 002B     		cmp	r3, #0
+ 136 003e 14BF     		ite	ne
+ 137 0040 0123     		movne	r3, #1
+ 138 0042 0023     		moveq	r3, #0
+ 139              	.LVL7:
+  29:Core/Src/main.c ****         
+ 140              		.loc 1 29 9 is_stmt 1 view .LVU32
+  29:Core/Src/main.c ****         
+ 141              		.loc 1 29 40 is_stmt 0 view .LVU33
+ 142 0044 0B4A     		ldr	r2, .L11+4
+ 143 0046 9373     		strb	r3, [r2, #14]
+  31:Core/Src/main.c ****             // 等待按键释放
+ 144              		.loc 1 31 9 is_stmt 1 view .LVU34
+  31:Core/Src/main.c ****             // 等待按键释放
+ 145              		.loc 1 31 12 is_stmt 0 view .LVU35
+ 146 0048 EBD1     		bne	.L5
+ 147 004a 02E0     		b	.L6
+ 148              	.LVL8:
+ 149              	.L7:
+  34:Core/Src/main.c ****             }
+ 150              		.loc 1 34 17 is_stmt 1 view .LVU36
+  34:Core/Src/main.c ****             }
+ 151              		.loc 1 34 48 is_stmt 0 view .LVU37
+ 152 004c 094B     		ldr	r3, .L11+4
+ 153 004e 0022     		movs	r2, #0
+ 154 0050 9A73     		strb	r2, [r3, #14]
+ 155              	.L6:
+  33:Core/Src/main.c ****                 g_system_monitor.pg3_key_state = 0;  // 持续更新为按下状态
+ 156              		.loc 1 33 94 is_stmt 1 view .LVU38
+  33:Core/Src/main.c ****                 g_system_monitor.pg3_key_state = 0;  // 持续更新为按下状态
+ 157              		.loc 1 33 21 is_stmt 0 view .LVU39
+ 158 0052 074B     		ldr	r3, .L11
+ 159 0054 D3F81038 		ldr	r3, [r3, #2064]
+  33:Core/Src/main.c ****                 g_system_monitor.pg3_key_state = 0;  // 持续更新为按下状态
+ 160              		.loc 1 33 94 view .LVU40
+ 161 0058 13F0080F 		tst	r3, #8
+ 162 005c F6D0     		beq	.L7
+  36:Core/Src/main.c ****             
+ 163              		.loc 1 36 13 is_stmt 1 view .LVU41
+ 164 005e 1420     		movs	r0, #20
+ 165 0060 FFF7FEFF 		bl	delay_ms
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 5
+
+
+ 166              	.LVL9:
+  39:Core/Src/main.c ****             last_pg3_raw_state = 1;
+ 167              		.loc 1 39 13 view .LVU42
+  39:Core/Src/main.c ****             last_pg3_raw_state = 1;
+ 168              		.loc 1 39 44 is_stmt 0 view .LVU43
+ 169 0064 0123     		movs	r3, #1
+ 170 0066 034A     		ldr	r2, .L11+4
+ 171 0068 9373     		strb	r3, [r2, #14]
+  40:Core/Src/main.c ****             return 1;  // 返回有效按下
+ 172              		.loc 1 40 13 is_stmt 1 view .LVU44
+  40:Core/Src/main.c ****             return 1;  // 返回有效按下
+ 173              		.loc 1 40 32 is_stmt 0 view .LVU45
+ 174 006a 034A     		ldr	r2, .L11+8
+ 175 006c 1370     		strb	r3, [r2]
+  41:Core/Src/main.c ****         }
+ 176              		.loc 1 41 13 is_stmt 1 view .LVU46
+  41:Core/Src/main.c ****         }
+ 177              		.loc 1 41 20 is_stmt 0 view .LVU47
+ 178 006e DBE7     		b	.L8
+ 179              	.L12:
+ 180              		.align	2
+ 181              	.L11:
+ 182 0070 00100240 		.word	1073876992
+ 183 0074 00000000 		.word	g_system_monitor
+ 184 0078 00000000 		.word	last_pg3_raw_state
+ 185              		.cfi_endproc
+ 186              	.LFE131:
+ 188              		.section	.text.check_control_button_pressed,"ax",%progbits
+ 189              		.align	1
+ 190              		.syntax unified
+ 191              		.thumb
+ 192              		.thumb_func
+ 194              	check_control_button_pressed:
+ 195              	.LVL10:
+ 196              	.LFB132:
+  48:Core/Src/main.c **** 
+  49:Core/Src/main.c **** // 控制按键检测（用于按住点亮功能）- 修复volatile限定符
+  50:Core/Src/main.c **** static uint8_t check_control_button_pressed(uint32_t gpio_base, uint16_t pin, uint8_t *last_raw_sta
+  51:Core/Src/main.c ****                                            volatile uint8_t *monitor_key_state, volatile uint8_t *p
+ 197              		.loc 1 51 113 is_stmt 1 view -0
+ 198              		.cfi_startproc
+ 199              		@ args = 4, pretend = 0, frame = 0
+ 200              		@ frame_needed = 0, uses_anonymous_args = 0
+ 201              		.loc 1 51 113 is_stmt 0 view .LVU49
+ 202 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 203              	.LCFI1:
+ 204              		.cfi_def_cfa_offset 32
+ 205              		.cfi_offset 3, -32
+ 206              		.cfi_offset 4, -28
+ 207              		.cfi_offset 5, -24
+ 208              		.cfi_offset 6, -20
+ 209              		.cfi_offset 7, -16
+ 210              		.cfi_offset 8, -12
+ 211              		.cfi_offset 9, -8
+ 212              		.cfi_offset 14, -4
+ 213 0004 9046     		mov	r8, r2
+ 214 0006 1F46     		mov	r7, r3
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 6
+
+
+ 215 0008 089E     		ldr	r6, [sp, #32]
+  52:Core/Src/main.c ****     // 读取原始引脚状态
+  53:Core/Src/main.c ****     uint8_t current_raw_state = (*((volatile uint32_t*)(gpio_base + IDR_OFFSET)) & (1U << pin)) ? 1
+ 216              		.loc 1 53 5 is_stmt 1 view .LVU50
+ 217              		.loc 1 53 34 is_stmt 0 view .LVU51
+ 218 000a 0569     		ldr	r5, [r0, #16]
+ 219              		.loc 1 53 88 view .LVU52
+ 220 000c 0124     		movs	r4, #1
+ 221 000e 8C40     		lsls	r4, r4, r1
+ 222              		.loc 1 53 82 view .LVU53
+ 223 0010 2540     		ands	r5, r5, r4
+ 224              		.loc 1 53 101 view .LVU54
+ 225 0012 002D     		cmp	r5, #0
+ 226 0014 14BF     		ite	ne
+ 227 0016 0121     		movne	r1, #1
+ 228              	.LVL11:
+ 229              		.loc 1 53 101 view .LVU55
+ 230 0018 0021     		moveq	r1, #0
+ 231              	.LVL12:
+  54:Core/Src/main.c ****     
+  55:Core/Src/main.c ****     // 更新监测变量 - 直接反映引脚电平
+  56:Core/Src/main.c ****     *monitor_key_state = current_raw_state;
+ 232              		.loc 1 56 5 is_stmt 1 view .LVU56
+ 233              		.loc 1 56 24 is_stmt 0 view .LVU57
+ 234 001a 1970     		strb	r1, [r3]
+  57:Core/Src/main.c ****     *pressed_flag = 0;  // 清除按下标志
+ 235              		.loc 1 57 5 is_stmt 1 view .LVU58
+ 236              		.loc 1 57 19 is_stmt 0 view .LVU59
+ 237 001c 4FF00003 		mov	r3, #0
+ 238              	.LVL13:
+ 239              		.loc 1 57 19 view .LVU60
+ 240 0020 3370     		strb	r3, [r6]
+  58:Core/Src/main.c ****     
+  59:Core/Src/main.c ****     // 检测按键是否被按住
+  60:Core/Src/main.c ****     if (current_raw_state == 0) {
+ 241              		.loc 1 60 5 is_stmt 1 view .LVU61
+ 242              		.loc 1 60 8 is_stmt 0 view .LVU62
+ 243 0022 04D0     		beq	.L17
+ 244              	.LVL14:
+ 245              	.L14:
+  61:Core/Src/main.c ****         delay_ms(20);  // 消抖
+  62:Core/Src/main.c ****         current_raw_state = (*((volatile uint32_t*)(gpio_base + IDR_OFFSET)) & (1U << pin)) ? 1 : 0
+  63:Core/Src/main.c ****         *monitor_key_state = current_raw_state;
+  64:Core/Src/main.c ****         
+  65:Core/Src/main.c ****         if (current_raw_state == 0) {
+  66:Core/Src/main.c ****             *pressed_flag = 1;  // 设置按下标志
+  67:Core/Src/main.c ****             *last_raw_state = current_raw_state;
+  68:Core/Src/main.c ****             return 1;  // 按键被按住
+  69:Core/Src/main.c ****         }
+  70:Core/Src/main.c ****     }
+  71:Core/Src/main.c ****     
+  72:Core/Src/main.c ****     *last_raw_state = current_raw_state;
+ 246              		.loc 1 72 5 is_stmt 1 view .LVU63
+ 247              		.loc 1 72 21 is_stmt 0 view .LVU64
+ 248 0024 88F80010 		strb	r1, [r8]
+  73:Core/Src/main.c ****     return 0;  // 按键未按住
+ 249              		.loc 1 73 5 is_stmt 1 view .LVU65
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 7
+
+
+ 250              		.loc 1 73 12 is_stmt 0 view .LVU66
+ 251 0028 0020     		movs	r0, #0
+ 252              	.L15:
+  74:Core/Src/main.c **** }
+ 253              		.loc 1 74 1 view .LVU67
+ 254 002a BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 255              	.LVL15:
+ 256              	.L17:
+ 257              		.loc 1 74 1 view .LVU68
+ 258 002e 8146     		mov	r9, r0
+  61:Core/Src/main.c ****         delay_ms(20);  // 消抖
+ 259              		.loc 1 61 9 is_stmt 1 view .LVU69
+ 260 0030 1420     		movs	r0, #20
+ 261              	.LVL16:
+  61:Core/Src/main.c ****         delay_ms(20);  // 消抖
+ 262              		.loc 1 61 9 is_stmt 0 view .LVU70
+ 263 0032 FFF7FEFF 		bl	delay_ms
+ 264              	.LVL17:
+  62:Core/Src/main.c ****         *monitor_key_state = current_raw_state;
+ 265              		.loc 1 62 9 is_stmt 1 view .LVU71
+  62:Core/Src/main.c ****         *monitor_key_state = current_raw_state;
+ 266              		.loc 1 62 30 is_stmt 0 view .LVU72
+ 267 0036 D9F81030 		ldr	r3, [r9, #16]
+  62:Core/Src/main.c ****         *monitor_key_state = current_raw_state;
+ 268              		.loc 1 62 78 view .LVU73
+ 269 003a 1C40     		ands	r4, r4, r3
+  62:Core/Src/main.c ****         *monitor_key_state = current_raw_state;
+ 270              		.loc 1 62 97 view .LVU74
+ 271 003c 002C     		cmp	r4, #0
+ 272 003e 14BF     		ite	ne
+ 273 0040 0121     		movne	r1, #1
+ 274 0042 0021     		moveq	r1, #0
+ 275              	.LVL18:
+  63:Core/Src/main.c ****         
+ 276              		.loc 1 63 9 is_stmt 1 view .LVU75
+  63:Core/Src/main.c ****         
+ 277              		.loc 1 63 28 is_stmt 0 view .LVU76
+ 278 0044 3970     		strb	r1, [r7]
+  65:Core/Src/main.c ****             *pressed_flag = 1;  // 设置按下标志
+ 279              		.loc 1 65 9 is_stmt 1 view .LVU77
+  65:Core/Src/main.c ****             *pressed_flag = 1;  // 设置按下标志
+ 280              		.loc 1 65 12 is_stmt 0 view .LVU78
+ 281 0046 EDD1     		bne	.L14
+  66:Core/Src/main.c ****             *last_raw_state = current_raw_state;
+ 282              		.loc 1 66 13 is_stmt 1 view .LVU79
+  66:Core/Src/main.c ****             *last_raw_state = current_raw_state;
+ 283              		.loc 1 66 27 is_stmt 0 view .LVU80
+ 284 0048 0120     		movs	r0, #1
+ 285 004a 3070     		strb	r0, [r6]
+  67:Core/Src/main.c ****             return 1;  // 按键被按住
+ 286              		.loc 1 67 13 is_stmt 1 view .LVU81
+  67:Core/Src/main.c ****             return 1;  // 按键被按住
+ 287              		.loc 1 67 29 is_stmt 0 view .LVU82
+ 288 004c 88F80010 		strb	r1, [r8]
+  68:Core/Src/main.c ****         }
+ 289              		.loc 1 68 13 is_stmt 1 view .LVU83
+  68:Core/Src/main.c ****         }
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 8
+
+
+ 290              		.loc 1 68 20 is_stmt 0 view .LVU84
+ 291 0050 EBE7     		b	.L15
+ 292              		.cfi_endproc
+ 293              	.LFE132:
+ 295              		.section	.text.manage_pg3_pulse_flag,"ax",%progbits
+ 296              		.align	1
+ 297              		.syntax unified
+ 298              		.thumb
+ 299              		.thumb_func
+ 301              	manage_pg3_pulse_flag:
+ 302              	.LFB137:
+  75:Core/Src/main.c **** 
+  76:Core/Src/main.c **** // 模式控制函数
+  77:Core/Src/main.c **** static void process_mode1_controls(void) {
+  78:Core/Src/main.c ****     uint8_t pc6_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL1_PIN, &last_pc6_raw_sta
+  79:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+  80:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+  81:Core/Src/main.c ****     
+  82:Core/Src/main.c ****     // PC6控制绿色LED组 - 按住点亮，松开熄灭
+  83:Core/Src/main.c ****     if (pc6_pressed) {
+  84:Core/Src/main.c ****         Green_LEDs_On();
+  85:Core/Src/main.c ****     } else if (g_system_monitor.pc6_key_state == 1 && (g_system_monitor.onboard_green_state || g_sy
+  86:Core/Src/main.c ****         Green_LEDs_Off();
+  87:Core/Src/main.c ****     }
+  88:Core/Src/main.c ****     
+  89:Core/Src/main.c ****     // PC8控制蓝色LED组 - 按住点亮，松开熄灭
+  90:Core/Src/main.c ****     if (pc8_pressed) {
+  91:Core/Src/main.c ****         Blue_LEDs_On();
+  92:Core/Src/main.c ****     } else if (g_system_monitor.pc8_key_state == 1 && (g_system_monitor.onboard_blue_state || g_sys
+  93:Core/Src/main.c ****         Blue_LEDs_Off();
+  94:Core/Src/main.c ****     }
+  95:Core/Src/main.c ****     
+  96:Core/Src/main.c ****     // PC9控制红色LED组 - 按住点亮，松开熄灭
+  97:Core/Src/main.c ****     if (pc9_pressed) {
+  98:Core/Src/main.c ****         Red_LEDs_On();
+  99:Core/Src/main.c ****     } else if (g_system_monitor.pc9_key_state == 1 && (g_system_monitor.onboard_red_state || g_syst
+ 100:Core/Src/main.c ****         Red_LEDs_Off();
+ 101:Core/Src/main.c ****     }
+ 102:Core/Src/main.c **** }
+ 103:Core/Src/main.c **** 
+ 104:Core/Src/main.c **** static void process_mode2_controls(void) {
+ 105:Core/Src/main.c ****     uint8_t pc6_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL1_PIN, &last_pc6_raw_sta
+ 106:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+ 107:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+ 108:Core/Src/main.c ****     
+ 109:Core/Src/main.c ****     // PC6控制红色LED组
+ 110:Core/Src/main.c ****     if (pc6_pressed) {
+ 111:Core/Src/main.c ****         Red_LEDs_On();
+ 112:Core/Src/main.c ****     } else if (g_system_monitor.pc6_key_state == 1 && (g_system_monitor.onboard_red_state || g_syst
+ 113:Core/Src/main.c ****         Red_LEDs_Off();
+ 114:Core/Src/main.c ****     }
+ 115:Core/Src/main.c ****     
+ 116:Core/Src/main.c ****     // PC8控制绿色LED组
+ 117:Core/Src/main.c ****     if (pc8_pressed) {
+ 118:Core/Src/main.c ****         Green_LEDs_On();
+ 119:Core/Src/main.c ****     } else if (g_system_monitor.pc8_key_state == 1 && (g_system_monitor.onboard_green_state || g_sy
+ 120:Core/Src/main.c ****         Green_LEDs_Off();
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 9
+
+
+ 121:Core/Src/main.c ****     }
+ 122:Core/Src/main.c ****     
+ 123:Core/Src/main.c ****     // PC9控制蓝色LED组
+ 124:Core/Src/main.c ****     if (pc9_pressed) {
+ 125:Core/Src/main.c ****         Blue_LEDs_On();
+ 126:Core/Src/main.c ****     } else if (g_system_monitor.pc9_key_state == 1 && (g_system_monitor.onboard_blue_state || g_sys
+ 127:Core/Src/main.c ****         Blue_LEDs_Off();
+ 128:Core/Src/main.c ****     }
+ 129:Core/Src/main.c **** }
+ 130:Core/Src/main.c **** 
+ 131:Core/Src/main.c **** static void process_mode3_controls(void) {
+ 132:Core/Src/main.c ****     uint8_t pc6_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL1_PIN, &last_pc6_raw_sta
+ 133:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+ 134:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+ 135:Core/Src/main.c ****     
+ 136:Core/Src/main.c ****     // PC6控制蓝色LED组
+ 137:Core/Src/main.c ****     if (pc6_pressed) {
+ 138:Core/Src/main.c ****         Blue_LEDs_On();
+ 139:Core/Src/main.c ****     } else if (g_system_monitor.pc6_key_state == 1 && (g_system_monitor.onboard_blue_state || g_sys
+ 140:Core/Src/main.c ****         Blue_LEDs_Off();
+ 141:Core/Src/main.c ****     }
+ 142:Core/Src/main.c ****     
+ 143:Core/Src/main.c ****     // PC8控制红色LED组
+ 144:Core/Src/main.c ****     if (pc8_pressed) {
+ 145:Core/Src/main.c ****         Red_LEDs_On();
+ 146:Core/Src/main.c ****     } else if (g_system_monitor.pc8_key_state == 1 && (g_system_monitor.onboard_red_state || g_syst
+ 147:Core/Src/main.c ****         Red_LEDs_Off();
+ 148:Core/Src/main.c ****     }
+ 149:Core/Src/main.c ****     
+ 150:Core/Src/main.c ****     // PC9控制绿色LED组
+ 151:Core/Src/main.c ****     if (pc9_pressed) {
+ 152:Core/Src/main.c ****         Green_LEDs_On();
+ 153:Core/Src/main.c ****     } else if (g_system_monitor.pc9_key_state == 1 && (g_system_monitor.onboard_green_state || g_sy
+ 154:Core/Src/main.c ****         Green_LEDs_Off();
+ 155:Core/Src/main.c ****     }
+ 156:Core/Src/main.c **** }
+ 157:Core/Src/main.c **** 
+ 158:Core/Src/main.c **** static void process_control_buttons(void) {
+ 159:Core/Src/main.c ****     switch (g_system_monitor.current_mode) {
+ 160:Core/Src/main.c ****         case 1: 
+ 161:Core/Src/main.c ****             process_mode1_controls(); 
+ 162:Core/Src/main.c ****             break;
+ 163:Core/Src/main.c ****         case 2: 
+ 164:Core/Src/main.c ****             process_mode2_controls(); 
+ 165:Core/Src/main.c ****             break;
+ 166:Core/Src/main.c ****         case 3: 
+ 167:Core/Src/main.c ****             process_mode3_controls(); 
+ 168:Core/Src/main.c ****             break;
+ 169:Core/Src/main.c ****         default: 
+ 170:Core/Src/main.c ****             g_system_monitor.current_mode = 1; 
+ 171:Core/Src/main.c ****             break;
+ 172:Core/Src/main.c ****     }
+ 173:Core/Src/main.c **** }
+ 174:Core/Src/main.c **** 
+ 175:Core/Src/main.c **** // 新增：PG3脉冲标志管理函数
+ 176:Core/Src/main.c **** static void manage_pg3_pulse_flag(void) {
+ 303              		.loc 1 176 41 is_stmt 1 view -0
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 10
+
+
+ 304              		.cfi_startproc
+ 305              		@ args = 0, pretend = 0, frame = 0
+ 306              		@ frame_needed = 0, uses_anonymous_args = 0
+ 307              		@ link register save eliminated.
+ 177:Core/Src/main.c ****     if (g_system_monitor.pg3_pulse_counter > 0) {
+ 308              		.loc 1 177 5 view .LVU86
+ 309              		.loc 1 177 25 is_stmt 0 view .LVU87
+ 310 0000 084B     		ldr	r3, .L20
+ 311 0002 93F82030 		ldrb	r3, [r3, #32]	@ zero_extendqisi2
+ 312              		.loc 1 177 8 view .LVU88
+ 313 0006 63B1     		cbz	r3, .L18
+ 178:Core/Src/main.c ****         g_system_monitor.pg3_pulse_counter--;
+ 314              		.loc 1 178 9 is_stmt 1 view .LVU89
+ 315              		.loc 1 178 25 is_stmt 0 view .LVU90
+ 316 0008 064A     		ldr	r2, .L20
+ 317 000a 92F82030 		ldrb	r3, [r2, #32]	@ zero_extendqisi2
+ 318              		.loc 1 178 43 view .LVU91
+ 319 000e 013B     		subs	r3, r3, #1
+ 320 0010 DBB2     		uxtb	r3, r3
+ 321 0012 82F82030 		strb	r3, [r2, #32]
+ 179:Core/Src/main.c ****         
+ 180:Core/Src/main.c ****         // 当计数器减到0时，清除脉冲标志
+ 181:Core/Src/main.c ****         if (g_system_monitor.pg3_pulse_counter == 0) {
+ 322              		.loc 1 181 9 is_stmt 1 view .LVU92
+ 323              		.loc 1 181 29 is_stmt 0 view .LVU93
+ 324 0016 92F82030 		ldrb	r3, [r2, #32]	@ zero_extendqisi2
+ 325              		.loc 1 181 12 view .LVU94
+ 326 001a 13B9     		cbnz	r3, .L18
+ 182:Core/Src/main.c ****             g_system_monitor.pg3_pressed_flag = 0;  // 产生脉冲下降沿
+ 327              		.loc 1 182 13 is_stmt 1 view .LVU95
+ 328              		.loc 1 182 47 is_stmt 0 view .LVU96
+ 329 001c 1346     		mov	r3, r2
+ 330 001e 0022     		movs	r2, #0
+ 331 0020 9A74     		strb	r2, [r3, #18]
+ 332              	.L18:
+ 183:Core/Src/main.c ****         }
+ 184:Core/Src/main.c ****     }
+ 185:Core/Src/main.c **** }
+ 333              		.loc 1 185 1 view .LVU97
+ 334 0022 7047     		bx	lr
+ 335              	.L21:
+ 336              		.align	2
+ 337              	.L20:
+ 338 0024 00000000 		.word	g_system_monitor
+ 339              		.cfi_endproc
+ 340              	.LFE137:
+ 342              		.section	.text.process_mode1_controls,"ax",%progbits
+ 343              		.align	1
+ 344              		.syntax unified
+ 345              		.thumb
+ 346              		.thumb_func
+ 348              	process_mode1_controls:
+ 349              	.LFB133:
+  77:Core/Src/main.c ****     uint8_t pc6_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL1_PIN, &last_pc6_raw_sta
+ 350              		.loc 1 77 42 is_stmt 1 view -0
+ 351              		.cfi_startproc
+ 352              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 11
+
+
+ 353              		@ frame_needed = 0, uses_anonymous_args = 0
+ 354 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 355              	.LCFI2:
+ 356              		.cfi_def_cfa_offset 20
+ 357              		.cfi_offset 4, -20
+ 358              		.cfi_offset 5, -16
+ 359              		.cfi_offset 6, -12
+ 360              		.cfi_offset 7, -8
+ 361              		.cfi_offset 14, -4
+ 362 0002 83B0     		sub	sp, sp, #12
+ 363              	.LCFI3:
+ 364              		.cfi_def_cfa_offset 32
+  78:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+ 365              		.loc 1 78 5 view .LVU99
+  78:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+ 366              		.loc 1 78 27 is_stmt 0 view .LVU100
+ 367 0004 2B4C     		ldr	r4, .L39
+ 368 0006 2C4F     		ldr	r7, .L39+4
+ 369 0008 231D     		adds	r3, r4, #4
+ 370 000a 0093     		str	r3, [sp]
+ 371 000c 2346     		mov	r3, r4
+ 372 000e 2B4A     		ldr	r2, .L39+8
+ 373 0010 0621     		movs	r1, #6
+ 374 0012 3846     		mov	r0, r7
+ 375 0014 FFF7FEFF 		bl	check_control_button_pressed
+ 376              	.LVL19:
+ 377 0018 0646     		mov	r6, r0
+ 378              	.LVL20:
+  79:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+ 379              		.loc 1 79 5 is_stmt 1 view .LVU101
+  79:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+ 380              		.loc 1 79 27 is_stmt 0 view .LVU102
+ 381 001a 631D     		adds	r3, r4, #5
+ 382 001c 0093     		str	r3, [sp]
+ 383 001e 631C     		adds	r3, r4, #1
+ 384 0020 274A     		ldr	r2, .L39+12
+ 385 0022 0821     		movs	r1, #8
+ 386 0024 3846     		mov	r0, r7
+ 387 0026 FFF7FEFF 		bl	check_control_button_pressed
+ 388              	.LVL21:
+ 389 002a 0546     		mov	r5, r0
+ 390              	.LVL22:
+  80:Core/Src/main.c ****     
+ 391              		.loc 1 80 5 is_stmt 1 view .LVU103
+  80:Core/Src/main.c ****     
+ 392              		.loc 1 80 27 is_stmt 0 view .LVU104
+ 393 002c A31D     		adds	r3, r4, #6
+ 394 002e 0093     		str	r3, [sp]
+ 395 0030 A31C     		adds	r3, r4, #2
+ 396 0032 244A     		ldr	r2, .L39+16
+ 397 0034 0921     		movs	r1, #9
+ 398 0036 3846     		mov	r0, r7
+ 399 0038 FFF7FEFF 		bl	check_control_button_pressed
+ 400              	.LVL23:
+ 401 003c 0446     		mov	r4, r0
+ 402              	.LVL24:
+  83:Core/Src/main.c ****         Green_LEDs_On();
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 12
+
+
+ 403              		.loc 1 83 5 is_stmt 1 view .LVU105
+  83:Core/Src/main.c ****         Green_LEDs_On();
+ 404              		.loc 1 83 8 is_stmt 0 view .LVU106
+ 405 003e 96B9     		cbnz	r6, .L33
+  85:Core/Src/main.c ****         Green_LEDs_Off();
+ 406              		.loc 1 85 12 is_stmt 1 view .LVU107
+  85:Core/Src/main.c ****         Green_LEDs_Off();
+ 407              		.loc 1 85 32 is_stmt 0 view .LVU108
+ 408 0040 214B     		ldr	r3, .L39+20
+ 409 0042 DB7B     		ldrb	r3, [r3, #15]	@ zero_extendqisi2
+ 410 0044 DBB2     		uxtb	r3, r3
+  85:Core/Src/main.c ****         Green_LEDs_Off();
+ 411              		.loc 1 85 15 view .LVU109
+ 412 0046 012B     		cmp	r3, #1
+ 413 0048 10D0     		beq	.L34
+ 414              	.L24:
+  90:Core/Src/main.c ****         Blue_LEDs_On();
+ 415              		.loc 1 90 5 is_stmt 1 view .LVU110
+  90:Core/Src/main.c ****         Blue_LEDs_On();
+ 416              		.loc 1 90 8 is_stmt 0 view .LVU111
+ 417 004a CDB9     		cbnz	r5, .L35
+  92:Core/Src/main.c ****         Blue_LEDs_Off();
+ 418              		.loc 1 92 12 is_stmt 1 view .LVU112
+  92:Core/Src/main.c ****         Blue_LEDs_Off();
+ 419              		.loc 1 92 32 is_stmt 0 view .LVU113
+ 420 004c 1E4B     		ldr	r3, .L39+20
+ 421 004e 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
+ 422 0050 DBB2     		uxtb	r3, r3
+  92:Core/Src/main.c ****         Blue_LEDs_Off();
+ 423              		.loc 1 92 15 view .LVU114
+ 424 0052 012B     		cmp	r3, #1
+ 425 0054 17D0     		beq	.L36
+ 426              	.L27:
+  97:Core/Src/main.c ****         Red_LEDs_On();
+ 427              		.loc 1 97 5 is_stmt 1 view .LVU115
+  97:Core/Src/main.c ****         Red_LEDs_On();
+ 428              		.loc 1 97 8 is_stmt 0 view .LVU116
+ 429 0056 04BB     		cbnz	r4, .L37
+  99:Core/Src/main.c ****         Red_LEDs_Off();
+ 430              		.loc 1 99 12 is_stmt 1 view .LVU117
+  99:Core/Src/main.c ****         Red_LEDs_Off();
+ 431              		.loc 1 99 32 is_stmt 0 view .LVU118
+ 432 0058 1B4B     		ldr	r3, .L39+20
+ 433 005a 5B7C     		ldrb	r3, [r3, #17]	@ zero_extendqisi2
+ 434 005c DBB2     		uxtb	r3, r3
+  99:Core/Src/main.c ****         Red_LEDs_Off();
+ 435              		.loc 1 99 15 view .LVU119
+ 436 005e 012B     		cmp	r3, #1
+ 437 0060 1ED0     		beq	.L38
+ 438              	.L22:
+ 102:Core/Src/main.c **** 
+ 439              		.loc 1 102 1 view .LVU120
+ 440 0062 03B0     		add	sp, sp, #12
+ 441              	.LCFI4:
+ 442              		.cfi_remember_state
+ 443              		.cfi_def_cfa_offset 20
+ 444              		@ sp needed
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 13
+
+
+ 445 0064 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 446              	.LVL25:
+ 447              	.L33:
+ 448              	.LCFI5:
+ 449              		.cfi_restore_state
+  84:Core/Src/main.c ****     } else if (g_system_monitor.pc6_key_state == 1 && (g_system_monitor.onboard_green_state || g_sy
+ 450              		.loc 1 84 9 is_stmt 1 view .LVU121
+ 451 0066 FFF7FEFF 		bl	Green_LEDs_On
+ 452              	.LVL26:
+ 453 006a EEE7     		b	.L24
+ 454              	.L34:
+  85:Core/Src/main.c ****         Green_LEDs_Off();
+ 455              		.loc 1 85 72 is_stmt 0 discriminator 1 view .LVU122
+ 456 006c 164B     		ldr	r3, .L39+20
+ 457 006e 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+  85:Core/Src/main.c ****         Green_LEDs_Off();
+ 458              		.loc 1 85 52 discriminator 1 view .LVU123
+ 459 0070 1BB9     		cbnz	r3, .L25
+  85:Core/Src/main.c ****         Green_LEDs_Off();
+ 460              		.loc 1 85 112 discriminator 2 view .LVU124
+ 461 0072 154B     		ldr	r3, .L39+20
+ 462 0074 DB7A     		ldrb	r3, [r3, #11]	@ zero_extendqisi2
+  85:Core/Src/main.c ****         Green_LEDs_Off();
+ 463              		.loc 1 85 93 discriminator 2 view .LVU125
+ 464 0076 002B     		cmp	r3, #0
+ 465 0078 E7D0     		beq	.L24
+ 466              	.L25:
+  86:Core/Src/main.c ****     }
+ 467              		.loc 1 86 9 is_stmt 1 view .LVU126
+ 468 007a FFF7FEFF 		bl	Green_LEDs_Off
+ 469              	.LVL27:
+ 470 007e E4E7     		b	.L24
+ 471              	.L35:
+  91:Core/Src/main.c ****     } else if (g_system_monitor.pc8_key_state == 1 && (g_system_monitor.onboard_blue_state || g_sys
+ 472              		.loc 1 91 9 view .LVU127
+ 473 0080 FFF7FEFF 		bl	Blue_LEDs_On
+ 474              	.LVL28:
+ 475 0084 E7E7     		b	.L27
+ 476              	.L36:
+  92:Core/Src/main.c ****         Blue_LEDs_Off();
+ 477              		.loc 1 92 72 is_stmt 0 discriminator 1 view .LVU128
+ 478 0086 104B     		ldr	r3, .L39+20
+ 479 0088 5B7A     		ldrb	r3, [r3, #9]	@ zero_extendqisi2
+  92:Core/Src/main.c ****         Blue_LEDs_Off();
+ 480              		.loc 1 92 52 discriminator 1 view .LVU129
+ 481 008a 1BB9     		cbnz	r3, .L28
+  92:Core/Src/main.c ****         Blue_LEDs_Off();
+ 482              		.loc 1 92 111 discriminator 2 view .LVU130
+ 483 008c 0E4B     		ldr	r3, .L39+20
+ 484 008e 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+  92:Core/Src/main.c ****         Blue_LEDs_Off();
+ 485              		.loc 1 92 92 discriminator 2 view .LVU131
+ 486 0090 002B     		cmp	r3, #0
+ 487 0092 E0D0     		beq	.L27
+ 488              	.L28:
+  93:Core/Src/main.c ****     }
+ 489              		.loc 1 93 9 is_stmt 1 view .LVU132
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 14
+
+
+ 490 0094 FFF7FEFF 		bl	Blue_LEDs_Off
+ 491              	.LVL29:
+ 492 0098 DDE7     		b	.L27
+ 493              	.L37:
+  98:Core/Src/main.c ****     } else if (g_system_monitor.pc9_key_state == 1 && (g_system_monitor.onboard_red_state || g_syst
+ 494              		.loc 1 98 9 view .LVU133
+ 495 009a FFF7FEFF 		bl	Red_LEDs_On
+ 496              	.LVL30:
+ 497 009e E0E7     		b	.L22
+ 498              	.L38:
+  99:Core/Src/main.c ****         Red_LEDs_Off();
+ 499              		.loc 1 99 72 is_stmt 0 discriminator 1 view .LVU134
+ 500 00a0 094B     		ldr	r3, .L39+20
+ 501 00a2 9B7A     		ldrb	r3, [r3, #10]	@ zero_extendqisi2
+  99:Core/Src/main.c ****         Red_LEDs_Off();
+ 502              		.loc 1 99 52 discriminator 1 view .LVU135
+ 503 00a4 1BB9     		cbnz	r3, .L31
+  99:Core/Src/main.c ****         Red_LEDs_Off();
+ 504              		.loc 1 99 110 discriminator 2 view .LVU136
+ 505 00a6 084B     		ldr	r3, .L39+20
+ 506 00a8 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
+  99:Core/Src/main.c ****         Red_LEDs_Off();
+ 507              		.loc 1 99 91 discriminator 2 view .LVU137
+ 508 00aa 002B     		cmp	r3, #0
+ 509 00ac D9D0     		beq	.L22
+ 510              	.L31:
+ 100:Core/Src/main.c ****     }
+ 511              		.loc 1 100 9 is_stmt 1 view .LVU138
+ 512 00ae FFF7FEFF 		bl	Red_LEDs_Off
+ 513              	.LVL31:
+ 102:Core/Src/main.c **** 
+ 514              		.loc 1 102 1 is_stmt 0 view .LVU139
+ 515 00b2 D6E7     		b	.L22
+ 516              	.L40:
+ 517              		.align	2
+ 518              	.L39:
+ 519 00b4 0F000000 		.word	g_system_monitor+15
+ 520 00b8 00080240 		.word	1073874944
+ 521 00bc 00000000 		.word	last_pc6_raw_state
+ 522 00c0 00000000 		.word	last_pc8_raw_state
+ 523 00c4 00000000 		.word	last_pc9_raw_state
+ 524 00c8 00000000 		.word	g_system_monitor
+ 525              		.cfi_endproc
+ 526              	.LFE133:
+ 528              		.section	.text.process_mode2_controls,"ax",%progbits
+ 529              		.align	1
+ 530              		.syntax unified
+ 531              		.thumb
+ 532              		.thumb_func
+ 534              	process_mode2_controls:
+ 535              	.LFB134:
+ 104:Core/Src/main.c ****     uint8_t pc6_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL1_PIN, &last_pc6_raw_sta
+ 536              		.loc 1 104 42 is_stmt 1 view -0
+ 537              		.cfi_startproc
+ 538              		@ args = 0, pretend = 0, frame = 0
+ 539              		@ frame_needed = 0, uses_anonymous_args = 0
+ 540 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 15
+
+
+ 541              	.LCFI6:
+ 542              		.cfi_def_cfa_offset 20
+ 543              		.cfi_offset 4, -20
+ 544              		.cfi_offset 5, -16
+ 545              		.cfi_offset 6, -12
+ 546              		.cfi_offset 7, -8
+ 547              		.cfi_offset 14, -4
+ 548 0002 83B0     		sub	sp, sp, #12
+ 549              	.LCFI7:
+ 550              		.cfi_def_cfa_offset 32
+ 105:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+ 551              		.loc 1 105 5 view .LVU141
+ 105:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+ 552              		.loc 1 105 27 is_stmt 0 view .LVU142
+ 553 0004 2B4C     		ldr	r4, .L58
+ 554 0006 2C4F     		ldr	r7, .L58+4
+ 555 0008 231D     		adds	r3, r4, #4
+ 556 000a 0093     		str	r3, [sp]
+ 557 000c 2346     		mov	r3, r4
+ 558 000e 2B4A     		ldr	r2, .L58+8
+ 559 0010 0621     		movs	r1, #6
+ 560 0012 3846     		mov	r0, r7
+ 561 0014 FFF7FEFF 		bl	check_control_button_pressed
+ 562              	.LVL32:
+ 563 0018 0646     		mov	r6, r0
+ 564              	.LVL33:
+ 106:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+ 565              		.loc 1 106 5 is_stmt 1 view .LVU143
+ 106:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+ 566              		.loc 1 106 27 is_stmt 0 view .LVU144
+ 567 001a 631D     		adds	r3, r4, #5
+ 568 001c 0093     		str	r3, [sp]
+ 569 001e 631C     		adds	r3, r4, #1
+ 570 0020 274A     		ldr	r2, .L58+12
+ 571 0022 0821     		movs	r1, #8
+ 572 0024 3846     		mov	r0, r7
+ 573 0026 FFF7FEFF 		bl	check_control_button_pressed
+ 574              	.LVL34:
+ 575 002a 0546     		mov	r5, r0
+ 576              	.LVL35:
+ 107:Core/Src/main.c ****     
+ 577              		.loc 1 107 5 is_stmt 1 view .LVU145
+ 107:Core/Src/main.c ****     
+ 578              		.loc 1 107 27 is_stmt 0 view .LVU146
+ 579 002c A31D     		adds	r3, r4, #6
+ 580 002e 0093     		str	r3, [sp]
+ 581 0030 A31C     		adds	r3, r4, #2
+ 582 0032 244A     		ldr	r2, .L58+16
+ 583 0034 0921     		movs	r1, #9
+ 584 0036 3846     		mov	r0, r7
+ 585 0038 FFF7FEFF 		bl	check_control_button_pressed
+ 586              	.LVL36:
+ 587 003c 0446     		mov	r4, r0
+ 588              	.LVL37:
+ 110:Core/Src/main.c ****         Red_LEDs_On();
+ 589              		.loc 1 110 5 is_stmt 1 view .LVU147
+ 110:Core/Src/main.c ****         Red_LEDs_On();
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 16
+
+
+ 590              		.loc 1 110 8 is_stmt 0 view .LVU148
+ 591 003e 96B9     		cbnz	r6, .L52
+ 112:Core/Src/main.c ****         Red_LEDs_Off();
+ 592              		.loc 1 112 12 is_stmt 1 view .LVU149
+ 112:Core/Src/main.c ****         Red_LEDs_Off();
+ 593              		.loc 1 112 32 is_stmt 0 view .LVU150
+ 594 0040 214B     		ldr	r3, .L58+20
+ 595 0042 DB7B     		ldrb	r3, [r3, #15]	@ zero_extendqisi2
+ 596 0044 DBB2     		uxtb	r3, r3
+ 112:Core/Src/main.c ****         Red_LEDs_Off();
+ 597              		.loc 1 112 15 view .LVU151
+ 598 0046 012B     		cmp	r3, #1
+ 599 0048 10D0     		beq	.L53
+ 600              	.L43:
+ 117:Core/Src/main.c ****         Green_LEDs_On();
+ 601              		.loc 1 117 5 is_stmt 1 view .LVU152
+ 117:Core/Src/main.c ****         Green_LEDs_On();
+ 602              		.loc 1 117 8 is_stmt 0 view .LVU153
+ 603 004a CDB9     		cbnz	r5, .L54
+ 119:Core/Src/main.c ****         Green_LEDs_Off();
+ 604              		.loc 1 119 12 is_stmt 1 view .LVU154
+ 119:Core/Src/main.c ****         Green_LEDs_Off();
+ 605              		.loc 1 119 32 is_stmt 0 view .LVU155
+ 606 004c 1E4B     		ldr	r3, .L58+20
+ 607 004e 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
+ 608 0050 DBB2     		uxtb	r3, r3
+ 119:Core/Src/main.c ****         Green_LEDs_Off();
+ 609              		.loc 1 119 15 view .LVU156
+ 610 0052 012B     		cmp	r3, #1
+ 611 0054 17D0     		beq	.L55
+ 612              	.L46:
+ 124:Core/Src/main.c ****         Blue_LEDs_On();
+ 613              		.loc 1 124 5 is_stmt 1 view .LVU157
+ 124:Core/Src/main.c ****         Blue_LEDs_On();
+ 614              		.loc 1 124 8 is_stmt 0 view .LVU158
+ 615 0056 04BB     		cbnz	r4, .L56
+ 126:Core/Src/main.c ****         Blue_LEDs_Off();
+ 616              		.loc 1 126 12 is_stmt 1 view .LVU159
+ 126:Core/Src/main.c ****         Blue_LEDs_Off();
+ 617              		.loc 1 126 32 is_stmt 0 view .LVU160
+ 618 0058 1B4B     		ldr	r3, .L58+20
+ 619 005a 5B7C     		ldrb	r3, [r3, #17]	@ zero_extendqisi2
+ 620 005c DBB2     		uxtb	r3, r3
+ 126:Core/Src/main.c ****         Blue_LEDs_Off();
+ 621              		.loc 1 126 15 view .LVU161
+ 622 005e 012B     		cmp	r3, #1
+ 623 0060 1ED0     		beq	.L57
+ 624              	.L41:
+ 129:Core/Src/main.c **** 
+ 625              		.loc 1 129 1 view .LVU162
+ 626 0062 03B0     		add	sp, sp, #12
+ 627              	.LCFI8:
+ 628              		.cfi_remember_state
+ 629              		.cfi_def_cfa_offset 20
+ 630              		@ sp needed
+ 631 0064 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 632              	.LVL38:
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 17
+
+
+ 633              	.L52:
+ 634              	.LCFI9:
+ 635              		.cfi_restore_state
+ 111:Core/Src/main.c ****     } else if (g_system_monitor.pc6_key_state == 1 && (g_system_monitor.onboard_red_state || g_syst
+ 636              		.loc 1 111 9 is_stmt 1 view .LVU163
+ 637 0066 FFF7FEFF 		bl	Red_LEDs_On
+ 638              	.LVL39:
+ 639 006a EEE7     		b	.L43
+ 640              	.L53:
+ 112:Core/Src/main.c ****         Red_LEDs_Off();
+ 641              		.loc 1 112 72 is_stmt 0 discriminator 1 view .LVU164
+ 642 006c 164B     		ldr	r3, .L58+20
+ 643 006e 9B7A     		ldrb	r3, [r3, #10]	@ zero_extendqisi2
+ 112:Core/Src/main.c ****         Red_LEDs_Off();
+ 644              		.loc 1 112 52 discriminator 1 view .LVU165
+ 645 0070 1BB9     		cbnz	r3, .L44
+ 112:Core/Src/main.c ****         Red_LEDs_Off();
+ 646              		.loc 1 112 110 discriminator 2 view .LVU166
+ 647 0072 154B     		ldr	r3, .L58+20
+ 648 0074 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
+ 112:Core/Src/main.c ****         Red_LEDs_Off();
+ 649              		.loc 1 112 91 discriminator 2 view .LVU167
+ 650 0076 002B     		cmp	r3, #0
+ 651 0078 E7D0     		beq	.L43
+ 652              	.L44:
+ 113:Core/Src/main.c ****     }
+ 653              		.loc 1 113 9 is_stmt 1 view .LVU168
+ 654 007a FFF7FEFF 		bl	Red_LEDs_Off
+ 655              	.LVL40:
+ 656 007e E4E7     		b	.L43
+ 657              	.L54:
+ 118:Core/Src/main.c ****     } else if (g_system_monitor.pc8_key_state == 1 && (g_system_monitor.onboard_green_state || g_sy
+ 658              		.loc 1 118 9 view .LVU169
+ 659 0080 FFF7FEFF 		bl	Green_LEDs_On
+ 660              	.LVL41:
+ 661 0084 E7E7     		b	.L46
+ 662              	.L55:
+ 119:Core/Src/main.c ****         Green_LEDs_Off();
+ 663              		.loc 1 119 72 is_stmt 0 discriminator 1 view .LVU170
+ 664 0086 104B     		ldr	r3, .L58+20
+ 665 0088 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 119:Core/Src/main.c ****         Green_LEDs_Off();
+ 666              		.loc 1 119 52 discriminator 1 view .LVU171
+ 667 008a 1BB9     		cbnz	r3, .L47
+ 119:Core/Src/main.c ****         Green_LEDs_Off();
+ 668              		.loc 1 119 112 discriminator 2 view .LVU172
+ 669 008c 0E4B     		ldr	r3, .L58+20
+ 670 008e DB7A     		ldrb	r3, [r3, #11]	@ zero_extendqisi2
+ 119:Core/Src/main.c ****         Green_LEDs_Off();
+ 671              		.loc 1 119 93 discriminator 2 view .LVU173
+ 672 0090 002B     		cmp	r3, #0
+ 673 0092 E0D0     		beq	.L46
+ 674              	.L47:
+ 120:Core/Src/main.c ****     }
+ 675              		.loc 1 120 9 is_stmt 1 view .LVU174
+ 676 0094 FFF7FEFF 		bl	Green_LEDs_Off
+ 677              	.LVL42:
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 18
+
+
+ 678 0098 DDE7     		b	.L46
+ 679              	.L56:
+ 125:Core/Src/main.c ****     } else if (g_system_monitor.pc9_key_state == 1 && (g_system_monitor.onboard_blue_state || g_sys
+ 680              		.loc 1 125 9 view .LVU175
+ 681 009a FFF7FEFF 		bl	Blue_LEDs_On
+ 682              	.LVL43:
+ 683 009e E0E7     		b	.L41
+ 684              	.L57:
+ 126:Core/Src/main.c ****         Blue_LEDs_Off();
+ 685              		.loc 1 126 72 is_stmt 0 discriminator 1 view .LVU176
+ 686 00a0 094B     		ldr	r3, .L58+20
+ 687 00a2 5B7A     		ldrb	r3, [r3, #9]	@ zero_extendqisi2
+ 126:Core/Src/main.c ****         Blue_LEDs_Off();
+ 688              		.loc 1 126 52 discriminator 1 view .LVU177
+ 689 00a4 1BB9     		cbnz	r3, .L50
+ 126:Core/Src/main.c ****         Blue_LEDs_Off();
+ 690              		.loc 1 126 111 discriminator 2 view .LVU178
+ 691 00a6 084B     		ldr	r3, .L58+20
+ 692 00a8 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ 126:Core/Src/main.c ****         Blue_LEDs_Off();
+ 693              		.loc 1 126 92 discriminator 2 view .LVU179
+ 694 00aa 002B     		cmp	r3, #0
+ 695 00ac D9D0     		beq	.L41
+ 696              	.L50:
+ 127:Core/Src/main.c ****     }
+ 697              		.loc 1 127 9 is_stmt 1 view .LVU180
+ 698 00ae FFF7FEFF 		bl	Blue_LEDs_Off
+ 699              	.LVL44:
+ 129:Core/Src/main.c **** 
+ 700              		.loc 1 129 1 is_stmt 0 view .LVU181
+ 701 00b2 D6E7     		b	.L41
+ 702              	.L59:
+ 703              		.align	2
+ 704              	.L58:
+ 705 00b4 0F000000 		.word	g_system_monitor+15
+ 706 00b8 00080240 		.word	1073874944
+ 707 00bc 00000000 		.word	last_pc6_raw_state
+ 708 00c0 00000000 		.word	last_pc8_raw_state
+ 709 00c4 00000000 		.word	last_pc9_raw_state
+ 710 00c8 00000000 		.word	g_system_monitor
+ 711              		.cfi_endproc
+ 712              	.LFE134:
+ 714              		.section	.text.process_mode3_controls,"ax",%progbits
+ 715              		.align	1
+ 716              		.syntax unified
+ 717              		.thumb
+ 718              		.thumb_func
+ 720              	process_mode3_controls:
+ 721              	.LFB135:
+ 131:Core/Src/main.c ****     uint8_t pc6_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL1_PIN, &last_pc6_raw_sta
+ 722              		.loc 1 131 42 is_stmt 1 view -0
+ 723              		.cfi_startproc
+ 724              		@ args = 0, pretend = 0, frame = 0
+ 725              		@ frame_needed = 0, uses_anonymous_args = 0
+ 726 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 727              	.LCFI10:
+ 728              		.cfi_def_cfa_offset 20
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 19
+
+
+ 729              		.cfi_offset 4, -20
+ 730              		.cfi_offset 5, -16
+ 731              		.cfi_offset 6, -12
+ 732              		.cfi_offset 7, -8
+ 733              		.cfi_offset 14, -4
+ 734 0002 83B0     		sub	sp, sp, #12
+ 735              	.LCFI11:
+ 736              		.cfi_def_cfa_offset 32
+ 132:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+ 737              		.loc 1 132 5 view .LVU183
+ 132:Core/Src/main.c ****     uint8_t pc8_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL2_PIN, &last_pc8_raw_sta
+ 738              		.loc 1 132 27 is_stmt 0 view .LVU184
+ 739 0004 2B4C     		ldr	r4, .L77
+ 740 0006 2C4F     		ldr	r7, .L77+4
+ 741 0008 231D     		adds	r3, r4, #4
+ 742 000a 0093     		str	r3, [sp]
+ 743 000c 2346     		mov	r3, r4
+ 744 000e 2B4A     		ldr	r2, .L77+8
+ 745 0010 0621     		movs	r1, #6
+ 746 0012 3846     		mov	r0, r7
+ 747 0014 FFF7FEFF 		bl	check_control_button_pressed
+ 748              	.LVL45:
+ 749 0018 0646     		mov	r6, r0
+ 750              	.LVL46:
+ 133:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+ 751              		.loc 1 133 5 is_stmt 1 view .LVU185
+ 133:Core/Src/main.c ****     uint8_t pc9_pressed = check_control_button_pressed(GPIOC_BASE, KEY_CTRL3_PIN, &last_pc9_raw_sta
+ 752              		.loc 1 133 27 is_stmt 0 view .LVU186
+ 753 001a 631D     		adds	r3, r4, #5
+ 754 001c 0093     		str	r3, [sp]
+ 755 001e 631C     		adds	r3, r4, #1
+ 756 0020 274A     		ldr	r2, .L77+12
+ 757 0022 0821     		movs	r1, #8
+ 758 0024 3846     		mov	r0, r7
+ 759 0026 FFF7FEFF 		bl	check_control_button_pressed
+ 760              	.LVL47:
+ 761 002a 0546     		mov	r5, r0
+ 762              	.LVL48:
+ 134:Core/Src/main.c ****     
+ 763              		.loc 1 134 5 is_stmt 1 view .LVU187
+ 134:Core/Src/main.c ****     
+ 764              		.loc 1 134 27 is_stmt 0 view .LVU188
+ 765 002c A31D     		adds	r3, r4, #6
+ 766 002e 0093     		str	r3, [sp]
+ 767 0030 A31C     		adds	r3, r4, #2
+ 768 0032 244A     		ldr	r2, .L77+16
+ 769 0034 0921     		movs	r1, #9
+ 770 0036 3846     		mov	r0, r7
+ 771 0038 FFF7FEFF 		bl	check_control_button_pressed
+ 772              	.LVL49:
+ 773 003c 0446     		mov	r4, r0
+ 774              	.LVL50:
+ 137:Core/Src/main.c ****         Blue_LEDs_On();
+ 775              		.loc 1 137 5 is_stmt 1 view .LVU189
+ 137:Core/Src/main.c ****         Blue_LEDs_On();
+ 776              		.loc 1 137 8 is_stmt 0 view .LVU190
+ 777 003e 96B9     		cbnz	r6, .L71
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 20
+
+
+ 139:Core/Src/main.c ****         Blue_LEDs_Off();
+ 778              		.loc 1 139 12 is_stmt 1 view .LVU191
+ 139:Core/Src/main.c ****         Blue_LEDs_Off();
+ 779              		.loc 1 139 32 is_stmt 0 view .LVU192
+ 780 0040 214B     		ldr	r3, .L77+20
+ 781 0042 DB7B     		ldrb	r3, [r3, #15]	@ zero_extendqisi2
+ 782 0044 DBB2     		uxtb	r3, r3
+ 139:Core/Src/main.c ****         Blue_LEDs_Off();
+ 783              		.loc 1 139 15 view .LVU193
+ 784 0046 012B     		cmp	r3, #1
+ 785 0048 10D0     		beq	.L72
+ 786              	.L62:
+ 144:Core/Src/main.c ****         Red_LEDs_On();
+ 787              		.loc 1 144 5 is_stmt 1 view .LVU194
+ 144:Core/Src/main.c ****         Red_LEDs_On();
+ 788              		.loc 1 144 8 is_stmt 0 view .LVU195
+ 789 004a CDB9     		cbnz	r5, .L73
+ 146:Core/Src/main.c ****         Red_LEDs_Off();
+ 790              		.loc 1 146 12 is_stmt 1 view .LVU196
+ 146:Core/Src/main.c ****         Red_LEDs_Off();
+ 791              		.loc 1 146 32 is_stmt 0 view .LVU197
+ 792 004c 1E4B     		ldr	r3, .L77+20
+ 793 004e 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
+ 794 0050 DBB2     		uxtb	r3, r3
+ 146:Core/Src/main.c ****         Red_LEDs_Off();
+ 795              		.loc 1 146 15 view .LVU198
+ 796 0052 012B     		cmp	r3, #1
+ 797 0054 17D0     		beq	.L74
+ 798              	.L65:
+ 151:Core/Src/main.c ****         Green_LEDs_On();
+ 799              		.loc 1 151 5 is_stmt 1 view .LVU199
+ 151:Core/Src/main.c ****         Green_LEDs_On();
+ 800              		.loc 1 151 8 is_stmt 0 view .LVU200
+ 801 0056 04BB     		cbnz	r4, .L75
+ 153:Core/Src/main.c ****         Green_LEDs_Off();
+ 802              		.loc 1 153 12 is_stmt 1 view .LVU201
+ 153:Core/Src/main.c ****         Green_LEDs_Off();
+ 803              		.loc 1 153 32 is_stmt 0 view .LVU202
+ 804 0058 1B4B     		ldr	r3, .L77+20
+ 805 005a 5B7C     		ldrb	r3, [r3, #17]	@ zero_extendqisi2
+ 806 005c DBB2     		uxtb	r3, r3
+ 153:Core/Src/main.c ****         Green_LEDs_Off();
+ 807              		.loc 1 153 15 view .LVU203
+ 808 005e 012B     		cmp	r3, #1
+ 809 0060 1ED0     		beq	.L76
+ 810              	.L60:
+ 156:Core/Src/main.c **** 
+ 811              		.loc 1 156 1 view .LVU204
+ 812 0062 03B0     		add	sp, sp, #12
+ 813              	.LCFI12:
+ 814              		.cfi_remember_state
+ 815              		.cfi_def_cfa_offset 20
+ 816              		@ sp needed
+ 817 0064 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 818              	.LVL51:
+ 819              	.L71:
+ 820              	.LCFI13:
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 21
+
+
+ 821              		.cfi_restore_state
+ 138:Core/Src/main.c ****     } else if (g_system_monitor.pc6_key_state == 1 && (g_system_monitor.onboard_blue_state || g_sys
+ 822              		.loc 1 138 9 is_stmt 1 view .LVU205
+ 823 0066 FFF7FEFF 		bl	Blue_LEDs_On
+ 824              	.LVL52:
+ 825 006a EEE7     		b	.L62
+ 826              	.L72:
+ 139:Core/Src/main.c ****         Blue_LEDs_Off();
+ 827              		.loc 1 139 72 is_stmt 0 discriminator 1 view .LVU206
+ 828 006c 164B     		ldr	r3, .L77+20
+ 829 006e 5B7A     		ldrb	r3, [r3, #9]	@ zero_extendqisi2
+ 139:Core/Src/main.c ****         Blue_LEDs_Off();
+ 830              		.loc 1 139 52 discriminator 1 view .LVU207
+ 831 0070 1BB9     		cbnz	r3, .L63
+ 139:Core/Src/main.c ****         Blue_LEDs_Off();
+ 832              		.loc 1 139 111 discriminator 2 view .LVU208
+ 833 0072 154B     		ldr	r3, .L77+20
+ 834 0074 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ 139:Core/Src/main.c ****         Blue_LEDs_Off();
+ 835              		.loc 1 139 92 discriminator 2 view .LVU209
+ 836 0076 002B     		cmp	r3, #0
+ 837 0078 E7D0     		beq	.L62
+ 838              	.L63:
+ 140:Core/Src/main.c ****     }
+ 839              		.loc 1 140 9 is_stmt 1 view .LVU210
+ 840 007a FFF7FEFF 		bl	Blue_LEDs_Off
+ 841              	.LVL53:
+ 842 007e E4E7     		b	.L62
+ 843              	.L73:
+ 145:Core/Src/main.c ****     } else if (g_system_monitor.pc8_key_state == 1 && (g_system_monitor.onboard_red_state || g_syst
+ 844              		.loc 1 145 9 view .LVU211
+ 845 0080 FFF7FEFF 		bl	Red_LEDs_On
+ 846              	.LVL54:
+ 847 0084 E7E7     		b	.L65
+ 848              	.L74:
+ 146:Core/Src/main.c ****         Red_LEDs_Off();
+ 849              		.loc 1 146 72 is_stmt 0 discriminator 1 view .LVU212
+ 850 0086 104B     		ldr	r3, .L77+20
+ 851 0088 9B7A     		ldrb	r3, [r3, #10]	@ zero_extendqisi2
+ 146:Core/Src/main.c ****         Red_LEDs_Off();
+ 852              		.loc 1 146 52 discriminator 1 view .LVU213
+ 853 008a 1BB9     		cbnz	r3, .L66
+ 146:Core/Src/main.c ****         Red_LEDs_Off();
+ 854              		.loc 1 146 110 discriminator 2 view .LVU214
+ 855 008c 0E4B     		ldr	r3, .L77+20
+ 856 008e 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
+ 146:Core/Src/main.c ****         Red_LEDs_Off();
+ 857              		.loc 1 146 91 discriminator 2 view .LVU215
+ 858 0090 002B     		cmp	r3, #0
+ 859 0092 E0D0     		beq	.L65
+ 860              	.L66:
+ 147:Core/Src/main.c ****     }
+ 861              		.loc 1 147 9 is_stmt 1 view .LVU216
+ 862 0094 FFF7FEFF 		bl	Red_LEDs_Off
+ 863              	.LVL55:
+ 864 0098 DDE7     		b	.L65
+ 865              	.L75:
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 22
+
+
+ 152:Core/Src/main.c ****     } else if (g_system_monitor.pc9_key_state == 1 && (g_system_monitor.onboard_green_state || g_sy
+ 866              		.loc 1 152 9 view .LVU217
+ 867 009a FFF7FEFF 		bl	Green_LEDs_On
+ 868              	.LVL56:
+ 869 009e E0E7     		b	.L60
+ 870              	.L76:
+ 153:Core/Src/main.c ****         Green_LEDs_Off();
+ 871              		.loc 1 153 72 is_stmt 0 discriminator 1 view .LVU218
+ 872 00a0 094B     		ldr	r3, .L77+20
+ 873 00a2 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 153:Core/Src/main.c ****         Green_LEDs_Off();
+ 874              		.loc 1 153 52 discriminator 1 view .LVU219
+ 875 00a4 1BB9     		cbnz	r3, .L69
+ 153:Core/Src/main.c ****         Green_LEDs_Off();
+ 876              		.loc 1 153 112 discriminator 2 view .LVU220
+ 877 00a6 084B     		ldr	r3, .L77+20
+ 878 00a8 DB7A     		ldrb	r3, [r3, #11]	@ zero_extendqisi2
+ 153:Core/Src/main.c ****         Green_LEDs_Off();
+ 879              		.loc 1 153 93 discriminator 2 view .LVU221
+ 880 00aa 002B     		cmp	r3, #0
+ 881 00ac D9D0     		beq	.L60
+ 882              	.L69:
+ 154:Core/Src/main.c ****     }
+ 883              		.loc 1 154 9 is_stmt 1 view .LVU222
+ 884 00ae FFF7FEFF 		bl	Green_LEDs_Off
+ 885              	.LVL57:
+ 156:Core/Src/main.c **** 
+ 886              		.loc 1 156 1 is_stmt 0 view .LVU223
+ 887 00b2 D6E7     		b	.L60
+ 888              	.L78:
+ 889              		.align	2
+ 890              	.L77:
+ 891 00b4 0F000000 		.word	g_system_monitor+15
+ 892 00b8 00080240 		.word	1073874944
+ 893 00bc 00000000 		.word	last_pc6_raw_state
+ 894 00c0 00000000 		.word	last_pc8_raw_state
+ 895 00c4 00000000 		.word	last_pc9_raw_state
+ 896 00c8 00000000 		.word	g_system_monitor
+ 897              		.cfi_endproc
+ 898              	.LFE135:
+ 900              		.section	.text.process_control_buttons,"ax",%progbits
+ 901              		.align	1
+ 902              		.syntax unified
+ 903              		.thumb
+ 904              		.thumb_func
+ 906              	process_control_buttons:
+ 907              	.LFB136:
+ 158:Core/Src/main.c ****     switch (g_system_monitor.current_mode) {
+ 908              		.loc 1 158 43 is_stmt 1 view -0
+ 909              		.cfi_startproc
+ 910              		@ args = 0, pretend = 0, frame = 0
+ 911              		@ frame_needed = 0, uses_anonymous_args = 0
+ 912 0000 08B5     		push	{r3, lr}
+ 913              	.LCFI14:
+ 914              		.cfi_def_cfa_offset 8
+ 915              		.cfi_offset 3, -8
+ 916              		.cfi_offset 14, -4
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 23
+
+
+ 159:Core/Src/main.c ****         case 1: 
+ 917              		.loc 1 159 5 view .LVU225
+ 159:Core/Src/main.c ****         case 1: 
+ 918              		.loc 1 159 29 is_stmt 0 view .LVU226
+ 919 0002 0B4B     		ldr	r3, .L85
+ 920 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 921 0006 DBB2     		uxtb	r3, r3
+ 159:Core/Src/main.c ****         case 1: 
+ 922              		.loc 1 159 5 view .LVU227
+ 923 0008 022B     		cmp	r3, #2
+ 924 000a 06D0     		beq	.L80
+ 925 000c 032B     		cmp	r3, #3
+ 926 000e 07D0     		beq	.L81
+ 927 0010 012B     		cmp	r3, #1
+ 928 0012 08D1     		bne	.L82
+ 161:Core/Src/main.c ****             break;
+ 929              		.loc 1 161 13 is_stmt 1 view .LVU228
+ 930 0014 FFF7FEFF 		bl	process_mode1_controls
+ 931              	.LVL58:
+ 162:Core/Src/main.c ****         case 2: 
+ 932              		.loc 1 162 13 view .LVU229
+ 933              	.L79:
+ 173:Core/Src/main.c **** 
+ 934              		.loc 1 173 1 is_stmt 0 view .LVU230
+ 935 0018 08BD     		pop	{r3, pc}
+ 936              	.L80:
+ 164:Core/Src/main.c ****             break;
+ 937              		.loc 1 164 13 is_stmt 1 view .LVU231
+ 938 001a FFF7FEFF 		bl	process_mode2_controls
+ 939              	.LVL59:
+ 165:Core/Src/main.c ****         case 3: 
+ 940              		.loc 1 165 13 view .LVU232
+ 941 001e FBE7     		b	.L79
+ 942              	.L81:
+ 167:Core/Src/main.c ****             break;
+ 943              		.loc 1 167 13 view .LVU233
+ 944 0020 FFF7FEFF 		bl	process_mode3_controls
+ 945              	.LVL60:
+ 168:Core/Src/main.c ****         default: 
+ 946              		.loc 1 168 13 view .LVU234
+ 947 0024 F8E7     		b	.L79
+ 948              	.L82:
+ 170:Core/Src/main.c ****             break;
+ 949              		.loc 1 170 13 view .LVU235
+ 170:Core/Src/main.c ****             break;
+ 950              		.loc 1 170 43 is_stmt 0 view .LVU236
+ 951 0026 024B     		ldr	r3, .L85
+ 952 0028 0122     		movs	r2, #1
+ 953 002a 1A70     		strb	r2, [r3]
+ 171:Core/Src/main.c ****     }
+ 954              		.loc 1 171 13 is_stmt 1 view .LVU237
+ 173:Core/Src/main.c **** 
+ 955              		.loc 1 173 1 is_stmt 0 view .LVU238
+ 956 002c F4E7     		b	.L79
+ 957              	.L86:
+ 958 002e 00BF     		.align	2
+ 959              	.L85:
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 24
+
+
+ 960 0030 00000000 		.word	g_system_monitor
+ 961              		.cfi_endproc
+ 962              	.LFE136:
+ 964              		.section	.text.main,"ax",%progbits
+ 965              		.align	1
+ 966              		.global	main
+ 967              		.syntax unified
+ 968              		.thumb
+ 969              		.thumb_func
+ 971              	main:
+ 972              	.LFB138:
+ 186:Core/Src/main.c **** 
+ 187:Core/Src/main.c **** // 主函数
+ 188:Core/Src/main.c **** int main(void) {
+ 973              		.loc 1 188 16 is_stmt 1 view -0
+ 974              		.cfi_startproc
+ 975              		@ Volatile: function does not return.
+ 976              		@ args = 0, pretend = 0, frame = 0
+ 977              		@ frame_needed = 0, uses_anonymous_args = 0
+ 978 0000 08B5     		push	{r3, lr}
+ 979              	.LCFI15:
+ 980              		.cfi_def_cfa_offset 8
+ 981              		.cfi_offset 3, -8
+ 982              		.cfi_offset 14, -4
+ 189:Core/Src/main.c ****     GPIO_Init_Memory();
+ 983              		.loc 1 189 5 view .LVU240
+ 984 0002 FFF7FEFF 		bl	GPIO_Init_Memory
+ 985              	.LVL61:
+ 190:Core/Src/main.c ****     All_LEDs_Off();
+ 986              		.loc 1 190 5 view .LVU241
+ 987 0006 FFF7FEFF 		bl	All_LEDs_Off
+ 988              	.LVL62:
+ 191:Core/Src/main.c ****     g_system_monitor.current_mode = 1;
+ 989              		.loc 1 191 5 view .LVU242
+ 990              		.loc 1 191 35 is_stmt 0 view .LVU243
+ 991 000a 0B4B     		ldr	r3, .L92
+ 992 000c 0122     		movs	r2, #1
+ 993 000e 1A70     		strb	r2, [r3]
+ 994 0010 08E0     		b	.L89
+ 995              	.L91:
+ 192:Core/Src/main.c **** 
+ 193:Core/Src/main.c ****     while (1) {
+ 194:Core/Src/main.c ****         // 更新循环计数器
+ 195:Core/Src/main.c ****         g_system_monitor.loop_counter++;
+ 196:Core/Src/main.c ****         
+ 197:Core/Src/main.c ****         // 检测PG3模式切换按键
+ 198:Core/Src/main.c ****         if (check_mode_button()) {
+ 199:Core/Src/main.c ****             Switch_Mode();
+ 996              		.loc 1 199 13 is_stmt 1 view .LVU244
+ 997 0012 FFF7FEFF 		bl	Switch_Mode
+ 998              	.LVL63:
+ 999              	.L88:
+ 200:Core/Src/main.c ****         }
+ 201:Core/Src/main.c **** 
+ 202:Core/Src/main.c ****         // 处理控制按键
+ 203:Core/Src/main.c ****         process_control_buttons();
+ 1000              		.loc 1 203 9 view .LVU245
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 25
+
+
+ 1001 0016 FFF7FEFF 		bl	process_control_buttons
+ 1002              	.LVL64:
+ 204:Core/Src/main.c ****         
+ 205:Core/Src/main.c ****         // 新增：管理PG3脉冲标志
+ 206:Core/Src/main.c ****         manage_pg3_pulse_flag();
+ 1003              		.loc 1 206 9 view .LVU246
+ 1004 001a FFF7FEFF 		bl	manage_pg3_pulse_flag
+ 1005              	.LVL65:
+ 207:Core/Src/main.c ****         
+ 208:Core/Src/main.c ****         // 短延时，降低CPU占用率
+ 209:Core/Src/main.c ****         delay_ms(10);
+ 1006              		.loc 1 209 9 view .LVU247
+ 1007 001e 0A20     		movs	r0, #10
+ 1008 0020 FFF7FEFF 		bl	delay_ms
+ 1009              	.LVL66:
+ 193:Core/Src/main.c ****         // 更新循环计数器
+ 1010              		.loc 1 193 11 view .LVU248
+ 1011              	.L89:
+ 193:Core/Src/main.c ****         // 更新循环计数器
+ 1012              		.loc 1 193 5 view .LVU249
+ 195:Core/Src/main.c ****         
+ 1013              		.loc 1 195 9 view .LVU250
+ 195:Core/Src/main.c ****         
+ 1014              		.loc 1 195 25 is_stmt 0 view .LVU251
+ 1015 0024 044A     		ldr	r2, .L92
+ 1016 0026 9369     		ldr	r3, [r2, #24]
+ 195:Core/Src/main.c ****         
+ 1017              		.loc 1 195 38 view .LVU252
+ 1018 0028 0133     		adds	r3, r3, #1
+ 1019 002a 9361     		str	r3, [r2, #24]
+ 198:Core/Src/main.c ****             Switch_Mode();
+ 1020              		.loc 1 198 9 is_stmt 1 view .LVU253
+ 198:Core/Src/main.c ****             Switch_Mode();
+ 1021              		.loc 1 198 13 is_stmt 0 view .LVU254
+ 1022 002c FFF7FEFF 		bl	check_mode_button
+ 1023              	.LVL67:
+ 198:Core/Src/main.c ****             Switch_Mode();
+ 1024              		.loc 1 198 12 discriminator 1 view .LVU255
+ 1025 0030 0028     		cmp	r0, #0
+ 1026 0032 EED1     		bne	.L91
+ 1027 0034 EFE7     		b	.L88
+ 1028              	.L93:
+ 1029 0036 00BF     		.align	2
+ 1030              	.L92:
+ 1031 0038 00000000 		.word	g_system_monitor
+ 1032              		.cfi_endproc
+ 1033              	.LFE138:
+ 1035              		.section	.data.last_pc9_raw_state,"aw"
+ 1038              	last_pc9_raw_state:
+ 1039 0000 01       		.byte	1
+ 1040              		.section	.data.last_pc8_raw_state,"aw"
+ 1043              	last_pc8_raw_state:
+ 1044 0000 01       		.byte	1
+ 1045              		.section	.data.last_pc6_raw_state,"aw"
+ 1048              	last_pc6_raw_state:
+ 1049 0000 01       		.byte	1
+ 1050              		.section	.data.last_pg3_raw_state,"aw"
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 26
+
+
+ 1053              	last_pg3_raw_state:
+ 1054 0000 01       		.byte	1
+ 1055              		.text
+ 1056              	.Letext0:
+ 1057              		.file 2 "E:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 1058              		.file 3 "E:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 1059              		.file 4 "E:/VSCode-file/Laboratory_Practice/Core/Inc/init.h"
+ARM GAS  C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s 			page 27
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:21     .text.delay_ms:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:26     .text.delay_ms:00000000 delay_ms
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:68     .text.check_mode_button:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:73     .text.check_mode_button:00000000 check_mode_button
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:182    .text.check_mode_button:00000070 $d
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:1053   .data.last_pg3_raw_state:00000000 last_pg3_raw_state
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:189    .text.check_control_button_pressed:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:194    .text.check_control_button_pressed:00000000 check_control_button_pressed
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:296    .text.manage_pg3_pulse_flag:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:301    .text.manage_pg3_pulse_flag:00000000 manage_pg3_pulse_flag
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:338    .text.manage_pg3_pulse_flag:00000024 $d
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:343    .text.process_mode1_controls:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:348    .text.process_mode1_controls:00000000 process_mode1_controls
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:519    .text.process_mode1_controls:000000b4 $d
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:1048   .data.last_pc6_raw_state:00000000 last_pc6_raw_state
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:1043   .data.last_pc8_raw_state:00000000 last_pc8_raw_state
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:1038   .data.last_pc9_raw_state:00000000 last_pc9_raw_state
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:529    .text.process_mode2_controls:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:534    .text.process_mode2_controls:00000000 process_mode2_controls
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:705    .text.process_mode2_controls:000000b4 $d
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:715    .text.process_mode3_controls:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:720    .text.process_mode3_controls:00000000 process_mode3_controls
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:891    .text.process_mode3_controls:000000b4 $d
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:901    .text.process_control_buttons:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:906    .text.process_control_buttons:00000000 process_control_buttons
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:960    .text.process_control_buttons:00000030 $d
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:965    .text.main:00000000 $t
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:971    .text.main:00000000 main
+C:\Users\ZJY\AppData\Local\Temp\ccdTFBh8.s:1031   .text.main:00000038 $d
+
+UNDEFINED SYMBOLS
+g_system_monitor
+Green_LEDs_On
+Green_LEDs_Off
+Blue_LEDs_On
+Blue_LEDs_Off
+Red_LEDs_On
+Red_LEDs_Off
+GPIO_Init_Memory
+All_LEDs_Off
+Switch_Mode
