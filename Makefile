@@ -3,7 +3,7 @@
 # ------------------------------------------------
 # List of supported controllers:
 #	STM32F446RE -- Target series -> STM32F446 | Target version -> RE
-# 	STM32F429ZI -- Target series -> STM32F429 | Target version -> ZI
+# 	STM32F429ZI -- Target series -> STM32F429 | Target version -> ZI按照这个来
 # 	STM32F411VE -- Target series -> STM32F411 | Target version -> VE
 #	STM32F411CE -- Target series -> STM32F411 | Target version -> CE
 #	STM32F411RE -- Target series -> STM32F411 | Target version -> RE
@@ -15,8 +15,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F411
-TARGET_VERSION = RE
+TARGET_SERIES = STM32F429
+TARGET_VERSION = ZI
 
 ######################################
 # building variables
@@ -135,7 +135,7 @@ endif
 C_SOURCES =  \
 $(SYS) \
 Core/Src/main.c \
-
+Core/Src/init.c \
 # ASM sources
 ASM_SOURCES =  \
 $(ASM)
