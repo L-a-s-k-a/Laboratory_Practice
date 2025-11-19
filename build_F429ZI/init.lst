@@ -1,0 +1,789 @@
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Scr/init.c"
+  20              		.section	.text.Register_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	Register_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	Register_Init:
+  28              	.LFB130:
+   1:Core/Scr/init.c **** #include "../Inc/init.h"
+   2:Core/Scr/init.c **** uint8_t led1_port = 0;
+   3:Core/Scr/init.c **** uint8_t led2_port = 0;
+   4:Core/Scr/init.c **** uint8_t led3_port = 0;
+   5:Core/Scr/init.c **** void Register_Init(void)
+   6:Core/Scr/init.c **** {
+  29              		.loc 1 6 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   7:Core/Scr/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIODEN | RCC_AHB
+  34              		.loc 1 7 5 view .LVU1
+  35 0000 024A     		ldr	r2, .L2
+  36 0002 136B     		ldr	r3, [r2, #48]
+  37 0004 43F01E03 		orr	r3, r3, #30
+  38 0008 1363     		str	r3, [r2, #48]
+   8:Core/Scr/init.c **** }
+  39              		.loc 1 8 1 is_stmt 0 view .LVU2
+  40 000a 7047     		bx	lr
+  41              	.L3:
+  42              		.align	2
+  43              	.L2:
+  44 000c 00380240 		.word	1073887232
+  45              		.cfi_endproc
+  46              	.LFE130:
+  48              		.section	.text.Led_Init,"ax",%progbits
+  49              		.align	1
+  50              		.global	Led_Init
+  51              		.syntax unified
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 2
+
+
+  52              		.thumb
+  53              		.thumb_func
+  55              	Led_Init:
+  56              	.LFB131:
+   9:Core/Scr/init.c **** void Led_Init(void)
+  10:Core/Scr/init.c **** {
+  57              		.loc 1 10 1 is_stmt 1 view -0
+  58              		.cfi_startproc
+  59              		@ args = 0, pretend = 0, frame = 0
+  60              		@ frame_needed = 0, uses_anonymous_args = 0
+  61              		@ link register save eliminated.
+  11:Core/Scr/init.c ****     // First Led (green)
+  12:Core/Scr/init.c ****     GPIO_B_MODER |= GPIO_B_MODE_PB0_OUT;
+  62              		.loc 1 12 5 view .LVU4
+  63 0000 134B     		ldr	r3, .L5
+  64 0002 D3F80014 		ldr	r1, [r3, #1024]
+  65              		.loc 1 12 18 is_stmt 0 view .LVU5
+  66 0006 41F00101 		orr	r1, r1, #1
+  67 000a C3F80014 		str	r1, [r3, #1024]
+  13:Core/Scr/init.c ****     GPIO_B_OTYPER |= GPIO_B_OTYPE_PB0_PP;
+  68              		.loc 1 13 5 is_stmt 1 view .LVU6
+  14:Core/Scr/init.c ****     GPIO_B_OSPEEDR |= GPIO_B_OSPEED_PB0_MID;
+  69              		.loc 1 14 5 view .LVU7
+  70 000e D3F80824 		ldr	r2, [r3, #1032]
+  71              		.loc 1 14 20 is_stmt 0 view .LVU8
+  72 0012 42F00102 		orr	r2, r2, #1
+  73 0016 C3F80824 		str	r2, [r3, #1032]
+  15:Core/Scr/init.c ****     GPIO_B_PUPDR |= GPIO_B_PUPDR_PB0_NOPUPD;
+  74              		.loc 1 15 5 is_stmt 1 view .LVU9
+  16:Core/Scr/init.c ****     // Second Led (blue)
+  17:Core/Scr/init.c ****     *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000;
+  75              		.loc 1 17 5 view .LVU10
+  76              		.loc 1 17 41 is_stmt 0 view .LVU11
+  77 001a 41F48041 		orr	r1, r1, #16384
+  78 001e C3F80014 		str	r1, [r3, #1024]
+  18:Core/Scr/init.c ****     *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00;
+  79              		.loc 1 18 5 is_stmt 1 view .LVU12
+  19:Core/Scr/init.c ****     *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000;
+  80              		.loc 1 19 5 view .LVU13
+  81              		.loc 1 19 41 is_stmt 0 view .LVU14
+  82 0022 42F48042 		orr	r2, r2, #16384
+  83 0026 C3F80824 		str	r2, [r3, #1032]
+  20:Core/Scr/init.c ****     *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00;
+  84              		.loc 1 20 5 is_stmt 1 view .LVU15
+  21:Core/Scr/init.c ****     // Third Led (red)
+  22:Core/Scr/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);
+  85              		.loc 1 22 5 view .LVU16
+  86 002a 03F58063 		add	r3, r3, #1024
+  87 002e 1A68     		ldr	r2, [r3]
+  88 0030 42F08052 		orr	r2, r2, #268435456
+  89 0034 1A60     		str	r2, [r3]
+  23:Core/Scr/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_14);
+  90              		.loc 1 23 5 view .LVU17
+  91 0036 5A68     		ldr	r2, [r3, #4]
+  92 0038 22F48042 		bic	r2, r2, #16384
+  93 003c 5A60     		str	r2, [r3, #4]
+  24:Core/Scr/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED14_0);
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 3
+
+
+  94              		.loc 1 24 5 view .LVU18
+  95 003e 9A68     		ldr	r2, [r3, #8]
+  96 0040 42F08052 		orr	r2, r2, #268435456
+  97 0044 9A60     		str	r2, [r3, #8]
+  25:Core/Scr/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
+  98              		.loc 1 25 5 view .LVU19
+  99 0046 DA68     		ldr	r2, [r3, #12]
+ 100 0048 22F08052 		bic	r2, r2, #268435456
+ 101 004c DA60     		str	r2, [r3, #12]
+  26:Core/Scr/init.c **** }
+ 102              		.loc 1 26 1 is_stmt 0 view .LVU20
+ 103 004e 7047     		bx	lr
+ 104              	.L6:
+ 105              		.align	2
+ 106              	.L5:
+ 107 0050 00000240 		.word	1073872896
+ 108              		.cfi_endproc
+ 109              	.LFE131:
+ 111              		.section	.text.All_Ports_Input,"ax",%progbits
+ 112              		.align	1
+ 113              		.global	All_Ports_Input
+ 114              		.syntax unified
+ 115              		.thumb
+ 116              		.thumb_func
+ 118              	All_Ports_Input:
+ 119              	.LFB132:
+  27:Core/Scr/init.c **** void All_Ports_Input(void)
+  28:Core/Scr/init.c **** {
+ 120              		.loc 1 28 1 is_stmt 1 view -0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              		@ link register save eliminated.
+  29:Core/Scr/init.c ****     // First Port
+  30:Core/Scr/init.c ****     S_BIT(GPIO_E_BSRR, GPIO_E_BSRR_PE0_RESET);
+ 125              		.loc 1 30 5 view .LVU22
+ 126 0000 134A     		ldr	r2, .L8
+ 127 0002 9369     		ldr	r3, [r2, #24]
+ 128 0004 43F48033 		orr	r3, r3, #65536
+ 129 0008 9361     		str	r3, [r2, #24]
+  31:Core/Scr/init.c ****     GPIO_E_MODER &= CL_DEL_E;
+ 130              		.loc 1 31 5 view .LVU23
+ 131              		.loc 1 31 18 is_stmt 0 view .LVU24
+ 132 000a 0023     		movs	r3, #0
+ 133 000c 1360     		str	r3, [r2]
+  32:Core/Scr/init.c ****     GPIO_E_OSPEEDR &= CL_DEL_E;
+ 134              		.loc 1 32 5 is_stmt 1 view .LVU25
+ 135              		.loc 1 32 20 is_stmt 0 view .LVU26
+ 136 000e 9360     		str	r3, [r2, #8]
+  33:Core/Scr/init.c ****     led1_port = 0;
+ 137              		.loc 1 33 5 is_stmt 1 view .LVU27
+ 138              		.loc 1 33 15 is_stmt 0 view .LVU28
+ 139 0010 104A     		ldr	r2, .L8+4
+ 140 0012 1370     		strb	r3, [r2]
+  34:Core/Scr/init.c ****     // Second Port
+  35:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x18UL) |= 0x800000;
+ 141              		.loc 1 35 5 is_stmt 1 view .LVU29
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 4
+
+
+ 142 0014 104A     		ldr	r2, .L8+8
+ 143 0016 D2F8181C 		ldr	r1, [r2, #3096]
+ 144              		.loc 1 35 41 is_stmt 0 view .LVU30
+ 145 001a 41F40001 		orr	r1, r1, #8388608
+ 146 001e C2F8181C 		str	r1, [r2, #3096]
+  36:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x00UL) &= 0x00;
+ 147              		.loc 1 36 5 is_stmt 1 view .LVU31
+ 148              		.loc 1 36 41 is_stmt 0 view .LVU32
+ 149 0022 C2F8003C 		str	r3, [r2, #3072]
+  37:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x08UL) &= 0x00;
+ 150              		.loc 1 37 5 is_stmt 1 view .LVU33
+ 151              		.loc 1 37 41 is_stmt 0 view .LVU34
+ 152 0026 C2F8083C 		str	r3, [r2, #3080]
+  38:Core/Scr/init.c ****     led2_port = 0;
+ 153              		.loc 1 38 5 is_stmt 1 view .LVU35
+ 154              		.loc 1 38 15 is_stmt 0 view .LVU36
+ 155 002a 0C4A     		ldr	r2, .L8+12
+ 156 002c 1370     		strb	r3, [r2]
+  39:Core/Scr/init.c ****     // Third Port
+  40:Core/Scr/init.c ****     SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
+ 157              		.loc 1 40 5 is_stmt 1 view .LVU37
+ 158 002e 0C4A     		ldr	r2, .L8+16
+ 159 0030 9169     		ldr	r1, [r2, #24]
+ 160 0032 41F08071 		orr	r1, r1, #16777216
+ 161 0036 9161     		str	r1, [r2, #24]
+  41:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE8_0);
+ 162              		.loc 1 41 5 view .LVU38
+ 163 0038 1168     		ldr	r1, [r2]
+ 164 003a 21F48031 		bic	r1, r1, #65536
+ 165 003e 1160     		str	r1, [r2]
+  42:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED8_0);
+ 166              		.loc 1 42 5 view .LVU39
+ 167 0040 9168     		ldr	r1, [r2, #8]
+ 168 0042 21F48031 		bic	r1, r1, #65536
+ 169 0046 9160     		str	r1, [r2, #8]
+  43:Core/Scr/init.c ****     led3_port = 0;
+ 170              		.loc 1 43 5 view .LVU40
+ 171              		.loc 1 43 15 is_stmt 0 view .LVU41
+ 172 0048 064A     		ldr	r2, .L8+20
+ 173 004a 1370     		strb	r3, [r2]
+  44:Core/Scr/init.c **** }
+ 174              		.loc 1 44 1 view .LVU42
+ 175 004c 7047     		bx	lr
+ 176              	.L9:
+ 177 004e 00BF     		.align	2
+ 178              	.L8:
+ 179 0050 00100240 		.word	1073876992
+ 180 0054 00000000 		.word	led1_port
+ 181 0058 00000240 		.word	1073872896
+ 182 005c 00000000 		.word	led2_port
+ 183 0060 00080240 		.word	1073874944
+ 184 0064 00000000 		.word	led3_port
+ 185              		.cfi_endproc
+ 186              	.LFE132:
+ 188              		.section	.text.All_Ports_Output,"ax",%progbits
+ 189              		.align	1
+ 190              		.global	All_Ports_Output
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 5
+
+
+ 191              		.syntax unified
+ 192              		.thumb
+ 193              		.thumb_func
+ 195              	All_Ports_Output:
+ 196              	.LFB133:
+  45:Core/Scr/init.c **** void All_Ports_Output(void)
+  46:Core/Scr/init.c **** {
+ 197              		.loc 1 46 1 is_stmt 1 view -0
+ 198              		.cfi_startproc
+ 199              		@ args = 0, pretend = 0, frame = 0
+ 200              		@ frame_needed = 0, uses_anonymous_args = 0
+ 201              		@ link register save eliminated.
+  47:Core/Scr/init.c ****     // First Port
+  48:Core/Scr/init.c ****     GPIO_E_MODER |= GPIO_E_MODE_PE0_OUT;
+ 202              		.loc 1 48 5 view .LVU44
+ 203 0000 1E4B     		ldr	r3, .L11
+ 204 0002 1A68     		ldr	r2, [r3]
+ 205              		.loc 1 48 18 is_stmt 0 view .LVU45
+ 206 0004 42F00102 		orr	r2, r2, #1
+ 207 0008 1A60     		str	r2, [r3]
+  49:Core/Scr/init.c ****     GPIO_E_OTYPER |= GPIO_E_OTYPE_PE0_PP;
+ 208              		.loc 1 49 5 is_stmt 1 view .LVU46
+  50:Core/Scr/init.c ****     GPIO_E_OSPEEDR |= GPIO_E_OSPEED_PE0_MID;
+ 209              		.loc 1 50 5 view .LVU47
+ 210 000a 9A68     		ldr	r2, [r3, #8]
+ 211              		.loc 1 50 20 is_stmt 0 view .LVU48
+ 212 000c 42F00102 		orr	r2, r2, #1
+ 213 0010 9A60     		str	r2, [r3, #8]
+  51:Core/Scr/init.c ****     GPIO_E_PUPDR |= GPIO_E_PUPDR_PE0_NOPUPD;
+ 214              		.loc 1 51 5 is_stmt 1 view .LVU49
+  52:Core/Scr/init.c ****     S_BIT(GPIO_E_BSRR, GPIO_E_BSRR_PE0_SET);
+ 215              		.loc 1 52 5 view .LVU50
+ 216 0012 9A69     		ldr	r2, [r3, #24]
+ 217 0014 42F00102 		orr	r2, r2, #1
+ 218 0018 9A61     		str	r2, [r3, #24]
+  53:Core/Scr/init.c ****     led1_port = 1;
+ 219              		.loc 1 53 5 view .LVU51
+ 220              		.loc 1 53 15 is_stmt 0 view .LVU52
+ 221 001a 0122     		movs	r2, #1
+ 222 001c 184B     		ldr	r3, .L11+4
+ 223 001e 1A70     		strb	r2, [r3]
+  54:Core/Scr/init.c ****     // Second Port
+  55:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x00UL) |= 0x4000;
+ 224              		.loc 1 55 5 is_stmt 1 view .LVU53
+ 225 0020 184B     		ldr	r3, .L11+8
+ 226 0022 D3F8001C 		ldr	r1, [r3, #3072]
+ 227              		.loc 1 55 41 is_stmt 0 view .LVU54
+ 228 0026 41F48041 		orr	r1, r1, #16384
+ 229 002a C3F8001C 		str	r1, [r3, #3072]
+  56:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x04UL) |= 0x00;
+ 230              		.loc 1 56 5 is_stmt 1 view .LVU55
+  57:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x08UL) |= 0x4000;
+ 231              		.loc 1 57 5 view .LVU56
+ 232 002e D3F8081C 		ldr	r1, [r3, #3080]
+ 233              		.loc 1 57 41 is_stmt 0 view .LVU57
+ 234 0032 41F48041 		orr	r1, r1, #16384
+ 235 0036 C3F8081C 		str	r1, [r3, #3080]
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 6
+
+
+  58:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x0CUL) |= 0x00;
+ 236              		.loc 1 58 5 is_stmt 1 view .LVU58
+  59:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x18UL) |= 0x80;
+ 237              		.loc 1 59 5 view .LVU59
+ 238 003a D3F8181C 		ldr	r1, [r3, #3096]
+ 239              		.loc 1 59 41 is_stmt 0 view .LVU60
+ 240 003e 41F08001 		orr	r1, r1, #128
+ 241 0042 C3F8181C 		str	r1, [r3, #3096]
+  60:Core/Scr/init.c ****     led2_port = 1;
+ 242              		.loc 1 60 5 is_stmt 1 view .LVU61
+ 243              		.loc 1 60 15 is_stmt 0 view .LVU62
+ 244 0046 104B     		ldr	r3, .L11+12
+ 245 0048 1A70     		strb	r2, [r3]
+  61:Core/Scr/init.c ****     // Third Port
+  62:Core/Scr/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODE8_0);
+ 246              		.loc 1 62 5 is_stmt 1 view .LVU63
+ 247 004a 104B     		ldr	r3, .L11+16
+ 248 004c 1968     		ldr	r1, [r3]
+ 249 004e 41F48031 		orr	r1, r1, #65536
+ 250 0052 1960     		str	r1, [r3]
+  63:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_8);
+ 251              		.loc 1 63 5 view .LVU64
+ 252 0054 5968     		ldr	r1, [r3, #4]
+ 253 0056 21F48071 		bic	r1, r1, #256
+ 254 005a 5960     		str	r1, [r3, #4]
+  64:Core/Scr/init.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED8_0);
+ 255              		.loc 1 64 5 view .LVU65
+ 256 005c 9968     		ldr	r1, [r3, #8]
+ 257 005e 41F48031 		orr	r1, r1, #65536
+ 258 0062 9960     		str	r1, [r3, #8]
+  65:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR8_0);
+ 259              		.loc 1 65 5 view .LVU66
+ 260 0064 D968     		ldr	r1, [r3, #12]
+ 261 0066 21F48031 		bic	r1, r1, #65536
+ 262 006a D960     		str	r1, [r3, #12]
+  66:Core/Scr/init.c ****     SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS8);
+ 263              		.loc 1 66 5 view .LVU67
+ 264 006c 9969     		ldr	r1, [r3, #24]
+ 265 006e 41F48071 		orr	r1, r1, #256
+ 266 0072 9961     		str	r1, [r3, #24]
+  67:Core/Scr/init.c ****     led3_port = 1;
+ 267              		.loc 1 67 5 view .LVU68
+ 268              		.loc 1 67 15 is_stmt 0 view .LVU69
+ 269 0074 064B     		ldr	r3, .L11+20
+ 270 0076 1A70     		strb	r2, [r3]
+  68:Core/Scr/init.c **** }
+ 271              		.loc 1 68 1 view .LVU70
+ 272 0078 7047     		bx	lr
+ 273              	.L12:
+ 274 007a 00BF     		.align	2
+ 275              	.L11:
+ 276 007c 00100240 		.word	1073876992
+ 277 0080 00000000 		.word	led1_port
+ 278 0084 00000240 		.word	1073872896
+ 279 0088 00000000 		.word	led2_port
+ 280 008c 00080240 		.word	1073874944
+ 281 0090 00000000 		.word	led3_port
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 7
+
+
+ 282              		.cfi_endproc
+ 283              	.LFE133:
+ 285              		.section	.text.First_Port_Output,"ax",%progbits
+ 286              		.align	1
+ 287              		.global	First_Port_Output
+ 288              		.syntax unified
+ 289              		.thumb
+ 290              		.thumb_func
+ 292              	First_Port_Output:
+ 293              	.LFB134:
+  69:Core/Scr/init.c **** void First_Port_Output(void)
+  70:Core/Scr/init.c **** {
+ 294              		.loc 1 70 1 is_stmt 1 view -0
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 0
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              		@ link register save eliminated.
+  71:Core/Scr/init.c ****     // First Port
+  72:Core/Scr/init.c ****     GPIO_E_MODER |= GPIO_E_MODE_PE0_OUT;
+ 299              		.loc 1 72 5 view .LVU72
+ 300 0000 164B     		ldr	r3, .L14
+ 301 0002 1A68     		ldr	r2, [r3]
+ 302              		.loc 1 72 18 is_stmt 0 view .LVU73
+ 303 0004 42F00102 		orr	r2, r2, #1
+ 304 0008 1A60     		str	r2, [r3]
+  73:Core/Scr/init.c ****     GPIO_E_OTYPER |= GPIO_E_OTYPE_PE0_PP;
+ 305              		.loc 1 73 5 is_stmt 1 view .LVU74
+  74:Core/Scr/init.c ****     GPIO_E_OSPEEDR |= GPIO_E_OSPEED_PE0_MID;
+ 306              		.loc 1 74 5 view .LVU75
+ 307 000a 9A68     		ldr	r2, [r3, #8]
+ 308              		.loc 1 74 20 is_stmt 0 view .LVU76
+ 309 000c 42F00102 		orr	r2, r2, #1
+ 310 0010 9A60     		str	r2, [r3, #8]
+  75:Core/Scr/init.c ****     GPIO_E_PUPDR |= GPIO_E_PUPDR_PE0_NOPUPD;
+ 311              		.loc 1 75 5 is_stmt 1 view .LVU77
+  76:Core/Scr/init.c ****     S_BIT(GPIO_E_BSRR, GPIO_E_BSRR_PE0_SET);
+ 312              		.loc 1 76 5 view .LVU78
+ 313 0012 9A69     		ldr	r2, [r3, #24]
+ 314 0014 42F00102 		orr	r2, r2, #1
+ 315 0018 9A61     		str	r2, [r3, #24]
+  77:Core/Scr/init.c ****     led1_port = 1;
+ 316              		.loc 1 77 5 view .LVU79
+ 317              		.loc 1 77 15 is_stmt 0 view .LVU80
+ 318 001a 114B     		ldr	r3, .L14+4
+ 319 001c 0122     		movs	r2, #1
+ 320 001e 1A70     		strb	r2, [r3]
+  78:Core/Scr/init.c ****     // Second Port
+  79:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x18UL) |= 0x800000;
+ 321              		.loc 1 79 5 is_stmt 1 view .LVU81
+ 322 0020 104B     		ldr	r3, .L14+8
+ 323 0022 D3F8182C 		ldr	r2, [r3, #3096]
+ 324              		.loc 1 79 41 is_stmt 0 view .LVU82
+ 325 0026 42F40002 		orr	r2, r2, #8388608
+ 326 002a C3F8182C 		str	r2, [r3, #3096]
+  80:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x00UL) &= 0x00;
+ 327              		.loc 1 80 5 is_stmt 1 view .LVU83
+ 328              		.loc 1 80 41 is_stmt 0 view .LVU84
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 8
+
+
+ 329 002e 0022     		movs	r2, #0
+ 330 0030 C3F8002C 		str	r2, [r3, #3072]
+  81:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x08UL) &= 0x00;
+ 331              		.loc 1 81 5 is_stmt 1 view .LVU85
+ 332              		.loc 1 81 41 is_stmt 0 view .LVU86
+ 333 0034 C3F8082C 		str	r2, [r3, #3080]
+  82:Core/Scr/init.c ****     led2_port = 0;
+ 334              		.loc 1 82 5 is_stmt 1 view .LVU87
+ 335              		.loc 1 82 15 is_stmt 0 view .LVU88
+ 336 0038 0B4B     		ldr	r3, .L14+12
+ 337 003a 1A70     		strb	r2, [r3]
+  83:Core/Scr/init.c ****     // Third Port
+  84:Core/Scr/init.c ****     SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
+ 338              		.loc 1 84 5 is_stmt 1 view .LVU89
+ 339 003c 0B4B     		ldr	r3, .L14+16
+ 340 003e 9969     		ldr	r1, [r3, #24]
+ 341 0040 41F08071 		orr	r1, r1, #16777216
+ 342 0044 9961     		str	r1, [r3, #24]
+  85:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE8_0);
+ 343              		.loc 1 85 5 view .LVU90
+ 344 0046 1968     		ldr	r1, [r3]
+ 345 0048 21F48031 		bic	r1, r1, #65536
+ 346 004c 1960     		str	r1, [r3]
+  86:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED8_0);
+ 347              		.loc 1 86 5 view .LVU91
+ 348 004e 9968     		ldr	r1, [r3, #8]
+ 349 0050 21F48031 		bic	r1, r1, #65536
+ 350 0054 9960     		str	r1, [r3, #8]
+  87:Core/Scr/init.c ****     led3_port = 0;
+ 351              		.loc 1 87 5 view .LVU92
+ 352              		.loc 1 87 15 is_stmt 0 view .LVU93
+ 353 0056 064B     		ldr	r3, .L14+20
+ 354 0058 1A70     		strb	r2, [r3]
+  88:Core/Scr/init.c **** }
+ 355              		.loc 1 88 1 view .LVU94
+ 356 005a 7047     		bx	lr
+ 357              	.L15:
+ 358              		.align	2
+ 359              	.L14:
+ 360 005c 00100240 		.word	1073876992
+ 361 0060 00000000 		.word	led1_port
+ 362 0064 00000240 		.word	1073872896
+ 363 0068 00000000 		.word	led2_port
+ 364 006c 00080240 		.word	1073874944
+ 365 0070 00000000 		.word	led3_port
+ 366              		.cfi_endproc
+ 367              	.LFE134:
+ 369              		.section	.text.Second_Port_Output,"ax",%progbits
+ 370              		.align	1
+ 371              		.global	Second_Port_Output
+ 372              		.syntax unified
+ 373              		.thumb
+ 374              		.thumb_func
+ 376              	Second_Port_Output:
+ 377              	.LFB135:
+  89:Core/Scr/init.c **** void Second_Port_Output(void)
+  90:Core/Scr/init.c **** {
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 9
+
+
+ 378              		.loc 1 90 1 is_stmt 1 view -0
+ 379              		.cfi_startproc
+ 380              		@ args = 0, pretend = 0, frame = 0
+ 381              		@ frame_needed = 0, uses_anonymous_args = 0
+ 382              		@ link register save eliminated.
+  91:Core/Scr/init.c ****     // First Port
+  92:Core/Scr/init.c ****     S_BIT(GPIO_E_BSRR, GPIO_E_BSRR_PE0_RESET);
+ 383              		.loc 1 92 5 view .LVU96
+ 384 0000 174B     		ldr	r3, .L17
+ 385 0002 9A69     		ldr	r2, [r3, #24]
+ 386 0004 42F48032 		orr	r2, r2, #65536
+ 387 0008 9A61     		str	r2, [r3, #24]
+  93:Core/Scr/init.c ****     GPIO_E_MODER &= CL_DEL_E;
+ 388              		.loc 1 93 5 view .LVU97
+ 389              		.loc 1 93 18 is_stmt 0 view .LVU98
+ 390 000a 0022     		movs	r2, #0
+ 391 000c 1A60     		str	r2, [r3]
+  94:Core/Scr/init.c ****     GPIO_E_OSPEEDR &= CL_DEL_E;
+ 392              		.loc 1 94 5 is_stmt 1 view .LVU99
+ 393              		.loc 1 94 20 is_stmt 0 view .LVU100
+ 394 000e 9A60     		str	r2, [r3, #8]
+  95:Core/Scr/init.c ****     led1_port = 0;
+ 395              		.loc 1 95 5 is_stmt 1 view .LVU101
+ 396              		.loc 1 95 15 is_stmt 0 view .LVU102
+ 397 0010 144B     		ldr	r3, .L17+4
+ 398 0012 1A70     		strb	r2, [r3]
+  96:Core/Scr/init.c ****     // Second Port
+  97:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x00UL) |= 0x4000;
+ 399              		.loc 1 97 5 is_stmt 1 view .LVU103
+ 400 0014 144B     		ldr	r3, .L17+8
+ 401 0016 D3F8001C 		ldr	r1, [r3, #3072]
+ 402              		.loc 1 97 41 is_stmt 0 view .LVU104
+ 403 001a 41F48041 		orr	r1, r1, #16384
+ 404 001e C3F8001C 		str	r1, [r3, #3072]
+  98:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x04UL) |= 0x00;
+ 405              		.loc 1 98 5 is_stmt 1 view .LVU105
+  99:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x08UL) |= 0x4000;
+ 406              		.loc 1 99 5 view .LVU106
+ 407 0022 D3F8081C 		ldr	r1, [r3, #3080]
+ 408              		.loc 1 99 41 is_stmt 0 view .LVU107
+ 409 0026 41F48041 		orr	r1, r1, #16384
+ 410 002a C3F8081C 		str	r1, [r3, #3080]
+ 100:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x0CUL) |= 0x00;
+ 411              		.loc 1 100 5 is_stmt 1 view .LVU108
+ 101:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x18UL) |= 0x80;
+ 412              		.loc 1 101 5 view .LVU109
+ 413 002e D3F8181C 		ldr	r1, [r3, #3096]
+ 414              		.loc 1 101 41 is_stmt 0 view .LVU110
+ 415 0032 41F08001 		orr	r1, r1, #128
+ 416 0036 C3F8181C 		str	r1, [r3, #3096]
+ 102:Core/Scr/init.c ****     led2_port = 1;
+ 417              		.loc 1 102 5 is_stmt 1 view .LVU111
+ 418              		.loc 1 102 15 is_stmt 0 view .LVU112
+ 419 003a 0C4B     		ldr	r3, .L17+12
+ 420 003c 0121     		movs	r1, #1
+ 421 003e 1970     		strb	r1, [r3]
+ 103:Core/Scr/init.c ****     // Third Port
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 10
+
+
+ 104:Core/Scr/init.c ****     SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8);
+ 422              		.loc 1 104 5 is_stmt 1 view .LVU113
+ 423 0040 0B4B     		ldr	r3, .L17+16
+ 424 0042 9969     		ldr	r1, [r3, #24]
+ 425 0044 41F08071 		orr	r1, r1, #16777216
+ 426 0048 9961     		str	r1, [r3, #24]
+ 105:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE8_0);
+ 427              		.loc 1 105 5 view .LVU114
+ 428 004a 1968     		ldr	r1, [r3]
+ 429 004c 21F48031 		bic	r1, r1, #65536
+ 430 0050 1960     		str	r1, [r3]
+ 106:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED8_0);
+ 431              		.loc 1 106 5 view .LVU115
+ 432 0052 9968     		ldr	r1, [r3, #8]
+ 433 0054 21F48031 		bic	r1, r1, #65536
+ 434 0058 9960     		str	r1, [r3, #8]
+ 107:Core/Scr/init.c ****     led3_port = 0;
+ 435              		.loc 1 107 5 view .LVU116
+ 436              		.loc 1 107 15 is_stmt 0 view .LVU117
+ 437 005a 064B     		ldr	r3, .L17+20
+ 438 005c 1A70     		strb	r2, [r3]
+ 108:Core/Scr/init.c **** }
+ 439              		.loc 1 108 1 view .LVU118
+ 440 005e 7047     		bx	lr
+ 441              	.L18:
+ 442              		.align	2
+ 443              	.L17:
+ 444 0060 00100240 		.word	1073876992
+ 445 0064 00000000 		.word	led1_port
+ 446 0068 00000240 		.word	1073872896
+ 447 006c 00000000 		.word	led2_port
+ 448 0070 00080240 		.word	1073874944
+ 449 0074 00000000 		.word	led3_port
+ 450              		.cfi_endproc
+ 451              	.LFE135:
+ 453              		.section	.text.Third_Port_Output,"ax",%progbits
+ 454              		.align	1
+ 455              		.global	Third_Port_Output
+ 456              		.syntax unified
+ 457              		.thumb
+ 458              		.thumb_func
+ 460              	Third_Port_Output:
+ 461              	.LFB136:
+ 109:Core/Scr/init.c **** void Third_Port_Output(void)
+ 110:Core/Scr/init.c **** {
+ 462              		.loc 1 110 1 is_stmt 1 view -0
+ 463              		.cfi_startproc
+ 464              		@ args = 0, pretend = 0, frame = 0
+ 465              		@ frame_needed = 0, uses_anonymous_args = 0
+ 466              		@ link register save eliminated.
+ 111:Core/Scr/init.c ****     // First Port
+ 112:Core/Scr/init.c ****     S_BIT(GPIO_E_BSRR, GPIO_E_BSRR_PE0_RESET);
+ 467              		.loc 1 112 5 view .LVU120
+ 468 0000 194A     		ldr	r2, .L20
+ 469 0002 9369     		ldr	r3, [r2, #24]
+ 470 0004 43F48033 		orr	r3, r3, #65536
+ 471 0008 9361     		str	r3, [r2, #24]
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 11
+
+
+ 113:Core/Scr/init.c ****     GPIO_E_MODER &= CL_DEL_E;
+ 472              		.loc 1 113 5 view .LVU121
+ 473              		.loc 1 113 18 is_stmt 0 view .LVU122
+ 474 000a 0023     		movs	r3, #0
+ 475 000c 1360     		str	r3, [r2]
+ 114:Core/Scr/init.c ****     GPIO_E_OSPEEDR &= CL_DEL_E;
+ 476              		.loc 1 114 5 is_stmt 1 view .LVU123
+ 477              		.loc 1 114 20 is_stmt 0 view .LVU124
+ 478 000e 9360     		str	r3, [r2, #8]
+ 115:Core/Scr/init.c ****     led1_port = 0;
+ 479              		.loc 1 115 5 is_stmt 1 view .LVU125
+ 480              		.loc 1 115 15 is_stmt 0 view .LVU126
+ 481 0010 164A     		ldr	r2, .L20+4
+ 482 0012 1370     		strb	r3, [r2]
+ 116:Core/Scr/init.c ****     // Second Port
+ 117:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x18UL) |= 0x800000;
+ 483              		.loc 1 117 5 is_stmt 1 view .LVU127
+ 484 0014 164A     		ldr	r2, .L20+8
+ 485 0016 D2F8181C 		ldr	r1, [r2, #3096]
+ 486              		.loc 1 117 41 is_stmt 0 view .LVU128
+ 487 001a 41F40001 		orr	r1, r1, #8388608
+ 488 001e C2F8181C 		str	r1, [r2, #3096]
+ 118:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x00UL) &= 0x00;
+ 489              		.loc 1 118 5 is_stmt 1 view .LVU129
+ 490              		.loc 1 118 41 is_stmt 0 view .LVU130
+ 491 0022 C2F8003C 		str	r3, [r2, #3072]
+ 119:Core/Scr/init.c ****     *(uint32_t*)(0x40020C00UL + 0x08UL) &= 0x00;
+ 492              		.loc 1 119 5 is_stmt 1 view .LVU131
+ 493              		.loc 1 119 41 is_stmt 0 view .LVU132
+ 494 0026 C2F8083C 		str	r3, [r2, #3080]
+ 120:Core/Scr/init.c ****     led2_port = 0;
+ 495              		.loc 1 120 5 is_stmt 1 view .LVU133
+ 496              		.loc 1 120 15 is_stmt 0 view .LVU134
+ 497 002a 124A     		ldr	r2, .L20+12
+ 498 002c 1370     		strb	r3, [r2]
+ 121:Core/Scr/init.c ****     // Third Port
+ 122:Core/Scr/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODE8_0);
+ 499              		.loc 1 122 5 is_stmt 1 view .LVU135
+ 500 002e 03F18043 		add	r3, r3, #1073741824
+ 501 0032 03F50233 		add	r3, r3, #133120
+ 502 0036 1A68     		ldr	r2, [r3]
+ 503 0038 42F48032 		orr	r2, r2, #65536
+ 504 003c 1A60     		str	r2, [r3]
+ 123:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_8);
+ 505              		.loc 1 123 5 view .LVU136
+ 506 003e 5A68     		ldr	r2, [r3, #4]
+ 507 0040 22F48072 		bic	r2, r2, #256
+ 508 0044 5A60     		str	r2, [r3, #4]
+ 124:Core/Scr/init.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED8_0);
+ 509              		.loc 1 124 5 view .LVU137
+ 510 0046 9A68     		ldr	r2, [r3, #8]
+ 511 0048 42F48032 		orr	r2, r2, #65536
+ 512 004c 9A60     		str	r2, [r3, #8]
+ 125:Core/Scr/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR8_0);
+ 513              		.loc 1 125 5 view .LVU138
+ 514 004e DA68     		ldr	r2, [r3, #12]
+ 515 0050 22F48032 		bic	r2, r2, #65536
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 12
+
+
+ 516 0054 DA60     		str	r2, [r3, #12]
+ 126:Core/Scr/init.c ****     SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS8);
+ 517              		.loc 1 126 5 view .LVU139
+ 518 0056 9A69     		ldr	r2, [r3, #24]
+ 519 0058 42F48072 		orr	r2, r2, #256
+ 520 005c 9A61     		str	r2, [r3, #24]
+ 127:Core/Scr/init.c ****     led3_port = 1;
+ 521              		.loc 1 127 5 view .LVU140
+ 522              		.loc 1 127 15 is_stmt 0 view .LVU141
+ 523 005e 064B     		ldr	r3, .L20+16
+ 524 0060 0122     		movs	r2, #1
+ 525 0062 1A70     		strb	r2, [r3]
+ 128:Core/Scr/init.c **** }
+ 526              		.loc 1 128 1 view .LVU142
+ 527 0064 7047     		bx	lr
+ 528              	.L21:
+ 529 0066 00BF     		.align	2
+ 530              	.L20:
+ 531 0068 00100240 		.word	1073876992
+ 532 006c 00000000 		.word	led1_port
+ 533 0070 00000240 		.word	1073872896
+ 534 0074 00000000 		.word	led2_port
+ 535 0078 00000000 		.word	led3_port
+ 536              		.cfi_endproc
+ 537              	.LFE136:
+ 539              		.section	.text.delay,"ax",%progbits
+ 540              		.align	1
+ 541              		.global	delay
+ 542              		.syntax unified
+ 543              		.thumb
+ 544              		.thumb_func
+ 546              	delay:
+ 547              	.LFB137:
+ 129:Core/Scr/init.c **** void delay(void)
+ 130:Core/Scr/init.c **** {
+ 548              		.loc 1 130 1 is_stmt 1 view -0
+ 549              		.cfi_startproc
+ 550              		@ args = 0, pretend = 0, frame = 0
+ 551              		@ frame_needed = 0, uses_anonymous_args = 0
+ 552              		@ link register save eliminated.
+ 131:Core/Scr/init.c ****     for (int i = 0; i <= 500000; i++);
+ 553              		.loc 1 131 5 view .LVU144
+ 554              	.LBB2:
+ 555              		.loc 1 131 10 view .LVU145
+ 556              	.LVL0:
+ 557              		.loc 1 131 14 is_stmt 0 view .LVU146
+ 558 0000 0023     		movs	r3, #0
+ 559              		.loc 1 131 5 view .LVU147
+ 560 0002 00E0     		b	.L23
+ 561              	.LVL1:
+ 562              	.L24:
+ 563              		.loc 1 131 35 is_stmt 1 discriminator 3 view .LVU148
+ 564 0004 0133     		adds	r3, r3, #1
+ 565              	.LVL2:
+ 566              	.L23:
+ 567              		.loc 1 131 23 discriminator 1 view .LVU149
+ 568 0006 024A     		ldr	r2, .L25
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 13
+
+
+ 569 0008 9342     		cmp	r3, r2
+ 570 000a FBDD     		ble	.L24
+ 571              	.LBE2:
+ 132:Core/Scr/init.c **** }
+ 572              		.loc 1 132 1 is_stmt 0 view .LVU150
+ 573 000c 7047     		bx	lr
+ 574              	.L26:
+ 575 000e 00BF     		.align	2
+ 576              	.L25:
+ 577 0010 20A10700 		.word	500000
+ 578              		.cfi_endproc
+ 579              	.LFE137:
+ 581              		.global	led3_port
+ 582              		.section	.bss.led3_port,"aw",%nobits
+ 585              	led3_port:
+ 586 0000 00       		.space	1
+ 587              		.global	led2_port
+ 588              		.section	.bss.led2_port,"aw",%nobits
+ 591              	led2_port:
+ 592 0000 00       		.space	1
+ 593              		.global	led1_port
+ 594              		.section	.bss.led1_port,"aw",%nobits
+ 597              	led1_port:
+ 598 0000 00       		.space	1
+ 599              		.text
+ 600              	.Letext0:
+ 601              		.file 2 "C:/Users/obukh/OneDrive/\320\240\320\260\320\261\320\276\321\207\320\270\320\271 \321\201
+ 602              		.file 3 "C:/Users/obukh/OneDrive/\320\240\320\260\320\261\320\276\321\207\320\270\320\271 \321\201
+ 603              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccbal80m.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:21     .text.Register_Init:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:27     .text.Register_Init:00000000 Register_Init
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:44     .text.Register_Init:0000000c $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:49     .text.Led_Init:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:55     .text.Led_Init:00000000 Led_Init
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:107    .text.Led_Init:00000050 $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:112    .text.All_Ports_Input:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:118    .text.All_Ports_Input:00000000 All_Ports_Input
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:179    .text.All_Ports_Input:00000050 $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:597    .bss.led1_port:00000000 led1_port
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:591    .bss.led2_port:00000000 led2_port
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:585    .bss.led3_port:00000000 led3_port
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:189    .text.All_Ports_Output:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:195    .text.All_Ports_Output:00000000 All_Ports_Output
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:276    .text.All_Ports_Output:0000007c $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:286    .text.First_Port_Output:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:292    .text.First_Port_Output:00000000 First_Port_Output
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:360    .text.First_Port_Output:0000005c $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:370    .text.Second_Port_Output:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:376    .text.Second_Port_Output:00000000 Second_Port_Output
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:444    .text.Second_Port_Output:00000060 $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:454    .text.Third_Port_Output:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:460    .text.Third_Port_Output:00000000 Third_Port_Output
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:531    .text.Third_Port_Output:00000068 $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:540    .text.delay:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:546    .text.delay:00000000 delay
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:577    .text.delay:00000010 $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:586    .bss.led3_port:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:592    .bss.led2_port:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\ccbal80m.s:598    .bss.led1_port:00000000 $d
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,466 @@
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Scr/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Scr/main.c **** #include "../Inc/init.h"
+   2:Core/Scr/main.c **** 
+   3:Core/Scr/main.c **** uint8_t but1 = 0;
+   4:Core/Scr/main.c **** uint8_t but2 = 0;
+   5:Core/Scr/main.c **** uint8_t but3 = 0;
+   6:Core/Scr/main.c **** uint32_t but4 = 0;
+   7:Core/Scr/main.c **** uint8_t led1 = 0;
+   8:Core/Scr/main.c **** uint8_t led2 = 0;
+   9:Core/Scr/main.c **** uint8_t led3 = 0;
+  10:Core/Scr/main.c **** int main()
+  11:Core/Scr/main.c **** {
+  29              		.loc 1 11 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  12:Core/Scr/main.c ****     uint8_t mode = 1;
+  38              		.loc 1 12 5 view .LVU1
+  39              	.LVL0:
+  13:Core/Scr/main.c ****     Register_Init();
+  40              		.loc 1 13 5 view .LVU2
+  41 0002 FFF7FEFF 		bl	Register_Init
+  42              	.LVL1:
+  14:Core/Scr/main.c ****     Led_Init();
+  43              		.loc 1 14 5 view .LVU3
+  44 0006 FFF7FEFF 		bl	Led_Init
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 2
+
+
+  45              	.LVL2:
+  12:Core/Scr/main.c ****     uint8_t mode = 1;
+  46              		.loc 1 12 13 is_stmt 0 view .LVU4
+  47 000a 0124     		movs	r4, #1
+  48 000c 7AE0     		b	.L2
+  49              	.LVL3:
+  50              	.L21:
+  15:Core/Scr/main.c ****     while(1)
+  16:Core/Scr/main.c ****     {
+  17:Core/Scr/main.c ****         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) == 0)
+  18:Core/Scr/main.c ****         {
+  19:Core/Scr/main.c ****             delay();
+  51              		.loc 1 19 13 is_stmt 1 view .LVU5
+  52 000e FFF7FEFF 		bl	delay
+  53              	.LVL4:
+  20:Core/Scr/main.c ****             but4++;
+  54              		.loc 1 20 13 view .LVU6
+  55              		.loc 1 20 17 is_stmt 0 view .LVU7
+  56 0012 474A     		ldr	r2, .L22
+  57 0014 1368     		ldr	r3, [r2]
+  58 0016 0133     		adds	r3, r3, #1
+  59 0018 1360     		str	r3, [r2]
+  21:Core/Scr/main.c ****             if (mode < 5)
+  60              		.loc 1 21 13 is_stmt 1 view .LVU8
+  61              		.loc 1 21 16 is_stmt 0 view .LVU9
+  62 001a 042C     		cmp	r4, #4
+  63 001c 02D8     		bhi	.L17
+  22:Core/Scr/main.c ****             mode = mode + 1;
+  64              		.loc 1 22 13 is_stmt 1 view .LVU10
+  65              		.loc 1 22 18 is_stmt 0 view .LVU11
+  66 001e 0134     		adds	r4, r4, #1
+  67              	.LVL5:
+  68              		.loc 1 22 18 view .LVU12
+  69 0020 E4B2     		uxtb	r4, r4
+  70              	.LVL6:
+  71              		.loc 1 22 18 view .LVU13
+  72 0022 75E0     		b	.L3
+  73              	.L17:
+  23:Core/Scr/main.c ****             else
+  24:Core/Scr/main.c ****             {
+  25:Core/Scr/main.c ****                 mode = 1;
+  74              		.loc 1 25 22 view .LVU14
+  75 0024 0124     		movs	r4, #1
+  76              	.LVL7:
+  77              	.L4:
+  26:Core/Scr/main.c ****             }
+  27:Core/Scr/main.c ****         }
+  28:Core/Scr/main.c ****         switch (mode)
+  29:Core/Scr/main.c ****         {
+  30:Core/Scr/main.c ****             case 1: All_Ports_Input(); break;
+  78              		.loc 1 30 21 is_stmt 1 view .LVU15
+  79 0026 FFF7FEFF 		bl	All_Ports_Input
+  80              	.LVL8:
+  81              		.loc 1 30 40 discriminator 1 view .LVU16
+  82              	.L5:
+  31:Core/Scr/main.c ****             case 2: First_Port_Output(); break;
+  32:Core/Scr/main.c ****             case 3: Second_Port_Output(); break;
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 3
+
+
+  33:Core/Scr/main.c ****             case 4: Third_Port_Output(); break;
+  34:Core/Scr/main.c ****             case 5: All_Ports_Output(); break;
+  35:Core/Scr/main.c ****         }
+  36:Core/Scr/main.c ****         if ((READ_BIT(GPIOE->IDR, GPIO_IDR_IDR_0) != 0) && mode !=5 && mode != 2)
+  83              		.loc 1 36 9 view .LVU17
+  84              		.loc 1 36 14 is_stmt 0 view .LVU18
+  85 002a 424B     		ldr	r3, .L22+4
+  86 002c 1B69     		ldr	r3, [r3, #16]
+  87              		.loc 1 36 12 view .LVU19
+  88 002e 13F0010F 		tst	r3, #1
+  89 0032 1BD0     		beq	.L11
+  90              		.loc 1 36 57 discriminator 1 view .LVU20
+  91 0034 052C     		cmp	r4, #5
+  92 0036 19D0     		beq	.L11
+  93              		.loc 1 36 69 discriminator 2 view .LVU21
+  94 0038 022C     		cmp	r4, #2
+  95 003a 17D0     		beq	.L11
+  37:Core/Scr/main.c ****         {
+  38:Core/Scr/main.c ****             but1 = 1;
+  96              		.loc 1 38 13 is_stmt 1 view .LVU22
+  97              		.loc 1 38 18 is_stmt 0 view .LVU23
+  98 003c 0122     		movs	r2, #1
+  99 003e 3E4B     		ldr	r3, .L22+8
+ 100 0040 1A70     		strb	r2, [r3]
+  39:Core/Scr/main.c ****             S_BIT(GPIO_B_BSRR, GPIO_B_BSRR_PB0_SET);
+ 101              		.loc 1 39 13 is_stmt 1 view .LVU24
+ 102 0042 3E49     		ldr	r1, .L22+12
+ 103 0044 D1F81834 		ldr	r3, [r1, #1048]
+ 104 0048 1343     		orrs	r3, r3, r2
+ 105 004a C1F81834 		str	r3, [r1, #1048]
+  40:Core/Scr/main.c ****             led1 = 1;
+ 106              		.loc 1 40 13 view .LVU25
+ 107              		.loc 1 40 18 is_stmt 0 view .LVU26
+ 108 004e 3C4B     		ldr	r3, .L22+16
+ 109 0050 1A70     		strb	r2, [r3]
+ 110 0052 17E0     		b	.L12
+ 111              	.LVL9:
+ 112              	.L10:
+  31:Core/Scr/main.c ****             case 3: Second_Port_Output(); break;
+ 113              		.loc 1 31 21 is_stmt 1 view .LVU27
+ 114 0054 FFF7FEFF 		bl	First_Port_Output
+ 115              	.LVL10:
+  31:Core/Scr/main.c ****             case 3: Second_Port_Output(); break;
+ 116              		.loc 1 31 42 discriminator 1 view .LVU28
+  31:Core/Scr/main.c ****             case 3: Second_Port_Output(); break;
+ 117              		.loc 1 31 42 is_stmt 0 view .LVU29
+ 118 0058 E7E7     		b	.L5
+ 119              	.L9:
+  32:Core/Scr/main.c ****             case 4: Third_Port_Output(); break;
+ 120              		.loc 1 32 21 is_stmt 1 view .LVU30
+ 121 005a FFF7FEFF 		bl	Second_Port_Output
+ 122              	.LVL11:
+  32:Core/Scr/main.c ****             case 4: Third_Port_Output(); break;
+ 123              		.loc 1 32 43 discriminator 1 view .LVU31
+  32:Core/Scr/main.c ****             case 4: Third_Port_Output(); break;
+ 124              		.loc 1 32 43 is_stmt 0 view .LVU32
+ 125 005e E4E7     		b	.L5
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 4
+
+
+ 126              	.L8:
+  33:Core/Scr/main.c ****             case 5: All_Ports_Output(); break;
+ 127              		.loc 1 33 21 is_stmt 1 view .LVU33
+ 128 0060 FFF7FEFF 		bl	Third_Port_Output
+ 129              	.LVL12:
+  33:Core/Scr/main.c ****             case 5: All_Ports_Output(); break;
+ 130              		.loc 1 33 42 discriminator 1 view .LVU34
+  33:Core/Scr/main.c ****             case 5: All_Ports_Output(); break;
+ 131              		.loc 1 33 42 is_stmt 0 view .LVU35
+ 132 0064 E1E7     		b	.L5
+ 133              	.L6:
+  34:Core/Scr/main.c ****         }
+ 134              		.loc 1 34 21 is_stmt 1 view .LVU36
+ 135 0066 FFF7FEFF 		bl	All_Ports_Output
+ 136              	.LVL13:
+  34:Core/Scr/main.c ****         }
+ 137              		.loc 1 34 41 discriminator 1 view .LVU37
+  34:Core/Scr/main.c ****         }
+ 138              		.loc 1 34 41 is_stmt 0 view .LVU38
+ 139 006a DEE7     		b	.L5
+ 140              	.LVL14:
+ 141              	.L11:
+  41:Core/Scr/main.c ****         }
+  42:Core/Scr/main.c ****         else
+  43:Core/Scr/main.c ****         {
+  44:Core/Scr/main.c ****             but1 = 0;
+ 142              		.loc 1 44 13 is_stmt 1 view .LVU39
+ 143              		.loc 1 44 18 is_stmt 0 view .LVU40
+ 144 006c 0022     		movs	r2, #0
+ 145 006e 324B     		ldr	r3, .L22+8
+ 146 0070 1A70     		strb	r2, [r3]
+  45:Core/Scr/main.c ****             S_BIT(GPIO_B_BSRR, GPIO_B_BSRR_PB0_RESET);
+ 147              		.loc 1 45 13 is_stmt 1 view .LVU41
+ 148 0072 3249     		ldr	r1, .L22+12
+ 149 0074 D1F81834 		ldr	r3, [r1, #1048]
+ 150 0078 43F48033 		orr	r3, r3, #65536
+ 151 007c C1F81834 		str	r3, [r1, #1048]
+  46:Core/Scr/main.c ****             led1 = 0;
+ 152              		.loc 1 46 13 view .LVU42
+ 153              		.loc 1 46 18 is_stmt 0 view .LVU43
+ 154 0080 2F4B     		ldr	r3, .L22+16
+ 155 0082 1A70     		strb	r2, [r3]
+ 156              	.L12:
+  47:Core/Scr/main.c ****         }
+  48:Core/Scr/main.c ****         if ((READ_BIT(GPIOD->IDR, GPIO_IDR_IDR_7) != 0) && mode != 5 && mode != 3)
+ 157              		.loc 1 48 9 is_stmt 1 view .LVU44
+ 158              		.loc 1 48 14 is_stmt 0 view .LVU45
+ 159 0084 2F4B     		ldr	r3, .L22+20
+ 160 0086 1B69     		ldr	r3, [r3, #16]
+ 161              		.loc 1 48 12 view .LVU46
+ 162 0088 13F0800F 		tst	r3, #128
+ 163 008c 10D0     		beq	.L13
+ 164              		.loc 1 48 57 discriminator 1 view .LVU47
+ 165 008e 052C     		cmp	r4, #5
+ 166 0090 0ED0     		beq	.L13
+ 167              		.loc 1 48 70 discriminator 2 view .LVU48
+ 168 0092 032C     		cmp	r4, #3
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 5
+
+
+ 169 0094 0CD0     		beq	.L13
+  49:Core/Scr/main.c ****         {
+  50:Core/Scr/main.c ****             but2 = 1;
+ 170              		.loc 1 50 13 is_stmt 1 view .LVU49
+ 171              		.loc 1 50 18 is_stmt 0 view .LVU50
+ 172 0096 0122     		movs	r2, #1
+ 173 0098 2B4B     		ldr	r3, .L22+24
+ 174 009a 1A70     		strb	r2, [r3]
+  51:Core/Scr/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80;
+ 175              		.loc 1 51 13 is_stmt 1 view .LVU51
+ 176 009c 2749     		ldr	r1, .L22+12
+ 177 009e D1F81834 		ldr	r3, [r1, #1048]
+ 178              		.loc 1 51 49 is_stmt 0 view .LVU52
+ 179 00a2 43F08003 		orr	r3, r3, #128
+ 180 00a6 C1F81834 		str	r3, [r1, #1048]
+  52:Core/Scr/main.c ****             led2 = 1;
+ 181              		.loc 1 52 13 is_stmt 1 view .LVU53
+ 182              		.loc 1 52 18 is_stmt 0 view .LVU54
+ 183 00aa 284B     		ldr	r3, .L22+28
+ 184 00ac 1A70     		strb	r2, [r3]
+ 185 00ae 0BE0     		b	.L14
+ 186              	.L13:
+  53:Core/Scr/main.c ****         }
+  54:Core/Scr/main.c ****         else
+  55:Core/Scr/main.c ****         {
+  56:Core/Scr/main.c ****             but2 = 0;
+ 187              		.loc 1 56 13 is_stmt 1 view .LVU55
+ 188              		.loc 1 56 18 is_stmt 0 view .LVU56
+ 189 00b0 0022     		movs	r2, #0
+ 190 00b2 254B     		ldr	r3, .L22+24
+ 191 00b4 1A70     		strb	r2, [r3]
+  57:Core/Scr/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x800000;
+ 192              		.loc 1 57 13 is_stmt 1 view .LVU57
+ 193 00b6 2149     		ldr	r1, .L22+12
+ 194 00b8 D1F81834 		ldr	r3, [r1, #1048]
+ 195              		.loc 1 57 49 is_stmt 0 view .LVU58
+ 196 00bc 43F40003 		orr	r3, r3, #8388608
+ 197 00c0 C1F81834 		str	r3, [r1, #1048]
+  58:Core/Scr/main.c ****             led2 = 0;
+ 198              		.loc 1 58 13 is_stmt 1 view .LVU59
+ 199              		.loc 1 58 18 is_stmt 0 view .LVU60
+ 200 00c4 214B     		ldr	r3, .L22+28
+ 201 00c6 1A70     		strb	r2, [r3]
+ 202              	.L14:
+  59:Core/Scr/main.c ****         }
+  60:Core/Scr/main.c ****         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_8) != 0 && mode != 5 && mode != 4)
+ 203              		.loc 1 60 9 is_stmt 1 view .LVU61
+ 204              		.loc 1 60 13 is_stmt 0 view .LVU62
+ 205 00c8 214B     		ldr	r3, .L22+32
+ 206 00ca 1B69     		ldr	r3, [r3, #16]
+ 207              		.loc 1 60 12 view .LVU63
+ 208 00cc 13F4807F 		tst	r3, #256
+ 209 00d0 0ED0     		beq	.L15
+ 210              		.loc 1 60 55 discriminator 1 view .LVU64
+ 211 00d2 052C     		cmp	r4, #5
+ 212 00d4 0CD0     		beq	.L15
+ 213              		.loc 1 60 68 discriminator 2 view .LVU65
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 6
+
+
+ 214 00d6 042C     		cmp	r4, #4
+ 215 00d8 0AD0     		beq	.L15
+  61:Core/Scr/main.c ****         {
+  62:Core/Scr/main.c ****             but3 = 1;
+ 216              		.loc 1 62 13 is_stmt 1 view .LVU66
+ 217              		.loc 1 62 18 is_stmt 0 view .LVU67
+ 218 00da 0122     		movs	r2, #1
+ 219 00dc 1D4B     		ldr	r3, .L22+36
+ 220 00de 1A70     		strb	r2, [r3]
+  63:Core/Scr/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
+ 221              		.loc 1 63 13 is_stmt 1 view .LVU68
+ 222 00e0 1D49     		ldr	r1, .L22+40
+ 223 00e2 8B69     		ldr	r3, [r1, #24]
+ 224 00e4 43F48043 		orr	r3, r3, #16384
+ 225 00e8 8B61     		str	r3, [r1, #24]
+  64:Core/Scr/main.c ****             led3 = 1;
+ 226              		.loc 1 64 13 view .LVU69
+ 227              		.loc 1 64 18 is_stmt 0 view .LVU70
+ 228 00ea 1C4B     		ldr	r3, .L22+44
+ 229 00ec 1A70     		strb	r2, [r3]
+ 230 00ee 09E0     		b	.L2
+ 231              	.L15:
+  65:Core/Scr/main.c ****         }
+  66:Core/Scr/main.c ****         else
+  67:Core/Scr/main.c ****         {
+  68:Core/Scr/main.c ****             but3 = 0;
+ 232              		.loc 1 68 13 is_stmt 1 view .LVU71
+ 233              		.loc 1 68 18 is_stmt 0 view .LVU72
+ 234 00f0 0022     		movs	r2, #0
+ 235 00f2 184B     		ldr	r3, .L22+36
+ 236 00f4 1A70     		strb	r2, [r3]
+  69:Core/Scr/main.c ****             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+ 237              		.loc 1 69 13 is_stmt 1 view .LVU73
+ 238 00f6 1849     		ldr	r1, .L22+40
+ 239 00f8 8B69     		ldr	r3, [r1, #24]
+ 240 00fa 43F08043 		orr	r3, r3, #1073741824
+ 241 00fe 8B61     		str	r3, [r1, #24]
+  70:Core/Scr/main.c ****             led3 = 0;
+ 242              		.loc 1 70 13 view .LVU74
+ 243              		.loc 1 70 18 is_stmt 0 view .LVU75
+ 244 0100 164B     		ldr	r3, .L22+44
+ 245 0102 1A70     		strb	r2, [r3]
+ 246              	.L2:
+ 247              	.LVL15:
+  15:Core/Scr/main.c ****     {
+ 248              		.loc 1 15 5 is_stmt 1 view .LVU76
+  17:Core/Scr/main.c ****         {
+ 249              		.loc 1 17 9 view .LVU77
+  17:Core/Scr/main.c ****         {
+ 250              		.loc 1 17 13 is_stmt 0 view .LVU78
+ 251 0104 124B     		ldr	r3, .L22+32
+ 252 0106 1B69     		ldr	r3, [r3, #16]
+  17:Core/Scr/main.c ****         {
+ 253              		.loc 1 17 12 view .LVU79
+ 254 0108 13F4005F 		tst	r3, #8192
+ 255 010c 3FF47FAF 		beq	.L21
+ 256              	.L3:
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 7
+
+
+  28:Core/Scr/main.c ****         {
+ 257              		.loc 1 28 9 is_stmt 1 view .LVU80
+ 258 0110 631E     		subs	r3, r4, #1
+ 259 0112 042B     		cmp	r3, #4
+ 260 0114 89D8     		bhi	.L5
+ 261 0116 01A2     		adr	r2, .L7
+ 262 0118 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 263              		.p2align 2
+ 264              	.L7:
+ 265 011c 27000000 		.word	.L4+1
+ 266 0120 55000000 		.word	.L10+1
+ 267 0124 5B000000 		.word	.L9+1
+ 268 0128 61000000 		.word	.L8+1
+ 269 012c 67000000 		.word	.L6+1
+ 270              		.p2align 1
+ 271              	.L23:
+ 272              		.align	2
+ 273              	.L22:
+ 274 0130 00000000 		.word	but4
+ 275 0134 00100240 		.word	1073876992
+ 276 0138 00000000 		.word	but1
+ 277 013c 00000240 		.word	1073872896
+ 278 0140 00000000 		.word	led1
+ 279 0144 000C0240 		.word	1073875968
+ 280 0148 00000000 		.word	but2
+ 281 014c 00000000 		.word	led2
+ 282 0150 00080240 		.word	1073874944
+ 283 0154 00000000 		.word	but3
+ 284 0158 00040240 		.word	1073873920
+ 285 015c 00000000 		.word	led3
+ 286              		.cfi_endproc
+ 287              	.LFE130:
+ 289              		.global	led3
+ 290              		.section	.bss.led3,"aw",%nobits
+ 293              	led3:
+ 294 0000 00       		.space	1
+ 295              		.global	led2
+ 296              		.section	.bss.led2,"aw",%nobits
+ 299              	led2:
+ 300 0000 00       		.space	1
+ 301              		.global	led1
+ 302              		.section	.bss.led1,"aw",%nobits
+ 305              	led1:
+ 306 0000 00       		.space	1
+ 307              		.global	but4
+ 308              		.section	.bss.but4,"aw",%nobits
+ 309              		.align	2
+ 312              	but4:
+ 313 0000 00000000 		.space	4
+ 314              		.global	but3
+ 315              		.section	.bss.but3,"aw",%nobits
+ 318              	but3:
+ 319 0000 00       		.space	1
+ 320              		.global	but2
+ 321              		.section	.bss.but2,"aw",%nobits
+ 324              	but2:
+ 325 0000 00       		.space	1
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 8
+
+
+ 326              		.global	but1
+ 327              		.section	.bss.but1,"aw",%nobits
+ 330              	but1:
+ 331 0000 00       		.space	1
+ 332              		.text
+ 333              	.Letext0:
+ 334              		.file 2 "C:/Users/obukh/OneDrive/\320\240\320\260\320\261\320\276\321\207\320\270\320\271 \321\201
+ 335              		.file 3 "C:/Users/obukh/OneDrive/\320\240\320\260\320\261\320\276\321\207\320\270\320\271 \321\201
+ 336              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 337              		.file 5 "Core/Scr/../Inc/init.h"
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:21     .text.main:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:27     .text.main:00000000 main
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:265    .text.main:0000011c $d
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:274    .text.main:00000130 $d
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:312    .bss.but4:00000000 but4
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:330    .bss.but1:00000000 but1
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:305    .bss.led1:00000000 led1
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:324    .bss.but2:00000000 but2
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:299    .bss.led2:00000000 led2
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:318    .bss.but3:00000000 but3
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:293    .bss.led3:00000000 led3
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:294    .bss.led3:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:300    .bss.led2:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:306    .bss.led1:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:309    .bss.but4:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:319    .bss.but3:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:325    .bss.but2:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\ccFNZbf6.s:331    .bss.but1:00000000 $d
+
+UNDEFINED SYMBOLS
+Register_Init
+Led_Init
+delay
+All_Ports_Input
+First_Port_Output
+Second_Port_Output
+Third_Port_Output
+All_Ports_Output
