@@ -1,0 +1,143 @@
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init_lab3.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** uint8_t PWM = 0;                                            // Процент скважности 
+   4:Core/Src/main.c **** uint8_t flag_1_led = 0;                                     // Нужно ли включать л�
+   5:Core/Src/main.c **** uint8_t mode = 0;                                           // Переменная для подс
+   6:Core/Src/main.c **** uint32_t Count = 0;                                         // Переменная таймер
+   7:Core/Src/main.c **** uint16_t Timer_1second = 0;                                 // Переменная для отсч
+   8:Core/Src/main.c **** uint16_t Timer_3second = 0;                                 // Переменная для отсч
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** int main(void)
+  11:Core/Src/main.c **** {
+  29              		.loc 1 11 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  12:Core/Src/main.c ****     GPIO_Init_Led_and_button();                             // Настройка портов ла
+  39              		.loc 1 12 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Init_Led_and_button
+  41              	.LVL0:
+  13:Core/Src/main.c ****     RCC_init_clocking();                                    // Настройка тактиров�
+  42              		.loc 1 13 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	RCC_init_clocking
+  44              	.LVL1:
+  14:Core/Src/main.c ****     ITR_init();                                             // Настройка прерыван�
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s 			page 2
+
+
+  45              		.loc 1 14 5 view .LVU3
+  46 000a FFF7FEFF 		bl	ITR_init
+  47              	.LVL2:
+  15:Core/Src/main.c ****     TIM1_PWM_PE14();                                        // Настройка ШИМ-сигна
+  48              		.loc 1 15 5 view .LVU4
+  49 000e FFF7FEFF 		bl	TIM1_PWM_PE14
+  50              	.LVL3:
+  16:Core/Src/main.c ****     TIM3_Init();                                            // Настройка таймера
+  51              		.loc 1 16 5 view .LVU5
+  52 0012 FFF7FEFF 		bl	TIM3_Init
+  53              	.LVL4:
+  54              	.L2:
+  17:Core/Src/main.c ****     while (1)
+  55              		.loc 1 17 5 view .LVU6
+  18:Core/Src/main.c ****     {
+  19:Core/Src/main.c ****     }
+  56              		.loc 1 19 5 view .LVU7
+  17:Core/Src/main.c ****     while (1)
+  57              		.loc 1 17 11 view .LVU8
+  58 0016 FEE7     		b	.L2
+  59              		.cfi_endproc
+  60              	.LFE130:
+  62              		.global	Timer_3second
+  63              		.section	.bss.Timer_3second,"aw",%nobits
+  64              		.align	1
+  67              	Timer_3second:
+  68 0000 0000     		.space	2
+  69              		.global	Timer_1second
+  70              		.section	.bss.Timer_1second,"aw",%nobits
+  71              		.align	1
+  74              	Timer_1second:
+  75 0000 0000     		.space	2
+  76              		.global	Count
+  77              		.section	.bss.Count,"aw",%nobits
+  78              		.align	2
+  81              	Count:
+  82 0000 00000000 		.space	4
+  83              		.global	mode
+  84              		.section	.bss.mode,"aw",%nobits
+  87              	mode:
+  88 0000 00       		.space	1
+  89              		.global	flag_1_led
+  90              		.section	.bss.flag_1_led,"aw",%nobits
+  93              	flag_1_led:
+  94 0000 00       		.space	1
+  95              		.global	PWM
+  96              		.section	.bss.PWM,"aw",%nobits
+  99              	PWM:
+ 100 0000 00       		.space	1
+ 101              		.text
+ 102              	.Letext0:
+ 103              		.file 2 "C:/Private/Study/DMPT/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/mach
+ 104              		.file 3 "C:/Private/Study/DMPT/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/
+ 105              		.file 4 "Core/Src/../Inc/init_lab3.h"
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:21     .text.main:00000000 $t
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:27     .text.main:00000000 main
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:67     .bss.Timer_3second:00000000 Timer_3second
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:64     .bss.Timer_3second:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:74     .bss.Timer_1second:00000000 Timer_1second
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:71     .bss.Timer_1second:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:81     .bss.Count:00000000 Count
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:78     .bss.Count:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:87     .bss.mode:00000000 mode
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:88     .bss.mode:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:93     .bss.flag_1_led:00000000 flag_1_led
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:94     .bss.flag_1_led:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:99     .bss.PWM:00000000 PWM
+C:\Users\lenovo\AppData\Local\Temp\ccL35gCd.s:100    .bss.PWM:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init_Led_and_button
+RCC_init_clocking
+ITR_init
+TIM1_PWM_PE14
+TIM3_Init
