@@ -1,0 +1,1554 @@
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.Delay,"ax",%progbits
+  21              		.align	1
+  22              		.global	Delay
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	Delay:
+  28              	.LVL0:
+  29              	.LFB130:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** #include "../Inc/init.h"
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** // 全局变量
+   5:Core/Src/main.c **** volatile uint8_t led_count = 1;     // 同时点亮的LED数量（1-6）
+   6:Core/Src/main.c **** volatile uint8_t current_step = 0;  // 当前步骤
+   7:Core/Src/main.c **** volatile uint8_t btn1_state = 0;    // 按钮1前一个状态
+   8:Core/Src/main.c **** volatile uint8_t btn2_state = 1;    // 按钮2前一个状态
+   9:Core/Src/main.c **** volatile uint8_t led2_blink_flag = 0; // LED2闪烁标志
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c **** void Delay(uint32_t time)
+  13:Core/Src/main.c **** {
+  30              		.loc 1 13 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 13 1 is_stmt 0 view .LVU1
+  36 0000 0146     		mov	r1, r0
+  14:Core/Src/main.c ****     for(uint32_t i = 0; i < time; i++)
+  37              		.loc 1 14 5 is_stmt 1 view .LVU2
+  38              	.LBB2:
+  39              		.loc 1 14 9 view .LVU3
+  40              	.LVL1:
+  41              		.loc 1 14 18 is_stmt 0 view .LVU4
+  42 0002 0022     		movs	r2, #0
+  43              		.loc 1 14 5 view .LVU5
+  44 0004 04E0     		b	.L2
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 2
+
+
+  45              	.LVL2:
+  46              	.L3:
+  47              	.LBB3:
+  15:Core/Src/main.c ****     {
+  16:Core/Src/main.c ****         for(uint32_t j = 0; j < 1000; j++);
+  48              		.loc 1 16 40 is_stmt 1 discriminator 3 view .LVU6
+  49 0006 0133     		adds	r3, r3, #1
+  50              	.LVL3:
+  51              	.L4:
+  52              		.loc 1 16 31 discriminator 1 view .LVU7
+  53 0008 B3F57A7F 		cmp	r3, #1000
+  54 000c FBD3     		bcc	.L3
+  55              	.LBE3:
+  14:Core/Src/main.c ****     for(uint32_t i = 0; i < time; i++)
+  56              		.loc 1 14 36 discriminator 2 view .LVU8
+  57 000e 0132     		adds	r2, r2, #1
+  58              	.LVL4:
+  59              	.L2:
+  14:Core/Src/main.c ****     for(uint32_t i = 0; i < time; i++)
+  60              		.loc 1 14 27 discriminator 1 view .LVU9
+  61 0010 8A42     		cmp	r2, r1
+  62 0012 01D2     		bcs	.L6
+  63              	.LBB4:
+  64              		.loc 1 16 22 is_stmt 0 view .LVU10
+  65 0014 0023     		movs	r3, #0
+  66 0016 F7E7     		b	.L4
+  67              	.L6:
+  68              	.LBE4:
+  69              	.LBE2:
+  17:Core/Src/main.c ****     }
+  18:Core/Src/main.c **** }
+  70              		.loc 1 18 1 view .LVU11
+  71 0018 7047     		bx	lr
+  72              		.cfi_endproc
+  73              	.LFE130:
+  75              		.section	.text.LED2_Blink_Task,"ax",%progbits
+  76              		.align	1
+  77              		.global	LED2_Blink_Task
+  78              		.syntax unified
+  79              		.thumb
+  80              		.thumb_func
+  82              	LED2_Blink_Task:
+  83              	.LFB131:
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c **** void LED2_Blink_Task(void)
+  22:Core/Src/main.c **** {
+  84              		.loc 1 22 1 is_stmt 1 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		@ link register save eliminated.
+  23:Core/Src/main.c ****     static uint32_t blink_timer = 0;
+  89              		.loc 1 23 5 view .LVU13
+  24:Core/Src/main.c ****     static uint8_t blink_state = 0;
+  90              		.loc 1 24 5 view .LVU14
+  25:Core/Src/main.c ****     
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 3
+
+
+  26:Core/Src/main.c ****     blink_timer++;
+  91              		.loc 1 26 5 view .LVU15
+  92              		.loc 1 26 16 is_stmt 0 view .LVU16
+  93 0000 104A     		ldr	r2, .L11
+  94 0002 1368     		ldr	r3, [r2]
+  95 0004 0133     		adds	r3, r3, #1
+  96 0006 1360     		str	r3, [r2]
+  27:Core/Src/main.c ****     if(blink_timer >= 500)  // 500ms闪烁
+  97              		.loc 1 27 5 is_stmt 1 view .LVU17
+  98              		.loc 1 27 7 is_stmt 0 view .LVU18
+  99 0008 B3F5FA7F 		cmp	r3, #500
+ 100 000c 13D3     		bcc	.L7
+  28:Core/Src/main.c ****     {
+  29:Core/Src/main.c ****         blink_timer = 0;
+ 101              		.loc 1 29 9 is_stmt 1 view .LVU19
+ 102              		.loc 1 29 21 is_stmt 0 view .LVU20
+ 103 000e 1346     		mov	r3, r2
+ 104 0010 0022     		movs	r2, #0
+ 105 0012 1A60     		str	r2, [r3]
+  30:Core/Src/main.c ****         if(led2_blink_flag)
+ 106              		.loc 1 30 9 is_stmt 1 view .LVU21
+ 107              		.loc 1 30 12 is_stmt 0 view .LVU22
+ 108 0014 0C4B     		ldr	r3, .L11+4
+ 109 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 110              		.loc 1 30 11 view .LVU23
+ 111 0018 6BB1     		cbz	r3, .L7
+  31:Core/Src/main.c ****         {
+  32:Core/Src/main.c ****             if(blink_state)
+ 112              		.loc 1 32 13 is_stmt 1 view .LVU24
+ 113              		.loc 1 32 16 is_stmt 0 view .LVU25
+ 114 001a 0C4B     		ldr	r3, .L11+8
+ 115 001c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 116              		.loc 1 32 15 view .LVU26
+ 117 001e 5BB1     		cbz	r3, .L9
+  33:Core/Src/main.c ****             {
+  34:Core/Src/main.c ****                 LED2_ON();
+ 118              		.loc 1 34 17 is_stmt 1 view .LVU27
+ 119 0020 02F18042 		add	r2, r2, #1073741824
+ 120 0024 02F50132 		add	r2, r2, #132096
+ 121 0028 8021     		movs	r1, #128
+ 122 002a 9161     		str	r1, [r2, #24]
+ 123              	.L10:
+  35:Core/Src/main.c ****             }
+  36:Core/Src/main.c ****             else
+  37:Core/Src/main.c ****             {
+  38:Core/Src/main.c ****                 LED2_OFF();
+  39:Core/Src/main.c ****             }
+  40:Core/Src/main.c ****             blink_state = !blink_state;
+ 124              		.loc 1 40 13 view .LVU28
+ 125              		.loc 1 40 27 is_stmt 0 view .LVU29
+ 126 002c B3FA83F3 		clz	r3, r3
+ 127 0030 5B09     		lsrs	r3, r3, #5
+ 128              		.loc 1 40 25 view .LVU30
+ 129 0032 064A     		ldr	r2, .L11+8
+ 130 0034 1370     		strb	r3, [r2]
+ 131              	.L7:
+  41:Core/Src/main.c ****         }
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 4
+
+
+  42:Core/Src/main.c ****     }
+  43:Core/Src/main.c **** }
+ 132              		.loc 1 43 1 view .LVU31
+ 133 0036 7047     		bx	lr
+ 134              	.L9:
+  38:Core/Src/main.c ****             }
+ 135              		.loc 1 38 17 is_stmt 1 view .LVU32
+ 136 0038 054A     		ldr	r2, .L11+12
+ 137 003a 4FF40001 		mov	r1, #8388608
+ 138 003e 9161     		str	r1, [r2, #24]
+ 139 0040 F4E7     		b	.L10
+ 140              	.L12:
+ 141 0042 00BF     		.align	2
+ 142              	.L11:
+ 143 0044 00000000 		.word	blink_timer.1
+ 144 0048 00000000 		.word	led2_blink_flag
+ 145 004c 00000000 		.word	blink_state.0
+ 146 0050 00040240 		.word	1073873920
+ 147              		.cfi_endproc
+ 148              	.LFE131:
+ 150              		.section	.text.Handle_BTN1_Press,"ax",%progbits
+ 151              		.align	1
+ 152              		.global	Handle_BTN1_Press
+ 153              		.syntax unified
+ 154              		.thumb
+ 155              		.thumb_func
+ 157              	Handle_BTN1_Press:
+ 158              	.LFB132:
+  44:Core/Src/main.c **** 
+  45:Core/Src/main.c **** 
+  46:Core/Src/main.c **** void Handle_BTN1_Press(void)
+  47:Core/Src/main.c **** {
+ 159              		.loc 1 47 1 view -0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163 0000 10B5     		push	{r4, lr}
+ 164              	.LCFI0:
+ 165              		.cfi_def_cfa_offset 8
+ 166              		.cfi_offset 4, -8
+ 167              		.cfi_offset 14, -4
+  48:Core/Src/main.c ****     led_count++;
+ 168              		.loc 1 48 5 view .LVU34
+ 169              		.loc 1 48 14 is_stmt 0 view .LVU35
+ 170 0002 214A     		ldr	r2, .L21
+ 171 0004 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 172 0006 0133     		adds	r3, r3, #1
+ 173 0008 DBB2     		uxtb	r3, r3
+ 174 000a 1370     		strb	r3, [r2]
+  49:Core/Src/main.c ****     if(led_count > 6) 
+ 175              		.loc 1 49 5 is_stmt 1 view .LVU36
+ 176              		.loc 1 49 18 is_stmt 0 view .LVU37
+ 177 000c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 178 000e DBB2     		uxtb	r3, r3
+ 179              		.loc 1 49 7 view .LVU38
+ 180 0010 062B     		cmp	r3, #6
+ 181 0012 02D9     		bls	.L14
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 5
+
+
+  50:Core/Src/main.c ****     {
+  51:Core/Src/main.c ****         led_count = 1;
+ 182              		.loc 1 51 9 is_stmt 1 view .LVU39
+ 183              		.loc 1 51 19 is_stmt 0 view .LVU40
+ 184 0014 1346     		mov	r3, r2
+ 185 0016 0122     		movs	r2, #1
+ 186 0018 1A70     		strb	r2, [r3]
+ 187              	.L14:
+  52:Core/Src/main.c ****     }
+  53:Core/Src/main.c ****     
+  54:Core/Src/main.c ****     // 重置当前步骤
+  55:Core/Src/main.c ****     current_step = 0;
+ 188              		.loc 1 55 5 is_stmt 1 view .LVU41
+ 189              		.loc 1 55 18 is_stmt 0 view .LVU42
+ 190 001a 0024     		movs	r4, #0
+ 191 001c 1B4B     		ldr	r3, .L21+4
+ 192 001e 1C70     		strb	r4, [r3]
+  56:Core/Src/main.c ****     
+  57:Core/Src/main.c ****     // 使用宏命令控制LED2闪烁指示设置变化
+  58:Core/Src/main.c ****     led2_blink_flag = 1;
+ 193              		.loc 1 58 5 is_stmt 1 view .LVU43
+ 194              		.loc 1 58 21 is_stmt 0 view .LVU44
+ 195 0020 1B4B     		ldr	r3, .L21+8
+ 196 0022 0122     		movs	r2, #1
+ 197 0024 1A70     		strb	r2, [r3]
+  59:Core/Src/main.c ****     
+  60:Core/Src/main.c ****     // 显示当前设置的数量（闪烁显示）
+  61:Core/Src/main.c ****     for(int i = 0; i < 3; i++)
+ 198              		.loc 1 61 5 is_stmt 1 view .LVU45
+ 199              	.LBB5:
+ 200              		.loc 1 61 9 view .LVU46
+ 201              	.LVL5:
+ 202              		.loc 1 61 5 is_stmt 0 view .LVU47
+ 203 0026 12E0     		b	.L15
+ 204              	.LVL6:
+ 205              	.L16:
+  62:Core/Src/main.c ****     {
+  63:Core/Src/main.c ****         // 根据设置的数量点亮对应的LED
+  64:Core/Src/main.c ****         if(led_count <= 3)
+  65:Core/Src/main.c ****         {
+  66:Core/Src/main.c ****             LED_Write((1 << led_count) - 1);
+  67:Core/Src/main.c ****             Ext_LED_Write(0);
+  68:Core/Src/main.c ****         }
+  69:Core/Src/main.c ****         else
+  70:Core/Src/main.c ****         {
+  71:Core/Src/main.c ****             LED_Write(0x07);  // 全亮板载LED
+ 206              		.loc 1 71 13 is_stmt 1 view .LVU48
+ 207 0028 0720     		movs	r0, #7
+ 208 002a FFF7FEFF 		bl	LED_Write
+ 209              	.LVL7:
+  72:Core/Src/main.c ****             Ext_LED_Write((1 << (led_count - 3)) - 1);
+ 210              		.loc 1 72 13 view .LVU49
+ 211              		.loc 1 72 44 is_stmt 0 view .LVU50
+ 212 002e 164B     		ldr	r3, .L21
+ 213 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 214 0032 033B     		subs	r3, r3, #3
+ 215              		.loc 1 72 30 view .LVU51
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 6
+
+
+ 216 0034 0120     		movs	r0, #1
+ 217 0036 9840     		lsls	r0, r0, r3
+ 218              		.loc 1 72 13 view .LVU52
+ 219 0038 0138     		subs	r0, r0, #1
+ 220 003a C0B2     		uxtb	r0, r0
+ 221 003c FFF7FEFF 		bl	Ext_LED_Write
+ 222              	.LVL8:
+ 223              	.L17:
+  73:Core/Src/main.c ****         }
+  74:Core/Src/main.c ****         Delay(200);
+ 224              		.loc 1 74 9 is_stmt 1 view .LVU53
+  75:Core/Src/main.c ****         LED_Write(0);
+ 225              		.loc 1 75 9 view .LVU54
+ 226 0040 0020     		movs	r0, #0
+ 227 0042 FFF7FEFF 		bl	LED_Write
+ 228              	.LVL9:
+  76:Core/Src/main.c ****         Ext_LED_Write(0);
+ 229              		.loc 1 76 9 view .LVU55
+ 230 0046 0020     		movs	r0, #0
+ 231 0048 FFF7FEFF 		bl	Ext_LED_Write
+ 232              	.LVL10:
+  77:Core/Src/main.c ****         Delay(200);
+ 233              		.loc 1 77 9 view .LVU56
+  61:Core/Src/main.c ****     {
+ 234              		.loc 1 61 28 discriminator 2 view .LVU57
+ 235 004c 0134     		adds	r4, r4, #1
+ 236              	.LVL11:
+ 237              	.L15:
+  61:Core/Src/main.c ****     {
+ 238              		.loc 1 61 22 discriminator 1 view .LVU58
+ 239 004e 022C     		cmp	r4, #2
+ 240 0050 11DC     		bgt	.L20
+  64:Core/Src/main.c ****         {
+ 241              		.loc 1 64 9 view .LVU59
+  64:Core/Src/main.c ****         {
+ 242              		.loc 1 64 22 is_stmt 0 view .LVU60
+ 243 0052 0D4B     		ldr	r3, .L21
+ 244 0054 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 245 0056 DBB2     		uxtb	r3, r3
+  64:Core/Src/main.c ****         {
+ 246              		.loc 1 64 11 view .LVU61
+ 247 0058 032B     		cmp	r3, #3
+ 248 005a E5D8     		bhi	.L16
+  66:Core/Src/main.c ****             Ext_LED_Write(0);
+ 249              		.loc 1 66 13 is_stmt 1 view .LVU62
+  66:Core/Src/main.c ****             Ext_LED_Write(0);
+ 250              		.loc 1 66 26 is_stmt 0 view .LVU63
+ 251 005c 0A4B     		ldr	r3, .L21
+ 252 005e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 253 0060 DBB2     		uxtb	r3, r3
+ 254 0062 0120     		movs	r0, #1
+ 255 0064 9840     		lsls	r0, r0, r3
+  66:Core/Src/main.c ****             Ext_LED_Write(0);
+ 256              		.loc 1 66 13 view .LVU64
+ 257 0066 0138     		subs	r0, r0, #1
+ 258 0068 C0B2     		uxtb	r0, r0
+ 259 006a FFF7FEFF 		bl	LED_Write
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 7
+
+
+ 260              	.LVL12:
+  67:Core/Src/main.c ****         }
+ 261              		.loc 1 67 13 is_stmt 1 view .LVU65
+ 262 006e 0020     		movs	r0, #0
+ 263 0070 FFF7FEFF 		bl	Ext_LED_Write
+ 264              	.LVL13:
+ 265 0074 E4E7     		b	.L17
+ 266              	.L20:
+ 267              	.LBE5:
+  78:Core/Src/main.c ****     }
+  79:Core/Src/main.c ****     
+  80:Core/Src/main.c ****     // 停止LED2闪烁
+  81:Core/Src/main.c ****     led2_blink_flag = 0;
+ 268              		.loc 1 81 5 view .LVU66
+ 269              		.loc 1 81 21 is_stmt 0 view .LVU67
+ 270 0076 064B     		ldr	r3, .L21+8
+ 271 0078 0022     		movs	r2, #0
+ 272 007a 1A70     		strb	r2, [r3]
+  82:Core/Src/main.c ****     LED2_OFF();
+ 273              		.loc 1 82 5 is_stmt 1 view .LVU68
+ 274 007c 054B     		ldr	r3, .L21+12
+ 275 007e 4FF40002 		mov	r2, #8388608
+ 276 0082 9A61     		str	r2, [r3, #24]
+  83:Core/Src/main.c **** }
+ 277              		.loc 1 83 1 is_stmt 0 view .LVU69
+ 278 0084 10BD     		pop	{r4, pc}
+ 279              	.LVL14:
+ 280              	.L22:
+ 281              		.loc 1 83 1 view .LVU70
+ 282 0086 00BF     		.align	2
+ 283              	.L21:
+ 284 0088 00000000 		.word	led_count
+ 285 008c 00000000 		.word	current_step
+ 286 0090 00000000 		.word	led2_blink_flag
+ 287 0094 00040240 		.word	1073873920
+ 288              		.cfi_endproc
+ 289              	.LFE132:
+ 291              		.section	.text.Handle_BTN2_Press,"ax",%progbits
+ 292              		.align	1
+ 293              		.global	Handle_BTN2_Press
+ 294              		.syntax unified
+ 295              		.thumb
+ 296              		.thumb_func
+ 298              	Handle_BTN2_Press:
+ 299              	.LFB133:
+  84:Core/Src/main.c **** 
+  85:Core/Src/main.c **** 
+  86:Core/Src/main.c **** void Handle_BTN2_Press(void)
+  87:Core/Src/main.c **** {
+ 300              		.loc 1 87 1 is_stmt 1 view -0
+ 301              		.cfi_startproc
+ 302              		@ args = 0, pretend = 0, frame = 0
+ 303              		@ frame_needed = 0, uses_anonymous_args = 0
+ 304 0000 08B5     		push	{r3, lr}
+ 305              	.LCFI1:
+ 306              		.cfi_def_cfa_offset 8
+ 307              		.cfi_offset 3, -8
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 8
+
+
+ 308              		.cfi_offset 14, -4
+  88:Core/Src/main.c ****     // 使用宏命令控制LED2在按下时短暂亮起
+  89:Core/Src/main.c ****     LED2_ON();
+ 309              		.loc 1 89 5 view .LVU72
+ 310 0002 9B4B     		ldr	r3, .L58
+ 311 0004 8022     		movs	r2, #128
+ 312 0006 9A61     		str	r2, [r3, #24]
+  90:Core/Src/main.c ****     Delay(50);
+ 313              		.loc 1 90 5 view .LVU73
+  91:Core/Src/main.c ****     LED2_OFF();
+ 314              		.loc 1 91 5 view .LVU74
+ 315 0008 4FF40002 		mov	r2, #8388608
+ 316 000c 9A61     		str	r2, [r3, #24]
+  92:Core/Src/main.c ****     
+  93:Core/Src/main.c ****     if(led_count == 6)
+ 317              		.loc 1 93 5 view .LVU75
+ 318              		.loc 1 93 18 is_stmt 0 view .LVU76
+ 319 000e 994B     		ldr	r3, .L58+4
+ 320 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 321 0012 DBB2     		uxtb	r3, r3
+ 322              		.loc 1 93 7 view .LVU77
+ 323 0014 062B     		cmp	r3, #6
+ 324 0016 27D0     		beq	.L53
+  94:Core/Src/main.c ****     {
+  95:Core/Src/main.c ****         // 数量为6时，全亮/全灭切换
+  96:Core/Src/main.c ****         if(current_step == 0)
+  97:Core/Src/main.c ****         {
+  98:Core/Src/main.c ****             LED_Write(0x07);      // 全亮板载LED
+  99:Core/Src/main.c ****             Ext_LED_Write(0x07);  // 全亮外接LED
+ 100:Core/Src/main.c ****             current_step = 1;
+ 101:Core/Src/main.c ****         }
+ 102:Core/Src/main.c ****         else
+ 103:Core/Src/main.c ****         {
+ 104:Core/Src/main.c ****             LED_Write(0x00);      // 全灭板载LED
+ 105:Core/Src/main.c ****             Ext_LED_Write(0x00);  // 全灭外接LED
+ 106:Core/Src/main.c ****             current_step = 0;
+ 107:Core/Src/main.c ****         }
+ 108:Core/Src/main.c ****     }
+ 109:Core/Src/main.c ****     else if(led_count == 5)
+ 325              		.loc 1 109 10 is_stmt 1 view .LVU78
+ 326              		.loc 1 109 23 is_stmt 0 view .LVU79
+ 327 0018 964B     		ldr	r3, .L58+4
+ 328 001a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 329 001c DBB2     		uxtb	r3, r3
+ 330              		.loc 1 109 12 view .LVU80
+ 331 001e 052B     		cmp	r3, #5
+ 332 0020 39D0     		beq	.L54
+ 110:Core/Src/main.c ****     {
+ 111:Core/Src/main.c ****         // 数量为5时：亮1-5 → 全亮 → 全灭
+ 112:Core/Src/main.c ****         switch(current_step)
+ 113:Core/Src/main.c ****         {
+ 114:Core/Src/main.c ****             case 0:
+ 115:Core/Src/main.c ****                 // 第一组：点亮LED1-5
+ 116:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 117:Core/Src/main.c ****                 Ext_LED_Write(0x03);  // 亮外接LED1-2 (PC10, PC11)
+ 118:Core/Src/main.c ****                 current_step = 1;
+ 119:Core/Src/main.c ****                 break;
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 9
+
+
+ 120:Core/Src/main.c ****                 
+ 121:Core/Src/main.c ****             case 1:
+ 122:Core/Src/main.c ****                 // 第二组：点亮所有LED (1-6)
+ 123:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 124:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 125:Core/Src/main.c ****                 current_step = 2;
+ 126:Core/Src/main.c ****                 break;
+ 127:Core/Src/main.c ****                 
+ 128:Core/Src/main.c ****             case 2:
+ 129:Core/Src/main.c ****                 // 第三组：全部熄灭并重置
+ 130:Core/Src/main.c ****                 LED_Write(0x00);
+ 131:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 132:Core/Src/main.c ****                 current_step = 0;
+ 133:Core/Src/main.c ****                 break;
+ 134:Core/Src/main.c ****         }
+ 135:Core/Src/main.c ****     }
+ 136:Core/Src/main.c ****     else if(led_count == 4)
+ 333              		.loc 1 136 10 is_stmt 1 view .LVU81
+ 334              		.loc 1 136 23 is_stmt 0 view .LVU82
+ 335 0022 944B     		ldr	r3, .L58+4
+ 336 0024 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 337 0026 DBB2     		uxtb	r3, r3
+ 338              		.loc 1 136 12 view .LVU83
+ 339 0028 042B     		cmp	r3, #4
+ 340 002a 5BD0     		beq	.L55
+ 137:Core/Src/main.c ****     {
+ 138:Core/Src/main.c ****         // 数量为4时：亮1-4 → 全亮 → 全灭
+ 139:Core/Src/main.c ****         switch(current_step)
+ 140:Core/Src/main.c ****         {
+ 141:Core/Src/main.c ****             case 0:
+ 142:Core/Src/main.c ****                 // 第一组：点亮LED1-4
+ 143:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 144:Core/Src/main.c ****                 Ext_LED_Write(0x01);  // 亮外接LED1 (PC10)
+ 145:Core/Src/main.c ****                 current_step = 1;
+ 146:Core/Src/main.c ****                 break;
+ 147:Core/Src/main.c ****                 
+ 148:Core/Src/main.c ****             case 1:
+ 149:Core/Src/main.c ****                 // 第二组：点亮所有LED (1-6)
+ 150:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 151:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 152:Core/Src/main.c ****                 current_step = 2;
+ 153:Core/Src/main.c ****                 break;
+ 154:Core/Src/main.c ****                 
+ 155:Core/Src/main.c ****             case 2:
+ 156:Core/Src/main.c ****                 // 第三组：全部熄灭并重置
+ 157:Core/Src/main.c ****                 LED_Write(0x00);
+ 158:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 159:Core/Src/main.c ****                 current_step = 0;
+ 160:Core/Src/main.c ****                 break;
+ 161:Core/Src/main.c ****         }
+ 162:Core/Src/main.c ****     }
+ 163:Core/Src/main.c ****     else if(led_count == 3)
+ 341              		.loc 1 163 10 is_stmt 1 view .LVU84
+ 342              		.loc 1 163 23 is_stmt 0 view .LVU85
+ 343 002c 914B     		ldr	r3, .L58+4
+ 344 002e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 345 0030 DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 10
+
+
+ 346              		.loc 1 163 12 view .LVU86
+ 347 0032 032B     		cmp	r3, #3
+ 348 0034 7DD0     		beq	.L56
+ 164:Core/Src/main.c ****     {
+ 165:Core/Src/main.c ****         // 数量为3时：亮1-3 → 亮1-6 → 全灭
+ 166:Core/Src/main.c ****         switch(current_step)
+ 167:Core/Src/main.c ****         {
+ 168:Core/Src/main.c ****             case 0:
+ 169:Core/Src/main.c ****                 // 第一组：点亮LED1-3
+ 170:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 171:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 172:Core/Src/main.c ****                 current_step = 1;
+ 173:Core/Src/main.c ****                 break;
+ 174:Core/Src/main.c ****                 
+ 175:Core/Src/main.c ****             case 1:
+ 176:Core/Src/main.c ****                 // 第二组：点亮所有LED (1-6)
+ 177:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 178:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 179:Core/Src/main.c ****                 current_step = 2;
+ 180:Core/Src/main.c ****                 break;
+ 181:Core/Src/main.c ****                 
+ 182:Core/Src/main.c ****             case 2:
+ 183:Core/Src/main.c ****                 // 第三组：全部熄灭并重置
+ 184:Core/Src/main.c ****                 LED_Write(0x00);
+ 185:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 186:Core/Src/main.c ****                 current_step = 0;
+ 187:Core/Src/main.c ****                 break;
+ 188:Core/Src/main.c ****         }
+ 189:Core/Src/main.c ****     }
+ 190:Core/Src/main.c ****     else if(led_count == 2)
+ 349              		.loc 1 190 10 is_stmt 1 view .LVU87
+ 350              		.loc 1 190 23 is_stmt 0 view .LVU88
+ 351 0036 8F4B     		ldr	r3, .L58+4
+ 352 0038 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 353 003a DBB2     		uxtb	r3, r3
+ 354              		.loc 1 190 12 view .LVU89
+ 355 003c 022B     		cmp	r3, #2
+ 356 003e 00F09F80 		beq	.L57
+ 191:Core/Src/main.c ****     {
+ 192:Core/Src/main.c ****         // 数量为2时：亮1-2 → 亮1-4 → 亮1-6 → 全灭
+ 193:Core/Src/main.c ****         switch(current_step)
+ 194:Core/Src/main.c ****         {
+ 195:Core/Src/main.c ****             case 0:
+ 196:Core/Src/main.c ****                 // 第一组：点亮LED1-2
+ 197:Core/Src/main.c ****                 LED_Write(0x03);      // 亮LED1-2
+ 198:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 199:Core/Src/main.c ****                 current_step = 1;
+ 200:Core/Src/main.c ****                 break;
+ 201:Core/Src/main.c ****                 
+ 202:Core/Src/main.c ****             case 1:
+ 203:Core/Src/main.c ****                 // 第二组：点亮LED1-4
+ 204:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 205:Core/Src/main.c ****                 Ext_LED_Write(0x01);  // 亮外接LED1 (PC10)
+ 206:Core/Src/main.c ****                 current_step = 2;
+ 207:Core/Src/main.c ****                 break;
+ 208:Core/Src/main.c ****                 
+ 209:Core/Src/main.c ****             case 2:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 11
+
+
+ 210:Core/Src/main.c ****                 // 第三组：点亮所有LED (1-6)
+ 211:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 212:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 213:Core/Src/main.c ****                 current_step = 3;
+ 214:Core/Src/main.c ****                 break;
+ 215:Core/Src/main.c ****                 
+ 216:Core/Src/main.c ****             case 3:
+ 217:Core/Src/main.c ****                 // 第四组：全部熄灭并重置
+ 218:Core/Src/main.c ****                 LED_Write(0x00);
+ 219:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 220:Core/Src/main.c ****                 current_step = 0;
+ 221:Core/Src/main.c ****                 break;
+ 222:Core/Src/main.c ****         }
+ 223:Core/Src/main.c ****     }
+ 224:Core/Src/main.c ****     else if(led_count == 1)
+ 357              		.loc 1 224 10 is_stmt 1 view .LVU90
+ 358              		.loc 1 224 23 is_stmt 0 view .LVU91
+ 359 0042 8C4B     		ldr	r3, .L58+4
+ 360 0044 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 361 0046 DBB2     		uxtb	r3, r3
+ 362              		.loc 1 224 12 view .LVU92
+ 363 0048 012B     		cmp	r3, #1
+ 364 004a 19D1     		bne	.L23
+ 225:Core/Src/main.c ****     {
+ 226:Core/Src/main.c ****         // 数量为1时：亮1 → 亮1-2 → 亮1-3 → 亮1-4 → 亮1-5 → 亮1-6 → 全灭
+ 227:Core/Src/main.c ****         switch(current_step)
+ 365              		.loc 1 227 9 is_stmt 1 view .LVU93
+ 366 004c 8A4B     		ldr	r3, .L58+8
+ 367 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 368 0050 DBB2     		uxtb	r3, r3
+ 369 0052 062B     		cmp	r3, #6
+ 370 0054 14D8     		bhi	.L23
+ 371 0056 DFE813F0 		tbh	[pc, r3, lsl #1]
+ 372              	.L43:
+ 373 005a C500     		.2byte	(.L49-.L43)/2
+ 374 005c CF00     		.2byte	(.L48-.L43)/2
+ 375 005e D900     		.2byte	(.L47-.L43)/2
+ 376 0060 E300     		.2byte	(.L46-.L43)/2
+ 377 0062 ED00     		.2byte	(.L45-.L43)/2
+ 378 0064 F700     		.2byte	(.L44-.L43)/2
+ 379 0066 0101     		.2byte	(.L42-.L43)/2
+ 380              		.p2align 1
+ 381              	.L53:
+  96:Core/Src/main.c ****         {
+ 382              		.loc 1 96 9 view .LVU94
+  96:Core/Src/main.c ****         {
+ 383              		.loc 1 96 25 is_stmt 0 view .LVU95
+ 384 0068 834B     		ldr	r3, .L58+8
+ 385 006a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  96:Core/Src/main.c ****         {
+ 386              		.loc 1 96 11 view .LVU96
+ 387 006c 4BB9     		cbnz	r3, .L25
+  98:Core/Src/main.c ****             Ext_LED_Write(0x07);  // 全亮外接LED
+ 388              		.loc 1 98 13 is_stmt 1 view .LVU97
+ 389 006e 0720     		movs	r0, #7
+ 390 0070 FFF7FEFF 		bl	LED_Write
+ 391              	.LVL15:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 12
+
+
+  99:Core/Src/main.c ****             current_step = 1;
+ 392              		.loc 1 99 13 view .LVU98
+ 393 0074 0720     		movs	r0, #7
+ 394 0076 FFF7FEFF 		bl	Ext_LED_Write
+ 395              	.LVL16:
+ 100:Core/Src/main.c ****         }
+ 396              		.loc 1 100 13 view .LVU99
+ 100:Core/Src/main.c ****         }
+ 397              		.loc 1 100 26 is_stmt 0 view .LVU100
+ 398 007a 7F4B     		ldr	r3, .L58+8
+ 399 007c 0122     		movs	r2, #1
+ 400 007e 1A70     		strb	r2, [r3]
+ 401              	.L23:
+ 228:Core/Src/main.c ****         {
+ 229:Core/Src/main.c ****             case 0:
+ 230:Core/Src/main.c ****                 // 第一组：点亮LED1
+ 231:Core/Src/main.c ****                 LED_Write(0x01);      // 亮LED1
+ 232:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 233:Core/Src/main.c ****                 current_step = 1;
+ 234:Core/Src/main.c ****                 break;
+ 235:Core/Src/main.c ****                 
+ 236:Core/Src/main.c ****             case 1:
+ 237:Core/Src/main.c ****                 // 第二组：点亮LED1-2
+ 238:Core/Src/main.c ****                 LED_Write(0x03);      // 亮LED1-2
+ 239:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 240:Core/Src/main.c ****                 current_step = 2;
+ 241:Core/Src/main.c ****                 break;
+ 242:Core/Src/main.c ****                 
+ 243:Core/Src/main.c ****             case 2:
+ 244:Core/Src/main.c ****                 // 第三组：点亮LED1-3
+ 245:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 246:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 247:Core/Src/main.c ****                 current_step = 3;
+ 248:Core/Src/main.c ****                 break;
+ 249:Core/Src/main.c ****                 
+ 250:Core/Src/main.c ****             case 3:
+ 251:Core/Src/main.c ****                 // 第四组：点亮LED1-4
+ 252:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 253:Core/Src/main.c ****                 Ext_LED_Write(0x01);  // 亮外接LED1 (PC10)
+ 254:Core/Src/main.c ****                 current_step = 4;
+ 255:Core/Src/main.c ****                 break;
+ 256:Core/Src/main.c ****                 
+ 257:Core/Src/main.c ****             case 4:
+ 258:Core/Src/main.c ****                 // 第五组：点亮LED1-5
+ 259:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 260:Core/Src/main.c ****                 Ext_LED_Write(0x03);  // 亮外接LED1-2 (PC10, PC11)
+ 261:Core/Src/main.c ****                 current_step = 5;
+ 262:Core/Src/main.c ****                 break;
+ 263:Core/Src/main.c ****                 
+ 264:Core/Src/main.c ****             case 5:
+ 265:Core/Src/main.c ****                 // 第六组：点亮所有LED (1-6)
+ 266:Core/Src/main.c ****                 LED_Write(0x07);      // 全亮板载LED
+ 267:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 268:Core/Src/main.c ****                 current_step = 6;
+ 269:Core/Src/main.c ****                 break;
+ 270:Core/Src/main.c ****                 
+ 271:Core/Src/main.c ****             case 6:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 13
+
+
+ 272:Core/Src/main.c ****                 // 第七组：全部熄灭并重置
+ 273:Core/Src/main.c ****                 LED_Write(0x00);
+ 274:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 275:Core/Src/main.c ****                 current_step = 0;
+ 276:Core/Src/main.c ****                 break;
+ 277:Core/Src/main.c ****         }
+ 278:Core/Src/main.c ****     }
+ 279:Core/Src/main.c **** }
+ 402              		.loc 1 279 1 view .LVU101
+ 403 0080 08BD     		pop	{r3, pc}
+ 404              	.L25:
+ 104:Core/Src/main.c ****             Ext_LED_Write(0x00);  // 全灭外接LED
+ 405              		.loc 1 104 13 is_stmt 1 view .LVU102
+ 406 0082 0020     		movs	r0, #0
+ 407 0084 FFF7FEFF 		bl	LED_Write
+ 408              	.LVL17:
+ 105:Core/Src/main.c ****             current_step = 0;
+ 409              		.loc 1 105 13 view .LVU103
+ 410 0088 0020     		movs	r0, #0
+ 411 008a FFF7FEFF 		bl	Ext_LED_Write
+ 412              	.LVL18:
+ 106:Core/Src/main.c ****         }
+ 413              		.loc 1 106 13 view .LVU104
+ 106:Core/Src/main.c ****         }
+ 414              		.loc 1 106 26 is_stmt 0 view .LVU105
+ 415 008e 7A4B     		ldr	r3, .L58+8
+ 416 0090 0022     		movs	r2, #0
+ 417 0092 1A70     		strb	r2, [r3]
+ 418 0094 F4E7     		b	.L23
+ 419              	.L54:
+ 112:Core/Src/main.c ****         {
+ 420              		.loc 1 112 9 is_stmt 1 view .LVU106
+ 421 0096 784B     		ldr	r3, .L58+8
+ 422 0098 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 423 009a DBB2     		uxtb	r3, r3
+ 424 009c 012B     		cmp	r3, #1
+ 425 009e 0DD0     		beq	.L28
+ 426 00a0 022B     		cmp	r3, #2
+ 427 00a2 15D0     		beq	.L29
+ 428 00a4 002B     		cmp	r3, #0
+ 429 00a6 EBD1     		bne	.L23
+ 116:Core/Src/main.c ****                 Ext_LED_Write(0x03);  // 亮外接LED1-2 (PC10, PC11)
+ 430              		.loc 1 116 17 view .LVU107
+ 431 00a8 0720     		movs	r0, #7
+ 432 00aa FFF7FEFF 		bl	LED_Write
+ 433              	.LVL19:
+ 117:Core/Src/main.c ****                 current_step = 1;
+ 434              		.loc 1 117 17 view .LVU108
+ 435 00ae 0320     		movs	r0, #3
+ 436 00b0 FFF7FEFF 		bl	Ext_LED_Write
+ 437              	.LVL20:
+ 118:Core/Src/main.c ****                 break;
+ 438              		.loc 1 118 17 view .LVU109
+ 118:Core/Src/main.c ****                 break;
+ 439              		.loc 1 118 30 is_stmt 0 view .LVU110
+ 440 00b4 704B     		ldr	r3, .L58+8
+ 441 00b6 0122     		movs	r2, #1
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 14
+
+
+ 442 00b8 1A70     		strb	r2, [r3]
+ 119:Core/Src/main.c ****                 
+ 443              		.loc 1 119 17 is_stmt 1 view .LVU111
+ 444 00ba E1E7     		b	.L23
+ 445              	.L28:
+ 123:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 446              		.loc 1 123 17 view .LVU112
+ 447 00bc 0720     		movs	r0, #7
+ 448 00be FFF7FEFF 		bl	LED_Write
+ 449              	.LVL21:
+ 124:Core/Src/main.c ****                 current_step = 2;
+ 450              		.loc 1 124 17 view .LVU113
+ 451 00c2 0720     		movs	r0, #7
+ 452 00c4 FFF7FEFF 		bl	Ext_LED_Write
+ 453              	.LVL22:
+ 125:Core/Src/main.c ****                 break;
+ 454              		.loc 1 125 17 view .LVU114
+ 125:Core/Src/main.c ****                 break;
+ 455              		.loc 1 125 30 is_stmt 0 view .LVU115
+ 456 00c8 6B4B     		ldr	r3, .L58+8
+ 457 00ca 0222     		movs	r2, #2
+ 458 00cc 1A70     		strb	r2, [r3]
+ 126:Core/Src/main.c ****                 
+ 459              		.loc 1 126 17 is_stmt 1 view .LVU116
+ 460 00ce D7E7     		b	.L23
+ 461              	.L29:
+ 130:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 462              		.loc 1 130 17 view .LVU117
+ 463 00d0 0020     		movs	r0, #0
+ 464 00d2 FFF7FEFF 		bl	LED_Write
+ 465              	.LVL23:
+ 131:Core/Src/main.c ****                 current_step = 0;
+ 466              		.loc 1 131 17 view .LVU118
+ 467 00d6 0020     		movs	r0, #0
+ 468 00d8 FFF7FEFF 		bl	Ext_LED_Write
+ 469              	.LVL24:
+ 132:Core/Src/main.c ****                 break;
+ 470              		.loc 1 132 17 view .LVU119
+ 132:Core/Src/main.c ****                 break;
+ 471              		.loc 1 132 30 is_stmt 0 view .LVU120
+ 472 00dc 664B     		ldr	r3, .L58+8
+ 473 00de 0022     		movs	r2, #0
+ 474 00e0 1A70     		strb	r2, [r3]
+ 133:Core/Src/main.c ****         }
+ 475              		.loc 1 133 17 is_stmt 1 view .LVU121
+ 476 00e2 CDE7     		b	.L23
+ 477              	.L55:
+ 139:Core/Src/main.c ****         {
+ 478              		.loc 1 139 9 view .LVU122
+ 479 00e4 644B     		ldr	r3, .L58+8
+ 480 00e6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 481 00e8 DBB2     		uxtb	r3, r3
+ 482 00ea 012B     		cmp	r3, #1
+ 483 00ec 0DD0     		beq	.L31
+ 484 00ee 022B     		cmp	r3, #2
+ 485 00f0 15D0     		beq	.L32
+ 486 00f2 002B     		cmp	r3, #0
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 15
+
+
+ 487 00f4 C4D1     		bne	.L23
+ 143:Core/Src/main.c ****                 Ext_LED_Write(0x01);  // 亮外接LED1 (PC10)
+ 488              		.loc 1 143 17 view .LVU123
+ 489 00f6 0720     		movs	r0, #7
+ 490 00f8 FFF7FEFF 		bl	LED_Write
+ 491              	.LVL25:
+ 144:Core/Src/main.c ****                 current_step = 1;
+ 492              		.loc 1 144 17 view .LVU124
+ 493 00fc 0120     		movs	r0, #1
+ 494 00fe FFF7FEFF 		bl	Ext_LED_Write
+ 495              	.LVL26:
+ 145:Core/Src/main.c ****                 break;
+ 496              		.loc 1 145 17 view .LVU125
+ 145:Core/Src/main.c ****                 break;
+ 497              		.loc 1 145 30 is_stmt 0 view .LVU126
+ 498 0102 5D4B     		ldr	r3, .L58+8
+ 499 0104 0122     		movs	r2, #1
+ 500 0106 1A70     		strb	r2, [r3]
+ 146:Core/Src/main.c ****                 
+ 501              		.loc 1 146 17 is_stmt 1 view .LVU127
+ 502 0108 BAE7     		b	.L23
+ 503              	.L31:
+ 150:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 504              		.loc 1 150 17 view .LVU128
+ 505 010a 0720     		movs	r0, #7
+ 506 010c FFF7FEFF 		bl	LED_Write
+ 507              	.LVL27:
+ 151:Core/Src/main.c ****                 current_step = 2;
+ 508              		.loc 1 151 17 view .LVU129
+ 509 0110 0720     		movs	r0, #7
+ 510 0112 FFF7FEFF 		bl	Ext_LED_Write
+ 511              	.LVL28:
+ 152:Core/Src/main.c ****                 break;
+ 512              		.loc 1 152 17 view .LVU130
+ 152:Core/Src/main.c ****                 break;
+ 513              		.loc 1 152 30 is_stmt 0 view .LVU131
+ 514 0116 584B     		ldr	r3, .L58+8
+ 515 0118 0222     		movs	r2, #2
+ 516 011a 1A70     		strb	r2, [r3]
+ 153:Core/Src/main.c ****                 
+ 517              		.loc 1 153 17 is_stmt 1 view .LVU132
+ 518 011c B0E7     		b	.L23
+ 519              	.L32:
+ 157:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 520              		.loc 1 157 17 view .LVU133
+ 521 011e 0020     		movs	r0, #0
+ 522 0120 FFF7FEFF 		bl	LED_Write
+ 523              	.LVL29:
+ 158:Core/Src/main.c ****                 current_step = 0;
+ 524              		.loc 1 158 17 view .LVU134
+ 525 0124 0020     		movs	r0, #0
+ 526 0126 FFF7FEFF 		bl	Ext_LED_Write
+ 527              	.LVL30:
+ 159:Core/Src/main.c ****                 break;
+ 528              		.loc 1 159 17 view .LVU135
+ 159:Core/Src/main.c ****                 break;
+ 529              		.loc 1 159 30 is_stmt 0 view .LVU136
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 16
+
+
+ 530 012a 534B     		ldr	r3, .L58+8
+ 531 012c 0022     		movs	r2, #0
+ 532 012e 1A70     		strb	r2, [r3]
+ 160:Core/Src/main.c ****         }
+ 533              		.loc 1 160 17 is_stmt 1 view .LVU137
+ 534 0130 A6E7     		b	.L23
+ 535              	.L56:
+ 166:Core/Src/main.c ****         {
+ 536              		.loc 1 166 9 view .LVU138
+ 537 0132 514B     		ldr	r3, .L58+8
+ 538 0134 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 539 0136 DBB2     		uxtb	r3, r3
+ 540 0138 012B     		cmp	r3, #1
+ 541 013a 0DD0     		beq	.L34
+ 542 013c 022B     		cmp	r3, #2
+ 543 013e 15D0     		beq	.L35
+ 544 0140 002B     		cmp	r3, #0
+ 545 0142 9DD1     		bne	.L23
+ 170:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 546              		.loc 1 170 17 view .LVU139
+ 547 0144 0720     		movs	r0, #7
+ 548 0146 FFF7FEFF 		bl	LED_Write
+ 549              	.LVL31:
+ 171:Core/Src/main.c ****                 current_step = 1;
+ 550              		.loc 1 171 17 view .LVU140
+ 551 014a 0020     		movs	r0, #0
+ 552 014c FFF7FEFF 		bl	Ext_LED_Write
+ 553              	.LVL32:
+ 172:Core/Src/main.c ****                 break;
+ 554              		.loc 1 172 17 view .LVU141
+ 172:Core/Src/main.c ****                 break;
+ 555              		.loc 1 172 30 is_stmt 0 view .LVU142
+ 556 0150 494B     		ldr	r3, .L58+8
+ 557 0152 0122     		movs	r2, #1
+ 558 0154 1A70     		strb	r2, [r3]
+ 173:Core/Src/main.c ****                 
+ 559              		.loc 1 173 17 is_stmt 1 view .LVU143
+ 560 0156 93E7     		b	.L23
+ 561              	.L34:
+ 177:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 562              		.loc 1 177 17 view .LVU144
+ 563 0158 0720     		movs	r0, #7
+ 564 015a FFF7FEFF 		bl	LED_Write
+ 565              	.LVL33:
+ 178:Core/Src/main.c ****                 current_step = 2;
+ 566              		.loc 1 178 17 view .LVU145
+ 567 015e 0720     		movs	r0, #7
+ 568 0160 FFF7FEFF 		bl	Ext_LED_Write
+ 569              	.LVL34:
+ 179:Core/Src/main.c ****                 break;
+ 570              		.loc 1 179 17 view .LVU146
+ 179:Core/Src/main.c ****                 break;
+ 571              		.loc 1 179 30 is_stmt 0 view .LVU147
+ 572 0164 444B     		ldr	r3, .L58+8
+ 573 0166 0222     		movs	r2, #2
+ 574 0168 1A70     		strb	r2, [r3]
+ 180:Core/Src/main.c ****                 
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 17
+
+
+ 575              		.loc 1 180 17 is_stmt 1 view .LVU148
+ 576 016a 89E7     		b	.L23
+ 577              	.L35:
+ 184:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 578              		.loc 1 184 17 view .LVU149
+ 579 016c 0020     		movs	r0, #0
+ 580 016e FFF7FEFF 		bl	LED_Write
+ 581              	.LVL35:
+ 185:Core/Src/main.c ****                 current_step = 0;
+ 582              		.loc 1 185 17 view .LVU150
+ 583 0172 0020     		movs	r0, #0
+ 584 0174 FFF7FEFF 		bl	Ext_LED_Write
+ 585              	.LVL36:
+ 186:Core/Src/main.c ****                 break;
+ 586              		.loc 1 186 17 view .LVU151
+ 186:Core/Src/main.c ****                 break;
+ 587              		.loc 1 186 30 is_stmt 0 view .LVU152
+ 588 0178 3F4B     		ldr	r3, .L58+8
+ 589 017a 0022     		movs	r2, #0
+ 590 017c 1A70     		strb	r2, [r3]
+ 187:Core/Src/main.c ****         }
+ 591              		.loc 1 187 17 is_stmt 1 view .LVU153
+ 592 017e 7FE7     		b	.L23
+ 593              	.L57:
+ 193:Core/Src/main.c ****         {
+ 594              		.loc 1 193 9 view .LVU154
+ 595 0180 3D4B     		ldr	r3, .L58+8
+ 596 0182 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 597 0184 DBB2     		uxtb	r3, r3
+ 598 0186 032B     		cmp	r3, #3
+ 599 0188 3FF67AAF 		bhi	.L23
+ 600 018c DFE803F0 		tbb	[pc, r3]
+ 601              	.L38:
+ 602 0190 02       		.byte	(.L41-.L38)/2
+ 603 0191 0C       		.byte	(.L40-.L38)/2
+ 604 0192 16       		.byte	(.L39-.L38)/2
+ 605 0193 20       		.byte	(.L37-.L38)/2
+ 606              		.p2align 1
+ 607              	.L41:
+ 197:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 608              		.loc 1 197 17 view .LVU155
+ 609 0194 0320     		movs	r0, #3
+ 610 0196 FFF7FEFF 		bl	LED_Write
+ 611              	.LVL37:
+ 198:Core/Src/main.c ****                 current_step = 1;
+ 612              		.loc 1 198 17 view .LVU156
+ 613 019a 0020     		movs	r0, #0
+ 614 019c FFF7FEFF 		bl	Ext_LED_Write
+ 615              	.LVL38:
+ 199:Core/Src/main.c ****                 break;
+ 616              		.loc 1 199 17 view .LVU157
+ 199:Core/Src/main.c ****                 break;
+ 617              		.loc 1 199 30 is_stmt 0 view .LVU158
+ 618 01a0 354B     		ldr	r3, .L58+8
+ 619 01a2 0122     		movs	r2, #1
+ 620 01a4 1A70     		strb	r2, [r3]
+ 200:Core/Src/main.c ****                 
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 18
+
+
+ 621              		.loc 1 200 17 is_stmt 1 view .LVU159
+ 622 01a6 6BE7     		b	.L23
+ 623              	.L40:
+ 204:Core/Src/main.c ****                 Ext_LED_Write(0x01);  // 亮外接LED1 (PC10)
+ 624              		.loc 1 204 17 view .LVU160
+ 625 01a8 0720     		movs	r0, #7
+ 626 01aa FFF7FEFF 		bl	LED_Write
+ 627              	.LVL39:
+ 205:Core/Src/main.c ****                 current_step = 2;
+ 628              		.loc 1 205 17 view .LVU161
+ 629 01ae 0120     		movs	r0, #1
+ 630 01b0 FFF7FEFF 		bl	Ext_LED_Write
+ 631              	.LVL40:
+ 206:Core/Src/main.c ****                 break;
+ 632              		.loc 1 206 17 view .LVU162
+ 206:Core/Src/main.c ****                 break;
+ 633              		.loc 1 206 30 is_stmt 0 view .LVU163
+ 634 01b4 304B     		ldr	r3, .L58+8
+ 635 01b6 0222     		movs	r2, #2
+ 636 01b8 1A70     		strb	r2, [r3]
+ 207:Core/Src/main.c ****                 
+ 637              		.loc 1 207 17 is_stmt 1 view .LVU164
+ 638 01ba 61E7     		b	.L23
+ 639              	.L39:
+ 211:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 640              		.loc 1 211 17 view .LVU165
+ 641 01bc 0720     		movs	r0, #7
+ 642 01be FFF7FEFF 		bl	LED_Write
+ 643              	.LVL41:
+ 212:Core/Src/main.c ****                 current_step = 3;
+ 644              		.loc 1 212 17 view .LVU166
+ 645 01c2 0720     		movs	r0, #7
+ 646 01c4 FFF7FEFF 		bl	Ext_LED_Write
+ 647              	.LVL42:
+ 213:Core/Src/main.c ****                 break;
+ 648              		.loc 1 213 17 view .LVU167
+ 213:Core/Src/main.c ****                 break;
+ 649              		.loc 1 213 30 is_stmt 0 view .LVU168
+ 650 01c8 2B4B     		ldr	r3, .L58+8
+ 651 01ca 0322     		movs	r2, #3
+ 652 01cc 1A70     		strb	r2, [r3]
+ 214:Core/Src/main.c ****                 
+ 653              		.loc 1 214 17 is_stmt 1 view .LVU169
+ 654 01ce 57E7     		b	.L23
+ 655              	.L37:
+ 218:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 656              		.loc 1 218 17 view .LVU170
+ 657 01d0 0020     		movs	r0, #0
+ 658 01d2 FFF7FEFF 		bl	LED_Write
+ 659              	.LVL43:
+ 219:Core/Src/main.c ****                 current_step = 0;
+ 660              		.loc 1 219 17 view .LVU171
+ 661 01d6 0020     		movs	r0, #0
+ 662 01d8 FFF7FEFF 		bl	Ext_LED_Write
+ 663              	.LVL44:
+ 220:Core/Src/main.c ****                 break;
+ 664              		.loc 1 220 17 view .LVU172
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 19
+
+
+ 220:Core/Src/main.c ****                 break;
+ 665              		.loc 1 220 30 is_stmt 0 view .LVU173
+ 666 01dc 264B     		ldr	r3, .L58+8
+ 667 01de 0022     		movs	r2, #0
+ 668 01e0 1A70     		strb	r2, [r3]
+ 221:Core/Src/main.c ****         }
+ 669              		.loc 1 221 17 is_stmt 1 view .LVU174
+ 670 01e2 4DE7     		b	.L23
+ 671              	.L49:
+ 231:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 672              		.loc 1 231 17 view .LVU175
+ 673 01e4 0120     		movs	r0, #1
+ 674 01e6 FFF7FEFF 		bl	LED_Write
+ 675              	.LVL45:
+ 232:Core/Src/main.c ****                 current_step = 1;
+ 676              		.loc 1 232 17 view .LVU176
+ 677 01ea 0020     		movs	r0, #0
+ 678 01ec FFF7FEFF 		bl	Ext_LED_Write
+ 679              	.LVL46:
+ 233:Core/Src/main.c ****                 break;
+ 680              		.loc 1 233 17 view .LVU177
+ 233:Core/Src/main.c ****                 break;
+ 681              		.loc 1 233 30 is_stmt 0 view .LVU178
+ 682 01f0 214B     		ldr	r3, .L58+8
+ 683 01f2 0122     		movs	r2, #1
+ 684 01f4 1A70     		strb	r2, [r3]
+ 234:Core/Src/main.c ****                 
+ 685              		.loc 1 234 17 is_stmt 1 view .LVU179
+ 686 01f6 43E7     		b	.L23
+ 687              	.L48:
+ 238:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 688              		.loc 1 238 17 view .LVU180
+ 689 01f8 0320     		movs	r0, #3
+ 690 01fa FFF7FEFF 		bl	LED_Write
+ 691              	.LVL47:
+ 239:Core/Src/main.c ****                 current_step = 2;
+ 692              		.loc 1 239 17 view .LVU181
+ 693 01fe 0020     		movs	r0, #0
+ 694 0200 FFF7FEFF 		bl	Ext_LED_Write
+ 695              	.LVL48:
+ 240:Core/Src/main.c ****                 break;
+ 696              		.loc 1 240 17 view .LVU182
+ 240:Core/Src/main.c ****                 break;
+ 697              		.loc 1 240 30 is_stmt 0 view .LVU183
+ 698 0204 1C4B     		ldr	r3, .L58+8
+ 699 0206 0222     		movs	r2, #2
+ 700 0208 1A70     		strb	r2, [r3]
+ 241:Core/Src/main.c ****                 
+ 701              		.loc 1 241 17 is_stmt 1 view .LVU184
+ 702 020a 39E7     		b	.L23
+ 703              	.L47:
+ 245:Core/Src/main.c ****                 Ext_LED_Write(0x00);  // 外接LED全灭
+ 704              		.loc 1 245 17 view .LVU185
+ 705 020c 0720     		movs	r0, #7
+ 706 020e FFF7FEFF 		bl	LED_Write
+ 707              	.LVL49:
+ 246:Core/Src/main.c ****                 current_step = 3;
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 20
+
+
+ 708              		.loc 1 246 17 view .LVU186
+ 709 0212 0020     		movs	r0, #0
+ 710 0214 FFF7FEFF 		bl	Ext_LED_Write
+ 711              	.LVL50:
+ 247:Core/Src/main.c ****                 break;
+ 712              		.loc 1 247 17 view .LVU187
+ 247:Core/Src/main.c ****                 break;
+ 713              		.loc 1 247 30 is_stmt 0 view .LVU188
+ 714 0218 174B     		ldr	r3, .L58+8
+ 715 021a 0322     		movs	r2, #3
+ 716 021c 1A70     		strb	r2, [r3]
+ 248:Core/Src/main.c ****                 
+ 717              		.loc 1 248 17 is_stmt 1 view .LVU189
+ 718 021e 2FE7     		b	.L23
+ 719              	.L46:
+ 252:Core/Src/main.c ****                 Ext_LED_Write(0x01);  // 亮外接LED1 (PC10)
+ 720              		.loc 1 252 17 view .LVU190
+ 721 0220 0720     		movs	r0, #7
+ 722 0222 FFF7FEFF 		bl	LED_Write
+ 723              	.LVL51:
+ 253:Core/Src/main.c ****                 current_step = 4;
+ 724              		.loc 1 253 17 view .LVU191
+ 725 0226 0120     		movs	r0, #1
+ 726 0228 FFF7FEFF 		bl	Ext_LED_Write
+ 727              	.LVL52:
+ 254:Core/Src/main.c ****                 break;
+ 728              		.loc 1 254 17 view .LVU192
+ 254:Core/Src/main.c ****                 break;
+ 729              		.loc 1 254 30 is_stmt 0 view .LVU193
+ 730 022c 124B     		ldr	r3, .L58+8
+ 731 022e 0422     		movs	r2, #4
+ 732 0230 1A70     		strb	r2, [r3]
+ 255:Core/Src/main.c ****                 
+ 733              		.loc 1 255 17 is_stmt 1 view .LVU194
+ 734 0232 25E7     		b	.L23
+ 735              	.L45:
+ 259:Core/Src/main.c ****                 Ext_LED_Write(0x03);  // 亮外接LED1-2 (PC10, PC11)
+ 736              		.loc 1 259 17 view .LVU195
+ 737 0234 0720     		movs	r0, #7
+ 738 0236 FFF7FEFF 		bl	LED_Write
+ 739              	.LVL53:
+ 260:Core/Src/main.c ****                 current_step = 5;
+ 740              		.loc 1 260 17 view .LVU196
+ 741 023a 0320     		movs	r0, #3
+ 742 023c FFF7FEFF 		bl	Ext_LED_Write
+ 743              	.LVL54:
+ 261:Core/Src/main.c ****                 break;
+ 744              		.loc 1 261 17 view .LVU197
+ 261:Core/Src/main.c ****                 break;
+ 745              		.loc 1 261 30 is_stmt 0 view .LVU198
+ 746 0240 0D4B     		ldr	r3, .L58+8
+ 747 0242 0522     		movs	r2, #5
+ 748 0244 1A70     		strb	r2, [r3]
+ 262:Core/Src/main.c ****                 
+ 749              		.loc 1 262 17 is_stmt 1 view .LVU199
+ 750 0246 1BE7     		b	.L23
+ 751              	.L44:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 21
+
+
+ 266:Core/Src/main.c ****                 Ext_LED_Write(0x07);  // 全亮外接LED
+ 752              		.loc 1 266 17 view .LVU200
+ 753 0248 0720     		movs	r0, #7
+ 754 024a FFF7FEFF 		bl	LED_Write
+ 755              	.LVL55:
+ 267:Core/Src/main.c ****                 current_step = 6;
+ 756              		.loc 1 267 17 view .LVU201
+ 757 024e 0720     		movs	r0, #7
+ 758 0250 FFF7FEFF 		bl	Ext_LED_Write
+ 759              	.LVL56:
+ 268:Core/Src/main.c ****                 break;
+ 760              		.loc 1 268 17 view .LVU202
+ 268:Core/Src/main.c ****                 break;
+ 761              		.loc 1 268 30 is_stmt 0 view .LVU203
+ 762 0254 084B     		ldr	r3, .L58+8
+ 763 0256 0622     		movs	r2, #6
+ 764 0258 1A70     		strb	r2, [r3]
+ 269:Core/Src/main.c ****                 
+ 765              		.loc 1 269 17 is_stmt 1 view .LVU204
+ 766 025a 11E7     		b	.L23
+ 767              	.L42:
+ 273:Core/Src/main.c ****                 Ext_LED_Write(0x00);
+ 768              		.loc 1 273 17 view .LVU205
+ 769 025c 0020     		movs	r0, #0
+ 770 025e FFF7FEFF 		bl	LED_Write
+ 771              	.LVL57:
+ 274:Core/Src/main.c ****                 current_step = 0;
+ 772              		.loc 1 274 17 view .LVU206
+ 773 0262 0020     		movs	r0, #0
+ 774 0264 FFF7FEFF 		bl	Ext_LED_Write
+ 775              	.LVL58:
+ 275:Core/Src/main.c ****                 break;
+ 776              		.loc 1 275 17 view .LVU207
+ 275:Core/Src/main.c ****                 break;
+ 777              		.loc 1 275 30 is_stmt 0 view .LVU208
+ 778 0268 034B     		ldr	r3, .L58+8
+ 779 026a 0022     		movs	r2, #0
+ 780 026c 1A70     		strb	r2, [r3]
+ 276:Core/Src/main.c ****         }
+ 781              		.loc 1 276 17 is_stmt 1 view .LVU209
+ 782              		.loc 1 279 1 is_stmt 0 view .LVU210
+ 783 026e 07E7     		b	.L23
+ 784              	.L59:
+ 785              		.align	2
+ 786              	.L58:
+ 787 0270 00040240 		.word	1073873920
+ 788 0274 00000000 		.word	led_count
+ 789 0278 00000000 		.word	current_step
+ 790              		.cfi_endproc
+ 791              	.LFE133:
+ 793              		.section	.text.main,"ax",%progbits
+ 794              		.align	1
+ 795              		.global	main
+ 796              		.syntax unified
+ 797              		.thumb
+ 798              		.thumb_func
+ 800              	main:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 22
+
+
+ 801              	.LFB134:
+ 280:Core/Src/main.c **** 
+ 281:Core/Src/main.c **** 
+ 282:Core/Src/main.c **** int main(void)
+ 283:Core/Src/main.c **** {
+ 802              		.loc 1 283 1 is_stmt 1 view -0
+ 803              		.cfi_startproc
+ 804              		@ args = 0, pretend = 0, frame = 0
+ 805              		@ frame_needed = 0, uses_anonymous_args = 0
+ 806 0000 38B5     		push	{r3, r4, r5, lr}
+ 807              	.LCFI2:
+ 808              		.cfi_def_cfa_offset 16
+ 809              		.cfi_offset 3, -16
+ 810              		.cfi_offset 4, -12
+ 811              		.cfi_offset 5, -8
+ 812              		.cfi_offset 14, -4
+ 284:Core/Src/main.c ****     // 系统初始化
+ 285:Core/Src/main.c ****     SystemClock_Config();
+ 813              		.loc 1 285 5 view .LVU212
+ 814 0002 FFF7FEFF 		bl	SystemClock_Config
+ 815              	.LVL59:
+ 286:Core/Src/main.c ****     GPIO_Init();
+ 816              		.loc 1 286 5 view .LVU213
+ 817 0006 FFF7FEFF 		bl	GPIO_Init
+ 818              	.LVL60:
+ 287:Core/Src/main.c ****     
+ 288:Core/Src/main.c ****     // 使用宏命令显示初始设置
+ 289:Core/Src/main.c ****     LED2_ON();  // 开启LED2
+ 819              		.loc 1 289 5 view .LVU214
+ 820 000a 194B     		ldr	r3, .L66
+ 821 000c 8021     		movs	r1, #128
+ 822 000e 9961     		str	r1, [r3, #24]
+ 290:Core/Src/main.c ****     Delay(500);
+ 823              		.loc 1 290 5 view .LVU215
+ 291:Core/Src/main.c ****     LED2_OFF(); // 关闭LED2
+ 824              		.loc 1 291 5 view .LVU216
+ 825 0010 4FF40002 		mov	r2, #8388608
+ 826 0014 9A61     		str	r2, [r3, #24]
+ 292:Core/Src/main.c ****     Delay(500);
+ 827              		.loc 1 292 5 view .LVU217
+ 293:Core/Src/main.c ****     LED2_ON();
+ 828              		.loc 1 293 5 view .LVU218
+ 829 0016 9961     		str	r1, [r3, #24]
+ 294:Core/Src/main.c ****     Delay(500);
+ 830              		.loc 1 294 5 view .LVU219
+ 295:Core/Src/main.c ****     LED2_OFF();
+ 831              		.loc 1 295 5 view .LVU220
+ 832 0018 9A61     		str	r2, [r3, #24]
+ 296:Core/Src/main.c ****     
+ 297:Core/Src/main.c ****     // 显示初始设置的数量（1个LED）
+ 298:Core/Src/main.c ****     LED_Write(0x01);
+ 833              		.loc 1 298 5 view .LVU221
+ 834 001a 0120     		movs	r0, #1
+ 835 001c FFF7FEFF 		bl	LED_Write
+ 836              	.LVL61:
+ 299:Core/Src/main.c ****     Delay(1000);
+ 837              		.loc 1 299 5 view .LVU222
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 23
+
+
+ 300:Core/Src/main.c ****     LED_Write(0x00);
+ 838              		.loc 1 300 5 view .LVU223
+ 839 0020 0020     		movs	r0, #0
+ 840 0022 FFF7FEFF 		bl	LED_Write
+ 841              	.LVL62:
+ 842 0026 09E0     		b	.L63
+ 843              	.LVL63:
+ 844              	.L65:
+ 845              	.LBB6:
+ 301:Core/Src/main.c ****     
+ 302:Core/Src/main.c ****     while(1)
+ 303:Core/Src/main.c ****     {
+ 304:Core/Src/main.c ****         uint8_t current_btn1 = Read_BTN1();
+ 305:Core/Src/main.c ****         uint8_t current_btn2 = Read_BTN2();
+ 306:Core/Src/main.c ****         
+ 307:Core/Src/main.c ****         // LED2闪烁任务
+ 308:Core/Src/main.c ****         LED2_Blink_Task();
+ 309:Core/Src/main.c ****         
+ 310:Core/Src/main.c ****         // 检测按钮1的下降沿（按下）
+ 311:Core/Src/main.c ****         if(btn1_state && !current_btn1)
+ 312:Core/Src/main.c ****         {
+ 313:Core/Src/main.c ****             Delay(10);  // 简单消抖
+ 846              		.loc 1 313 13 view .LVU224
+ 314:Core/Src/main.c ****             if(!Read_BTN1())
+ 847              		.loc 1 314 13 view .LVU225
+ 848              		.loc 1 314 17 is_stmt 0 view .LVU226
+ 849 0028 FFF7FEFF 		bl	Read_BTN1
+ 850              	.LVL64:
+ 851              		.loc 1 314 15 discriminator 1 view .LVU227
+ 852 002c 98B9     		cbnz	r0, .L61
+ 315:Core/Src/main.c ****             {
+ 316:Core/Src/main.c ****                 Handle_BTN1_Press();
+ 853              		.loc 1 316 17 is_stmt 1 view .LVU228
+ 854 002e FFF7FEFF 		bl	Handle_BTN1_Press
+ 855              	.LVL65:
+ 856 0032 10E0     		b	.L61
+ 857              	.L62:
+ 317:Core/Src/main.c ****             }
+ 318:Core/Src/main.c ****         }
+ 319:Core/Src/main.c ****         
+ 320:Core/Src/main.c ****         // 检测按钮2的下降沿（按下）
+ 321:Core/Src/main.c ****         if(btn2_state && !current_btn2)
+ 322:Core/Src/main.c ****         {
+ 323:Core/Src/main.c ****             Delay(10);  // 简单消抖
+ 324:Core/Src/main.c ****             if(!Read_BTN2())
+ 325:Core/Src/main.c ****             {
+ 326:Core/Src/main.c ****                 Handle_BTN2_Press();
+ 327:Core/Src/main.c ****             }
+ 328:Core/Src/main.c ****         }
+ 329:Core/Src/main.c ****         
+ 330:Core/Src/main.c ****         // 更新按钮状态
+ 331:Core/Src/main.c ****         btn1_state = current_btn1;
+ 858              		.loc 1 331 9 view .LVU229
+ 859              		.loc 1 331 20 is_stmt 0 view .LVU230
+ 860 0034 0F4B     		ldr	r3, .L66+4
+ 861 0036 1D70     		strb	r5, [r3]
+ 332:Core/Src/main.c ****         btn2_state = current_btn2;
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 24
+
+
+ 862              		.loc 1 332 9 is_stmt 1 view .LVU231
+ 863              		.loc 1 332 20 is_stmt 0 view .LVU232
+ 864 0038 0F4B     		ldr	r3, .L66+8
+ 865 003a 1C70     		strb	r4, [r3]
+ 333:Core/Src/main.c ****         
+ 334:Core/Src/main.c ****         Delay(1);
+ 866              		.loc 1 334 9 is_stmt 1 view .LVU233
+ 867              	.LBE6:
+ 302:Core/Src/main.c ****     {
+ 868              		.loc 1 302 10 view .LVU234
+ 869              	.LVL66:
+ 870              	.L63:
+ 302:Core/Src/main.c ****     {
+ 871              		.loc 1 302 5 view .LVU235
+ 872              	.LBB7:
+ 304:Core/Src/main.c ****         uint8_t current_btn2 = Read_BTN2();
+ 873              		.loc 1 304 9 view .LVU236
+ 304:Core/Src/main.c ****         uint8_t current_btn2 = Read_BTN2();
+ 874              		.loc 1 304 32 is_stmt 0 view .LVU237
+ 875 003c FFF7FEFF 		bl	Read_BTN1
+ 876              	.LVL67:
+ 877 0040 0546     		mov	r5, r0
+ 878              	.LVL68:
+ 305:Core/Src/main.c ****         
+ 879              		.loc 1 305 9 is_stmt 1 view .LVU238
+ 305:Core/Src/main.c ****         
+ 880              		.loc 1 305 32 is_stmt 0 view .LVU239
+ 881 0042 FFF7FEFF 		bl	Read_BTN2
+ 882              	.LVL69:
+ 883 0046 0446     		mov	r4, r0
+ 884              	.LVL70:
+ 308:Core/Src/main.c ****         
+ 885              		.loc 1 308 9 is_stmt 1 view .LVU240
+ 886 0048 FFF7FEFF 		bl	LED2_Blink_Task
+ 887              	.LVL71:
+ 311:Core/Src/main.c ****         {
+ 888              		.loc 1 311 9 view .LVU241
+ 311:Core/Src/main.c ****         {
+ 889              		.loc 1 311 12 is_stmt 0 view .LVU242
+ 890 004c 094B     		ldr	r3, .L66+4
+ 891 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 311:Core/Src/main.c ****         {
+ 892              		.loc 1 311 11 view .LVU243
+ 893 0050 0BB1     		cbz	r3, .L61
+ 311:Core/Src/main.c ****         {
+ 894              		.loc 1 311 23 discriminator 1 view .LVU244
+ 895 0052 002D     		cmp	r5, #0
+ 896 0054 E8D0     		beq	.L65
+ 897              	.L61:
+ 321:Core/Src/main.c ****         {
+ 898              		.loc 1 321 9 is_stmt 1 view .LVU245
+ 321:Core/Src/main.c ****         {
+ 899              		.loc 1 321 12 is_stmt 0 view .LVU246
+ 900 0056 084B     		ldr	r3, .L66+8
+ 901 0058 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 321:Core/Src/main.c ****         {
+ 902              		.loc 1 321 11 view .LVU247
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 25
+
+
+ 903 005a 002B     		cmp	r3, #0
+ 904 005c EAD0     		beq	.L62
+ 321:Core/Src/main.c ****         {
+ 905              		.loc 1 321 23 discriminator 1 view .LVU248
+ 906 005e 002C     		cmp	r4, #0
+ 907 0060 E8D1     		bne	.L62
+ 323:Core/Src/main.c ****             if(!Read_BTN2())
+ 908              		.loc 1 323 13 is_stmt 1 view .LVU249
+ 324:Core/Src/main.c ****             {
+ 909              		.loc 1 324 13 view .LVU250
+ 324:Core/Src/main.c ****             {
+ 910              		.loc 1 324 17 is_stmt 0 view .LVU251
+ 911 0062 FFF7FEFF 		bl	Read_BTN2
+ 912              	.LVL72:
+ 324:Core/Src/main.c ****             {
+ 913              		.loc 1 324 15 discriminator 1 view .LVU252
+ 914 0066 0028     		cmp	r0, #0
+ 915 0068 E4D1     		bne	.L62
+ 326:Core/Src/main.c ****             }
+ 916              		.loc 1 326 17 is_stmt 1 view .LVU253
+ 917 006a FFF7FEFF 		bl	Handle_BTN2_Press
+ 918              	.LVL73:
+ 919 006e E1E7     		b	.L62
+ 920              	.L67:
+ 921              		.align	2
+ 922              	.L66:
+ 923 0070 00040240 		.word	1073873920
+ 924 0074 00000000 		.word	btn1_state
+ 925 0078 00000000 		.word	btn2_state
+ 926              	.LBE7:
+ 927              		.cfi_endproc
+ 928              	.LFE134:
+ 930              		.section	.bss.blink_state.0,"aw",%nobits
+ 933              	blink_state.0:
+ 934 0000 00       		.space	1
+ 935              		.section	.bss.blink_timer.1,"aw",%nobits
+ 936              		.align	2
+ 939              	blink_timer.1:
+ 940 0000 00000000 		.space	4
+ 941              		.global	led2_blink_flag
+ 942              		.section	.bss.led2_blink_flag,"aw",%nobits
+ 945              	led2_blink_flag:
+ 946 0000 00       		.space	1
+ 947              		.global	btn2_state
+ 948              		.section	.data.btn2_state,"aw"
+ 951              	btn2_state:
+ 952 0000 01       		.byte	1
+ 953              		.global	btn1_state
+ 954              		.section	.bss.btn1_state,"aw",%nobits
+ 957              	btn1_state:
+ 958 0000 00       		.space	1
+ 959              		.global	current_step
+ 960              		.section	.bss.current_step,"aw",%nobits
+ 963              	current_step:
+ 964 0000 00       		.space	1
+ 965              		.global	led_count
+ 966              		.section	.data.led_count,"aw"
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 26
+
+
+ 969              	led_count:
+ 970 0000 01       		.byte	1
+ 971              		.text
+ 972              	.Letext0:
+ 973              		.file 2 "E:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 974              		.file 3 "E:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 975              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 976              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s 			page 27
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:21     .text.Delay:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:27     .text.Delay:00000000 Delay
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:76     .text.LED2_Blink_Task:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:82     .text.LED2_Blink_Task:00000000 LED2_Blink_Task
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:143    .text.LED2_Blink_Task:00000044 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:939    .bss.blink_timer.1:00000000 blink_timer.1
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:945    .bss.led2_blink_flag:00000000 led2_blink_flag
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:933    .bss.blink_state.0:00000000 blink_state.0
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:151    .text.Handle_BTN1_Press:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:157    .text.Handle_BTN1_Press:00000000 Handle_BTN1_Press
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:284    .text.Handle_BTN1_Press:00000088 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:969    .data.led_count:00000000 led_count
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:963    .bss.current_step:00000000 current_step
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:292    .text.Handle_BTN2_Press:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:298    .text.Handle_BTN2_Press:00000000 Handle_BTN2_Press
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:373    .text.Handle_BTN2_Press:0000005a $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:380    .text.Handle_BTN2_Press:00000068 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:602    .text.Handle_BTN2_Press:00000190 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:606    .text.Handle_BTN2_Press:00000194 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:787    .text.Handle_BTN2_Press:00000270 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:794    .text.main:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:800    .text.main:00000000 main
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:923    .text.main:00000070 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:957    .bss.btn1_state:00000000 btn1_state
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:951    .data.btn2_state:00000000 btn2_state
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:934    .bss.blink_state.0:00000000 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:936    .bss.blink_timer.1:00000000 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:946    .bss.led2_blink_flag:00000000 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:958    .bss.btn1_state:00000000 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccdeF1rt.s:964    .bss.current_step:00000000 $d
+
+UNDEFINED SYMBOLS
+LED_Write
+Ext_LED_Write
+SystemClock_Config
+GPIO_Init
+Read_BTN1
+Read_BTN2

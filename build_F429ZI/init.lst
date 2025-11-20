@@ -1,0 +1,778 @@
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.SystemClock_Config,"ax",%progbits
+  21              		.align	1
+  22              		.global	SystemClock_Config
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SystemClock_Config:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "../Inc/init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void SystemClock_Config(void)
+   4:Core/Src/init.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****   
+   6:Core/Src/init.c ****     RCC->CR |= RCC_CR_HSEON;
+  34              		.loc 1 6 5 view .LVU1
+  35              		.loc 1 6 8 is_stmt 0 view .LVU2
+  36 0000 1A4A     		ldr	r2, .L5
+  37 0002 1368     		ldr	r3, [r2]
+  38              		.loc 1 6 13 view .LVU3
+  39 0004 43F48033 		orr	r3, r3, #65536
+  40 0008 1360     		str	r3, [r2]
+   7:Core/Src/init.c ****     while(!(RCC->CR & RCC_CR_HSERDY));
+  41              		.loc 1 7 5 is_stmt 1 view .LVU4
+  42              	.L2:
+  43              		.loc 1 7 11 discriminator 1 view .LVU5
+  44              		.loc 1 7 16 is_stmt 0 discriminator 1 view .LVU6
+  45 000a 184B     		ldr	r3, .L5
+  46 000c 1B68     		ldr	r3, [r3]
+  47              		.loc 1 7 11 discriminator 1 view .LVU7
+  48 000e 13F4003F 		tst	r3, #131072
+  49 0012 FAD0     		beq	.L2
+   8:Core/Src/init.c **** 
+   9:Core/Src/init.c ****     RCC->PLLCFGR = (8 << 0) | (336 << 6) | (0 << 16) | (1 << 22) | (7 << 24);
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 2
+
+
+  50              		.loc 1 9 5 is_stmt 1 view .LVU8
+  51              		.loc 1 9 18 is_stmt 0 view .LVU9
+  52 0014 154B     		ldr	r3, .L5
+  53 0016 164A     		ldr	r2, .L5+4
+  54 0018 5A60     		str	r2, [r3, #4]
+  10:Core/Src/init.c ****     
+  11:Core/Src/init.c ****     RCC->CR |= RCC_CR_PLLON;
+  55              		.loc 1 11 5 is_stmt 1 view .LVU10
+  56              		.loc 1 11 8 is_stmt 0 view .LVU11
+  57 001a 1A68     		ldr	r2, [r3]
+  58              		.loc 1 11 13 view .LVU12
+  59 001c 42F08072 		orr	r2, r2, #16777216
+  60 0020 1A60     		str	r2, [r3]
+  12:Core/Src/init.c ****     while(!(RCC->CR & RCC_CR_PLLRDY));
+  61              		.loc 1 12 5 is_stmt 1 view .LVU13
+  62              	.L3:
+  63              		.loc 1 12 11 discriminator 1 view .LVU14
+  64              		.loc 1 12 16 is_stmt 0 discriminator 1 view .LVU15
+  65 0022 124B     		ldr	r3, .L5
+  66 0024 1B68     		ldr	r3, [r3]
+  67              		.loc 1 12 11 discriminator 1 view .LVU16
+  68 0026 13F0007F 		tst	r3, #33554432
+  69 002a FAD0     		beq	.L3
+  13:Core/Src/init.c ****     
+  14:Core/Src/init.c **** 
+  15:Core/Src/init.c ****     FLASH->ACR = FLASH_ACR_ICEN | FLASH_ACR_DCEN | FLASH_ACR_LATENCY_5WS;
+  70              		.loc 1 15 5 is_stmt 1 view .LVU17
+  71              		.loc 1 15 16 is_stmt 0 view .LVU18
+  72 002c 114B     		ldr	r3, .L5+8
+  73 002e 40F20562 		movw	r2, #1541
+  74 0032 1A60     		str	r2, [r3]
+  16:Core/Src/init.c ****     
+  17:Core/Src/init.c ****     RCC->CFGR |= RCC_CFGR_HPRE_DIV1;   // AHB = 168MHz
+  75              		.loc 1 17 5 is_stmt 1 view .LVU19
+  76              		.loc 1 17 8 is_stmt 0 view .LVU20
+  77 0034 A3F58063 		sub	r3, r3, #1024
+  78 0038 9A68     		ldr	r2, [r3, #8]
+  79              		.loc 1 17 15 view .LVU21
+  80 003a 9A60     		str	r2, [r3, #8]
+  18:Core/Src/init.c ****     RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;  // APB1 = 42MHz
+  81              		.loc 1 18 5 is_stmt 1 view .LVU22
+  82              		.loc 1 18 8 is_stmt 0 view .LVU23
+  83 003c 9A68     		ldr	r2, [r3, #8]
+  84              		.loc 1 18 15 view .LVU24
+  85 003e 42F4A052 		orr	r2, r2, #5120
+  86 0042 9A60     		str	r2, [r3, #8]
+  19:Core/Src/init.c ****     RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;  // APB2 = 84MHz
+  87              		.loc 1 19 5 is_stmt 1 view .LVU25
+  88              		.loc 1 19 8 is_stmt 0 view .LVU26
+  89 0044 9A68     		ldr	r2, [r3, #8]
+  90              		.loc 1 19 15 view .LVU27
+  91 0046 42F40042 		orr	r2, r2, #32768
+  92 004a 9A60     		str	r2, [r3, #8]
+  20:Core/Src/init.c ****     
+  21:Core/Src/init.c **** 
+  22:Core/Src/init.c ****     RCC->CFGR &= ~RCC_CFGR_SW;
+  93              		.loc 1 22 5 is_stmt 1 view .LVU28
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 3
+
+
+  94              		.loc 1 22 8 is_stmt 0 view .LVU29
+  95 004c 9A68     		ldr	r2, [r3, #8]
+  96              		.loc 1 22 15 view .LVU30
+  97 004e 22F00302 		bic	r2, r2, #3
+  98 0052 9A60     		str	r2, [r3, #8]
+  23:Core/Src/init.c ****     RCC->CFGR |= RCC_CFGR_SW_PLL;
+  99              		.loc 1 23 5 is_stmt 1 view .LVU31
+ 100              		.loc 1 23 8 is_stmt 0 view .LVU32
+ 101 0054 9A68     		ldr	r2, [r3, #8]
+ 102              		.loc 1 23 15 view .LVU33
+ 103 0056 42F00202 		orr	r2, r2, #2
+ 104 005a 9A60     		str	r2, [r3, #8]
+  24:Core/Src/init.c ****     while((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL);
+ 105              		.loc 1 24 5 is_stmt 1 view .LVU34
+ 106              	.L4:
+ 107              		.loc 1 24 38 discriminator 1 view .LVU35
+ 108              		.loc 1 24 15 is_stmt 0 discriminator 1 view .LVU36
+ 109 005c 034B     		ldr	r3, .L5
+ 110 005e 9B68     		ldr	r3, [r3, #8]
+ 111              		.loc 1 24 22 discriminator 1 view .LVU37
+ 112 0060 03F00C03 		and	r3, r3, #12
+ 113              		.loc 1 24 38 discriminator 1 view .LVU38
+ 114 0064 082B     		cmp	r3, #8
+ 115 0066 F9D1     		bne	.L4
+  25:Core/Src/init.c **** }
+ 116              		.loc 1 25 1 view .LVU39
+ 117 0068 7047     		bx	lr
+ 118              	.L6:
+ 119 006a 00BF     		.align	2
+ 120              	.L5:
+ 121 006c 00380240 		.word	1073887232
+ 122 0070 08544007 		.word	121656328
+ 123 0074 003C0240 		.word	1073888256
+ 124              		.cfi_endproc
+ 125              	.LFE130:
+ 127              		.section	.text.GPIO_Init,"ax",%progbits
+ 128              		.align	1
+ 129              		.global	GPIO_Init
+ 130              		.syntax unified
+ 131              		.thumb
+ 132              		.thumb_func
+ 134              	GPIO_Init:
+ 135              	.LFB131:
+  26:Core/Src/init.c **** 
+  27:Core/Src/init.c **** 
+  28:Core/Src/init.c **** void GPIO_Init(void)
+  29:Core/Src/init.c **** {
+ 136              		.loc 1 29 1 is_stmt 1 view -0
+ 137              		.cfi_startproc
+ 138              		@ args = 0, pretend = 0, frame = 0
+ 139              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140              		@ link register save eliminated.
+  30:Core/Src/init.c **** 
+  31:Core/Src/init.c ****     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;  // 启用GPIOB时钟（板载LED）
+ 141              		.loc 1 31 5 view .LVU41
+ 142              		.loc 1 31 8 is_stmt 0 view .LVU42
+ 143 0000 424B     		ldr	r3, .L8
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 4
+
+
+ 144 0002 1A6B     		ldr	r2, [r3, #48]
+ 145              		.loc 1 31 18 view .LVU43
+ 146 0004 42F00202 		orr	r2, r2, #2
+ 147 0008 1A63     		str	r2, [r3, #48]
+  32:Core/Src/init.c ****     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;  // 启用GPIOC时钟（外接LED）
+ 148              		.loc 1 32 5 is_stmt 1 view .LVU44
+ 149              		.loc 1 32 8 is_stmt 0 view .LVU45
+ 150 000a 1A6B     		ldr	r2, [r3, #48]
+ 151              		.loc 1 32 18 view .LVU46
+ 152 000c 42F00402 		orr	r2, r2, #4
+ 153 0010 1A63     		str	r2, [r3, #48]
+  33:Core/Src/init.c ****     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;  // 启用GPIOA时钟（按钮2）
+ 154              		.loc 1 33 5 is_stmt 1 view .LVU47
+ 155              		.loc 1 33 8 is_stmt 0 view .LVU48
+ 156 0012 1A6B     		ldr	r2, [r3, #48]
+ 157              		.loc 1 33 18 view .LVU49
+ 158 0014 42F00102 		orr	r2, r2, #1
+ 159 0018 1A63     		str	r2, [r3, #48]
+  34:Core/Src/init.c ****     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOGEN;  // 启用GPIOG时钟（按钮1）
+ 160              		.loc 1 34 5 is_stmt 1 view .LVU50
+ 161              		.loc 1 34 8 is_stmt 0 view .LVU51
+ 162 001a 1A6B     		ldr	r2, [r3, #48]
+ 163              		.loc 1 34 18 view .LVU52
+ 164 001c 42F04002 		orr	r2, r2, #64
+ 165 0020 1A63     		str	r2, [r3, #48]
+  35:Core/Src/init.c ****     
+  36:Core/Src/init.c ****     LED_PORT->MODER &= ~(0x3 << (0 * 2));
+ 166              		.loc 1 36 5 is_stmt 1 view .LVU53
+ 167              		.loc 1 36 13 is_stmt 0 view .LVU54
+ 168 0022 3B4A     		ldr	r2, .L8+4
+ 169 0024 1368     		ldr	r3, [r2]
+ 170              		.loc 1 36 21 view .LVU55
+ 171 0026 23F00303 		bic	r3, r3, #3
+ 172 002a 1360     		str	r3, [r2]
+  37:Core/Src/init.c ****     LED_PORT->MODER |= (GPIO_MODE_OUTPUT << (0 * 2));
+ 173              		.loc 1 37 5 is_stmt 1 view .LVU56
+ 174              		.loc 1 37 13 is_stmt 0 view .LVU57
+ 175 002c 1368     		ldr	r3, [r2]
+ 176              		.loc 1 37 21 view .LVU58
+ 177 002e 43F00103 		orr	r3, r3, #1
+ 178 0032 1360     		str	r3, [r2]
+  38:Core/Src/init.c ****     LED_PORT->MODER &= ~(0x3 << (7 * 2));
+ 179              		.loc 1 38 5 is_stmt 1 view .LVU59
+ 180              		.loc 1 38 13 is_stmt 0 view .LVU60
+ 181 0034 1368     		ldr	r3, [r2]
+ 182              		.loc 1 38 21 view .LVU61
+ 183 0036 23F44043 		bic	r3, r3, #49152
+ 184 003a 1360     		str	r3, [r2]
+  39:Core/Src/init.c ****     LED_PORT->MODER |= (GPIO_MODE_OUTPUT << (7 * 2));
+ 185              		.loc 1 39 5 is_stmt 1 view .LVU62
+ 186              		.loc 1 39 13 is_stmt 0 view .LVU63
+ 187 003c 1368     		ldr	r3, [r2]
+ 188              		.loc 1 39 21 view .LVU64
+ 189 003e 43F48043 		orr	r3, r3, #16384
+ 190 0042 1360     		str	r3, [r2]
+  40:Core/Src/init.c ****     LED_PORT->MODER &= ~(0x3 << (14 * 2));
+ 191              		.loc 1 40 5 is_stmt 1 view .LVU65
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 5
+
+
+ 192              		.loc 1 40 13 is_stmt 0 view .LVU66
+ 193 0044 1368     		ldr	r3, [r2]
+ 194              		.loc 1 40 21 view .LVU67
+ 195 0046 23F04053 		bic	r3, r3, #805306368
+ 196 004a 1360     		str	r3, [r2]
+  41:Core/Src/init.c ****     LED_PORT->MODER |= (GPIO_MODE_OUTPUT << (14 * 2));
+ 197              		.loc 1 41 5 is_stmt 1 view .LVU68
+ 198              		.loc 1 41 13 is_stmt 0 view .LVU69
+ 199 004c 1368     		ldr	r3, [r2]
+ 200              		.loc 1 41 21 view .LVU70
+ 201 004e 43F08053 		orr	r3, r3, #268435456
+ 202 0052 1360     		str	r3, [r2]
+  42:Core/Src/init.c ****     LED_PORT->OTYPER &= ~(LED1_PIN | LED2_PIN | LED3_PIN);
+ 203              		.loc 1 42 5 is_stmt 1 view .LVU71
+ 204              		.loc 1 42 13 is_stmt 0 view .LVU72
+ 205 0054 5368     		ldr	r3, [r2, #4]
+ 206              		.loc 1 42 22 view .LVU73
+ 207 0056 23F48143 		bic	r3, r3, #16512
+ 208 005a 23F00103 		bic	r3, r3, #1
+ 209 005e 5360     		str	r3, [r2, #4]
+  43:Core/Src/init.c ****     LED_PORT->OSPEEDR &= ~(0x3 << (0 * 2) | 0x3 << (7 * 2) | 0x3 << (14 * 2));
+ 210              		.loc 1 43 5 is_stmt 1 view .LVU74
+ 211              		.loc 1 43 13 is_stmt 0 view .LVU75
+ 212 0060 9368     		ldr	r3, [r2, #8]
+ 213              		.loc 1 43 23 view .LVU76
+ 214 0062 2C49     		ldr	r1, .L8+8
+ 215 0064 0B40     		ands	r3, r3, r1
+ 216 0066 9360     		str	r3, [r2, #8]
+  44:Core/Src/init.c ****     LED_PORT->OSPEEDR |= (0x2 << (0 * 2) | 0x2 << (7 * 2) | 0x2 << (14 * 2));
+ 217              		.loc 1 44 5 is_stmt 1 view .LVU77
+ 218              		.loc 1 44 13 is_stmt 0 view .LVU78
+ 219 0068 9068     		ldr	r0, [r2, #8]
+ 220              		.loc 1 44 23 view .LVU79
+ 221 006a 2B4B     		ldr	r3, .L8+12
+ 222 006c 0343     		orrs	r3, r3, r0
+ 223 006e 9360     		str	r3, [r2, #8]
+  45:Core/Src/init.c ****     LED_PORT->PUPDR &= ~(0x3 << (0 * 2) | 0x3 << (7 * 2) | 0x3 << (14 * 2));
+ 224              		.loc 1 45 5 is_stmt 1 view .LVU80
+ 225              		.loc 1 45 13 is_stmt 0 view .LVU81
+ 226 0070 D368     		ldr	r3, [r2, #12]
+ 227              		.loc 1 45 21 view .LVU82
+ 228 0072 0B40     		ands	r3, r3, r1
+ 229 0074 D360     		str	r3, [r2, #12]
+  46:Core/Src/init.c **** 
+  47:Core/Src/init.c **** EXT_LED_PORT->MODER &= ~(0x3 << (10 * 2));
+ 230              		.loc 1 47 1 is_stmt 1 view .LVU83
+ 231              		.loc 1 47 13 is_stmt 0 view .LVU84
+ 232 0076 294B     		ldr	r3, .L8+16
+ 233 0078 1968     		ldr	r1, [r3]
+ 234              		.loc 1 47 21 view .LVU85
+ 235 007a 21F44011 		bic	r1, r1, #3145728
+ 236 007e 1960     		str	r1, [r3]
+  48:Core/Src/init.c **** EXT_LED_PORT->MODER |= (GPIO_MODE_OUTPUT << (10 * 2));
+ 237              		.loc 1 48 1 is_stmt 1 view .LVU86
+ 238              		.loc 1 48 13 is_stmt 0 view .LVU87
+ 239 0080 1968     		ldr	r1, [r3]
+ 240              		.loc 1 48 21 view .LVU88
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 6
+
+
+ 241 0082 41F48011 		orr	r1, r1, #1048576
+ 242 0086 1960     		str	r1, [r3]
+  49:Core/Src/init.c **** 
+  50:Core/Src/init.c **** EXT_LED_PORT->MODER &= ~(0x3 << (11 * 2));
+ 243              		.loc 1 50 1 is_stmt 1 view .LVU89
+ 244              		.loc 1 50 13 is_stmt 0 view .LVU90
+ 245 0088 1968     		ldr	r1, [r3]
+ 246              		.loc 1 50 21 view .LVU91
+ 247 008a 21F44001 		bic	r1, r1, #12582912
+ 248 008e 1960     		str	r1, [r3]
+  51:Core/Src/init.c **** EXT_LED_PORT->MODER |= (GPIO_MODE_OUTPUT << (11 * 2));
+ 249              		.loc 1 51 1 is_stmt 1 view .LVU92
+ 250              		.loc 1 51 13 is_stmt 0 view .LVU93
+ 251 0090 1968     		ldr	r1, [r3]
+ 252              		.loc 1 51 21 view .LVU94
+ 253 0092 41F48001 		orr	r1, r1, #4194304
+ 254 0096 1960     		str	r1, [r3]
+  52:Core/Src/init.c **** 
+  53:Core/Src/init.c **** EXT_LED_PORT->MODER &= ~(0x3 << (12 * 2));
+ 255              		.loc 1 53 1 is_stmt 1 view .LVU95
+ 256              		.loc 1 53 13 is_stmt 0 view .LVU96
+ 257 0098 1968     		ldr	r1, [r3]
+ 258              		.loc 1 53 21 view .LVU97
+ 259 009a 21F04071 		bic	r1, r1, #50331648
+ 260 009e 1960     		str	r1, [r3]
+  54:Core/Src/init.c **** EXT_LED_PORT->MODER |= (GPIO_MODE_OUTPUT << (12 * 2));
+ 261              		.loc 1 54 1 is_stmt 1 view .LVU98
+ 262              		.loc 1 54 13 is_stmt 0 view .LVU99
+ 263 00a0 1968     		ldr	r1, [r3]
+ 264              		.loc 1 54 21 view .LVU100
+ 265 00a2 41F08071 		orr	r1, r1, #16777216
+ 266 00a6 1960     		str	r1, [r3]
+  55:Core/Src/init.c **** 
+  56:Core/Src/init.c **** EXT_LED_PORT->OTYPER &= ~(EXT_LED1_PIN | EXT_LED2_PIN | EXT_LED3_PIN);
+ 267              		.loc 1 56 1 is_stmt 1 view .LVU101
+ 268              		.loc 1 56 13 is_stmt 0 view .LVU102
+ 269 00a8 5968     		ldr	r1, [r3, #4]
+ 270              		.loc 1 56 22 view .LVU103
+ 271 00aa 21F4E051 		bic	r1, r1, #7168
+ 272 00ae 5960     		str	r1, [r3, #4]
+  57:Core/Src/init.c **** 
+  58:Core/Src/init.c **** EXT_LED_PORT->OSPEEDR &= ~(0x3 << (10 * 2) | 0x3 << (11 * 2) | 0x3 << (12 * 2));
+ 273              		.loc 1 58 1 is_stmt 1 view .LVU104
+ 274              		.loc 1 58 13 is_stmt 0 view .LVU105
+ 275 00b0 9968     		ldr	r1, [r3, #8]
+ 276              		.loc 1 58 23 view .LVU106
+ 277 00b2 21F07C71 		bic	r1, r1, #66060288
+ 278 00b6 9960     		str	r1, [r3, #8]
+  59:Core/Src/init.c **** EXT_LED_PORT->OSPEEDR |= (0x2 << (10 * 2) | 0x2 << (11 * 2) | 0x2 << (12 * 2));
+ 279              		.loc 1 59 1 is_stmt 1 view .LVU107
+ 280              		.loc 1 59 13 is_stmt 0 view .LVU108
+ 281 00b8 9968     		ldr	r1, [r3, #8]
+ 282              		.loc 1 59 23 view .LVU109
+ 283 00ba 41F02871 		orr	r1, r1, #44040192
+ 284 00be 9960     		str	r1, [r3, #8]
+  60:Core/Src/init.c **** 
+  61:Core/Src/init.c **** EXT_LED_PORT->PUPDR &= ~(0x3 << (10 * 2) | 0x3 << (11 * 2) | 0x3 << (12 * 2));
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 7
+
+
+ 285              		.loc 1 61 1 is_stmt 1 view .LVU110
+ 286              		.loc 1 61 13 is_stmt 0 view .LVU111
+ 287 00c0 D968     		ldr	r1, [r3, #12]
+ 288              		.loc 1 61 21 view .LVU112
+ 289 00c2 21F07C71 		bic	r1, r1, #66060288
+ 290 00c6 D960     		str	r1, [r3, #12]
+  62:Core/Src/init.c ****     
+  63:Core/Src/init.c ****     LED_PORT->BSRR = (LED1_PIN << 16) | (LED2_PIN << 16) | (LED3_PIN << 16);
+ 291              		.loc 1 63 5 is_stmt 1 view .LVU113
+ 292              		.loc 1 63 20 is_stmt 0 view .LVU114
+ 293 00c8 1549     		ldr	r1, .L8+20
+ 294 00ca 9161     		str	r1, [r2, #24]
+  64:Core/Src/init.c ****     EXT_LED_PORT->BSRR = (EXT_LED1_PIN << 16) | (EXT_LED2_PIN << 16) | (EXT_LED3_PIN << 16);
+ 295              		.loc 1 64 5 is_stmt 1 view .LVU115
+ 296              		.loc 1 64 24 is_stmt 0 view .LVU116
+ 297 00cc 4FF0E052 		mov	r2, #469762048
+ 298 00d0 9A61     		str	r2, [r3, #24]
+  65:Core/Src/init.c ****     
+  66:Core/Src/init.c ****     BTN1_PORT->MODER &= ~(0x3 << (3 * 2));
+ 299              		.loc 1 66 5 is_stmt 1 view .LVU117
+ 300              		.loc 1 66 14 is_stmt 0 view .LVU118
+ 301 00d2 03F58053 		add	r3, r3, #4096
+ 302 00d6 1A68     		ldr	r2, [r3]
+ 303              		.loc 1 66 22 view .LVU119
+ 304 00d8 22F0C002 		bic	r2, r2, #192
+ 305 00dc 1A60     		str	r2, [r3]
+  67:Core/Src/init.c ****     BTN1_PORT->PUPDR &= ~(0x3 << (3 * 2));
+ 306              		.loc 1 67 5 is_stmt 1 view .LVU120
+ 307              		.loc 1 67 14 is_stmt 0 view .LVU121
+ 308 00de DA68     		ldr	r2, [r3, #12]
+ 309              		.loc 1 67 22 view .LVU122
+ 310 00e0 22F0C002 		bic	r2, r2, #192
+ 311 00e4 DA60     		str	r2, [r3, #12]
+  68:Core/Src/init.c ****     BTN1_PORT->PUPDR |= (GPIO_PULLUP << (3 * 2));
+ 312              		.loc 1 68 5 is_stmt 1 view .LVU123
+ 313              		.loc 1 68 14 is_stmt 0 view .LVU124
+ 314 00e6 DA68     		ldr	r2, [r3, #12]
+ 315              		.loc 1 68 22 view .LVU125
+ 316 00e8 42F04002 		orr	r2, r2, #64
+ 317 00ec DA60     		str	r2, [r3, #12]
+  69:Core/Src/init.c **** 
+  70:Core/Src/init.c ****     BTN2_PORT->MODER &= ~(0x3 << (0 * 2));
+ 318              		.loc 1 70 5 is_stmt 1 view .LVU126
+ 319              		.loc 1 70 14 is_stmt 0 view .LVU127
+ 320 00ee A3F5C053 		sub	r3, r3, #6144
+ 321 00f2 1A68     		ldr	r2, [r3]
+ 322              		.loc 1 70 22 view .LVU128
+ 323 00f4 22F00302 		bic	r2, r2, #3
+ 324 00f8 1A60     		str	r2, [r3]
+  71:Core/Src/init.c ****     BTN2_PORT->PUPDR &= ~(0x3 << (0 * 2));
+ 325              		.loc 1 71 5 is_stmt 1 view .LVU129
+ 326              		.loc 1 71 14 is_stmt 0 view .LVU130
+ 327 00fa DA68     		ldr	r2, [r3, #12]
+ 328              		.loc 1 71 22 view .LVU131
+ 329 00fc 22F00302 		bic	r2, r2, #3
+ 330 0100 DA60     		str	r2, [r3, #12]
+  72:Core/Src/init.c ****     BTN2_PORT->PUPDR |= (GPIO_PULLUP << (0 * 2));
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 8
+
+
+ 331              		.loc 1 72 5 is_stmt 1 view .LVU132
+ 332              		.loc 1 72 14 is_stmt 0 view .LVU133
+ 333 0102 DA68     		ldr	r2, [r3, #12]
+ 334              		.loc 1 72 22 view .LVU134
+ 335 0104 42F00102 		orr	r2, r2, #1
+ 336 0108 DA60     		str	r2, [r3, #12]
+  73:Core/Src/init.c **** }
+ 337              		.loc 1 73 1 view .LVU135
+ 338 010a 7047     		bx	lr
+ 339              	.L9:
+ 340              		.align	2
+ 341              	.L8:
+ 342 010c 00380240 		.word	1073887232
+ 343 0110 00040240 		.word	1073873920
+ 344 0114 FC3FFFCF 		.word	-805355524
+ 345 0118 02800020 		.word	536903682
+ 346 011c 00080240 		.word	1073874944
+ 347 0120 00008140 		.word	1082195968
+ 348              		.cfi_endproc
+ 349              	.LFE131:
+ 351              		.section	.text.Read_BTN1,"ax",%progbits
+ 352              		.align	1
+ 353              		.global	Read_BTN1
+ 354              		.syntax unified
+ 355              		.thumb
+ 356              		.thumb_func
+ 358              	Read_BTN1:
+ 359              	.LFB132:
+  74:Core/Src/init.c **** 
+  75:Core/Src/init.c **** 
+  76:Core/Src/init.c **** uint8_t Read_BTN1(void)
+  77:Core/Src/init.c **** {
+ 360              		.loc 1 77 1 is_stmt 1 view -0
+ 361              		.cfi_startproc
+ 362              		@ args = 0, pretend = 0, frame = 0
+ 363              		@ frame_needed = 0, uses_anonymous_args = 0
+ 364              		@ link register save eliminated.
+  78:Core/Src/init.c ****     return (BTN1_PORT->IDR & BTN1_PIN) ? 0 : 1;
+ 365              		.loc 1 78 5 view .LVU137
+ 366              		.loc 1 78 22 is_stmt 0 view .LVU138
+ 367 0000 034B     		ldr	r3, .L11
+ 368 0002 1B69     		ldr	r3, [r3, #16]
+ 369              		.loc 1 78 44 view .LVU139
+ 370 0004 13F0080F 		tst	r3, #8
+  79:Core/Src/init.c **** }
+ 371              		.loc 1 79 1 view .LVU140
+ 372 0008 0CBF     		ite	eq
+ 373 000a 0120     		moveq	r0, #1
+ 374 000c 0020     		movne	r0, #0
+ 375 000e 7047     		bx	lr
+ 376              	.L12:
+ 377              		.align	2
+ 378              	.L11:
+ 379 0010 00180240 		.word	1073879040
+ 380              		.cfi_endproc
+ 381              	.LFE132:
+ 383              		.section	.text.Read_BTN2,"ax",%progbits
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 9
+
+
+ 384              		.align	1
+ 385              		.global	Read_BTN2
+ 386              		.syntax unified
+ 387              		.thumb
+ 388              		.thumb_func
+ 390              	Read_BTN2:
+ 391              	.LFB133:
+  80:Core/Src/init.c **** 
+  81:Core/Src/init.c **** uint8_t Read_BTN2(void)
+  82:Core/Src/init.c **** {
+ 392              		.loc 1 82 1 is_stmt 1 view -0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 0
+ 395              		@ frame_needed = 0, uses_anonymous_args = 0
+ 396              		@ link register save eliminated.
+  83:Core/Src/init.c ****     return (BTN2_PORT->IDR & BTN2_PIN) ? 0 : 1;
+ 397              		.loc 1 83 5 view .LVU142
+ 398              		.loc 1 83 22 is_stmt 0 view .LVU143
+ 399 0000 034B     		ldr	r3, .L14
+ 400 0002 1B69     		ldr	r3, [r3, #16]
+ 401              		.loc 1 83 44 view .LVU144
+ 402 0004 13F0010F 		tst	r3, #1
+  84:Core/Src/init.c **** }
+ 403              		.loc 1 84 1 view .LVU145
+ 404 0008 0CBF     		ite	eq
+ 405 000a 0120     		moveq	r0, #1
+ 406 000c 0020     		movne	r0, #0
+ 407 000e 7047     		bx	lr
+ 408              	.L15:
+ 409              		.align	2
+ 410              	.L14:
+ 411 0010 00000240 		.word	1073872896
+ 412              		.cfi_endproc
+ 413              	.LFE133:
+ 415              		.section	.text.LED_Write,"ax",%progbits
+ 416              		.align	1
+ 417              		.global	LED_Write
+ 418              		.syntax unified
+ 419              		.thumb
+ 420              		.thumb_func
+ 422              	LED_Write:
+ 423              	.LVL0:
+ 424              	.LFB134:
+  85:Core/Src/init.c **** 
+  86:Core/Src/init.c **** void LED_Write(uint8_t leds)
+  87:Core/Src/init.c **** {
+ 425              		.loc 1 87 1 is_stmt 1 view -0
+ 426              		.cfi_startproc
+ 427              		@ args = 0, pretend = 0, frame = 0
+ 428              		@ frame_needed = 0, uses_anonymous_args = 0
+ 429              		@ link register save eliminated.
+  88:Core/Src/init.c ****     uint32_t set_mask = 0;
+ 430              		.loc 1 88 5 view .LVU147
+  89:Core/Src/init.c ****     uint32_t reset_mask = 0;
+ 431              		.loc 1 89 5 view .LVU148
+  90:Core/Src/init.c ****     
+  91:Core/Src/init.c ****     if(leds & 0x01) set_mask |= LED1_PIN;
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 10
+
+
+ 432              		.loc 1 91 5 view .LVU149
+ 433              		.loc 1 91 7 is_stmt 0 view .LVU150
+ 434 0000 10F0010F 		tst	r0, #1
+ 435 0004 10D0     		beq	.L22
+  89:Core/Src/init.c ****     uint32_t reset_mask = 0;
+ 436              		.loc 1 89 14 view .LVU151
+ 437 0006 0022     		movs	r2, #0
+ 438              		.loc 1 91 30 discriminator 1 view .LVU152
+ 439 0008 0123     		movs	r3, #1
+ 440              	.L17:
+ 441              	.LVL1:
+  92:Core/Src/init.c ****     else reset_mask |= LED1_PIN;
+  93:Core/Src/init.c ****     
+  94:Core/Src/init.c ****     if(leds & 0x02) set_mask |= LED2_PIN;
+ 442              		.loc 1 94 5 is_stmt 1 view .LVU153
+ 443              		.loc 1 94 7 is_stmt 0 view .LVU154
+ 444 000a 10F0020F 		tst	r0, #2
+ 445 000e 0ED0     		beq	.L18
+ 446              		.loc 1 94 21 is_stmt 1 discriminator 1 view .LVU155
+ 447              		.loc 1 94 30 is_stmt 0 discriminator 1 view .LVU156
+ 448 0010 43F08003 		orr	r3, r3, #128
+ 449              	.LVL2:
+ 450              	.L19:
+  95:Core/Src/init.c ****     else reset_mask |= LED2_PIN;
+  96:Core/Src/init.c ****     
+  97:Core/Src/init.c ****     if(leds & 0x04) set_mask |= LED3_PIN;
+ 451              		.loc 1 97 5 is_stmt 1 view .LVU157
+ 452              		.loc 1 97 7 is_stmt 0 view .LVU158
+ 453 0014 10F0040F 		tst	r0, #4
+ 454 0018 0CD0     		beq	.L20
+ 455              		.loc 1 97 21 is_stmt 1 discriminator 1 view .LVU159
+ 456              		.loc 1 97 30 is_stmt 0 discriminator 1 view .LVU160
+ 457 001a 43F48043 		orr	r3, r3, #16384
+ 458              	.LVL3:
+ 459              	.L21:
+  98:Core/Src/init.c ****     else reset_mask |= LED3_PIN;
+  99:Core/Src/init.c ****     
+ 100:Core/Src/init.c ****     LED_PORT->BSRR = (reset_mask << 16) | set_mask;
+ 460              		.loc 1 100 5 is_stmt 1 view .LVU161
+ 461              		.loc 1 100 41 is_stmt 0 view .LVU162
+ 462 001e 43EA0243 		orr	r3, r3, r2, lsl #16
+ 463              	.LVL4:
+ 464              		.loc 1 100 20 view .LVU163
+ 465 0022 064A     		ldr	r2, .L23
+ 466              	.LVL5:
+ 467              		.loc 1 100 20 view .LVU164
+ 468 0024 9361     		str	r3, [r2, #24]
+ 101:Core/Src/init.c **** }
+ 469              		.loc 1 101 1 view .LVU165
+ 470 0026 7047     		bx	lr
+ 471              	.LVL6:
+ 472              	.L22:
+  92:Core/Src/init.c ****     
+ 473              		.loc 1 92 21 view .LVU166
+ 474 0028 0122     		movs	r2, #1
+  88:Core/Src/init.c ****     uint32_t reset_mask = 0;
+ 475              		.loc 1 88 14 view .LVU167
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 11
+
+
+ 476 002a 0023     		movs	r3, #0
+ 477 002c EDE7     		b	.L17
+ 478              	.LVL7:
+ 479              	.L18:
+  95:Core/Src/init.c ****     
+ 480              		.loc 1 95 10 is_stmt 1 view .LVU168
+  95:Core/Src/init.c ****     
+ 481              		.loc 1 95 21 is_stmt 0 view .LVU169
+ 482 002e 42F08002 		orr	r2, r2, #128
+ 483              	.LVL8:
+  95:Core/Src/init.c ****     
+ 484              		.loc 1 95 21 view .LVU170
+ 485 0032 EFE7     		b	.L19
+ 486              	.L20:
+  98:Core/Src/init.c ****     
+ 487              		.loc 1 98 10 is_stmt 1 view .LVU171
+  98:Core/Src/init.c ****     
+ 488              		.loc 1 98 21 is_stmt 0 view .LVU172
+ 489 0034 42F48042 		orr	r2, r2, #16384
+ 490              	.LVL9:
+  98:Core/Src/init.c ****     
+ 491              		.loc 1 98 21 view .LVU173
+ 492 0038 F1E7     		b	.L21
+ 493              	.L24:
+ 494 003a 00BF     		.align	2
+ 495              	.L23:
+ 496 003c 00040240 		.word	1073873920
+ 497              		.cfi_endproc
+ 498              	.LFE134:
+ 500              		.section	.text.Ext_LED_Write,"ax",%progbits
+ 501              		.align	1
+ 502              		.global	Ext_LED_Write
+ 503              		.syntax unified
+ 504              		.thumb
+ 505              		.thumb_func
+ 507              	Ext_LED_Write:
+ 508              	.LVL10:
+ 509              	.LFB135:
+ 102:Core/Src/init.c **** 
+ 103:Core/Src/init.c **** 
+ 104:Core/Src/init.c **** void Ext_LED_Write(uint8_t leds)
+ 105:Core/Src/init.c **** {
+ 510              		.loc 1 105 1 is_stmt 1 view -0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 0
+ 513              		@ frame_needed = 0, uses_anonymous_args = 0
+ 514              		@ link register save eliminated.
+ 106:Core/Src/init.c ****     uint32_t set_mask = 0;
+ 515              		.loc 1 106 5 view .LVU175
+ 107:Core/Src/init.c ****     uint32_t reset_mask = 0;
+ 516              		.loc 1 107 5 view .LVU176
+ 108:Core/Src/init.c ****     
+ 109:Core/Src/init.c ****     if(leds & 0x01) set_mask |= EXT_LED1_PIN;
+ 517              		.loc 1 109 5 view .LVU177
+ 518              		.loc 1 109 7 is_stmt 0 view .LVU178
+ 519 0000 10F0010F 		tst	r0, #1
+ 520 0004 11D0     		beq	.L31
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 12
+
+
+ 107:Core/Src/init.c ****     uint32_t reset_mask = 0;
+ 521              		.loc 1 107 14 view .LVU179
+ 522 0006 0022     		movs	r2, #0
+ 523              		.loc 1 109 30 discriminator 1 view .LVU180
+ 524 0008 4FF48063 		mov	r3, #1024
+ 525              	.L26:
+ 526              	.LVL11:
+ 110:Core/Src/init.c ****     else reset_mask |= EXT_LED1_PIN;
+ 111:Core/Src/init.c ****     
+ 112:Core/Src/init.c ****     if(leds & 0x02) set_mask |= EXT_LED2_PIN;
+ 527              		.loc 1 112 5 is_stmt 1 view .LVU181
+ 528              		.loc 1 112 7 is_stmt 0 view .LVU182
+ 529 000c 10F0020F 		tst	r0, #2
+ 530 0010 0FD0     		beq	.L27
+ 531              		.loc 1 112 21 is_stmt 1 discriminator 1 view .LVU183
+ 532              		.loc 1 112 30 is_stmt 0 discriminator 1 view .LVU184
+ 533 0012 43F40063 		orr	r3, r3, #2048
+ 534              	.LVL12:
+ 535              	.L28:
+ 113:Core/Src/init.c ****     else reset_mask |= EXT_LED2_PIN;
+ 114:Core/Src/init.c ****     
+ 115:Core/Src/init.c ****     if(leds & 0x04) set_mask |= EXT_LED3_PIN;
+ 536              		.loc 1 115 5 is_stmt 1 view .LVU185
+ 537              		.loc 1 115 7 is_stmt 0 view .LVU186
+ 538 0016 10F0040F 		tst	r0, #4
+ 539 001a 0DD0     		beq	.L29
+ 540              		.loc 1 115 21 is_stmt 1 discriminator 1 view .LVU187
+ 541              		.loc 1 115 30 is_stmt 0 discriminator 1 view .LVU188
+ 542 001c 43F48053 		orr	r3, r3, #4096
+ 543              	.LVL13:
+ 544              	.L30:
+ 116:Core/Src/init.c ****     else reset_mask |= EXT_LED3_PIN;
+ 117:Core/Src/init.c ****     
+ 118:Core/Src/init.c ****     EXT_LED_PORT->BSRR = (reset_mask << 16) | set_mask;
+ 545              		.loc 1 118 5 is_stmt 1 view .LVU189
+ 546              		.loc 1 118 45 is_stmt 0 view .LVU190
+ 547 0020 43EA0243 		orr	r3, r3, r2, lsl #16
+ 548              	.LVL14:
+ 549              		.loc 1 118 24 view .LVU191
+ 550 0024 064A     		ldr	r2, .L32
+ 551              	.LVL15:
+ 552              		.loc 1 118 24 view .LVU192
+ 553 0026 9361     		str	r3, [r2, #24]
+ 119:Core/Src/init.c **** }...
+ 554              		.loc 1 119 1 view .LVU193
+ 555 0028 7047     		bx	lr
+ 556              	.LVL16:
+ 557              	.L31:
+ 110:Core/Src/init.c ****     else reset_mask |= EXT_LED1_PIN;
+ 558              		.loc 1 110 21 view .LVU194
+ 559 002a 4FF48062 		mov	r2, #1024
+ 106:Core/Src/init.c ****     uint32_t set_mask = 0;
+ 560              		.loc 1 106 14 view .LVU195
+ 561 002e 0023     		movs	r3, #0
+ 562 0030 ECE7     		b	.L26
+ 563              	.LVL17:
+ 564              	.L27:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 13
+
+
+ 113:Core/Src/init.c ****     else reset_mask |= EXT_LED2_PIN;
+ 565              		.loc 1 113 10 is_stmt 1 view .LVU196
+ 113:Core/Src/init.c ****     else reset_mask |= EXT_LED2_PIN;
+ 566              		.loc 1 113 21 is_stmt 0 view .LVU197
+ 567 0032 42F40062 		orr	r2, r2, #2048
+ 568              	.LVL18:
+ 113:Core/Src/init.c ****     else reset_mask |= EXT_LED2_PIN;
+ 569              		.loc 1 113 21 view .LVU198
+ 570 0036 EEE7     		b	.L28
+ 571              	.L29:
+ 116:Core/Src/init.c ****     else reset_mask |= EXT_LED3_PIN;
+ 572              		.loc 1 116 10 is_stmt 1 view .LVU199
+ 116:Core/Src/init.c ****     else reset_mask |= EXT_LED3_PIN;
+ 573              		.loc 1 116 21 is_stmt 0 view .LVU200
+ 574 0038 42F48052 		orr	r2, r2, #4096
+ 575              	.LVL19:
+ 116:Core/Src/init.c ****     else reset_mask |= EXT_LED3_PIN;
+ 576              		.loc 1 116 21 view .LVU201
+ 577 003c F0E7     		b	.L30
+ 578              	.L33:
+ 579 003e 00BF     		.align	2
+ 580              	.L32:
+ 581 0040 00080240 		.word	1073874944
+ 582              		.cfi_endproc
+ 583              	.LFE135:
+ 585              		.text
+ 586              	.Letext0:
+ 587              		.file 2 "E:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 588              		.file 3 "E:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 589              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:21     .text.SystemClock_Config:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:27     .text.SystemClock_Config:00000000 SystemClock_Config
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:121    .text.SystemClock_Config:0000006c $d
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:128    .text.GPIO_Init:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:134    .text.GPIO_Init:00000000 GPIO_Init
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:342    .text.GPIO_Init:0000010c $d
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:352    .text.Read_BTN1:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:358    .text.Read_BTN1:00000000 Read_BTN1
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:379    .text.Read_BTN1:00000010 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:384    .text.Read_BTN2:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:390    .text.Read_BTN2:00000000 Read_BTN2
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:411    .text.Read_BTN2:00000010 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:416    .text.LED_Write:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:422    .text.LED_Write:00000000 LED_Write
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:496    .text.LED_Write:0000003c $d
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:501    .text.Ext_LED_Write:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:507    .text.Ext_LED_Write:00000000 Ext_LED_Write
+C:\Users\Lenovo\AppData\Local\Temp\ccR0R1CU.s:581    .text.Ext_LED_Write:00000040 $d
+
+NO UNDEFINED SYMBOLS
