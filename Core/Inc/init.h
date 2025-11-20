@@ -1,60 +1,66 @@
-#include  "../../CMSIS/Devices/stm32f4xx.h"
-#include  "../../CMSIS/Devices/stm32f429xx.h"
-#include <stdint.h>
+#ifndef INIT_H
+#define INIT_H
 
-//开启时钟 B,C
-#define RCC_GPIO_EN                 (*(uint32_t*)(0x40023800UL + 0x30UL)) 
-#define RCC_GPIOB_EN                0x02UL 
-#define RCC_GPIOC_EN                0x04UL 
- //设置时钟
-#define GPIOB_MODER                 (*(uint32_t*)(0x40020400UL + 0x00UL)) 
-#define GPIOB_OTYPER                (*(uint32_t*)(0x40020400UL + 0x04UL)) 
-#define GPIOB_OSPEEDR               (*(uint32_t*)(0x40020400UL + 0x08UL)) 
-#define GPIOB_PUPDR                 (*(uint32_t*)(0x40020400UL + 0x0CUL))  
-#define GPIOB_BSRR                  (*(uint32_t*)(0x40020400UL + 0x18UL)) 
+#include  "D:\AAA_TOOL\Laboratory_Practice\CMSIS\Devices\STM32F4xx\Inc\stm32f4xx.h"
+#include  "D:\AAA_TOOL\Laboratory_Practice\CMSIS\Devices\STM32F4xx\Inc\STM32F429xx\stm32f429xx.h"
 
-// GPIOC寄存器定义
-#define GPIOC_IDR                   (*(uint32_t*)(0x40020800UL + 0x10UL))
-#define GPIOC_MODER                 (*(uint32_t*)(0x40020800UL + 0x00UL))
 
-//设置按钮
-#define GPIOC_IDR                   (*(uint32_t*)(0x40020800UL + 0x10UL)) 
-//按钮2
-#define GPIOC_IDR_PIN13            0x002000UL 
-//按钮3
-#define GPIOC_IDR_PIN6             0x40UL  
-//按钮1
-#define GPIOC_IDR_PIN12            0x001000UL
 
-//设置LED1黄色
-#define GPIOB_MODE_PIN0_OUT        0x001UL 
-#define GPIOB_OTYPE_PIN0_PP        0x000000UL 
-#define GPIOB_OSPEED_PIN0_MID      0x001UL 
-#define GPIOB_PUPDR_PIN0_NOPUPD    0x000000UL
-#define GPIOB_BSRR_PIN0_SET        0x001UL 
-#define GPIOB_BSRR_PIN0_RESET      0x0010000UL
-//设置LED2蓝色
-#define GPIOB_MODE_PIN7_OUT         0x004000UL       
-#define GPIOB_OTYPE_PIN7_PP         0x000000UL 
-#define GPIOB_OSPEED_PIN7_MID       0x004000UL 
-#define GPIOB_PUPDR_PIN7_NOPUPD     0x000000UL 
-#define GPIOB_BSRR_PIN7_SET         0x000080UL 
-#define GPIOB_BSRR_PIN7_RESET       0x800000UL 
-//设置LED3红色
-#define GPIOB_MODE_PIN14_OUT        0x0010000000UL 
-#define GPIOB_OTYPE_PIN14_PP        0x000000UL 
-#define GPIOB_OSPEED_PIN14_MID      0x0010000000UL 
-#define GPIOB_PUPDR_PIN14_NOPUPD    0x000000UL
-#define GPIOB_BSRR_PIN14_SET        0x004000UL 
-#define GPIOB_BSRR_PIN14_RESET      0x0040000000UL
-//设置LED4
-#define GPIOB_MODE_PIN8_OUT        0x0010000UL 
-#define GPIOB_OTYPE_PIN8_PP        0x000000UL 
-#define GPIOB_OSPEED_PIN8_MID      0x0010000UL 
-#define GPIOB_PUPDR_PIN8_NOPUPD    0x000000UL
-#define GPIOB_BSRR_PIN8_SET        0x00100UL 
-#define GPIOB_BSRR_PIN8_RESET      0x001000000UL
- 
-void GPIO_Ini_1(void);
-void GPIO_Ini_2(void);
-void delay(uint32_t s);
+// 硬编码地址定义
+#define GPIOB_BASE_ADDR 0x40020400UL  // GPIOB端口基地址（AHB1总线）
+#define GPIOC_BASE_ADDR 0x40020800UL  // GPIOC端口基地址（AHB1总线）
+#define RCC_BASE_ADDR   0x40023800UL  // RCC（复位和时钟控制）基地址
+
+// GPIO寄存器偏移量定义
+#define MODER_OFFSET    0x00  // GPIO模式寄存器偏移量
+#define OTYPER_OFFSET   0x04  // GPIO输出类型寄存器偏移量
+#define OSPEEDR_OFFSET  0x08  // GPIO输出速度寄存器偏移量
+#define PUPDR_OFFSET    0x0C  // GPIO上拉/下拉寄存器偏移量
+#define IDR_OFFSET      0x10  // GPIO输入数据寄存器偏移量
+#define BSRR_OFFSET     0x18  // GPIO位设置/复位寄存器偏移量
+#define AHB1ENR_OFFSET  0x30  // RCC AHB1外设时钟使能寄存器偏移量
+
+// PB7 LED控制宏
+#define PB7_MODER_OUTPUT()     (GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODER7) | GPIO_MODER_MODER7_0)
+#define PB7_OTYPER_PUSHPULL()  (GPIOB->OTYPER &= ~GPIO_OTYPER_OT7)
+#define PB7_OSPEEDR_HIGH()     (GPIOB->OSPEEDR = (GPIOB->OSPEEDR & ~GPIO_OSPEEDR_OSPEED7) | GPIO_OSPEEDR_OSPEED7_1)
+#define PB7_PUPDR_NOPULL()     (GPIOB->PUPDR &= ~GPIO_PUPDR_PUPD7)
+#define PB7_LED_ON()           (GPIOB->BSRR = GPIO_BSRR_BS_7)
+#define PB7_LED_OFF()          (GPIOB->BSRR = GPIO_BSRR_BR_7)
+
+// PB8 LED控制宏
+#define PB8_MODER_OUTPUT()     (GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODER8) | GPIO_MODER_MODER8_0)
+#define PB8_OTYPER_PUSHPULL()  (GPIOB->OTYPER &= ~GPIO_OTYPER_OT8)
+#define PB8_OSPEEDR_HIGH()     (GPIOB->OSPEEDR = (GPIOB->OSPEEDR & ~GPIO_OSPEEDR_OSPEED8) | GPIO_OSPEEDR_OSPEED8_1)
+#define PB8_PUPDR_NOPULL()     (GPIOB->PUPDR &= ~GPIO_PUPDR_PUPD8)
+#define PB8_LED_ON()           (GPIOB->BSRR = GPIO_BSRR_BS_8)
+#define PB8_LED_OFF()          (GPIOB->BSRR = GPIO_BSRR_BR_8)
+
+// LED控制函数声明
+static inline void led_on(GPIO_TypeDef* port, uint8_t pin)  { port->BSRR = (1U << pin); }
+static inline void led_off(GPIO_TypeDef* port, uint8_t pin) { port->BSRR = (1U << (pin + 16U)); }
+static inline void pb0_led_on(void)  { *(volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET) = (1U << 0); }
+static inline void pb0_led_off(void) { *(volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET) = (1U << (0 + 16U)); }
+
+// PC8模式控制函数声明
+void PC8_Set_Input_PullUp(void);    // 设置PC8为输入模式+内部上拉
+void PC8_Set_Output_High(void);     // 设置PC8为输出模式+高电平
+
+// 全局变量声明
+extern volatile uint8_t g_pc8_mode;  // PC8模式：0=输入模式，1=输出模式
+
+// 按钮标志(用于外部分析)
+extern volatile uint8_t button1_flag;  // PC12按钮标志
+extern volatile uint8_t button2_flag;  // PC6按钮标志  
+extern volatile uint8_t button3_flag;  // PC8按钮标志
+
+// LED状态变量(0:灭，1:亮)
+extern volatile uint8_t led_1_state;  // 红色LED状态 (PB14)
+extern volatile uint8_t led_2_state;  // 蓝色LED状态 (PB7)
+extern volatile uint8_t led_3_state;  // 黄色LED状态 (PB0)
+extern volatile uint8_t led_4_state;  // 外部LED状态 (PC8输出时)
+
+// 函数声明
+void GPIO_Init_Memory(void);  // GPIO初始化函数
+
+#endif
