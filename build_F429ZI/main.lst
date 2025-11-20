@@ -1,0 +1,693 @@
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** static uint8_t button_press_count = 0; //按钮监测变量
+   4:Core/Src/main.c **** static uint8_t debounce_flag = 0; //去抖动处理标志
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** uint8_t LB1 = 0;
+   7:Core/Src/main.c **** uint8_t LB2 = 0;
+   8:Core/Src/main.c **** uint8_t LB3 = 0;
+   9:Core/Src/main.c **** uint8_t LB4 = 0;
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** int main(void)
+  12:Core/Src/main.c **** {
+  29              		.loc 1 12 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 8
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 00B5     		push	{lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 4
+  37              		.cfi_offset 14, -4
+  38 0002 83B0     		sub	sp, sp, #12
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 16
+  13:Core/Src/main.c ****     GPIO_Init_Memory();
+  41              		.loc 1 13 5 view .LVU1
+  42 0004 FFF7FEFF 		bl	GPIO_Init_Memory
+  43              	.LVL0:
+  14:Core/Src/main.c ****     GPIO_Init_CMSIS();
+  44              		.loc 1 14 5 view .LVU2
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 2
+
+
+  45 0008 FFF7FEFF 		bl	GPIO_Init_CMSIS
+  46              	.LVL1:
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c ****     // 初始状态：所有LED关闭
+  17:Core/Src/main.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);   // PB0 关闭
+  47              		.loc 1 17 5 view .LVU3
+  48 000c 7C4B     		ldr	r3, .L20
+  49 000e 9A69     		ldr	r2, [r3, #24]
+  50 0010 42F48032 		orr	r2, r2, #65536
+  51 0014 9A61     		str	r2, [r3, #24]
+  18:Core/Src/main.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);   // PB7 关闭  
+  52              		.loc 1 18 5 view .LVU4
+  53 0016 9A69     		ldr	r2, [r3, #24]
+  54 0018 42F40002 		orr	r2, r2, #8388608
+  55 001c 9A61     		str	r2, [r3, #24]
+  19:Core/Src/main.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);  // PB14 关闭
+  56              		.loc 1 19 5 view .LVU5
+  57 001e 9A69     		ldr	r2, [r3, #24]
+  58 0020 42F08042 		orr	r2, r2, #1073741824
+  59 0024 9A61     		str	r2, [r3, #24]
+  20:Core/Src/main.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);  // PB10 关闭
+  60              		.loc 1 20 5 view .LVU6
+  61 0026 9A69     		ldr	r2, [r3, #24]
+  62 0028 42F08062 		orr	r2, r2, #67108864
+  63 002c 9A61     		str	r2, [r3, #24]
+  64 002e B7E0     		b	.L17
+  65              	.L12:
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c ****     while(1)
+  23:Core/Src/main.c ****     {
+  24:Core/Src/main.c ****         // 检测按钮按下（GPIOC ID13）
+  25:Core/Src/main.c ****         if(READ_BIT(GPIOC->IDR, GPIO_IDR_ID13))
+  26:Core/Src/main.c ****         {
+  27:Core/Src/main.c ****             // 去抖动处理 - 确保每次按下只计数一次
+  28:Core/Src/main.c ****             if(!debounce_flag)
+  29:Core/Src/main.c ****             {
+  30:Core/Src/main.c ****                 debounce_flag = 1;
+  31:Core/Src/main.c ****                 
+  32:Core/Src/main.c ****                 // 增加按钮按下计数
+  33:Core/Src/main.c ****                 button_press_count++;
+  34:Core/Src/main.c ****                 if(button_press_count > 6)
+  35:Core/Src/main.c ****                 {
+  36:Core/Src/main.c ****                     button_press_count = 1;
+  37:Core/Src/main.c ****                 }
+  38:Core/Src/main.c ****                 
+  39:Core/Src/main.c ****                 // 根据计数控制LED - 使用if判断
+  40:Core/Src/main.c ****                 if(button_press_count == 1)
+  41:Core/Src/main.c ****                 {
+  42:Core/Src/main.c ****                     // 第一个灯亮（PB0）
+  43:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);   // PB7关闭
+  66              		.loc 1 43 21 view .LVU7
+  67 0030 734B     		ldr	r3, .L20
+  68 0032 9A69     		ldr	r2, [r3, #24]
+  69 0034 42F40002 		orr	r2, r2, #8388608
+  70 0038 9A61     		str	r2, [r3, #24]
+  44:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);  // PB14关闭
+  71              		.loc 1 44 21 view .LVU8
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 3
+
+
+  72 003a 9A69     		ldr	r2, [r3, #24]
+  73 003c 42F08042 		orr	r2, r2, #1073741824
+  74 0040 9A61     		str	r2, [r3, #24]
+  45:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);  // PB10关闭
+  75              		.loc 1 45 21 view .LVU9
+  76 0042 9A69     		ldr	r2, [r3, #24]
+  77 0044 42F08062 		orr	r2, r2, #67108864
+  78 0048 9A61     		str	r2, [r3, #24]
+  46:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);   // PB0亮
+  79              		.loc 1 46 21 view .LVU10
+  80 004a 9A69     		ldr	r2, [r3, #24]
+  81 004c 42F00102 		orr	r2, r2, #1
+  82 0050 9A61     		str	r2, [r3, #24]
+  47:Core/Src/main.c ****                     LB1 = 1;
+  83              		.loc 1 47 21 view .LVU11
+  84              		.loc 1 47 25 is_stmt 0 view .LVU12
+  85 0052 6C4B     		ldr	r3, .L20+4
+  86 0054 0122     		movs	r2, #1
+  87 0056 1A70     		strb	r2, [r3]
+  48:Core/Src/main.c ****                     LB2 = 0;
+  88              		.loc 1 48 21 is_stmt 1 view .LVU13
+  89              		.loc 1 48 25 is_stmt 0 view .LVU14
+  90 0058 0023     		movs	r3, #0
+  91 005a 6B4A     		ldr	r2, .L20+8
+  92 005c 1370     		strb	r3, [r2]
+  49:Core/Src/main.c ****                     LB3 = 0;
+  93              		.loc 1 49 21 is_stmt 1 view .LVU15
+  94              		.loc 1 49 25 is_stmt 0 view .LVU16
+  95 005e 6B4A     		ldr	r2, .L20+12
+  96 0060 1370     		strb	r3, [r2]
+  50:Core/Src/main.c ****                     LB4 = 0;
+  97              		.loc 1 50 21 is_stmt 1 view .LVU17
+  98              		.loc 1 50 25 is_stmt 0 view .LVU18
+  99 0062 6B4A     		ldr	r2, .L20+16
+ 100 0064 1370     		strb	r3, [r2]
+ 101              	.L5:
+  51:Core/Src/main.c ****                 }
+  52:Core/Src/main.c ****                 else if(button_press_count == 2)
+  53:Core/Src/main.c ****                 {
+  54:Core/Src/main.c ****                     // 前两个灯亮（PB0, PB7）
+  55:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);   // PB0亮
+  56:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);   // PB7亮
+  57:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);  // PB14关闭
+  58:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);  // PB10关闭
+  59:Core/Src/main.c ****                     LB1 = 1;
+  60:Core/Src/main.c ****                     LB2 = 1;
+  61:Core/Src/main.c ****                     LB3 = 0;
+  62:Core/Src/main.c ****                     LB4 = 0;
+  63:Core/Src/main.c ****                 }
+  64:Core/Src/main.c ****                 else if(button_press_count == 3)
+  65:Core/Src/main.c ****                 {
+  66:Core/Src/main.c ****                     // 前三个灯亮（PB0, PB7, PB14）
+  67:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);   // PB0亮
+  68:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);   // PB7亮
+  69:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);  // PB14亮
+  70:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);  // PB10关闭
+  71:Core/Src/main.c ****                     LB1 = 1;
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 4
+
+
+  72:Core/Src/main.c ****                     LB2 = 1;
+  73:Core/Src/main.c ****                     LB3 = 1;
+  74:Core/Src/main.c ****                     LB4 = 0;
+  75:Core/Src/main.c ****                 }
+  76:Core/Src/main.c ****                 else if(button_press_count == 4)
+  77:Core/Src/main.c ****                 {
+  78:Core/Src/main.c ****                     // 四个灯全亮（PB0, PB7, PB14, PB10）
+  79:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);   // PB0亮
+  80:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);   // PB7亮
+  81:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);  // PB14亮
+  82:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS10);  // PB10亮
+  83:Core/Src/main.c ****                     LB1 = 1;
+  84:Core/Src/main.c ****                     LB2 = 1;
+  85:Core/Src/main.c ****                     LB3 = 1;
+  86:Core/Src/main.c ****                     LB4 = 1;
+  87:Core/Src/main.c ****                 }
+  88:Core/Src/main.c ****                 else if(button_press_count == 5)
+  89:Core/Src/main.c ****                 {
+  90:Core/Src/main.c ****                     // 所有LED关闭
+  91:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);   // PB0关闭
+  92:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);   // PB7关闭
+  93:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);  // PB14关闭
+  94:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);  // PB10关闭
+  95:Core/Src/main.c ****                     LB1 = 0;
+  96:Core/Src/main.c ****                     LB2 = 0;
+  97:Core/Src/main.c ****                     LB3 = 0;
+  98:Core/Src/main.c ****                     LB4 = 0;
+  99:Core/Src/main.c ****                 }
+ 100:Core/Src/main.c ****                 else if(button_press_count == 6)
+ 101:Core/Src/main.c ****                 {
+ 102:Core/Src/main.c ****                     // 所有LED打开
+ 103:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);   // PB0亮
+ 104:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);   // PB7亮
+ 105:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);  // PB14亮
+ 106:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS10);  // PB10亮
+ 107:Core/Src/main.c ****                     LB1 = 1;
+ 108:Core/Src/main.c ****                     LB2 = 1;
+ 109:Core/Src/main.c ****                     LB3 = 1;
+ 110:Core/Src/main.c ****                     LB4 = 1;
+ 111:Core/Src/main.c ****                 }
+ 112:Core/Src/main.c ****                 
+ 113:Core/Src/main.c ****                 // 简单延时，防止过于快速的处理
+ 114:Core/Src/main.c ****                 for(volatile uint32_t i = 0; i < 100000; i++);
+ 102              		.loc 1 114 17 is_stmt 1 view .LVU19
+ 103              	.LBB2:
+ 104              		.loc 1 114 21 view .LVU20
+ 105              		.loc 1 114 39 is_stmt 0 view .LVU21
+ 106 0066 0023     		movs	r3, #0
+ 107 0068 0093     		str	r3, [sp]
+ 108              		.loc 1 114 17 view .LVU22
+ 109 006a 8BE0     		b	.L13
+ 110              	.L11:
+ 111              	.LBE2:
+  55:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);   // PB7亮
+ 112              		.loc 1 55 21 is_stmt 1 view .LVU23
+ 113 006c 644B     		ldr	r3, .L20
+ 114 006e 9A69     		ldr	r2, [r3, #24]
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 5
+
+
+ 115 0070 42F00102 		orr	r2, r2, #1
+ 116 0074 9A61     		str	r2, [r3, #24]
+  56:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);  // PB14关闭
+ 117              		.loc 1 56 21 view .LVU24
+ 118 0076 9A69     		ldr	r2, [r3, #24]
+ 119 0078 42F08002 		orr	r2, r2, #128
+ 120 007c 9A61     		str	r2, [r3, #24]
+  57:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);  // PB10关闭
+ 121              		.loc 1 57 21 view .LVU25
+ 122 007e 9A69     		ldr	r2, [r3, #24]
+ 123 0080 42F08042 		orr	r2, r2, #1073741824
+ 124 0084 9A61     		str	r2, [r3, #24]
+  58:Core/Src/main.c ****                     LB1 = 1;
+ 125              		.loc 1 58 21 view .LVU26
+ 126 0086 9A69     		ldr	r2, [r3, #24]
+ 127 0088 42F08062 		orr	r2, r2, #67108864
+ 128 008c 9A61     		str	r2, [r3, #24]
+  59:Core/Src/main.c ****                     LB2 = 1;
+ 129              		.loc 1 59 21 view .LVU27
+  59:Core/Src/main.c ****                     LB2 = 1;
+ 130              		.loc 1 59 25 is_stmt 0 view .LVU28
+ 131 008e 0123     		movs	r3, #1
+ 132 0090 5C4A     		ldr	r2, .L20+4
+ 133 0092 1370     		strb	r3, [r2]
+  60:Core/Src/main.c ****                     LB3 = 0;
+ 134              		.loc 1 60 21 is_stmt 1 view .LVU29
+  60:Core/Src/main.c ****                     LB3 = 0;
+ 135              		.loc 1 60 25 is_stmt 0 view .LVU30
+ 136 0094 5C4A     		ldr	r2, .L20+8
+ 137 0096 1370     		strb	r3, [r2]
+  61:Core/Src/main.c ****                     LB4 = 0;
+ 138              		.loc 1 61 21 is_stmt 1 view .LVU31
+  61:Core/Src/main.c ****                     LB4 = 0;
+ 139              		.loc 1 61 25 is_stmt 0 view .LVU32
+ 140 0098 0023     		movs	r3, #0
+ 141 009a 5C4A     		ldr	r2, .L20+12
+ 142 009c 1370     		strb	r3, [r2]
+  62:Core/Src/main.c ****                 }
+ 143              		.loc 1 62 21 is_stmt 1 view .LVU33
+  62:Core/Src/main.c ****                 }
+ 144              		.loc 1 62 25 is_stmt 0 view .LVU34
+ 145 009e 5C4A     		ldr	r2, .L20+16
+ 146 00a0 1370     		strb	r3, [r2]
+ 147 00a2 E0E7     		b	.L5
+ 148              	.L10:
+  67:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);   // PB7亮
+ 149              		.loc 1 67 21 is_stmt 1 view .LVU35
+ 150 00a4 564B     		ldr	r3, .L20
+ 151 00a6 9A69     		ldr	r2, [r3, #24]
+ 152 00a8 42F00102 		orr	r2, r2, #1
+ 153 00ac 9A61     		str	r2, [r3, #24]
+  68:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);  // PB14亮
+ 154              		.loc 1 68 21 view .LVU36
+ 155 00ae 9A69     		ldr	r2, [r3, #24]
+ 156 00b0 42F08002 		orr	r2, r2, #128
+ 157 00b4 9A61     		str	r2, [r3, #24]
+  69:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);  // PB10关闭
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 6
+
+
+ 158              		.loc 1 69 21 view .LVU37
+ 159 00b6 9A69     		ldr	r2, [r3, #24]
+ 160 00b8 42F48042 		orr	r2, r2, #16384
+ 161 00bc 9A61     		str	r2, [r3, #24]
+  70:Core/Src/main.c ****                     LB1 = 1;
+ 162              		.loc 1 70 21 view .LVU38
+ 163 00be 9A69     		ldr	r2, [r3, #24]
+ 164 00c0 42F08062 		orr	r2, r2, #67108864
+ 165 00c4 9A61     		str	r2, [r3, #24]
+  71:Core/Src/main.c ****                     LB2 = 1;
+ 166              		.loc 1 71 21 view .LVU39
+  71:Core/Src/main.c ****                     LB2 = 1;
+ 167              		.loc 1 71 25 is_stmt 0 view .LVU40
+ 168 00c6 0123     		movs	r3, #1
+ 169 00c8 4E4A     		ldr	r2, .L20+4
+ 170 00ca 1370     		strb	r3, [r2]
+  72:Core/Src/main.c ****                     LB3 = 1;
+ 171              		.loc 1 72 21 is_stmt 1 view .LVU41
+  72:Core/Src/main.c ****                     LB3 = 1;
+ 172              		.loc 1 72 25 is_stmt 0 view .LVU42
+ 173 00cc 4E4A     		ldr	r2, .L20+8
+ 174 00ce 1370     		strb	r3, [r2]
+  73:Core/Src/main.c ****                     LB4 = 0;
+ 175              		.loc 1 73 21 is_stmt 1 view .LVU43
+  73:Core/Src/main.c ****                     LB4 = 0;
+ 176              		.loc 1 73 25 is_stmt 0 view .LVU44
+ 177 00d0 4E4A     		ldr	r2, .L20+12
+ 178 00d2 1370     		strb	r3, [r2]
+  74:Core/Src/main.c ****                 }
+ 179              		.loc 1 74 21 is_stmt 1 view .LVU45
+  74:Core/Src/main.c ****                 }
+ 180              		.loc 1 74 25 is_stmt 0 view .LVU46
+ 181 00d4 4E4B     		ldr	r3, .L20+16
+ 182 00d6 0022     		movs	r2, #0
+ 183 00d8 1A70     		strb	r2, [r3]
+ 184 00da C4E7     		b	.L5
+ 185              	.L9:
+  79:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);   // PB7亮
+ 186              		.loc 1 79 21 is_stmt 1 view .LVU47
+ 187 00dc 484B     		ldr	r3, .L20
+ 188 00de 9A69     		ldr	r2, [r3, #24]
+ 189 00e0 42F00102 		orr	r2, r2, #1
+ 190 00e4 9A61     		str	r2, [r3, #24]
+  80:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);  // PB14亮
+ 191              		.loc 1 80 21 view .LVU48
+ 192 00e6 9A69     		ldr	r2, [r3, #24]
+ 193 00e8 42F08002 		orr	r2, r2, #128
+ 194 00ec 9A61     		str	r2, [r3, #24]
+  81:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS10);  // PB10亮
+ 195              		.loc 1 81 21 view .LVU49
+ 196 00ee 9A69     		ldr	r2, [r3, #24]
+ 197 00f0 42F48042 		orr	r2, r2, #16384
+ 198 00f4 9A61     		str	r2, [r3, #24]
+  82:Core/Src/main.c ****                     LB1 = 1;
+ 199              		.loc 1 82 21 view .LVU50
+ 200 00f6 9A69     		ldr	r2, [r3, #24]
+ 201 00f8 42F48062 		orr	r2, r2, #1024
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 7
+
+
+ 202 00fc 9A61     		str	r2, [r3, #24]
+  83:Core/Src/main.c ****                     LB2 = 1;
+ 203              		.loc 1 83 21 view .LVU51
+  83:Core/Src/main.c ****                     LB2 = 1;
+ 204              		.loc 1 83 25 is_stmt 0 view .LVU52
+ 205 00fe 0123     		movs	r3, #1
+ 206 0100 404A     		ldr	r2, .L20+4
+ 207 0102 1370     		strb	r3, [r2]
+  84:Core/Src/main.c ****                     LB3 = 1;
+ 208              		.loc 1 84 21 is_stmt 1 view .LVU53
+  84:Core/Src/main.c ****                     LB3 = 1;
+ 209              		.loc 1 84 25 is_stmt 0 view .LVU54
+ 210 0104 404A     		ldr	r2, .L20+8
+ 211 0106 1370     		strb	r3, [r2]
+  85:Core/Src/main.c ****                     LB4 = 1;
+ 212              		.loc 1 85 21 is_stmt 1 view .LVU55
+  85:Core/Src/main.c ****                     LB4 = 1;
+ 213              		.loc 1 85 25 is_stmt 0 view .LVU56
+ 214 0108 404A     		ldr	r2, .L20+12
+ 215 010a 1370     		strb	r3, [r2]
+  86:Core/Src/main.c ****                 }
+ 216              		.loc 1 86 21 is_stmt 1 view .LVU57
+  86:Core/Src/main.c ****                 }
+ 217              		.loc 1 86 25 is_stmt 0 view .LVU58
+ 218 010c 404A     		ldr	r2, .L20+16
+ 219 010e 1370     		strb	r3, [r2]
+ 220 0110 A9E7     		b	.L5
+ 221              	.L8:
+  91:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);   // PB7关闭
+ 222              		.loc 1 91 21 is_stmt 1 view .LVU59
+ 223 0112 3B4B     		ldr	r3, .L20
+ 224 0114 9A69     		ldr	r2, [r3, #24]
+ 225 0116 42F48032 		orr	r2, r2, #65536
+ 226 011a 9A61     		str	r2, [r3, #24]
+  92:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);  // PB14关闭
+ 227              		.loc 1 92 21 view .LVU60
+ 228 011c 9A69     		ldr	r2, [r3, #24]
+ 229 011e 42F40002 		orr	r2, r2, #8388608
+ 230 0122 9A61     		str	r2, [r3, #24]
+  93:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);  // PB10关闭
+ 231              		.loc 1 93 21 view .LVU61
+ 232 0124 9A69     		ldr	r2, [r3, #24]
+ 233 0126 42F08042 		orr	r2, r2, #1073741824
+ 234 012a 9A61     		str	r2, [r3, #24]
+  94:Core/Src/main.c ****                     LB1 = 0;
+ 235              		.loc 1 94 21 view .LVU62
+ 236 012c 9A69     		ldr	r2, [r3, #24]
+ 237 012e 42F08062 		orr	r2, r2, #67108864
+ 238 0132 9A61     		str	r2, [r3, #24]
+  95:Core/Src/main.c ****                     LB2 = 0;
+ 239              		.loc 1 95 21 view .LVU63
+  95:Core/Src/main.c ****                     LB2 = 0;
+ 240              		.loc 1 95 25 is_stmt 0 view .LVU64
+ 241 0134 0023     		movs	r3, #0
+ 242 0136 334A     		ldr	r2, .L20+4
+ 243 0138 1370     		strb	r3, [r2]
+  96:Core/Src/main.c ****                     LB3 = 0;
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 8
+
+
+ 244              		.loc 1 96 21 is_stmt 1 view .LVU65
+  96:Core/Src/main.c ****                     LB3 = 0;
+ 245              		.loc 1 96 25 is_stmt 0 view .LVU66
+ 246 013a 334A     		ldr	r2, .L20+8
+ 247 013c 1370     		strb	r3, [r2]
+  97:Core/Src/main.c ****                     LB4 = 0;
+ 248              		.loc 1 97 21 is_stmt 1 view .LVU67
+  97:Core/Src/main.c ****                     LB4 = 0;
+ 249              		.loc 1 97 25 is_stmt 0 view .LVU68
+ 250 013e 334A     		ldr	r2, .L20+12
+ 251 0140 1370     		strb	r3, [r2]
+  98:Core/Src/main.c ****                 }
+ 252              		.loc 1 98 21 is_stmt 1 view .LVU69
+  98:Core/Src/main.c ****                 }
+ 253              		.loc 1 98 25 is_stmt 0 view .LVU70
+ 254 0142 334A     		ldr	r2, .L20+16
+ 255 0144 1370     		strb	r3, [r2]
+ 256 0146 8EE7     		b	.L5
+ 257              	.L6:
+ 103:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);   // PB7亮
+ 258              		.loc 1 103 21 is_stmt 1 view .LVU71
+ 259 0148 2D4B     		ldr	r3, .L20
+ 260 014a 9A69     		ldr	r2, [r3, #24]
+ 261 014c 42F00102 		orr	r2, r2, #1
+ 262 0150 9A61     		str	r2, [r3, #24]
+ 104:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);  // PB14亮
+ 263              		.loc 1 104 21 view .LVU72
+ 264 0152 9A69     		ldr	r2, [r3, #24]
+ 265 0154 42F08002 		orr	r2, r2, #128
+ 266 0158 9A61     		str	r2, [r3, #24]
+ 105:Core/Src/main.c ****                     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS10);  // PB10亮
+ 267              		.loc 1 105 21 view .LVU73
+ 268 015a 9A69     		ldr	r2, [r3, #24]
+ 269 015c 42F48042 		orr	r2, r2, #16384
+ 270 0160 9A61     		str	r2, [r3, #24]
+ 106:Core/Src/main.c ****                     LB1 = 1;
+ 271              		.loc 1 106 21 view .LVU74
+ 272 0162 9A69     		ldr	r2, [r3, #24]
+ 273 0164 42F48062 		orr	r2, r2, #1024
+ 274 0168 9A61     		str	r2, [r3, #24]
+ 107:Core/Src/main.c ****                     LB2 = 1;
+ 275              		.loc 1 107 21 view .LVU75
+ 107:Core/Src/main.c ****                     LB2 = 1;
+ 276              		.loc 1 107 25 is_stmt 0 view .LVU76
+ 277 016a 0123     		movs	r3, #1
+ 278 016c 254A     		ldr	r2, .L20+4
+ 279 016e 1370     		strb	r3, [r2]
+ 108:Core/Src/main.c ****                     LB3 = 1;
+ 280              		.loc 1 108 21 is_stmt 1 view .LVU77
+ 108:Core/Src/main.c ****                     LB3 = 1;
+ 281              		.loc 1 108 25 is_stmt 0 view .LVU78
+ 282 0170 254A     		ldr	r2, .L20+8
+ 283 0172 1370     		strb	r3, [r2]
+ 109:Core/Src/main.c ****                     LB4 = 1;
+ 284              		.loc 1 109 21 is_stmt 1 view .LVU79
+ 109:Core/Src/main.c ****                     LB4 = 1;
+ 285              		.loc 1 109 25 is_stmt 0 view .LVU80
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 9
+
+
+ 286 0174 254A     		ldr	r2, .L20+12
+ 287 0176 1370     		strb	r3, [r2]
+ 110:Core/Src/main.c ****                 }
+ 288              		.loc 1 110 21 is_stmt 1 view .LVU81
+ 110:Core/Src/main.c ****                 }
+ 289              		.loc 1 110 25 is_stmt 0 view .LVU82
+ 290 0178 254A     		ldr	r2, .L20+16
+ 291 017a 1370     		strb	r3, [r2]
+ 292 017c 73E7     		b	.L5
+ 293              	.L14:
+ 294              	.LBB3:
+ 295              		.loc 1 114 59 is_stmt 1 discriminator 3 view .LVU83
+ 296 017e 009B     		ldr	r3, [sp]
+ 297 0180 0133     		adds	r3, r3, #1
+ 298 0182 0093     		str	r3, [sp]
+ 299              	.L13:
+ 300              		.loc 1 114 48 discriminator 1 view .LVU84
+ 301 0184 009A     		ldr	r2, [sp]
+ 302 0186 234B     		ldr	r3, .L20+20
+ 303 0188 9A42     		cmp	r2, r3
+ 304 018a F8D9     		bls	.L14
+ 305 018c 02E0     		b	.L3
+ 306              	.L2:
+ 307              	.LBE3:
+ 115:Core/Src/main.c ****             }
+ 116:Core/Src/main.c ****         }
+ 117:Core/Src/main.c ****         else
+ 118:Core/Src/main.c ****         {
+ 119:Core/Src/main.c ****             // 按钮释放，重置去抖动标志
+ 120:Core/Src/main.c ****             debounce_flag = 0;
+ 308              		.loc 1 120 13 view .LVU85
+ 309              		.loc 1 120 27 is_stmt 0 view .LVU86
+ 310 018e 224B     		ldr	r3, .L20+24
+ 311 0190 0022     		movs	r2, #0
+ 312 0192 1A70     		strb	r2, [r3]
+ 313              	.L3:
+ 121:Core/Src/main.c ****         }
+ 122:Core/Src/main.c ****         
+ 123:Core/Src/main.c ****         // 添加小延时，避免过于频繁的检测
+ 124:Core/Src/main.c ****         for(volatile uint32_t i = 0; i < 1000; i++);
+ 314              		.loc 1 124 9 is_stmt 1 view .LVU87
+ 315              	.LBB4:
+ 316              		.loc 1 124 13 view .LVU88
+ 317              		.loc 1 124 31 is_stmt 0 view .LVU89
+ 318 0194 0023     		movs	r3, #0
+ 319 0196 0193     		str	r3, [sp, #4]
+ 320              	.L15:
+ 321              		.loc 1 124 40 is_stmt 1 discriminator 1 view .LVU90
+ 322 0198 019B     		ldr	r3, [sp, #4]
+ 323 019a B3F57A7F 		cmp	r3, #1000
+ 324 019e 2BD3     		bcc	.L16
+ 325              	.L17:
+ 326              	.LBE4:
+  22:Core/Src/main.c ****     {
+ 327              		.loc 1 22 5 view .LVU91
+  25:Core/Src/main.c ****         {
+ 328              		.loc 1 25 9 view .LVU92
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 10
+
+
+  25:Core/Src/main.c ****         {
+ 329              		.loc 1 25 12 is_stmt 0 view .LVU93
+ 330 01a0 1E4B     		ldr	r3, .L20+28
+ 331 01a2 1B69     		ldr	r3, [r3, #16]
+  25:Core/Src/main.c ****         {
+ 332              		.loc 1 25 11 view .LVU94
+ 333 01a4 13F4005F 		tst	r3, #8192
+ 334 01a8 F1D0     		beq	.L2
+  28:Core/Src/main.c ****             {
+ 335              		.loc 1 28 13 is_stmt 1 view .LVU95
+  28:Core/Src/main.c ****             {
+ 336              		.loc 1 28 16 is_stmt 0 view .LVU96
+ 337 01aa 1B4B     		ldr	r3, .L20+24
+ 338 01ac 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  28:Core/Src/main.c ****             {
+ 339              		.loc 1 28 15 view .LVU97
+ 340 01ae 002B     		cmp	r3, #0
+ 341 01b0 F0D1     		bne	.L3
+  30:Core/Src/main.c ****                 
+ 342              		.loc 1 30 17 is_stmt 1 view .LVU98
+  30:Core/Src/main.c ****                 
+ 343              		.loc 1 30 31 is_stmt 0 view .LVU99
+ 344 01b2 194B     		ldr	r3, .L20+24
+ 345 01b4 0122     		movs	r2, #1
+ 346 01b6 1A70     		strb	r2, [r3]
+  33:Core/Src/main.c ****                 if(button_press_count > 6)
+ 347              		.loc 1 33 17 is_stmt 1 view .LVU100
+  33:Core/Src/main.c ****                 if(button_press_count > 6)
+ 348              		.loc 1 33 35 is_stmt 0 view .LVU101
+ 349 01b8 194A     		ldr	r2, .L20+32
+ 350 01ba 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 351 01bc 0133     		adds	r3, r3, #1
+ 352 01be DBB2     		uxtb	r3, r3
+ 353 01c0 1370     		strb	r3, [r2]
+  34:Core/Src/main.c ****                 {
+ 354              		.loc 1 34 17 is_stmt 1 view .LVU102
+  34:Core/Src/main.c ****                 {
+ 355              		.loc 1 34 19 is_stmt 0 view .LVU103
+ 356 01c2 062B     		cmp	r3, #6
+ 357 01c4 02D9     		bls	.L4
+  36:Core/Src/main.c ****                 }
+ 358              		.loc 1 36 21 is_stmt 1 view .LVU104
+  36:Core/Src/main.c ****                 }
+ 359              		.loc 1 36 40 is_stmt 0 view .LVU105
+ 360 01c6 1346     		mov	r3, r2
+ 361 01c8 0122     		movs	r2, #1
+ 362 01ca 1A70     		strb	r2, [r3]
+ 363              	.L4:
+  40:Core/Src/main.c ****                 {
+ 364              		.loc 1 40 17 is_stmt 1 view .LVU106
+  40:Core/Src/main.c ****                 {
+ 365              		.loc 1 40 39 is_stmt 0 view .LVU107
+ 366 01cc 144B     		ldr	r3, .L20+32
+ 367 01ce 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 368 01d0 013B     		subs	r3, r3, #1
+ 369 01d2 052B     		cmp	r3, #5
+ 370 01d4 3FF647AF 		bhi	.L5
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 11
+
+
+ 371 01d8 01A2     		adr	r2, .L7
+ 372 01da 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 373 01de 00BF     		.p2align 2
+ 374              	.L7:
+ 375 01e0 31000000 		.word	.L12+1
+ 376 01e4 6D000000 		.word	.L11+1
+ 377 01e8 A5000000 		.word	.L10+1
+ 378 01ec DD000000 		.word	.L9+1
+ 379 01f0 13010000 		.word	.L8+1
+ 380 01f4 49010000 		.word	.L6+1
+ 381              		.p2align 1
+ 382              	.L16:
+ 383              	.LBB5:
+ 384              		.loc 1 124 49 is_stmt 1 discriminator 3 view .LVU108
+ 385 01f8 019B     		ldr	r3, [sp, #4]
+ 386 01fa 0133     		adds	r3, r3, #1
+ 387 01fc 0193     		str	r3, [sp, #4]
+ 388 01fe CBE7     		b	.L15
+ 389              	.L21:
+ 390              		.align	2
+ 391              	.L20:
+ 392 0200 00040240 		.word	1073873920
+ 393 0204 00000000 		.word	LB1
+ 394 0208 00000000 		.word	LB2
+ 395 020c 00000000 		.word	LB3
+ 396 0210 00000000 		.word	LB4
+ 397 0214 9F860100 		.word	99999
+ 398 0218 00000000 		.word	debounce_flag
+ 399 021c 00080240 		.word	1073874944
+ 400 0220 00000000 		.word	button_press_count
+ 401              	.LBE5:
+ 402              		.cfi_endproc
+ 403              	.LFE130:
+ 405              		.global	LB4
+ 406              		.section	.bss.LB4,"aw",%nobits
+ 409              	LB4:
+ 410 0000 00       		.space	1
+ 411              		.global	LB3
+ 412              		.section	.bss.LB3,"aw",%nobits
+ 415              	LB3:
+ 416 0000 00       		.space	1
+ 417              		.global	LB2
+ 418              		.section	.bss.LB2,"aw",%nobits
+ 421              	LB2:
+ 422 0000 00       		.space	1
+ 423              		.global	LB1
+ 424              		.section	.bss.LB1,"aw",%nobits
+ 427              	LB1:
+ 428 0000 00       		.space	1
+ 429              		.section	.bss.debounce_flag,"aw",%nobits
+ 432              	debounce_flag:
+ 433 0000 00       		.space	1
+ 434              		.section	.bss.button_press_count,"aw",%nobits
+ 437              	button_press_count:
+ 438 0000 00       		.space	1
+ 439              		.text
+ 440              	.Letext0:
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 12
+
+
+ 441              		.file 2 "F:/VStools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_type
+ 442              		.file 3 "F:/VStools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 443              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 444              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:21     .text.main:00000000 $t
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:27     .text.main:00000000 main
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:375    .text.main:000001e0 $d
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:381    .text.main:000001f8 $t
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:392    .text.main:00000200 $d
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:427    .bss.LB1:00000000 LB1
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:421    .bss.LB2:00000000 LB2
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:415    .bss.LB3:00000000 LB3
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:409    .bss.LB4:00000000 LB4
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:432    .bss.debounce_flag:00000000 debounce_flag
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:437    .bss.button_press_count:00000000 button_press_count
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:410    .bss.LB4:00000000 $d
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:416    .bss.LB3:00000000 $d
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:422    .bss.LB2:00000000 $d
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:428    .bss.LB1:00000000 $d
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:433    .bss.debounce_flag:00000000 $d
+C:\Users\Polaris\AppData\Local\Temp\ccVQ55Je.s:438    .bss.button_press_count:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init_Memory
+GPIO_Init_CMSIS
