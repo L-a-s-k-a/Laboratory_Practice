@@ -1,0 +1,561 @@
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.Init_PORT_D_withMemory,"ax",%progbits
+  21              		.align	1
+  22              		.global	Init_PORT_D_withMemory
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	Init_PORT_D_withMemory:
+  28              	.LFB130:
+   1:Core/Src/init.c ****  #include "../Inc/init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c ****  // Есть порты: portA, portB, portC, portD
+   4:Core/Src/init.c ****  //частота
+   5:Core/Src/init.c **** #define HPERIOD_F1  200000UL 
+   6:Core/Src/init.c **** #define HPERIOD_F2   80000UL   
+   7:Core/Src/init.c **** #define HPERIOD_F3   300000UL 
+   8:Core/Src/init.c **** 
+   9:Core/Src/init.c **** //(светодиод pd1)
+  10:Core/Src/init.c **** void Init_PORT_D_withMemory(void) 
+  11:Core/Src/init.c **** {
+  29              		.loc 1 11 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  12:Core/Src/init.c ****     (*(uint32_t*)(0x40023800+0x30UL)) |= 0x08UL; 
+  34              		.loc 1 12 5 view .LVU1
+  35              		.loc 1 12 6 is_stmt 0 view .LVU2
+  36 0000 0D4A     		ldr	r2, .L2
+  37 0002 D2F83038 		ldr	r3, [r2, #2096]
+  38              		.loc 1 12 39 view .LVU3
+  39 0006 43F00803 		orr	r3, r3, #8
+  40 000a C2F83038 		str	r3, [r2, #2096]
+  13:Core/Src/init.c ****     (*(uint32_t*)(0x40020C00UL + 0x00UL)) |= (0b0100UL); 
+  41              		.loc 1 13 5 is_stmt 1 view .LVU4
+  42              		.loc 1 13 6 is_stmt 0 view .LVU5
+  43 000e 0B4B     		ldr	r3, .L2+4
+  44 0010 D3F8002C 		ldr	r2, [r3, #3072]
+  45              		.loc 1 13 43 view .LVU6
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 2
+
+
+  46 0014 42F00402 		orr	r2, r2, #4
+  47 0018 C3F8002C 		str	r2, [r3, #3072]
+  14:Core/Src/init.c ****     (*(uint32_t*)(0x40020C00UL + 0x04UL)) |= 0b00UL;  
+  48              		.loc 1 14 5 is_stmt 1 view .LVU7
+  15:Core/Src/init.c ****     (*(uint32_t*)(0x40020C00UL + 0x08UL)) |= (0b0100UL); 
+  49              		.loc 1 15 5 view .LVU8
+  50              		.loc 1 15 6 is_stmt 0 view .LVU9
+  51 001c D3F8082C 		ldr	r2, [r3, #3080]
+  52              		.loc 1 15 43 view .LVU10
+  53 0020 42F00402 		orr	r2, r2, #4
+  54 0024 C3F8082C 		str	r2, [r3, #3080]
+  16:Core/Src/init.c ****     (*(uint32_t*)(0x40020C00UL + 0x0CUL) )|= (0b00UL); 
+  55              		.loc 1 16 5 is_stmt 1 view .LVU11
+  17:Core/Src/init.c ****     (*(uint32_t*)(0x40020C00UL + 0x18UL)) |= (0x20000UL); 
+  56              		.loc 1 17 5 view .LVU12
+  57              		.loc 1 17 6 is_stmt 0 view .LVU13
+  58 0028 D3F8182C 		ldr	r2, [r3, #3096]
+  59              		.loc 1 17 43 view .LVU14
+  60 002c 42F40032 		orr	r2, r2, #131072
+  61 0030 C3F8182C 		str	r2, [r3, #3096]
+  18:Core/Src/init.c **** }
+  62              		.loc 1 18 1 view .LVU15
+  63 0034 7047     		bx	lr
+  64              	.L3:
+  65 0036 00BF     		.align	2
+  66              	.L2:
+  67 0038 00300240 		.word	1073885184
+  68 003c 00000240 		.word	1073872896
+  69              		.cfi_endproc
+  70              	.LFE130:
+  72              		.section	.text.Init_PORT_A_withMemory,"ax",%progbits
+  73              		.align	1
+  74              		.global	Init_PORT_A_withMemory
+  75              		.syntax unified
+  76              		.thumb
+  77              		.thumb_func
+  79              	Init_PORT_A_withMemory:
+  80              	.LFB131:
+  19:Core/Src/init.c **** 
+  20:Core/Src/init.c **** //светодиод PA0 через CMSIS
+  21:Core/Src/init.c **** void Init_PORT_A_withMemory(void)
+  22:Core/Src/init.c **** {
+  81              		.loc 1 22 1 is_stmt 1 view -0
+  82              		.cfi_startproc
+  83              		@ args = 0, pretend = 0, frame = 0
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+  85              		@ link register save eliminated.
+  23:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN);        //тактирование
+  86              		.loc 1 23 5 view .LVU17
+  87 0000 0D4A     		ldr	r2, .L5
+  88 0002 136B     		ldr	r3, [r2, #48]
+  89 0004 43F00103 		orr	r3, r3, #1
+  90 0008 1363     		str	r3, [r2, #48]
+  24:Core/Src/init.c ****     SET_BIT(GPIOA->MODER, GPIO_MODER_MODE0_0);         //настроили на выход MODER
+  91              		.loc 1 24 5 view .LVU18
+  92 000a 0C4B     		ldr	r3, .L5+4
+  93 000c 1A68     		ldr	r2, [r3]
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 3
+
+
+  94 000e 42F00102 		orr	r2, r2, #1
+  95 0012 1A60     		str	r2, [r3]
+  25:Core/Src/init.c ****     CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT0);         //OTYPER настраивается тип �
+  96              		.loc 1 25 5 view .LVU19
+  97 0014 5A68     		ldr	r2, [r3, #4]
+  98 0016 22F00102 		bic	r2, r2, #1
+  99 001a 5A60     		str	r2, [r3, #4]
+  26:Core/Src/init.c ****     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0); //Скорость medium
+ 100              		.loc 1 26 5 view .LVU20
+ 101 001c 9A68     		ldr	r2, [r3, #8]
+ 102 001e 42F00102 		orr	r2, r2, #1
+ 103 0022 9A60     		str	r2, [r3, #8]
+  27:Core/Src/init.c ****     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD0);         //no pull-resistor
+ 104              		.loc 1 27 5 view .LVU21
+ 105 0024 DA68     		ldr	r2, [r3, #12]
+ 106 0026 22F00302 		bic	r2, r2, #3
+ 107 002a DA60     		str	r2, [r3, #12]
+  28:Core/Src/init.c ****     SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR0);               //BSRR выключили LED PA0
+ 108              		.loc 1 28 5 view .LVU22
+ 109 002c 9A69     		ldr	r2, [r3, #24]
+ 110 002e 42F48032 		orr	r2, r2, #65536
+ 111 0032 9A61     		str	r2, [r3, #24]
+  29:Core/Src/init.c **** }
+ 112              		.loc 1 29 1 is_stmt 0 view .LVU23
+ 113 0034 7047     		bx	lr
+ 114              	.L6:
+ 115 0036 00BF     		.align	2
+ 116              	.L5:
+ 117 0038 00380240 		.word	1073887232
+ 118 003c 00000240 		.word	1073872896
+ 119              		.cfi_endproc
+ 120              	.LFE131:
+ 122              		.section	.text.Init_PORT_E_withMemory,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	Init_PORT_E_withMemory
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 129              	Init_PORT_E_withMemory:
+ 130              	.LFB132:
+  30:Core/Src/init.c **** 
+  31:Core/Src/init.c **** //светодиод PE0 через собственные макросы
+  32:Core/Src/init.c **** 
+  33:Core/Src/init.c **** void Init_PORT_E_withMemory(void)
+  34:Core/Src/init.c **** {
+ 131              		.loc 1 34 1 is_stmt 1 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135              		@ link register save eliminated.
+  35:Core/Src/init.c ****     MY_SET_BIT(RCC_GPIO_EN, RCC_GPIOE_EN);
+ 136              		.loc 1 35 5 view .LVU25
+ 137 0000 0A4A     		ldr	r2, .L8
+ 138 0002 D2F83038 		ldr	r3, [r2, #2096]
+ 139 0006 43F01003 		orr	r3, r3, #16
+ 140 000a C2F83038 		str	r3, [r2, #2096]
+  36:Core/Src/init.c ****     MY_SET_BIT(GPIOE_MODER_REG, GPIOE_MODER_BIT);
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 4
+
+
+ 141              		.loc 1 36 5 view .LVU26
+ 142 000e 084B     		ldr	r3, .L8+4
+ 143 0010 1A68     		ldr	r2, [r3]
+ 144 0012 42F00102 		orr	r2, r2, #1
+ 145 0016 1A60     		str	r2, [r3]
+  37:Core/Src/init.c ****     MY_SET_BIT(GPIOE_OTYPER_REG, GPIOE_OTYPER_BIT);
+ 146              		.loc 1 37 5 view .LVU27
+  38:Core/Src/init.c ****     MY_SET_BIT(GPIOE_OSPEEDR_REG, GPIOE_OSPEEDR_BIT);
+ 147              		.loc 1 38 5 view .LVU28
+ 148 0018 9A68     		ldr	r2, [r3, #8]
+ 149 001a 42F00102 		orr	r2, r2, #1
+ 150 001e 9A60     		str	r2, [r3, #8]
+  39:Core/Src/init.c ****     MY_SET_BIT(GPIOE_PUPDR_REG, GPIOE_PUPDR_BIT);   
+ 151              		.loc 1 39 5 view .LVU29
+  40:Core/Src/init.c ****     MY_SET_BIT(GPIOE_BSRR_REG, GPIOE_BSRR_BIT);
+ 152              		.loc 1 40 5 view .LVU30
+ 153 0020 9A69     		ldr	r2, [r3, #24]
+ 154 0022 42F48032 		orr	r2, r2, #65536
+ 155 0026 9A61     		str	r2, [r3, #24]
+  41:Core/Src/init.c **** }
+ 156              		.loc 1 41 1 is_stmt 0 view .LVU31
+ 157 0028 7047     		bx	lr
+ 158              	.L9:
+ 159 002a 00BF     		.align	2
+ 160              	.L8:
+ 161 002c 00300240 		.word	1073885184
+ 162 0030 00100240 		.word	1073876992
+ 163              		.cfi_endproc
+ 164              	.LFE132:
+ 166              		.section	.text.Init_Port_D_withMemory_Button,"ax",%progbits
+ 167              		.align	1
+ 168              		.global	Init_Port_D_withMemory_Button
+ 169              		.syntax unified
+ 170              		.thumb
+ 171              		.thumb_func
+ 173              	Init_Port_D_withMemory_Button:
+ 174              	.LFB133:
+  42:Core/Src/init.c **** 
+  43:Core/Src/init.c **** //кнопка PD0
+  44:Core/Src/init.c **** void Init_Port_D_withMemory_Button(void)
+  45:Core/Src/init.c **** { 
+ 175              		.loc 1 45 1 is_stmt 1 view -0
+ 176              		.cfi_startproc
+ 177              		@ args = 0, pretend = 0, frame = 0
+ 178              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179              		@ link register save eliminated.
+  46:Core/Src/init.c ****     (*(uint32_t*)(0x40020C00UL + 0x00UL)) |= 0b00UL;                 //настроили на вх
+ 180              		.loc 1 46 5 view .LVU33
+  47:Core/Src/init.c ****     (*(uint32_t*)(0x40020C00UL + 0x04UL)) |= 0b0UL;                   //OTYPER настраивае
+ 181              		.loc 1 47 5 view .LVU34
+  48:Core/Src/init.c ****     (*(uint32_t*)(0x40020C00UL + 0x0CUL)) |= 0b01UL;                    //  pull-up resistor
+ 182              		.loc 1 48 5 view .LVU35
+ 183              		.loc 1 48 6 is_stmt 0 view .LVU36
+ 184 0000 034A     		ldr	r2, .L11
+ 185 0002 D2F80C3C 		ldr	r3, [r2, #3084]
+ 186              		.loc 1 48 43 view .LVU37
+ 187 0006 43F00103 		orr	r3, r3, #1
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 5
+
+
+ 188 000a C2F80C3C 		str	r3, [r2, #3084]
+  49:Core/Src/init.c **** }
+ 189              		.loc 1 49 1 view .LVU38
+ 190 000e 7047     		bx	lr
+ 191              	.L12:
+ 192              		.align	2
+ 193              	.L11:
+ 194 0010 00000240 		.word	1073872896
+ 195              		.cfi_endproc
+ 196              	.LFE133:
+ 198              		.section	.text.Init_Port_A_withMemory_Button,"ax",%progbits
+ 199              		.align	1
+ 200              		.global	Init_Port_A_withMemory_Button
+ 201              		.syntax unified
+ 202              		.thumb
+ 203              		.thumb_func
+ 205              	Init_Port_A_withMemory_Button:
+ 206              	.LFB134:
+  50:Core/Src/init.c **** 
+  51:Core/Src/init.c **** //кнопка PA4
+  52:Core/Src/init.c **** void Init_Port_A_withMemory_Button(void)
+  53:Core/Src/init.c **** { 
+ 207              		.loc 1 53 1 is_stmt 1 view -0
+ 208              		.cfi_startproc
+ 209              		@ args = 0, pretend = 0, frame = 0
+ 210              		@ frame_needed = 0, uses_anonymous_args = 0
+ 211              		@ link register save eliminated.
+  54:Core/Src/init.c ****    *(uint32_t*)(0x40020000UL + 0x00UL) &= ~0xC000UL;                    //Явное обнулен
+ 212              		.loc 1 54 4 view .LVU40
+ 213 0000 084B     		ldr	r3, .L14
+ 214 0002 1A68     		ldr	r2, [r3]
+ 215              		.loc 1 54 40 is_stmt 0 view .LVU41
+ 216 0004 22F44042 		bic	r2, r2, #49152
+ 217 0008 1A60     		str	r2, [r3]
+  55:Core/Src/init.c ****    *(uint32_t*)(0x40020000UL + 0x04UL) &= ~0x80UL;                      //OTYPER настраива
+ 218              		.loc 1 55 4 is_stmt 1 view .LVU42
+ 219 000a 5A68     		ldr	r2, [r3, #4]
+ 220              		.loc 1 55 40 is_stmt 0 view .LVU43
+ 221 000c 22F08002 		bic	r2, r2, #128
+ 222 0010 5A60     		str	r2, [r3, #4]
+  56:Core/Src/init.c ****    *(uint32_t*)(0x40020000UL + 0x0CUL) &= ~0xC000UL;                    // Сначала очищ�
+ 223              		.loc 1 56 4 is_stmt 1 view .LVU44
+ 224 0012 DA68     		ldr	r2, [r3, #12]
+ 225              		.loc 1 56 40 is_stmt 0 view .LVU45
+ 226 0014 22F44042 		bic	r2, r2, #49152
+ 227 0018 DA60     		str	r2, [r3, #12]
+  57:Core/Src/init.c ****     (*(uint32_t*)(0x40020000UL + 0x0CUL)) |= 0b0000100000000UL;          // Затем устана
+ 228              		.loc 1 57 5 is_stmt 1 view .LVU46
+ 229              		.loc 1 57 43 is_stmt 0 view .LVU47
+ 230 001a 42F48072 		orr	r2, r2, #256
+ 231 001e DA60     		str	r2, [r3, #12]
+  58:Core/Src/init.c **** 
+  59:Core/Src/init.c **** }
+ 232              		.loc 1 59 1 view .LVU48
+ 233 0020 7047     		bx	lr
+ 234              	.L15:
+ 235 0022 00BF     		.align	2
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 6
+
+
+ 236              	.L14:
+ 237 0024 00000240 		.word	1073872896
+ 238              		.cfi_endproc
+ 239              	.LFE134:
+ 241              		.section	.text.Init_Port_E_withMemory_Button,"ax",%progbits
+ 242              		.align	1
+ 243              		.global	Init_Port_E_withMemory_Button
+ 244              		.syntax unified
+ 245              		.thumb
+ 246              		.thumb_func
+ 248              	Init_Port_E_withMemory_Button:
+ 249              	.LFB135:
+  60:Core/Src/init.c **** 
+  61:Core/Src/init.c **** //кнопка PE2
+  62:Core/Src/init.c **** void Init_Port_E_withMemory_Button(void)
+  63:Core/Src/init.c **** {
+ 250              		.loc 1 63 1 is_stmt 1 view -0
+ 251              		.cfi_startproc
+ 252              		@ args = 0, pretend = 0, frame = 0
+ 253              		@ frame_needed = 0, uses_anonymous_args = 0
+ 254              		@ link register save eliminated.
+  64:Core/Src/init.c ****     *(uint32_t*)(0x40021000UL + 0x00UL) &= ~0x30UL; 
+ 255              		.loc 1 64 5 view .LVU50
+ 256 0000 064B     		ldr	r3, .L17
+ 257 0002 1A68     		ldr	r2, [r3]
+ 258              		.loc 1 64 41 is_stmt 0 view .LVU51
+ 259 0004 22F03002 		bic	r2, r2, #48
+ 260 0008 1A60     		str	r2, [r3]
+  65:Core/Src/init.c ****     *(uint32_t*)(0x40021000UL + 0x04UL) &= ~0x4UL;                          //OTYPER настраи
+ 261              		.loc 1 65 5 is_stmt 1 view .LVU52
+ 262 000a 5A68     		ldr	r2, [r3, #4]
+ 263              		.loc 1 65 41 is_stmt 0 view .LVU53
+ 264 000c 22F00402 		bic	r2, r2, #4
+ 265 0010 5A60     		str	r2, [r3, #4]
+  66:Core/Src/init.c ****     *(uint32_t*)(0x40021000UL + 0x0CUL) |= 0x10UL;                      //  pull-resistor
+ 266              		.loc 1 66 5 is_stmt 1 view .LVU54
+ 267 0012 DA68     		ldr	r2, [r3, #12]
+ 268              		.loc 1 66 41 is_stmt 0 view .LVU55
+ 269 0014 42F01002 		orr	r2, r2, #16
+ 270 0018 DA60     		str	r2, [r3, #12]
+  67:Core/Src/init.c **** }
+ 271              		.loc 1 67 1 view .LVU56
+ 272 001a 7047     		bx	lr
+ 273              	.L18:
+ 274              		.align	2
+ 275              	.L17:
+ 276 001c 00100240 		.word	1073876992
+ 277              		.cfi_endproc
+ 278              	.LFE135:
+ 280              		.section	.text.Init_Port_C_with_Memory_Button,"ax",%progbits
+ 281              		.align	1
+ 282              		.global	Init_Port_C_with_Memory_Button
+ 283              		.syntax unified
+ 284              		.thumb
+ 285              		.thumb_func
+ 287              	Init_Port_C_with_Memory_Button:
+ 288              	.LFB136:
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 7
+
+
+  68:Core/Src/init.c **** 
+  69:Core/Src/init.c **** //кнопка PC13
+  70:Core/Src/init.c **** void Init_Port_C_with_Memory_Button(void)
+  71:Core/Src/init.c **** {
+ 289              		.loc 1 71 1 is_stmt 1 view -0
+ 290              		.cfi_startproc
+ 291              		@ args = 0, pretend = 0, frame = 0
+ 292              		@ frame_needed = 0, uses_anonymous_args = 0
+ 293              		@ link register save eliminated.
+  72:Core/Src/init.c ****     (*(uint32_t*)(0x40023800 + 0x30UL)) |= 0x04UL;                      // тактирование
+ 294              		.loc 1 72 5 view .LVU58
+ 295              		.loc 1 72 6 is_stmt 0 view .LVU59
+ 296 0000 0D4A     		ldr	r2, .L20
+ 297 0002 D2F83038 		ldr	r3, [r2, #2096]
+ 298              		.loc 1 72 41 view .LVU60
+ 299 0006 43F00403 		orr	r3, r3, #4
+ 300 000a C2F83038 		str	r3, [r2, #2096]
+  73:Core/Src/init.c ****     *(uint32_t*)(0x40020800UL + 0x00UL) &= ~0xC000000UL;                 // MODER13 = 00
+ 301              		.loc 1 73 5 is_stmt 1 view .LVU61
+ 302 000e 0B4B     		ldr	r3, .L20+4
+ 303 0010 D3F80028 		ldr	r2, [r3, #2048]
+ 304              		.loc 1 73 41 is_stmt 0 view .LVU62
+ 305 0014 22F04062 		bic	r2, r2, #201326592
+ 306 0018 C3F80028 		str	r2, [r3, #2048]
+  74:Core/Src/init.c ****     *(uint32_t*)(0x40020800UL + 0x04UL) &= ~0x2000UL;
+ 307              		.loc 1 74 5 is_stmt 1 view .LVU63
+ 308 001c D3F80428 		ldr	r2, [r3, #2052]
+ 309              		.loc 1 74 41 is_stmt 0 view .LVU64
+ 310 0020 22F40052 		bic	r2, r2, #8192
+ 311 0024 C3F80428 		str	r2, [r3, #2052]
+  75:Core/Src/init.c ****     *(uint32_t*)(0x40020800UL + 0x0CUL) |=  0x8000000;               // PUPDR13 = 01 (pull-up)
+ 312              		.loc 1 75 5 is_stmt 1 view .LVU65
+ 313 0028 D3F80C28 		ldr	r2, [r3, #2060]
+ 314              		.loc 1 75 41 is_stmt 0 view .LVU66
+ 315 002c 42F00062 		orr	r2, r2, #134217728
+ 316 0030 C3F80C28 		str	r2, [r3, #2060]
+  76:Core/Src/init.c **** }
+ 317              		.loc 1 76 1 view .LVU67
+ 318 0034 7047     		bx	lr
+ 319              	.L21:
+ 320 0036 00BF     		.align	2
+ 321              	.L20:
+ 322 0038 00300240 		.word	1073885184
+ 323 003c 00000240 		.word	1073872896
+ 324              		.cfi_endproc
+ 325              	.LFE136:
+ 327              		.section	.text.HandleButton,"ax",%progbits
+ 328              		.align	1
+ 329              		.global	HandleButton
+ 330              		.syntax unified
+ 331              		.thumb
+ 332              		.thumb_func
+ 334              	HandleButton:
+ 335              	.LVL0:
+ 336              	.LFB137:
+  77:Core/Src/init.c **** 
+  78:Core/Src/init.c **** // Функция обработки кнопки 1–3
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 8
+
+
+  79:Core/Src/init.c **** 
+  80:Core/Src/init.c **** void HandleButton(uint8_t btnState, uint8_t base, uint8_t rot)
+  81:Core/Src/init.c **** {
+ 337              		.loc 1 81 1 is_stmt 1 view -0
+ 338              		.cfi_startproc
+ 339              		@ args = 0, pretend = 0, frame = 0
+ 340              		@ frame_needed = 0, uses_anonymous_args = 0
+ 341              		@ link register save eliminated.
+  82:Core/Src/init.c **** 
+  83:Core/Src/init.c ****     if (btnState != 0) return;
+ 342              		.loc 1 83 5 view .LVU69
+ 343              		.loc 1 83 8 is_stmt 0 view .LVU70
+ 344 0000 98B9     		cbnz	r0, .L22
+  84:Core/Src/init.c **** 
+  85:Core/Src/init.c ****     uint8_t tgt = base + rot;
+ 345              		.loc 1 85 5 is_stmt 1 view .LVU71
+ 346              	.LVL1:
+  86:Core/Src/init.c ****     tgt = (base + rot) % 3;
+ 347              		.loc 1 86 5 view .LVU72
+ 348              		.loc 1 86 17 is_stmt 0 view .LVU73
+ 349 0002 0A44     		add	r2, r2, r1
+ 350              	.LVL2:
+ 351              		.loc 1 86 24 view .LVU74
+ 352 0004 0B4B     		ldr	r3, .L27
+ 353 0006 83FB0213 		smull	r1, r3, r3, r2
+ 354              	.LVL3:
+ 355              		.loc 1 86 24 view .LVU75
+ 356 000a 03EB4303 		add	r3, r3, r3, lsl #1
+ 357 000e D31A     		subs	r3, r2, r3
+ 358              	.LVL4:
+  87:Core/Src/init.c **** 
+  88:Core/Src/init.c ****     if (tgt == 0)
+ 359              		.loc 1 88 5 is_stmt 1 view .LVU76
+ 360              		.loc 1 88 8 is_stmt 0 view .LVU77
+ 361 0010 13F0FF03 		ands	r3, r3, #255
+ 362              	.LVL5:
+ 363              		.loc 1 88 8 view .LVU78
+ 364 0014 04D1     		bne	.L24
+  89:Core/Src/init.c ****     {
+  90:Core/Src/init.c ****         // PD1 ON
+  91:Core/Src/init.c ****         *(uint32_t*)(0x40020C00UL + 0x18UL) = (1UL << 1);
+ 365              		.loc 1 91 9 is_stmt 1 view .LVU79
+ 366              		.loc 1 91 45 is_stmt 0 view .LVU80
+ 367 0016 084B     		ldr	r3, .L27+4
+ 368 0018 0222     		movs	r2, #2
+ 369              	.LVL6:
+ 370              		.loc 1 91 45 view .LVU81
+ 371 001a C3F8182C 		str	r2, [r3, #3096]
+ 372 001e 7047     		bx	lr
+ 373              	.LVL7:
+ 374              	.L24:
+  92:Core/Src/init.c ****     }
+  93:Core/Src/init.c ****     else if (tgt == 1)
+ 375              		.loc 1 93 10 is_stmt 1 view .LVU82
+ 376              		.loc 1 93 13 is_stmt 0 view .LVU83
+ 377 0020 012B     		cmp	r3, #1
+ 378 0022 03D0     		beq	.L26
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 9
+
+
+  94:Core/Src/init.c ****     {
+  95:Core/Src/init.c ****         // PA0 ON
+  96:Core/Src/init.c ****         *(uint32_t*)(0x40020000UL + 0x18UL) = (1UL << 0);
+  97:Core/Src/init.c ****     }
+  98:Core/Src/init.c ****     else // tgt == 2
+  99:Core/Src/init.c ****     {
+ 100:Core/Src/init.c ****         // PE0 ON
+ 101:Core/Src/init.c ****         *(uint32_t*)(0x40021000UL + 0x18UL) = (1UL << 0);
+ 379              		.loc 1 101 9 is_stmt 1 view .LVU84
+ 380              		.loc 1 101 45 is_stmt 0 view .LVU85
+ 381 0024 054B     		ldr	r3, .L27+8
+ 382 0026 0122     		movs	r2, #1
+ 383              	.LVL8:
+ 384              		.loc 1 101 45 view .LVU86
+ 385 0028 9A61     		str	r2, [r3, #24]
+ 386              	.LVL9:
+ 387              	.L22:
+ 102:Core/Src/init.c ****     }
+ 103:Core/Src/init.c **** }
+ 388              		.loc 1 103 1 view .LVU87
+ 389 002a 7047     		bx	lr
+ 390              	.LVL10:
+ 391              	.L26:
+  96:Core/Src/init.c ****     }
+ 392              		.loc 1 96 9 is_stmt 1 view .LVU88
+  96:Core/Src/init.c ****     }
+ 393              		.loc 1 96 45 is_stmt 0 view .LVU89
+ 394 002c 024B     		ldr	r3, .L27+4
+ 395 002e 0122     		movs	r2, #1
+ 396              	.LVL11:
+  96:Core/Src/init.c ****     }
+ 397              		.loc 1 96 45 view .LVU90
+ 398 0030 9A61     		str	r2, [r3, #24]
+ 399 0032 7047     		bx	lr
+ 400              	.L28:
+ 401              		.align	2
+ 402              	.L27:
+ 403 0034 56555555 		.word	1431655766
+ 404 0038 00000240 		.word	1073872896
+ 405 003c 00100240 		.word	1073876992
+ 406              		.cfi_endproc
+ 407              	.LFE137:
+ 409              		.text
+ 410              	.Letext0:
+ 411              		.file 2 "C:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 412              		.file 3 "C:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 413              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\diana\AppData\Local\Temp\cc28mZIz.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:21     .text.Init_PORT_D_withMemory:00000000 $t
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:27     .text.Init_PORT_D_withMemory:00000000 Init_PORT_D_withMemory
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:67     .text.Init_PORT_D_withMemory:00000038 $d
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:73     .text.Init_PORT_A_withMemory:00000000 $t
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:79     .text.Init_PORT_A_withMemory:00000000 Init_PORT_A_withMemory
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:117    .text.Init_PORT_A_withMemory:00000038 $d
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:123    .text.Init_PORT_E_withMemory:00000000 $t
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:129    .text.Init_PORT_E_withMemory:00000000 Init_PORT_E_withMemory
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:161    .text.Init_PORT_E_withMemory:0000002c $d
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:167    .text.Init_Port_D_withMemory_Button:00000000 $t
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:173    .text.Init_Port_D_withMemory_Button:00000000 Init_Port_D_withMemory_Button
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:194    .text.Init_Port_D_withMemory_Button:00000010 $d
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:199    .text.Init_Port_A_withMemory_Button:00000000 $t
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:205    .text.Init_Port_A_withMemory_Button:00000000 Init_Port_A_withMemory_Button
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:237    .text.Init_Port_A_withMemory_Button:00000024 $d
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:242    .text.Init_Port_E_withMemory_Button:00000000 $t
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:248    .text.Init_Port_E_withMemory_Button:00000000 Init_Port_E_withMemory_Button
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:276    .text.Init_Port_E_withMemory_Button:0000001c $d
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:281    .text.Init_Port_C_with_Memory_Button:00000000 $t
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:287    .text.Init_Port_C_with_Memory_Button:00000000 Init_Port_C_with_Memory_Button
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:322    .text.Init_Port_C_with_Memory_Button:00000038 $d
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:328    .text.HandleButton:00000000 $t
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:334    .text.HandleButton:00000000 HandleButton
+C:\Users\diana\AppData\Local\Temp\cc28mZIz.s:403    .text.HandleButton:00000034 $d
+
+NO UNDEFINED SYMBOLS

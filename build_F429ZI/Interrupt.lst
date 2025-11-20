@@ -1,0 +1,97 @@
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccv1rBng.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"Interrupt.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/Interrupt.c"
+  20              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+  21              		.align	1
+  22              		.global	EXTI15_10_IRQHandler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	EXTI15_10_IRQHandler:
+  28              	.LFB130:
+   1:Core/Src/Interrupt.c **** #include "Interrupt.h"
+   2:Core/Src/Interrupt.c **** 
+   3:Core/Src/Interrupt.c **** void EXTI15_10_IRQHandler()
+   4:Core/Src/Interrupt.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/Interrupt.c ****     // Мы должны обязательно отключать pending бит после тог
+   6:Core/Src/Interrupt.c ****     // 1 чтобы сбросит в 0
+   7:Core/Src/Interrupt.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13);
+  34              		.loc 1 7 5 view .LVU1
+  35 0000 084A     		ldr	r2, .L2
+  36 0002 5369     		ldr	r3, [r2, #20]
+  37 0004 43F40053 		orr	r3, r3, #8192
+  38 0008 5361     		str	r3, [r2, #20]
+   8:Core/Src/Interrupt.c **** 
+   9:Core/Src/Interrupt.c ****     btnCount++;
+  39              		.loc 1 9 5 view .LVU2
+  40              		.loc 1 9 13 is_stmt 0 view .LVU3
+  41 000a 074A     		ldr	r2, .L2+4
+  42 000c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  43 000e 0133     		adds	r3, r3, #1
+  44 0010 DBB2     		uxtb	r3, r3
+  45 0012 1370     		strb	r3, [r2]
+  10:Core/Src/Interrupt.c ****     flag = !flag;
+  46              		.loc 1 10 5 is_stmt 1 view .LVU4
+  47              		.loc 1 10 12 is_stmt 0 view .LVU5
+  48 0014 054A     		ldr	r2, .L2+8
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccv1rBng.s 			page 2
+
+
+  49 0016 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  50 0018 B3FA83F3 		clz	r3, r3
+  51 001c 5B09     		lsrs	r3, r3, #5
+  52              		.loc 1 10 10 view .LVU6
+  53 001e 1370     		strb	r3, [r2]
+  11:Core/Src/Interrupt.c **** }...
+  54              		.loc 1 11 1 view .LVU7
+  55 0020 7047     		bx	lr
+  56              	.L3:
+  57 0022 00BF     		.align	2
+  58              	.L2:
+  59 0024 003C0140 		.word	1073822720
+  60 0028 00000000 		.word	btnCount
+  61 002c 00000000 		.word	flag
+  62              		.cfi_endproc
+  63              	.LFE130:
+  65              		.text
+  66              	.Letext0:
+  67              		.file 2 "C:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+  68              		.file 3 "C:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+  69              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+  70              		.file 5 "Core/Inc/Interrupt.h"
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccv1rBng.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Interrupt.c
+C:\Users\diana\AppData\Local\Temp\ccv1rBng.s:21     .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\diana\AppData\Local\Temp\ccv1rBng.s:27     .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\diana\AppData\Local\Temp\ccv1rBng.s:59     .text.EXTI15_10_IRQHandler:00000024 $d
+
+UNDEFINED SYMBOLS
+btnCount
+flag

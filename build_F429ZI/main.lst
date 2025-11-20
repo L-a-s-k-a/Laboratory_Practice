@@ -1,0 +1,411 @@
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** #include <stdint.h>
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** #include "../Inc/mcuvars.h"  // Добавьте этот include
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c ****  
+   7:Core/Src/main.c ****  
+   8:Core/Src/main.c **** volatile uint8_t rot    = 0;                  // 0..2
+   9:Core/Src/main.c **** volatile uint8_t prevB4 = 0;  
+  10:Core/Src/main.c **** volatile uint8_t b1_state = 0;
+  11:Core/Src/main.c **** volatile uint8_t b2_state = 0;
+  12:Core/Src/main.c **** volatile uint8_t b3_state = 0;
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c **** int main(void)
+  15:Core/Src/main.c **** {
+  29              		.loc 1 15 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 70B5     		push	{r4, r5, r6, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 4, -16
+  37              		.cfi_offset 5, -12
+  38              		.cfi_offset 6, -8
+  39              		.cfi_offset 14, -4
+  40 0002 82B0     		sub	sp, sp, #8
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 24
+  16:Core/Src/main.c ****     Init_PORT_D_withMemory();           // PD1 - LED (синий)
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s 			page 2
+
+
+  43              		.loc 1 16 5 view .LVU1
+  44 0004 FFF7FEFF 		bl	Init_PORT_D_withMemory
+  45              	.LVL0:
+  17:Core/Src/main.c ****     Init_PORT_A_withMemory();           // PA0 - LED (зелёный)
+  46              		.loc 1 17 5 view .LVU2
+  47 0008 FFF7FEFF 		bl	Init_PORT_A_withMemory
+  48              	.LVL1:
+  18:Core/Src/main.c ****     Init_PORT_E_withMemory();           // PE0 - LED (красный)
+  49              		.loc 1 18 5 view .LVU3
+  50 000c FFF7FEFF 		bl	Init_PORT_E_withMemory
+  51              	.LVL2:
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c ****     Init_Port_D_withMemory_Button();    // PD0 - кнопка 1
+  52              		.loc 1 20 5 view .LVU4
+  53 0010 FFF7FEFF 		bl	Init_Port_D_withMemory_Button
+  54              	.LVL3:
+  21:Core/Src/main.c ****     Init_Port_A_withMemory_Button();    // PA4 - кнопка 2
+  55              		.loc 1 21 5 view .LVU5
+  56 0014 FFF7FEFF 		bl	Init_Port_A_withMemory_Button
+  57              	.LVL4:
+  22:Core/Src/main.c ****     Init_Port_E_withMemory_Button();    // PE2 - кнопка 3
+  58              		.loc 1 22 5 view .LVU6
+  59 0018 FFF7FEFF 		bl	Init_Port_E_withMemory_Button
+  60              	.LVL5:
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c ****     Init_Port_C_with_Memory_Button();   // PC13 - кнопка 4
+  61              		.loc 1 24 5 view .LVU7
+  62 001c FFF7FEFF 		bl	Init_Port_C_with_Memory_Button
+  63              	.LVL6:
+  64 0020 32E0     		b	.L6
+  65              	.LVL7:
+  66              	.L3:
+  67              	.LBB2:
+  68              	.LBB3:
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c ****  
+  27:Core/Src/main.c ****  
+  28:Core/Src/main.c ****   
+  29:Core/Src/main.c ****     while (1)
+  30:Core/Src/main.c ****     {
+  31:Core/Src/main.c ****          volatile uint8_t b1 = ((*(uint32_t*)(0x40020C00UL + 0x10UL)) >> 0 ) & 1U;            // PD
+  32:Core/Src/main.c ****         b1_state = b1;
+  33:Core/Src/main.c ****         uint8_t b2 = ((*(uint32_t*)(0x40020000UL + 0x10UL)) >> 4 ) & 1U;            // PA4
+  34:Core/Src/main.c ****         b2_state = b2;
+  35:Core/Src/main.c ****         uint8_t b3 = ((*(uint32_t*)(0x40021000UL + 0x10UL)) >> 2 ) & 1U;            // PE2
+  36:Core/Src/main.c ****         b3_state = b3;
+  37:Core/Src/main.c **** 
+  38:Core/Src/main.c ****         uint8_t c1 = ((*(uint32_t*)(0x40020800UL + 0x10UL)) >> 13) & 1U;            // PC13 (пер
+  39:Core/Src/main.c **** 
+  40:Core/Src/main.c ****         for (volatile int d=0; d<2000; ++d) __asm__("nop");
+  69              		.loc 1 40 45 discriminator 3 view .LVU8
+  70              		.syntax unified
+  71              	@ 40 "Core/Src/main.c" 1
+  72 0022 00BF     		nop
+  73              	@ 0 "" 2
+  74              		.loc 1 40 40 discriminator 3 view .LVU9
+  75              		.thumb
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s 			page 3
+
+
+  76              		.syntax unified
+  77 0024 019B     		ldr	r3, [sp, #4]
+  78 0026 0133     		adds	r3, r3, #1
+  79 0028 0193     		str	r3, [sp, #4]
+  80              	.L2:
+  81              		.loc 1 40 33 discriminator 1 view .LVU10
+  82 002a 019B     		ldr	r3, [sp, #4]
+  83 002c B3F5FA6F 		cmp	r3, #2000
+  84 0030 F7DB     		blt	.L3
+  85              	.LBE3:
+  41:Core/Src/main.c ****         uint8_t c2 = ((*(uint32_t*)(0x40020800UL + 0x10UL)) >> 13) & 1U;
+  86              		.loc 1 41 9 view .LVU11
+  87              		.loc 1 41 24 is_stmt 0 view .LVU12
+  88 0032 2B4B     		ldr	r3, .L10
+  89 0034 D3F81038 		ldr	r3, [r3, #2064]
+  90              		.loc 1 41 17 view .LVU13
+  91 0038 C3F34033 		ubfx	r3, r3, #13, #1
+  92              	.LVL8:
+  42:Core/Src/main.c **** 
+  43:Core/Src/main.c ****         uint8_t b4 = (c1 == c2) ? c2 : 0;                                              
+  93              		.loc 1 43 9 is_stmt 1 view .LVU14
+  94              		.loc 1 43 17 is_stmt 0 view .LVU15
+  95 003c 9A42     		cmp	r2, r3
+  96 003e 00D0     		beq	.L4
+  97              		.loc 1 43 17 discriminator 2 view .LVU16
+  98 0040 0023     		movs	r3, #0
+  99              	.LVL9:
+ 100              	.L4:
+  44:Core/Src/main.c **** 
+  45:Core/Src/main.c ****         if (prevB4 == 0 && b4 == 1)
+ 101              		.loc 1 45 9 is_stmt 1 view .LVU17
+ 102              		.loc 1 45 20 is_stmt 0 view .LVU18
+ 103 0042 284A     		ldr	r2, .L10+4
+ 104              	.LVL10:
+ 105              		.loc 1 45 20 view .LVU19
+ 106 0044 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 107              		.loc 1 45 12 view .LVU20
+ 108 0046 0AB9     		cbnz	r2, .L5
+ 109              		.loc 1 45 25 discriminator 1 view .LVU21
+ 110 0048 002B     		cmp	r3, #0
+ 111 004a 3BD1     		bne	.L9
+ 112              	.LVL11:
+ 113              	.L5:
+  46:Core/Src/main.c ****         {
+  47:Core/Src/main.c ****             rot++;
+  48:Core/Src/main.c ****             if (rot >= 3) rot = 0;
+  49:Core/Src/main.c ****         }
+  50:Core/Src/main.c ****         prevB4 = b4;
+ 114              		.loc 1 50 9 is_stmt 1 view .LVU22
+ 115              		.loc 1 50 16 is_stmt 0 view .LVU23
+ 116 004c 254A     		ldr	r2, .L10+4
+ 117 004e 1370     		strb	r3, [r2]
+  51:Core/Src/main.c **** 
+  52:Core/Src/main.c ****         // Сначала выключаем все LED 
+  53:Core/Src/main.c ****         *(uint32_t*)(0x40020000UL + 0x18UL) = (1UL << (0+16)); // PA0 
+ 118              		.loc 1 53 9 is_stmt 1 view .LVU24
+ 119              		.loc 1 53 45 is_stmt 0 view .LVU25
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s 			page 4
+
+
+ 120 0050 234A     		ldr	r2, .L10
+ 121 0052 4FF48033 		mov	r3, #65536
+ 122              	.LVL12:
+ 123              		.loc 1 53 45 view .LVU26
+ 124 0056 9361     		str	r3, [r2, #24]
+ 125              	.LVL13:
+  54:Core/Src/main.c ****         *(uint32_t*)(0x40020C00UL + 0x18UL) = (1UL << (1+16)); // PD1 
+ 126              		.loc 1 54 9 is_stmt 1 view .LVU27
+ 127              		.loc 1 54 45 is_stmt 0 view .LVU28
+ 128 0058 4FF40031 		mov	r1, #131072
+ 129 005c C2F8181C 		str	r1, [r2, #3096]
+  55:Core/Src/main.c ****         *(uint32_t*)(0x40021000UL + 0x18UL) = (1UL << (0+16)); // PE0 
+ 130              		.loc 1 55 9 is_stmt 1 view .LVU29
+ 131              		.loc 1 55 45 is_stmt 0 view .LVU30
+ 132 0060 02F58052 		add	r2, r2, #4096
+ 133 0064 9361     		str	r3, [r2, #24]
+  56:Core/Src/main.c **** 
+  57:Core/Src/main.c ****         // Обработка кнопок 1–3 через функцию
+  58:Core/Src/main.c ****         HandleButton(b1, 0, rot);  // кнопка 1 — base=0
+ 134              		.loc 1 58 9 is_stmt 1 view .LVU31
+ 135 0066 9DF80300 		ldrb	r0, [sp, #3]	@ zero_extendqisi2
+ 136 006a 1F4E     		ldr	r6, .L10+8
+ 137 006c 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 138 006e 0021     		movs	r1, #0
+ 139 0070 FFF7FEFF 		bl	HandleButton
+ 140              	.LVL14:
+  59:Core/Src/main.c ****         HandleButton(b2, 1, rot);  // кнопка 2 — base=1
+ 141              		.loc 1 59 9 view .LVU32
+ 142 0074 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 143 0076 0121     		movs	r1, #1
+ 144 0078 2846     		mov	r0, r5
+ 145 007a FFF7FEFF 		bl	HandleButton
+ 146              	.LVL15:
+  60:Core/Src/main.c ****         HandleButton(b3, 2, rot);  // кнопка 3 — base=2
+ 147              		.loc 1 60 9 view .LVU33
+ 148 007e 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 149 0080 0221     		movs	r1, #2
+ 150 0082 2046     		mov	r0, r4
+ 151 0084 FFF7FEFF 		bl	HandleButton
+ 152              	.LVL16:
+ 153              	.LBE2:
+  29:Core/Src/main.c ****     {
+ 154              		.loc 1 29 11 view .LVU34
+ 155              	.L6:
+  29:Core/Src/main.c ****     {
+ 156              		.loc 1 29 5 view .LVU35
+ 157              	.LBB5:
+  31:Core/Src/main.c ****         b1_state = b1;
+ 158              		.loc 1 31 10 view .LVU36
+  31:Core/Src/main.c ****         b1_state = b1;
+ 159              		.loc 1 31 71 is_stmt 0 view .LVU37
+ 160 0088 154B     		ldr	r3, .L10
+ 161 008a D3F8102C 		ldr	r2, [r3, #3088]
+  31:Core/Src/main.c ****         b1_state = b1;
+ 162              		.loc 1 31 78 view .LVU38
+ 163 008e 02F00102 		and	r2, r2, #1
+  31:Core/Src/main.c ****         b1_state = b1;
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s 			page 5
+
+
+ 164              		.loc 1 31 27 view .LVU39
+ 165 0092 8DF80320 		strb	r2, [sp, #3]
+  32:Core/Src/main.c ****         uint8_t b2 = ((*(uint32_t*)(0x40020000UL + 0x10UL)) >> 4 ) & 1U;            // PA4
+ 166              		.loc 1 32 9 is_stmt 1 view .LVU40
+  32:Core/Src/main.c ****         uint8_t b2 = ((*(uint32_t*)(0x40020000UL + 0x10UL)) >> 4 ) & 1U;            // PA4
+ 167              		.loc 1 32 18 is_stmt 0 view .LVU41
+ 168 0096 9DF80320 		ldrb	r2, [sp, #3]	@ zero_extendqisi2
+ 169 009a D2B2     		uxtb	r2, r2
+ 170 009c 1349     		ldr	r1, .L10+12
+ 171 009e 0A70     		strb	r2, [r1]
+  33:Core/Src/main.c ****         b2_state = b2;
+ 172              		.loc 1 33 9 is_stmt 1 view .LVU42
+  33:Core/Src/main.c ****         b2_state = b2;
+ 173              		.loc 1 33 24 is_stmt 0 view .LVU43
+ 174 00a0 1D69     		ldr	r5, [r3, #16]
+  33:Core/Src/main.c ****         b2_state = b2;
+ 175              		.loc 1 33 17 view .LVU44
+ 176 00a2 C5F30015 		ubfx	r5, r5, #4, #1
+ 177              	.LVL17:
+  34:Core/Src/main.c ****         uint8_t b3 = ((*(uint32_t*)(0x40021000UL + 0x10UL)) >> 2 ) & 1U;            // PE2
+ 178              		.loc 1 34 9 is_stmt 1 view .LVU45
+  34:Core/Src/main.c ****         uint8_t b3 = ((*(uint32_t*)(0x40021000UL + 0x10UL)) >> 2 ) & 1U;            // PE2
+ 179              		.loc 1 34 18 is_stmt 0 view .LVU46
+ 180 00a6 124A     		ldr	r2, .L10+16
+ 181 00a8 1570     		strb	r5, [r2]
+  35:Core/Src/main.c ****         b3_state = b3;
+ 182              		.loc 1 35 9 is_stmt 1 view .LVU47
+  35:Core/Src/main.c ****         b3_state = b3;
+ 183              		.loc 1 35 24 is_stmt 0 view .LVU48
+ 184 00aa 124A     		ldr	r2, .L10+20
+ 185 00ac 1469     		ldr	r4, [r2, #16]
+  35:Core/Src/main.c ****         b3_state = b3;
+ 186              		.loc 1 35 17 view .LVU49
+ 187 00ae C4F38004 		ubfx	r4, r4, #2, #1
+ 188              	.LVL18:
+  36:Core/Src/main.c **** 
+ 189              		.loc 1 36 9 is_stmt 1 view .LVU50
+  36:Core/Src/main.c **** 
+ 190              		.loc 1 36 18 is_stmt 0 view .LVU51
+ 191 00b2 114A     		ldr	r2, .L10+24
+ 192 00b4 1470     		strb	r4, [r2]
+  38:Core/Src/main.c **** 
+ 193              		.loc 1 38 9 is_stmt 1 view .LVU52
+  38:Core/Src/main.c **** 
+ 194              		.loc 1 38 24 is_stmt 0 view .LVU53
+ 195 00b6 D3F81028 		ldr	r2, [r3, #2064]
+  38:Core/Src/main.c **** 
+ 196              		.loc 1 38 17 view .LVU54
+ 197 00ba C2F34032 		ubfx	r2, r2, #13, #1
+ 198              	.LVL19:
+  40:Core/Src/main.c ****         uint8_t c2 = ((*(uint32_t*)(0x40020800UL + 0x10UL)) >> 13) & 1U;
+ 199              		.loc 1 40 9 is_stmt 1 view .LVU55
+ 200              	.LBB4:
+  40:Core/Src/main.c ****         uint8_t c2 = ((*(uint32_t*)(0x40020800UL + 0x10UL)) >> 13) & 1U;
+ 201              		.loc 1 40 14 view .LVU56
+  40:Core/Src/main.c ****         uint8_t c2 = ((*(uint32_t*)(0x40020800UL + 0x10UL)) >> 13) & 1U;
+ 202              		.loc 1 40 27 is_stmt 0 view .LVU57
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s 			page 6
+
+
+ 203 00be 0023     		movs	r3, #0
+ 204 00c0 0193     		str	r3, [sp, #4]
+  40:Core/Src/main.c ****         uint8_t c2 = ((*(uint32_t*)(0x40020800UL + 0x10UL)) >> 13) & 1U;
+ 205              		.loc 1 40 9 view .LVU58
+ 206 00c2 B2E7     		b	.L2
+ 207              	.LVL20:
+ 208              	.L9:
+  40:Core/Src/main.c ****         uint8_t c2 = ((*(uint32_t*)(0x40020800UL + 0x10UL)) >> 13) & 1U;
+ 209              		.loc 1 40 9 view .LVU59
+ 210              	.LBE4:
+  47:Core/Src/main.c ****             if (rot >= 3) rot = 0;
+ 211              		.loc 1 47 13 is_stmt 1 view .LVU60
+  47:Core/Src/main.c ****             if (rot >= 3) rot = 0;
+ 212              		.loc 1 47 16 is_stmt 0 view .LVU61
+ 213 00c4 0849     		ldr	r1, .L10+8
+ 214 00c6 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 215 00c8 0132     		adds	r2, r2, #1
+ 216 00ca D2B2     		uxtb	r2, r2
+ 217 00cc 0A70     		strb	r2, [r1]
+ 218              	.LVL21:
+  48:Core/Src/main.c ****         }
+ 219              		.loc 1 48 13 is_stmt 1 view .LVU62
+  48:Core/Src/main.c ****         }
+ 220              		.loc 1 48 21 is_stmt 0 view .LVU63
+ 221 00ce 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 222 00d0 D2B2     		uxtb	r2, r2
+  48:Core/Src/main.c ****         }
+ 223              		.loc 1 48 16 view .LVU64
+ 224 00d2 022A     		cmp	r2, #2
+ 225 00d4 BAD9     		bls	.L5
+  48:Core/Src/main.c ****         }
+ 226              		.loc 1 48 27 is_stmt 1 discriminator 1 view .LVU65
+  48:Core/Src/main.c ****         }
+ 227              		.loc 1 48 31 is_stmt 0 discriminator 1 view .LVU66
+ 228 00d6 0A46     		mov	r2, r1
+ 229 00d8 0021     		movs	r1, #0
+ 230 00da 1170     		strb	r1, [r2]
+ 231 00dc B6E7     		b	.L5
+ 232              	.L11:
+ 233 00de 00BF     		.align	2
+ 234              	.L10:
+ 235 00e0 00000240 		.word	1073872896
+ 236 00e4 00000000 		.word	prevB4
+ 237 00e8 00000000 		.word	rot
+ 238 00ec 00000000 		.word	b1_state
+ 239 00f0 00000000 		.word	b2_state
+ 240 00f4 00100240 		.word	1073876992
+ 241 00f8 00000000 		.word	b3_state
+ 242              	.LBE5:
+ 243              		.cfi_endproc
+ 244              	.LFE130:
+ 246              		.global	b3_state
+ 247              		.section	.bss.b3_state,"aw",%nobits
+ 250              	b3_state:
+ 251 0000 00       		.space	1
+ 252              		.global	b2_state
+ 253              		.section	.bss.b2_state,"aw",%nobits
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s 			page 7
+
+
+ 256              	b2_state:
+ 257 0000 00       		.space	1
+ 258              		.global	b1_state
+ 259              		.section	.bss.b1_state,"aw",%nobits
+ 262              	b1_state:
+ 263 0000 00       		.space	1
+ 264              		.global	prevB4
+ 265              		.section	.bss.prevB4,"aw",%nobits
+ 268              	prevB4:
+ 269 0000 00       		.space	1
+ 270              		.global	rot
+ 271              		.section	.bss.rot,"aw",%nobits
+ 274              	rot:
+ 275 0000 00       		.space	1
+ 276              		.text
+ 277              	.Letext0:
+ 278              		.file 2 "C:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 279              		.file 3 "C:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 280              		.file 4 "Core/Src/../Inc/init.h"
+ 281              		.file 5 "Core/Src/../Inc/mcuvars.h"
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:21     .text.main:00000000 $t
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:27     .text.main:00000000 main
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:235    .text.main:000000e0 $d
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:268    .bss.prevB4:00000000 prevB4
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:274    .bss.rot:00000000 rot
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:262    .bss.b1_state:00000000 b1_state
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:256    .bss.b2_state:00000000 b2_state
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:250    .bss.b3_state:00000000 b3_state
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:251    .bss.b3_state:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:257    .bss.b2_state:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:263    .bss.b1_state:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:269    .bss.prevB4:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccJE6rRF.s:275    .bss.rot:00000000 $d
+
+UNDEFINED SYMBOLS
+Init_PORT_D_withMemory
+Init_PORT_A_withMemory
+Init_PORT_E_withMemory
+Init_Port_D_withMemory_Button
+Init_Port_A_withMemory_Button
+Init_Port_E_withMemory_Button
+Init_Port_C_with_Memory_Button
+HandleButton
