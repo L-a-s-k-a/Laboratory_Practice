@@ -1,0 +1,892 @@
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.Button1_Task,"ax",%progbits
+  21              		.align	1
+  22              		.global	Button1_Task
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	Button1_Task:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** #include "init.h"
+   3:Core/Src/main.c **** #include "Interrupt.h"
+   4:Core/Src/main.c **** // Посылаю всем привет из второй лабораторной!
+   5:Core/Src/main.c **** extern uint32_t SystemCoreClock;
+   6:Core/Src/main.c **** volatile uint32_t g_msTicks = 0U; // глобальный счётчик миллисекунд
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** #define LED_COUNT 6U
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** /* Режимы работы светодиодов */
+  11:Core/Src/main.c **** #define LED_MODE_BLINK 0U
+  12:Core/Src/main.c **** #define LED_MODE_ON 1U
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c **** /* Частоты мигания: 0.2 Гц, 0.8 Гц, 1.3 Гц
+  15:Core/Src/main.c ****  * Храним "половину периода" в мс (интервал между перекл
+  16:Core/Src/main.c ****  * 0.2 Гц → T = 5000 мс, T/2 = 2500
+  17:Core/Src/main.c ****  * 0.8 Гц → T = 1250 мс, T/2 = 625
+  18:Core/Src/main.c ****  * 1.3 Гц → T ≈ 770 мс, T/2 ≈ 385
+  19:Core/Src/main.c ****  */
+  20:Core/Src/main.c **** #define BLINK_MODE_COUNT 3U
+  21:Core/Src/main.c **** static const uint32_t g_blinkIntervals[BLINK_MODE_COUNT] = {
+  22:Core/Src/main.c ****     2500U, 625U, 385U};
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c **** // Общее время от SysTick (мс)
+  25:Core/Src/main.c **** volatile uint32_t system_time_ms = 0U;
+  26:Core/Src/main.c **** 
+  27:Core/Src/main.c **** /* --- Кнопка 1 (PA0) --- */
+  28:Core/Src/main.c **** volatile uint8_t button1_pressed_flag = 0U;
+  29:Core/Src/main.c **** volatile uint32_t button1_last_irq_time_ms = 0U;
+  30:Core/Src/main.c **** 
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 2
+
+
+  31:Core/Src/main.c **** /* --- Кнопка 2 (PA5) --- */
+  32:Core/Src/main.c **** volatile uint8_t button2_press_event_flag = 0U;   // фронт нажатия (PA5=0)
+  33:Core/Src/main.c **** volatile uint8_t button2_release_event_flag = 0U; // фронт отпускания (PA5=1)
+  34:Core/Src/main.c **** volatile uint32_t button2_last_irq_time_ms = 0U;
+  35:Core/Src/main.c **** 
+  36:Core/Src/main.c **** volatile uint8_t button2_is_pressed = 0U;      // сейчас реально зажата (пос�
+  37:Core/Src/main.c **** volatile uint32_t button2_press_start_ms = 0U; // когда нажали (для измерени�
+  38:Core/Src/main.c **** 
+  39:Core/Src/main.c **** /* --- Светодиоды --- */
+  40:Core/Src/main.c **** volatile uint8_t led_mode = LED_MODE_BLINK;
+  41:Core/Src/main.c **** volatile uint8_t blink_mode_index = 0U; // 0..2
+  42:Core/Src/main.c **** volatile uint32_t last_blink_time_ms = 0U;
+  43:Core/Src/main.c **** volatile uint8_t blink_led_is_on = 0U; // 0 = выкл, 1 = горит
+  44:Core/Src/main.c **** 
+  45:Core/Src/main.c **** #define LED_INDEX_NONE 255U
+  46:Core/Src/main.c **** volatile uint8_t current_led_index = LED_INDEX_NONE; // 0..5
+  47:Core/Src/main.c **** 
+  48:Core/Src/main.c **** extern volatile uint8_t seconds = 0;
+  49:Core/Src/main.c **** 
+  50:Core/Src/main.c **** void Button1_Task(void)
+  51:Core/Src/main.c **** {
+  29              		.loc 1 51 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  52:Core/Src/main.c ****     if (button1_pressed_flag == 0U)
+  38              		.loc 1 52 5 view .LVU1
+  39              		.loc 1 52 30 is_stmt 0 view .LVU2
+  40 0002 134B     		ldr	r3, .L8
+  41 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  42              		.loc 1 52 8 view .LVU3
+  43 0006 DBB1     		cbz	r3, .L1
+  53:Core/Src/main.c ****         return;
+  54:Core/Src/main.c **** 
+  55:Core/Src/main.c ****     button1_pressed_flag = 0U;
+  44              		.loc 1 55 5 is_stmt 1 view .LVU4
+  45              		.loc 1 55 26 is_stmt 0 view .LVU5
+  46 0008 114B     		ldr	r3, .L8
+  47 000a 0022     		movs	r2, #0
+  48 000c 1A70     		strb	r2, [r3]
+  56:Core/Src/main.c **** 
+  57:Core/Src/main.c ****     if (current_led_index == LED_INDEX_NONE)
+  49              		.loc 1 57 5 is_stmt 1 view .LVU6
+  50              		.loc 1 57 27 is_stmt 0 view .LVU7
+  51 000e 114B     		ldr	r3, .L8+4
+  52 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  53 0012 DBB2     		uxtb	r3, r3
+  54              		.loc 1 57 8 view .LVU8
+  55 0014 FF2B     		cmp	r3, #255
+  56 0016 0CD0     		beq	.L6
+  58:Core/Src/main.c ****     {
+  59:Core/Src/main.c ****         current_led_index = 0U;
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 3
+
+
+  60:Core/Src/main.c ****     }
+  61:Core/Src/main.c ****     else
+  62:Core/Src/main.c ****     {
+  63:Core/Src/main.c ****         current_led_index++;
+  57              		.loc 1 63 9 is_stmt 1 view .LVU9
+  58              		.loc 1 63 26 is_stmt 0 view .LVU10
+  59 0018 0E4A     		ldr	r2, .L8+4
+  60 001a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  61 001c 0133     		adds	r3, r3, #1
+  62 001e DBB2     		uxtb	r3, r3
+  63 0020 1370     		strb	r3, [r2]
+  64:Core/Src/main.c ****         if (current_led_index >= LED_COUNT)
+  64              		.loc 1 64 9 is_stmt 1 view .LVU11
+  65              		.loc 1 64 31 is_stmt 0 view .LVU12
+  66 0022 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  67 0024 DBB2     		uxtb	r3, r3
+  68              		.loc 1 64 12 view .LVU13
+  69 0026 052B     		cmp	r3, #5
+  70 0028 05D9     		bls	.L4
+  65:Core/Src/main.c ****             current_led_index = 0U;
+  71              		.loc 1 65 13 is_stmt 1 view .LVU14
+  72              		.loc 1 65 31 is_stmt 0 view .LVU15
+  73 002a 1346     		mov	r3, r2
+  74 002c 0022     		movs	r2, #0
+  75 002e 1A70     		strb	r2, [r3]
+  76 0030 01E0     		b	.L4
+  77              	.L6:
+  59:Core/Src/main.c ****     }
+  78              		.loc 1 59 9 is_stmt 1 view .LVU16
+  59:Core/Src/main.c ****     }
+  79              		.loc 1 59 27 is_stmt 0 view .LVU17
+  80 0032 084B     		ldr	r3, .L8+4
+  81 0034 1A70     		strb	r2, [r3]
+  82              	.L4:
+  66:Core/Src/main.c ****     }
+  67:Core/Src/main.c **** 
+  68:Core/Src/main.c ****     if (led_mode == LED_MODE_ON)
+  83              		.loc 1 68 5 is_stmt 1 view .LVU18
+  84              		.loc 1 68 18 is_stmt 0 view .LVU19
+  85 0036 084B     		ldr	r3, .L8+8
+  86 0038 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  87 003a DBB2     		uxtb	r3, r3
+  88              		.loc 1 68 8 view .LVU20
+  89 003c 012B     		cmp	r3, #1
+  90 003e 00D0     		beq	.L7
+  91              	.L1:
+  69:Core/Src/main.c ****     {
+  70:Core/Src/main.c ****         LED_AllOff();
+  71:Core/Src/main.c ****         LED_On_Index(current_led_index);
+  72:Core/Src/main.c ****     }
+  73:Core/Src/main.c **** }
+  92              		.loc 1 73 1 view .LVU21
+  93 0040 08BD     		pop	{r3, pc}
+  94              	.L7:
+  70:Core/Src/main.c ****         LED_On_Index(current_led_index);
+  95              		.loc 1 70 9 is_stmt 1 view .LVU22
+  96 0042 FFF7FEFF 		bl	LED_AllOff
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 4
+
+
+  97              	.LVL0:
+  71:Core/Src/main.c ****     }
+  98              		.loc 1 71 9 view .LVU23
+  99 0046 034B     		ldr	r3, .L8+4
+ 100 0048 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 101 004a FFF7FEFF 		bl	LED_On_Index
+ 102              	.LVL1:
+ 103 004e F7E7     		b	.L1
+ 104              	.L9:
+ 105              		.align	2
+ 106              	.L8:
+ 107 0050 00000000 		.word	button1_pressed_flag
+ 108 0054 00000000 		.word	current_led_index
+ 109 0058 00000000 		.word	led_mode
+ 110              		.cfi_endproc
+ 111              	.LFE130:
+ 113              		.section	.text.Button2_Task,"ax",%progbits
+ 114              		.align	1
+ 115              		.global	Button2_Task
+ 116              		.syntax unified
+ 117              		.thumb
+ 118              		.thumb_func
+ 120              	Button2_Task:
+ 121              	.LFB131:
+  74:Core/Src/main.c **** 
+  75:Core/Src/main.c **** void Button2_Task(void)
+  76:Core/Src/main.c **** {
+ 122              		.loc 1 76 1 view -0
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 0
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126 0000 38B5     		push	{r3, r4, r5, lr}
+ 127              	.LCFI1:
+ 128              		.cfi_def_cfa_offset 16
+ 129              		.cfi_offset 3, -16
+ 130              		.cfi_offset 4, -12
+ 131              		.cfi_offset 5, -8
+ 132              		.cfi_offset 14, -4
+  77:Core/Src/main.c ****     uint32_t now = system_time_ms;
+ 133              		.loc 1 77 5 view .LVU25
+ 134              		.loc 1 77 14 is_stmt 0 view .LVU26
+ 135 0002 274B     		ldr	r3, .L18
+ 136 0004 1C68     		ldr	r4, [r3]
+ 137              	.LVL2:
+  78:Core/Src/main.c **** 
+  79:Core/Src/main.c ****     // Нажали
+  80:Core/Src/main.c ****     if (button2_press_event_flag != 0U)
+ 138              		.loc 1 80 5 is_stmt 1 view .LVU27
+ 139              		.loc 1 80 34 is_stmt 0 view .LVU28
+ 140 0006 274B     		ldr	r3, .L18+4
+ 141 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 142              		.loc 1 80 8 view .LVU29
+ 143 000a 3BB1     		cbz	r3, .L11
+  81:Core/Src/main.c ****     {
+  82:Core/Src/main.c ****         button2_press_event_flag = 0U;
+ 144              		.loc 1 82 9 is_stmt 1 view .LVU30
+ 145              		.loc 1 82 34 is_stmt 0 view .LVU31
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 5
+
+
+ 146 000c 254B     		ldr	r3, .L18+4
+ 147 000e 0022     		movs	r2, #0
+ 148 0010 1A70     		strb	r2, [r3]
+  83:Core/Src/main.c **** 
+  84:Core/Src/main.c ****         button2_is_pressed = 1U;
+ 149              		.loc 1 84 9 is_stmt 1 view .LVU32
+ 150              		.loc 1 84 28 is_stmt 0 view .LVU33
+ 151 0012 254B     		ldr	r3, .L18+8
+ 152 0014 0122     		movs	r2, #1
+ 153 0016 1A70     		strb	r2, [r3]
+  85:Core/Src/main.c ****         button2_press_start_ms = now;
+ 154              		.loc 1 85 9 is_stmt 1 view .LVU34
+ 155              		.loc 1 85 32 is_stmt 0 view .LVU35
+ 156 0018 244B     		ldr	r3, .L18+12
+ 157 001a 1C60     		str	r4, [r3]
+ 158              	.L11:
+  86:Core/Src/main.c ****     }
+  87:Core/Src/main.c **** 
+  88:Core/Src/main.c ****     // Отпустили
+  89:Core/Src/main.c ****     if (button2_release_event_flag != 0U)
+ 159              		.loc 1 89 5 is_stmt 1 view .LVU36
+ 160              		.loc 1 89 36 is_stmt 0 view .LVU37
+ 161 001c 244B     		ldr	r3, .L18+16
+ 162 001e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 163              		.loc 1 89 8 view .LVU38
+ 164 0020 002B     		cmp	r3, #0
+ 165 0022 2FD0     		beq	.L10
+  90:Core/Src/main.c ****     {
+  91:Core/Src/main.c ****         button2_release_event_flag = 0U;
+ 166              		.loc 1 91 9 is_stmt 1 view .LVU39
+ 167              		.loc 1 91 36 is_stmt 0 view .LVU40
+ 168 0024 224B     		ldr	r3, .L18+16
+ 169 0026 0022     		movs	r2, #0
+ 170 0028 1A70     		strb	r2, [r3]
+  92:Core/Src/main.c **** 
+  93:Core/Src/main.c ****         if (button2_is_pressed != 0U)
+ 171              		.loc 1 93 9 is_stmt 1 view .LVU41
+ 172              		.loc 1 93 32 is_stmt 0 view .LVU42
+ 173 002a 1F4B     		ldr	r3, .L18+8
+ 174 002c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 175              		.loc 1 93 12 view .LVU43
+ 176 002e 4BB3     		cbz	r3, .L10
+ 177              	.LBB2:
+  94:Core/Src/main.c ****         {
+  95:Core/Src/main.c ****             button2_is_pressed = 0U;
+ 178              		.loc 1 95 13 is_stmt 1 view .LVU44
+ 179              		.loc 1 95 32 is_stmt 0 view .LVU45
+ 180 0030 1D4B     		ldr	r3, .L18+8
+ 181 0032 1A70     		strb	r2, [r3]
+  96:Core/Src/main.c **** 
+  97:Core/Src/main.c ****             uint32_t press_time = now - button2_press_start_ms;
+ 182              		.loc 1 97 13 is_stmt 1 view .LVU46
+ 183              		.loc 1 97 39 is_stmt 0 view .LVU47
+ 184 0034 1D4B     		ldr	r3, .L18+12
+ 185 0036 1B68     		ldr	r3, [r3]
+ 186              		.loc 1 97 22 view .LVU48
+ 187 0038 E31A     		subs	r3, r4, r3
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 6
+
+
+ 188              	.LVL3:
+  98:Core/Src/main.c **** 
+  99:Core/Src/main.c ****             if (press_time >= BTN2_LONG_MS)
+ 189              		.loc 1 99 13 is_stmt 1 view .LVU49
+ 190              		.loc 1 99 16 is_stmt 0 view .LVU50
+ 191 003a B3F5FA6F 		cmp	r3, #2000
+ 192 003e 22D3     		bcc	.L13
+ 100:Core/Src/main.c ****             {
+ 101:Core/Src/main.c ****                 // Долгое нажатие — смена режима
+ 102:Core/Src/main.c ****                 if (led_mode == LED_MODE_BLINK)
+ 193              		.loc 1 102 17 is_stmt 1 view .LVU51
+ 194              		.loc 1 102 30 is_stmt 0 view .LVU52
+ 195 0040 1C4B     		ldr	r3, .L18+20
+ 196              	.LVL4:
+ 197              		.loc 1 102 30 view .LVU53
+ 198 0042 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 199              		.loc 1 102 20 view .LVU54
+ 200 0044 ABB9     		cbnz	r3, .L14
+ 103:Core/Src/main.c ****                 {
+ 104:Core/Src/main.c ****                     led_mode = LED_MODE_ON;
+ 201              		.loc 1 104 21 is_stmt 1 view .LVU55
+ 202              		.loc 1 104 30 is_stmt 0 view .LVU56
+ 203 0046 1B4B     		ldr	r3, .L18+20
+ 204 0048 0122     		movs	r2, #1
+ 205 004a 1A70     		strb	r2, [r3]
+ 105:Core/Src/main.c **** 
+ 106:Core/Src/main.c ****                     // В режиме "светится":
+ 107:Core/Src/main.c ****                     LED_AllOff();
+ 206              		.loc 1 107 21 is_stmt 1 view .LVU57
+ 207 004c FFF7FEFF 		bl	LED_AllOff
+ 208              	.LVL5:
+ 108:Core/Src/main.c **** 
+ 109:Core/Src/main.c ****                     if (current_led_index != LED_INDEX_NONE)
+ 209              		.loc 1 109 21 view .LVU58
+ 210              		.loc 1 109 43 is_stmt 0 view .LVU59
+ 211 0050 194B     		ldr	r3, .L18+24
+ 212 0052 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 213 0054 DBB2     		uxtb	r3, r3
+ 214              		.loc 1 109 24 view .LVU60
+ 215 0056 FF2B     		cmp	r3, #255
+ 216 0058 03D1     		bne	.L17
+ 110:Core/Src/main.c ****                     {
+ 111:Core/Src/main.c ****                         // Если активный LED уже выбран — зажечь то�
+ 112:Core/Src/main.c ****                         LED_On_Index(current_led_index);
+ 113:Core/Src/main.c ****                         blink_led_is_on = 1U;
+ 114:Core/Src/main.c ****                     }
+ 115:Core/Src/main.c ****                     else
+ 116:Core/Src/main.c ****                     {
+ 117:Core/Src/main.c ****                         // Активный ещё не выбран — просто ничего 
+ 118:Core/Src/main.c ****                         blink_led_is_on = 0U;
+ 217              		.loc 1 118 25 is_stmt 1 view .LVU61
+ 218              		.loc 1 118 41 is_stmt 0 view .LVU62
+ 219 005a 184B     		ldr	r3, .L18+28
+ 220 005c 0022     		movs	r2, #0
+ 221 005e 1A70     		strb	r2, [r3]
+ 222 0060 10E0     		b	.L10
+ 223              	.L17:
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 7
+
+
+ 112:Core/Src/main.c ****                         blink_led_is_on = 1U;
+ 224              		.loc 1 112 25 is_stmt 1 view .LVU63
+ 225 0062 154B     		ldr	r3, .L18+24
+ 226 0064 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 227 0066 FFF7FEFF 		bl	LED_On_Index
+ 228              	.LVL6:
+ 113:Core/Src/main.c ****                     }
+ 229              		.loc 1 113 25 view .LVU64
+ 113:Core/Src/main.c ****                     }
+ 230              		.loc 1 113 41 is_stmt 0 view .LVU65
+ 231 006a 144B     		ldr	r3, .L18+28
+ 232 006c 0122     		movs	r2, #1
+ 233 006e 1A70     		strb	r2, [r3]
+ 234 0070 08E0     		b	.L10
+ 235              	.L14:
+ 119:Core/Src/main.c ****                     }
+ 120:Core/Src/main.c ****                 }
+ 121:Core/Src/main.c ****                 else
+ 122:Core/Src/main.c ****                 {
+ 123:Core/Src/main.c ****                     // Переход в режим мигания
+ 124:Core/Src/main.c ****                     led_mode = LED_MODE_BLINK;
+ 236              		.loc 1 124 21 is_stmt 1 view .LVU66
+ 237              		.loc 1 124 30 is_stmt 0 view .LVU67
+ 238 0072 0025     		movs	r5, #0
+ 239 0074 0F4B     		ldr	r3, .L18+20
+ 240 0076 1D70     		strb	r5, [r3]
+ 125:Core/Src/main.c **** 
+ 126:Core/Src/main.c ****                     LED_AllOff();
+ 241              		.loc 1 126 21 is_stmt 1 view .LVU68
+ 242 0078 FFF7FEFF 		bl	LED_AllOff
+ 243              	.LVL7:
+ 127:Core/Src/main.c ****                     blink_led_is_on = 0U;
+ 244              		.loc 1 127 21 view .LVU69
+ 245              		.loc 1 127 37 is_stmt 0 view .LVU70
+ 246 007c 0F4B     		ldr	r3, .L18+28
+ 247 007e 1D70     		strb	r5, [r3]
+ 128:Core/Src/main.c ****                     last_blink_time_ms = now;
+ 248              		.loc 1 128 21 is_stmt 1 view .LVU71
+ 249              		.loc 1 128 40 is_stmt 0 view .LVU72
+ 250 0080 0F4B     		ldr	r3, .L18+32
+ 251 0082 1C60     		str	r4, [r3]
+ 252              	.LVL8:
+ 253              	.L10:
+ 254              		.loc 1 128 40 view .LVU73
+ 255              	.LBE2:
+ 129:Core/Src/main.c ****                 }
+ 130:Core/Src/main.c ****             }
+ 131:Core/Src/main.c ****             else
+ 132:Core/Src/main.c ****             {
+ 133:Core/Src/main.c ****                 // Короткое нажатие — смена частоты мигания
+ 134:Core/Src/main.c ****                 blink_mode_index++;
+ 135:Core/Src/main.c ****                 if (blink_mode_index >= BLINK_MODE_COUNT)
+ 136:Core/Src/main.c ****                 {
+ 137:Core/Src/main.c ****                     blink_mode_index = 0U;
+ 138:Core/Src/main.c ****                 }
+ 139:Core/Src/main.c ****             }
+ 140:Core/Src/main.c ****         }
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 8
+
+
+ 141:Core/Src/main.c ****     }
+ 142:Core/Src/main.c **** }
+ 256              		.loc 1 142 1 view .LVU74
+ 257 0084 38BD     		pop	{r3, r4, r5, pc}
+ 258              	.LVL9:
+ 259              	.L13:
+ 260              	.LBB3:
+ 134:Core/Src/main.c ****                 if (blink_mode_index >= BLINK_MODE_COUNT)
+ 261              		.loc 1 134 17 is_stmt 1 view .LVU75
+ 134:Core/Src/main.c ****                 if (blink_mode_index >= BLINK_MODE_COUNT)
+ 262              		.loc 1 134 33 is_stmt 0 view .LVU76
+ 263 0086 0F4A     		ldr	r2, .L18+36
+ 264 0088 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 265              	.LVL10:
+ 134:Core/Src/main.c ****                 if (blink_mode_index >= BLINK_MODE_COUNT)
+ 266              		.loc 1 134 33 view .LVU77
+ 267 008a 0133     		adds	r3, r3, #1
+ 268 008c DBB2     		uxtb	r3, r3
+ 269 008e 1370     		strb	r3, [r2]
+ 135:Core/Src/main.c ****                 {
+ 270              		.loc 1 135 17 is_stmt 1 view .LVU78
+ 135:Core/Src/main.c ****                 {
+ 271              		.loc 1 135 38 is_stmt 0 view .LVU79
+ 272 0090 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 273 0092 DBB2     		uxtb	r3, r3
+ 135:Core/Src/main.c ****                 {
+ 274              		.loc 1 135 20 view .LVU80
+ 275 0094 022B     		cmp	r3, #2
+ 276 0096 F5D9     		bls	.L10
+ 137:Core/Src/main.c ****                 }
+ 277              		.loc 1 137 21 is_stmt 1 view .LVU81
+ 137:Core/Src/main.c ****                 }
+ 278              		.loc 1 137 38 is_stmt 0 view .LVU82
+ 279 0098 1346     		mov	r3, r2
+ 280 009a 0022     		movs	r2, #0
+ 281 009c 1A70     		strb	r2, [r3]
+ 282              	.LBE3:
+ 283              		.loc 1 142 1 view .LVU83
+ 284 009e F1E7     		b	.L10
+ 285              	.L19:
+ 286              		.align	2
+ 287              	.L18:
+ 288 00a0 00000000 		.word	system_time_ms
+ 289 00a4 00000000 		.word	button2_press_event_flag
+ 290 00a8 00000000 		.word	button2_is_pressed
+ 291 00ac 00000000 		.word	button2_press_start_ms
+ 292 00b0 00000000 		.word	button2_release_event_flag
+ 293 00b4 00000000 		.word	led_mode
+ 294 00b8 00000000 		.word	current_led_index
+ 295 00bc 00000000 		.word	blink_led_is_on
+ 296 00c0 00000000 		.word	last_blink_time_ms
+ 297 00c4 00000000 		.word	blink_mode_index
+ 298              		.cfi_endproc
+ 299              	.LFE131:
+ 301              		.section	.text.Blink_Task,"ax",%progbits
+ 302              		.align	1
+ 303              		.global	Blink_Task
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 9
+
+
+ 304              		.syntax unified
+ 305              		.thumb
+ 306              		.thumb_func
+ 308              	Blink_Task:
+ 309              	.LFB132:
+ 143:Core/Src/main.c **** 
+ 144:Core/Src/main.c **** void Blink_Task(void)
+ 145:Core/Src/main.c **** {
+ 310              		.loc 1 145 1 is_stmt 1 view -0
+ 311              		.cfi_startproc
+ 312              		@ args = 0, pretend = 0, frame = 0
+ 313              		@ frame_needed = 0, uses_anonymous_args = 0
+ 314 0000 08B5     		push	{r3, lr}
+ 315              	.LCFI2:
+ 316              		.cfi_def_cfa_offset 8
+ 317              		.cfi_offset 3, -8
+ 318              		.cfi_offset 14, -4
+ 146:Core/Src/main.c ****     // Если режим не "мигание" ничего не делаем
+ 147:Core/Src/main.c ****     if (led_mode != LED_MODE_BLINK)
+ 319              		.loc 1 147 5 view .LVU85
+ 320              		.loc 1 147 18 is_stmt 0 view .LVU86
+ 321 0002 144B     		ldr	r3, .L24
+ 322 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 323              		.loc 1 147 8 view .LVU87
+ 324 0006 F3B9     		cbnz	r3, .L20
+ 148:Core/Src/main.c ****     {
+ 149:Core/Src/main.c ****         return;
+ 150:Core/Src/main.c ****     }
+ 151:Core/Src/main.c **** 
+ 152:Core/Src/main.c ****     // Если ещё не выбрали активный светодиод тоже ничег�
+ 153:Core/Src/main.c ****     if (current_led_index == LED_INDEX_NONE)
+ 325              		.loc 1 153 5 is_stmt 1 view .LVU88
+ 326              		.loc 1 153 27 is_stmt 0 view .LVU89
+ 327 0008 134B     		ldr	r3, .L24+4
+ 328 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 329 000c DBB2     		uxtb	r3, r3
+ 330              		.loc 1 153 8 view .LVU90
+ 331 000e FF2B     		cmp	r3, #255
+ 332 0010 19D0     		beq	.L20
+ 154:Core/Src/main.c ****     {
+ 155:Core/Src/main.c ****         return;
+ 156:Core/Src/main.c ****     }
+ 157:Core/Src/main.c **** 
+ 158:Core/Src/main.c ****     uint32_t now = system_time_ms;
+ 333              		.loc 1 158 5 is_stmt 1 view .LVU91
+ 334              		.loc 1 158 14 is_stmt 0 view .LVU92
+ 335 0012 124B     		ldr	r3, .L24+8
+ 336 0014 1A68     		ldr	r2, [r3]
+ 337              	.LVL11:
+ 159:Core/Src/main.c ****     uint32_t interval = g_blinkIntervals[blink_mode_index];
+ 338              		.loc 1 159 5 is_stmt 1 view .LVU93
+ 339              		.loc 1 159 41 is_stmt 0 view .LVU94
+ 340 0016 124B     		ldr	r3, .L24+12
+ 341 0018 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 342              		.loc 1 159 14 view .LVU95
+ 343 001a 124B     		ldr	r3, .L24+16
+ 344 001c 53F82110 		ldr	r1, [r3, r1, lsl #2]
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 10
+
+
+ 345              	.LVL12:
+ 160:Core/Src/main.c **** 
+ 161:Core/Src/main.c ****     if ((now - last_blink_time_ms) >= interval)
+ 346              		.loc 1 161 5 is_stmt 1 view .LVU96
+ 347              		.loc 1 161 14 is_stmt 0 view .LVU97
+ 348 0020 114B     		ldr	r3, .L24+20
+ 349 0022 1B68     		ldr	r3, [r3]
+ 350 0024 D31A     		subs	r3, r2, r3
+ 351              		.loc 1 161 8 view .LVU98
+ 352 0026 8B42     		cmp	r3, r1
+ 353 0028 0DD3     		bcc	.L20
+ 162:Core/Src/main.c ****     {
+ 163:Core/Src/main.c ****         last_blink_time_ms = now;
+ 354              		.loc 1 163 9 is_stmt 1 view .LVU99
+ 355              		.loc 1 163 28 is_stmt 0 view .LVU100
+ 356 002a 0F4B     		ldr	r3, .L24+20
+ 357 002c 1A60     		str	r2, [r3]
+ 164:Core/Src/main.c **** 
+ 165:Core/Src/main.c ****         if (blink_led_is_on == 0U)
+ 358              		.loc 1 165 9 is_stmt 1 view .LVU101
+ 359              		.loc 1 165 29 is_stmt 0 view .LVU102
+ 360 002e 0F4B     		ldr	r3, .L24+24
+ 361 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 362              		.loc 1 165 12 view .LVU103
+ 363 0032 4BB9     		cbnz	r3, .L22
+ 166:Core/Src/main.c ****         {
+ 167:Core/Src/main.c ****             LED_AllOff();
+ 364              		.loc 1 167 13 is_stmt 1 view .LVU104
+ 365 0034 FFF7FEFF 		bl	LED_AllOff
+ 366              	.LVL13:
+ 168:Core/Src/main.c ****             LED_On_Index(current_led_index);
+ 367              		.loc 1 168 13 view .LVU105
+ 368 0038 074B     		ldr	r3, .L24+4
+ 369 003a 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 370 003c FFF7FEFF 		bl	LED_On_Index
+ 371              	.LVL14:
+ 169:Core/Src/main.c ****             blink_led_is_on = 1U;
+ 372              		.loc 1 169 13 view .LVU106
+ 373              		.loc 1 169 29 is_stmt 0 view .LVU107
+ 374 0040 0A4B     		ldr	r3, .L24+24
+ 375 0042 0122     		movs	r2, #1
+ 376 0044 1A70     		strb	r2, [r3]
+ 377              	.LVL15:
+ 378              	.L20:
+ 170:Core/Src/main.c ****         }
+ 171:Core/Src/main.c ****         else
+ 172:Core/Src/main.c ****         {
+ 173:Core/Src/main.c ****             LED_AllOff();
+ 174:Core/Src/main.c ****             blink_led_is_on = 0U;
+ 175:Core/Src/main.c ****         }
+ 176:Core/Src/main.c ****     }
+ 177:Core/Src/main.c **** }
+ 379              		.loc 1 177 1 view .LVU108
+ 380 0046 08BD     		pop	{r3, pc}
+ 381              	.LVL16:
+ 382              	.L22:
+ 173:Core/Src/main.c ****             blink_led_is_on = 0U;
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 11
+
+
+ 383              		.loc 1 173 13 is_stmt 1 view .LVU109
+ 384 0048 FFF7FEFF 		bl	LED_AllOff
+ 385              	.LVL17:
+ 174:Core/Src/main.c ****         }
+ 386              		.loc 1 174 13 view .LVU110
+ 174:Core/Src/main.c ****         }
+ 387              		.loc 1 174 29 is_stmt 0 view .LVU111
+ 388 004c 074B     		ldr	r3, .L24+24
+ 389 004e 0022     		movs	r2, #0
+ 390 0050 1A70     		strb	r2, [r3]
+ 391 0052 F8E7     		b	.L20
+ 392              	.L25:
+ 393              		.align	2
+ 394              	.L24:
+ 395 0054 00000000 		.word	led_mode
+ 396 0058 00000000 		.word	current_led_index
+ 397 005c 00000000 		.word	system_time_ms
+ 398 0060 00000000 		.word	blink_mode_index
+ 399 0064 00000000 		.word	g_blinkIntervals
+ 400 0068 00000000 		.word	last_blink_time_ms
+ 401 006c 00000000 		.word	blink_led_is_on
+ 402              		.cfi_endproc
+ 403              	.LFE132:
+ 405              		.section	.text.main,"ax",%progbits
+ 406              		.align	1
+ 407              		.global	main
+ 408              		.syntax unified
+ 409              		.thumb
+ 410              		.thumb_func
+ 412              	main:
+ 413              	.LFB133:
+ 178:Core/Src/main.c **** 
+ 179:Core/Src/main.c **** int main(void)
+ 180:Core/Src/main.c **** {
+ 414              		.loc 1 180 1 is_stmt 1 view -0
+ 415              		.cfi_startproc
+ 416              		@ Volatile: function does not return.
+ 417              		@ args = 0, pretend = 0, frame = 0
+ 418              		@ frame_needed = 0, uses_anonymous_args = 0
+ 419 0000 08B5     		push	{r3, lr}
+ 420              	.LCFI3:
+ 421              		.cfi_def_cfa_offset 8
+ 422              		.cfi_offset 3, -8
+ 423              		.cfi_offset 14, -4
+ 181:Core/Src/main.c ****     Clock_Init_HSE_PLL_168MHz();
+ 424              		.loc 1 181 5 view .LVU113
+ 425 0002 FFF7FEFF 		bl	Clock_Init_HSE_PLL_168MHz
+ 426              	.LVL18:
+ 182:Core/Src/main.c ****     SysTick_Init_1ms();
+ 427              		.loc 1 182 5 view .LVU114
+ 428 0006 FFF7FEFF 		bl	SysTick_Init_1ms
+ 429              	.LVL19:
+ 183:Core/Src/main.c **** 
+ 184:Core/Src/main.c ****     LEDs_GPIO_Init();
+ 430              		.loc 1 184 5 view .LVU115
+ 431 000a FFF7FEFF 		bl	LEDs_GPIO_Init
+ 432              	.LVL20:
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 12
+
+
+ 185:Core/Src/main.c ****     Buttons_GPIO_Init();
+ 433              		.loc 1 185 5 view .LVU116
+ 434 000e FFF7FEFF 		bl	Buttons_GPIO_Init
+ 435              	.LVL21:
+ 186:Core/Src/main.c ****     Buttons_EXTI_Init();
+ 436              		.loc 1 186 5 view .LVU117
+ 437 0012 FFF7FEFF 		bl	Buttons_EXTI_Init
+ 438              	.LVL22:
+ 187:Core/Src/main.c **** 
+ 188:Core/Src/main.c ****     LED_AllOff();
+ 439              		.loc 1 188 5 view .LVU118
+ 440 0016 FFF7FEFF 		bl	LED_AllOff
+ 441              	.LVL23:
+ 189:Core/Src/main.c **** 
+ 190:Core/Src/main.c ****     SET_BIT(EXTI->PR, (1U << 0) | (1U << 5));
+ 442              		.loc 1 190 5 view .LVU119
+ 443 001a 074A     		ldr	r2, .L29
+ 444 001c 5369     		ldr	r3, [r2, #20]
+ 445 001e 43F02103 		orr	r3, r3, #33
+ 446 0022 5361     		str	r3, [r2, #20]
+ 191:Core/Src/main.c ****     MCO_init();
+ 447              		.loc 1 191 5 view .LVU120
+ 448 0024 FFF7FEFF 		bl	MCO_init
+ 449              	.LVL24:
+ 450              	.L27:
+ 192:Core/Src/main.c ****     while (1)
+ 451              		.loc 1 192 5 view .LVU121
+ 193:Core/Src/main.c ****     {
+ 194:Core/Src/main.c ****         Button1_Task(); // переключение активного светодиода
+ 452              		.loc 1 194 9 view .LVU122
+ 453 0028 FFF7FEFF 		bl	Button1_Task
+ 454              	.LVL25:
+ 195:Core/Src/main.c ****         Button2_Task(); // смена частоты / режима
+ 455              		.loc 1 195 9 view .LVU123
+ 456 002c FFF7FEFF 		bl	Button2_Task
+ 457              	.LVL26:
+ 196:Core/Src/main.c ****         Blink_Task();   // мигаем в нужном режиме
+ 458              		.loc 1 196 9 discriminator 1 view .LVU124
+ 459 0030 FFF7FEFF 		bl	Blink_Task
+ 460              	.LVL27:
+ 192:Core/Src/main.c ****     {
+ 461              		.loc 1 192 11 view .LVU125
+ 462 0034 F8E7     		b	.L27
+ 463              	.L30:
+ 464 0036 00BF     		.align	2
+ 465              	.L29:
+ 466 0038 003C0140 		.word	1073822720
+ 467              		.cfi_endproc
+ 468              	.LFE133:
+ 470              		.global	seconds
+ 471              		.section	.bss.seconds,"aw",%nobits
+ 474              	seconds:
+ 475 0000 00       		.space	1
+ 476              		.global	current_led_index
+ 477              		.section	.data.current_led_index,"aw"
+ 480              	current_led_index:
+ 481 0000 FF       		.byte	-1
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 13
+
+
+ 482              		.global	blink_led_is_on
+ 483              		.section	.bss.blink_led_is_on,"aw",%nobits
+ 486              	blink_led_is_on:
+ 487 0000 00       		.space	1
+ 488              		.global	last_blink_time_ms
+ 489              		.section	.bss.last_blink_time_ms,"aw",%nobits
+ 490              		.align	2
+ 493              	last_blink_time_ms:
+ 494 0000 00000000 		.space	4
+ 495              		.global	blink_mode_index
+ 496              		.section	.bss.blink_mode_index,"aw",%nobits
+ 499              	blink_mode_index:
+ 500 0000 00       		.space	1
+ 501              		.global	led_mode
+ 502              		.section	.bss.led_mode,"aw",%nobits
+ 505              	led_mode:
+ 506 0000 00       		.space	1
+ 507              		.global	button2_press_start_ms
+ 508              		.section	.bss.button2_press_start_ms,"aw",%nobits
+ 509              		.align	2
+ 512              	button2_press_start_ms:
+ 513 0000 00000000 		.space	4
+ 514              		.global	button2_is_pressed
+ 515              		.section	.bss.button2_is_pressed,"aw",%nobits
+ 518              	button2_is_pressed:
+ 519 0000 00       		.space	1
+ 520              		.global	button2_last_irq_time_ms
+ 521              		.section	.bss.button2_last_irq_time_ms,"aw",%nobits
+ 522              		.align	2
+ 525              	button2_last_irq_time_ms:
+ 526 0000 00000000 		.space	4
+ 527              		.global	button2_release_event_flag
+ 528              		.section	.bss.button2_release_event_flag,"aw",%nobits
+ 531              	button2_release_event_flag:
+ 532 0000 00       		.space	1
+ 533              		.global	button2_press_event_flag
+ 534              		.section	.bss.button2_press_event_flag,"aw",%nobits
+ 537              	button2_press_event_flag:
+ 538 0000 00       		.space	1
+ 539              		.global	button1_last_irq_time_ms
+ 540              		.section	.bss.button1_last_irq_time_ms,"aw",%nobits
+ 541              		.align	2
+ 544              	button1_last_irq_time_ms:
+ 545 0000 00000000 		.space	4
+ 546              		.global	button1_pressed_flag
+ 547              		.section	.bss.button1_pressed_flag,"aw",%nobits
+ 550              	button1_pressed_flag:
+ 551 0000 00       		.space	1
+ 552              		.global	system_time_ms
+ 553              		.section	.bss.system_time_ms,"aw",%nobits
+ 554              		.align	2
+ 557              	system_time_ms:
+ 558 0000 00000000 		.space	4
+ 559              		.section	.rodata.g_blinkIntervals,"a"
+ 560              		.align	2
+ 563              	g_blinkIntervals:
+ 564 0000 C4090000 		.word	2500
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 14
+
+
+ 565 0004 71020000 		.word	625
+ 566 0008 81010000 		.word	385
+ 567              		.global	g_msTicks
+ 568              		.section	.bss.g_msTicks,"aw",%nobits
+ 569              		.align	2
+ 572              	g_msTicks:
+ 573 0000 00000000 		.space	4
+ 574              		.section	.bss.g_blink_on,"aw",%nobits
+ 577              	g_blink_on:
+ 578 0000 00       		.space	1
+ 579              		.section	.bss.g_blink_timer,"aw",%nobits
+ 580              		.align	2
+ 583              	g_blink_timer:
+ 584 0000 00000000 		.space	4
+ 585              		.section	.bss.g_btn2_press_ms,"aw",%nobits
+ 586              		.align	2
+ 589              	g_btn2_press_ms:
+ 590 0000 00000000 		.space	4
+ 591              		.section	.bss.g_btn2_pressed,"aw",%nobits
+ 594              	g_btn2_pressed:
+ 595 0000 00       		.space	1
+ 596              		.section	.bss.g_btn2_last_time,"aw",%nobits
+ 597              		.align	2
+ 600              	g_btn2_last_time:
+ 601 0000 00000000 		.space	4
+ 602              		.section	.bss.g_btn1_last_time,"aw",%nobits
+ 603              		.align	2
+ 606              	g_btn1_last_time:
+ 607 0000 00000000 		.space	4
+ 608              		.text
+ 609              	.Letext0:
+ 610              		.file 2 "C:/Users/user/Desktop/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/mach
+ 611              		.file 3 "C:/Users/user/Desktop/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/
+ 612              		.file 4 "Core/Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI/stm32f429xx.h"
+ 613              		.file 5 "Core/Inc/Interrupt.h"
+ 614              		.file 6 "Core/Inc/init.h"
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:21     .text.Button1_Task:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:27     .text.Button1_Task:00000000 Button1_Task
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:107    .text.Button1_Task:00000050 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:550    .bss.button1_pressed_flag:00000000 button1_pressed_flag
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:480    .data.current_led_index:00000000 current_led_index
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:505    .bss.led_mode:00000000 led_mode
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:114    .text.Button2_Task:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:120    .text.Button2_Task:00000000 Button2_Task
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:288    .text.Button2_Task:000000a0 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:557    .bss.system_time_ms:00000000 system_time_ms
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:537    .bss.button2_press_event_flag:00000000 button2_press_event_flag
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:518    .bss.button2_is_pressed:00000000 button2_is_pressed
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:512    .bss.button2_press_start_ms:00000000 button2_press_start_ms
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:531    .bss.button2_release_event_flag:00000000 button2_release_event_flag
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:486    .bss.blink_led_is_on:00000000 blink_led_is_on
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:493    .bss.last_blink_time_ms:00000000 last_blink_time_ms
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:499    .bss.blink_mode_index:00000000 blink_mode_index
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:302    .text.Blink_Task:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:308    .text.Blink_Task:00000000 Blink_Task
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:395    .text.Blink_Task:00000054 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:563    .rodata.g_blinkIntervals:00000000 g_blinkIntervals
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:406    .text.main:00000000 $t
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:412    .text.main:00000000 main
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:466    .text.main:00000038 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:474    .bss.seconds:00000000 seconds
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:475    .bss.seconds:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:487    .bss.blink_led_is_on:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:490    .bss.last_blink_time_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:500    .bss.blink_mode_index:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:506    .bss.led_mode:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:509    .bss.button2_press_start_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:519    .bss.button2_is_pressed:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:525    .bss.button2_last_irq_time_ms:00000000 button2_last_irq_time_ms
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:522    .bss.button2_last_irq_time_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:532    .bss.button2_release_event_flag:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:538    .bss.button2_press_event_flag:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:544    .bss.button1_last_irq_time_ms:00000000 button1_last_irq_time_ms
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:541    .bss.button1_last_irq_time_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:551    .bss.button1_pressed_flag:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:554    .bss.system_time_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:560    .rodata.g_blinkIntervals:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:572    .bss.g_msTicks:00000000 g_msTicks
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:569    .bss.g_msTicks:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:577    .bss.g_blink_on:00000000 g_blink_on
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:578    .bss.g_blink_on:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:580    .bss.g_blink_timer:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:583    .bss.g_blink_timer:00000000 g_blink_timer
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:586    .bss.g_btn2_press_ms:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:589    .bss.g_btn2_press_ms:00000000 g_btn2_press_ms
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:594    .bss.g_btn2_pressed:00000000 g_btn2_pressed
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:595    .bss.g_btn2_pressed:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:597    .bss.g_btn2_last_time:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:600    .bss.g_btn2_last_time:00000000 g_btn2_last_time
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:603    .bss.g_btn1_last_time:00000000 $d
+C:\Users\user\AppData\Local\Temp\ccUDKyCd.s:606    .bss.g_btn1_last_time:00000000 g_btn1_last_time
+ARM GAS  C:\Users\user\AppData\Local\Temp\ccUDKyCd.s 			page 16
+
+
+
+UNDEFINED SYMBOLS
+LED_AllOff
+LED_On_Index
+Clock_Init_HSE_PLL_168MHz
+SysTick_Init_1ms
+LEDs_GPIO_Init
+Buttons_GPIO_Init
+Buttons_EXTI_Init
+MCO_init
