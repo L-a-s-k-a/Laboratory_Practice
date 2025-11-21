@@ -1,0 +1,631 @@
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.disableAllLeds,"ax",%progbits
+  21              		.align	1
+  22              		.global	disableAllLeds
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	disableAllLeds:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** uint8_t led_state[3] = {0, 0, 0};                                       //состояния све
+   4:Core/Src/init.c **** uint8_t button_to_color[3] = {0, 1, 2};                                 //первая кнопка
+   5:Core/Src/init.c **** uint8_t btn1_prev = 0, btn2_prev = 0, btn3_prev = 0, mode_prev = 0;     //переменные дл
+   6:Core/Src/init.c **** uint8_t mode_count = 0;     //кнопарь
+   7:Core/Src/init.c **** 
+   8:Core/Src/init.c **** // Счётчики количества нажатий на кнопки
+   9:Core/Src/init.c **** uint32_t btn1_press_count = 0;  // кнопка 1
+  10:Core/Src/init.c **** uint32_t btn2_press_count = 0;  // кнопка 2
+  11:Core/Src/init.c **** uint32_t btn3_press_count = 0;  //кнопка 3
+  12:Core/Src/init.c **** uint32_t mode_press_count = 0;  //кнопка MODE
+  13:Core/Src/init.c **** // Отдельные переменные для каждого светодиода иначе п
+  14:Core/Src/init.c **** uint8_t led_green = 0;      //1 - горит, а больше и не надо
+  15:Core/Src/init.c **** uint8_t led_blue = 0;       //1 - горит
+  16:Core/Src/init.c **** uint8_t led_red = 0;        // 1 - горит
+  17:Core/Src/init.c **** // Флаг для отладки 
+  18:Core/Src/init.c **** uint8_t debug_flag = 0;         //отслеживания нажатий
+  19:Core/Src/init.c **** 
+  20:Core/Src/init.c **** // Функции
+  21:Core/Src/init.c **** void disableAllLeds(void) {             //изначально выключая всё - свето
+  29              		.loc 1 21 27 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  22:Core/Src/init.c ****     // Зеленые 
+  23:Core/Src/init.c ****     GPIOA->BSRR = GPIO_BSRR_BR_5;
+  34              		.loc 1 23 5 view .LVU1
+  35              		.loc 1 23 17 is_stmt 0 view .LVU2
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 2
+
+
+  36 0000 094B     		ldr	r3, .L2
+  37 0002 4FF40012 		mov	r2, #2097152
+  38 0006 9A61     		str	r2, [r3, #24]
+  24:Core/Src/init.c ****     GPIOC->BSRR = GPIO_BSRR_BR_5;
+  39              		.loc 1 24 5 is_stmt 1 view .LVU3
+  40              		.loc 1 24 17 is_stmt 0 view .LVU4
+  41 0008 0849     		ldr	r1, .L2+4
+  42 000a 8A61     		str	r2, [r1, #24]
+  25:Core/Src/init.c ****     // Синие 
+  26:Core/Src/init.c ****     GPIOC_BSRR = BSRR_RESET_6;
+  43              		.loc 1 26 5 is_stmt 1 view .LVU5
+  44              		.loc 1 26 16 is_stmt 0 view .LVU6
+  45 000c 4FF48002 		mov	r2, #4194304
+  46 0010 C3F81828 		str	r2, [r3, #2072]
+  27:Core/Src/init.c ****     GPIOB_BSRR = BSRR_RESET_2;
+  47              		.loc 1 27 5 is_stmt 1 view .LVU7
+  48              		.loc 1 27 16 is_stmt 0 view .LVU8
+  49 0014 4FF48021 		mov	r1, #262144
+  50 0018 C3F81814 		str	r1, [r3, #1048]
+  28:Core/Src/init.c ****     // Красные
+  29:Core/Src/init.c ****     GPIOA_BSRR = BSRR_RESET_6;
+  51              		.loc 1 29 5 is_stmt 1 view .LVU9
+  52              		.loc 1 29 16 is_stmt 0 view .LVU10
+  53 001c 9A61     		str	r2, [r3, #24]
+  30:Core/Src/init.c ****     GPIOB_BSRR = BSRR_RESET_1;
+  54              		.loc 1 30 5 is_stmt 1 view .LVU11
+  55              		.loc 1 30 16 is_stmt 0 view .LVU12
+  56 001e 4FF40032 		mov	r2, #131072
+  57 0022 C3F81824 		str	r2, [r3, #1048]
+  31:Core/Src/init.c **** }
+  58              		.loc 1 31 1 view .LVU13
+  59 0026 7047     		bx	lr
+  60              	.L3:
+  61              		.align	2
+  62              	.L2:
+  63 0028 00000240 		.word	1073872896
+  64 002c 00080240 		.word	1073874944
+  65              		.cfi_endproc
+  66              	.LFE130:
+  68              		.section	.text.update_leds,"ax",%progbits
+  69              		.align	1
+  70              		.global	update_leds
+  71              		.syntax unified
+  72              		.thumb
+  73              		.thumb_func
+  75              	update_leds:
+  76              	.LFB131:
+  32:Core/Src/init.c **** 
+  33:Core/Src/init.c **** void update_leds(void) {                //обновляю состояния диодов по м�
+  77              		.loc 1 33 24 is_stmt 1 view -0
+  78              		.cfi_startproc
+  79              		@ args = 0, pretend = 0, frame = 0
+  80              		@ frame_needed = 0, uses_anonymous_args = 0
+  81              		@ link register save eliminated.
+  82 0000 10B4     		push	{r4}
+  83              	.LCFI0:
+  84              		.cfi_def_cfa_offset 4
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 3
+
+
+  85              		.cfi_offset 4, -4
+  34:Core/Src/init.c ****     // Зелёные светодиоды 
+  35:Core/Src/init.c ****     if (led_state[0]) {
+  86              		.loc 1 35 5 view .LVU15
+  87              		.loc 1 35 18 is_stmt 0 view .LVU16
+  88 0002 204B     		ldr	r3, .L12
+  89 0004 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  90              		.loc 1 35 8 view .LVU17
+  91 0006 09B3     		cbz	r1, .L5
+  36:Core/Src/init.c ****         GPIOA->BSRR = GPIO_BSRR_BS_5;
+  92              		.loc 1 36 9 is_stmt 1 view .LVU18
+  93              		.loc 1 36 21 is_stmt 0 view .LVU19
+  94 0008 2023     		movs	r3, #32
+  95 000a 1F4A     		ldr	r2, .L12+4
+  96 000c 9361     		str	r3, [r2, #24]
+  37:Core/Src/init.c ****         GPIOC->BSRR = GPIO_BSRR_BS_5;
+  97              		.loc 1 37 9 is_stmt 1 view .LVU20
+  98              		.loc 1 37 21 is_stmt 0 view .LVU21
+  99 000e 02F50062 		add	r2, r2, #2048
+ 100 0012 9361     		str	r3, [r2, #24]
+ 101              	.L6:
+  38:Core/Src/init.c ****     } else {
+  39:Core/Src/init.c ****         GPIOA->BSRR = GPIO_BSRR_BR_5;
+  40:Core/Src/init.c ****         GPIOC->BSRR = GPIO_BSRR_BR_5;
+  41:Core/Src/init.c ****     }
+  42:Core/Src/init.c ****     // Синие светодиоды 
+  43:Core/Src/init.c ****     if (led_state[1]) {
+ 102              		.loc 1 43 5 is_stmt 1 view .LVU22
+ 103              		.loc 1 43 18 is_stmt 0 view .LVU23
+ 104 0014 1B4B     		ldr	r3, .L12
+ 105 0016 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 106              		.loc 1 43 8 view .LVU24
+ 107 0018 02B3     		cbz	r2, .L7
+  44:Core/Src/init.c ****         GPIOC_BSRR = BSRR_SET_6;
+ 108              		.loc 1 44 9 is_stmt 1 view .LVU25
+ 109              		.loc 1 44 20 is_stmt 0 view .LVU26
+ 110 001a 1B4B     		ldr	r3, .L12+4
+ 111 001c 4020     		movs	r0, #64
+ 112 001e C3F81808 		str	r0, [r3, #2072]
+  45:Core/Src/init.c ****         GPIOB_BSRR = BSRR_SET_2;
+ 113              		.loc 1 45 9 is_stmt 1 view .LVU27
+ 114              		.loc 1 45 20 is_stmt 0 view .LVU28
+ 115 0022 0420     		movs	r0, #4
+ 116 0024 C3F81804 		str	r0, [r3, #1048]
+ 117              	.L8:
+  46:Core/Src/init.c ****     } else {
+  47:Core/Src/init.c ****         GPIOC_BSRR = BSRR_RESET_6;
+  48:Core/Src/init.c ****         GPIOB_BSRR = BSRR_RESET_2;
+  49:Core/Src/init.c ****     }
+  50:Core/Src/init.c ****     // Красные светодиоды 
+  51:Core/Src/init.c ****     if (led_state[2]) {
+ 118              		.loc 1 51 5 is_stmt 1 view .LVU29
+ 119              		.loc 1 51 18 is_stmt 0 view .LVU30
+ 120 0028 164B     		ldr	r3, .L12
+ 121 002a 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 122              		.loc 1 51 8 view .LVU31
+ 123 002c 03B3     		cbz	r3, .L9
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 4
+
+
+  52:Core/Src/init.c ****         GPIOA_BSRR = BSRR_SET_6;
+ 124              		.loc 1 52 9 is_stmt 1 view .LVU32
+ 125              		.loc 1 52 20 is_stmt 0 view .LVU33
+ 126 002e 1648     		ldr	r0, .L12+4
+ 127 0030 4024     		movs	r4, #64
+ 128 0032 8461     		str	r4, [r0, #24]
+  53:Core/Src/init.c ****         GPIOB_BSRR = BSRR_SET_1;
+ 129              		.loc 1 53 9 is_stmt 1 view .LVU34
+ 130              		.loc 1 53 20 is_stmt 0 view .LVU35
+ 131 0034 0224     		movs	r4, #2
+ 132 0036 C0F81844 		str	r4, [r0, #1048]
+ 133              	.L10:
+  54:Core/Src/init.c ****     } else {
+  55:Core/Src/init.c ****         GPIOA_BSRR = BSRR_RESET_6;
+  56:Core/Src/init.c ****         GPIOB_BSRR = BSRR_RESET_1;
+  57:Core/Src/init.c ****     }
+  58:Core/Src/init.c ****     
+  59:Core/Src/init.c ****     // переменную синхронизирую 
+  60:Core/Src/init.c ****     led_green = led_state[0];
+ 134              		.loc 1 60 5 is_stmt 1 view .LVU36
+ 135              		.loc 1 60 15 is_stmt 0 view .LVU37
+ 136 003a 1448     		ldr	r0, .L12+8
+ 137 003c 0170     		strb	r1, [r0]
+  61:Core/Src/init.c ****     led_blue = led_state[1];
+ 138              		.loc 1 61 5 is_stmt 1 view .LVU38
+ 139              		.loc 1 61 14 is_stmt 0 view .LVU39
+ 140 003e 1449     		ldr	r1, .L12+12
+ 141 0040 0A70     		strb	r2, [r1]
+  62:Core/Src/init.c ****     led_red = led_state[2];
+ 142              		.loc 1 62 5 is_stmt 1 view .LVU40
+ 143              		.loc 1 62 13 is_stmt 0 view .LVU41
+ 144 0042 144A     		ldr	r2, .L12+16
+ 145 0044 1370     		strb	r3, [r2]
+  63:Core/Src/init.c **** }
+ 146              		.loc 1 63 1 view .LVU42
+ 147 0046 5DF8044B 		ldr	r4, [sp], #4
+ 148              	.LCFI1:
+ 149              		.cfi_remember_state
+ 150              		.cfi_restore 4
+ 151              		.cfi_def_cfa_offset 0
+ 152 004a 7047     		bx	lr
+ 153              	.L5:
+ 154              	.LCFI2:
+ 155              		.cfi_restore_state
+  39:Core/Src/init.c ****         GPIOC->BSRR = GPIO_BSRR_BR_5;
+ 156              		.loc 1 39 9 is_stmt 1 view .LVU43
+  39:Core/Src/init.c ****         GPIOC->BSRR = GPIO_BSRR_BR_5;
+ 157              		.loc 1 39 21 is_stmt 0 view .LVU44
+ 158 004c 4FF40013 		mov	r3, #2097152
+ 159 0050 0D4A     		ldr	r2, .L12+4
+ 160 0052 9361     		str	r3, [r2, #24]
+  40:Core/Src/init.c ****     }
+ 161              		.loc 1 40 9 is_stmt 1 view .LVU45
+  40:Core/Src/init.c ****     }
+ 162              		.loc 1 40 21 is_stmt 0 view .LVU46
+ 163 0054 02F50062 		add	r2, r2, #2048
+ 164 0058 9361     		str	r3, [r2, #24]
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 5
+
+
+ 165 005a DBE7     		b	.L6
+ 166              	.L7:
+  47:Core/Src/init.c ****         GPIOB_BSRR = BSRR_RESET_2;
+ 167              		.loc 1 47 9 is_stmt 1 view .LVU47
+  47:Core/Src/init.c ****         GPIOB_BSRR = BSRR_RESET_2;
+ 168              		.loc 1 47 20 is_stmt 0 view .LVU48
+ 169 005c 0A4B     		ldr	r3, .L12+4
+ 170 005e 4FF48000 		mov	r0, #4194304
+ 171 0062 C3F81808 		str	r0, [r3, #2072]
+  48:Core/Src/init.c ****     }
+ 172              		.loc 1 48 9 is_stmt 1 view .LVU49
+  48:Core/Src/init.c ****     }
+ 173              		.loc 1 48 20 is_stmt 0 view .LVU50
+ 174 0066 4FF48020 		mov	r0, #262144
+ 175 006a C3F81804 		str	r0, [r3, #1048]
+ 176 006e DBE7     		b	.L8
+ 177              	.L9:
+  55:Core/Src/init.c ****         GPIOB_BSRR = BSRR_RESET_1;
+ 178              		.loc 1 55 9 is_stmt 1 view .LVU51
+  55:Core/Src/init.c ****         GPIOB_BSRR = BSRR_RESET_1;
+ 179              		.loc 1 55 20 is_stmt 0 view .LVU52
+ 180 0070 0548     		ldr	r0, .L12+4
+ 181 0072 4FF48004 		mov	r4, #4194304
+ 182 0076 8461     		str	r4, [r0, #24]
+  56:Core/Src/init.c ****     }
+ 183              		.loc 1 56 9 is_stmt 1 view .LVU53
+  56:Core/Src/init.c ****     }
+ 184              		.loc 1 56 20 is_stmt 0 view .LVU54
+ 185 0078 4FF40034 		mov	r4, #131072
+ 186 007c C0F81844 		str	r4, [r0, #1048]
+ 187 0080 DBE7     		b	.L10
+ 188              	.L13:
+ 189 0082 00BF     		.align	2
+ 190              	.L12:
+ 191 0084 00000000 		.word	led_state
+ 192 0088 00000240 		.word	1073872896
+ 193 008c 00000000 		.word	led_green
+ 194 0090 00000000 		.word	led_blue
+ 195 0094 00000000 		.word	led_red
+ 196              		.cfi_endproc
+ 197              	.LFE131:
+ 199              		.section	.text.readButton,"ax",%progbits
+ 200              		.align	1
+ 201              		.global	readButton
+ 202              		.syntax unified
+ 203              		.thumb
+ 204              		.thumb_func
+ 206              	readButton:
+ 207              	.LVL0:
+ 208              	.LFB132:
+  64:Core/Src/init.c **** 
+  65:Core/Src/init.c **** //читаю кнопку по фронту отпущена -> нажата
+  66:Core/Src/init.c **** //указываю на регистр, маска кнопки, указываю на переме
+  67:Core/Src/init.c **** uint8_t readButton(uint32_t *idr, uint32_t mask, uint8_t* prevState) {    
+ 209              		.loc 1 67 70 is_stmt 1 view -0
+ 210              		.cfi_startproc
+ 211              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 6
+
+
+ 212              		@ frame_needed = 0, uses_anonymous_args = 0
+ 213              		@ link register save eliminated.
+  68:Core/Src/init.c ****     //считываю состояние с регистра, получаю бит с кнопк�
+  69:Core/Src/init.c ****     uint8_t pressed = !(*idr & mask);           
+ 214              		.loc 1 69 5 view .LVU56
+ 215              		.loc 1 69 25 is_stmt 0 view .LVU57
+ 216 0000 0368     		ldr	r3, [r0]
+ 217              		.loc 1 69 30 view .LVU58
+ 218 0002 0B40     		ands	r3, r3, r1
+ 219              		.loc 1 69 23 view .LVU59
+ 220 0004 002B     		cmp	r3, #0
+ 221 0006 0CBF     		ite	eq
+ 222 0008 0123     		moveq	r3, #1
+ 223 000a 0023     		movne	r3, #0
+ 224              	.LVL1:
+  70:Core/Src/init.c ****     uint8_t result = 0;                         
+ 225              		.loc 1 70 5 is_stmt 1 view .LVU60
+  71:Core/Src/init.c ****     if (pressed && !(*prevState)) result = 1;   // если кнопка нажата сейчас 
+ 226              		.loc 1 71 5 view .LVU61
+ 227              		.loc 1 71 8 is_stmt 0 view .LVU62
+ 228 000c 03D1     		bne	.L16
+ 229              		.loc 1 71 22 discriminator 1 view .LVU63
+ 230 000e 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 231              	.LVL2:
+ 232              		.loc 1 71 17 discriminator 1 view .LVU64
+ 233 0010 21B1     		cbz	r1, .L17
+  70:Core/Src/init.c ****     uint8_t result = 0;                         
+ 234              		.loc 1 70 13 view .LVU65
+ 235 0012 0020     		movs	r0, #0
+ 236              	.LVL3:
+  70:Core/Src/init.c ****     uint8_t result = 0;                         
+ 237              		.loc 1 70 13 view .LVU66
+ 238 0014 00E0     		b	.L15
+ 239              	.LVL4:
+ 240              	.L16:
+  70:Core/Src/init.c ****     uint8_t result = 0;                         
+ 241              		.loc 1 70 13 view .LVU67
+ 242 0016 0020     		movs	r0, #0
+ 243              	.LVL5:
+ 244              	.L15:
+  72:Core/Src/init.c ****     *prevState = pressed; //запомнили состояние кнопки для следую�
+ 245              		.loc 1 72 5 is_stmt 1 view .LVU68
+ 246              		.loc 1 72 16 is_stmt 0 view .LVU69
+ 247 0018 1370     		strb	r3, [r2]
+  73:Core/Src/init.c ****     return result;
+ 248              		.loc 1 73 5 is_stmt 1 view .LVU70
+  74:Core/Src/init.c **** }
+ 249              		.loc 1 74 1 is_stmt 0 view .LVU71
+ 250 001a 7047     		bx	lr
+ 251              	.LVL6:
+ 252              	.L17:
+  71:Core/Src/init.c ****     *prevState = pressed; //запомнили состояние кнопки для следую�
+ 253              		.loc 1 71 42 discriminator 2 view .LVU72
+ 254 001c 0120     		movs	r0, #1
+ 255              	.LVL7:
+  71:Core/Src/init.c ****     *prevState = pressed; //запомнили состояние кнопки для следую�
+ 256              		.loc 1 71 42 discriminator 2 view .LVU73
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 7
+
+
+ 257 001e FBE7     		b	.L15
+ 258              		.cfi_endproc
+ 259              	.LFE132:
+ 261              		.section	.text.GPIO_Init_All,"ax",%progbits
+ 262              		.align	1
+ 263              		.global	GPIO_Init_All
+ 264              		.syntax unified
+ 265              		.thumb
+ 266              		.thumb_func
+ 268              	GPIO_Init_All:
+ 269              	.LFB133:
+  75:Core/Src/init.c **** 
+  76:Core/Src/init.c **** void GPIO_Init_All(void) {
+ 270              		.loc 1 76 26 is_stmt 1 view -0
+ 271              		.cfi_startproc
+ 272              		@ args = 0, pretend = 0, frame = 0
+ 273              		@ frame_needed = 0, uses_anonymous_args = 0
+ 274 0000 08B5     		push	{r3, lr}
+ 275              	.LCFI3:
+ 276              		.cfi_def_cfa_offset 8
+ 277              		.cfi_offset 3, -8
+ 278              		.cfi_offset 14, -4
+  77:Core/Src/init.c ****     // Включение тактирования
+  78:Core/Src/init.c ****     RCC_AHB1ENR |= 0x07;
+ 279              		.loc 1 78 5 view .LVU75
+ 280 0002 2A4A     		ldr	r2, .L20
+ 281 0004 D2F83038 		ldr	r3, [r2, #2096]
+ 282              		.loc 1 78 17 is_stmt 0 view .LVU76
+ 283 0008 43F00703 		orr	r3, r3, #7
+ 284 000c C2F83038 		str	r3, [r2, #2096]
+  79:Core/Src/init.c ****     // Зелёные светодиоды 
+  80:Core/Src/init.c ****     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER5_0);    // PA5 - зелёный диод на GPIOA
+ 285              		.loc 1 80 5 is_stmt 1 view .LVU77
+ 286 0010 274B     		ldr	r3, .L20+4
+ 287 0012 1A68     		ldr	r2, [r3]
+ 288 0014 42F48062 		orr	r2, r2, #1024
+ 289 0018 1A60     		str	r2, [r3]
+  81:Core/Src/init.c ****     CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODER5_1);
+ 290              		.loc 1 81 5 view .LVU78
+ 291 001a 1A68     		ldr	r2, [r3]
+ 292 001c 22F40062 		bic	r2, r2, #2048
+ 293 0020 1A60     		str	r2, [r3]
+  82:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER5_0);    // PC5 - зелёный диод на GPIOC
+ 294              		.loc 1 82 5 view .LVU79
+ 295 0022 244A     		ldr	r2, .L20+8
+ 296 0024 1168     		ldr	r1, [r2]
+ 297 0026 41F48061 		orr	r1, r1, #1024
+ 298 002a 1160     		str	r1, [r2]
+  83:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER5_1);
+ 299              		.loc 1 83 5 view .LVU80
+ 300 002c 1168     		ldr	r1, [r2]
+ 301 002e 21F40061 		bic	r1, r1, #2048
+ 302 0032 1160     		str	r1, [r2]
+  84:Core/Src/init.c ****     // Красные светодиоды 
+  85:Core/Src/init.c ****     GPIOA_MODER |= MODER_PA6_OUTPUT;        // PA6 - красный диод на GPIOA
+ 303              		.loc 1 85 5 view .LVU81
+ 304 0034 1968     		ldr	r1, [r3]
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 8
+
+
+ 305              		.loc 1 85 17 is_stmt 0 view .LVU82
+ 306 0036 41F48051 		orr	r1, r1, #4096
+ 307 003a 1960     		str	r1, [r3]
+  86:Core/Src/init.c ****     GPIOB_MODER |= MODER_PB1_OUTPUT;        // PB1 - красный диод на GPIOB
+ 308              		.loc 1 86 5 is_stmt 1 view .LVU83
+ 309 003c D3F80014 		ldr	r1, [r3, #1024]
+ 310              		.loc 1 86 17 is_stmt 0 view .LVU84
+ 311 0040 41F00400 		orr	r0, r1, #4
+ 312 0044 C3F80004 		str	r0, [r3, #1024]
+  87:Core/Src/init.c ****     // Синие светодиоды 
+  88:Core/Src/init.c ****     GPIOC_MODER |= MODER_PC6_OUTPUT;        // PC6 - синий диод на GPIOC
+ 313              		.loc 1 88 5 is_stmt 1 view .LVU85
+ 314 0048 D3F80008 		ldr	r0, [r3, #2048]
+ 315              		.loc 1 88 17 is_stmt 0 view .LVU86
+ 316 004c 40F48050 		orr	r0, r0, #4096
+ 317 0050 C3F80008 		str	r0, [r3, #2048]
+  89:Core/Src/init.c ****     GPIOB_MODER |= MODER_PB2_OUTPUT;        // PB2 - синий диод на GPIOB
+ 318              		.loc 1 89 5 is_stmt 1 view .LVU87
+ 319              		.loc 1 89 17 is_stmt 0 view .LVU88
+ 320 0054 41F01401 		orr	r1, r1, #20
+ 321 0058 C3F80014 		str	r1, [r3, #1024]
+  90:Core/Src/init.c ****     // Кнопки
+  91:Core/Src/init.c ****     GPIOC_PUPDR |= PUPDR_PC13_PULLUP;           // кнопа1 - PC13 
+ 322              		.loc 1 91 5 is_stmt 1 view .LVU89
+ 323 005c D3F80C18 		ldr	r1, [r3, #2060]
+ 324              		.loc 1 91 17 is_stmt 0 view .LVU90
+ 325 0060 41F08061 		orr	r1, r1, #67108864
+ 326 0064 C3F80C18 		str	r1, [r3, #2060]
+  92:Core/Src/init.c ****     GPIOB_PUPDR |= PUPDR_PB12_PULLUP;           // кнопа2 - PB12 
+ 327              		.loc 1 92 5 is_stmt 1 view .LVU91
+ 328 0068 D3F80C14 		ldr	r1, [r3, #1036]
+ 329              		.loc 1 92 17 is_stmt 0 view .LVU92
+ 330 006c 41F08071 		orr	r1, r1, #16777216
+ 331 0070 C3F80C14 		str	r1, [r3, #1036]
+  93:Core/Src/init.c ****     // кнопа3 - PC4 
+  94:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER4_0);
+ 332              		.loc 1 94 5 is_stmt 1 view .LVU93
+ 333 0074 1168     		ldr	r1, [r2]
+ 334 0076 21F48071 		bic	r1, r1, #256
+ 335 007a 1160     		str	r1, [r2]
+  95:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER4_1);
+ 336              		.loc 1 95 5 view .LVU94
+ 337 007c 1168     		ldr	r1, [r2]
+ 338 007e 21F40071 		bic	r1, r1, #512
+ 339 0082 1160     		str	r1, [r2]
+  96:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR4_0);
+ 340              		.loc 1 96 5 view .LVU95
+ 341 0084 D168     		ldr	r1, [r2, #12]
+ 342 0086 21F48071 		bic	r1, r1, #256
+ 343 008a D160     		str	r1, [r2, #12]
+  97:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR4_1);
+ 344              		.loc 1 97 5 view .LVU96
+ 345 008c D168     		ldr	r1, [r2, #12]
+ 346 008e 21F40071 		bic	r1, r1, #512
+ 347 0092 D160     		str	r1, [r2, #12]
+  98:Core/Src/init.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR4_0);
+ 348              		.loc 1 98 5 view .LVU97
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 9
+
+
+ 349 0094 D168     		ldr	r1, [r2, #12]
+ 350 0096 41F48071 		orr	r1, r1, #256
+ 351 009a D160     		str	r1, [r2, #12]
+  99:Core/Src/init.c ****     // MODE - PA11 
+ 100:Core/Src/init.c ****     GPIOA_PUPDR |= PUPDR_PA11_PULLUP;
+ 352              		.loc 1 100 5 view .LVU98
+ 353 009c DA68     		ldr	r2, [r3, #12]
+ 354              		.loc 1 100 17 is_stmt 0 view .LVU99
+ 355 009e 42F48002 		orr	r2, r2, #4194304
+ 356 00a2 DA60     		str	r2, [r3, #12]
+ 101:Core/Src/init.c ****     disableAllLeds();
+ 357              		.loc 1 101 5 is_stmt 1 view .LVU100
+ 358 00a4 FFF7FEFF 		bl	disableAllLeds
+ 359              	.LVL8:
+ 102:Core/Src/init.c **** }
+ 360              		.loc 1 102 1 is_stmt 0 view .LVU101
+ 361 00a8 08BD     		pop	{r3, pc}
+ 362              	.L21:
+ 363 00aa 00BF     		.align	2
+ 364              	.L20:
+ 365 00ac 00300240 		.word	1073885184
+ 366 00b0 00000240 		.word	1073872896
+ 367 00b4 00080240 		.word	1073874944
+ 368              		.cfi_endproc
+ 369              	.LFE133:
+ 371              		.global	debug_flag
+ 372              		.section	.bss.debug_flag,"aw",%nobits
+ 375              	debug_flag:
+ 376 0000 00       		.space	1
+ 377              		.global	led_red
+ 378              		.section	.bss.led_red,"aw",%nobits
+ 381              	led_red:
+ 382 0000 00       		.space	1
+ 383              		.global	led_blue
+ 384              		.section	.bss.led_blue,"aw",%nobits
+ 387              	led_blue:
+ 388 0000 00       		.space	1
+ 389              		.global	led_green
+ 390              		.section	.bss.led_green,"aw",%nobits
+ 393              	led_green:
+ 394 0000 00       		.space	1
+ 395              		.global	mode_press_count
+ 396              		.section	.bss.mode_press_count,"aw",%nobits
+ 397              		.align	2
+ 400              	mode_press_count:
+ 401 0000 00000000 		.space	4
+ 402              		.global	btn3_press_count
+ 403              		.section	.bss.btn3_press_count,"aw",%nobits
+ 404              		.align	2
+ 407              	btn3_press_count:
+ 408 0000 00000000 		.space	4
+ 409              		.global	btn2_press_count
+ 410              		.section	.bss.btn2_press_count,"aw",%nobits
+ 411              		.align	2
+ 414              	btn2_press_count:
+ 415 0000 00000000 		.space	4
+ 416              		.global	btn1_press_count
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 10
+
+
+ 417              		.section	.bss.btn1_press_count,"aw",%nobits
+ 418              		.align	2
+ 421              	btn1_press_count:
+ 422 0000 00000000 		.space	4
+ 423              		.global	mode_count
+ 424              		.section	.bss.mode_count,"aw",%nobits
+ 427              	mode_count:
+ 428 0000 00       		.space	1
+ 429              		.global	mode_prev
+ 430              		.section	.bss.mode_prev,"aw",%nobits
+ 433              	mode_prev:
+ 434 0000 00       		.space	1
+ 435              		.global	btn3_prev
+ 436              		.section	.bss.btn3_prev,"aw",%nobits
+ 439              	btn3_prev:
+ 440 0000 00       		.space	1
+ 441              		.global	btn2_prev
+ 442              		.section	.bss.btn2_prev,"aw",%nobits
+ 445              	btn2_prev:
+ 446 0000 00       		.space	1
+ 447              		.global	btn1_prev
+ 448              		.section	.bss.btn1_prev,"aw",%nobits
+ 451              	btn1_prev:
+ 452 0000 00       		.space	1
+ 453              		.global	button_to_color
+ 454              		.section	.data.button_to_color,"aw"
+ 455              		.align	2
+ 458              	button_to_color:
+ 459 0000 000102   		.ascii	"\000\001\002"
+ 460              		.global	led_state
+ 461              		.section	.bss.led_state,"aw",%nobits
+ 462              		.align	2
+ 465              	led_state:
+ 466 0000 000000   		.space	3
+ 467              		.text
+ 468              	.Letext0:
+ 469              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 470              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 471              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 472              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:21     .text.disableAllLeds:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:27     .text.disableAllLeds:00000000 disableAllLeds
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:63     .text.disableAllLeds:00000028 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:69     .text.update_leds:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:75     .text.update_leds:00000000 update_leds
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:191    .text.update_leds:00000084 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:465    .bss.led_state:00000000 led_state
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:393    .bss.led_green:00000000 led_green
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:387    .bss.led_blue:00000000 led_blue
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:381    .bss.led_red:00000000 led_red
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:200    .text.readButton:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:206    .text.readButton:00000000 readButton
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:262    .text.GPIO_Init_All:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:268    .text.GPIO_Init_All:00000000 GPIO_Init_All
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:365    .text.GPIO_Init_All:000000ac $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:375    .bss.debug_flag:00000000 debug_flag
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:376    .bss.debug_flag:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:382    .bss.led_red:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:388    .bss.led_blue:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:394    .bss.led_green:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:400    .bss.mode_press_count:00000000 mode_press_count
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:397    .bss.mode_press_count:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:407    .bss.btn3_press_count:00000000 btn3_press_count
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:404    .bss.btn3_press_count:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:414    .bss.btn2_press_count:00000000 btn2_press_count
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:411    .bss.btn2_press_count:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:421    .bss.btn1_press_count:00000000 btn1_press_count
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:418    .bss.btn1_press_count:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:427    .bss.mode_count:00000000 mode_count
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:428    .bss.mode_count:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:433    .bss.mode_prev:00000000 mode_prev
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:434    .bss.mode_prev:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:439    .bss.btn3_prev:00000000 btn3_prev
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:440    .bss.btn3_prev:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:445    .bss.btn2_prev:00000000 btn2_prev
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:446    .bss.btn2_prev:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:451    .bss.btn1_prev:00000000 btn1_prev
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:452    .bss.btn1_prev:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:458    .data.button_to_color:00000000 button_to_color
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:455    .data.button_to_color:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccboNkXM.s:462    .bss.led_state:00000000 $d
+
+NO UNDEFINED SYMBOLS

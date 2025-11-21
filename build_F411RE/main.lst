@@ -1,0 +1,517 @@
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** int main(void) {
+  29              		.loc 1 2 16 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+   3:Core/Src/main.c ****     GPIO_Init_All(); // иницилизирую все порты
+  38              		.loc 1 3 5 view .LVU1
+  39 0002 FFF7FEFF 		bl	GPIO_Init_All
+  40              	.LVL0:
+   4:Core/Src/main.c ****     // Инициализация предыдущих состояний (проверка для 
+   5:Core/Src/main.c ****     btn1_prev = !((uint32_t)GPIOC_IDR & GPIO_PIN_13); //считать текущее состоя�
+  41              		.loc 1 5 5 view .LVU2
+  42              		.loc 1 5 19 is_stmt 0 view .LVU3
+  43 0006 544B     		ldr	r3, .L13
+  44 0008 D3F81028 		ldr	r2, [r3, #2064]
+  45              		.loc 1 5 17 view .LVU4
+  46 000c 12F4005F 		tst	r2, #8192
+  47 0010 0CBF     		ite	eq
+  48 0012 0121     		moveq	r1, #1
+  49 0014 0021     		movne	r1, #0
+  50              		.loc 1 5 15 view .LVU5
+  51 0016 514A     		ldr	r2, .L13+4
+  52 0018 1170     		strb	r1, [r2]
+   6:Core/Src/main.c ****     btn2_prev = !((uint32_t)GPIOB_IDR & GPIO_PIN_12);
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 2
+
+
+  53              		.loc 1 6 5 is_stmt 1 view .LVU6
+  54              		.loc 1 6 19 is_stmt 0 view .LVU7
+  55 001a D3F81024 		ldr	r2, [r3, #1040]
+  56              		.loc 1 6 17 view .LVU8
+  57 001e 12F4805F 		tst	r2, #4096
+  58 0022 0CBF     		ite	eq
+  59 0024 0121     		moveq	r1, #1
+  60 0026 0021     		movne	r1, #0
+  61              		.loc 1 6 15 view .LVU9
+  62 0028 4D4A     		ldr	r2, .L13+8
+  63 002a 1170     		strb	r1, [r2]
+   7:Core/Src/main.c ****     btn3_prev = !(GPIOC->IDR & GPIO_IDR_ID4);
+  64              		.loc 1 7 5 is_stmt 1 view .LVU10
+  65              		.loc 1 7 24 is_stmt 0 view .LVU11
+  66 002c 4D4A     		ldr	r2, .L13+12
+  67 002e 1269     		ldr	r2, [r2, #16]
+  68              		.loc 1 7 17 view .LVU12
+  69 0030 12F0100F 		tst	r2, #16
+  70 0034 0CBF     		ite	eq
+  71 0036 0121     		moveq	r1, #1
+  72 0038 0021     		movne	r1, #0
+  73              		.loc 1 7 15 view .LVU13
+  74 003a 4B4A     		ldr	r2, .L13+16
+  75 003c 1170     		strb	r1, [r2]
+   8:Core/Src/main.c ****     mode_prev = !((uint32_t)GPIOA_IDR & GPIO_PIN_11);
+  76              		.loc 1 8 5 is_stmt 1 view .LVU14
+  77              		.loc 1 8 19 is_stmt 0 view .LVU15
+  78 003e 1B69     		ldr	r3, [r3, #16]
+  79              		.loc 1 8 17 view .LVU16
+  80 0040 13F4006F 		tst	r3, #2048
+  81 0044 0CBF     		ite	eq
+  82 0046 0122     		moveq	r2, #1
+  83 0048 0022     		movne	r2, #0
+  84              		.loc 1 8 15 view .LVU17
+  85 004a 484B     		ldr	r3, .L13+20
+  86 004c 1A70     		strb	r2, [r3]
+   9:Core/Src/main.c ****     update_leds(); // обновление состояния светодиодов
+  87              		.loc 1 9 5 is_stmt 1 view .LVU18
+  88 004e FFF7FEFF 		bl	update_leds
+  89              	.LVL1:
+  90 0052 3AE0     		b	.L8
+  91              	.L10:
+  92              	.LBB2:
+  10:Core/Src/main.c ****     while (1) {
+  11:Core/Src/main.c ****         // Обработка кнопки MODE
+  12:Core/Src/main.c ****         if (readButton((uint32_t *)&GPIOA_IDR, GPIO_PIN_11, &mode_prev)) {  //обработка с
+  13:Core/Src/main.c ****             mode_press_count++;  // Увеличиваем счётчик нажатий MODE
+  14:Core/Src/main.c ****             debug_flag = 1;      // Флаг для STMViewer
+  15:Core/Src/main.c ****             uint8_t tmp = button_to_color[2];
+  16:Core/Src/main.c ****             button_to_color[2] = button_to_color[1];
+  17:Core/Src/main.c ****             button_to_color[1] = button_to_color[0];
+  18:Core/Src/main.c ****             button_to_color[0] = tmp;
+  19:Core/Src/main.c ****             mode_count++; 
+  20:Core/Src/main.c ****             if (mode_count % 3 == 0) {
+  21:Core/Src/main.c ****                 button_to_color[0] = 0;
+  22:Core/Src/main.c ****                 button_to_color[1] = 1;
+  23:Core/Src/main.c ****                 button_to_color[2] = 2;
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 3
+
+
+  24:Core/Src/main.c ****             }
+  25:Core/Src/main.c ****         }
+  26:Core/Src/main.c ****         
+  27:Core/Src/main.c ****         // Обработка BTN1 переключаю цвет, который к этой кно
+  28:Core/Src/main.c ****         if (readButton((uint32_t *)&GPIOC_IDR, GPIO_PIN_13, &btn1_prev)) {
+  29:Core/Src/main.c ****             btn1_press_count++;  // Увеличиваем счётчик нажатий кнопк
+  93              		.loc 1 29 13 view .LVU19
+  94              		.loc 1 29 29 is_stmt 0 view .LVU20
+  95 0054 464A     		ldr	r2, .L13+24
+  96 0056 1368     		ldr	r3, [r2]
+  97 0058 0133     		adds	r3, r3, #1
+  98 005a 1360     		str	r3, [r2]
+  30:Core/Src/main.c ****             debug_flag = 2;      // Флаг для STMViewer
+  99              		.loc 1 30 13 is_stmt 1 view .LVU21
+ 100              		.loc 1 30 24 is_stmt 0 view .LVU22
+ 101 005c 454B     		ldr	r3, .L13+28
+ 102 005e 0222     		movs	r2, #2
+ 103 0060 1A70     		strb	r2, [r3]
+  31:Core/Src/main.c ****             
+  32:Core/Src/main.c ****             uint8_t color = button_to_color[0];
+ 104              		.loc 1 32 13 is_stmt 1 view .LVU23
+ 105              		.loc 1 32 21 is_stmt 0 view .LVU24
+ 106 0062 454B     		ldr	r3, .L13+32
+ 107 0064 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 108              	.LVL2:
+  33:Core/Src/main.c ****             led_state[color] = !led_state[color];
+ 109              		.loc 1 33 13 is_stmt 1 view .LVU25
+ 110              		.loc 1 33 42 is_stmt 0 view .LVU26
+ 111 0066 4549     		ldr	r1, .L13+36
+ 112 0068 8B5C     		ldrb	r3, [r1, r2]	@ zero_extendqisi2
+ 113              		.loc 1 33 32 view .LVU27
+ 114 006a B3FA83F3 		clz	r3, r3
+ 115 006e 5B09     		lsrs	r3, r3, #5
+ 116              		.loc 1 33 30 view .LVU28
+ 117 0070 8B54     		strb	r3, [r1, r2]
+  34:Core/Src/main.c ****             
+  35:Core/Src/main.c ****             update_leds();
+ 118              		.loc 1 35 13 is_stmt 1 view .LVU29
+ 119 0072 FFF7FEFF 		bl	update_leds
+ 120              	.LVL3:
+ 121              		.loc 1 35 13 is_stmt 0 view .LVU30
+ 122 0076 5CE0     		b	.L3
+ 123              	.LVL4:
+ 124              	.L11:
+ 125              		.loc 1 35 13 view .LVU31
+ 126              	.LBE2:
+ 127              	.LBB3:
+  36:Core/Src/main.c ****         }
+  37:Core/Src/main.c ****         // Обработка BTN2
+  38:Core/Src/main.c ****         if (readButton((uint32_t *)&GPIOB_IDR, GPIO_PIN_12, &btn2_prev)) {
+  39:Core/Src/main.c ****             btn2_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 128              		.loc 1 39 13 is_stmt 1 view .LVU32
+ 129              		.loc 1 39 29 is_stmt 0 view .LVU33
+ 130 0078 414A     		ldr	r2, .L13+40
+ 131 007a 1368     		ldr	r3, [r2]
+ 132 007c 0133     		adds	r3, r3, #1
+ 133 007e 1360     		str	r3, [r2]
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 4
+
+
+  40:Core/Src/main.c ****             debug_flag = 3;      // Флаг для STMViewer
+ 134              		.loc 1 40 13 is_stmt 1 view .LVU34
+ 135              		.loc 1 40 24 is_stmt 0 view .LVU35
+ 136 0080 3C4B     		ldr	r3, .L13+28
+ 137 0082 0322     		movs	r2, #3
+ 138 0084 1A70     		strb	r2, [r3]
+  41:Core/Src/main.c ****             
+  42:Core/Src/main.c ****             uint8_t color = button_to_color[1];
+ 139              		.loc 1 42 13 is_stmt 1 view .LVU36
+ 140              		.loc 1 42 21 is_stmt 0 view .LVU37
+ 141 0086 3C4B     		ldr	r3, .L13+32
+ 142 0088 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 143              	.LVL5:
+  43:Core/Src/main.c ****             led_state[color] = !led_state[color];
+ 144              		.loc 1 43 13 is_stmt 1 view .LVU38
+ 145              		.loc 1 43 42 is_stmt 0 view .LVU39
+ 146 008a 3C49     		ldr	r1, .L13+36
+ 147 008c 8B5C     		ldrb	r3, [r1, r2]	@ zero_extendqisi2
+ 148              		.loc 1 43 32 view .LVU40
+ 149 008e B3FA83F3 		clz	r3, r3
+ 150 0092 5B09     		lsrs	r3, r3, #5
+ 151              		.loc 1 43 30 view .LVU41
+ 152 0094 8B54     		strb	r3, [r1, r2]
+  44:Core/Src/main.c ****             
+  45:Core/Src/main.c ****             update_leds();
+ 153              		.loc 1 45 13 is_stmt 1 view .LVU42
+ 154 0096 FFF7FEFF 		bl	update_leds
+ 155              	.LVL6:
+ 156              		.loc 1 45 13 is_stmt 0 view .LVU43
+ 157 009a 52E0     		b	.L4
+ 158              	.LVL7:
+ 159              	.L12:
+ 160              		.loc 1 45 13 view .LVU44
+ 161              	.LBE3:
+ 162              	.LBB4:
+  46:Core/Src/main.c ****         }
+  47:Core/Src/main.c ****         // Обработка BTN3
+  48:Core/Src/main.c ****         if (readButton(&GPIOC->IDR, GPIO_IDR_ID4, &btn3_prev)) {
+  49:Core/Src/main.c ****             btn3_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 163              		.loc 1 49 13 is_stmt 1 view .LVU45
+ 164              		.loc 1 49 29 is_stmt 0 view .LVU46
+ 165 009c 394A     		ldr	r2, .L13+44
+ 166 009e 1368     		ldr	r3, [r2]
+ 167 00a0 0133     		adds	r3, r3, #1
+ 168 00a2 1360     		str	r3, [r2]
+  50:Core/Src/main.c ****             debug_flag = 4;      // Флаг для STMViewer
+ 169              		.loc 1 50 13 is_stmt 1 view .LVU47
+ 170              		.loc 1 50 24 is_stmt 0 view .LVU48
+ 171 00a4 334B     		ldr	r3, .L13+28
+ 172 00a6 0422     		movs	r2, #4
+ 173 00a8 1A70     		strb	r2, [r3]
+  51:Core/Src/main.c ****             
+  52:Core/Src/main.c ****             uint8_t color = button_to_color[2];
+ 174              		.loc 1 52 13 is_stmt 1 view .LVU49
+ 175              		.loc 1 52 21 is_stmt 0 view .LVU50
+ 176 00aa 334B     		ldr	r3, .L13+32
+ 177 00ac 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 5
+
+
+ 178              	.LVL8:
+  53:Core/Src/main.c ****             led_state[color] = !led_state[color];
+ 179              		.loc 1 53 13 is_stmt 1 view .LVU51
+ 180              		.loc 1 53 42 is_stmt 0 view .LVU52
+ 181 00ae 3349     		ldr	r1, .L13+36
+ 182 00b0 8B5C     		ldrb	r3, [r1, r2]	@ zero_extendqisi2
+ 183              		.loc 1 53 32 view .LVU53
+ 184 00b2 B3FA83F3 		clz	r3, r3
+ 185 00b6 5B09     		lsrs	r3, r3, #5
+ 186              		.loc 1 53 30 view .LVU54
+ 187 00b8 8B54     		strb	r3, [r1, r2]
+  54:Core/Src/main.c ****             
+  55:Core/Src/main.c ****             update_leds();
+ 188              		.loc 1 55 13 is_stmt 1 view .LVU55
+ 189 00ba FFF7FEFF 		bl	update_leds
+ 190              	.LVL9:
+ 191              		.loc 1 55 13 is_stmt 0 view .LVU56
+ 192 00be 47E0     		b	.L5
+ 193              	.LVL10:
+ 194              	.L7:
+ 195              		.loc 1 55 13 view .LVU57
+ 196              	.LBE4:
+ 197              	.LBB5:
+  56:Core/Src/main.c ****         }
+  57:Core/Src/main.c ****         debug_flag = 0;  //сбрасываю флаг после обработки всей
+  58:Core/Src/main.c ****         for (int timer = 0; timer < 50000; timer++);
+ 198              		.loc 1 58 49 is_stmt 1 discriminator 3 view .LVU58
+ 199 00c0 0133     		adds	r3, r3, #1
+ 200              	.LVL11:
+ 201              	.L6:
+ 202              		.loc 1 58 35 discriminator 1 view .LVU59
+ 203 00c2 4CF24F32 		movw	r2, #49999
+ 204 00c6 9342     		cmp	r3, r2
+ 205 00c8 FADD     		ble	.L7
+ 206              	.LVL12:
+ 207              	.L8:
+ 208              		.loc 1 58 35 is_stmt 0 discriminator 1 view .LVU60
+ 209              	.LBE5:
+  10:Core/Src/main.c ****         // Обработка кнопки MODE
+ 210              		.loc 1 10 5 is_stmt 1 view .LVU61
+  12:Core/Src/main.c ****             mode_press_count++;  // Увеличиваем счётчик нажатий MODE
+ 211              		.loc 1 12 9 view .LVU62
+  12:Core/Src/main.c ****             mode_press_count++;  // Увеличиваем счётчик нажатий MODE
+ 212              		.loc 1 12 13 is_stmt 0 view .LVU63
+ 213 00ca 284A     		ldr	r2, .L13+20
+ 214 00cc 4FF40061 		mov	r1, #2048
+ 215 00d0 2D48     		ldr	r0, .L13+48
+ 216 00d2 FFF7FEFF 		bl	readButton
+ 217              	.LVL13:
+  12:Core/Src/main.c ****             mode_press_count++;  // Увеличиваем счётчик нажатий MODE
+ 218              		.loc 1 12 12 discriminator 1 view .LVU64
+ 219 00d6 20B3     		cbz	r0, .L2
+ 220              	.LBB6:
+  13:Core/Src/main.c ****             debug_flag = 1;      // Флаг для STMViewer
+ 221              		.loc 1 13 13 is_stmt 1 view .LVU65
+  13:Core/Src/main.c ****             debug_flag = 1;      // Флаг для STMViewer
+ 222              		.loc 1 13 29 is_stmt 0 view .LVU66
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 6
+
+
+ 223 00d8 2C4A     		ldr	r2, .L13+52
+ 224 00da 1368     		ldr	r3, [r2]
+ 225 00dc 0133     		adds	r3, r3, #1
+ 226 00de 1360     		str	r3, [r2]
+  14:Core/Src/main.c ****             uint8_t tmp = button_to_color[2];
+ 227              		.loc 1 14 13 is_stmt 1 view .LVU67
+  14:Core/Src/main.c ****             uint8_t tmp = button_to_color[2];
+ 228              		.loc 1 14 24 is_stmt 0 view .LVU68
+ 229 00e0 244B     		ldr	r3, .L13+28
+ 230 00e2 0122     		movs	r2, #1
+ 231 00e4 1A70     		strb	r2, [r3]
+  15:Core/Src/main.c ****             button_to_color[2] = button_to_color[1];
+ 232              		.loc 1 15 13 is_stmt 1 view .LVU69
+  15:Core/Src/main.c ****             button_to_color[2] = button_to_color[1];
+ 233              		.loc 1 15 21 is_stmt 0 view .LVU70
+ 234 00e6 244B     		ldr	r3, .L13+32
+ 235 00e8 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 236              	.LVL14:
+  16:Core/Src/main.c ****             button_to_color[1] = button_to_color[0];
+ 237              		.loc 1 16 13 is_stmt 1 view .LVU71
+  16:Core/Src/main.c ****             button_to_color[1] = button_to_color[0];
+ 238              		.loc 1 16 49 is_stmt 0 view .LVU72
+ 239 00ea 5978     		ldrb	r1, [r3, #1]	@ zero_extendqisi2
+  16:Core/Src/main.c ****             button_to_color[1] = button_to_color[0];
+ 240              		.loc 1 16 32 view .LVU73
+ 241 00ec 9970     		strb	r1, [r3, #2]
+  17:Core/Src/main.c ****             button_to_color[0] = tmp;
+ 242              		.loc 1 17 13 is_stmt 1 view .LVU74
+  17:Core/Src/main.c ****             button_to_color[0] = tmp;
+ 243              		.loc 1 17 49 is_stmt 0 view .LVU75
+ 244 00ee 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+  17:Core/Src/main.c ****             button_to_color[0] = tmp;
+ 245              		.loc 1 17 32 view .LVU76
+ 246 00f0 5970     		strb	r1, [r3, #1]
+  18:Core/Src/main.c ****             mode_count++; 
+ 247              		.loc 1 18 13 is_stmt 1 view .LVU77
+  18:Core/Src/main.c ****             mode_count++; 
+ 248              		.loc 1 18 32 is_stmt 0 view .LVU78
+ 249 00f2 1A70     		strb	r2, [r3]
+  19:Core/Src/main.c ****             if (mode_count % 3 == 0) {
+ 250              		.loc 1 19 13 is_stmt 1 view .LVU79
+  19:Core/Src/main.c ****             if (mode_count % 3 == 0) {
+ 251              		.loc 1 19 23 is_stmt 0 view .LVU80
+ 252 00f4 264A     		ldr	r2, .L13+56
+ 253              	.LVL15:
+  19:Core/Src/main.c ****             if (mode_count % 3 == 0) {
+ 254              		.loc 1 19 23 view .LVU81
+ 255 00f6 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 256              	.LVL16:
+  19:Core/Src/main.c ****             if (mode_count % 3 == 0) {
+ 257              		.loc 1 19 23 view .LVU82
+ 258 00f8 0133     		adds	r3, r3, #1
+ 259 00fa DBB2     		uxtb	r3, r3
+ 260 00fc 1370     		strb	r3, [r2]
+  20:Core/Src/main.c ****                 button_to_color[0] = 0;
+ 261              		.loc 1 20 13 is_stmt 1 view .LVU83
+  20:Core/Src/main.c ****                 button_to_color[0] = 0;
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 7
+
+
+ 262              		.loc 1 20 32 is_stmt 0 view .LVU84
+ 263 00fe 254A     		ldr	r2, .L13+60
+ 264 0100 A2FB0312 		umull	r1, r2, r2, r3
+ 265 0104 02F0FE01 		and	r1, r2, #254
+ 266 0108 01EB5202 		add	r2, r1, r2, lsr #1
+ 267 010c 9B1A     		subs	r3, r3, r2
+  20:Core/Src/main.c ****                 button_to_color[0] = 0;
+ 268              		.loc 1 20 16 view .LVU85
+ 269 010e 13F0FF0F 		tst	r3, #255
+ 270 0112 06D1     		bne	.L2
+  21:Core/Src/main.c ****                 button_to_color[1] = 1;
+ 271              		.loc 1 21 17 is_stmt 1 view .LVU86
+  21:Core/Src/main.c ****                 button_to_color[1] = 1;
+ 272              		.loc 1 21 36 is_stmt 0 view .LVU87
+ 273 0114 184B     		ldr	r3, .L13+32
+ 274              	.LVL17:
+  21:Core/Src/main.c ****                 button_to_color[1] = 1;
+ 275              		.loc 1 21 36 view .LVU88
+ 276 0116 0022     		movs	r2, #0
+ 277 0118 1A70     		strb	r2, [r3]
+ 278              	.LVL18:
+  22:Core/Src/main.c ****                 button_to_color[2] = 2;
+ 279              		.loc 1 22 17 is_stmt 1 view .LVU89
+  22:Core/Src/main.c ****                 button_to_color[2] = 2;
+ 280              		.loc 1 22 36 is_stmt 0 view .LVU90
+ 281 011a 0122     		movs	r2, #1
+ 282 011c 5A70     		strb	r2, [r3, #1]
+  23:Core/Src/main.c ****             }
+ 283              		.loc 1 23 17 is_stmt 1 view .LVU91
+  23:Core/Src/main.c ****             }
+ 284              		.loc 1 23 36 is_stmt 0 view .LVU92
+ 285 011e 0222     		movs	r2, #2
+ 286 0120 9A70     		strb	r2, [r3, #2]
+ 287              	.LVL19:
+ 288              	.L2:
+  23:Core/Src/main.c ****             }
+ 289              		.loc 1 23 36 view .LVU93
+ 290              	.LBE6:
+  28:Core/Src/main.c ****             btn1_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 291              		.loc 1 28 9 is_stmt 1 view .LVU94
+  28:Core/Src/main.c ****             btn1_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 292              		.loc 1 28 13 is_stmt 0 view .LVU95
+ 293 0122 0E4A     		ldr	r2, .L13+4
+ 294 0124 4FF40051 		mov	r1, #8192
+ 295 0128 1B48     		ldr	r0, .L13+64
+ 296 012a FFF7FEFF 		bl	readButton
+ 297              	.LVL20:
+  28:Core/Src/main.c ****             btn1_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 298              		.loc 1 28 12 discriminator 1 view .LVU96
+ 299 012e 0028     		cmp	r0, #0
+ 300 0130 90D1     		bne	.L10
+ 301              	.L3:
+  38:Core/Src/main.c ****             btn2_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 302              		.loc 1 38 9 is_stmt 1 view .LVU97
+  38:Core/Src/main.c ****             btn2_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 303              		.loc 1 38 13 is_stmt 0 view .LVU98
+ 304 0132 0B4A     		ldr	r2, .L13+8
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 8
+
+
+ 305 0134 4FF48051 		mov	r1, #4096
+ 306 0138 1848     		ldr	r0, .L13+68
+ 307 013a FFF7FEFF 		bl	readButton
+ 308              	.LVL21:
+  38:Core/Src/main.c ****             btn2_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 309              		.loc 1 38 12 discriminator 1 view .LVU99
+ 310 013e 0028     		cmp	r0, #0
+ 311 0140 9AD1     		bne	.L11
+ 312              	.L4:
+  48:Core/Src/main.c ****             btn3_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 313              		.loc 1 48 9 is_stmt 1 view .LVU100
+  48:Core/Src/main.c ****             btn3_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 314              		.loc 1 48 13 is_stmt 0 view .LVU101
+ 315 0142 094A     		ldr	r2, .L13+16
+ 316 0144 1021     		movs	r1, #16
+ 317 0146 1448     		ldr	r0, .L13+64
+ 318 0148 FFF7FEFF 		bl	readButton
+ 319              	.LVL22:
+  48:Core/Src/main.c ****             btn3_press_count++;  // Увеличиваем счётчик нажатий кнопк
+ 320              		.loc 1 48 12 discriminator 1 view .LVU102
+ 321 014c 0028     		cmp	r0, #0
+ 322 014e A5D1     		bne	.L12
+ 323              	.L5:
+  57:Core/Src/main.c ****         for (int timer = 0; timer < 50000; timer++);
+ 324              		.loc 1 57 9 is_stmt 1 view .LVU103
+  57:Core/Src/main.c ****         for (int timer = 0; timer < 50000; timer++);
+ 325              		.loc 1 57 20 is_stmt 0 view .LVU104
+ 326 0150 0023     		movs	r3, #0
+ 327 0152 084A     		ldr	r2, .L13+28
+ 328 0154 1370     		strb	r3, [r2]
+ 329              		.loc 1 58 9 is_stmt 1 view .LVU105
+ 330              	.LBB7:
+ 331              		.loc 1 58 14 view .LVU106
+ 332              	.LVL23:
+ 333              		.loc 1 58 9 is_stmt 0 view .LVU107
+ 334 0156 B4E7     		b	.L6
+ 335              	.L14:
+ 336              		.align	2
+ 337              	.L13:
+ 338 0158 00000240 		.word	1073872896
+ 339 015c 00000000 		.word	btn1_prev
+ 340 0160 00000000 		.word	btn2_prev
+ 341 0164 00080240 		.word	1073874944
+ 342 0168 00000000 		.word	btn3_prev
+ 343 016c 00000000 		.word	mode_prev
+ 344 0170 00000000 		.word	btn1_press_count
+ 345 0174 00000000 		.word	debug_flag
+ 346 0178 00000000 		.word	button_to_color
+ 347 017c 00000000 		.word	led_state
+ 348 0180 00000000 		.word	btn2_press_count
+ 349 0184 00000000 		.word	btn3_press_count
+ 350 0188 10000240 		.word	1073872912
+ 351 018c 00000000 		.word	mode_press_count
+ 352 0190 00000000 		.word	mode_count
+ 353 0194 ABAAAAAA 		.word	-1431655765
+ 354 0198 10080240 		.word	1073874960
+ 355 019c 10040240 		.word	1073873936
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 9
+
+
+ 356              	.LBE7:
+ 357              		.cfi_endproc
+ 358              	.LFE130:
+ 360              		.text
+ 361              	.Letext0:
+ 362              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 363              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 364              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 365              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s:21     .text.main:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s:27     .text.main:00000000 main
+C:\Users\Thx\AppData\Local\Temp\ccPSUu5x.s:338    .text.main:00000158 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init_All
+update_leds
+readButton
+btn1_prev
+btn2_prev
+btn3_prev
+mode_prev
+btn1_press_count
+debug_flag
+button_to_color
+led_state
+btn2_press_count
+btn3_press_count
+mode_press_count
+mode_count
