@@ -1,0 +1,974 @@
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"Lab2.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/Lab2.c"
+  20              		.section	.text.blinking_func,"ax",%progbits
+  21              		.align	1
+  22              		.global	blinking_func
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	blinking_func:
+  28              	.LVL0:
+  29              	.LFB130:
+   1:Core/Src/Lab2.c **** #include "init_lab2.h"
+   2:Core/Src/Lab2.c **** 
+   3:Core/Src/Lab2.c **** uint32_t last_blinking1 = 0;                           // Время когда последний 
+   4:Core/Src/Lab2.c **** uint8_t flag1 = 0;                                     // Включен или выключен щ
+   5:Core/Src/Lab2.c **** uint32_t last_blinking2 = 0;                           // Время когда последний 
+   6:Core/Src/Lab2.c **** uint8_t flag2 = 0;                                     // Включен или выключен щ
+   7:Core/Src/Lab2.c **** uint32_t last_blinking3 = 0;                           // Время когда последний 
+   8:Core/Src/Lab2.c **** uint8_t flag3 = 0;                                     // Включен или выключен щ
+   9:Core/Src/Lab2.c **** uint32_t last_blinking4 = 0;                           // Время когда последний 
+  10:Core/Src/Lab2.c **** uint8_t flag4 = 0;                                     // Включен или выключен щ
+  11:Core/Src/Lab2.c **** uint32_t last_blinking5 = 0;                           // Время когда последний 
+  12:Core/Src/Lab2.c **** uint8_t flag5 = 0;                                     // Включен или выключен щ
+  13:Core/Src/Lab2.c **** uint32_t last_blinking6 = 0;                           // Время когда последний 
+  14:Core/Src/Lab2.c **** uint8_t flag6 = 0;                                     // Включен или выключен щ
+  15:Core/Src/Lab2.c **** 
+  16:Core/Src/Lab2.c **** static const uint16_t delay_table[3][3] = {            // Таблица задержок, по н�
+  17:Core/Src/Lab2.c ****     {1666, 500, 357},
+  18:Core/Src/Lab2.c ****     {1250, 416, 294},
+  19:Core/Src/Lab2.c ****     {1000, 312, 263}};
+  20:Core/Src/Lab2.c **** 
+  21:Core/Src/Lab2.c **** 
+  22:Core/Src/Lab2.c **** 
+  23:Core/Src/Lab2.c **** void blinking_func(uint8_t *led_en, uint8_t blink[][2], uint32_t *GlobalTickCount)
+  24:Core/Src/Lab2.c **** {
+  30              		.loc 1 24 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 2
+
+
+  35              		.loc 1 24 1 is_stmt 0 view .LVU1
+  36 0000 30B4     		push	{r4, r5}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 4, -8
+  40              		.cfi_offset 5, -4
+  25:Core/Src/Lab2.c ****     uint8_t range = blink[0][0];                            // Переменная храняща�
+  41              		.loc 1 25 5 is_stmt 1 view .LVU2
+  42              		.loc 1 25 13 is_stmt 0 view .LVU3
+  43 0002 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+  44              	.LVL1:
+  26:Core/Src/Lab2.c ****     uint8_t freq = blink[0][1];                             // Переменная храняща�
+  45              		.loc 1 26 5 is_stmt 1 view .LVU4
+  46              		.loc 1 26 13 is_stmt 0 view .LVU5
+  47 0004 4C78     		ldrb	r4, [r1, #1]	@ zero_extendqisi2
+  48              	.LVL2:
+  27:Core/Src/Lab2.c ****     uint16_t delay1 = delay_table[range][freq];             // Используем ранее со
+  49              		.loc 1 27 5 is_stmt 1 view .LVU6
+  50              		.loc 1 27 14 is_stmt 0 view .LVU7
+  51 0006 03EB4303 		add	r3, r3, r3, lsl #1
+  52              	.LVL3:
+  53              		.loc 1 27 14 view .LVU8
+  54 000a 2344     		add	r3, r3, r4
+  55 000c 894C     		ldr	r4, .L28
+  56              	.LVL4:
+  57              		.loc 1 27 14 view .LVU9
+  58 000e 34F81340 		ldrh	r4, [r4, r3, lsl #1]
+  59              	.LVL5:
+  28:Core/Src/Lab2.c ****     if (*led_en > 0)                                        // Проверяем включен л
+  60              		.loc 1 28 5 is_stmt 1 view .LVU10
+  61              		.loc 1 28 9 is_stmt 0 view .LVU11
+  62 0012 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+  63              		.loc 1 28 8 view .LVU12
+  64 0014 ABB1     		cbz	r3, .L2
+  29:Core/Src/Lab2.c ****     {
+  30:Core/Src/Lab2.c ****         if ((*GlobalTickCount - last_blinking1) >= delay1)   // Проверка прошла ли 
+  65              		.loc 1 30 9 is_stmt 1 view .LVU13
+  66              		.loc 1 30 14 is_stmt 0 view .LVU14
+  67 0016 1368     		ldr	r3, [r2]
+  68              		.loc 1 30 31 view .LVU15
+  69 0018 874D     		ldr	r5, .L28+4
+  70 001a 2D68     		ldr	r5, [r5]
+  71 001c 5B1B     		subs	r3, r3, r5
+  72              		.loc 1 30 12 view .LVU16
+  73 001e A342     		cmp	r3, r4
+  74 0020 0FD3     		bcc	.L2
+  31:Core/Src/Lab2.c ****         {
+  32:Core/Src/Lab2.c ****             if (flag1 == 1)                                 // Если светодиод вклю
+  75              		.loc 1 32 13 is_stmt 1 view .LVU17
+  76              		.loc 1 32 23 is_stmt 0 view .LVU18
+  77 0022 864B     		ldr	r3, .L28+8
+  78 0024 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  79              		.loc 1 32 16 view .LVU19
+  80 0026 012B     		cmp	r3, #1
+  81 0028 00F0CE80 		beq	.L22
+  33:Core/Src/Lab2.c ****             {
+  34:Core/Src/Lab2.c ****                 LED1_OFF;
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 3
+
+
+  35:Core/Src/Lab2.c ****                 flag1 = 0;
+  36:Core/Src/Lab2.c ****             }
+  37:Core/Src/Lab2.c ****             else                                            // Иначе включаем его �
+  38:Core/Src/Lab2.c ****             {
+  39:Core/Src/Lab2.c ****                 LED1_ON;
+  82              		.loc 1 39 17 is_stmt 1 view .LVU20
+  83 002c 844C     		ldr	r4, .L28+12
+  84              	.LVL6:
+  85              		.loc 1 39 17 is_stmt 0 view .LVU21
+  86 002e A369     		ldr	r3, [r4, #24]
+  87 0030 43F00103 		orr	r3, r3, #1
+  88 0034 A361     		str	r3, [r4, #24]
+  89              	.LVL7:
+  90              		.loc 1 39 24 is_stmt 1 view .LVU22
+  40:Core/Src/Lab2.c ****                 flag1 = 1;
+  91              		.loc 1 40 17 view .LVU23
+  92              		.loc 1 40 23 is_stmt 0 view .LVU24
+  93 0036 814B     		ldr	r3, .L28+8
+  94 0038 0124     		movs	r4, #1
+  95 003a 1C70     		strb	r4, [r3]
+  96              	.L4:
+  41:Core/Src/Lab2.c ****             }
+  42:Core/Src/Lab2.c ****             last_blinking1 = *GlobalTickCount;              // Обновляем значение 
+  97              		.loc 1 42 13 is_stmt 1 view .LVU25
+  98              		.loc 1 42 30 is_stmt 0 view .LVU26
+  99 003c 1468     		ldr	r4, [r2]
+ 100              		.loc 1 42 28 view .LVU27
+ 101 003e 7E4B     		ldr	r3, .L28+4
+ 102 0040 1C60     		str	r4, [r3]
+ 103              	.L2:
+  43:Core/Src/Lab2.c ****         }
+  44:Core/Src/Lab2.c ****     }
+  45:Core/Src/Lab2.c **** 
+  46:Core/Src/Lab2.c ****     if (*led_en > 1)                                        // Проверяем включен л
+ 104              		.loc 1 46 5 is_stmt 1 view .LVU28
+ 105              		.loc 1 46 9 is_stmt 0 view .LVU29
+ 106 0042 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 107              		.loc 1 46 8 view .LVU30
+ 108 0044 012B     		cmp	r3, #1
+ 109 0046 1DD9     		bls	.L5
+ 110              	.LBB2:
+  47:Core/Src/Lab2.c ****     {
+  48:Core/Src/Lab2.c ****         range = blink[1][0];                                // Переменная храняща�
+ 111              		.loc 1 48 9 is_stmt 1 view .LVU31
+ 112              		.loc 1 48 15 is_stmt 0 view .LVU32
+ 113 0048 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
+ 114              	.LVL8:
+  49:Core/Src/Lab2.c ****         freq = blink[1][1];                                 // Переменная храняща�
+ 115              		.loc 1 49 9 is_stmt 1 view .LVU33
+ 116              		.loc 1 49 14 is_stmt 0 view .LVU34
+ 117 004a CC78     		ldrb	r4, [r1, #3]	@ zero_extendqisi2
+ 118              	.LVL9:
+  50:Core/Src/Lab2.c ****         uint16_t delay2 = delay_table[range][freq];         // Используем ранее со
+ 119              		.loc 1 50 9 is_stmt 1 view .LVU35
+ 120              		.loc 1 50 18 is_stmt 0 view .LVU36
+ 121 004c 03EB4303 		add	r3, r3, r3, lsl #1
+ 122              	.LVL10:
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 4
+
+
+ 123              		.loc 1 50 18 view .LVU37
+ 124 0050 2344     		add	r3, r3, r4
+ 125 0052 784C     		ldr	r4, .L28
+ 126              	.LVL11:
+ 127              		.loc 1 50 18 view .LVU38
+ 128 0054 34F81340 		ldrh	r4, [r4, r3, lsl #1]
+ 129              	.LVL12:
+  51:Core/Src/Lab2.c ****         if ((*GlobalTickCount - last_blinking2) >= delay2)
+ 130              		.loc 1 51 9 is_stmt 1 view .LVU39
+ 131              		.loc 1 51 14 is_stmt 0 view .LVU40
+ 132 0058 1368     		ldr	r3, [r2]
+ 133              		.loc 1 51 31 view .LVU41
+ 134 005a 7A4D     		ldr	r5, .L28+16
+ 135 005c 2D68     		ldr	r5, [r5]
+ 136 005e 5B1B     		subs	r3, r3, r5
+ 137              		.loc 1 51 12 view .LVU42
+ 138 0060 A342     		cmp	r3, r4
+ 139 0062 0FD3     		bcc	.L5
+  52:Core/Src/Lab2.c ****         {
+  53:Core/Src/Lab2.c ****             if (flag2 == 1)                                 // Если светодиод вклю
+ 140              		.loc 1 53 13 is_stmt 1 view .LVU43
+ 141              		.loc 1 53 23 is_stmt 0 view .LVU44
+ 142 0064 784B     		ldr	r3, .L28+20
+ 143 0066 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 144              		.loc 1 53 16 view .LVU45
+ 145 0068 012B     		cmp	r3, #1
+ 146 006a 00F0B680 		beq	.L23
+  54:Core/Src/Lab2.c ****             {
+  55:Core/Src/Lab2.c ****                 LED2_OFF;
+  56:Core/Src/Lab2.c ****                 flag2 = 0;
+  57:Core/Src/Lab2.c ****             }
+  58:Core/Src/Lab2.c ****             else                                            // Иначе включаем его �
+  59:Core/Src/Lab2.c ****             {
+  60:Core/Src/Lab2.c ****                 LED2_ON;
+ 147              		.loc 1 60 17 is_stmt 1 view .LVU46
+ 148 006e 744C     		ldr	r4, .L28+12
+ 149              	.LVL13:
+ 150              		.loc 1 60 17 is_stmt 0 view .LVU47
+ 151 0070 A369     		ldr	r3, [r4, #24]
+ 152 0072 43F08003 		orr	r3, r3, #128
+ 153 0076 A361     		str	r3, [r4, #24]
+ 154              	.LVL14:
+ 155              		.loc 1 60 24 is_stmt 1 view .LVU48
+  61:Core/Src/Lab2.c ****                 flag2 = 1;
+ 156              		.loc 1 61 17 view .LVU49
+ 157              		.loc 1 61 23 is_stmt 0 view .LVU50
+ 158 0078 734B     		ldr	r3, .L28+20
+ 159 007a 0124     		movs	r4, #1
+ 160 007c 1C70     		strb	r4, [r3]
+ 161              	.L7:
+  62:Core/Src/Lab2.c ****             }
+  63:Core/Src/Lab2.c ****             last_blinking2 = *GlobalTickCount;              // Обновляем значение 
+ 162              		.loc 1 63 13 is_stmt 1 view .LVU51
+ 163              		.loc 1 63 30 is_stmt 0 view .LVU52
+ 164 007e 1468     		ldr	r4, [r2]
+ 165              		.loc 1 63 28 view .LVU53
+ 166 0080 704B     		ldr	r3, .L28+16
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 5
+
+
+ 167 0082 1C60     		str	r4, [r3]
+ 168              	.LVL15:
+ 169              	.L5:
+ 170              		.loc 1 63 28 view .LVU54
+ 171              	.LBE2:
+  64:Core/Src/Lab2.c ****         }
+  65:Core/Src/Lab2.c ****     }
+  66:Core/Src/Lab2.c **** 
+  67:Core/Src/Lab2.c ****     if (*led_en > 2)                                        // Проверяем включен л
+ 172              		.loc 1 67 5 is_stmt 1 view .LVU55
+ 173              		.loc 1 67 9 is_stmt 0 view .LVU56
+ 174 0084 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 175              		.loc 1 67 8 view .LVU57
+ 176 0086 022B     		cmp	r3, #2
+ 177 0088 1DD9     		bls	.L8
+ 178              	.LBB3:
+  68:Core/Src/Lab2.c ****     {
+  69:Core/Src/Lab2.c ****         range = blink[2][0];                                // Переменная храняща�
+ 179              		.loc 1 69 9 is_stmt 1 view .LVU58
+ 180              		.loc 1 69 15 is_stmt 0 view .LVU59
+ 181 008a 0B79     		ldrb	r3, [r1, #4]	@ zero_extendqisi2
+ 182              	.LVL16:
+  70:Core/Src/Lab2.c ****         freq = blink[2][1];                                 // Переменная храняща�
+ 183              		.loc 1 70 9 is_stmt 1 view .LVU60
+ 184              		.loc 1 70 14 is_stmt 0 view .LVU61
+ 185 008c 4C79     		ldrb	r4, [r1, #5]	@ zero_extendqisi2
+ 186              	.LVL17:
+  71:Core/Src/Lab2.c ****         uint16_t delay3 = delay_table[range][freq];         // Используем ранее со
+ 187              		.loc 1 71 9 is_stmt 1 view .LVU62
+ 188              		.loc 1 71 18 is_stmt 0 view .LVU63
+ 189 008e 03EB4303 		add	r3, r3, r3, lsl #1
+ 190              	.LVL18:
+ 191              		.loc 1 71 18 view .LVU64
+ 192 0092 2344     		add	r3, r3, r4
+ 193 0094 674C     		ldr	r4, .L28
+ 194              	.LVL19:
+ 195              		.loc 1 71 18 view .LVU65
+ 196 0096 34F81340 		ldrh	r4, [r4, r3, lsl #1]
+ 197              	.LVL20:
+  72:Core/Src/Lab2.c ****         if ((*GlobalTickCount - last_blinking3) >= delay3)   // Проверка прошла ли 
+ 198              		.loc 1 72 9 is_stmt 1 view .LVU66
+ 199              		.loc 1 72 14 is_stmt 0 view .LVU67
+ 200 009a 1368     		ldr	r3, [r2]
+ 201              		.loc 1 72 31 view .LVU68
+ 202 009c 6B4D     		ldr	r5, .L28+24
+ 203 009e 2D68     		ldr	r5, [r5]
+ 204 00a0 5B1B     		subs	r3, r3, r5
+ 205              		.loc 1 72 12 view .LVU69
+ 206 00a2 A342     		cmp	r3, r4
+ 207 00a4 0FD3     		bcc	.L8
+  73:Core/Src/Lab2.c ****         {
+  74:Core/Src/Lab2.c ****             if (flag3 == 1)                                 // Если светодиод вклю
+ 208              		.loc 1 74 13 is_stmt 1 view .LVU70
+ 209              		.loc 1 74 23 is_stmt 0 view .LVU71
+ 210 00a6 6A4B     		ldr	r3, .L28+28
+ 211 00a8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 212              		.loc 1 74 16 view .LVU72
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 6
+
+
+ 213 00aa 012B     		cmp	r3, #1
+ 214 00ac 00F09E80 		beq	.L24
+  75:Core/Src/Lab2.c ****             {
+  76:Core/Src/Lab2.c ****                 LED3_OFF;
+  77:Core/Src/Lab2.c ****                 flag3 = 0;
+  78:Core/Src/Lab2.c ****             }
+  79:Core/Src/Lab2.c ****             else                                            // Иначе включаем его �
+  80:Core/Src/Lab2.c ****             {
+  81:Core/Src/Lab2.c ****                 LED3_ON;
+ 215              		.loc 1 81 17 is_stmt 1 view .LVU73
+ 216 00b0 634C     		ldr	r4, .L28+12
+ 217              	.LVL21:
+ 218              		.loc 1 81 17 is_stmt 0 view .LVU74
+ 219 00b2 A369     		ldr	r3, [r4, #24]
+ 220 00b4 43F48043 		orr	r3, r3, #16384
+ 221 00b8 A361     		str	r3, [r4, #24]
+ 222              	.LVL22:
+ 223              		.loc 1 81 24 is_stmt 1 view .LVU75
+  82:Core/Src/Lab2.c ****                 flag3 = 1;
+ 224              		.loc 1 82 17 view .LVU76
+ 225              		.loc 1 82 23 is_stmt 0 view .LVU77
+ 226 00ba 654B     		ldr	r3, .L28+28
+ 227 00bc 0124     		movs	r4, #1
+ 228 00be 1C70     		strb	r4, [r3]
+ 229              	.L10:
+  83:Core/Src/Lab2.c ****             }
+  84:Core/Src/Lab2.c ****             last_blinking3 = *GlobalTickCount;              // Обновляем значение 
+ 230              		.loc 1 84 13 is_stmt 1 view .LVU78
+ 231              		.loc 1 84 30 is_stmt 0 view .LVU79
+ 232 00c0 1468     		ldr	r4, [r2]
+ 233              		.loc 1 84 28 view .LVU80
+ 234 00c2 624B     		ldr	r3, .L28+24
+ 235 00c4 1C60     		str	r4, [r3]
+ 236              	.LVL23:
+ 237              	.L8:
+ 238              		.loc 1 84 28 view .LVU81
+ 239              	.LBE3:
+  85:Core/Src/Lab2.c ****         }
+  86:Core/Src/Lab2.c ****     }
+  87:Core/Src/Lab2.c **** 
+  88:Core/Src/Lab2.c ****     if (*led_en > 3)                                        // Проверяем включен л
+ 240              		.loc 1 88 5 is_stmt 1 view .LVU82
+ 241              		.loc 1 88 9 is_stmt 0 view .LVU83
+ 242 00c6 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 243              		.loc 1 88 8 view .LVU84
+ 244 00c8 032B     		cmp	r3, #3
+ 245 00ca 1DD9     		bls	.L11
+ 246              	.LBB4:
+  89:Core/Src/Lab2.c ****     {
+  90:Core/Src/Lab2.c ****         range = blink[3][0];                                // Переменная храняща�
+ 247              		.loc 1 90 9 is_stmt 1 view .LVU85
+ 248              		.loc 1 90 15 is_stmt 0 view .LVU86
+ 249 00cc 8B79     		ldrb	r3, [r1, #6]	@ zero_extendqisi2
+ 250              	.LVL24:
+  91:Core/Src/Lab2.c ****         freq = blink[3][1];                                 // Переменная храняща�
+ 251              		.loc 1 91 9 is_stmt 1 view .LVU87
+ 252              		.loc 1 91 14 is_stmt 0 view .LVU88
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 7
+
+
+ 253 00ce CC79     		ldrb	r4, [r1, #7]	@ zero_extendqisi2
+ 254              	.LVL25:
+  92:Core/Src/Lab2.c ****         uint16_t delay4 = delay_table[range][freq];         // Используем ранее со
+ 255              		.loc 1 92 9 is_stmt 1 view .LVU89
+ 256              		.loc 1 92 18 is_stmt 0 view .LVU90
+ 257 00d0 03EB4303 		add	r3, r3, r3, lsl #1
+ 258              	.LVL26:
+ 259              		.loc 1 92 18 view .LVU91
+ 260 00d4 2344     		add	r3, r3, r4
+ 261 00d6 574C     		ldr	r4, .L28
+ 262              	.LVL27:
+ 263              		.loc 1 92 18 view .LVU92
+ 264 00d8 34F81340 		ldrh	r4, [r4, r3, lsl #1]
+ 265              	.LVL28:
+  93:Core/Src/Lab2.c ****         if ((*GlobalTickCount - last_blinking4) >= delay4)   // Проверка прошла ли 
+ 266              		.loc 1 93 9 is_stmt 1 view .LVU93
+ 267              		.loc 1 93 14 is_stmt 0 view .LVU94
+ 268 00dc 1368     		ldr	r3, [r2]
+ 269              		.loc 1 93 31 view .LVU95
+ 270 00de 5D4D     		ldr	r5, .L28+32
+ 271 00e0 2D68     		ldr	r5, [r5]
+ 272 00e2 5B1B     		subs	r3, r3, r5
+ 273              		.loc 1 93 12 view .LVU96
+ 274 00e4 A342     		cmp	r3, r4
+ 275 00e6 0FD3     		bcc	.L11
+  94:Core/Src/Lab2.c ****         {
+  95:Core/Src/Lab2.c ****             if (flag4 == 1)                                 // Если светодиод вклю
+ 276              		.loc 1 95 13 is_stmt 1 view .LVU97
+ 277              		.loc 1 95 23 is_stmt 0 view .LVU98
+ 278 00e8 5B4B     		ldr	r3, .L28+36
+ 279 00ea 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 280              		.loc 1 95 16 view .LVU99
+ 281 00ec 012B     		cmp	r3, #1
+ 282 00ee 00F08680 		beq	.L25
+  96:Core/Src/Lab2.c ****             {
+  97:Core/Src/Lab2.c ****                 LED4_OFF;
+  98:Core/Src/Lab2.c ****                 flag4 = 0;
+  99:Core/Src/Lab2.c ****             }
+ 100:Core/Src/Lab2.c ****             else                                            // Иначе включаем его �
+ 101:Core/Src/Lab2.c ****             {
+ 102:Core/Src/Lab2.c ****                 LED4_ON;
+ 283              		.loc 1 102 17 is_stmt 1 view .LVU100
+ 284 00f2 534C     		ldr	r4, .L28+12
+ 285              	.LVL29:
+ 286              		.loc 1 102 17 is_stmt 0 view .LVU101
+ 287 00f4 A369     		ldr	r3, [r4, #24]
+ 288 00f6 43F48073 		orr	r3, r3, #256
+ 289 00fa A361     		str	r3, [r4, #24]
+ 290              	.LVL30:
+ 291              		.loc 1 102 24 is_stmt 1 view .LVU102
+ 103:Core/Src/Lab2.c ****                 flag4 = 1;
+ 292              		.loc 1 103 17 view .LVU103
+ 293              		.loc 1 103 23 is_stmt 0 view .LVU104
+ 294 00fc 564B     		ldr	r3, .L28+36
+ 295 00fe 0124     		movs	r4, #1
+ 296 0100 1C70     		strb	r4, [r3]
+ 297              	.L13:
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 8
+
+
+ 104:Core/Src/Lab2.c ****             }
+ 105:Core/Src/Lab2.c ****             last_blinking4 = *GlobalTickCount;              // Обновляем значение 
+ 298              		.loc 1 105 13 is_stmt 1 view .LVU105
+ 299              		.loc 1 105 30 is_stmt 0 view .LVU106
+ 300 0102 1468     		ldr	r4, [r2]
+ 301              		.loc 1 105 28 view .LVU107
+ 302 0104 534B     		ldr	r3, .L28+32
+ 303 0106 1C60     		str	r4, [r3]
+ 304              	.LVL31:
+ 305              	.L11:
+ 306              		.loc 1 105 28 view .LVU108
+ 307              	.LBE4:
+ 106:Core/Src/Lab2.c ****         }
+ 107:Core/Src/Lab2.c ****     }
+ 108:Core/Src/Lab2.c **** 
+ 109:Core/Src/Lab2.c ****     if (*led_en > 4)                                        // Проверяем включен л
+ 308              		.loc 1 109 5 is_stmt 1 view .LVU109
+ 309              		.loc 1 109 9 is_stmt 0 view .LVU110
+ 310 0108 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 311              		.loc 1 109 8 view .LVU111
+ 312 010a 042B     		cmp	r3, #4
+ 313 010c 1CD9     		bls	.L14
+ 314              	.LBB5:
+ 110:Core/Src/Lab2.c ****     {
+ 111:Core/Src/Lab2.c ****         range = blink[4][0];                                // Переменная храняща�
+ 315              		.loc 1 111 9 is_stmt 1 view .LVU112
+ 316              		.loc 1 111 15 is_stmt 0 view .LVU113
+ 317 010e 0B7A     		ldrb	r3, [r1, #8]	@ zero_extendqisi2
+ 318              	.LVL32:
+ 112:Core/Src/Lab2.c ****         freq = blink[4][1];                                 // Переменная храняща�
+ 319              		.loc 1 112 9 is_stmt 1 view .LVU114
+ 320              		.loc 1 112 14 is_stmt 0 view .LVU115
+ 321 0110 4C7A     		ldrb	r4, [r1, #9]	@ zero_extendqisi2
+ 322              	.LVL33:
+ 113:Core/Src/Lab2.c ****         uint16_t delay5 = delay_table[range][freq];         // Используем ранее со
+ 323              		.loc 1 113 9 is_stmt 1 view .LVU116
+ 324              		.loc 1 113 18 is_stmt 0 view .LVU117
+ 325 0112 03EB4303 		add	r3, r3, r3, lsl #1
+ 326              	.LVL34:
+ 327              		.loc 1 113 18 view .LVU118
+ 328 0116 2344     		add	r3, r3, r4
+ 329 0118 464C     		ldr	r4, .L28
+ 330              	.LVL35:
+ 331              		.loc 1 113 18 view .LVU119
+ 332 011a 34F81340 		ldrh	r4, [r4, r3, lsl #1]
+ 333              	.LVL36:
+ 114:Core/Src/Lab2.c ****         if ((*GlobalTickCount - last_blinking5) >= delay5)   // Проверка прошла ли 
+ 334              		.loc 1 114 9 is_stmt 1 view .LVU120
+ 335              		.loc 1 114 14 is_stmt 0 view .LVU121
+ 336 011e 1368     		ldr	r3, [r2]
+ 337              		.loc 1 114 31 view .LVU122
+ 338 0120 4E4D     		ldr	r5, .L28+40
+ 339 0122 2D68     		ldr	r5, [r5]
+ 340 0124 5B1B     		subs	r3, r3, r5
+ 341              		.loc 1 114 12 view .LVU123
+ 342 0126 A342     		cmp	r3, r4
+ 343 0128 0ED3     		bcc	.L14
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 9
+
+
+ 115:Core/Src/Lab2.c ****         {
+ 116:Core/Src/Lab2.c ****             if (flag5 == 1)                                 // Если светодиод вклю
+ 344              		.loc 1 116 13 is_stmt 1 view .LVU124
+ 345              		.loc 1 116 23 is_stmt 0 view .LVU125
+ 346 012a 4D4B     		ldr	r3, .L28+44
+ 347 012c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 348              		.loc 1 116 16 view .LVU126
+ 349 012e 012B     		cmp	r3, #1
+ 350 0130 6ED0     		beq	.L26
+ 117:Core/Src/Lab2.c ****             {
+ 118:Core/Src/Lab2.c ****                 LED5_OFF;
+ 119:Core/Src/Lab2.c ****                 flag5 = 0;
+ 120:Core/Src/Lab2.c ****             }
+ 121:Core/Src/Lab2.c ****             else                                            // Иначе включаем его �
+ 122:Core/Src/Lab2.c ****             {
+ 123:Core/Src/Lab2.c ****                 LED5_ON;
+ 351              		.loc 1 123 17 is_stmt 1 view .LVU127
+ 352 0132 434C     		ldr	r4, .L28+12
+ 353              	.LVL37:
+ 354              		.loc 1 123 17 is_stmt 0 view .LVU128
+ 355 0134 A369     		ldr	r3, [r4, #24]
+ 356 0136 43F40073 		orr	r3, r3, #512
+ 357 013a A361     		str	r3, [r4, #24]
+ 358              	.LVL38:
+ 359              		.loc 1 123 24 is_stmt 1 view .LVU129
+ 124:Core/Src/Lab2.c ****                 flag5 = 1;
+ 360              		.loc 1 124 17 view .LVU130
+ 361              		.loc 1 124 23 is_stmt 0 view .LVU131
+ 362 013c 484B     		ldr	r3, .L28+44
+ 363 013e 0124     		movs	r4, #1
+ 364 0140 1C70     		strb	r4, [r3]
+ 365              	.L16:
+ 125:Core/Src/Lab2.c ****             }
+ 126:Core/Src/Lab2.c ****             last_blinking5 = *GlobalTickCount;              // Обновляем значение 
+ 366              		.loc 1 126 13 is_stmt 1 view .LVU132
+ 367              		.loc 1 126 30 is_stmt 0 view .LVU133
+ 368 0142 1468     		ldr	r4, [r2]
+ 369              		.loc 1 126 28 view .LVU134
+ 370 0144 454B     		ldr	r3, .L28+40
+ 371 0146 1C60     		str	r4, [r3]
+ 372              	.LVL39:
+ 373              	.L14:
+ 374              		.loc 1 126 28 view .LVU135
+ 375              	.LBE5:
+ 127:Core/Src/Lab2.c ****         }
+ 128:Core/Src/Lab2.c ****     }
+ 129:Core/Src/Lab2.c **** 
+ 130:Core/Src/Lab2.c ****     if (*led_en > 5)                                        // Проверяем включен л
+ 376              		.loc 1 130 5 is_stmt 1 view .LVU136
+ 377              		.loc 1 130 9 is_stmt 0 view .LVU137
+ 378 0148 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 379              		.loc 1 130 8 view .LVU138
+ 380 014a 052B     		cmp	r3, #5
+ 381 014c 1CD9     		bls	.L17
+ 382              	.LBB6:
+ 131:Core/Src/Lab2.c ****     {
+ 132:Core/Src/Lab2.c ****         range = blink[5][0];                                // Переменная храняща�
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 10
+
+
+ 383              		.loc 1 132 9 is_stmt 1 view .LVU139
+ 384              		.loc 1 132 15 is_stmt 0 view .LVU140
+ 385 014e 8B7A     		ldrb	r3, [r1, #10]	@ zero_extendqisi2
+ 386              	.LVL40:
+ 133:Core/Src/Lab2.c ****         freq = blink[5][1];                                 // Переменная храняща�
+ 387              		.loc 1 133 9 is_stmt 1 view .LVU141
+ 388              		.loc 1 133 14 is_stmt 0 view .LVU142
+ 389 0150 C97A     		ldrb	r1, [r1, #11]	@ zero_extendqisi2
+ 390              	.LVL41:
+ 134:Core/Src/Lab2.c ****         uint16_t delay6 = delay_table[range][freq];         // Используем ранее со
+ 391              		.loc 1 134 9 is_stmt 1 view .LVU143
+ 392              		.loc 1 134 18 is_stmt 0 view .LVU144
+ 393 0152 03EB4303 		add	r3, r3, r3, lsl #1
+ 394              	.LVL42:
+ 395              		.loc 1 134 18 view .LVU145
+ 396 0156 0B44     		add	r3, r3, r1
+ 397 0158 3649     		ldr	r1, .L28
+ 398              	.LVL43:
+ 399              		.loc 1 134 18 view .LVU146
+ 400 015a 31F81310 		ldrh	r1, [r1, r3, lsl #1]
+ 401              	.LVL44:
+ 135:Core/Src/Lab2.c ****         if ((*GlobalTickCount - last_blinking6) >= delay6)   // Проверка прошла ли 
+ 402              		.loc 1 135 9 is_stmt 1 view .LVU147
+ 403              		.loc 1 135 14 is_stmt 0 view .LVU148
+ 404 015e 1368     		ldr	r3, [r2]
+ 405              		.loc 1 135 31 view .LVU149
+ 406 0160 404C     		ldr	r4, .L28+48
+ 407 0162 2468     		ldr	r4, [r4]
+ 408 0164 1B1B     		subs	r3, r3, r4
+ 409              		.loc 1 135 12 view .LVU150
+ 410 0166 8B42     		cmp	r3, r1
+ 411 0168 0ED3     		bcc	.L17
+ 136:Core/Src/Lab2.c ****         {
+ 137:Core/Src/Lab2.c ****             if (flag6 == 1)                                 // Если светодиод вклю
+ 412              		.loc 1 137 13 is_stmt 1 view .LVU151
+ 413              		.loc 1 137 23 is_stmt 0 view .LVU152
+ 414 016a 3F4B     		ldr	r3, .L28+52
+ 415 016c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 416              		.loc 1 137 16 view .LVU153
+ 417 016e 012B     		cmp	r3, #1
+ 418 0170 57D0     		beq	.L27
+ 138:Core/Src/Lab2.c ****             {
+ 139:Core/Src/Lab2.c ****                 LED6_OFF;
+ 140:Core/Src/Lab2.c ****                 flag6 = 0;
+ 141:Core/Src/Lab2.c ****             }
+ 142:Core/Src/Lab2.c ****             else                                            // Иначе включаем его �
+ 143:Core/Src/Lab2.c ****             {
+ 144:Core/Src/Lab2.c ****                 LED6_ON;
+ 419              		.loc 1 144 17 is_stmt 1 view .LVU154
+ 420 0172 3349     		ldr	r1, .L28+12
+ 421              	.LVL45:
+ 422              		.loc 1 144 17 is_stmt 0 view .LVU155
+ 423 0174 8B69     		ldr	r3, [r1, #24]
+ 424 0176 43F40043 		orr	r3, r3, #32768
+ 425 017a 8B61     		str	r3, [r1, #24]
+ 426              	.LVL46:
+ 427              		.loc 1 144 24 is_stmt 1 view .LVU156
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 11
+
+
+ 145:Core/Src/Lab2.c ****                 flag6 = 1;
+ 428              		.loc 1 145 17 view .LVU157
+ 429              		.loc 1 145 23 is_stmt 0 view .LVU158
+ 430 017c 3A4B     		ldr	r3, .L28+52
+ 431 017e 0121     		movs	r1, #1
+ 432 0180 1970     		strb	r1, [r3]
+ 433              	.L19:
+ 146:Core/Src/Lab2.c ****             }
+ 147:Core/Src/Lab2.c ****             last_blinking6 = *GlobalTickCount;              // Обновляем значение 
+ 434              		.loc 1 147 13 is_stmt 1 view .LVU159
+ 435              		.loc 1 147 30 is_stmt 0 view .LVU160
+ 436 0182 1268     		ldr	r2, [r2]
+ 437              	.LVL47:
+ 438              		.loc 1 147 28 view .LVU161
+ 439 0184 374B     		ldr	r3, .L28+48
+ 440 0186 1A60     		str	r2, [r3]
+ 441              	.LVL48:
+ 442              	.L17:
+ 443              		.loc 1 147 28 view .LVU162
+ 444              	.LBE6:
+ 148:Core/Src/Lab2.c ****         }
+ 149:Core/Src/Lab2.c ****     }
+ 150:Core/Src/Lab2.c ****     if (*led_en == 0)                                       // Если режим работы 0, 
+ 445              		.loc 1 150 5 is_stmt 1 view .LVU163
+ 446              		.loc 1 150 9 is_stmt 0 view .LVU164
+ 447 0188 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 448              		.loc 1 150 8 view .LVU165
+ 449 018a DBB9     		cbnz	r3, .L1
+ 151:Core/Src/Lab2.c ****     {
+ 152:Core/Src/Lab2.c ****         LED1_OFF;
+ 450              		.loc 1 152 9 is_stmt 1 view .LVU166
+ 451 018c 03F18043 		add	r3, r3, #1073741824
+ 452 0190 03F50133 		add	r3, r3, #132096
+ 453 0194 9A69     		ldr	r2, [r3, #24]
+ 454 0196 42F48032 		orr	r2, r2, #65536
+ 455 019a 9A61     		str	r2, [r3, #24]
+ 456              		.loc 1 152 17 view .LVU167
+ 153:Core/Src/Lab2.c ****         LED2_OFF;
+ 457              		.loc 1 153 9 view .LVU168
+ 458 019c 9A69     		ldr	r2, [r3, #24]
+ 459 019e 42F40002 		orr	r2, r2, #8388608
+ 460 01a2 9A61     		str	r2, [r3, #24]
+ 461              		.loc 1 153 17 view .LVU169
+ 154:Core/Src/Lab2.c ****         LED3_OFF;
+ 462              		.loc 1 154 9 view .LVU170
+ 463 01a4 9A69     		ldr	r2, [r3, #24]
+ 464 01a6 42F08042 		orr	r2, r2, #1073741824
+ 465 01aa 9A61     		str	r2, [r3, #24]
+ 466              		.loc 1 154 17 view .LVU171
+ 155:Core/Src/Lab2.c ****         LED4_OFF;
+ 467              		.loc 1 155 9 view .LVU172
+ 468 01ac 9A69     		ldr	r2, [r3, #24]
+ 469 01ae 42F08072 		orr	r2, r2, #16777216
+ 470 01b2 9A61     		str	r2, [r3, #24]
+ 471              		.loc 1 155 17 view .LVU173
+ 156:Core/Src/Lab2.c ****         LED5_OFF;
+ 472              		.loc 1 156 9 view .LVU174
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 12
+
+
+ 473 01b4 9A69     		ldr	r2, [r3, #24]
+ 474 01b6 42F00072 		orr	r2, r2, #33554432
+ 475 01ba 9A61     		str	r2, [r3, #24]
+ 476              		.loc 1 156 17 view .LVU175
+ 157:Core/Src/Lab2.c ****         LED6_OFF;
+ 477              		.loc 1 157 9 view .LVU176
+ 478 01bc 9A69     		ldr	r2, [r3, #24]
+ 479 01be 42F00042 		orr	r2, r2, #-2147483648
+ 480 01c2 9A61     		str	r2, [r3, #24]
+ 481              		.loc 1 157 17 discriminator 1 view .LVU177
+ 482              	.L1:
+ 158:Core/Src/Lab2.c ****     }
+ 159:Core/Src/Lab2.c **** }...
+ 483              		.loc 1 159 1 is_stmt 0 view .LVU178
+ 484 01c4 30BC     		pop	{r4, r5}
+ 485              	.LCFI1:
+ 486              		.cfi_remember_state
+ 487              		.cfi_restore 5
+ 488              		.cfi_restore 4
+ 489              		.cfi_def_cfa_offset 0
+ 490 01c6 7047     		bx	lr
+ 491              	.LVL49:
+ 492              	.L22:
+ 493              	.LCFI2:
+ 494              		.cfi_restore_state
+  34:Core/Src/Lab2.c ****                 LED1_OFF;
+ 495              		.loc 1 34 17 is_stmt 1 view .LVU179
+ 496 01c8 1D4C     		ldr	r4, .L28+12
+ 497              	.LVL50:
+  34:Core/Src/Lab2.c ****                 LED1_OFF;
+ 498              		.loc 1 34 17 is_stmt 0 view .LVU180
+ 499 01ca A369     		ldr	r3, [r4, #24]
+ 500 01cc 43F48033 		orr	r3, r3, #65536
+ 501 01d0 A361     		str	r3, [r4, #24]
+ 502              	.LVL51:
+  34:Core/Src/Lab2.c ****                 LED1_OFF;
+ 503              		.loc 1 34 25 is_stmt 1 view .LVU181
+  35:Core/Src/Lab2.c ****                 flag1 = 0;
+ 504              		.loc 1 35 17 view .LVU182
+  35:Core/Src/Lab2.c ****                 flag1 = 0;
+ 505              		.loc 1 35 23 is_stmt 0 view .LVU183
+ 506 01d2 1A4B     		ldr	r3, .L28+8
+ 507 01d4 0024     		movs	r4, #0
+ 508 01d6 1C70     		strb	r4, [r3]
+ 509 01d8 30E7     		b	.L4
+ 510              	.LVL52:
+ 511              	.L23:
+ 512              	.LBB7:
+  55:Core/Src/Lab2.c ****                 LED2_OFF;
+ 513              		.loc 1 55 17 is_stmt 1 view .LVU184
+ 514 01da 194C     		ldr	r4, .L28+12
+ 515              	.LVL53:
+  55:Core/Src/Lab2.c ****                 LED2_OFF;
+ 516              		.loc 1 55 17 is_stmt 0 view .LVU185
+ 517 01dc A369     		ldr	r3, [r4, #24]
+ 518 01de 43F40003 		orr	r3, r3, #8388608
+ 519 01e2 A361     		str	r3, [r4, #24]
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 13
+
+
+ 520              	.LVL54:
+  55:Core/Src/Lab2.c ****                 LED2_OFF;
+ 521              		.loc 1 55 25 is_stmt 1 view .LVU186
+  56:Core/Src/Lab2.c ****                 flag2 = 0;
+ 522              		.loc 1 56 17 view .LVU187
+  56:Core/Src/Lab2.c ****                 flag2 = 0;
+ 523              		.loc 1 56 23 is_stmt 0 view .LVU188
+ 524 01e4 184B     		ldr	r3, .L28+20
+ 525 01e6 0024     		movs	r4, #0
+ 526 01e8 1C70     		strb	r4, [r3]
+ 527 01ea 48E7     		b	.L7
+ 528              	.LVL55:
+ 529              	.L24:
+  56:Core/Src/Lab2.c ****                 flag2 = 0;
+ 530              		.loc 1 56 23 view .LVU189
+ 531              	.LBE7:
+ 532              	.LBB8:
+  76:Core/Src/Lab2.c ****                 LED3_OFF;
+ 533              		.loc 1 76 17 is_stmt 1 view .LVU190
+ 534 01ec 144C     		ldr	r4, .L28+12
+ 535              	.LVL56:
+  76:Core/Src/Lab2.c ****                 LED3_OFF;
+ 536              		.loc 1 76 17 is_stmt 0 view .LVU191
+ 537 01ee A369     		ldr	r3, [r4, #24]
+ 538 01f0 43F08043 		orr	r3, r3, #1073741824
+ 539 01f4 A361     		str	r3, [r4, #24]
+ 540              	.LVL57:
+  76:Core/Src/Lab2.c ****                 LED3_OFF;
+ 541              		.loc 1 76 25 is_stmt 1 view .LVU192
+  77:Core/Src/Lab2.c ****                 flag3 = 0;
+ 542              		.loc 1 77 17 view .LVU193
+  77:Core/Src/Lab2.c ****                 flag3 = 0;
+ 543              		.loc 1 77 23 is_stmt 0 view .LVU194
+ 544 01f6 164B     		ldr	r3, .L28+28
+ 545 01f8 0024     		movs	r4, #0
+ 546 01fa 1C70     		strb	r4, [r3]
+ 547 01fc 60E7     		b	.L10
+ 548              	.LVL58:
+ 549              	.L25:
+  77:Core/Src/Lab2.c ****                 flag3 = 0;
+ 550              		.loc 1 77 23 view .LVU195
+ 551              	.LBE8:
+ 552              	.LBB9:
+  97:Core/Src/Lab2.c ****                 LED4_OFF;
+ 553              		.loc 1 97 17 is_stmt 1 view .LVU196
+ 554 01fe 104C     		ldr	r4, .L28+12
+ 555              	.LVL59:
+  97:Core/Src/Lab2.c ****                 LED4_OFF;
+ 556              		.loc 1 97 17 is_stmt 0 view .LVU197
+ 557 0200 A369     		ldr	r3, [r4, #24]
+ 558 0202 43F08073 		orr	r3, r3, #16777216
+ 559 0206 A361     		str	r3, [r4, #24]
+ 560              	.LVL60:
+  97:Core/Src/Lab2.c ****                 LED4_OFF;
+ 561              		.loc 1 97 25 is_stmt 1 view .LVU198
+  98:Core/Src/Lab2.c ****                 flag4 = 0;
+ 562              		.loc 1 98 17 view .LVU199
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 14
+
+
+  98:Core/Src/Lab2.c ****                 flag4 = 0;
+ 563              		.loc 1 98 23 is_stmt 0 view .LVU200
+ 564 0208 134B     		ldr	r3, .L28+36
+ 565 020a 0024     		movs	r4, #0
+ 566 020c 1C70     		strb	r4, [r3]
+ 567 020e 78E7     		b	.L13
+ 568              	.LVL61:
+ 569              	.L26:
+  98:Core/Src/Lab2.c ****                 flag4 = 0;
+ 570              		.loc 1 98 23 view .LVU201
+ 571              	.LBE9:
+ 572              	.LBB10:
+ 118:Core/Src/Lab2.c ****                 LED5_OFF;
+ 573              		.loc 1 118 17 is_stmt 1 view .LVU202
+ 574 0210 0B4C     		ldr	r4, .L28+12
+ 575              	.LVL62:
+ 118:Core/Src/Lab2.c ****                 LED5_OFF;
+ 576              		.loc 1 118 17 is_stmt 0 view .LVU203
+ 577 0212 A369     		ldr	r3, [r4, #24]
+ 578 0214 43F00073 		orr	r3, r3, #33554432
+ 579 0218 A361     		str	r3, [r4, #24]
+ 580              	.LVL63:
+ 118:Core/Src/Lab2.c ****                 LED5_OFF;
+ 581              		.loc 1 118 25 is_stmt 1 view .LVU204
+ 119:Core/Src/Lab2.c ****                 flag5 = 0;
+ 582              		.loc 1 119 17 view .LVU205
+ 119:Core/Src/Lab2.c ****                 flag5 = 0;
+ 583              		.loc 1 119 23 is_stmt 0 view .LVU206
+ 584 021a 114B     		ldr	r3, .L28+44
+ 585 021c 0024     		movs	r4, #0
+ 586 021e 1C70     		strb	r4, [r3]
+ 587 0220 8FE7     		b	.L16
+ 588              	.LVL64:
+ 589              	.L27:
+ 119:Core/Src/Lab2.c ****                 flag5 = 0;
+ 590              		.loc 1 119 23 view .LVU207
+ 591              	.LBE10:
+ 592              	.LBB11:
+ 139:Core/Src/Lab2.c ****                 LED6_OFF;
+ 593              		.loc 1 139 17 is_stmt 1 view .LVU208
+ 594 0222 0749     		ldr	r1, .L28+12
+ 595              	.LVL65:
+ 139:Core/Src/Lab2.c ****                 LED6_OFF;
+ 596              		.loc 1 139 17 is_stmt 0 view .LVU209
+ 597 0224 8B69     		ldr	r3, [r1, #24]
+ 598 0226 43F00043 		orr	r3, r3, #-2147483648
+ 599 022a 8B61     		str	r3, [r1, #24]
+ 600              	.LVL66:
+ 139:Core/Src/Lab2.c ****                 LED6_OFF;
+ 601              		.loc 1 139 25 is_stmt 1 view .LVU210
+ 140:Core/Src/Lab2.c ****                 flag6 = 0;
+ 602              		.loc 1 140 17 view .LVU211
+ 140:Core/Src/Lab2.c ****                 flag6 = 0;
+ 603              		.loc 1 140 23 is_stmt 0 view .LVU212
+ 604 022c 0E4B     		ldr	r3, .L28+52
+ 605 022e 0021     		movs	r1, #0
+ 606 0230 1970     		strb	r1, [r3]
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 15
+
+
+ 607 0232 A6E7     		b	.L19
+ 608              	.L29:
+ 609              		.align	2
+ 610              	.L28:
+ 611 0234 00000000 		.word	delay_table
+ 612 0238 00000000 		.word	last_blinking1
+ 613 023c 00000000 		.word	flag1
+ 614 0240 00040240 		.word	1073873920
+ 615 0244 00000000 		.word	last_blinking2
+ 616 0248 00000000 		.word	flag2
+ 617 024c 00000000 		.word	last_blinking3
+ 618 0250 00000000 		.word	flag3
+ 619 0254 00000000 		.word	last_blinking4
+ 620 0258 00000000 		.word	flag4
+ 621 025c 00000000 		.word	last_blinking5
+ 622 0260 00000000 		.word	flag5
+ 623 0264 00000000 		.word	last_blinking6
+ 624 0268 00000000 		.word	flag6
+ 625              	.LBE11:
+ 626              		.cfi_endproc
+ 627              	.LFE130:
+ 629              		.section	.rodata.delay_table,"a"
+ 630              		.align	2
+ 633              	delay_table:
+ 634 0000 8206     		.short	1666
+ 635 0002 F401     		.short	500
+ 636 0004 6501     		.short	357
+ 637 0006 E204     		.short	1250
+ 638 0008 A001     		.short	416
+ 639 000a 2601     		.short	294
+ 640 000c E803     		.short	1000
+ 641 000e 3801     		.short	312
+ 642 0010 0701     		.short	263
+ 643              		.global	flag6
+ 644              		.section	.bss.flag6,"aw",%nobits
+ 647              	flag6:
+ 648 0000 00       		.space	1
+ 649              		.global	last_blinking6
+ 650              		.section	.bss.last_blinking6,"aw",%nobits
+ 651              		.align	2
+ 654              	last_blinking6:
+ 655 0000 00000000 		.space	4
+ 656              		.global	flag5
+ 657              		.section	.bss.flag5,"aw",%nobits
+ 660              	flag5:
+ 661 0000 00       		.space	1
+ 662              		.global	last_blinking5
+ 663              		.section	.bss.last_blinking5,"aw",%nobits
+ 664              		.align	2
+ 667              	last_blinking5:
+ 668 0000 00000000 		.space	4
+ 669              		.global	flag4
+ 670              		.section	.bss.flag4,"aw",%nobits
+ 673              	flag4:
+ 674 0000 00       		.space	1
+ 675              		.global	last_blinking4
+ 676              		.section	.bss.last_blinking4,"aw",%nobits
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 16
+
+
+ 677              		.align	2
+ 680              	last_blinking4:
+ 681 0000 00000000 		.space	4
+ 682              		.global	flag3
+ 683              		.section	.bss.flag3,"aw",%nobits
+ 686              	flag3:
+ 687 0000 00       		.space	1
+ 688              		.global	last_blinking3
+ 689              		.section	.bss.last_blinking3,"aw",%nobits
+ 690              		.align	2
+ 693              	last_blinking3:
+ 694 0000 00000000 		.space	4
+ 695              		.global	flag2
+ 696              		.section	.bss.flag2,"aw",%nobits
+ 699              	flag2:
+ 700 0000 00       		.space	1
+ 701              		.global	last_blinking2
+ 702              		.section	.bss.last_blinking2,"aw",%nobits
+ 703              		.align	2
+ 706              	last_blinking2:
+ 707 0000 00000000 		.space	4
+ 708              		.global	flag1
+ 709              		.section	.bss.flag1,"aw",%nobits
+ 712              	flag1:
+ 713 0000 00       		.space	1
+ 714              		.global	last_blinking1
+ 715              		.section	.bss.last_blinking1,"aw",%nobits
+ 716              		.align	2
+ 719              	last_blinking1:
+ 720 0000 00000000 		.space	4
+ 721              		.text
+ 722              	.Letext0:
+ 723              		.file 2 "C:/Private/Study/DMPT/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/mach
+ 724              		.file 3 "C:/Private/Study/DMPT/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/
+ 725              		.file 4 "Core/Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s 			page 17
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Lab2.c
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:21     .text.blinking_func:00000000 $t
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:27     .text.blinking_func:00000000 blinking_func
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:611    .text.blinking_func:00000234 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:633    .rodata.delay_table:00000000 delay_table
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:719    .bss.last_blinking1:00000000 last_blinking1
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:712    .bss.flag1:00000000 flag1
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:706    .bss.last_blinking2:00000000 last_blinking2
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:699    .bss.flag2:00000000 flag2
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:693    .bss.last_blinking3:00000000 last_blinking3
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:686    .bss.flag3:00000000 flag3
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:680    .bss.last_blinking4:00000000 last_blinking4
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:673    .bss.flag4:00000000 flag4
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:667    .bss.last_blinking5:00000000 last_blinking5
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:660    .bss.flag5:00000000 flag5
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:654    .bss.last_blinking6:00000000 last_blinking6
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:647    .bss.flag6:00000000 flag6
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:630    .rodata.delay_table:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:648    .bss.flag6:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:651    .bss.last_blinking6:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:661    .bss.flag5:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:664    .bss.last_blinking5:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:674    .bss.flag4:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:677    .bss.last_blinking4:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:687    .bss.flag3:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:690    .bss.last_blinking3:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:700    .bss.flag2:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:703    .bss.last_blinking2:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:713    .bss.flag1:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccRO9V9h.s:716    .bss.last_blinking1:00000000 $d
+
+NO UNDEFINED SYMBOLS
