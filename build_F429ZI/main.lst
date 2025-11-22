@@ -1,0 +1,1403 @@
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.SystemClock_Config,"ax",%progbits
+  21              		.align	1
+  22              		.global	SystemClock_Config
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SystemClock_Config:
+  28              	.LFB130:
+  29              		.file 2 "Core/Src/init.c"
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** #include "stm32f429xx.h"
+   3:Core/Src/init.c **** 
+   4:Core/Src/init.c **** void SystemClock_Config(void)
+   5:Core/Src/init.c **** {
+  30              		.loc 2 5 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   6:Core/Src/init.c ****     // 使用默认时钟配置
+   7:Core/Src/init.c ****     RCC->CR |= RCC_CR_HSEON;
+  39              		.loc 2 7 5 view .LVU1
+  40              		.loc 2 7 8 is_stmt 0 view .LVU2
+  41 0002 0B4A     		ldr	r2, .L5
+  42 0004 1368     		ldr	r3, [r2]
+  43              		.loc 2 7 13 view .LVU3
+  44 0006 43F48033 		orr	r3, r3, #65536
+  45 000a 1360     		str	r3, [r2]
+   8:Core/Src/init.c ****     while(!(RCC->CR & RCC_CR_HSERDY));
+  46              		.loc 2 8 5 is_stmt 1 view .LVU4
+  47              	.L2:
+  48              		.loc 2 8 11 discriminator 1 view .LVU5
+  49              		.loc 2 8 16 is_stmt 0 discriminator 1 view .LVU6
+  50 000c 084B     		ldr	r3, .L5
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 2
+
+
+  51 000e 1B68     		ldr	r3, [r3]
+  52              		.loc 2 8 11 discriminator 1 view .LVU7
+  53 0010 13F4003F 		tst	r3, #131072
+  54 0014 FAD0     		beq	.L2
+   9:Core/Src/init.c ****     
+  10:Core/Src/init.c ****     RCC->CFGR = RCC_CFGR_SW_HSE;
+  55              		.loc 2 10 5 is_stmt 1 view .LVU8
+  56              		.loc 2 10 15 is_stmt 0 view .LVU9
+  57 0016 064B     		ldr	r3, .L5
+  58 0018 0122     		movs	r2, #1
+  59 001a 9A60     		str	r2, [r3, #8]
+  11:Core/Src/init.c ****     while((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_HSE);
+  60              		.loc 2 11 5 is_stmt 1 view .LVU10
+  61              	.L3:
+  62              		.loc 2 11 38 discriminator 1 view .LVU11
+  63              		.loc 2 11 15 is_stmt 0 discriminator 1 view .LVU12
+  64 001c 044B     		ldr	r3, .L5
+  65 001e 9B68     		ldr	r3, [r3, #8]
+  66              		.loc 2 11 22 discriminator 1 view .LVU13
+  67 0020 03F00C03 		and	r3, r3, #12
+  68              		.loc 2 11 38 discriminator 1 view .LVU14
+  69 0024 042B     		cmp	r3, #4
+  70 0026 F9D1     		bne	.L3
+  12:Core/Src/init.c ****     
+  13:Core/Src/init.c ****     SystemCoreClockUpdate();
+  71              		.loc 2 13 5 is_stmt 1 view .LVU15
+  72 0028 FFF7FEFF 		bl	SystemCoreClockUpdate
+  73              	.LVL0:
+  14:Core/Src/init.c **** }
+  74              		.loc 2 14 1 is_stmt 0 view .LVU16
+  75 002c 08BD     		pop	{r3, pc}
+  76              	.L6:
+  77 002e 00BF     		.align	2
+  78              	.L5:
+  79 0030 00380240 		.word	1073887232
+  80              		.cfi_endproc
+  81              	.LFE130:
+  83              		.section	.text.GPIO_Init,"ax",%progbits
+  84              		.align	1
+  85              		.global	GPIO_Init
+  86              		.syntax unified
+  87              		.thumb
+  88              		.thumb_func
+  90              	GPIO_Init:
+  91              	.LFB131:
+  15:Core/Src/init.c **** 
+  16:Core/Src/init.c **** void GPIO_Init(void)
+  17:Core/Src/init.c **** {
+  92              		.loc 2 17 1 is_stmt 1 view -0
+  93              		.cfi_startproc
+  94              		@ args = 0, pretend = 0, frame = 0
+  95              		@ frame_needed = 0, uses_anonymous_args = 0
+  96              		@ link register save eliminated.
+  18:Core/Src/init.c ****     // 启用GPIO时钟
+  19:Core/Src/init.c ****     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN | 
+  97              		.loc 2 19 5 view .LVU18
+  98              		.loc 2 19 8 is_stmt 0 view .LVU19
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 3
+
+
+  99 0000 214A     		ldr	r2, .L8
+ 100 0002 136B     		ldr	r3, [r2, #48]
+ 101              		.loc 2 19 18 view .LVU20
+ 102 0004 43F05603 		orr	r3, r3, #86
+ 103 0008 1363     		str	r3, [r2, #48]
+  20:Core/Src/init.c ****                     RCC_AHB1ENR_GPIOCEN | 
+  21:Core/Src/init.c ****                     RCC_AHB1ENR_GPIOEEN |
+  22:Core/Src/init.c ****                     RCC_AHB1ENR_GPIOGEN;
+  23:Core/Src/init.c ****     
+  24:Core/Src/init.c ****     // 配置LED引脚为输出
+  25:Core/Src/init.c ****     // 板载LED (PB0, PB7, PB14)
+  26:Core/Src/init.c ****     GPIOB->MODER |= GPIO_MODER_MODER0_0 | GPIO_MODER_MODER7_0 | GPIO_MODER_MODER14_0;
+ 104              		.loc 2 26 5 is_stmt 1 view .LVU21
+ 105              		.loc 2 26 10 is_stmt 0 view .LVU22
+ 106 000a 204B     		ldr	r3, .L8+4
+ 107 000c 1968     		ldr	r1, [r3]
+ 108              		.loc 2 26 18 view .LVU23
+ 109 000e 204A     		ldr	r2, .L8+8
+ 110 0010 0A43     		orrs	r2, r2, r1
+ 111 0012 1A60     		str	r2, [r3]
+  27:Core/Src/init.c ****     GPIOB->OTYPER &= ~(GPIO_OTYPER_OT0 | GPIO_OTYPER_OT7 | GPIO_OTYPER_OT14);
+ 112              		.loc 2 27 5 is_stmt 1 view .LVU24
+ 113              		.loc 2 27 10 is_stmt 0 view .LVU25
+ 114 0014 5A68     		ldr	r2, [r3, #4]
+ 115              		.loc 2 27 19 view .LVU26
+ 116 0016 22F48142 		bic	r2, r2, #16512
+ 117 001a 22F00102 		bic	r2, r2, #1
+ 118 001e 5A60     		str	r2, [r3, #4]
+  28:Core/Src/init.c ****     GPIOB->OSPEEDR |= GPIO_OSPEEDR_OSPEED0_1 | GPIO_OSPEEDR_OSPEED7_1 | GPIO_OSPEEDR_OSPEED14_1;
+ 119              		.loc 2 28 5 is_stmt 1 view .LVU27
+ 120              		.loc 2 28 10 is_stmt 0 view .LVU28
+ 121 0020 9968     		ldr	r1, [r3, #8]
+ 122              		.loc 2 28 20 view .LVU29
+ 123 0022 1C4A     		ldr	r2, .L8+12
+ 124 0024 0A43     		orrs	r2, r2, r1
+ 125 0026 9A60     		str	r2, [r3, #8]
+  29:Core/Src/init.c ****     
+  30:Core/Src/init.c ****     // 外部LED (PC12, PE2, PE3)
+  31:Core/Src/init.c ****     GPIOC->MODER |= GPIO_MODER_MODER12_0;  // PC12设为输出
+ 126              		.loc 2 31 5 is_stmt 1 view .LVU30
+ 127              		.loc 2 31 10 is_stmt 0 view .LVU31
+ 128 0028 1B4A     		ldr	r2, .L8+16
+ 129 002a 1368     		ldr	r3, [r2]
+ 130              		.loc 2 31 18 view .LVU32
+ 131 002c 43F08073 		orr	r3, r3, #16777216
+ 132 0030 1360     		str	r3, [r2]
+  32:Core/Src/init.c ****     GPIOE->MODER |= GPIO_MODER_MODER2_0 | GPIO_MODER_MODER3_0;  // PE2, PE3设为输出
+ 133              		.loc 2 32 5 is_stmt 1 view .LVU33
+ 134              		.loc 2 32 10 is_stmt 0 view .LVU34
+ 135 0032 1A4B     		ldr	r3, .L8+20
+ 136 0034 1968     		ldr	r1, [r3]
+ 137              		.loc 2 32 18 view .LVU35
+ 138 0036 41F05001 		orr	r1, r1, #80
+ 139 003a 1960     		str	r1, [r3]
+  33:Core/Src/init.c ****     
+  34:Core/Src/init.c ****     GPIOC->OTYPER &= ~GPIO_OTYPER_OT12;   // PC12推挽输出
+ 140              		.loc 2 34 5 is_stmt 1 view .LVU36
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 4
+
+
+ 141              		.loc 2 34 10 is_stmt 0 view .LVU37
+ 142 003c 5168     		ldr	r1, [r2, #4]
+ 143              		.loc 2 34 19 view .LVU38
+ 144 003e 21F48051 		bic	r1, r1, #4096
+ 145 0042 5160     		str	r1, [r2, #4]
+  35:Core/Src/init.c ****     GPIOE->OTYPER &= ~(GPIO_OTYPER_OT2 | GPIO_OTYPER_OT3);  // PE2, PE3推挽输出
+ 146              		.loc 2 35 5 is_stmt 1 view .LVU39
+ 147              		.loc 2 35 10 is_stmt 0 view .LVU40
+ 148 0044 5968     		ldr	r1, [r3, #4]
+ 149              		.loc 2 35 19 view .LVU41
+ 150 0046 21F00C01 		bic	r1, r1, #12
+ 151 004a 5960     		str	r1, [r3, #4]
+  36:Core/Src/init.c ****     
+  37:Core/Src/init.c ****     GPIOC->OSPEEDR |= GPIO_OSPEEDR_OSPEED12_1;  // PC12高速
+ 152              		.loc 2 37 5 is_stmt 1 view .LVU42
+ 153              		.loc 2 37 10 is_stmt 0 view .LVU43
+ 154 004c 9168     		ldr	r1, [r2, #8]
+ 155              		.loc 2 37 20 view .LVU44
+ 156 004e 41F00071 		orr	r1, r1, #33554432
+ 157 0052 9160     		str	r1, [r2, #8]
+  38:Core/Src/init.c ****     GPIOE->OSPEEDR |= GPIO_OSPEEDR_OSPEED2_1 | GPIO_OSPEEDR_OSPEED3_1;  // PE2, PE3高速
+ 158              		.loc 2 38 5 is_stmt 1 view .LVU45
+ 159              		.loc 2 38 10 is_stmt 0 view .LVU46
+ 160 0054 9A68     		ldr	r2, [r3, #8]
+ 161              		.loc 2 38 20 view .LVU47
+ 162 0056 42F0A002 		orr	r2, r2, #160
+ 163 005a 9A60     		str	r2, [r3, #8]
+  39:Core/Src/init.c ****     
+  40:Core/Src/init.c ****     // 配置按钮引脚为输入
+  41:Core/Src/init.c ****     // 按钮1 (PG3) - 使用PG3替代损坏的板载按钮
+  42:Core/Src/init.c ****     GPIOG->MODER &= ~GPIO_MODER_MODER3;    // PG3设为输入
+ 164              		.loc 2 42 5 is_stmt 1 view .LVU48
+ 165              		.loc 2 42 10 is_stmt 0 view .LVU49
+ 166 005c 104A     		ldr	r2, .L8+24
+ 167 005e 1168     		ldr	r1, [r2]
+ 168              		.loc 2 42 18 view .LVU50
+ 169 0060 21F0C001 		bic	r1, r1, #192
+ 170 0064 1160     		str	r1, [r2]
+  43:Core/Src/init.c ****     GPIOG->PUPDR |= GPIO_PUPDR_PUPDR3_0;   // PG3上拉
+ 171              		.loc 2 43 5 is_stmt 1 view .LVU51
+ 172              		.loc 2 43 10 is_stmt 0 view .LVU52
+ 173 0066 D168     		ldr	r1, [r2, #12]
+ 174              		.loc 2 43 18 view .LVU53
+ 175 0068 41F04001 		orr	r1, r1, #64
+ 176 006c D160     		str	r1, [r2, #12]
+  44:Core/Src/init.c ****     
+  45:Core/Src/init.c ****     // 外部按钮 (PE0, PE4)
+  46:Core/Src/init.c ****     GPIOE->MODER &= ~(GPIO_MODER_MODER0 | GPIO_MODER_MODER4);  // PE0, PE4设为输入
+ 177              		.loc 2 46 5 is_stmt 1 view .LVU54
+ 178              		.loc 2 46 10 is_stmt 0 view .LVU55
+ 179 006e 1A68     		ldr	r2, [r3]
+ 180              		.loc 2 46 18 view .LVU56
+ 181 0070 22F44072 		bic	r2, r2, #768
+ 182 0074 22F00302 		bic	r2, r2, #3
+ 183 0078 1A60     		str	r2, [r3]
+  47:Core/Src/init.c ****     GPIOE->PUPDR |= GPIO_PUPDR_PUPDR0_0 | GPIO_PUPDR_PUPDR4_0; // PE0, PE4上拉
+ 184              		.loc 2 47 5 is_stmt 1 view .LVU57
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 5
+
+
+ 185              		.loc 2 47 10 is_stmt 0 view .LVU58
+ 186 007a DA68     		ldr	r2, [r3, #12]
+ 187              		.loc 2 47 18 view .LVU59
+ 188 007c 42F48072 		orr	r2, r2, #256
+ 189 0080 42F00102 		orr	r2, r2, #1
+ 190 0084 DA60     		str	r2, [r3, #12]
+  48:Core/Src/init.c **** }
+ 191              		.loc 2 48 1 view .LVU60
+ 192 0086 7047     		bx	lr
+ 193              	.L9:
+ 194              		.align	2
+ 195              	.L8:
+ 196 0088 00380240 		.word	1073887232
+ 197 008c 00040240 		.word	1073873920
+ 198 0090 01400010 		.word	268451841
+ 199 0094 02800020 		.word	536903682
+ 200 0098 00080240 		.word	1073874944
+ 201 009c 00100240 		.word	1073876992
+ 202 00a0 00180240 		.word	1073879040
+ 203              		.cfi_endproc
+ 204              	.LFE131:
+ 206              		.section	.text.LED_On,"ax",%progbits
+ 207              		.align	1
+ 208              		.global	LED_On
+ 209              		.syntax unified
+ 210              		.thumb
+ 211              		.thumb_func
+ 213              	LED_On:
+ 214              	.LVL1:
+ 215              	.LFB132:
+  49:Core/Src/init.c **** 
+  50:Core/Src/init.c **** void LED_On(uint8_t led_num)
+  51:Core/Src/init.c **** {
+ 216              		.loc 2 51 1 is_stmt 1 view -0
+ 217              		.cfi_startproc
+ 218              		@ args = 0, pretend = 0, frame = 0
+ 219              		@ frame_needed = 0, uses_anonymous_args = 0
+ 220              		@ link register save eliminated.
+  52:Core/Src/init.c ****     switch(led_num) {
+ 221              		.loc 2 52 5 view .LVU62
+ 222 0000 0138     		subs	r0, r0, #1
+ 223              	.LVL2:
+ 224              		.loc 2 52 5 is_stmt 0 view .LVU63
+ 225 0002 0528     		cmp	r0, #5
+ 226 0004 1DD8     		bhi	.L10
+ 227 0006 DFE800F0 		tbb	[pc, r0]
+ 228              	.L13:
+ 229 000a 03       		.byte	(.L18-.L13)/2
+ 230 000b 07       		.byte	(.L17-.L13)/2
+ 231 000c 0B       		.byte	(.L16-.L13)/2
+ 232 000d 10       		.byte	(.L15-.L13)/2
+ 233 000e 15       		.byte	(.L14-.L13)/2
+ 234 000f 19       		.byte	(.L12-.L13)/2
+ 235              		.p2align 1
+ 236              	.L18:
+  53:Core/Src/init.c ****         case 1: GPIOB->BSRR = LED1_PIN; break;
+ 237              		.loc 2 53 17 is_stmt 1 view .LVU64
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 6
+
+
+ 238              		.loc 2 53 29 is_stmt 0 view .LVU65
+ 239 0010 0C4B     		ldr	r3, .L20
+ 240 0012 0122     		movs	r2, #1
+ 241 0014 9A61     		str	r2, [r3, #24]
+ 242              		.loc 2 53 41 is_stmt 1 view .LVU66
+ 243 0016 7047     		bx	lr
+ 244              	.L17:
+  54:Core/Src/init.c ****         case 2: GPIOB->BSRR = LED2_PIN; break;
+ 245              		.loc 2 54 17 view .LVU67
+ 246              		.loc 2 54 29 is_stmt 0 view .LVU68
+ 247 0018 0A4B     		ldr	r3, .L20
+ 248 001a 8022     		movs	r2, #128
+ 249 001c 9A61     		str	r2, [r3, #24]
+ 250              		.loc 2 54 41 is_stmt 1 view .LVU69
+ 251 001e 7047     		bx	lr
+ 252              	.L16:
+  55:Core/Src/init.c ****         case 3: GPIOB->BSRR = LED3_PIN; break;
+ 253              		.loc 2 55 17 view .LVU70
+ 254              		.loc 2 55 29 is_stmt 0 view .LVU71
+ 255 0020 084B     		ldr	r3, .L20
+ 256 0022 4FF48042 		mov	r2, #16384
+ 257 0026 9A61     		str	r2, [r3, #24]
+ 258              		.loc 2 55 41 is_stmt 1 view .LVU72
+ 259 0028 7047     		bx	lr
+ 260              	.L15:
+  56:Core/Src/init.c ****         case 4: GPIOC->BSRR = LED4_PIN; break;
+ 261              		.loc 2 56 17 view .LVU73
+ 262              		.loc 2 56 29 is_stmt 0 view .LVU74
+ 263 002a 074B     		ldr	r3, .L20+4
+ 264 002c 4FF48052 		mov	r2, #4096
+ 265 0030 9A61     		str	r2, [r3, #24]
+ 266              		.loc 2 56 41 is_stmt 1 view .LVU75
+ 267 0032 7047     		bx	lr
+ 268              	.L14:
+  57:Core/Src/init.c ****         case 5: GPIOE->BSRR = LED5_PIN; break;
+ 269              		.loc 2 57 17 view .LVU76
+ 270              		.loc 2 57 29 is_stmt 0 view .LVU77
+ 271 0034 054B     		ldr	r3, .L20+8
+ 272 0036 0422     		movs	r2, #4
+ 273 0038 9A61     		str	r2, [r3, #24]
+ 274              		.loc 2 57 41 is_stmt 1 view .LVU78
+ 275 003a 7047     		bx	lr
+ 276              	.L12:
+  58:Core/Src/init.c ****         case 6: GPIOE->BSRR = LED6_PIN; break;
+ 277              		.loc 2 58 17 view .LVU79
+ 278              		.loc 2 58 29 is_stmt 0 view .LVU80
+ 279 003c 034B     		ldr	r3, .L20+8
+ 280 003e 0822     		movs	r2, #8
+ 281 0040 9A61     		str	r2, [r3, #24]
+ 282              		.loc 2 58 41 is_stmt 1 view .LVU81
+ 283              	.L10:
+  59:Core/Src/init.c ****     }
+  60:Core/Src/init.c **** }
+ 284              		.loc 2 60 1 is_stmt 0 view .LVU82
+ 285 0042 7047     		bx	lr
+ 286              	.L21:
+ 287              		.align	2
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 7
+
+
+ 288              	.L20:
+ 289 0044 00040240 		.word	1073873920
+ 290 0048 00080240 		.word	1073874944
+ 291 004c 00100240 		.word	1073876992
+ 292              		.cfi_endproc
+ 293              	.LFE132:
+ 295              		.section	.text.LED_Off,"ax",%progbits
+ 296              		.align	1
+ 297              		.global	LED_Off
+ 298              		.syntax unified
+ 299              		.thumb
+ 300              		.thumb_func
+ 302              	LED_Off:
+ 303              	.LVL3:
+ 304              	.LFB133:
+  61:Core/Src/init.c **** 
+  62:Core/Src/init.c **** void LED_Off(uint8_t led_num)
+  63:Core/Src/init.c **** {
+ 305              		.loc 2 63 1 is_stmt 1 view -0
+ 306              		.cfi_startproc
+ 307              		@ args = 0, pretend = 0, frame = 0
+ 308              		@ frame_needed = 0, uses_anonymous_args = 0
+ 309              		@ link register save eliminated.
+  64:Core/Src/init.c ****     switch(led_num) {
+ 310              		.loc 2 64 5 view .LVU84
+ 311 0000 0138     		subs	r0, r0, #1
+ 312              	.LVL4:
+ 313              		.loc 2 64 5 is_stmt 0 view .LVU85
+ 314 0002 0528     		cmp	r0, #5
+ 315 0004 21D8     		bhi	.L22
+ 316 0006 DFE800F0 		tbb	[pc, r0]
+ 317              	.L25:
+ 318 000a 03       		.byte	(.L30-.L25)/2
+ 319 000b 08       		.byte	(.L29-.L25)/2
+ 320 000c 0D       		.byte	(.L28-.L25)/2
+ 321 000d 12       		.byte	(.L27-.L25)/2
+ 322 000e 17       		.byte	(.L26-.L25)/2
+ 323 000f 1C       		.byte	(.L24-.L25)/2
+ 324              		.p2align 1
+ 325              	.L30:
+  65:Core/Src/init.c ****         case 1: GPIOB->BSRR = (LED1_PIN << 16); break;
+ 326              		.loc 2 65 17 is_stmt 1 view .LVU86
+ 327              		.loc 2 65 29 is_stmt 0 view .LVU87
+ 328 0010 0E4B     		ldr	r3, .L32
+ 329 0012 4FF48032 		mov	r2, #65536
+ 330 0016 9A61     		str	r2, [r3, #24]
+ 331              		.loc 2 65 49 is_stmt 1 view .LVU88
+ 332 0018 7047     		bx	lr
+ 333              	.L29:
+  66:Core/Src/init.c ****         case 2: GPIOB->BSRR = (LED2_PIN << 16); break;
+ 334              		.loc 2 66 17 view .LVU89
+ 335              		.loc 2 66 29 is_stmt 0 view .LVU90
+ 336 001a 0C4B     		ldr	r3, .L32
+ 337 001c 4FF40002 		mov	r2, #8388608
+ 338 0020 9A61     		str	r2, [r3, #24]
+ 339              		.loc 2 66 49 is_stmt 1 view .LVU91
+ 340 0022 7047     		bx	lr
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 8
+
+
+ 341              	.L28:
+  67:Core/Src/init.c ****         case 3: GPIOB->BSRR = (LED3_PIN << 16); break;
+ 342              		.loc 2 67 17 view .LVU92
+ 343              		.loc 2 67 29 is_stmt 0 view .LVU93
+ 344 0024 094B     		ldr	r3, .L32
+ 345 0026 4FF08042 		mov	r2, #1073741824
+ 346 002a 9A61     		str	r2, [r3, #24]
+ 347              		.loc 2 67 49 is_stmt 1 view .LVU94
+ 348 002c 7047     		bx	lr
+ 349              	.L27:
+  68:Core/Src/init.c ****         case 4: GPIOC->BSRR = (LED4_PIN << 16); break;
+ 350              		.loc 2 68 17 view .LVU95
+ 351              		.loc 2 68 29 is_stmt 0 view .LVU96
+ 352 002e 084B     		ldr	r3, .L32+4
+ 353 0030 4FF08052 		mov	r2, #268435456
+ 354 0034 9A61     		str	r2, [r3, #24]
+ 355              		.loc 2 68 49 is_stmt 1 view .LVU97
+ 356 0036 7047     		bx	lr
+ 357              	.L26:
+  69:Core/Src/init.c ****         case 5: GPIOE->BSRR = (LED5_PIN << 16); break;
+ 358              		.loc 2 69 17 view .LVU98
+ 359              		.loc 2 69 29 is_stmt 0 view .LVU99
+ 360 0038 064B     		ldr	r3, .L32+8
+ 361 003a 4FF48022 		mov	r2, #262144
+ 362 003e 9A61     		str	r2, [r3, #24]
+ 363              		.loc 2 69 49 is_stmt 1 view .LVU100
+ 364 0040 7047     		bx	lr
+ 365              	.L24:
+  70:Core/Src/init.c ****         case 6: GPIOE->BSRR = (LED6_PIN << 16); break;
+ 366              		.loc 2 70 17 view .LVU101
+ 367              		.loc 2 70 29 is_stmt 0 view .LVU102
+ 368 0042 044B     		ldr	r3, .L32+8
+ 369 0044 4FF40022 		mov	r2, #524288
+ 370 0048 9A61     		str	r2, [r3, #24]
+ 371              		.loc 2 70 49 is_stmt 1 view .LVU103
+ 372              	.L22:
+  71:Core/Src/init.c ****     }
+  72:Core/Src/init.c **** }
+ 373              		.loc 2 72 1 is_stmt 0 view .LVU104
+ 374 004a 7047     		bx	lr
+ 375              	.L33:
+ 376              		.align	2
+ 377              	.L32:
+ 378 004c 00040240 		.word	1073873920
+ 379 0050 00080240 		.word	1073874944
+ 380 0054 00100240 		.word	1073876992
+ 381              		.cfi_endproc
+ 382              	.LFE133:
+ 384              		.section	.text.Button_Read,"ax",%progbits
+ 385              		.align	1
+ 386              		.global	Button_Read
+ 387              		.syntax unified
+ 388              		.thumb
+ 389              		.thumb_func
+ 391              	Button_Read:
+ 392              	.LVL5:
+ 393              	.LFB134:
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 9
+
+
+  73:Core/Src/init.c **** 
+  74:Core/Src/init.c **** uint8_t Button_Read(uint8_t btn_num)
+  75:Core/Src/init.c **** {
+ 394              		.loc 2 75 1 is_stmt 1 view -0
+ 395              		.cfi_startproc
+ 396              		@ args = 0, pretend = 0, frame = 0
+ 397              		@ frame_needed = 0, uses_anonymous_args = 0
+ 398              		@ link register save eliminated.
+  76:Core/Src/init.c ****     switch(btn_num) {
+ 399              		.loc 2 76 5 view .LVU106
+ 400 0000 0228     		cmp	r0, #2
+ 401 0002 0BD0     		beq	.L35
+ 402 0004 0328     		cmp	r0, #3
+ 403 0006 11D0     		beq	.L36
+ 404 0008 0128     		cmp	r0, #1
+ 405 000a 17D1     		bne	.L38
+  77:Core/Src/init.c ****         case 1: 
+  78:Core/Src/init.c ****             // 读取PG3，按下为低电平
+  79:Core/Src/init.c ****             return (GPIOG->IDR & BTN1_PIN) == 0;
+ 406              		.loc 2 79 13 view .LVU107
+ 407              		.loc 2 79 26 is_stmt 0 view .LVU108
+ 408 000c 0C4B     		ldr	r3, .L39
+ 409 000e 1B69     		ldr	r3, [r3, #16]
+ 410              		.loc 2 79 44 view .LVU109
+ 411 0010 13F0080F 		tst	r3, #8
+ 412 0014 0CBF     		ite	eq
+ 413 0016 0120     		moveq	r0, #1
+ 414              	.LVL6:
+ 415              		.loc 2 79 44 view .LVU110
+ 416 0018 0020     		movne	r0, #0
+ 417 001a 7047     		bx	lr
+ 418              	.LVL7:
+ 419              	.L35:
+  80:Core/Src/init.c ****         case 2: 
+  81:Core/Src/init.c ****             // 读取PE0，按下为低电平
+  82:Core/Src/init.c ****             return (GPIOE->IDR & BTN2_PIN) == 0;
+ 420              		.loc 2 82 13 is_stmt 1 view .LVU111
+ 421              		.loc 2 82 26 is_stmt 0 view .LVU112
+ 422 001c 094B     		ldr	r3, .L39+4
+ 423 001e 1B69     		ldr	r3, [r3, #16]
+ 424              		.loc 2 82 44 view .LVU113
+ 425 0020 13F0010F 		tst	r3, #1
+ 426 0024 0CBF     		ite	eq
+ 427 0026 0120     		moveq	r0, #1
+ 428              	.LVL8:
+ 429              		.loc 2 82 44 view .LVU114
+ 430 0028 0020     		movne	r0, #0
+ 431 002a 7047     		bx	lr
+ 432              	.LVL9:
+ 433              	.L36:
+  83:Core/Src/init.c ****         case 3: 
+  84:Core/Src/init.c ****             // 读取PE4，按下为低电平
+  85:Core/Src/init.c ****             return (GPIOE->IDR & BTN3_PIN) == 0;
+ 434              		.loc 2 85 13 is_stmt 1 view .LVU115
+ 435              		.loc 2 85 26 is_stmt 0 view .LVU116
+ 436 002c 054B     		ldr	r3, .L39+4
+ 437 002e 1B69     		ldr	r3, [r3, #16]
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 10
+
+
+ 438              		.loc 2 85 44 view .LVU117
+ 439 0030 13F0100F 		tst	r3, #16
+ 440 0034 0CBF     		ite	eq
+ 441 0036 0120     		moveq	r0, #1
+ 442              	.LVL10:
+ 443              		.loc 2 85 44 view .LVU118
+ 444 0038 0020     		movne	r0, #0
+ 445 003a 7047     		bx	lr
+ 446              	.LVL11:
+ 447              	.L38:
+  76:Core/Src/init.c ****         case 1: 
+ 448              		.loc 2 76 5 view .LVU119
+ 449 003c 0020     		movs	r0, #0
+ 450              	.LVL12:
+  86:Core/Src/init.c ****         default: 
+  87:Core/Src/init.c ****             return 0;
+  88:Core/Src/init.c ****     }
+  89:Core/Src/init.c **** }
+ 451              		.loc 2 89 1 view .LVU120
+ 452 003e 7047     		bx	lr
+ 453              	.L40:
+ 454              		.align	2
+ 455              	.L39:
+ 456 0040 00180240 		.word	1073879040
+ 457 0044 00100240 		.word	1073876992
+ 458              		.cfi_endproc
+ 459              	.LFE134:
+ 461              		.section	.text.All_LEDs_Off,"ax",%progbits
+ 462              		.align	1
+ 463              		.global	All_LEDs_Off
+ 464              		.syntax unified
+ 465              		.thumb
+ 466              		.thumb_func
+ 468              	All_LEDs_Off:
+ 469              	.LFB135:
+  90:Core/Src/init.c **** 
+  91:Core/Src/init.c **** void All_LEDs_Off(void)
+  92:Core/Src/init.c **** {
+ 470              		.loc 2 92 1 is_stmt 1 view -0
+ 471              		.cfi_startproc
+ 472              		@ args = 0, pretend = 0, frame = 0
+ 473              		@ frame_needed = 0, uses_anonymous_args = 0
+ 474 0000 10B5     		push	{r4, lr}
+ 475              	.LCFI1:
+ 476              		.cfi_def_cfa_offset 8
+ 477              		.cfi_offset 4, -8
+ 478              		.cfi_offset 14, -4
+  93:Core/Src/init.c ****     for(uint8_t i = 1; i <= 6; i++) {
+ 479              		.loc 2 93 5 view .LVU122
+ 480              	.LBB2:
+ 481              		.loc 2 93 9 view .LVU123
+ 482              	.LVL13:
+ 483              		.loc 2 93 17 is_stmt 0 view .LVU124
+ 484 0002 0124     		movs	r4, #1
+ 485              		.loc 2 93 5 view .LVU125
+ 486 0004 04E0     		b	.L42
+ 487              	.LVL14:
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 11
+
+
+ 488              	.L43:
+  94:Core/Src/init.c ****         LED_Off(i);
+ 489              		.loc 2 94 9 is_stmt 1 view .LVU126
+ 490 0006 2046     		mov	r0, r4
+ 491 0008 FFF7FEFF 		bl	LED_Off
+ 492              	.LVL15:
+  93:Core/Src/init.c ****     for(uint8_t i = 1; i <= 6; i++) {
+ 493              		.loc 2 93 33 discriminator 3 view .LVU127
+ 494 000c 0134     		adds	r4, r4, #1
+ 495              	.LVL16:
+  93:Core/Src/init.c ****     for(uint8_t i = 1; i <= 6; i++) {
+ 496              		.loc 2 93 33 is_stmt 0 discriminator 3 view .LVU128
+ 497 000e E4B2     		uxtb	r4, r4
+ 498              	.LVL17:
+ 499              	.L42:
+  93:Core/Src/init.c ****     for(uint8_t i = 1; i <= 6; i++) {
+ 500              		.loc 2 93 26 is_stmt 1 discriminator 1 view .LVU129
+ 501 0010 062C     		cmp	r4, #6
+ 502 0012 F8D9     		bls	.L43
+ 503              	.LBE2:
+  95:Core/Src/init.c ****     }
+  96:Core/Src/init.c **** }...
+ 504              		.loc 2 96 1 is_stmt 0 view .LVU130
+ 505 0014 10BD     		pop	{r4, pc}
+ 506              		.loc 2 96 1 view .LVU131
+ 507              		.cfi_endproc
+ 508              	.LFE135:
+ 510              		.section	.text.delay,"ax",%progbits
+ 511              		.align	1
+ 512              		.global	delay
+ 513              		.syntax unified
+ 514              		.thumb
+ 515              		.thumb_func
+ 517              	delay:
+ 518              	.LVL18:
+ 519              	.LFB136:
+   1:Core/Src/main.c **** #include "stm32f429xx.h"
+   2:Core/Src/main.c **** #include "init.h"
+   3:Core/Src/main.c **** #include "init.c"
+   4:Core/Src/main.c **** // 全局变量
+   5:Core/Src/main.c **** volatile uint8_t current_led = 0;
+   6:Core/Src/main.c **** volatile uint8_t function_swapped = 0;
+   7:Core/Src/main.c **** volatile uint8_t btn1_pressed = 0;
+   8:Core/Src/main.c **** volatile uint8_t btn2_pressed = 0;
+   9:Core/Src/main.c **** volatile uint8_t btn3_pressed = 0;
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** // 延时函数
+  12:Core/Src/main.c **** void delay(uint32_t count)
+  13:Core/Src/main.c **** {
+ 520              		.loc 1 13 1 is_stmt 1 view -0
+ 521              		.cfi_startproc
+ 522              		@ args = 0, pretend = 0, frame = 8
+ 523              		@ frame_needed = 0, uses_anonymous_args = 0
+ 524              		@ link register save eliminated.
+ 525              		.loc 1 13 1 is_stmt 0 view .LVU133
+ 526 0000 82B0     		sub	sp, sp, #8
+ 527              	.LCFI2:
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 12
+
+
+ 528              		.cfi_def_cfa_offset 8
+  14:Core/Src/main.c ****     for(volatile uint32_t i = 0; i < count; i++);
+ 529              		.loc 1 14 5 is_stmt 1 view .LVU134
+ 530              	.LBB3:
+ 531              		.loc 1 14 9 view .LVU135
+ 532              		.loc 1 14 27 is_stmt 0 view .LVU136
+ 533 0002 0023     		movs	r3, #0
+ 534 0004 0193     		str	r3, [sp, #4]
+ 535              		.loc 1 14 5 view .LVU137
+ 536 0006 02E0     		b	.L46
+ 537              	.L47:
+ 538              		.loc 1 14 46 is_stmt 1 discriminator 3 view .LVU138
+ 539 0008 019B     		ldr	r3, [sp, #4]
+ 540 000a 0133     		adds	r3, r3, #1
+ 541 000c 0193     		str	r3, [sp, #4]
+ 542              	.L46:
+ 543              		.loc 1 14 36 discriminator 1 view .LVU139
+ 544 000e 019B     		ldr	r3, [sp, #4]
+ 545 0010 8342     		cmp	r3, r0
+ 546 0012 F9D3     		bcc	.L47
+ 547              	.LBE3:
+  15:Core/Src/main.c **** }
+ 548              		.loc 1 15 1 is_stmt 0 view .LVU140
+ 549 0014 02B0     		add	sp, sp, #8
+ 550              	.LCFI3:
+ 551              		.cfi_def_cfa_offset 0
+ 552              		@ sp needed
+ 553 0016 7047     		bx	lr
+ 554              		.cfi_endproc
+ 555              	.LFE136:
+ 557              		.section	.text.Sequence_On,"ax",%progbits
+ 558              		.align	1
+ 559              		.global	Sequence_On
+ 560              		.syntax unified
+ 561              		.thumb
+ 562              		.thumb_func
+ 564              	Sequence_On:
+ 565              	.LFB137:
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** // 顺序打开LED
+  18:Core/Src/main.c **** void Sequence_On(void)
+  19:Core/Src/main.c **** {
+ 566              		.loc 1 19 1 is_stmt 1 view -0
+ 567              		.cfi_startproc
+ 568              		@ args = 0, pretend = 0, frame = 0
+ 569              		@ frame_needed = 0, uses_anonymous_args = 0
+ 570 0000 08B5     		push	{r3, lr}
+ 571              	.LCFI4:
+ 572              		.cfi_def_cfa_offset 8
+ 573              		.cfi_offset 3, -8
+ 574              		.cfi_offset 14, -4
+  20:Core/Src/main.c ****     if(current_led < 6) {
+ 575              		.loc 1 20 5 view .LVU142
+ 576              		.loc 1 20 20 is_stmt 0 view .LVU143
+ 577 0002 074B     		ldr	r3, .L53
+ 578 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 579 0006 DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 13
+
+
+ 580              		.loc 1 20 7 view .LVU144
+ 581 0008 052B     		cmp	r3, #5
+ 582 000a 00D9     		bls	.L52
+ 583              	.L49:
+  21:Core/Src/main.c ****         current_led++;
+  22:Core/Src/main.c ****         LED_On(current_led);
+  23:Core/Src/main.c ****     }
+  24:Core/Src/main.c **** }
+ 584              		.loc 1 24 1 view .LVU145
+ 585 000c 08BD     		pop	{r3, pc}
+ 586              	.L52:
+  21:Core/Src/main.c ****         current_led++;
+ 587              		.loc 1 21 9 is_stmt 1 view .LVU146
+  21:Core/Src/main.c ****         current_led++;
+ 588              		.loc 1 21 20 is_stmt 0 view .LVU147
+ 589 000e 044A     		ldr	r2, .L53
+ 590 0010 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 591 0012 0133     		adds	r3, r3, #1
+ 592 0014 DBB2     		uxtb	r3, r3
+ 593 0016 1370     		strb	r3, [r2]
+  22:Core/Src/main.c ****     }
+ 594              		.loc 1 22 9 is_stmt 1 view .LVU148
+ 595 0018 1078     		ldrb	r0, [r2]	@ zero_extendqisi2
+ 596 001a FFF7FEFF 		bl	LED_On
+ 597              	.LVL19:
+ 598              		.loc 1 24 1 is_stmt 0 view .LVU149
+ 599 001e F5E7     		b	.L49
+ 600              	.L54:
+ 601              		.align	2
+ 602              	.L53:
+ 603 0020 00000000 		.word	current_led
+ 604              		.cfi_endproc
+ 605              	.LFE137:
+ 607              		.section	.text.Sequence_Off,"ax",%progbits
+ 608              		.align	1
+ 609              		.global	Sequence_Off
+ 610              		.syntax unified
+ 611              		.thumb
+ 612              		.thumb_func
+ 614              	Sequence_Off:
+ 615              	.LFB138:
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c **** // 顺序关闭LED  
+  27:Core/Src/main.c **** void Sequence_Off(void)
+  28:Core/Src/main.c **** {
+ 616              		.loc 1 28 1 is_stmt 1 view -0
+ 617              		.cfi_startproc
+ 618              		@ args = 0, pretend = 0, frame = 0
+ 619              		@ frame_needed = 0, uses_anonymous_args = 0
+  29:Core/Src/main.c ****     if(current_led > 0) {
+ 620              		.loc 1 29 5 view .LVU151
+ 621              		.loc 1 29 20 is_stmt 0 view .LVU152
+ 622 0000 064B     		ldr	r3, .L62
+ 623 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 624              		.loc 1 29 7 view .LVU153
+ 625 0004 03B9     		cbnz	r3, .L61
+ 626 0006 7047     		bx	lr
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 14
+
+
+ 627              	.L61:
+  28:Core/Src/main.c ****     if(current_led > 0) {
+ 628              		.loc 1 28 1 view .LVU154
+ 629 0008 10B5     		push	{r4, lr}
+ 630              	.LCFI5:
+ 631              		.cfi_def_cfa_offset 8
+ 632              		.cfi_offset 4, -8
+ 633              		.cfi_offset 14, -4
+  30:Core/Src/main.c ****         LED_Off(current_led);
+ 634              		.loc 1 30 9 is_stmt 1 view .LVU155
+ 635 000a 044C     		ldr	r4, .L62
+ 636 000c 2078     		ldrb	r0, [r4]	@ zero_extendqisi2
+ 637 000e FFF7FEFF 		bl	LED_Off
+ 638              	.LVL20:
+  31:Core/Src/main.c ****         current_led--;
+ 639              		.loc 1 31 9 view .LVU156
+ 640              		.loc 1 31 20 is_stmt 0 view .LVU157
+ 641 0012 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 642 0014 013B     		subs	r3, r3, #1
+ 643 0016 DBB2     		uxtb	r3, r3
+ 644 0018 2370     		strb	r3, [r4]
+  32:Core/Src/main.c ****     }
+  33:Core/Src/main.c **** }
+ 645              		.loc 1 33 1 view .LVU158
+ 646 001a 10BD     		pop	{r4, pc}
+ 647              	.L63:
+ 648              		.align	2
+ 649              	.L62:
+ 650 001c 00000000 		.word	current_led
+ 651              		.cfi_endproc
+ 652              	.LFE138:
+ 654              		.section	.text.main,"ax",%progbits
+ 655              		.align	1
+ 656              		.global	main
+ 657              		.syntax unified
+ 658              		.thumb
+ 659              		.thumb_func
+ 661              	main:
+ 662              	.LFB139:
+  34:Core/Src/main.c **** 
+  35:Core/Src/main.c **** int main(void)
+  36:Core/Src/main.c **** {
+ 663              		.loc 1 36 1 is_stmt 1 view -0
+ 664              		.cfi_startproc
+ 665              		@ args = 0, pretend = 0, frame = 0
+ 666              		@ frame_needed = 0, uses_anonymous_args = 0
+ 667 0000 70B5     		push	{r4, r5, r6, lr}
+ 668              	.LCFI6:
+ 669              		.cfi_def_cfa_offset 16
+ 670              		.cfi_offset 4, -16
+ 671              		.cfi_offset 5, -12
+ 672              		.cfi_offset 6, -8
+ 673              		.cfi_offset 14, -4
+  37:Core/Src/main.c ****     SystemClock_Config();
+ 674              		.loc 1 37 5 view .LVU160
+ 675 0002 FFF7FEFF 		bl	SystemClock_Config
+ 676              	.LVL21:
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 15
+
+
+  38:Core/Src/main.c ****     GPIO_Init();
+ 677              		.loc 1 38 5 view .LVU161
+ 678 0006 FFF7FEFF 		bl	GPIO_Init
+ 679              	.LVL22:
+  39:Core/Src/main.c ****     All_LEDs_Off();
+ 680              		.loc 1 39 5 view .LVU162
+ 681 000a FFF7FEFF 		bl	All_LEDs_Off
+ 682              	.LVL23:
+  40:Core/Src/main.c ****     
+  41:Core/Src/main.c ****     // 启动指示
+  42:Core/Src/main.c ****     for(uint8_t i = 1; i <= 6; i++) LED_On(i);
+ 683              		.loc 1 42 5 view .LVU163
+ 684              	.LBB4:
+ 685              		.loc 1 42 9 view .LVU164
+ 686              		.loc 1 42 17 is_stmt 0 view .LVU165
+ 687 000e 0124     		movs	r4, #1
+ 688              		.loc 1 42 5 view .LVU166
+ 689 0010 04E0     		b	.L65
+ 690              	.LVL24:
+ 691              	.L66:
+ 692              		.loc 1 42 37 is_stmt 1 discriminator 3 view .LVU167
+ 693 0012 2046     		mov	r0, r4
+ 694 0014 FFF7FEFF 		bl	LED_On
+ 695              	.LVL25:
+ 696              		.loc 1 42 33 discriminator 3 view .LVU168
+ 697 0018 0134     		adds	r4, r4, #1
+ 698              	.LVL26:
+ 699              		.loc 1 42 33 is_stmt 0 discriminator 3 view .LVU169
+ 700 001a E4B2     		uxtb	r4, r4
+ 701              	.LVL27:
+ 702              	.L65:
+ 703              		.loc 1 42 26 is_stmt 1 discriminator 2 view .LVU170
+ 704 001c 062C     		cmp	r4, #6
+ 705 001e F8D9     		bls	.L66
+ 706              	.LBE4:
+  43:Core/Src/main.c ****     delay(300000);
+ 707              		.loc 1 43 5 view .LVU171
+ 708 0020 4048     		ldr	r0, .L87
+ 709 0022 FFF7FEFF 		bl	delay
+ 710              	.LVL28:
+  44:Core/Src/main.c ****     for(uint8_t i = 1; i <= 6; i++) LED_Off(i);
+ 711              		.loc 1 44 5 view .LVU172
+ 712              	.LBB5:
+ 713              		.loc 1 44 9 view .LVU173
+ 714              		.loc 1 44 17 is_stmt 0 view .LVU174
+ 715 0026 0124     		movs	r4, #1
+ 716              	.LVL29:
+ 717              		.loc 1 44 5 view .LVU175
+ 718 0028 04E0     		b	.L67
+ 719              	.LVL30:
+ 720              	.L68:
+ 721              		.loc 1 44 37 is_stmt 1 discriminator 3 view .LVU176
+ 722 002a 2046     		mov	r0, r4
+ 723 002c FFF7FEFF 		bl	LED_Off
+ 724              	.LVL31:
+ 725              		.loc 1 44 33 discriminator 3 view .LVU177
+ 726 0030 0134     		adds	r4, r4, #1
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 16
+
+
+ 727              	.LVL32:
+ 728              		.loc 1 44 33 is_stmt 0 discriminator 3 view .LVU178
+ 729 0032 E4B2     		uxtb	r4, r4
+ 730              	.LVL33:
+ 731              	.L67:
+ 732              		.loc 1 44 26 is_stmt 1 discriminator 2 view .LVU179
+ 733 0034 062C     		cmp	r4, #6
+ 734 0036 F8D9     		bls	.L68
+ 735              	.LBE5:
+  45:Core/Src/main.c ****     delay(300000);
+ 736              		.loc 1 45 5 view .LVU180
+ 737 0038 3A48     		ldr	r0, .L87
+ 738 003a FFF7FEFF 		bl	delay
+ 739              	.LVL34:
+ 740 003e 10E0     		b	.L82
+ 741              	.LVL35:
+ 742              	.L71:
+ 743              	.LBB6:
+ 744              	.LBB7:
+  46:Core/Src/main.c ****     
+  47:Core/Src/main.c ****     while(1) {
+  48:Core/Src/main.c ****         // 读取按钮状态（减少消抖时间）
+  49:Core/Src/main.c ****         static uint32_t last_check = 0;
+  50:Core/Src/main.c ****         static uint32_t tick_count = 0;
+  51:Core/Src/main.c ****         
+  52:Core/Src/main.c ****         tick_count++;
+  53:Core/Src/main.c ****         
+  54:Core/Src/main.c ****         // 减少消抖时间：从5000改为1000（约1ms）
+  55:Core/Src/main.c ****         if(tick_count - last_check > 1000) {
+  56:Core/Src/main.c ****             last_check = tick_count;
+  57:Core/Src/main.c ****             
+  58:Core/Src/main.c ****             uint8_t btn1_current = Button_Read(1);
+  59:Core/Src/main.c ****             uint8_t btn2_current = Button_Read(2);
+  60:Core/Src/main.c ****             uint8_t btn3_current = Button_Read(3);
+  61:Core/Src/main.c ****             
+  62:Core/Src/main.c ****             // 检测按钮1按下（上升沿）
+  63:Core/Src/main.c ****             if(!btn1_pressed && btn1_current) {
+  64:Core/Src/main.c ****                 if(!function_swapped) {
+  65:Core/Src/main.c ****                     Sequence_On();  // 正常模式：顺序打开
+  66:Core/Src/main.c ****                 } else {
+  67:Core/Src/main.c ****                     Sequence_Off(); // 交换模式：顺序关闭
+ 745              		.loc 1 67 21 view .LVU181
+ 746 0040 FFF7FEFF 		bl	Sequence_Off
+ 747              	.LVL36:
+ 748 0044 2FE0     		b	.L70
+ 749              	.L73:
+  68:Core/Src/main.c ****                 }
+  69:Core/Src/main.c ****             }
+  70:Core/Src/main.c ****             btn1_pressed = btn1_current;
+  71:Core/Src/main.c ****             
+  72:Core/Src/main.c ****             // 检测按钮2按下
+  73:Core/Src/main.c ****             if(!btn2_pressed && btn2_current) {
+  74:Core/Src/main.c ****                 if(!function_swapped) {
+  75:Core/Src/main.c ****                     Sequence_Off(); // 正常模式：顺序关闭
+  76:Core/Src/main.c ****                 } else {
+  77:Core/Src/main.c ****                     Sequence_On();  // 交换模式：顺序打开
+ 750              		.loc 1 77 21 view .LVU182
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 17
+
+
+ 751 0046 FFF7FEFF 		bl	Sequence_On
+ 752              	.LVL37:
+ 753              	.L72:
+  78:Core/Src/main.c ****                 }
+  79:Core/Src/main.c ****             }
+  80:Core/Src/main.c ****             btn2_pressed = btn2_current;
+ 754              		.loc 1 80 13 view .LVU183
+ 755              		.loc 1 80 26 is_stmt 0 view .LVU184
+ 756 004a 374B     		ldr	r3, .L87+4
+ 757 004c 1C70     		strb	r4, [r3]
+  81:Core/Src/main.c ****             
+  82:Core/Src/main.c ****             // 检测按钮3按下（功能交换）
+  83:Core/Src/main.c ****             if(!btn3_pressed && btn3_current) {
+ 758              		.loc 1 83 13 is_stmt 1 view .LVU185
+ 759              		.loc 1 83 16 is_stmt 0 view .LVU186
+ 760 004e 374B     		ldr	r3, .L87+8
+ 761 0050 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 762              		.loc 1 83 15 view .LVU187
+ 763 0052 0BB9     		cbnz	r3, .L74
+ 764              		.loc 1 83 30 discriminator 1 view .LVU188
+ 765 0054 002D     		cmp	r5, #0
+ 766 0056 35D1     		bne	.L85
+ 767              	.LVL38:
+ 768              	.L74:
+  84:Core/Src/main.c ****                 function_swapped = !function_swapped;
+  85:Core/Src/main.c ****                 
+  86:Core/Src/main.c ****                 // 使用视觉反馈
+  87:Core/Src/main.c ****                 for(int i = 0; i < 2; i++) { 
+  88:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_On(j);
+  89:Core/Src/main.c ****                     delay(100000);  // 减少延时
+  90:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_Off(j);
+  91:Core/Src/main.c ****                     delay(100000);  // 减少延时
+  92:Core/Src/main.c ****                 }
+  93:Core/Src/main.c ****                 
+  94:Core/Src/main.c ****                 // 恢复之前的LED状态
+  95:Core/Src/main.c ****                 for(uint8_t i = 1; i <= current_led; i++) {
+  96:Core/Src/main.c ****                     LED_On(i);
+  97:Core/Src/main.c ****                 }
+  98:Core/Src/main.c ****             }
+  99:Core/Src/main.c ****             btn3_pressed = btn3_current;
+ 769              		.loc 1 99 13 is_stmt 1 view .LVU189
+ 770              		.loc 1 99 26 is_stmt 0 view .LVU190
+ 771 0058 344B     		ldr	r3, .L87+8
+ 772 005a 1D70     		strb	r5, [r3]
+ 773              	.LVL39:
+ 774              	.L69:
+ 775              		.loc 1 99 26 view .LVU191
+ 776              	.LBE7:
+ 100:Core/Src/main.c ****         }
+ 101:Core/Src/main.c ****         
+ 102:Core/Src/main.c ****         delay(100); 
+ 777              		.loc 1 102 9 is_stmt 1 view .LVU192
+ 778 005c 6420     		movs	r0, #100
+ 779 005e FFF7FEFF 		bl	delay
+ 780              	.LVL40:
+ 781              	.LBE6:
+  47:Core/Src/main.c ****         // 读取按钮状态（减少消抖时间）
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 18
+
+
+ 782              		.loc 1 47 10 view .LVU193
+ 783              	.L82:
+  47:Core/Src/main.c ****         // 读取按钮状态（减少消抖时间）
+ 784              		.loc 1 47 5 view .LVU194
+ 785              	.LBB14:
+  49:Core/Src/main.c ****         static uint32_t tick_count = 0;
+ 786              		.loc 1 49 9 view .LVU195
+  50:Core/Src/main.c ****         
+ 787              		.loc 1 50 9 view .LVU196
+  52:Core/Src/main.c ****         
+ 788              		.loc 1 52 9 view .LVU197
+  52:Core/Src/main.c ****         
+ 789              		.loc 1 52 19 is_stmt 0 view .LVU198
+ 790 0062 334A     		ldr	r2, .L87+12
+ 791 0064 1368     		ldr	r3, [r2]
+ 792 0066 0133     		adds	r3, r3, #1
+ 793 0068 1360     		str	r3, [r2]
+  55:Core/Src/main.c ****             last_check = tick_count;
+ 794              		.loc 1 55 9 is_stmt 1 view .LVU199
+  55:Core/Src/main.c ****             last_check = tick_count;
+ 795              		.loc 1 55 23 is_stmt 0 view .LVU200
+ 796 006a 324A     		ldr	r2, .L87+16
+ 797 006c 1268     		ldr	r2, [r2]
+ 798 006e 9A1A     		subs	r2, r3, r2
+  55:Core/Src/main.c ****             last_check = tick_count;
+ 799              		.loc 1 55 11 view .LVU201
+ 800 0070 B2F57A7F 		cmp	r2, #1000
+ 801 0074 F2D9     		bls	.L69
+ 802              	.LBB13:
+  56:Core/Src/main.c ****             
+ 803              		.loc 1 56 13 is_stmt 1 view .LVU202
+  56:Core/Src/main.c ****             
+ 804              		.loc 1 56 24 is_stmt 0 view .LVU203
+ 805 0076 2F4A     		ldr	r2, .L87+16
+ 806 0078 1360     		str	r3, [r2]
+  58:Core/Src/main.c ****             uint8_t btn2_current = Button_Read(2);
+ 807              		.loc 1 58 13 is_stmt 1 view .LVU204
+  58:Core/Src/main.c ****             uint8_t btn2_current = Button_Read(2);
+ 808              		.loc 1 58 36 is_stmt 0 view .LVU205
+ 809 007a 0120     		movs	r0, #1
+ 810 007c FFF7FEFF 		bl	Button_Read
+ 811              	.LVL41:
+ 812 0080 0646     		mov	r6, r0
+ 813              	.LVL42:
+  59:Core/Src/main.c ****             uint8_t btn3_current = Button_Read(3);
+ 814              		.loc 1 59 13 is_stmt 1 view .LVU206
+  59:Core/Src/main.c ****             uint8_t btn3_current = Button_Read(3);
+ 815              		.loc 1 59 36 is_stmt 0 view .LVU207
+ 816 0082 0220     		movs	r0, #2
+ 817 0084 FFF7FEFF 		bl	Button_Read
+ 818              	.LVL43:
+ 819 0088 0446     		mov	r4, r0
+ 820              	.LVL44:
+  60:Core/Src/main.c ****             
+ 821              		.loc 1 60 13 is_stmt 1 view .LVU208
+  60:Core/Src/main.c ****             
+ 822              		.loc 1 60 36 is_stmt 0 view .LVU209
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 19
+
+
+ 823 008a 0320     		movs	r0, #3
+ 824 008c FFF7FEFF 		bl	Button_Read
+ 825              	.LVL45:
+ 826 0090 0546     		mov	r5, r0
+ 827              	.LVL46:
+  63:Core/Src/main.c ****                 if(!function_swapped) {
+ 828              		.loc 1 63 13 is_stmt 1 view .LVU210
+  63:Core/Src/main.c ****                 if(!function_swapped) {
+ 829              		.loc 1 63 16 is_stmt 0 view .LVU211
+ 830 0092 294B     		ldr	r3, .L87+20
+ 831 0094 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  63:Core/Src/main.c ****                 if(!function_swapped) {
+ 832              		.loc 1 63 15 view .LVU212
+ 833 0096 33B9     		cbnz	r3, .L70
+  63:Core/Src/main.c ****                 if(!function_swapped) {
+ 834              		.loc 1 63 30 discriminator 1 view .LVU213
+ 835 0098 2EB1     		cbz	r6, .L70
+  64:Core/Src/main.c ****                     Sequence_On();  // 正常模式：顺序打开
+ 836              		.loc 1 64 17 is_stmt 1 view .LVU214
+  64:Core/Src/main.c ****                     Sequence_On();  // 正常模式：顺序打开
+ 837              		.loc 1 64 20 is_stmt 0 view .LVU215
+ 838 009a 284B     		ldr	r3, .L87+24
+ 839 009c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  64:Core/Src/main.c ****                     Sequence_On();  // 正常模式：顺序打开
+ 840              		.loc 1 64 19 view .LVU216
+ 841 009e 002B     		cmp	r3, #0
+ 842 00a0 CED1     		bne	.L71
+  65:Core/Src/main.c ****                 } else {
+ 843              		.loc 1 65 21 is_stmt 1 view .LVU217
+ 844 00a2 FFF7FEFF 		bl	Sequence_On
+ 845              	.LVL47:
+ 846              	.L70:
+  70:Core/Src/main.c ****             
+ 847              		.loc 1 70 13 view .LVU218
+  70:Core/Src/main.c ****             
+ 848              		.loc 1 70 26 is_stmt 0 view .LVU219
+ 849 00a6 244B     		ldr	r3, .L87+20
+ 850 00a8 1E70     		strb	r6, [r3]
+  73:Core/Src/main.c ****                 if(!function_swapped) {
+ 851              		.loc 1 73 13 is_stmt 1 view .LVU220
+  73:Core/Src/main.c ****                 if(!function_swapped) {
+ 852              		.loc 1 73 16 is_stmt 0 view .LVU221
+ 853 00aa 1F4B     		ldr	r3, .L87+4
+ 854 00ac 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  73:Core/Src/main.c ****                 if(!function_swapped) {
+ 855              		.loc 1 73 15 view .LVU222
+ 856 00ae 002B     		cmp	r3, #0
+ 857 00b0 CBD1     		bne	.L72
+  73:Core/Src/main.c ****                 if(!function_swapped) {
+ 858              		.loc 1 73 30 discriminator 1 view .LVU223
+ 859 00b2 002C     		cmp	r4, #0
+ 860 00b4 C9D0     		beq	.L72
+  74:Core/Src/main.c ****                     Sequence_Off(); // 正常模式：顺序关闭
+ 861              		.loc 1 74 17 is_stmt 1 view .LVU224
+  74:Core/Src/main.c ****                     Sequence_Off(); // 正常模式：顺序关闭
+ 862              		.loc 1 74 20 is_stmt 0 view .LVU225
+ 863 00b6 214B     		ldr	r3, .L87+24
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 20
+
+
+ 864 00b8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  74:Core/Src/main.c ****                     Sequence_Off(); // 正常模式：顺序关闭
+ 865              		.loc 1 74 19 view .LVU226
+ 866 00ba 002B     		cmp	r3, #0
+ 867 00bc C3D1     		bne	.L73
+  75:Core/Src/main.c ****                 } else {
+ 868              		.loc 1 75 21 is_stmt 1 view .LVU227
+ 869 00be FFF7FEFF 		bl	Sequence_Off
+ 870              	.LVL48:
+ 871 00c2 C2E7     		b	.L72
+ 872              	.L85:
+  84:Core/Src/main.c ****                 
+ 873              		.loc 1 84 17 view .LVU228
+  84:Core/Src/main.c ****                 
+ 874              		.loc 1 84 36 is_stmt 0 view .LVU229
+ 875 00c4 1D4A     		ldr	r2, .L87+24
+ 876 00c6 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 877 00c8 B3FA83F3 		clz	r3, r3
+ 878 00cc 5B09     		lsrs	r3, r3, #5
+  84:Core/Src/main.c ****                 
+ 879              		.loc 1 84 34 view .LVU230
+ 880 00ce 1370     		strb	r3, [r2]
+  87:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_On(j);
+ 881              		.loc 1 87 17 is_stmt 1 view .LVU231
+ 882              	.LBB8:
+  87:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_On(j);
+ 883              		.loc 1 87 21 view .LVU232
+ 884              	.LVL49:
+  87:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_On(j);
+ 885              		.loc 1 87 25 is_stmt 0 view .LVU233
+ 886 00d0 0026     		movs	r6, #0
+ 887              	.LVL50:
+  87:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_On(j);
+ 888              		.loc 1 87 17 view .LVU234
+ 889 00d2 16E0     		b	.L75
+ 890              	.LVL51:
+ 891              	.L76:
+ 892              	.LBB9:
+  88:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 893              		.loc 1 88 53 is_stmt 1 discriminator 3 view .LVU235
+ 894 00d4 2046     		mov	r0, r4
+ 895 00d6 FFF7FEFF 		bl	LED_On
+ 896              	.LVL52:
+  88:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 897              		.loc 1 88 49 discriminator 3 view .LVU236
+ 898 00da 0134     		adds	r4, r4, #1
+ 899              	.LVL53:
+  88:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 900              		.loc 1 88 49 is_stmt 0 discriminator 3 view .LVU237
+ 901 00dc E4B2     		uxtb	r4, r4
+ 902              	.LVL54:
+ 903              	.L79:
+  88:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 904              		.loc 1 88 42 is_stmt 1 discriminator 2 view .LVU238
+ 905 00de 062C     		cmp	r4, #6
+ 906 00e0 F8D9     		bls	.L76
+ 907              	.LBE9:
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 21
+
+
+  89:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_Off(j);
+ 908              		.loc 1 89 21 view .LVU239
+ 909 00e2 1748     		ldr	r0, .L87+28
+ 910 00e4 FFF7FEFF 		bl	delay
+ 911              	.LVL55:
+  90:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 912              		.loc 1 90 21 view .LVU240
+ 913              	.LBB10:
+  90:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 914              		.loc 1 90 25 view .LVU241
+  90:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 915              		.loc 1 90 33 is_stmt 0 view .LVU242
+ 916 00e8 0124     		movs	r4, #1
+ 917              	.LVL56:
+  90:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 918              		.loc 1 90 21 view .LVU243
+ 919 00ea 04E0     		b	.L77
+ 920              	.LVL57:
+ 921              	.L78:
+  90:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 922              		.loc 1 90 53 is_stmt 1 discriminator 3 view .LVU244
+ 923 00ec 2046     		mov	r0, r4
+ 924 00ee FFF7FEFF 		bl	LED_Off
+ 925              	.LVL58:
+  90:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 926              		.loc 1 90 49 discriminator 3 view .LVU245
+ 927 00f2 0134     		adds	r4, r4, #1
+ 928              	.LVL59:
+  90:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 929              		.loc 1 90 49 is_stmt 0 discriminator 3 view .LVU246
+ 930 00f4 E4B2     		uxtb	r4, r4
+ 931              	.LVL60:
+ 932              	.L77:
+  90:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 933              		.loc 1 90 42 is_stmt 1 discriminator 2 view .LVU247
+ 934 00f6 062C     		cmp	r4, #6
+ 935 00f8 F8D9     		bls	.L78
+ 936              	.LBE10:
+  91:Core/Src/main.c ****                 }
+ 937              		.loc 1 91 21 view .LVU248
+ 938 00fa 1148     		ldr	r0, .L87+28
+ 939 00fc FFF7FEFF 		bl	delay
+ 940              	.LVL61:
+  87:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_On(j);
+ 941              		.loc 1 87 40 discriminator 2 view .LVU249
+ 942 0100 0136     		adds	r6, r6, #1
+ 943              	.LVL62:
+ 944              	.L75:
+  87:Core/Src/main.c ****                     for(uint8_t j = 1; j <= 6; j++) LED_On(j);
+ 945              		.loc 1 87 34 discriminator 1 view .LVU250
+ 946 0102 012E     		cmp	r6, #1
+ 947 0104 01DC     		bgt	.L86
+ 948              	.LBB11:
+  88:Core/Src/main.c ****                     delay(100000);  // 减少延时
+ 949              		.loc 1 88 33 is_stmt 0 view .LVU251
+ 950 0106 0124     		movs	r4, #1
+ 951 0108 E9E7     		b	.L79
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 22
+
+
+ 952              	.L86:
+ 953              	.LBE11:
+ 954              	.LBE8:
+ 955              	.LBB12:
+  95:Core/Src/main.c ****                     LED_On(i);
+ 956              		.loc 1 95 29 view .LVU252
+ 957 010a 0124     		movs	r4, #1
+ 958 010c 04E0     		b	.L80
+ 959              	.LVL63:
+ 960              	.L81:
+  96:Core/Src/main.c ****                 }
+ 961              		.loc 1 96 21 is_stmt 1 view .LVU253
+ 962 010e 2046     		mov	r0, r4
+ 963 0110 FFF7FEFF 		bl	LED_On
+ 964              	.LVL64:
+  95:Core/Src/main.c ****                     LED_On(i);
+ 965              		.loc 1 95 55 discriminator 3 view .LVU254
+ 966 0114 0134     		adds	r4, r4, #1
+ 967              	.LVL65:
+  95:Core/Src/main.c ****                     LED_On(i);
+ 968              		.loc 1 95 55 is_stmt 0 discriminator 3 view .LVU255
+ 969 0116 E4B2     		uxtb	r4, r4
+ 970              	.LVL66:
+ 971              	.L80:
+  95:Core/Src/main.c ****                     LED_On(i);
+ 972              		.loc 1 95 38 is_stmt 1 discriminator 1 view .LVU256
+ 973 0118 0A4B     		ldr	r3, .L87+32
+ 974 011a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 975 011c DBB2     		uxtb	r3, r3
+ 976 011e A342     		cmp	r3, r4
+ 977 0120 F5D2     		bcs	.L81
+ 978 0122 99E7     		b	.L74
+ 979              	.L88:
+ 980              		.align	2
+ 981              	.L87:
+ 982 0124 E0930400 		.word	300000
+ 983 0128 00000000 		.word	btn2_pressed
+ 984 012c 00000000 		.word	btn3_pressed
+ 985 0130 00000000 		.word	tick_count.1
+ 986 0134 00000000 		.word	last_check.0
+ 987 0138 00000000 		.word	btn1_pressed
+ 988 013c 00000000 		.word	function_swapped
+ 989 0140 A0860100 		.word	100000
+ 990 0144 00000000 		.word	current_led
+ 991              	.LBE12:
+ 992              	.LBE13:
+ 993              	.LBE14:
+ 994              		.cfi_endproc
+ 995              	.LFE139:
+ 997              		.section	.bss.last_check.0,"aw",%nobits
+ 998              		.align	2
+ 1001              	last_check.0:
+ 1002 0000 00000000 		.space	4
+ 1003              		.section	.bss.tick_count.1,"aw",%nobits
+ 1004              		.align	2
+ 1007              	tick_count.1:
+ 1008 0000 00000000 		.space	4
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 23
+
+
+ 1009              		.global	btn3_pressed
+ 1010              		.section	.bss.btn3_pressed,"aw",%nobits
+ 1013              	btn3_pressed:
+ 1014 0000 00       		.space	1
+ 1015              		.global	btn2_pressed
+ 1016              		.section	.bss.btn2_pressed,"aw",%nobits
+ 1019              	btn2_pressed:
+ 1020 0000 00       		.space	1
+ 1021              		.global	btn1_pressed
+ 1022              		.section	.bss.btn1_pressed,"aw",%nobits
+ 1025              	btn1_pressed:
+ 1026 0000 00       		.space	1
+ 1027              		.global	function_swapped
+ 1028              		.section	.bss.function_swapped,"aw",%nobits
+ 1031              	function_swapped:
+ 1032 0000 00       		.space	1
+ 1033              		.global	current_led
+ 1034              		.section	.bss.current_led,"aw",%nobits
+ 1037              	current_led:
+ 1038 0000 00       		.space	1
+ 1039              		.text
+ 1040              	.Letext0:
+ 1041              		.file 3 "D:/shiyan/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1
+ 1042              		.file 4 "D:/shiyan/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-arm-none-eabi-gcc-13.2.1-1.1
+ 1043              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 1044              		.file 6 "CMSIS/Devices/STM32F4xx/Inc/system_stm32f4xx.h"
+ARM GAS  C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s 			page 24
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:21     .text.SystemClock_Config:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:27     .text.SystemClock_Config:00000000 SystemClock_Config
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:79     .text.SystemClock_Config:00000030 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:84     .text.GPIO_Init:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:90     .text.GPIO_Init:00000000 GPIO_Init
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:196    .text.GPIO_Init:00000088 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:207    .text.LED_On:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:213    .text.LED_On:00000000 LED_On
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:229    .text.LED_On:0000000a $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:235    .text.LED_On:00000010 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:289    .text.LED_On:00000044 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:296    .text.LED_Off:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:302    .text.LED_Off:00000000 LED_Off
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:318    .text.LED_Off:0000000a $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:324    .text.LED_Off:00000010 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:378    .text.LED_Off:0000004c $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:385    .text.Button_Read:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:391    .text.Button_Read:00000000 Button_Read
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:456    .text.Button_Read:00000040 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:462    .text.All_LEDs_Off:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:468    .text.All_LEDs_Off:00000000 All_LEDs_Off
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:511    .text.delay:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:517    .text.delay:00000000 delay
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:558    .text.Sequence_On:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:564    .text.Sequence_On:00000000 Sequence_On
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:603    .text.Sequence_On:00000020 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1037   .bss.current_led:00000000 current_led
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:608    .text.Sequence_Off:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:614    .text.Sequence_Off:00000000 Sequence_Off
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:650    .text.Sequence_Off:0000001c $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:655    .text.main:00000000 $t
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:661    .text.main:00000000 main
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:982    .text.main:00000124 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1019   .bss.btn2_pressed:00000000 btn2_pressed
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1013   .bss.btn3_pressed:00000000 btn3_pressed
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1007   .bss.tick_count.1:00000000 tick_count.1
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1001   .bss.last_check.0:00000000 last_check.0
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1025   .bss.btn1_pressed:00000000 btn1_pressed
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1031   .bss.function_swapped:00000000 function_swapped
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:998    .bss.last_check.0:00000000 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1004   .bss.tick_count.1:00000000 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1014   .bss.btn3_pressed:00000000 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1020   .bss.btn2_pressed:00000000 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1026   .bss.btn1_pressed:00000000 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1032   .bss.function_swapped:00000000 $d
+C:\Users\ZHANGF~1\AppData\Local\Temp\ccJAyiTO.s:1038   .bss.current_led:00000000 $d
+
+UNDEFINED SYMBOLS
+SystemCoreClockUpdate
