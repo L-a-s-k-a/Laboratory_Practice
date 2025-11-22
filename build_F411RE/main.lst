@@ -1,0 +1,267 @@
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Scr/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Scr/main.c **** #include <init.h>
+   2:Core/Scr/main.c **** #include <ithandlers.h>
+   3:Core/Scr/main.c **** uint16_t GlobalTickCount;
+   4:Core/Scr/main.c **** uint8_t flag = 8;
+   5:Core/Scr/main.c **** int main(void)
+   6:Core/Scr/main.c **** {
+  29              		.loc 1 6 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 24
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 00B5     		push	{lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 4
+  36              		.cfi_offset 14, -4
+  37 0002 87B0     		sub	sp, sp, #28
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 32
+   7:Core/Scr/main.c ****     GPIO_Ini();     
+  40              		.loc 1 7 5 view .LVU1
+  41 0004 FFF7FEFF 		bl	GPIO_Ini
+  42              	.LVL0:
+   8:Core/Scr/main.c ****     RCC_Ini();      
+  43              		.loc 1 8 5 view .LVU2
+  44 0008 FFF7FEFF 		bl	RCC_Ini
+  45              	.LVL1:
+   9:Core/Scr/main.c ****     EXTI_ITR_Ini(); 
+  46              		.loc 1 9 5 view .LVU3
+  47 000c FFF7FEFF 		bl	EXTI_ITR_Ini
+  48              	.LVL2:
+  10:Core/Scr/main.c ****     SysTick_Init(); 
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s 			page 2
+
+
+  49              		.loc 1 10 5 view .LVU4
+  50 0010 FFF7FEFF 		bl	SysTick_Init
+  51              	.LVL3:
+  11:Core/Scr/main.c ****     uint16_t led[6][2];
+  52              		.loc 1 11 5 view .LVU5
+  12:Core/Scr/main.c ****     for (uint16_t i = 0; i < 6; i++)
+  53              		.loc 1 12 5 view .LVU6
+  54              	.LBB2:
+  55              		.loc 1 12 10 view .LVU7
+  56              		.loc 1 12 19 is_stmt 0 view .LVU8
+  57 0014 0021     		movs	r1, #0
+  58              		.loc 1 12 5 view .LVU9
+  59 0016 0DE0     		b	.L2
+  60              	.LVL4:
+  61              	.L3:
+  62              	.LBB3:
+  13:Core/Scr/main.c ****     {
+  14:Core/Scr/main.c ****         for (uint16_t j = 0; j < 2; j++)
+  15:Core/Scr/main.c ****         {
+  16:Core/Scr/main.c ****             led[i][j] = 0;
+  63              		.loc 1 16 13 is_stmt 1 view .LVU10
+  64              		.loc 1 16 23 is_stmt 0 view .LVU11
+  65 0018 03EB4102 		add	r2, r3, r1, lsl #1
+  66 001c 06A8     		add	r0, sp, #24
+  67 001e 00EB4202 		add	r2, r0, r2, lsl #1
+  68 0022 0020     		movs	r0, #0
+  69 0024 22F8180C 		strh	r0, [r2, #-24]	@ movhi
+  14:Core/Scr/main.c ****         {
+  70              		.loc 1 14 38 is_stmt 1 discriminator 3 view .LVU12
+  71 0028 0133     		adds	r3, r3, #1
+  72              	.LVL5:
+  14:Core/Scr/main.c ****         {
+  73              		.loc 1 14 38 is_stmt 0 discriminator 3 view .LVU13
+  74 002a 9BB2     		uxth	r3, r3
+  75              	.LVL6:
+  76              	.L4:
+  14:Core/Scr/main.c ****         {
+  77              		.loc 1 14 32 is_stmt 1 discriminator 1 view .LVU14
+  78 002c 012B     		cmp	r3, #1
+  79 002e F3D9     		bls	.L3
+  80              	.LBE3:
+  12:Core/Scr/main.c ****     for (uint16_t i = 0; i < 6; i++)
+  81              		.loc 1 12 34 discriminator 2 view .LVU15
+  82 0030 0131     		adds	r1, r1, #1
+  83              	.LVL7:
+  12:Core/Scr/main.c ****     for (uint16_t i = 0; i < 6; i++)
+  84              		.loc 1 12 34 is_stmt 0 discriminator 2 view .LVU16
+  85 0032 89B2     		uxth	r1, r1
+  86              	.LVL8:
+  87              	.L2:
+  12:Core/Scr/main.c ****     for (uint16_t i = 0; i < 6; i++)
+  88              		.loc 1 12 28 is_stmt 1 discriminator 1 view .LVU17
+  89 0034 0529     		cmp	r1, #5
+  90 0036 05D8     		bhi	.L5
+  91              	.LBB4:
+  14:Core/Scr/main.c ****         {
+  92              		.loc 1 14 23 is_stmt 0 view .LVU18
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s 			page 3
+
+
+  93 0038 0023     		movs	r3, #0
+  94 003a F7E7     		b	.L4
+  95              	.LVL9:
+  96              	.L6:
+  14:Core/Scr/main.c ****         {
+  97              		.loc 1 14 23 view .LVU19
+  98              	.LBE4:
+  99              	.LBE2:
+  17:Core/Scr/main.c ****         }
+  18:Core/Scr/main.c ****     }
+  19:Core/Scr/main.c ****     while (1)
+  20:Core/Scr/main.c ****     {
+  21:Core/Scr/main.c ****         Clear();
+  22:Core/Scr/main.c ****         Work(led);
+  23:Core/Scr/main.c ****         if (flag == 0)
+  24:Core/Scr/main.c ****         {
+  25:Core/Scr/main.c ****             LedPush(led);
+  26:Core/Scr/main.c ****             flag = 8;
+  27:Core/Scr/main.c ****         }
+  28:Core/Scr/main.c ****         else if (flag == 1)
+ 100              		.loc 1 28 14 is_stmt 1 view .LVU20
+ 101              		.loc 1 28 17 is_stmt 0 view .LVU21
+ 102 003c 012B     		cmp	r3, #1
+ 103 003e 11D0     		beq	.L11
+  29:Core/Scr/main.c ****         {
+  30:Core/Scr/main.c ****             LedMerz(led);
+  31:Core/Scr/main.c ****             flag = 8;
+  32:Core/Scr/main.c ****         }
+  33:Core/Scr/main.c ****         else if (flag == 2)
+ 104              		.loc 1 33 14 is_stmt 1 view .LVU22
+ 105              		.loc 1 33 17 is_stmt 0 view .LVU23
+ 106 0040 022B     		cmp	r3, #2
+ 107 0042 16D0     		beq	.L12
+ 108              	.L5:
+  19:Core/Scr/main.c ****     {
+ 109              		.loc 1 19 5 is_stmt 1 view .LVU24
+  21:Core/Scr/main.c ****         Work(led);
+ 110              		.loc 1 21 9 view .LVU25
+ 111 0044 FFF7FEFF 		bl	Clear
+ 112              	.LVL10:
+  22:Core/Scr/main.c ****         if (flag == 0)
+ 113              		.loc 1 22 9 view .LVU26
+ 114 0048 6846     		mov	r0, sp
+ 115 004a FFF7FEFF 		bl	Work
+ 116              	.LVL11:
+  23:Core/Scr/main.c ****         {
+ 117              		.loc 1 23 9 view .LVU27
+  23:Core/Scr/main.c ****         {
+ 118              		.loc 1 23 18 is_stmt 0 view .LVU28
+ 119 004e 0C4B     		ldr	r3, .L13
+ 120 0050 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  23:Core/Scr/main.c ****         {
+ 121              		.loc 1 23 12 view .LVU29
+ 122 0052 002B     		cmp	r3, #0
+ 123 0054 F2D1     		bne	.L6
+  25:Core/Scr/main.c ****             flag = 8;
+ 124              		.loc 1 25 13 is_stmt 1 view .LVU30
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s 			page 4
+
+
+ 125 0056 6846     		mov	r0, sp
+ 126 0058 FFF7FEFF 		bl	LedPush
+ 127              	.LVL12:
+  26:Core/Scr/main.c ****         }
+ 128              		.loc 1 26 13 view .LVU31
+  26:Core/Scr/main.c ****         }
+ 129              		.loc 1 26 18 is_stmt 0 view .LVU32
+ 130 005c 084B     		ldr	r3, .L13
+ 131 005e 0822     		movs	r2, #8
+ 132 0060 1A70     		strb	r2, [r3]
+ 133 0062 EFE7     		b	.L5
+ 134              	.L11:
+  30:Core/Scr/main.c ****             flag = 8;
+ 135              		.loc 1 30 13 is_stmt 1 view .LVU33
+ 136 0064 6846     		mov	r0, sp
+ 137 0066 FFF7FEFF 		bl	LedMerz
+ 138              	.LVL13:
+  31:Core/Scr/main.c ****         }
+ 139              		.loc 1 31 13 view .LVU34
+  31:Core/Scr/main.c ****         }
+ 140              		.loc 1 31 18 is_stmt 0 view .LVU35
+ 141 006a 054B     		ldr	r3, .L13
+ 142 006c 0822     		movs	r2, #8
+ 143 006e 1A70     		strb	r2, [r3]
+ 144 0070 E8E7     		b	.L5
+ 145              	.L12:
+  34:Core/Scr/main.c ****         {
+  35:Core/Scr/main.c ****             LedOn(led);
+ 146              		.loc 1 35 13 is_stmt 1 view .LVU36
+ 147 0072 6846     		mov	r0, sp
+ 148 0074 FFF7FEFF 		bl	LedOn
+ 149              	.LVL14:
+  36:Core/Scr/main.c ****             flag = 8;
+ 150              		.loc 1 36 13 view .LVU37
+ 151              		.loc 1 36 18 is_stmt 0 view .LVU38
+ 152 0078 014B     		ldr	r3, .L13
+ 153 007a 0822     		movs	r2, #8
+ 154 007c 1A70     		strb	r2, [r3]
+ 155 007e E1E7     		b	.L5
+ 156              	.L14:
+ 157              		.align	2
+ 158              	.L13:
+ 159 0080 00000000 		.word	flag
+ 160              		.cfi_endproc
+ 161              	.LFE130:
+ 163              		.global	flag
+ 164              		.section	.data.flag,"aw"
+ 167              	flag:
+ 168 0000 08       		.byte	8
+ 169              		.global	GlobalTickCount
+ 170              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 171              		.align	1
+ 174              	GlobalTickCount:
+ 175 0000 0000     		.space	2
+ 176              		.text
+ 177              	.Letext0:
+ 178              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s 			page 5
+
+
+ 179              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 180              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s:21     .text.main:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s:27     .text.main:00000000 main
+C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s:159    .text.main:00000080 $d
+C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s:167    .data.flag:00000000 flag
+C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s:174    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\obukh\AppData\Local\Temp\ccC6XKYT.s:171    .bss.GlobalTickCount:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
+RCC_Ini
+EXTI_ITR_Ini
+SysTick_Init
+Clear
+Work
+LedPush
+LedMerz
+LedOn

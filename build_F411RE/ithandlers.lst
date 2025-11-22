@@ -1,0 +1,255 @@
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"ithandlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Scr/ithandlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Scr/ithandlers.c **** #include "../Inc/ithandlers.h"
+   2:Core/Scr/ithandlers.c **** extern uint16_t GlobalTickCount;
+   3:Core/Scr/ithandlers.c **** uint16_t ButtonTickCount;
+   4:Core/Scr/ithandlers.c **** extern uint8_t flag;
+   5:Core/Scr/ithandlers.c **** uint8_t flag_b = 0;
+   6:Core/Scr/ithandlers.c **** uint16_t EnterruptCount;
+   7:Core/Scr/ithandlers.c **** void SysTick_Handler(void)
+   8:Core/Scr/ithandlers.c **** {
+  29              		.loc 1 8 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   9:Core/Scr/ithandlers.c ****     EnterruptCount++;
+  34              		.loc 1 9 5 view .LVU1
+  35              		.loc 1 9 19 is_stmt 0 view .LVU2
+  36 0000 064A     		ldr	r2, .L2
+  37 0002 1388     		ldrh	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1380     		strh	r3, [r2]	@ movhi
+  10:Core/Scr/ithandlers.c ****     ButtonTickCount++;
+  40              		.loc 1 10 5 is_stmt 1 view .LVU3
+  41              		.loc 1 10 20 is_stmt 0 view .LVU4
+  42 0008 054A     		ldr	r2, .L2+4
+  43 000a 1388     		ldrh	r3, [r2]
+  44 000c 0133     		adds	r3, r3, #1
+  45 000e 1380     		strh	r3, [r2]	@ movhi
+  11:Core/Scr/ithandlers.c ****     GlobalTickCount++;
+  46              		.loc 1 11 5 is_stmt 1 view .LVU5
+  47              		.loc 1 11 20 is_stmt 0 view .LVU6
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s 			page 2
+
+
+  48 0010 044A     		ldr	r2, .L2+8
+  49 0012 1388     		ldrh	r3, [r2]
+  50 0014 0133     		adds	r3, r3, #1
+  51 0016 1380     		strh	r3, [r2]	@ movhi
+  12:Core/Scr/ithandlers.c **** }
+  52              		.loc 1 12 1 view .LVU7
+  53 0018 7047     		bx	lr
+  54              	.L3:
+  55 001a 00BF     		.align	2
+  56              	.L2:
+  57 001c 00000000 		.word	EnterruptCount
+  58 0020 00000000 		.word	ButtonTickCount
+  59 0024 00000000 		.word	GlobalTickCount
+  60              		.cfi_endproc
+  61              	.LFE130:
+  63              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+  64              		.align	1
+  65              		.global	EXTI15_10_IRQHandler
+  66              		.syntax unified
+  67              		.thumb
+  68              		.thumb_func
+  70              	EXTI15_10_IRQHandler:
+  71              	.LFB131:
+  13:Core/Scr/ithandlers.c **** void EXTI15_10_IRQHandler(void)
+  14:Core/Scr/ithandlers.c **** {
+  72              		.loc 1 14 1 is_stmt 1 view -0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76              		@ link register save eliminated.
+  15:Core/Scr/ithandlers.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13);
+  77              		.loc 1 15 5 view .LVU9
+  78 0000 184A     		ldr	r2, .L9
+  79 0002 5369     		ldr	r3, [r2, #20]
+  80 0004 43F40053 		orr	r3, r3, #8192
+  81 0008 5361     		str	r3, [r2, #20]
+  16:Core/Scr/ithandlers.c ****     if (EnterruptCount >= 50)
+  82              		.loc 1 16 5 view .LVU10
+  83              		.loc 1 16 24 is_stmt 0 view .LVU11
+  84 000a 174B     		ldr	r3, .L9+4
+  85 000c 1B88     		ldrh	r3, [r3]
+  86              		.loc 1 16 8 view .LVU12
+  87 000e 312B     		cmp	r3, #49
+  88 0010 27D9     		bls	.L4
+  17:Core/Scr/ithandlers.c ****     {
+  18:Core/Scr/ithandlers.c ****         EnterruptCount = 0;
+  89              		.loc 1 18 9 is_stmt 1 view .LVU13
+  90              		.loc 1 18 24 is_stmt 0 view .LVU14
+  91 0012 154B     		ldr	r3, .L9+4
+  92 0014 0022     		movs	r2, #0
+  93 0016 1A80     		strh	r2, [r3]	@ movhi
+  19:Core/Scr/ithandlers.c ****         if (flag_b == 0)
+  94              		.loc 1 19 9 is_stmt 1 view .LVU15
+  95              		.loc 1 19 20 is_stmt 0 view .LVU16
+  96 0018 144B     		ldr	r3, .L9+8
+  97 001a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  98              		.loc 1 19 12 view .LVU17
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s 			page 3
+
+
+  99 001c 33B9     		cbnz	r3, .L6
+  20:Core/Scr/ithandlers.c ****         {
+  21:Core/Scr/ithandlers.c ****             flag_b = 1;
+ 100              		.loc 1 21 13 is_stmt 1 view .LVU18
+ 101              		.loc 1 21 20 is_stmt 0 view .LVU19
+ 102 001e 134B     		ldr	r3, .L9+8
+ 103 0020 0122     		movs	r2, #1
+ 104 0022 1A70     		strb	r2, [r3]
+  22:Core/Scr/ithandlers.c ****             ButtonTickCount = 0;
+ 105              		.loc 1 22 13 is_stmt 1 view .LVU20
+ 106              		.loc 1 22 29 is_stmt 0 view .LVU21
+ 107 0024 124B     		ldr	r3, .L9+12
+ 108 0026 0022     		movs	r2, #0
+ 109 0028 1A80     		strh	r2, [r3]	@ movhi
+ 110 002a 7047     		bx	lr
+ 111              	.L6:
+  23:Core/Scr/ithandlers.c ****         }
+  24:Core/Scr/ithandlers.c ****         else
+  25:Core/Scr/ithandlers.c ****         {
+  26:Core/Scr/ithandlers.c ****             flag_b = 0;
+ 112              		.loc 1 26 13 is_stmt 1 view .LVU22
+ 113              		.loc 1 26 20 is_stmt 0 view .LVU23
+ 114 002c 0F4B     		ldr	r3, .L9+8
+ 115 002e 0022     		movs	r2, #0
+ 116 0030 1A70     		strb	r2, [r3]
+  27:Core/Scr/ithandlers.c ****             if (ButtonTickCount < 2000)
+ 117              		.loc 1 27 13 is_stmt 1 view .LVU24
+ 118              		.loc 1 27 33 is_stmt 0 view .LVU25
+ 119 0032 0F4B     		ldr	r3, .L9+12
+ 120 0034 1B88     		ldrh	r3, [r3]
+ 121              		.loc 1 27 16 view .LVU26
+ 122 0036 B3F5FA6F 		cmp	r3, #2000
+ 123 003a 02D2     		bcs	.L7
+  28:Core/Scr/ithandlers.c ****             {
+  29:Core/Scr/ithandlers.c ****                 flag = 0;
+ 124              		.loc 1 29 17 is_stmt 1 view .LVU27
+ 125              		.loc 1 29 22 is_stmt 0 view .LVU28
+ 126 003c 0D4B     		ldr	r3, .L9+16
+ 127 003e 1A70     		strb	r2, [r3]
+ 128 0040 7047     		bx	lr
+ 129              	.L7:
+  30:Core/Scr/ithandlers.c ****             }
+  31:Core/Scr/ithandlers.c ****             else if (ButtonTickCount < 4000 && ButtonTickCount >= 2000)
+ 130              		.loc 1 31 18 is_stmt 1 view .LVU29
+ 131              		.loc 1 31 45 is_stmt 0 view .LVU30
+ 132 0042 A3F5FA62 		sub	r2, r3, #2000
+ 133 0046 92B2     		uxth	r2, r2
+ 134              		.loc 1 31 21 view .LVU31
+ 135 0048 B2F5FA6F 		cmp	r2, #2000
+ 136 004c 03D2     		bcs	.L8
+  32:Core/Scr/ithandlers.c ****             {
+  33:Core/Scr/ithandlers.c ****                 flag = 1;
+ 137              		.loc 1 33 17 is_stmt 1 view .LVU32
+ 138              		.loc 1 33 22 is_stmt 0 view .LVU33
+ 139 004e 094B     		ldr	r3, .L9+16
+ 140 0050 0122     		movs	r2, #1
+ 141 0052 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s 			page 4
+
+
+ 142 0054 7047     		bx	lr
+ 143              	.L8:
+  34:Core/Scr/ithandlers.c ****             }
+  35:Core/Scr/ithandlers.c ****             else if (ButtonTickCount >= 4000)
+ 144              		.loc 1 35 18 is_stmt 1 view .LVU34
+ 145              		.loc 1 35 21 is_stmt 0 view .LVU35
+ 146 0056 B3F57A6F 		cmp	r3, #4000
+ 147 005a 02D3     		bcc	.L4
+  36:Core/Scr/ithandlers.c ****             {
+  37:Core/Scr/ithandlers.c ****                 flag = 2;
+ 148              		.loc 1 37 17 is_stmt 1 view .LVU36
+ 149              		.loc 1 37 22 is_stmt 0 view .LVU37
+ 150 005c 054B     		ldr	r3, .L9+16
+ 151 005e 0222     		movs	r2, #2
+ 152 0060 1A70     		strb	r2, [r3]
+ 153              	.L4:
+  38:Core/Scr/ithandlers.c ****             }
+  39:Core/Scr/ithandlers.c ****         }
+  40:Core/Scr/ithandlers.c ****     }
+  41:Core/Scr/ithandlers.c **** }
+ 154              		.loc 1 41 1 view .LVU38
+ 155 0062 7047     		bx	lr
+ 156              	.L10:
+ 157              		.align	2
+ 158              	.L9:
+ 159 0064 003C0140 		.word	1073822720
+ 160 0068 00000000 		.word	EnterruptCount
+ 161 006c 00000000 		.word	flag_b
+ 162 0070 00000000 		.word	ButtonTickCount
+ 163 0074 00000000 		.word	flag
+ 164              		.cfi_endproc
+ 165              	.LFE131:
+ 167              		.global	EnterruptCount
+ 168              		.section	.bss.EnterruptCount,"aw",%nobits
+ 169              		.align	1
+ 172              	EnterruptCount:
+ 173 0000 0000     		.space	2
+ 174              		.global	flag_b
+ 175              		.section	.bss.flag_b,"aw",%nobits
+ 178              	flag_b:
+ 179 0000 00       		.space	1
+ 180              		.global	ButtonTickCount
+ 181              		.section	.bss.ButtonTickCount,"aw",%nobits
+ 182              		.align	1
+ 185              	ButtonTickCount:
+ 186 0000 0000     		.space	2
+ 187              		.text
+ 188              	.Letext0:
+ 189              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 190              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 191              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ARM GAS  C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ithandlers.c
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:57     .text.SysTick_Handler:0000001c $d
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:172    .bss.EnterruptCount:00000000 EnterruptCount
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:185    .bss.ButtonTickCount:00000000 ButtonTickCount
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:64     .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:70     .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:159    .text.EXTI15_10_IRQHandler:00000064 $d
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:178    .bss.flag_b:00000000 flag_b
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:169    .bss.EnterruptCount:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:179    .bss.flag_b:00000000 $d
+C:\Users\obukh\AppData\Local\Temp\cckpOmT9.s:182    .bss.ButtonTickCount:00000000 $d
+
+UNDEFINED SYMBOLS
+GlobalTickCount
+flag
