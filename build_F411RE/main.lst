@@ -1,0 +1,150 @@
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Scr/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Scr/main.c **** #include "../Inc/init.h"
+   2:Core/Scr/main.c **** #include "../Inc/interrupt.h"
+   3:Core/Scr/main.c **** 
+   4:Core/Scr/main.c **** uint16_t ButtonTicks = 0;
+   5:Core/Scr/main.c **** 
+   6:Core/Scr/main.c **** uint8_t LED_OPT = 0;
+   7:Core/Scr/main.c **** uint8_t LED_NUM = 6;
+   8:Core/Scr/main.c **** uint8_t LED_OPTION[2][6] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
+   9:Core/Scr/main.c **** 
+  10:Core/Scr/main.c **** bool LedState = false;
+  11:Core/Scr/main.c **** 
+  12:Core/Scr/main.c **** int main(void)
+  13:Core/Scr/main.c **** {
+  29              		.loc 1 13 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  14:Core/Scr/main.c ****     GPIO_INIT();
+  39              		.loc 1 14 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_INIT
+  41              	.LVL0:
+  15:Core/Scr/main.c ****     RCC_INIT();
+  42              		.loc 1 15 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	RCC_INIT
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s 			page 2
+
+
+  44              	.LVL1:
+  16:Core/Scr/main.c ****     IQR_INIT();
+  45              		.loc 1 16 5 view .LVU3
+  46 000a FFF7FEFF 		bl	IQR_INIT
+  47              	.LVL2:
+  17:Core/Scr/main.c ****     SYSTIMER_INIT();
+  48              		.loc 1 17 5 view .LVU4
+  49 000e FFF7FEFF 		bl	SYSTIMER_INIT
+  50              	.LVL3:
+  51              	.L2:
+  18:Core/Scr/main.c **** 
+  19:Core/Scr/main.c ****     while (1)
+  52              		.loc 1 19 5 view .LVU5
+  20:Core/Scr/main.c ****     {
+  21:Core/Scr/main.c ****         working_mode(LED_NUM, LED_OPTION);
+  53              		.loc 1 21 9 discriminator 1 view .LVU6
+  54 0012 0349     		ldr	r1, .L4
+  55 0014 034B     		ldr	r3, .L4+4
+  56 0016 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  57 0018 FFF7FEFF 		bl	working_mode
+  58              	.LVL4:
+  19:Core/Scr/main.c ****     {
+  59              		.loc 1 19 11 view .LVU7
+  60 001c F9E7     		b	.L2
+  61              	.L5:
+  62 001e 00BF     		.align	2
+  63              	.L4:
+  64 0020 00000000 		.word	LED_OPTION
+  65 0024 00000000 		.word	LED_NUM
+  66              		.cfi_endproc
+  67              	.LFE130:
+  69              		.global	LedState
+  70              		.section	.bss.LedState,"aw",%nobits
+  73              	LedState:
+  74 0000 00       		.space	1
+  75              		.global	LED_OPTION
+  76              		.section	.bss.LED_OPTION,"aw",%nobits
+  77              		.align	2
+  80              	LED_OPTION:
+  81 0000 00000000 		.space	12
+  81      00000000 
+  81      00000000 
+  82              		.global	LED_NUM
+  83              		.section	.data.LED_NUM,"aw"
+  86              	LED_NUM:
+  87 0000 06       		.byte	6
+  88              		.global	LED_OPT
+  89              		.section	.bss.LED_OPT,"aw",%nobits
+  92              	LED_OPT:
+  93 0000 00       		.space	1
+  94              		.global	ButtonTicks
+  95              		.section	.bss.ButtonTicks,"aw",%nobits
+  96              		.align	1
+  99              	ButtonTicks:
+ 100 0000 0000     		.space	2
+ 101              		.text
+ 102              	.Letext0:
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s 			page 3
+
+
+ 103              		.file 2 "C:/for_all/1study/MC_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machi
+ 104              		.file 3 "C:/for_all/1study/MC_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_
+ 105              		.file 4 "Core/Scr/../Inc/../Inc/init.h"
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:21     .text.main:00000000 $t
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:27     .text.main:00000000 main
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:64     .text.main:00000020 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:80     .bss.LED_OPTION:00000000 LED_OPTION
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:86     .data.LED_NUM:00000000 LED_NUM
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:73     .bss.LedState:00000000 LedState
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:74     .bss.LedState:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:77     .bss.LED_OPTION:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:92     .bss.LED_OPT:00000000 LED_OPT
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:93     .bss.LED_OPT:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:99     .bss.ButtonTicks:00000000 ButtonTicks
+C:\Users\VITYAL~1\AppData\Local\Temp\ccu4KZzn.s:96     .bss.ButtonTicks:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_INIT
+RCC_INIT
+IQR_INIT
+SYSTIMER_INIT
+working_mode

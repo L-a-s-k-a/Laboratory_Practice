@@ -1,0 +1,550 @@
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"interrupt.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Scr/interrupt.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Scr/interrupt.c **** #include "../Inc/interrupt.h"
+   2:Core/Scr/interrupt.c **** 
+   3:Core/Scr/interrupt.c **** extern uint16_t TickCounter;
+   4:Core/Scr/interrupt.c **** extern uint16_t ButtonTicks;
+   5:Core/Scr/interrupt.c **** extern bool LedState;
+   6:Core/Scr/interrupt.c **** uint16_t DelayCounter = 0;
+   7:Core/Scr/interrupt.c **** uint16_t Inerticker = 0;
+   8:Core/Scr/interrupt.c **** // режим свечения
+   9:Core/Scr/interrupt.c **** uint8_t LED_MODE;
+  10:Core/Scr/interrupt.c **** // номер светящегося
+  11:Core/Scr/interrupt.c **** extern uint8_t LED_NUM;
+  12:Core/Scr/interrupt.c **** // который настраиваем
+  13:Core/Scr/interrupt.c **** // shine
+  14:Core/Scr/interrupt.c **** // mode
+  15:Core/Scr/interrupt.c **** extern uint8_t LED_OPTION[2][7];
+  16:Core/Scr/interrupt.c **** extern uint8_t LED_OPT;
+  17:Core/Scr/interrupt.c **** // частота в режиме
+  18:Core/Scr/interrupt.c **** uint8_t shine_mode;
+  19:Core/Scr/interrupt.c **** uint8_t mode_mode;
+  20:Core/Scr/interrupt.c **** bool but1_press = false;
+  21:Core/Scr/interrupt.c **** bool but2_press = false;
+  22:Core/Scr/interrupt.c **** 
+  23:Core/Scr/interrupt.c **** extern uint16_t freq[3][3];
+  24:Core/Scr/interrupt.c **** 
+  25:Core/Scr/interrupt.c **** void SysTick_Handler(void)
+  26:Core/Scr/interrupt.c **** {
+  29              		.loc 1 26 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 2
+
+
+  33              		@ link register save eliminated.
+  27:Core/Scr/interrupt.c ****     TickCounter++;
+  34              		.loc 1 27 5 view .LVU1
+  35              		.loc 1 27 16 is_stmt 0 view .LVU2
+  36 0000 044A     		ldr	r2, .L2
+  37 0002 1388     		ldrh	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1380     		strh	r3, [r2]	@ movhi
+  28:Core/Scr/interrupt.c ****     ButtonTicks++;
+  40              		.loc 1 28 5 is_stmt 1 view .LVU3
+  41              		.loc 1 28 16 is_stmt 0 view .LVU4
+  42 0008 034A     		ldr	r2, .L2+4
+  43 000a 1388     		ldrh	r3, [r2]
+  44 000c 0133     		adds	r3, r3, #1
+  45 000e 1380     		strh	r3, [r2]	@ movhi
+  29:Core/Scr/interrupt.c **** }
+  46              		.loc 1 29 1 view .LVU5
+  47 0010 7047     		bx	lr
+  48              	.L3:
+  49 0012 00BF     		.align	2
+  50              	.L2:
+  51 0014 00000000 		.word	TickCounter
+  52 0018 00000000 		.word	ButtonTicks
+  53              		.cfi_endproc
+  54              	.LFE130:
+  56              		.section	.text.Delay,"ax",%progbits
+  57              		.align	1
+  58              		.global	Delay
+  59              		.syntax unified
+  60              		.thumb
+  61              		.thumb_func
+  63              	Delay:
+  64              	.LFB131:
+  30:Core/Scr/interrupt.c **** 
+  31:Core/Scr/interrupt.c **** void Delay(uint16_t delay)
+  32:Core/Scr/interrupt.c **** {
+  65              		.loc 1 32 1 is_stmt 1 view -0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+  70              	.LVL0:
+  71              	.L5:
+  33:Core/Scr/interrupt.c ****     while (TickCounter < delay)
+  72              		.loc 1 33 24 discriminator 1 view .LVU7
+  73 0000 034B     		ldr	r3, .L6
+  74 0002 1B88     		ldrh	r3, [r3]
+  75 0004 8342     		cmp	r3, r0
+  76 0006 FBD3     		bcc	.L5
+  34:Core/Scr/interrupt.c ****         ;
+  35:Core/Scr/interrupt.c ****     if (TickCounter >= delay)
+  77              		.loc 1 35 5 view .LVU8
+  36:Core/Scr/interrupt.c ****         TickCounter = 0;
+  78              		.loc 1 36 9 view .LVU9
+  79              		.loc 1 36 21 is_stmt 0 view .LVU10
+  80 0008 014B     		ldr	r3, .L6
+  81 000a 0022     		movs	r2, #0
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 3
+
+
+  82 000c 1A80     		strh	r2, [r3]	@ movhi
+  37:Core/Scr/interrupt.c **** }
+  83              		.loc 1 37 1 view .LVU11
+  84 000e 7047     		bx	lr
+  85              	.L7:
+  86              		.align	2
+  87              	.L6:
+  88 0010 00000000 		.word	TickCounter
+  89              		.cfi_endproc
+  90              	.LFE131:
+  92              		.section	.text.EXTI3_IRQHandler,"ax",%progbits
+  93              		.align	1
+  94              		.global	EXTI3_IRQHandler
+  95              		.syntax unified
+  96              		.thumb
+  97              		.thumb_func
+  99              	EXTI3_IRQHandler:
+ 100              	.LFB132:
+  38:Core/Scr/interrupt.c **** 
+  39:Core/Scr/interrupt.c **** void EXTI3_IRQHandler(void)
+  40:Core/Scr/interrupt.c **** {
+ 101              		.loc 1 40 1 is_stmt 1 view -0
+ 102              		.cfi_startproc
+ 103              		@ args = 0, pretend = 0, frame = 0
+ 104              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105              		@ link register save eliminated.
+  41:Core/Scr/interrupt.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR3);
+ 106              		.loc 1 41 5 view .LVU13
+ 107 0000 234A     		ldr	r2, .L14
+ 108 0002 5369     		ldr	r3, [r2, #20]
+ 109 0004 43F00803 		orr	r3, r3, #8
+ 110 0008 5361     		str	r3, [r2, #20]
+  42:Core/Scr/interrupt.c ****     if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID3) == RESET)
+ 111              		.loc 1 42 5 view .LVU14
+ 112              		.loc 1 42 9 is_stmt 0 view .LVU15
+ 113 000a 224B     		ldr	r3, .L14+4
+ 114 000c 1B69     		ldr	r3, [r3, #16]
+ 115              		.loc 1 42 8 view .LVU16
+ 116 000e 13F0080F 		tst	r3, #8
+ 117 0012 07D1     		bne	.L9
+  43:Core/Scr/interrupt.c ****     {
+  44:Core/Scr/interrupt.c ****         but1_press = !but1_press;
+ 118              		.loc 1 44 9 is_stmt 1 view .LVU17
+ 119 0014 204A     		ldr	r2, .L14+8
+ 120 0016 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 121 0018 83F00103 		eor	r3, r3, #1
+ 122              		.loc 1 44 20 is_stmt 0 view .LVU18
+ 123 001c 1370     		strb	r3, [r2]
+  45:Core/Scr/interrupt.c ****         ButtonTicks = 0;
+ 124              		.loc 1 45 9 is_stmt 1 view .LVU19
+ 125              		.loc 1 45 21 is_stmt 0 view .LVU20
+ 126 001e 1F4B     		ldr	r3, .L14+12
+ 127 0020 0022     		movs	r2, #0
+ 128 0022 1A80     		strh	r2, [r3]	@ movhi
+ 129              	.L9:
+  46:Core/Scr/interrupt.c ****     }
+  47:Core/Scr/interrupt.c ****     if (ButtonTicks >= 2000)
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 4
+
+
+ 130              		.loc 1 47 5 is_stmt 1 view .LVU21
+ 131              		.loc 1 47 21 is_stmt 0 view .LVU22
+ 132 0024 1D4B     		ldr	r3, .L14+12
+ 133 0026 1B88     		ldrh	r3, [r3]
+ 134              		.loc 1 47 8 view .LVU23
+ 135 0028 B3F5FA6F 		cmp	r3, #2000
+ 136 002c 18D3     		bcc	.L10
+  48:Core/Scr/interrupt.c ****     {
+  49:Core/Scr/interrupt.c ****         but1_press = !but1_press;
+ 137              		.loc 1 49 9 is_stmt 1 view .LVU24
+ 138 002e 1A4A     		ldr	r2, .L14+8
+ 139 0030 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 140 0032 83F00103 		eor	r3, r3, #1
+ 141              		.loc 1 49 20 is_stmt 0 view .LVU25
+ 142 0036 1370     		strb	r3, [r2]
+  50:Core/Scr/interrupt.c ****         LED_OPTION[0][LED_OPT]++;
+ 143              		.loc 1 50 9 is_stmt 1 view .LVU26
+ 144              		.loc 1 50 22 is_stmt 0 view .LVU27
+ 145 0038 194B     		ldr	r3, .L14+16
+ 146 003a 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 147 003c 1949     		ldr	r1, .L14+20
+ 148 003e 8B5C     		ldrb	r3, [r1, r2]	@ zero_extendqisi2
+ 149              		.loc 1 50 31 view .LVU28
+ 150 0040 0133     		adds	r3, r3, #1
+ 151 0042 DBB2     		uxtb	r3, r3
+ 152 0044 8B54     		strb	r3, [r1, r2]
+  51:Core/Scr/interrupt.c ****         if (LED_OPTION[0][LED_OPT] > 2)
+ 153              		.loc 1 51 9 is_stmt 1 view .LVU29
+ 154              		.loc 1 51 12 is_stmt 0 view .LVU30
+ 155 0046 022B     		cmp	r3, #2
+ 156 0048 02D9     		bls	.L11
+  52:Core/Scr/interrupt.c ****             LED_OPTION[0][LED_OPT] = 0;
+ 157              		.loc 1 52 13 is_stmt 1 view .LVU31
+ 158              		.loc 1 52 36 is_stmt 0 view .LVU32
+ 159 004a 0B46     		mov	r3, r1
+ 160 004c 0021     		movs	r1, #0
+ 161 004e 9954     		strb	r1, [r3, r2]
+ 162              	.L11:
+  53:Core/Scr/interrupt.c ****         shine_mode = LED_OPTION[0][LED_OPT];
+ 163              		.loc 1 53 9 is_stmt 1 view .LVU33
+ 164              		.loc 1 53 35 is_stmt 0 view .LVU34
+ 165 0050 144B     		ldr	r3, .L14+20
+ 166 0052 9A5C     		ldrb	r2, [r3, r2]	@ zero_extendqisi2
+ 167              		.loc 1 53 20 view .LVU35
+ 168 0054 144B     		ldr	r3, .L14+24
+ 169 0056 1A70     		strb	r2, [r3]
+  54:Core/Scr/interrupt.c ****         ButtonTicks = 0;
+ 170              		.loc 1 54 9 is_stmt 1 view .LVU36
+ 171              		.loc 1 54 21 is_stmt 0 view .LVU37
+ 172 0058 104B     		ldr	r3, .L14+12
+ 173 005a 0022     		movs	r2, #0
+ 174 005c 1A80     		strh	r2, [r3]	@ movhi
+ 175 005e 7047     		bx	lr
+ 176              	.L10:
+  55:Core/Scr/interrupt.c ****     }
+  56:Core/Scr/interrupt.c ****     else if (ButtonTicks < 2000 && ButtonTicks > 70)
+ 177              		.loc 1 56 10 is_stmt 1 view .LVU38
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 5
+
+
+ 178              		.loc 1 56 33 is_stmt 0 view .LVU39
+ 179 0060 473B     		subs	r3, r3, #71
+ 180 0062 9BB2     		uxth	r3, r3
+ 181              		.loc 1 56 13 view .LVU40
+ 182 0064 B3F5F16F 		cmp	r3, #1928
+ 183 0068 11D8     		bhi	.L8
+  57:Core/Scr/interrupt.c ****     {
+  58:Core/Scr/interrupt.c ****         but1_press = !but1_press;
+ 184              		.loc 1 58 9 is_stmt 1 view .LVU41
+ 185 006a 0B4A     		ldr	r2, .L14+8
+ 186 006c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 187 006e 83F00103 		eor	r3, r3, #1
+ 188              		.loc 1 58 20 is_stmt 0 view .LVU42
+ 189 0072 1370     		strb	r3, [r2]
+  59:Core/Scr/interrupt.c ****         LED_NUM++;
+ 190              		.loc 1 59 9 is_stmt 1 view .LVU43
+ 191              		.loc 1 59 16 is_stmt 0 view .LVU44
+ 192 0074 0D4A     		ldr	r2, .L14+28
+ 193 0076 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 194 0078 0133     		adds	r3, r3, #1
+ 195 007a DBB2     		uxtb	r3, r3
+ 196 007c 1370     		strb	r3, [r2]
+  60:Core/Scr/interrupt.c ****         if (LED_NUM > 6)
+ 197              		.loc 1 60 9 is_stmt 1 view .LVU45
+ 198              		.loc 1 60 12 is_stmt 0 view .LVU46
+ 199 007e 062B     		cmp	r3, #6
+ 200 0080 02D9     		bls	.L13
+  61:Core/Scr/interrupt.c ****             LED_NUM = 0;
+ 201              		.loc 1 61 13 is_stmt 1 view .LVU47
+ 202              		.loc 1 61 21 is_stmt 0 view .LVU48
+ 203 0082 1346     		mov	r3, r2
+ 204 0084 0022     		movs	r2, #0
+ 205 0086 1A70     		strb	r2, [r3]
+ 206              	.L13:
+  62:Core/Scr/interrupt.c ****         ButtonTicks = 0;
+ 207              		.loc 1 62 9 is_stmt 1 view .LVU49
+ 208              		.loc 1 62 21 is_stmt 0 view .LVU50
+ 209 0088 044B     		ldr	r3, .L14+12
+ 210 008a 0022     		movs	r2, #0
+ 211 008c 1A80     		strh	r2, [r3]	@ movhi
+ 212              	.L8:
+  63:Core/Scr/interrupt.c ****     }
+  64:Core/Scr/interrupt.c **** }
+ 213              		.loc 1 64 1 view .LVU51
+ 214 008e 7047     		bx	lr
+ 215              	.L15:
+ 216              		.align	2
+ 217              	.L14:
+ 218 0090 003C0140 		.word	1073822720
+ 219 0094 00080240 		.word	1073874944
+ 220 0098 00000000 		.word	but1_press
+ 221 009c 00000000 		.word	ButtonTicks
+ 222 00a0 00000000 		.word	LED_OPT
+ 223 00a4 00000000 		.word	LED_OPTION
+ 224 00a8 00000000 		.word	shine_mode
+ 225 00ac 00000000 		.word	LED_NUM
+ 226              		.cfi_endproc
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 6
+
+
+ 227              	.LFE132:
+ 229              		.section	.text.EXTI2_IRQHandler,"ax",%progbits
+ 230              		.align	1
+ 231              		.global	EXTI2_IRQHandler
+ 232              		.syntax unified
+ 233              		.thumb
+ 234              		.thumb_func
+ 236              	EXTI2_IRQHandler:
+ 237              	.LFB133:
+  65:Core/Scr/interrupt.c **** 
+  66:Core/Scr/interrupt.c **** void EXTI2_IRQHandler(void)
+  67:Core/Scr/interrupt.c **** {
+ 238              		.loc 1 67 1 is_stmt 1 view -0
+ 239              		.cfi_startproc
+ 240              		@ args = 0, pretend = 0, frame = 0
+ 241              		@ frame_needed = 0, uses_anonymous_args = 0
+ 242              		@ link register save eliminated.
+  68:Core/Scr/interrupt.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR2);
+ 243              		.loc 1 68 5 view .LVU53
+ 244 0000 244A     		ldr	r2, .L22
+ 245 0002 5369     		ldr	r3, [r2, #20]
+ 246 0004 43F00403 		orr	r3, r3, #4
+ 247 0008 5361     		str	r3, [r2, #20]
+  69:Core/Scr/interrupt.c ****     if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID2) == RESET)
+ 248              		.loc 1 69 5 view .LVU54
+ 249              		.loc 1 69 9 is_stmt 0 view .LVU55
+ 250 000a 234B     		ldr	r3, .L22+4
+ 251 000c 1B69     		ldr	r3, [r3, #16]
+ 252              		.loc 1 69 8 view .LVU56
+ 253 000e 13F0040F 		tst	r3, #4
+ 254 0012 07D1     		bne	.L17
+  70:Core/Scr/interrupt.c ****     {
+  71:Core/Scr/interrupt.c ****         but2_press = !but2_press;
+ 255              		.loc 1 71 9 is_stmt 1 view .LVU57
+ 256 0014 214A     		ldr	r2, .L22+8
+ 257 0016 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 258 0018 83F00103 		eor	r3, r3, #1
+ 259              		.loc 1 71 20 is_stmt 0 view .LVU58
+ 260 001c 1370     		strb	r3, [r2]
+  72:Core/Scr/interrupt.c ****         ButtonTicks = 0;
+ 261              		.loc 1 72 9 is_stmt 1 view .LVU59
+ 262              		.loc 1 72 21 is_stmt 0 view .LVU60
+ 263 001e 204B     		ldr	r3, .L22+12
+ 264 0020 0022     		movs	r2, #0
+ 265 0022 1A80     		strh	r2, [r3]	@ movhi
+ 266              	.L17:
+  73:Core/Scr/interrupt.c ****     }
+  74:Core/Scr/interrupt.c ****     if (ButtonTicks >= 2000)
+ 267              		.loc 1 74 5 is_stmt 1 view .LVU61
+ 268              		.loc 1 74 21 is_stmt 0 view .LVU62
+ 269 0024 1E4B     		ldr	r3, .L22+12
+ 270 0026 1B88     		ldrh	r3, [r3]
+ 271              		.loc 1 74 8 view .LVU63
+ 272 0028 B3F5FA6F 		cmp	r3, #2000
+ 273 002c 1AD3     		bcc	.L18
+  75:Core/Scr/interrupt.c ****     {
+  76:Core/Scr/interrupt.c ****         but2_press = !but2_press;
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 7
+
+
+ 274              		.loc 1 76 9 is_stmt 1 view .LVU64
+ 275 002e 1B4A     		ldr	r2, .L22+8
+ 276 0030 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 277 0032 83F00103 		eor	r3, r3, #1
+ 278              		.loc 1 76 20 is_stmt 0 view .LVU65
+ 279 0036 1370     		strb	r3, [r2]
+  77:Core/Scr/interrupt.c ****         LED_OPTION[1][LED_OPT]++;
+ 280              		.loc 1 77 9 is_stmt 1 view .LVU66
+ 281              		.loc 1 77 22 is_stmt 0 view .LVU67
+ 282 0038 1A4B     		ldr	r3, .L22+16
+ 283 003a 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 284 003c 1A4A     		ldr	r2, .L22+20
+ 285 003e 0A44     		add	r2, r2, r1
+ 286 0040 D379     		ldrb	r3, [r2, #7]	@ zero_extendqisi2
+ 287              		.loc 1 77 31 view .LVU68
+ 288 0042 0133     		adds	r3, r3, #1
+ 289 0044 DBB2     		uxtb	r3, r3
+ 290 0046 D371     		strb	r3, [r2, #7]
+  78:Core/Scr/interrupt.c ****         if (LED_OPTION[1][LED_OPT] > 2)
+ 291              		.loc 1 78 9 is_stmt 1 view .LVU69
+ 292              		.loc 1 78 12 is_stmt 0 view .LVU70
+ 293 0048 022B     		cmp	r3, #2
+ 294 004a 02D9     		bls	.L19
+  79:Core/Scr/interrupt.c ****             LED_OPTION[1][LED_OPT] = 0;
+ 295              		.loc 1 79 13 is_stmt 1 view .LVU71
+ 296              		.loc 1 79 36 is_stmt 0 view .LVU72
+ 297 004c 1346     		mov	r3, r2
+ 298 004e 0022     		movs	r2, #0
+ 299 0050 DA71     		strb	r2, [r3, #7]
+ 300              	.L19:
+  80:Core/Scr/interrupt.c ****         mode_mode = LED_OPTION[1][LED_OPT];
+ 301              		.loc 1 80 9 is_stmt 1 view .LVU73
+ 302              		.loc 1 80 34 is_stmt 0 view .LVU74
+ 303 0052 154B     		ldr	r3, .L22+20
+ 304 0054 0B44     		add	r3, r3, r1
+ 305 0056 DA79     		ldrb	r2, [r3, #7]	@ zero_extendqisi2
+ 306              		.loc 1 80 19 view .LVU75
+ 307 0058 144B     		ldr	r3, .L22+24
+ 308 005a 1A70     		strb	r2, [r3]
+  81:Core/Scr/interrupt.c ****         ButtonTicks = 0;
+ 309              		.loc 1 81 9 is_stmt 1 view .LVU76
+ 310              		.loc 1 81 21 is_stmt 0 view .LVU77
+ 311 005c 104B     		ldr	r3, .L22+12
+ 312 005e 0022     		movs	r2, #0
+ 313 0060 1A80     		strh	r2, [r3]	@ movhi
+ 314 0062 7047     		bx	lr
+ 315              	.L18:
+  82:Core/Scr/interrupt.c ****     }
+  83:Core/Scr/interrupt.c ****     else if (ButtonTicks < 2000 && ButtonTicks > 70)
+ 316              		.loc 1 83 10 is_stmt 1 view .LVU78
+ 317              		.loc 1 83 33 is_stmt 0 view .LVU79
+ 318 0064 473B     		subs	r3, r3, #71
+ 319 0066 9BB2     		uxth	r3, r3
+ 320              		.loc 1 83 13 view .LVU80
+ 321 0068 B3F5F16F 		cmp	r3, #1928
+ 322 006c 11D8     		bhi	.L16
+  84:Core/Scr/interrupt.c ****     {
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 8
+
+
+  85:Core/Scr/interrupt.c ****         but2_press = !but2_press;
+ 323              		.loc 1 85 9 is_stmt 1 view .LVU81
+ 324 006e 0B4A     		ldr	r2, .L22+8
+ 325 0070 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 326 0072 83F00103 		eor	r3, r3, #1
+ 327              		.loc 1 85 20 is_stmt 0 view .LVU82
+ 328 0076 1370     		strb	r3, [r2]
+  86:Core/Scr/interrupt.c ****         LED_OPT++;
+ 329              		.loc 1 86 9 is_stmt 1 view .LVU83
+ 330              		.loc 1 86 16 is_stmt 0 view .LVU84
+ 331 0078 0A4A     		ldr	r2, .L22+16
+ 332 007a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 333 007c 0133     		adds	r3, r3, #1
+ 334 007e DBB2     		uxtb	r3, r3
+ 335 0080 1370     		strb	r3, [r2]
+  87:Core/Scr/interrupt.c ****         if (LED_OPT > 5)
+ 336              		.loc 1 87 9 is_stmt 1 view .LVU85
+ 337              		.loc 1 87 12 is_stmt 0 view .LVU86
+ 338 0082 052B     		cmp	r3, #5
+ 339 0084 02D9     		bls	.L21
+  88:Core/Scr/interrupt.c ****             LED_OPT = 0;
+ 340              		.loc 1 88 13 is_stmt 1 view .LVU87
+ 341              		.loc 1 88 21 is_stmt 0 view .LVU88
+ 342 0086 1346     		mov	r3, r2
+ 343 0088 0022     		movs	r2, #0
+ 344 008a 1A70     		strb	r2, [r3]
+ 345              	.L21:
+  89:Core/Scr/interrupt.c ****         ButtonTicks = 0;
+ 346              		.loc 1 89 9 is_stmt 1 view .LVU89
+ 347              		.loc 1 89 21 is_stmt 0 view .LVU90
+ 348 008c 044B     		ldr	r3, .L22+12
+ 349 008e 0022     		movs	r2, #0
+ 350 0090 1A80     		strh	r2, [r3]	@ movhi
+ 351              	.L16:
+  90:Core/Scr/interrupt.c ****     }
+  91:Core/Scr/interrupt.c **** }...
+ 352              		.loc 1 91 1 view .LVU91
+ 353 0092 7047     		bx	lr
+ 354              	.L23:
+ 355              		.align	2
+ 356              	.L22:
+ 357 0094 003C0140 		.word	1073822720
+ 358 0098 00080240 		.word	1073874944
+ 359 009c 00000000 		.word	but2_press
+ 360 00a0 00000000 		.word	ButtonTicks
+ 361 00a4 00000000 		.word	LED_OPT
+ 362 00a8 00000000 		.word	LED_OPTION
+ 363 00ac 00000000 		.word	mode_mode
+ 364              		.cfi_endproc
+ 365              	.LFE133:
+ 367              		.global	but2_press
+ 368              		.section	.bss.but2_press,"aw",%nobits
+ 371              	but2_press:
+ 372 0000 00       		.space	1
+ 373              		.global	but1_press
+ 374              		.section	.bss.but1_press,"aw",%nobits
+ 377              	but1_press:
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 9
+
+
+ 378 0000 00       		.space	1
+ 379              		.global	mode_mode
+ 380              		.section	.bss.mode_mode,"aw",%nobits
+ 383              	mode_mode:
+ 384 0000 00       		.space	1
+ 385              		.global	shine_mode
+ 386              		.section	.bss.shine_mode,"aw",%nobits
+ 389              	shine_mode:
+ 390 0000 00       		.space	1
+ 391              		.global	LED_MODE
+ 392              		.section	.bss.LED_MODE,"aw",%nobits
+ 395              	LED_MODE:
+ 396 0000 00       		.space	1
+ 397              		.global	Inerticker
+ 398              		.section	.bss.Inerticker,"aw",%nobits
+ 399              		.align	1
+ 402              	Inerticker:
+ 403 0000 0000     		.space	2
+ 404              		.global	DelayCounter
+ 405              		.section	.bss.DelayCounter,"aw",%nobits
+ 406              		.align	1
+ 409              	DelayCounter:
+ 410 0000 0000     		.space	2
+ 411              		.text
+ 412              	.Letext0:
+ 413              		.file 2 "C:/for_all/1study/MC_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machi
+ 414              		.file 3 "C:/for_all/1study/MC_tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_
+ 415              		.file 4 "Core/Scr/../Inc/../Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 416              		.file 5 "Core/Scr/../Inc/../Inc/../../CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
+ARM GAS  C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 interrupt.c
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:51     .text.SysTick_Handler:00000014 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:57     .text.Delay:00000000 $t
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:63     .text.Delay:00000000 Delay
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:88     .text.Delay:00000010 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:93     .text.EXTI3_IRQHandler:00000000 $t
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:99     .text.EXTI3_IRQHandler:00000000 EXTI3_IRQHandler
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:218    .text.EXTI3_IRQHandler:00000090 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:377    .bss.but1_press:00000000 but1_press
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:389    .bss.shine_mode:00000000 shine_mode
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:230    .text.EXTI2_IRQHandler:00000000 $t
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:236    .text.EXTI2_IRQHandler:00000000 EXTI2_IRQHandler
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:357    .text.EXTI2_IRQHandler:00000094 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:371    .bss.but2_press:00000000 but2_press
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:383    .bss.mode_mode:00000000 mode_mode
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:372    .bss.but2_press:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:378    .bss.but1_press:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:384    .bss.mode_mode:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:390    .bss.shine_mode:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:395    .bss.LED_MODE:00000000 LED_MODE
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:396    .bss.LED_MODE:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:402    .bss.Inerticker:00000000 Inerticker
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:399    .bss.Inerticker:00000000 $d
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:409    .bss.DelayCounter:00000000 DelayCounter
+C:\Users\VITYAL~1\AppData\Local\Temp\ccKvHNNS.s:406    .bss.DelayCounter:00000000 $d
+
+UNDEFINED SYMBOLS
+TickCounter
+ButtonTicks
+LED_OPT
+LED_OPTION
+LED_NUM
