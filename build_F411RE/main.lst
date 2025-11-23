@@ -1,0 +1,672 @@
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** // Глобальные переменные
+   4:Core/Src/main.c **** volatile uint32_t button_press_start_time = 0;
+   5:Core/Src/main.c **** volatile uint32_t button_press_duration = 0;
+   6:Core/Src/main.c **** volatile uint8_t button_state = 0;
+   7:Core/Src/main.c **** volatile uint32_t systick_counter = 0;
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** // Переменные для управления светодиодами
+  10:Core/Src/main.c **** volatile uint8_t current_led = 0;        // Текущий горящий светодиод (0-5)
+  11:Core/Src/main.c **** volatile uint8_t blink_enabled = 1;      // 1 - мерцание, 0 - постоянное свеч
+  12:Core/Src/main.c **** volatile uint8_t blink_frequency = 0;    // 0: 0.4 Гц, 1: 1.1 Гц, 2: 1.9 Гц
+  13:Core/Src/main.c **** volatile uint8_t leds_enabled = 1;       // 1 - светодиоды включены, 0 - выкл
+  14:Core/Src/main.c **** volatile uint32_t last_blink_time = 0;   // Время последнего мигания
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c **** // Периоды мерцания для разных частот (в мс)
+  17:Core/Src/main.c **** const uint32_t blink_periods[] = {2500, 909, 526}; // 0.4Гц, 1.1Гц, 1.9Гц
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c **** int main(void)
+  20:Core/Src/main.c **** {
+  29              		.loc 1 20 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 24
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38 0002 86B0     		sub	sp, sp, #24
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 2
+
+
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 32
+  21:Core/Src/main.c ****     Clock_Init_HSI_PLL_100MHz(); // настройка частоты тактирования на
+  41              		.loc 1 21 5 view .LVU1
+  42 0004 FFF7FEFF 		bl	Clock_Init_HSI_PLL_100MHz
+  43              	.LVL0:
+  22:Core/Src/main.c ****     MCO_init(); // настройка вывода тактового сигнала на PC9
+  44              		.loc 1 22 5 view .LVU2
+  45 0008 FFF7FEFF 		bl	MCO_init
+  46              	.LVL1:
+  23:Core/Src/main.c ****     SysTick_Init(); // инициализация системного таймера
+  47              		.loc 1 23 5 view .LVU3
+  48 000c FFF7FEFF 		bl	SysTick_Init
+  49              	.LVL2:
+  24:Core/Src/main.c ****     GPIO_Init(); // инициализируем порты
+  50              		.loc 1 24 5 view .LVU4
+  51 0010 FFF7FEFF 		bl	GPIO_Init
+  52              	.LVL3:
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c ****     // Изначально выключаем все светодиоды
+  27:Core/Src/main.c ****     ClearAllLEDs();
+  53              		.loc 1 27 5 view .LVU5
+  54 0014 FFF7FEFF 		bl	ClearAllLEDs
+  55              	.LVL4:
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c ****     // Включаем первый светодиод
+  30:Core/Src/main.c ****     SetLED(0);
+  56              		.loc 1 30 5 view .LVU6
+  57 0018 0020     		movs	r0, #0
+  58 001a FFF7FEFF 		bl	SetLED
+  59              	.LVL5:
+  60 001e 89E0     		b	.L25
+  61              	.L5:
+  31:Core/Src/main.c ****     
+  32:Core/Src/main.c ****     while (1)
+  33:Core/Src/main.c ****     {
+  34:Core/Src/main.c ****         UpdateBlink(); // Обновляем мерцание
+  35:Core/Src/main.c ****         
+  36:Core/Src/main.c ****         if (button_press_duration > 0) // если кнопка нажата
+  37:Core/Src/main.c ****         {
+  38:Core/Src/main.c ****             if (button_press_duration < 1000) // Функция 1: Кратковременное �
+  39:Core/Src/main.c ****             {
+  40:Core/Src/main.c ****                 if (leds_enabled) // если светодиоды включены
+  41:Core/Src/main.c ****                 {
+  42:Core/Src/main.c ****                     current_led++; // переключаем на следующий светоди
+  43:Core/Src/main.c ****                     if (current_led > 5) // если горел последний светодио
+  44:Core/Src/main.c ****                     {
+  45:Core/Src/main.c ****                         current_led = 0; // выбираем первый светодиод
+  46:Core/Src/main.c ****                         leds_enabled = 0; // указываем что все светодиоды 
+  47:Core/Src/main.c ****                         ClearAllLEDs(); // выключаем все светодиоды
+  48:Core/Src/main.c ****                     }
+  49:Core/Src/main.c ****                     else // если горел не последний светодиод
+  50:Core/Src/main.c ****                     {
+  51:Core/Src/main.c ****                         SetLED(current_led); // Включаем следующий светоди�
+  62              		.loc 1 51 25 view .LVU7
+  63 0020 574B     		ldr	r3, .L29
+  64 0022 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 3
+
+
+  65 0024 FFF7FEFF 		bl	SetLED
+  66              	.LVL6:
+  67 0028 46E0     		b	.L6
+  68              	.L4:
+  52:Core/Src/main.c ****                     }
+  53:Core/Src/main.c ****                 }
+  54:Core/Src/main.c ****                 else // если светодиоды выключены
+  55:Core/Src/main.c ****                 {
+  56:Core/Src/main.c ****                     leds_enabled = 1; // указываем что светодиоды включ�
+  69              		.loc 1 56 21 view .LVU8
+  70              		.loc 1 56 34 is_stmt 0 view .LVU9
+  71 002a 564B     		ldr	r3, .L29+4
+  72 002c 0122     		movs	r2, #1
+  73 002e 1A70     		strb	r2, [r3]
+  57:Core/Src/main.c ****                     current_led = 0; // выбираем первый светодиод
+  74              		.loc 1 57 21 is_stmt 1 view .LVU10
+  75              		.loc 1 57 33 is_stmt 0 view .LVU11
+  76 0030 534B     		ldr	r3, .L29
+  77 0032 0022     		movs	r2, #0
+  78 0034 1A70     		strb	r2, [r3]
+  58:Core/Src/main.c ****                     SetLED(current_led); // и включаем его
+  79              		.loc 1 58 21 is_stmt 1 view .LVU12
+  80 0036 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  81 0038 FFF7FEFF 		bl	SetLED
+  82              	.LVL7:
+  83 003c 3CE0     		b	.L6
+  84              	.L3:
+  59:Core/Src/main.c ****                 }
+  60:Core/Src/main.c ****             }
+  61:Core/Src/main.c ****             else if (button_press_duration >= 2000 && button_press_duration < 4000) // Функци
+  85              		.loc 1 61 18 view .LVU13
+  86              		.loc 1 61 44 is_stmt 0 view .LVU14
+  87 003e 524B     		ldr	r3, .L29+8
+  88 0040 1B68     		ldr	r3, [r3]
+  89              		.loc 1 61 21 view .LVU15
+  90 0042 B3F5FA6F 		cmp	r3, #2000
+  91 0046 32D3     		bcc	.L7
+  92              		.loc 1 61 77 discriminator 1 view .LVU16
+  93 0048 4F4B     		ldr	r3, .L29+8
+  94 004a 1B68     		ldr	r3, [r3]
+  95              		.loc 1 61 52 discriminator 1 view .LVU17
+  96 004c B3F57A6F 		cmp	r3, #4000
+  97 0050 2DD2     		bcs	.L7
+  62:Core/Src/main.c ****             {
+  63:Core/Src/main.c ****                 if (blink_enabled) // Только если режим мерцания актив�
+  98              		.loc 1 63 17 is_stmt 1 view .LVU18
+  99              		.loc 1 63 21 is_stmt 0 view .LVU19
+ 100 0052 4E4B     		ldr	r3, .L29+12
+ 101 0054 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 102              		.loc 1 63 20 view .LVU20
+ 103 0056 002B     		cmp	r3, #0
+ 104 0058 2ED0     		beq	.L6
+  64:Core/Src/main.c ****                 {
+  65:Core/Src/main.c ****                     blink_frequency = (blink_frequency + 1) % 3; // выбираем следующ
+ 105              		.loc 1 65 21 is_stmt 1 view .LVU21
+ 106              		.loc 1 65 56 is_stmt 0 view .LVU22
+ 107 005a 4D49     		ldr	r1, .L29+16
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 4
+
+
+ 108 005c 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 109 005e 0132     		adds	r2, r2, #1
+ 110              		.loc 1 65 61 view .LVU23
+ 111 0060 4C4B     		ldr	r3, .L29+20
+ 112 0062 83FB0203 		smull	r0, r3, r3, r2
+ 113 0066 03EB4303 		add	r3, r3, r3, lsl #1
+ 114 006a D31A     		subs	r3, r2, r3
+ 115              		.loc 1 65 37 view .LVU24
+ 116 006c DBB2     		uxtb	r3, r3
+ 117 006e 0B70     		strb	r3, [r1]
+  66:Core/Src/main.c ****                     
+  67:Core/Src/main.c ****                     for (int i = 0; i < 3; i++) // Визуальное подтверждение 
+ 118              		.loc 1 67 21 is_stmt 1 view .LVU25
+ 119              	.LBB2:
+ 120              		.loc 1 67 26 view .LVU26
+ 121              	.LVL8:
+ 122              		.loc 1 67 30 is_stmt 0 view .LVU27
+ 123 0070 0024     		movs	r4, #0
+ 124              		.loc 1 67 21 view .LVU28
+ 125 0072 15E0     		b	.L8
+ 126              	.LVL9:
+ 127              	.L10:
+ 128              	.LBB3:
+  68:Core/Src/main.c ****                     {
+  69:Core/Src/main.c ****                         ClearAllLEDs(); // выключаем все светодиоды
+  70:Core/Src/main.c ****                         for (volatile uint32_t j = 0; j < 1000000; j++); // Задержка для
+ 129              		.loc 1 70 69 is_stmt 1 discriminator 3 view .LVU29
+ 130 0074 009B     		ldr	r3, [sp]
+ 131 0076 0133     		adds	r3, r3, #1
+ 132 0078 0093     		str	r3, [sp]
+ 133              	.L9:
+ 134              		.loc 1 70 57 discriminator 1 view .LVU30
+ 135 007a 009A     		ldr	r2, [sp]
+ 136 007c 464B     		ldr	r3, .L29+24
+ 137 007e 9A42     		cmp	r2, r3
+ 138 0080 F8D9     		bls	.L10
+ 139              	.LBE3:
+  71:Core/Src/main.c ****                         SetLED(current_led); // включаем этот светодиод
+ 140              		.loc 1 71 25 view .LVU31
+ 141 0082 3F4B     		ldr	r3, .L29
+ 142 0084 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 143 0086 FFF7FEFF 		bl	SetLED
+ 144              	.LVL10:
+  72:Core/Src/main.c ****                         for (volatile uint32_t j = 0; j < 1000000; j++); // Задержка для
+ 145              		.loc 1 72 25 view .LVU32
+ 146              	.LBB4:
+ 147              		.loc 1 72 30 view .LVU33
+ 148              		.loc 1 72 48 is_stmt 0 view .LVU34
+ 149 008a 0023     		movs	r3, #0
+ 150 008c 0193     		str	r3, [sp, #4]
+ 151              		.loc 1 72 25 view .LVU35
+ 152 008e 02E0     		b	.L11
+ 153              	.L12:
+ 154              		.loc 1 72 69 is_stmt 1 discriminator 3 view .LVU36
+ 155 0090 019B     		ldr	r3, [sp, #4]
+ 156 0092 0133     		adds	r3, r3, #1
+ 157 0094 0193     		str	r3, [sp, #4]
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 5
+
+
+ 158              	.L11:
+ 159              		.loc 1 72 57 discriminator 1 view .LVU37
+ 160 0096 019A     		ldr	r2, [sp, #4]
+ 161 0098 3F4B     		ldr	r3, .L29+24
+ 162 009a 9A42     		cmp	r2, r3
+ 163 009c F8D9     		bls	.L12
+ 164              	.LBE4:
+  67:Core/Src/main.c ****                     {
+ 165              		.loc 1 67 45 discriminator 2 view .LVU38
+ 166 009e 0134     		adds	r4, r4, #1
+ 167              	.LVL11:
+ 168              	.L8:
+  67:Core/Src/main.c ****                     {
+ 169              		.loc 1 67 39 discriminator 1 view .LVU39
+ 170 00a0 022C     		cmp	r4, #2
+ 171 00a2 09DC     		bgt	.L6
+  69:Core/Src/main.c ****                         for (volatile uint32_t j = 0; j < 1000000; j++); // Задержка для
+ 172              		.loc 1 69 25 view .LVU40
+ 173 00a4 FFF7FEFF 		bl	ClearAllLEDs
+ 174              	.LVL12:
+  70:Core/Src/main.c ****                         SetLED(current_led); // включаем этот светодиод
+ 175              		.loc 1 70 25 view .LVU41
+ 176              	.LBB5:
+  70:Core/Src/main.c ****                         SetLED(current_led); // включаем этот светодиод
+ 177              		.loc 1 70 30 view .LVU42
+  70:Core/Src/main.c ****                         SetLED(current_led); // включаем этот светодиод
+ 178              		.loc 1 70 48 is_stmt 0 view .LVU43
+ 179 00a8 0023     		movs	r3, #0
+ 180 00aa 0093     		str	r3, [sp]
+  70:Core/Src/main.c ****                         SetLED(current_led); // включаем этот светодиод
+ 181              		.loc 1 70 25 view .LVU44
+ 182 00ac E5E7     		b	.L9
+ 183              	.LVL13:
+ 184              	.L7:
+  70:Core/Src/main.c ****                         SetLED(current_led); // включаем этот светодиод
+ 185              		.loc 1 70 25 view .LVU45
+ 186              	.LBE5:
+ 187              	.LBE2:
+  73:Core/Src/main.c ****                     }
+  74:Core/Src/main.c ****                 }
+  75:Core/Src/main.c ****             }
+  76:Core/Src/main.c ****             else if (button_press_duration >= 4000) // Функция 3: Удержание 4 се�
+ 188              		.loc 1 76 18 is_stmt 1 view .LVU46
+ 189              		.loc 1 76 44 is_stmt 0 view .LVU47
+ 190 00ae 364B     		ldr	r3, .L29+8
+ 191 00b0 1B68     		ldr	r3, [r3]
+ 192              		.loc 1 76 21 view .LVU48
+ 193 00b2 B3F57A6F 		cmp	r3, #4000
+ 194 00b6 04D2     		bcs	.L27
+ 195              	.L6:
+  77:Core/Src/main.c ****             {
+  78:Core/Src/main.c ****                 blink_enabled = !blink_enabled; // переключаем режим мерцани
+  79:Core/Src/main.c ****                 
+  80:Core/Src/main.c ****                 if (!blink_enabled) // если выбран режим постоянного св
+  81:Core/Src/main.c ****                 {
+  82:Core/Src/main.c ****                     SetLED(current_led); // включаем выбранный светодиод
+  83:Core/Src/main.c ****                 }
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 6
+
+
+  84:Core/Src/main.c ****                 
+  85:Core/Src/main.c ****                 for (int i = 0; i < 3; i++) // Визуальное подтверждение - 3 
+  86:Core/Src/main.c ****                 {
+  87:Core/Src/main.c ****                     ClearAllLEDs(); // выключаем все светодиоды
+  88:Core/Src/main.c ****                     for (volatile uint32_t j = 0; j < 500000; j++); // Задержка для 100 
+  89:Core/Src/main.c ****                     SetLED(current_led); // включаем этот светодиод
+  90:Core/Src/main.c ****                     for (volatile uint32_t j = 0; j < 500000; j++); // Задержка для 100 
+  91:Core/Src/main.c ****                 }
+  92:Core/Src/main.c ****             }
+  93:Core/Src/main.c ****             
+  94:Core/Src/main.c ****             button_press_duration = 0; // указываем что кнопка больше не 
+ 196              		.loc 1 94 13 is_stmt 1 view .LVU49
+ 197              		.loc 1 94 35 is_stmt 0 view .LVU50
+ 198 00b8 0023     		movs	r3, #0
+ 199 00ba 334A     		ldr	r2, .L29+8
+ 200 00bc 1360     		str	r3, [r2]
+  95:Core/Src/main.c ****             
+  96:Core/Src/main.c ****             for (volatile uint32_t i = 0; i < 1500000; i++); // защита от дребезга
+ 201              		.loc 1 96 13 is_stmt 1 view .LVU51
+ 202              	.LBB6:
+ 203              		.loc 1 96 18 view .LVU52
+ 204              		.loc 1 96 36 is_stmt 0 view .LVU53
+ 205 00be 0493     		str	r3, [sp, #16]
+ 206              		.loc 1 96 13 view .LVU54
+ 207 00c0 2EE0     		b	.L21
+ 208              	.L27:
+ 209              	.LBE6:
+  78:Core/Src/main.c ****                 
+ 210              		.loc 1 78 17 is_stmt 1 view .LVU55
+  78:Core/Src/main.c ****                 
+ 211              		.loc 1 78 33 is_stmt 0 view .LVU56
+ 212 00c2 324A     		ldr	r2, .L29+12
+ 213 00c4 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 214 00c6 B3FA83F3 		clz	r3, r3
+ 215 00ca 5B09     		lsrs	r3, r3, #5
+  78:Core/Src/main.c ****                 
+ 216              		.loc 1 78 31 view .LVU57
+ 217 00cc 1370     		strb	r3, [r2]
+  80:Core/Src/main.c ****                 {
+ 218              		.loc 1 80 17 is_stmt 1 view .LVU58
+  80:Core/Src/main.c ****                 {
+ 219              		.loc 1 80 21 is_stmt 0 view .LVU59
+ 220 00ce 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  80:Core/Src/main.c ****                 {
+ 221              		.loc 1 80 20 view .LVU60
+ 222 00d0 0BB1     		cbz	r3, .L28
+ 223              	.L14:
+ 224              	.LBB7:
+  67:Core/Src/main.c ****                     {
+ 225              		.loc 1 67 30 view .LVU61
+ 226 00d2 0024     		movs	r4, #0
+ 227 00d4 1AE0     		b	.L15
+ 228              	.L28:
+ 229              	.LBE7:
+  82:Core/Src/main.c ****                 }
+ 230              		.loc 1 82 21 is_stmt 1 view .LVU62
+ 231 00d6 2A4B     		ldr	r3, .L29
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 7
+
+
+ 232 00d8 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 233 00da FFF7FEFF 		bl	SetLED
+ 234              	.LVL14:
+ 235 00de F8E7     		b	.L14
+ 236              	.LVL15:
+ 237              	.L17:
+ 238              	.LBB8:
+ 239              	.LBB9:
+  88:Core/Src/main.c ****                     SetLED(current_led); // включаем этот светодиод
+ 240              		.loc 1 88 64 discriminator 3 view .LVU63
+ 241 00e0 029B     		ldr	r3, [sp, #8]
+ 242 00e2 0133     		adds	r3, r3, #1
+ 243 00e4 0293     		str	r3, [sp, #8]
+ 244              	.L16:
+  88:Core/Src/main.c ****                     SetLED(current_led); // включаем этот светодиод
+ 245              		.loc 1 88 53 discriminator 1 view .LVU64
+ 246 00e6 029A     		ldr	r2, [sp, #8]
+ 247 00e8 2C4B     		ldr	r3, .L29+28
+ 248 00ea 9A42     		cmp	r2, r3
+ 249 00ec F8D9     		bls	.L17
+ 250              	.LBE9:
+  89:Core/Src/main.c ****                     for (volatile uint32_t j = 0; j < 500000; j++); // Задержка для 100 
+ 251              		.loc 1 89 21 view .LVU65
+ 252 00ee 244B     		ldr	r3, .L29
+ 253 00f0 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 254 00f2 FFF7FEFF 		bl	SetLED
+ 255              	.LVL16:
+  90:Core/Src/main.c ****                 }
+ 256              		.loc 1 90 21 view .LVU66
+ 257              	.LBB10:
+  90:Core/Src/main.c ****                 }
+ 258              		.loc 1 90 26 view .LVU67
+  90:Core/Src/main.c ****                 }
+ 259              		.loc 1 90 44 is_stmt 0 view .LVU68
+ 260 00f6 0023     		movs	r3, #0
+ 261 00f8 0393     		str	r3, [sp, #12]
+  90:Core/Src/main.c ****                 }
+ 262              		.loc 1 90 21 view .LVU69
+ 263 00fa 02E0     		b	.L18
+ 264              	.L19:
+  90:Core/Src/main.c ****                 }
+ 265              		.loc 1 90 64 is_stmt 1 discriminator 3 view .LVU70
+ 266 00fc 039B     		ldr	r3, [sp, #12]
+ 267 00fe 0133     		adds	r3, r3, #1
+ 268 0100 0393     		str	r3, [sp, #12]
+ 269              	.L18:
+  90:Core/Src/main.c ****                 }
+ 270              		.loc 1 90 53 discriminator 1 view .LVU71
+ 271 0102 039A     		ldr	r2, [sp, #12]
+ 272 0104 254B     		ldr	r3, .L29+28
+ 273 0106 9A42     		cmp	r2, r3
+ 274 0108 F8D9     		bls	.L19
+ 275              	.LBE10:
+  85:Core/Src/main.c ****                 {
+ 276              		.loc 1 85 41 discriminator 2 view .LVU72
+ 277 010a 0134     		adds	r4, r4, #1
+ 278              	.LVL17:
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 8
+
+
+ 279              	.L15:
+  85:Core/Src/main.c ****                 {
+ 280              		.loc 1 85 35 discriminator 1 view .LVU73
+ 281 010c 022C     		cmp	r4, #2
+ 282 010e D3DC     		bgt	.L6
+  87:Core/Src/main.c ****                     for (volatile uint32_t j = 0; j < 500000; j++); // Задержка для 100 
+ 283              		.loc 1 87 21 view .LVU74
+ 284 0110 FFF7FEFF 		bl	ClearAllLEDs
+ 285              	.LVL18:
+  88:Core/Src/main.c ****                     SetLED(current_led); // включаем этот светодиод
+ 286              		.loc 1 88 21 view .LVU75
+ 287              	.LBB11:
+  88:Core/Src/main.c ****                     SetLED(current_led); // включаем этот светодиод
+ 288              		.loc 1 88 26 view .LVU76
+  88:Core/Src/main.c ****                     SetLED(current_led); // включаем этот светодиод
+ 289              		.loc 1 88 44 is_stmt 0 view .LVU77
+ 290 0114 0023     		movs	r3, #0
+ 291 0116 0293     		str	r3, [sp, #8]
+  88:Core/Src/main.c ****                     SetLED(current_led); // включаем этот светодиод
+ 292              		.loc 1 88 21 view .LVU78
+ 293 0118 E5E7     		b	.L16
+ 294              	.LVL19:
+ 295              	.L22:
+  88:Core/Src/main.c ****                     SetLED(current_led); // включаем этот светодиод
+ 296              		.loc 1 88 21 view .LVU79
+ 297              	.LBE11:
+ 298              	.LBE8:
+ 299              	.LBB12:
+ 300              		.loc 1 96 57 is_stmt 1 discriminator 3 view .LVU80
+ 301 011a 049B     		ldr	r3, [sp, #16]
+ 302 011c 0133     		adds	r3, r3, #1
+ 303 011e 0493     		str	r3, [sp, #16]
+ 304              	.L21:
+ 305              		.loc 1 96 45 discriminator 1 view .LVU81
+ 306 0120 049A     		ldr	r2, [sp, #16]
+ 307 0122 1F4B     		ldr	r3, .L29+32
+ 308 0124 9A42     		cmp	r2, r3
+ 309 0126 F8D9     		bls	.L22
+ 310              	.L2:
+ 311              	.LBE12:
+  97:Core/Src/main.c ****         }
+  98:Core/Src/main.c ****         
+  99:Core/Src/main.c ****         // Небольшая пауза в основном цикле
+ 100:Core/Src/main.c ****         for (volatile uint32_t i = 0; i < 200000; i++);
+ 312              		.loc 1 100 9 view .LVU82
+ 313              	.LBB13:
+ 314              		.loc 1 100 14 view .LVU83
+ 315              		.loc 1 100 32 is_stmt 0 view .LVU84
+ 316 0128 0023     		movs	r3, #0
+ 317 012a 0593     		str	r3, [sp, #20]
+ 318              	.L23:
+ 319              		.loc 1 100 41 is_stmt 1 discriminator 1 view .LVU85
+ 320 012c 059A     		ldr	r2, [sp, #20]
+ 321 012e 1D4B     		ldr	r3, .L29+36
+ 322 0130 9A42     		cmp	r2, r3
+ 323 0132 21D9     		bls	.L24
+ 324              	.L25:
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 9
+
+
+ 325              	.LBE13:
+  32:Core/Src/main.c ****     {
+ 326              		.loc 1 32 5 view .LVU86
+  34:Core/Src/main.c ****         
+ 327              		.loc 1 34 9 view .LVU87
+ 328 0134 FFF7FEFF 		bl	UpdateBlink
+ 329              	.LVL20:
+  36:Core/Src/main.c ****         {
+ 330              		.loc 1 36 9 view .LVU88
+  36:Core/Src/main.c ****         {
+ 331              		.loc 1 36 35 is_stmt 0 view .LVU89
+ 332 0138 134B     		ldr	r3, .L29+8
+ 333 013a 1B68     		ldr	r3, [r3]
+  36:Core/Src/main.c ****         {
+ 334              		.loc 1 36 12 view .LVU90
+ 335 013c 002B     		cmp	r3, #0
+ 336 013e F3D0     		beq	.L2
+  38:Core/Src/main.c ****             {
+ 337              		.loc 1 38 13 is_stmt 1 view .LVU91
+  38:Core/Src/main.c ****             {
+ 338              		.loc 1 38 39 is_stmt 0 view .LVU92
+ 339 0140 114B     		ldr	r3, .L29+8
+ 340 0142 1B68     		ldr	r3, [r3]
+  38:Core/Src/main.c ****             {
+ 341              		.loc 1 38 16 view .LVU93
+ 342 0144 B3F57A7F 		cmp	r3, #1000
+ 343 0148 BFF479AF 		bcs	.L3
+  40:Core/Src/main.c ****                 {
+ 344              		.loc 1 40 17 is_stmt 1 view .LVU94
+  40:Core/Src/main.c ****                 {
+ 345              		.loc 1 40 21 is_stmt 0 view .LVU95
+ 346 014c 0D4B     		ldr	r3, .L29+4
+ 347 014e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  40:Core/Src/main.c ****                 {
+ 348              		.loc 1 40 20 view .LVU96
+ 349 0150 002B     		cmp	r3, #0
+ 350 0152 3FF46AAF 		beq	.L4
+  42:Core/Src/main.c ****                     if (current_led > 5) // если горел последний светодио
+ 351              		.loc 1 42 21 is_stmt 1 view .LVU97
+  42:Core/Src/main.c ****                     if (current_led > 5) // если горел последний светодио
+ 352              		.loc 1 42 32 is_stmt 0 view .LVU98
+ 353 0156 0A4A     		ldr	r2, .L29
+ 354 0158 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 355 015a 0133     		adds	r3, r3, #1
+ 356 015c DBB2     		uxtb	r3, r3
+ 357 015e 1370     		strb	r3, [r2]
+  43:Core/Src/main.c ****                     {
+ 358              		.loc 1 43 21 is_stmt 1 view .LVU99
+  43:Core/Src/main.c ****                     {
+ 359              		.loc 1 43 37 is_stmt 0 view .LVU100
+ 360 0160 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 361 0162 DBB2     		uxtb	r3, r3
+  43:Core/Src/main.c ****                     {
+ 362              		.loc 1 43 24 view .LVU101
+ 363 0164 052B     		cmp	r3, #5
+ 364 0166 7FF65BAF 		bls	.L5
+  45:Core/Src/main.c ****                         leds_enabled = 0; // указываем что все светодиоды 
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 10
+
+
+ 365              		.loc 1 45 25 is_stmt 1 view .LVU102
+  45:Core/Src/main.c ****                         leds_enabled = 0; // указываем что все светодиоды 
+ 366              		.loc 1 45 37 is_stmt 0 view .LVU103
+ 367 016a 0023     		movs	r3, #0
+ 368 016c 1370     		strb	r3, [r2]
+  46:Core/Src/main.c ****                         ClearAllLEDs(); // выключаем все светодиоды
+ 369              		.loc 1 46 25 is_stmt 1 view .LVU104
+  46:Core/Src/main.c ****                         ClearAllLEDs(); // выключаем все светодиоды
+ 370              		.loc 1 46 38 is_stmt 0 view .LVU105
+ 371 016e 054A     		ldr	r2, .L29+4
+ 372 0170 1370     		strb	r3, [r2]
+  47:Core/Src/main.c ****                     }
+ 373              		.loc 1 47 25 is_stmt 1 view .LVU106
+ 374 0172 FFF7FEFF 		bl	ClearAllLEDs
+ 375              	.LVL21:
+ 376 0176 9FE7     		b	.L6
+ 377              	.L24:
+ 378              	.LBB14:
+ 379              		.loc 1 100 52 discriminator 3 view .LVU107
+ 380 0178 059B     		ldr	r3, [sp, #20]
+ 381 017a 0133     		adds	r3, r3, #1
+ 382 017c 0593     		str	r3, [sp, #20]
+ 383 017e D5E7     		b	.L23
+ 384              	.L30:
+ 385              		.align	2
+ 386              	.L29:
+ 387 0180 00000000 		.word	current_led
+ 388 0184 00000000 		.word	leds_enabled
+ 389 0188 00000000 		.word	button_press_duration
+ 390 018c 00000000 		.word	blink_enabled
+ 391 0190 00000000 		.word	blink_frequency
+ 392 0194 56555555 		.word	1431655766
+ 393 0198 3F420F00 		.word	999999
+ 394 019c 1FA10700 		.word	499999
+ 395 01a0 5FE31600 		.word	1499999
+ 396 01a4 3F0D0300 		.word	199999
+ 397              	.LBE14:
+ 398              		.cfi_endproc
+ 399              	.LFE130:
+ 401              		.global	blink_periods
+ 402              		.section	.rodata.blink_periods,"a"
+ 403              		.align	2
+ 406              	blink_periods:
+ 407 0000 C4090000 		.word	2500
+ 408 0004 8D030000 		.word	909
+ 409 0008 0E020000 		.word	526
+ 410              		.global	last_blink_time
+ 411              		.section	.bss.last_blink_time,"aw",%nobits
+ 412              		.align	2
+ 415              	last_blink_time:
+ 416 0000 00000000 		.space	4
+ 417              		.global	leds_enabled
+ 418              		.section	.data.leds_enabled,"aw"
+ 421              	leds_enabled:
+ 422 0000 01       		.byte	1
+ 423              		.global	blink_frequency
+ 424              		.section	.bss.blink_frequency,"aw",%nobits
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 11
+
+
+ 427              	blink_frequency:
+ 428 0000 00       		.space	1
+ 429              		.global	blink_enabled
+ 430              		.section	.data.blink_enabled,"aw"
+ 433              	blink_enabled:
+ 434 0000 01       		.byte	1
+ 435              		.global	current_led
+ 436              		.section	.bss.current_led,"aw",%nobits
+ 439              	current_led:
+ 440 0000 00       		.space	1
+ 441              		.global	systick_counter
+ 442              		.section	.bss.systick_counter,"aw",%nobits
+ 443              		.align	2
+ 446              	systick_counter:
+ 447 0000 00000000 		.space	4
+ 448              		.global	button_state
+ 449              		.section	.bss.button_state,"aw",%nobits
+ 452              	button_state:
+ 453 0000 00       		.space	1
+ 454              		.global	button_press_duration
+ 455              		.section	.bss.button_press_duration,"aw",%nobits
+ 456              		.align	2
+ 459              	button_press_duration:
+ 460 0000 00000000 		.space	4
+ 461              		.global	button_press_start_time
+ 462              		.section	.bss.button_press_start_time,"aw",%nobits
+ 463              		.align	2
+ 466              	button_press_start_time:
+ 467 0000 00000000 		.space	4
+ 468              		.text
+ 469              	.Letext0:
+ 470              		.file 2 "C:/Users/pashk/Desktop/\302\240/tools/Make/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/x
+ 471              		.file 3 "C:/Users/pashk/Desktop/\302\240/tools/Make/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/x
+ 472              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:21     .text.main:00000000 $t
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:27     .text.main:00000000 main
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:387    .text.main:00000180 $d
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:439    .bss.current_led:00000000 current_led
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:421    .data.leds_enabled:00000000 leds_enabled
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:459    .bss.button_press_duration:00000000 button_press_duration
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:433    .data.blink_enabled:00000000 blink_enabled
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:427    .bss.blink_frequency:00000000 blink_frequency
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:406    .rodata.blink_periods:00000000 blink_periods
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:403    .rodata.blink_periods:00000000 $d
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:415    .bss.last_blink_time:00000000 last_blink_time
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:412    .bss.last_blink_time:00000000 $d
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:428    .bss.blink_frequency:00000000 $d
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:440    .bss.current_led:00000000 $d
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:446    .bss.systick_counter:00000000 systick_counter
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:443    .bss.systick_counter:00000000 $d
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:452    .bss.button_state:00000000 button_state
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:453    .bss.button_state:00000000 $d
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:456    .bss.button_press_duration:00000000 $d
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:466    .bss.button_press_start_time:00000000 button_press_start_time
+C:\Users\pashk\AppData\Local\Temp\ccvbFVzL.s:463    .bss.button_press_start_time:00000000 $d
+
+UNDEFINED SYMBOLS
+Clock_Init_HSI_PLL_100MHz
+MCO_init
+SysTick_Init
+GPIO_Init
+ClearAllLEDs
+SetLED
+UpdateBlink
