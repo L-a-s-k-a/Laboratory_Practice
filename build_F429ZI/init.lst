@@ -1,0 +1,531 @@
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.PD4_Set_Input_PullUp,"ax",%progbits
+  21              		.align	1
+  22              		.global	PD4_Set_Input_PullUp
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	PD4_Set_Input_PullUp:
+  28              	.LFB131:
+   1:Core/Src/init.c **** // #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** // void GPIO_Ini_Self_Def(void)
+   4:Core/Src/init.c **** // {
+   5:Core/Src/init.c **** //     SET_BIT_SELF(RCC_AHB1ENR,RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); /*|按位取或,a|=b代
+   6:Core/Src/init.c **** //     SET_BIT_SELF(GPIOB_MODER, GPIO_PIN_7_OUT); /*设置pb0=7 MODER0为01(General purpose output 
+   7:Core/Src/init.c **** //     SET_BIT_SELF(GPIOB_OSPEEDR, GPIO_PIN_7_MED);
+   8:Core/Src/init.c **** //     SET_BIT_SELF(GPIOB_BSRR, GPIO_PIN_7_RESET);
+   9:Core/Src/init.c **** //      // 配置 PC13 和 PC6 为输入模式
+  10:Core/Src/init.c **** //     GPIOC->MODER &= ~(GPIO_MODER_MODE13);
+  11:Core/Src/init.c **** //     // // 配置为上拉模式
+  12:Core/Src/init.c **** //     // GPIOC->PUPDR |= (GPIO_PUPDR_PUPD13_0 | GPIO_PUPDR_PUPD6_0);
+  13:Core/Src/init.c **** 
+  14:Core/Src/init.c **** // }
+  15:Core/Src/init.c **** 
+  16:Core/Src/init.c **** // void GPIO_Ini_CMSIS(void)
+  17:Core/Src/init.c **** // {
+  18:Core/Src/init.c **** //     /*使用gpiob点亮pb14红色led */
+  19:Core/Src/init.c **** //     SET_BIT(GPIOB->MODER,GPIO_MODER_MODE14_0);
+  20:Core/Src/init.c **** //     CLEAR_BIT(GPIOB->OTYPER,GPIO_OTYPER_OT14); /*重置pb14 OTYPER为0(Output push-pull)？？*/
+  21:Core/Src/init.c **** //     SET_BIT(GPIOB->OSPEEDR,GPIO_OSPEEDER_OSPEEDR14_0);
+  22:Core/Src/init.c **** //     SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR14);
+  23:Core/Src/init.c **** 
+  24:Core/Src/init.c **** //     /*---SET PB0 FOR GREEN LED*/
+  25:Core/Src/init.c **** //     SET_BIT(GPIOB->MODER,GPIO_MODER_MODE0_0); /*设置pb0 MODER0为01(General purpose output mod
+  26:Core/Src/init.c **** //     SET_BIT(GPIOB->OSPEEDR,GPIO_OSPEEDER_OSPEEDR0_0); /*设置pb0 设置端⼝引脚的速度为
+  27:Core/Src/init.c **** //     SET_BIT(GPIOB->BSRR,GPIO_BSRR_BR0); /*设置pb0 bsrr寄存器复位br0 （置位bs0）*/
+  28:Core/Src/init.c **** 
+  29:Core/Src/init.c **** // }
+  30:Core/Src/init.c **** 
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 2
+
+
+  31:Core/Src/init.c **** 
+  32:Core/Src/init.c **** #include "init.h"
+  33:Core/Src/init.c **** 
+  34:Core/Src/init.c **** // GPIO初始化函数 - 直接操作寄存器方式
+  35:Core/Src/init.c **** 
+  36:Core/Src/init.c **** void GPIO_Init_Memory(void){
+  37:Core/Src/init.c **** 
+  38:Core/Src/init.c ****     //第一步：启用GPIO时钟 
+  39:Core/Src/init.c **** 
+  40:Core/Src/init.c ****     volatile uint32_t *rcc_ahb1enr = (volatile uint32_t *)(RCC_BASE_ADDR + AHB1ENR_OFFSET);
+  41:Core/Src/init.c ****     // 设置GPIOB、GPIOD、GPIOG的时钟使能位（bit1、bit3、bit6）
+  42:Core/Src/init.c ****     *rcc_ahb1enr |= (1 << 1) | (1 << 3) | (1 << 6);  // 使能GPIOB、GPIOD、GPIOG时钟
+  43:Core/Src/init.c **** 
+  44:Core/Src/init.c ****     //第二步：配置PD4为输入模式+上拉（正常模式，避免引脚浮空）
+  45:Core/Src/init.c ****     PD4_Set_Input_PullUp();
+  46:Core/Src/init.c **** 
+  47:Core/Src/init.c ****     //第三步：配置PG3为输入模式（按键引脚，启用内部上拉）
+  48:Core/Src/init.c ****     volatile uint32_t *pg3_moder = (volatile uint32_t *)(GPIOG_BASE_ADDR + MODER_OFFSET);
+  49:Core/Src/init.c ****     volatile uint32_t *pg3_pupdr = (volatile uint32_t *)(GPIOG_BASE_ADDR + PUPDR_OFFSET);
+  50:Core/Src/init.c ****     // 配置PG3引脚模式：清除原来的设置，设置为输入模式(00)
+  51:Core/Src/init.c ****     *pg3_moder &= ~(3 << (3 * 2));       // 设置PG3为输入模式
+  52:Core/Src/init.c ****     // 配置PG3上拉下拉：先清除原来的设置，再设置为上拉模式(01)
+  53:Core/Src/init.c ****     *pg3_pupdr = (*pg3_pupdr & ~(3 << (3 * 2))) | (1 << (3 * 2));  // 设置PG3内部上拉电阻
+  54:Core/Src/init.c **** 
+  55:Core/Src/init.c ****     //第四步：配置PB14 (LED2) - 初始为低电平（LED熄灭）
+  56:Core/Src/init.c ****     volatile uint32_t *pb14_moder = (volatile uint32_t *)(GPIOB_BASE_ADDR + MODER_OFFSET);
+  57:Core/Src/init.c ****     volatile uint32_t *pb14_otyper = (volatile uint32_t *)(GPIOB_BASE_ADDR + OTYPER_OFFSET);
+  58:Core/Src/init.c ****     volatile uint32_t *pb14_ospeedr = (volatile uint32_t *)(GPIOB_BASE_ADDR + OSPEEDR_OFFSET);
+  59:Core/Src/init.c ****     volatile uint32_t *pb14_pupdr = (volatile uint32_t *)(GPIOB_BASE_ADDR + PUPDR_OFFSET);
+  60:Core/Src/init.c ****     volatile uint32_t *pb14_bsrr = (volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET);
+  61:Core/Src/init.c **** 
+  62:Core/Src/init.c ****     // 配置PB14引脚模式：先清除原来的设置，再设置为输出模式(01)
+  63:Core/Src/init.c ****     *pb14_moder = (*pb14_moder & ~(3 << (14 * 2))) | (1 << (14 * 2));      // 设置PB14为通用�
+  64:Core/Src/init.c ****     // 配置PB14输出类型：清除第14位，设置为推挽输出(0)
+  65:Core/Src/init.c ****     *pb14_otyper &= ~(1 << 14);                                            // 设置PB14为推挽�
+  66:Core/Src/init.c ****     // 配置PB14输出速度：先清除原来的设置，再设置为高速模式(10)
+  67:Core/Src/init.c ****     *pb14_ospeedr = (*pb14_ospeedr & ~(3 << (14 * 2))) | (2 << (14 * 2));  // 设置PB14为高速�
+  68:Core/Src/init.c ****     // 配置PB14上拉下拉：清除第14位的上下拉设置，设置为无上下拉(00)
+  69:Core/Src/init.c ****     *pb14_pupdr &= ~(3 << (14 * 2));                                       // 禁用PB14内部上�
+  70:Core/Src/init.c ****     // 设置PB14初始输出低电平（LED熄灭）
+  71:Core/Src/init.c ****     *pb14_bsrr = (1U << (14 + 16U));                                       // PB14输出低电平
+  72:Core/Src/init.c **** 
+  73:Core/Src/init.c ****     // 第五步：配置PB7 (LED3)使用自定义宏 - 初始为低电平（LED熄灭）
+  74:Core/Src/init.c ****     PB7_MODER_OUTPUT();        // 宏：设置PB7为输出模式
+  75:Core/Src/init.c ****     PB7_OTYPER_PUSHPULL();     // 宏：设置PB7为推挽输出
+  76:Core/Src/init.c ****     PB7_OSPEEDR_HIGH();        // 宏：设置PB7为高速模式
+  77:Core/Src/init.c ****     PB7_PUPDR_NOPULL();        // 宏：禁用PB7内部上下拉电阻
+  78:Core/Src/init.c ****     PB7_LED_OFF();             // 宏：PB7输出低电平（LED熄灭）
+  79:Core/Src/init.c **** 
+  80:Core/Src/init.c ****     // 第六步：配置PB0 (LED4) - 使用真正的直接内存访问，初始为低电平（LED�
+  81:Core/Src/init.c ****     volatile uint32_t *pb0_moder = (volatile uint32_t *)(GPIOB_BASE_ADDR + MODER_OFFSET);
+  82:Core/Src/init.c ****     volatile uint32_t *pb0_otyper = (volatile uint32_t *)(GPIOB_BASE_ADDR + OTYPER_OFFSET);
+  83:Core/Src/init.c ****     volatile uint32_t *pb0_ospeedr = (volatile uint32_t *)(GPIOB_BASE_ADDR + OSPEEDR_OFFSET);
+  84:Core/Src/init.c ****     volatile uint32_t *pb0_pupdr = (volatile uint32_t *)(GPIOB_BASE_ADDR + PUPDR_OFFSET);
+  85:Core/Src/init.c ****     volatile uint32_t *pb0_bsrr = (volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET);
+  86:Core/Src/init.c **** 
+  87:Core/Src/init.c ****     // 直接内存访问配置PB0
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 3
+
+
+  88:Core/Src/init.c ****     *pb0_moder = (*pb0_moder & ~(3 << (0 * 2))) | (1 << (0 * 2));      // 设置PB0为通用输出�
+  89:Core/Src/init.c **** 
+  90:Core/Src/init.c ****     *pb0_otyper &= ~(1 << 0);                                          // 设置PB0为推挽输出
+  91:Core/Src/init.c **** 
+  92:Core/Src/init.c ****     *pb0_ospeedr = (*pb0_ospeedr & ~(3 << (0 * 2))) | (2 << (0 * 2));  // 设置PB0为高速输出
+  93:Core/Src/init.c **** 
+  94:Core/Src/init.c ****     *pb0_pupdr &= ~(3 << (0 * 2));                                     // 禁用PB0内部上下拉�
+  95:Core/Src/init.c ****     // 设置PB0初始输出低电平（LED熄灭）
+  96:Core/Src/init.c ****     *pb0_bsrr = (1U << (0 + 16U));                                     // PB0输出低电平
+  97:Core/Src/init.c **** }
+  98:Core/Src/init.c **** 
+  99:Core/Src/init.c **** 
+ 100:Core/Src/init.c **** //设置PD4为输入模式+上拉（正常模式，用于按键检测）
+ 101:Core/Src/init.c **** 
+ 102:Core/Src/init.c **** 
+ 103:Core/Src/init.c **** void PD4_Set_Input_PullUp(void) {
+  29              		.loc 1 103 33 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+ 104:Core/Src/init.c ****     volatile uint32_t *pd4_moder = (volatile uint32_t *)(GPIOD_BASE_ADDR + MODER_OFFSET);
+  34              		.loc 1 104 5 view .LVU1
+  35              	.LVL0:
+ 105:Core/Src/init.c ****     volatile uint32_t *pd4_pupdr = (volatile uint32_t *)(GPIOD_BASE_ADDR + PUPDR_OFFSET);
+  36              		.loc 1 105 5 view .LVU2
+ 106:Core/Src/init.c ****     // 配置PD4引脚模式：清除原来的设置，设置为输入模式(00)
+ 107:Core/Src/init.c ****     *pd4_moder &= ~(3 << (4 * 2));       // 设置PD4为输入模式
+  37              		.loc 1 107 5 view .LVU3
+  38 0000 094A     		ldr	r2, .L2
+  39 0002 D2F8003C 		ldr	r3, [r2, #3072]
+  40              		.loc 1 107 16 is_stmt 0 view .LVU4
+  41 0006 23F44073 		bic	r3, r3, #768
+  42 000a C2F8003C 		str	r3, [r2, #3072]
+ 108:Core/Src/init.c ****     // 配置PD4上拉下拉：先清除原来的设置，再设置为上拉模式(01)
+ 109:Core/Src/init.c ****     *pd4_pupdr = (*pd4_pupdr & ~(3 << (4 * 2))) | (1 << (4 * 2));  // 设置PD4内部上拉电阻
+  43              		.loc 1 109 5 is_stmt 1 view .LVU5
+  44              		.loc 1 109 19 is_stmt 0 view .LVU6
+  45 000e D2F80C3C 		ldr	r3, [r2, #3084]
+  46              		.loc 1 109 30 view .LVU7
+  47 0012 23F44073 		bic	r3, r3, #768
+  48              		.loc 1 109 49 view .LVU8
+  49 0016 43F48073 		orr	r3, r3, #256
+  50              		.loc 1 109 16 view .LVU9
+  51 001a C2F80C3C 		str	r3, [r2, #3084]
+ 110:Core/Src/init.c **** 
+ 111:Core/Src/init.c ****     // 更新PD4模式状态
+ 112:Core/Src/init.c ****     g_pd4_mode_state = 0;  // 输入上拉模式
+  52              		.loc 1 112 5 is_stmt 1 view .LVU10
+  53              		.loc 1 112 22 is_stmt 0 view .LVU11
+  54 001e 034B     		ldr	r3, .L2+4
+  55 0020 0022     		movs	r2, #0
+  56 0022 1A70     		strb	r2, [r3]
+ 113:Core/Src/init.c **** }
+  57              		.loc 1 113 1 view .LVU12
+  58 0024 7047     		bx	lr
+  59              	.L3:
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 4
+
+
+  60 0026 00BF     		.align	2
+  61              	.L2:
+  62 0028 00000240 		.word	1073872896
+  63 002c 00000000 		.word	g_pd4_mode_state
+  64              		.cfi_endproc
+  65              	.LFE131:
+  67              		.section	.text.GPIO_Init_Memory,"ax",%progbits
+  68              		.align	1
+  69              		.global	GPIO_Init_Memory
+  70              		.syntax unified
+  71              		.thumb
+  72              		.thumb_func
+  74              	GPIO_Init_Memory:
+  75              	.LFB130:
+  36:Core/Src/init.c **** 
+  76              		.loc 1 36 28 is_stmt 1 view -0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80 0000 08B5     		push	{r3, lr}
+  81              	.LCFI0:
+  82              		.cfi_def_cfa_offset 8
+  83              		.cfi_offset 3, -8
+  84              		.cfi_offset 14, -4
+  40:Core/Src/init.c ****     // 设置GPIOB、GPIOD、GPIOG的时钟使能位（bit1、bit3、bit6）
+  85              		.loc 1 40 5 view .LVU14
+  86              	.LVL1:
+  42:Core/Src/init.c **** 
+  87              		.loc 1 42 5 view .LVU15
+  88 0002 394A     		ldr	r2, .L6
+  89 0004 D2F83038 		ldr	r3, [r2, #2096]
+  42:Core/Src/init.c **** 
+  90              		.loc 1 42 18 is_stmt 0 view .LVU16
+  91 0008 43F04A03 		orr	r3, r3, #74
+  92 000c C2F83038 		str	r3, [r2, #2096]
+  45:Core/Src/init.c **** 
+  93              		.loc 1 45 5 is_stmt 1 view .LVU17
+  94 0010 FFF7FEFF 		bl	PD4_Set_Input_PullUp
+  95              	.LVL2:
+  48:Core/Src/init.c ****     volatile uint32_t *pg3_pupdr = (volatile uint32_t *)(GPIOG_BASE_ADDR + PUPDR_OFFSET);
+  96              		.loc 1 48 5 view .LVU18
+  49:Core/Src/init.c ****     // 配置PG3引脚模式：清除原来的设置，设置为输入模式(00)
+  97              		.loc 1 49 5 view .LVU19
+  51:Core/Src/init.c ****     // 配置PG3上拉下拉：先清除原来的设置，再设置为上拉模式(01)
+  98              		.loc 1 51 5 view .LVU20
+  99 0014 354A     		ldr	r2, .L6+4
+ 100 0016 D2F80038 		ldr	r3, [r2, #2048]
+  51:Core/Src/init.c ****     // 配置PG3上拉下拉：先清除原来的设置，再设置为上拉模式(01)
+ 101              		.loc 1 51 16 is_stmt 0 view .LVU21
+ 102 001a 23F0C003 		bic	r3, r3, #192
+ 103 001e C2F80038 		str	r3, [r2, #2048]
+  53:Core/Src/init.c **** 
+ 104              		.loc 1 53 5 is_stmt 1 view .LVU22
+  53:Core/Src/init.c **** 
+ 105              		.loc 1 53 19 is_stmt 0 view .LVU23
+ 106 0022 D2F80C38 		ldr	r3, [r2, #2060]
+  53:Core/Src/init.c **** 
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 5
+
+
+ 107              		.loc 1 53 30 view .LVU24
+ 108 0026 23F0C003 		bic	r3, r3, #192
+  53:Core/Src/init.c **** 
+ 109              		.loc 1 53 49 view .LVU25
+ 110 002a 43F04003 		orr	r3, r3, #64
+  53:Core/Src/init.c **** 
+ 111              		.loc 1 53 16 view .LVU26
+ 112 002e C2F80C38 		str	r3, [r2, #2060]
+  56:Core/Src/init.c ****     volatile uint32_t *pb14_otyper = (volatile uint32_t *)(GPIOB_BASE_ADDR + OTYPER_OFFSET);
+ 113              		.loc 1 56 5 is_stmt 1 view .LVU27
+ 114              	.LVL3:
+  57:Core/Src/init.c ****     volatile uint32_t *pb14_ospeedr = (volatile uint32_t *)(GPIOB_BASE_ADDR + OSPEEDR_OFFSET);
+ 115              		.loc 1 57 5 view .LVU28
+  58:Core/Src/init.c ****     volatile uint32_t *pb14_pupdr = (volatile uint32_t *)(GPIOB_BASE_ADDR + PUPDR_OFFSET);
+ 116              		.loc 1 58 5 view .LVU29
+  59:Core/Src/init.c ****     volatile uint32_t *pb14_bsrr = (volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET);
+ 117              		.loc 1 59 5 view .LVU30
+  60:Core/Src/init.c **** 
+ 118              		.loc 1 60 5 view .LVU31
+  63:Core/Src/init.c ****     // 配置PB14输出类型：清除第14位，设置为推挽输出(0)
+ 119              		.loc 1 63 5 view .LVU32
+  63:Core/Src/init.c ****     // 配置PB14输出类型：清除第14位，设置为推挽输出(0)
+ 120              		.loc 1 63 20 is_stmt 0 view .LVU33
+ 121 0032 2F4B     		ldr	r3, .L6+8
+ 122 0034 D3F80024 		ldr	r2, [r3, #1024]
+  63:Core/Src/init.c ****     // 配置PB14输出类型：清除第14位，设置为推挽输出(0)
+ 123              		.loc 1 63 32 view .LVU34
+ 124 0038 22F04052 		bic	r2, r2, #805306368
+  63:Core/Src/init.c ****     // 配置PB14输出类型：清除第14位，设置为推挽输出(0)
+ 125              		.loc 1 63 52 view .LVU35
+ 126 003c 42F08052 		orr	r2, r2, #268435456
+  63:Core/Src/init.c ****     // 配置PB14输出类型：清除第14位，设置为推挽输出(0)
+ 127              		.loc 1 63 17 view .LVU36
+ 128 0040 C3F80024 		str	r2, [r3, #1024]
+  65:Core/Src/init.c ****     // 配置PB14输出速度：先清除原来的设置，再设置为高速模式(10)
+ 129              		.loc 1 65 5 is_stmt 1 view .LVU37
+ 130 0044 D3F80424 		ldr	r2, [r3, #1028]
+  65:Core/Src/init.c ****     // 配置PB14输出速度：先清除原来的设置，再设置为高速模式(10)
+ 131              		.loc 1 65 18 is_stmt 0 view .LVU38
+ 132 0048 22F48042 		bic	r2, r2, #16384
+ 133 004c C3F80424 		str	r2, [r3, #1028]
+  67:Core/Src/init.c ****     // 配置PB14上拉下拉：清除第14位的上下拉设置，设置为无上下拉(00)
+ 134              		.loc 1 67 5 is_stmt 1 view .LVU39
+  67:Core/Src/init.c ****     // 配置PB14上拉下拉：清除第14位的上下拉设置，设置为无上下拉(00)
+ 135              		.loc 1 67 22 is_stmt 0 view .LVU40
+ 136 0050 D3F80824 		ldr	r2, [r3, #1032]
+  67:Core/Src/init.c ****     // 配置PB14上拉下拉：清除第14位的上下拉设置，设置为无上下拉(00)
+ 137              		.loc 1 67 36 view .LVU41
+ 138 0054 22F04052 		bic	r2, r2, #805306368
+  67:Core/Src/init.c ****     // 配置PB14上拉下拉：清除第14位的上下拉设置，设置为无上下拉(00)
+ 139              		.loc 1 67 56 view .LVU42
+ 140 0058 42F00052 		orr	r2, r2, #536870912
+  67:Core/Src/init.c ****     // 配置PB14上拉下拉：清除第14位的上下拉设置，设置为无上下拉(00)
+ 141              		.loc 1 67 19 view .LVU43
+ 142 005c C3F80824 		str	r2, [r3, #1032]
+  69:Core/Src/init.c ****     // 设置PB14初始输出低电平（LED熄灭）
+ 143              		.loc 1 69 5 is_stmt 1 view .LVU44
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 6
+
+
+ 144 0060 D3F80C24 		ldr	r2, [r3, #1036]
+  69:Core/Src/init.c ****     // 设置PB14初始输出低电平（LED熄灭）
+ 145              		.loc 1 69 17 is_stmt 0 view .LVU45
+ 146 0064 22F04052 		bic	r2, r2, #805306368
+ 147 0068 C3F80C24 		str	r2, [r3, #1036]
+  71:Core/Src/init.c **** 
+ 148              		.loc 1 71 5 is_stmt 1 view .LVU46
+  71:Core/Src/init.c **** 
+ 149              		.loc 1 71 16 is_stmt 0 view .LVU47
+ 150 006c 4FF08042 		mov	r2, #1073741824
+ 151 0070 C3F81824 		str	r2, [r3, #1048]
+  74:Core/Src/init.c ****     PB7_OTYPER_PUSHPULL();     // 宏：设置PB7为推挽输出
+ 152              		.loc 1 74 5 is_stmt 1 view .LVU48
+ 153 0074 02F50132 		add	r2, r2, #132096
+ 154 0078 1168     		ldr	r1, [r2]
+ 155 007a 21F44041 		bic	r1, r1, #49152
+ 156 007e 41F48041 		orr	r1, r1, #16384
+ 157 0082 1160     		str	r1, [r2]
+  75:Core/Src/init.c ****     PB7_OSPEEDR_HIGH();        // 宏：设置PB7为高速模式
+ 158              		.loc 1 75 5 view .LVU49
+ 159 0084 5168     		ldr	r1, [r2, #4]
+ 160 0086 21F08001 		bic	r1, r1, #128
+ 161 008a 5160     		str	r1, [r2, #4]
+  76:Core/Src/init.c ****     PB7_PUPDR_NOPULL();        // 宏：禁用PB7内部上下拉电阻
+ 162              		.loc 1 76 5 view .LVU50
+ 163 008c 9168     		ldr	r1, [r2, #8]
+ 164 008e 21F44041 		bic	r1, r1, #49152
+ 165 0092 41F40041 		orr	r1, r1, #32768
+ 166 0096 9160     		str	r1, [r2, #8]
+  77:Core/Src/init.c ****     PB7_LED_OFF();             // 宏：PB7输出低电平（LED熄灭）
+ 167              		.loc 1 77 5 view .LVU51
+ 168 0098 D168     		ldr	r1, [r2, #12]
+ 169 009a 21F44041 		bic	r1, r1, #49152
+ 170 009e D160     		str	r1, [r2, #12]
+  78:Core/Src/init.c **** 
+ 171              		.loc 1 78 5 view .LVU52
+ 172 00a0 4FF40001 		mov	r1, #8388608
+ 173 00a4 9161     		str	r1, [r2, #24]
+  81:Core/Src/init.c ****     volatile uint32_t *pb0_otyper = (volatile uint32_t *)(GPIOB_BASE_ADDR + OTYPER_OFFSET);
+ 174              		.loc 1 81 5 view .LVU53
+ 175              	.LVL4:
+  82:Core/Src/init.c ****     volatile uint32_t *pb0_ospeedr = (volatile uint32_t *)(GPIOB_BASE_ADDR + OSPEEDR_OFFSET);
+ 176              		.loc 1 82 5 view .LVU54
+  83:Core/Src/init.c ****     volatile uint32_t *pb0_pupdr = (volatile uint32_t *)(GPIOB_BASE_ADDR + PUPDR_OFFSET);
+ 177              		.loc 1 83 5 view .LVU55
+  84:Core/Src/init.c ****     volatile uint32_t *pb0_bsrr = (volatile uint32_t *)(GPIOB_BASE_ADDR + BSRR_OFFSET);
+ 178              		.loc 1 84 5 view .LVU56
+  85:Core/Src/init.c **** 
+ 179              		.loc 1 85 5 view .LVU57
+  88:Core/Src/init.c **** 
+ 180              		.loc 1 88 5 view .LVU58
+  88:Core/Src/init.c **** 
+ 181              		.loc 1 88 19 is_stmt 0 view .LVU59
+ 182 00a6 D3F80024 		ldr	r2, [r3, #1024]
+  88:Core/Src/init.c **** 
+ 183              		.loc 1 88 30 view .LVU60
+ 184 00aa 22F00302 		bic	r2, r2, #3
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 7
+
+
+  88:Core/Src/init.c **** 
+ 185              		.loc 1 88 49 view .LVU61
+ 186 00ae 42F00102 		orr	r2, r2, #1
+  88:Core/Src/init.c **** 
+ 187              		.loc 1 88 16 view .LVU62
+ 188 00b2 C3F80024 		str	r2, [r3, #1024]
+  90:Core/Src/init.c **** 
+ 189              		.loc 1 90 5 is_stmt 1 view .LVU63
+ 190 00b6 D3F80424 		ldr	r2, [r3, #1028]
+  90:Core/Src/init.c **** 
+ 191              		.loc 1 90 17 is_stmt 0 view .LVU64
+ 192 00ba 22F00102 		bic	r2, r2, #1
+ 193 00be C3F80424 		str	r2, [r3, #1028]
+  92:Core/Src/init.c **** 
+ 194              		.loc 1 92 5 is_stmt 1 view .LVU65
+  92:Core/Src/init.c **** 
+ 195              		.loc 1 92 21 is_stmt 0 view .LVU66
+ 196 00c2 D3F80824 		ldr	r2, [r3, #1032]
+  92:Core/Src/init.c **** 
+ 197              		.loc 1 92 34 view .LVU67
+ 198 00c6 22F00302 		bic	r2, r2, #3
+  92:Core/Src/init.c **** 
+ 199              		.loc 1 92 53 view .LVU68
+ 200 00ca 42F00202 		orr	r2, r2, #2
+  92:Core/Src/init.c **** 
+ 201              		.loc 1 92 18 view .LVU69
+ 202 00ce C3F80824 		str	r2, [r3, #1032]
+  94:Core/Src/init.c ****     // 设置PB0初始输出低电平（LED熄灭）
+ 203              		.loc 1 94 5 is_stmt 1 view .LVU70
+ 204 00d2 D3F80C24 		ldr	r2, [r3, #1036]
+  94:Core/Src/init.c ****     // 设置PB0初始输出低电平（LED熄灭）
+ 205              		.loc 1 94 16 is_stmt 0 view .LVU71
+ 206 00d6 22F00302 		bic	r2, r2, #3
+ 207 00da C3F80C24 		str	r2, [r3, #1036]
+  96:Core/Src/init.c **** }
+ 208              		.loc 1 96 5 is_stmt 1 view .LVU72
+  96:Core/Src/init.c **** }
+ 209              		.loc 1 96 15 is_stmt 0 view .LVU73
+ 210 00de 4FF48032 		mov	r2, #65536
+ 211 00e2 C3F81824 		str	r2, [r3, #1048]
+  97:Core/Src/init.c **** 
+ 212              		.loc 1 97 1 view .LVU74
+ 213 00e6 08BD     		pop	{r3, pc}
+ 214              	.L7:
+ 215              		.align	2
+ 216              	.L6:
+ 217 00e8 00300240 		.word	1073885184
+ 218 00ec 00100240 		.word	1073876992
+ 219 00f0 00000240 		.word	1073872896
+ 220              		.cfi_endproc
+ 221              	.LFE130:
+ 223              		.section	.text.PD4_Set_Output_High,"ax",%progbits
+ 224              		.align	1
+ 225              		.global	PD4_Set_Output_High
+ 226              		.syntax unified
+ 227              		.thumb
+ 228              		.thumb_func
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 8
+
+
+ 230              	PD4_Set_Output_High:
+ 231              	.LFB132:
+ 114:Core/Src/init.c **** //设置PD4为输出模式+高电平
+ 115:Core/Src/init.c **** void PD4_Set_Output_High(void) {
+ 232              		.loc 1 115 32 is_stmt 1 view -0
+ 233              		.cfi_startproc
+ 234              		@ args = 0, pretend = 0, frame = 0
+ 235              		@ frame_needed = 0, uses_anonymous_args = 0
+ 236              		@ link register save eliminated.
+ 116:Core/Src/init.c ****     volatile uint32_t *pd4_moder = (volatile uint32_t *)(GPIOD_BASE_ADDR + MODER_OFFSET);
+ 237              		.loc 1 116 5 view .LVU76
+ 238              	.LVL5:
+ 117:Core/Src/init.c ****     volatile uint32_t *pd4_otyper = (volatile uint32_t *)(GPIOD_BASE_ADDR + OTYPER_OFFSET);
+ 239              		.loc 1 117 5 view .LVU77
+ 118:Core/Src/init.c ****     volatile uint32_t *pd4_ospeedr = (volatile uint32_t *)(GPIOD_BASE_ADDR + OSPEEDR_OFFSET);
+ 240              		.loc 1 118 5 view .LVU78
+ 119:Core/Src/init.c ****     volatile uint32_t *pd4_pupdr = (volatile uint32_t *)(GPIOD_BASE_ADDR + PUPDR_OFFSET);
+ 241              		.loc 1 119 5 view .LVU79
+ 120:Core/Src/init.c ****     volatile uint32_t *pd4_bsrr = (volatile uint32_t *)(GPIOD_BASE_ADDR + BSRR_OFFSET);
+ 242              		.loc 1 120 5 view .LVU80
+ 121:Core/Src/init.c **** 
+ 122:Core/Src/init.c ****     // 配置PD4引脚模式：先清除原来的设置，再设置为输出模式(01)
+ 123:Core/Src/init.c ****     *pd4_moder = (*pd4_moder & ~(3 << (4 * 2))) | (1 << (4 * 2));      // 设置PD4为通用输出�
+ 243              		.loc 1 123 5 view .LVU81
+ 244              		.loc 1 123 19 is_stmt 0 view .LVU82
+ 245 0000 114B     		ldr	r3, .L9
+ 246 0002 D3F8002C 		ldr	r2, [r3, #3072]
+ 247              		.loc 1 123 30 view .LVU83
+ 248 0006 22F44072 		bic	r2, r2, #768
+ 249              		.loc 1 123 49 view .LVU84
+ 250 000a 42F48072 		orr	r2, r2, #256
+ 251              		.loc 1 123 16 view .LVU85
+ 252 000e C3F8002C 		str	r2, [r3, #3072]
+ 124:Core/Src/init.c ****     // 配置PD4输出类型：清除第4位，设置为推挽输出(0)
+ 125:Core/Src/init.c ****     *pd4_otyper &= ~(1 << 4);                                          // 设置PD4为推挽输出
+ 253              		.loc 1 125 5 is_stmt 1 view .LVU86
+ 254 0012 D3F8042C 		ldr	r2, [r3, #3076]
+ 255              		.loc 1 125 17 is_stmt 0 view .LVU87
+ 256 0016 22F01002 		bic	r2, r2, #16
+ 257 001a C3F8042C 		str	r2, [r3, #3076]
+ 126:Core/Src/init.c ****     // 配置PD4输出速度：先清除原来的设置，再设置为高速模式(10)
+ 127:Core/Src/init.c ****     *pd4_ospeedr = (*pd4_ospeedr & ~(3 << (4 * 2))) | (2 << (4 * 2));  // 设置PD4为高速输出
+ 258              		.loc 1 127 5 is_stmt 1 view .LVU88
+ 259              		.loc 1 127 21 is_stmt 0 view .LVU89
+ 260 001e D3F8082C 		ldr	r2, [r3, #3080]
+ 261              		.loc 1 127 34 view .LVU90
+ 262 0022 22F44072 		bic	r2, r2, #768
+ 263              		.loc 1 127 53 view .LVU91
+ 264 0026 42F40072 		orr	r2, r2, #512
+ 265              		.loc 1 127 18 view .LVU92
+ 266 002a C3F8082C 		str	r2, [r3, #3080]
+ 128:Core/Src/init.c ****     // 配置PD4上拉下拉：清除第4位的上下拉设置，设置为无上下拉(00)
+ 129:Core/Src/init.c ****     *pd4_pupdr &= ~(3 << (4 * 2));                                     // 禁用PD4内部上下拉�
+ 267              		.loc 1 129 5 is_stmt 1 view .LVU93
+ 268 002e D3F80C2C 		ldr	r2, [r3, #3084]
+ 269              		.loc 1 129 16 is_stmt 0 view .LVU94
+ 270 0032 22F44072 		bic	r2, r2, #768
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 9
+
+
+ 271 0036 C3F80C2C 		str	r2, [r3, #3084]
+ 130:Core/Src/init.c ****     // 设置PD4输出高电平
+ 131:Core/Src/init.c ****     *pd4_bsrr = (1U << 4);                                             // 设置PD4输出高电平
+ 272              		.loc 1 131 5 is_stmt 1 view .LVU95
+ 273              		.loc 1 131 15 is_stmt 0 view .LVU96
+ 274 003a 1022     		movs	r2, #16
+ 275 003c C3F8182C 		str	r2, [r3, #3096]
+ 132:Core/Src/init.c **** 
+ 133:Core/Src/init.c ****     // 更新PD4模式状态
+ 134:Core/Src/init.c ****     g_pd4_mode_state = 1;  // 输出高电平模式//////
+ 276              		.loc 1 134 5 is_stmt 1 view .LVU97
+ 277              		.loc 1 134 22 is_stmt 0 view .LVU98
+ 278 0040 024B     		ldr	r3, .L9+4
+ 279 0042 0122     		movs	r2, #1
+ 280 0044 1A70     		strb	r2, [r3]
+ 135:Core/Src/init.c **** }
+ 281              		.loc 1 135 1 view .LVU99
+ 282 0046 7047     		bx	lr
+ 283              	.L10:
+ 284              		.align	2
+ 285              	.L9:
+ 286 0048 00000240 		.word	1073872896
+ 287 004c 00000000 		.word	g_pd4_mode_state
+ 288              		.cfi_endproc
+ 289              	.LFE132:
+ 291              		.text
+ 292              	.Letext0:
+ 293              		.file 2 "E:/make/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 294              		.file 3 "E:/make/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 295              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 296              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\������\AppData\Local\Temp\ccSwuAie.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:21     .text.PD4_Set_Input_PullUp:00000000 $t
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:27     .text.PD4_Set_Input_PullUp:00000000 PD4_Set_Input_PullUp
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:62     .text.PD4_Set_Input_PullUp:00000028 $d
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:68     .text.GPIO_Init_Memory:00000000 $t
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:74     .text.GPIO_Init_Memory:00000000 GPIO_Init_Memory
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:217    .text.GPIO_Init_Memory:000000e8 $d
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:224    .text.PD4_Set_Output_High:00000000 $t
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:230    .text.PD4_Set_Output_High:00000000 PD4_Set_Output_High
+C:\Users\������\AppData\Local\Temp\ccSwuAie.s:286    .text.PD4_Set_Output_High:00000048 $d
+
+UNDEFINED SYMBOLS
+g_pd4_mode_state
