@@ -1,0 +1,930 @@
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.Beep,"ax",%progbits
+  21              		.align	1
+  22              		.global	Beep
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	Beep:
+  28              	.LVL0:
+  29              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** #include <stdint.h>
+   4:Core/Src/main.c **** #include "stm32f4xx.h"
+   5:Core/Src/main.c **** #include "init.h"
+   6:Core/Src/main.c **** #include "it_handlers.h"
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** // Определения глобальных переменных
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** volatile uint32_t holdTime = 0;
+  11:Core/Src/main.c **** volatile uint8_t shortState = 0;
+  12:Core/Src/main.c **** volatile uint8_t mode = 0;
+  13:Core/Src/main.c **** volatile uint8_t flag = 0;
+  14:Core/Src/main.c **** volatile uint16_t adc = 0;
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c **** // Переменные для управления светодиодами
+  17:Core/Src/main.c **** volatile uint8_t current_led = 0;
+  18:Core/Src/main.c **** volatile uint16_t pwm_value = 500;
+  19:Core/Src/main.c **** volatile uint32_t switch_speed = 500;
+  20:Core/Src/main.c **** volatile uint32_t last_switch_time = 0;
+  21:Core/Src/main.c **** 
+  22:Core/Src/main.c **** uint16_t prev_encoder_count = 0;
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c **** // Определения глобальных переменных
+  25:Core/Src/main.c **** volatile uint32_t systemTickCount = 0;
+  26:Core/Src/main.c **** 
+  27:Core/Src/main.c **** // Переменные для управления светодиодами
+  28:Core/Src/main.c **** volatile uint32_t base_time = 1000; // Базовое время в мс (1 секунда)
+  29:Core/Src/main.c **** volatile uint32_t phase_start_time = 0;
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 2
+
+
+  30:Core/Src/main.c **** volatile uint8_t current_phase = 0;
+  31:Core/Src/main.c **** 
+  32:Core/Src/main.c **** 
+  33:Core/Src/main.c **** 
+  34:Core/Src/main.c **** // Временные интервалы для каждого светодиода (в мс)
+  35:Core/Src/main.c **** volatile uint32_t pe13_time = 1000;    // PE13: 1 секунда
+  36:Core/Src/main.c **** volatile uint32_t pe14_time = 500;   // PE14: 30 секунд  
+  37:Core/Src/main.c **** volatile uint32_t pe11_time = 1000;    // PE11: 1 секунда
+  38:Core/Src/main.c **** volatile uint32_t pe14_11_time = 500; // PE14+PE11: 30 секунд
+  39:Core/Src/main.c **** 
+  40:Core/Src/main.c **** 
+  41:Core/Src/main.c **** 
+  42:Core/Src/main.c **** void Beep(uint16_t frequency)
+  43:Core/Src/main.c **** {
+  30              		.loc 1 43 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  44:Core/Src/main.c ****     if (frequency == 0) {
+  35              		.loc 1 44 5 view .LVU1
+  36              		.loc 1 44 8 is_stmt 0 view .LVU2
+  37 0000 40B1     		cbz	r0, .L4
+  45:Core/Src/main.c ****         TIM3->CCR2 = 0; // Выключить звук
+  46:Core/Src/main.c ****         return;
+  47:Core/Src/main.c ****     }
+  48:Core/Src/main.c **** 
+  49:Core/Src/main.c ****     uint16_t period = 1000000 / frequency;
+  38              		.loc 1 49 5 is_stmt 1 view .LVU3
+  39              		.loc 1 49 31 is_stmt 0 view .LVU4
+  40 0002 064B     		ldr	r3, .L5
+  41 0004 93FBF0F3 		sdiv	r3, r3, r0
+  42              		.loc 1 49 14 view .LVU5
+  43 0008 9BB2     		uxth	r3, r3
+  44              	.LVL1:
+  50:Core/Src/main.c ****     
+  51:Core/Src/main.c ****     TIM3->ARR = period;
+  45              		.loc 1 51 5 is_stmt 1 view .LVU6
+  46              		.loc 1 51 15 is_stmt 0 view .LVU7
+  47 000a 054A     		ldr	r2, .L5+4
+  48 000c D362     		str	r3, [r2, #44]
+  52:Core/Src/main.c ****     TIM3->CCR2 = period / 2; // Скважность 50%
+  49              		.loc 1 52 5 is_stmt 1 view .LVU8
+  50              		.loc 1 52 25 is_stmt 0 view .LVU9
+  51 000e 5B08     		lsrs	r3, r3, #1
+  52              	.LVL2:
+  53              		.loc 1 52 16 view .LVU10
+  54 0010 9363     		str	r3, [r2, #56]
+  55              	.LVL3:
+  53:Core/Src/main.c **** }
+  56              		.loc 1 53 1 view .LVU11
+  57 0012 7047     		bx	lr
+  58              	.LVL4:
+  59              	.L4:
+  45:Core/Src/main.c ****         return;
+  60              		.loc 1 45 9 is_stmt 1 view .LVU12
+  45:Core/Src/main.c ****         return;
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 3
+
+
+  61              		.loc 1 45 20 is_stmt 0 view .LVU13
+  62 0014 024B     		ldr	r3, .L5+4
+  63 0016 0022     		movs	r2, #0
+  64 0018 9A63     		str	r2, [r3, #56]
+  46:Core/Src/main.c ****     }
+  65              		.loc 1 46 9 is_stmt 1 view .LVU14
+  66 001a 7047     		bx	lr
+  67              	.L6:
+  68              		.align	2
+  69              	.L5:
+  70 001c 40420F00 		.word	1000000
+  71 0020 00040040 		.word	1073742848
+  72              		.cfi_endproc
+  73              	.LFE130:
+  75              		.section	.text.ADC_Read,"ax",%progbits
+  76              		.align	1
+  77              		.global	ADC_Read
+  78              		.syntax unified
+  79              		.thumb
+  80              		.thumb_func
+  82              	ADC_Read:
+  83              	.LFB131:
+  54:Core/Src/main.c **** 
+  55:Core/Src/main.c **** 
+  56:Core/Src/main.c **** uint16_t ADC_Read(void) {
+  84              		.loc 1 56 25 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		@ link register save eliminated.
+  57:Core/Src/main.c ****     SET_BIT(ADC1->CR2, ADC_CR2_SWSTART);
+  89              		.loc 1 57 5 view .LVU16
+  90 0000 064A     		ldr	r2, .L9
+  91 0002 9368     		ldr	r3, [r2, #8]
+  92 0004 43F08043 		orr	r3, r3, #1073741824
+  93 0008 9360     		str	r3, [r2, #8]
+  58:Core/Src/main.c ****     while(!(READ_BIT(ADC1->SR, ADC_SR_EOC)));
+  94              		.loc 1 58 5 view .LVU17
+  95              	.L8:
+  96              		.loc 1 58 11 discriminator 1 view .LVU18
+  97              		.loc 1 58 13 is_stmt 0 discriminator 1 view .LVU19
+  98 000a 044B     		ldr	r3, .L9
+  99 000c 1B68     		ldr	r3, [r3]
+ 100              		.loc 1 58 11 discriminator 1 view .LVU20
+ 101 000e 13F0020F 		tst	r3, #2
+ 102 0012 FAD0     		beq	.L8
+  59:Core/Src/main.c ****     return ADC1->DR;
+ 103              		.loc 1 59 5 is_stmt 1 view .LVU21
+ 104              		.loc 1 59 16 is_stmt 0 view .LVU22
+ 105 0014 014B     		ldr	r3, .L9
+ 106 0016 D86C     		ldr	r0, [r3, #76]
+  60:Core/Src/main.c **** }
+ 107              		.loc 1 60 1 view .LVU23
+ 108 0018 80B2     		uxth	r0, r0
+ 109 001a 7047     		bx	lr
+ 110              	.L10:
+ 111              		.align	2
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 4
+
+
+ 112              	.L9:
+ 113 001c 00200140 		.word	1073815552
+ 114              		.cfi_endproc
+ 115              	.LFE131:
+ 117              		.section	.text.main,"ax",%progbits
+ 118              		.align	1
+ 119              		.global	main
+ 120              		.syntax unified
+ 121              		.thumb
+ 122              		.thumb_func
+ 124              	main:
+ 125              	.LFB132:
+  61:Core/Src/main.c **** 
+  62:Core/Src/main.c **** int main(void) {
+ 126              		.loc 1 62 16 is_stmt 1 view -0
+ 127              		.cfi_startproc
+ 128              		@ args = 0, pretend = 0, frame = 0
+ 129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 130 0000 10B5     		push	{r4, lr}
+ 131              	.LCFI0:
+ 132              		.cfi_def_cfa_offset 8
+ 133              		.cfi_offset 4, -8
+ 134              		.cfi_offset 14, -4
+  63:Core/Src/main.c ****     GPIO_Init();
+ 135              		.loc 1 63 5 view .LVU25
+ 136 0002 FFF7FEFF 		bl	GPIO_Init
+ 137              	.LVL5:
+  64:Core/Src/main.c ****     ADC_Init();
+ 138              		.loc 1 64 5 view .LVU26
+ 139 0006 FFF7FEFF 		bl	ADC_Init
+ 140              	.LVL6:
+  65:Core/Src/main.c ****     TIM_Init();
+ 141              		.loc 1 65 5 view .LVU27
+ 142 000a FFF7FEFF 		bl	TIM_Init
+ 143              	.LVL7:
+  66:Core/Src/main.c ****     SysTick_Init();
+ 144              		.loc 1 66 5 view .LVU28
+ 145 000e FFF7FEFF 		bl	SysTick_Init
+ 146              	.LVL8:
+  67:Core/Src/main.c **** 
+  68:Core/Src/main.c ****     TIM2->CNT = 32768;
+ 147              		.loc 1 68 5 view .LVU29
+ 148              		.loc 1 68 15 is_stmt 0 view .LVU30
+ 149 0012 4FF40043 		mov	r3, #32768
+ 150 0016 4FF08042 		mov	r2, #1073741824
+ 151 001a 5362     		str	r3, [r2, #36]
+  69:Core/Src/main.c ****     prev_encoder_count = 32768;
+ 152              		.loc 1 69 5 is_stmt 1 view .LVU31
+ 153              		.loc 1 69 24 is_stmt 0 view .LVU32
+ 154 001c 634A     		ldr	r2, .L34
+ 155 001e 1380     		strh	r3, [r2]	@ movhi
+  70:Core/Src/main.c ****     phase_start_time = systemTickCount;
+ 156              		.loc 1 70 5 is_stmt 1 view .LVU33
+ 157              		.loc 1 70 22 is_stmt 0 view .LVU34
+ 158 0020 634B     		ldr	r3, .L34+4
+ 159 0022 1A68     		ldr	r2, [r3]
+ 160 0024 634B     		ldr	r3, .L34+8
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 5
+
+
+ 161 0026 1A60     		str	r2, [r3]
+ 162 0028 12E0     		b	.L29
+ 163              	.LVL9:
+ 164              	.L32:
+ 165              	.LBB2:
+  71:Core/Src/main.c **** 
+  72:Core/Src/main.c ****     while(1) {
+  73:Core/Src/main.c ****         
+  74:Core/Src/main.c ****         int32_t encoder_count = (int32_t)TIM2->CNT;
+  75:Core/Src/main.c ****         int16_t encoder_delta = (int16_t)(encoder_count - prev_encoder_count);
+  76:Core/Src/main.c ****         prev_encoder_count = encoder_count;
+  77:Core/Src/main.c **** 
+  78:Core/Src/main.c ****         // Чтение потенциометра для ШИМ
+  79:Core/Src/main.c ****         uint16_t adc_value = ADC_Read();
+  80:Core/Src/main.c ****         uint16_t pwm_value = adc_value * 1000 / 4096;
+ 166              		.loc 1 80 47 view .LVU35
+ 167 002a 00F6FF70 		addw	r0, r0, #4095
+ 168 002e 20E0     		b	.L13
+ 169              	.LVL10:
+ 170              	.L22:
+  81:Core/Src/main.c **** 
+  82:Core/Src/main.c ****         // Регулировка времени текущего светодиода энкоде
+  83:Core/Src/main.c ****         if (encoder_delta != 0) {
+  84:Core/Src/main.c ****             
+  85:Core/Src/main.c ****                     pe13_time += encoder_delta * 100; // шаг 100мс
+  86:Core/Src/main.c ****                     if (pe13_time < 100) pe13_time = 100;
+  87:Core/Src/main.c ****                     if (pe13_time > 6000) pe13_time = 6000;
+  88:Core/Src/main.c ****                     pe14_time += encoder_delta * 100; // шаг 1 сек
+  89:Core/Src/main.c ****                     if (pe14_time < 70) pe14_time = 70;
+  90:Core/Src/main.c ****                     if (pe14_time > 3500) pe14_time = 3500; // 5 минут макс
+  91:Core/Src/main.c ****                     pe11_time += encoder_delta * 100; // шаг 100мс
+  92:Core/Src/main.c ****                     if (pe11_time < 70) pe11_time = 70;
+  93:Core/Src/main.c ****                     if (pe11_time > 3500) pe11_time = 3500;
+  94:Core/Src/main.c ****                     pe14_11_time += encoder_delta * 100; // шаг 1 сек
+  95:Core/Src/main.c ****                     if (pe14_11_time < 30) pe14_11_time = 30;
+  96:Core/Src/main.c ****                     if (pe14_11_time > 1500) pe14_11_time = 1500;
+  97:Core/Src/main.c ****                     
+  98:Core/Src/main.c ****             }
+  99:Core/Src/main.c ****         
+ 100:Core/Src/main.c **** 
+ 101:Core/Src/main.c ****         // Определение текущей фазы
+ 102:Core/Src/main.c ****         uint32_t elapsed_time = systemTickCount - phase_start_time;
+ 103:Core/Src/main.c ****         uint32_t current_phase_time = 0;
+ 104:Core/Src/main.c ****         
+ 105:Core/Src/main.c ****         switch(current_phase) {
+ 106:Core/Src/main.c ****             case 0: current_phase_time = pe13_time; break;
+ 107:Core/Src/main.c ****             case 1: current_phase_time = pe11_time; break;
+ 171              		.loc 1 107 21 is_stmt 1 view .LVU36
+ 172              		.loc 1 107 40 is_stmt 0 view .LVU37
+ 173 0030 614B     		ldr	r3, .L34+12
+ 174 0032 1B68     		ldr	r3, [r3]
+ 175              	.LVL11:
+ 176              		.loc 1 107 53 is_stmt 1 view .LVU38
+ 177 0034 84E0     		b	.L25
+ 178              	.LVL12:
+ 179              	.L23:
+ 108:Core/Src/main.c ****             case 2: current_phase_time = pe14_11_time; break;
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 6
+
+
+ 180              		.loc 1 108 21 view .LVU39
+ 181              		.loc 1 108 40 is_stmt 0 view .LVU40
+ 182 0036 614B     		ldr	r3, .L34+16
+ 183 0038 1B68     		ldr	r3, [r3]
+ 184              	.LVL13:
+ 185              		.loc 1 108 56 is_stmt 1 view .LVU41
+ 186 003a 81E0     		b	.L25
+ 187              	.LVL14:
+ 188              	.L33:
+ 109:Core/Src/main.c ****         }
+ 110:Core/Src/main.c ****         
+ 111:Core/Src/main.c ****         if (elapsed_time >= current_phase_time) {
+ 112:Core/Src/main.c ****             current_phase = (current_phase + 1) % 3;
+ 113:Core/Src/main.c ****             phase_start_time = systemTickCount;
+ 114:Core/Src/main.c ****             current_led = current_phase;
+ 115:Core/Src/main.c ****         }
+ 116:Core/Src/main.c **** 
+ 117:Core/Src/main.c ****         // Управление светодиодами в зависимости от фазы
+ 118:Core/Src/main.c ****         switch(current_phase) {
+ 119:Core/Src/main.c ****             case 0: // PE13 горит
+ 120:Core/Src/main.c ****                 TIM1->CCR2 = 0;         // PE11 выкл
+ 189              		.loc 1 120 17 view .LVU42
+ 190              		.loc 1 120 28 is_stmt 0 view .LVU43
+ 191 003c 604B     		ldr	r3, .L34+20
+ 192 003e 0022     		movs	r2, #0
+ 193 0040 9A63     		str	r2, [r3, #56]
+ 121:Core/Src/main.c ****                 TIM1->CCR3 = pwm_value; // PE13 вкл
+ 194              		.loc 1 121 17 is_stmt 1 view .LVU44
+ 195              		.loc 1 121 28 is_stmt 0 view .LVU45
+ 196 0042 80B2     		uxth	r0, r0
+ 197              		.loc 1 121 28 view .LVU46
+ 198 0044 D863     		str	r0, [r3, #60]
+ 122:Core/Src/main.c ****                 TIM1->CCR4 = 0;         // PE14 выкл
+ 199              		.loc 1 122 17 is_stmt 1 view .LVU47
+ 200              		.loc 1 122 28 is_stmt 0 view .LVU48
+ 201 0046 1A64     		str	r2, [r3, #64]
+ 123:Core/Src/main.c ****                 Beep(1500);
+ 202              		.loc 1 123 17 is_stmt 1 view .LVU49
+ 203 0048 40F2DC50 		movw	r0, #1500
+ 204              	.LVL15:
+ 205              		.loc 1 123 17 is_stmt 0 view .LVU50
+ 206 004c FFF7FEFF 		bl	Beep
+ 207              	.LVL16:
+ 124:Core/Src/main.c ****                 break;
+ 208              		.loc 1 124 17 is_stmt 1 view .LVU51
+ 209              	.L29:
+ 210              		.loc 1 124 17 is_stmt 0 view .LVU52
+ 211              	.LBE2:
+  72:Core/Src/main.c ****         
+ 212              		.loc 1 72 5 is_stmt 1 view .LVU53
+ 213              	.LBB3:
+  74:Core/Src/main.c ****         int16_t encoder_delta = (int16_t)(encoder_count - prev_encoder_count);
+ 214              		.loc 1 74 9 view .LVU54
+  74:Core/Src/main.c ****         int16_t encoder_delta = (int16_t)(encoder_count - prev_encoder_count);
+ 215              		.loc 1 74 46 is_stmt 0 view .LVU55
+ 216 0050 4FF08043 		mov	r3, #1073741824
+ 217 0054 5B6A     		ldr	r3, [r3, #36]
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 7
+
+
+ 218              	.LVL17:
+  75:Core/Src/main.c ****         prev_encoder_count = encoder_count;
+ 219              		.loc 1 75 9 is_stmt 1 view .LVU56
+  75:Core/Src/main.c ****         prev_encoder_count = encoder_count;
+ 220              		.loc 1 75 57 is_stmt 0 view .LVU57
+ 221 0056 9BB2     		uxth	r3, r3
+ 222              	.LVL18:
+  75:Core/Src/main.c ****         prev_encoder_count = encoder_count;
+ 223              		.loc 1 75 57 view .LVU58
+ 224 0058 544A     		ldr	r2, .L34
+ 225 005a 1488     		ldrh	r4, [r2]
+ 226 005c 1C1B     		subs	r4, r3, r4
+  75:Core/Src/main.c ****         prev_encoder_count = encoder_count;
+ 227              		.loc 1 75 17 view .LVU59
+ 228 005e 24B2     		sxth	r4, r4
+ 229              	.LVL19:
+  76:Core/Src/main.c **** 
+ 230              		.loc 1 76 9 is_stmt 1 view .LVU60
+  76:Core/Src/main.c **** 
+ 231              		.loc 1 76 28 is_stmt 0 view .LVU61
+ 232 0060 1380     		strh	r3, [r2]	@ movhi
+  79:Core/Src/main.c ****         uint16_t pwm_value = adc_value * 1000 / 4096;
+ 233              		.loc 1 79 9 is_stmt 1 view .LVU62
+  79:Core/Src/main.c ****         uint16_t pwm_value = adc_value * 1000 / 4096;
+ 234              		.loc 1 79 30 is_stmt 0 view .LVU63
+ 235 0062 FFF7FEFF 		bl	ADC_Read
+ 236              	.LVL20:
+  80:Core/Src/main.c **** 
+ 237              		.loc 1 80 9 is_stmt 1 view .LVU64
+  80:Core/Src/main.c **** 
+ 238              		.loc 1 80 40 is_stmt 0 view .LVU65
+ 239 0066 4FF47A73 		mov	r3, #1000
+ 240 006a 03FB00F0 		mul	r0, r3, r0
+ 241              	.LVL21:
+  80:Core/Src/main.c **** 
+ 242              		.loc 1 80 47 view .LVU66
+ 243 006e 0028     		cmp	r0, #0
+ 244 0070 DBDB     		blt	.L32
+ 245              	.L13:
+ 246 0072 0013     		asrs	r0, r0, #12
+ 247              	.LVL22:
+  83:Core/Src/main.c ****             
+ 248              		.loc 1 83 9 is_stmt 1 view .LVU67
+  83:Core/Src/main.c ****             
+ 249              		.loc 1 83 12 is_stmt 0 view .LVU68
+ 250 0074 002C     		cmp	r4, #0
+ 251 0076 52D0     		beq	.L14
+  85:Core/Src/main.c ****                     if (pe13_time < 100) pe13_time = 100;
+ 252              		.loc 1 85 21 is_stmt 1 view .LVU69
+  85:Core/Src/main.c ****                     if (pe13_time < 100) pe13_time = 100;
+ 253              		.loc 1 85 48 is_stmt 0 view .LVU70
+ 254 0078 6423     		movs	r3, #100
+ 255 007a 03FB04F4 		mul	r4, r3, r4
+ 256              	.LVL23:
+  85:Core/Src/main.c ****                     if (pe13_time < 100) pe13_time = 100;
+ 257              		.loc 1 85 31 view .LVU71
+ 258 007e 514B     		ldr	r3, .L34+24
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 8
+
+
+ 259 0080 1A68     		ldr	r2, [r3]
+ 260 0082 2244     		add	r2, r2, r4
+ 261 0084 1A60     		str	r2, [r3]
+  86:Core/Src/main.c ****                     if (pe13_time > 6000) pe13_time = 6000;
+ 262              		.loc 1 86 21 is_stmt 1 view .LVU72
+  86:Core/Src/main.c ****                     if (pe13_time > 6000) pe13_time = 6000;
+ 263              		.loc 1 86 35 is_stmt 0 view .LVU73
+ 264 0086 1B68     		ldr	r3, [r3]
+  86:Core/Src/main.c ****                     if (pe13_time > 6000) pe13_time = 6000;
+ 265              		.loc 1 86 24 view .LVU74
+ 266 0088 632B     		cmp	r3, #99
+ 267 008a 02D8     		bhi	.L15
+  86:Core/Src/main.c ****                     if (pe13_time > 6000) pe13_time = 6000;
+ 268              		.loc 1 86 42 is_stmt 1 discriminator 1 view .LVU75
+  86:Core/Src/main.c ****                     if (pe13_time > 6000) pe13_time = 6000;
+ 269              		.loc 1 86 52 is_stmt 0 discriminator 1 view .LVU76
+ 270 008c 4D4B     		ldr	r3, .L34+24
+ 271 008e 6422     		movs	r2, #100
+ 272 0090 1A60     		str	r2, [r3]
+ 273              	.L15:
+  87:Core/Src/main.c ****                     pe14_time += encoder_delta * 100; // шаг 1 сек
+ 274              		.loc 1 87 21 is_stmt 1 view .LVU77
+  87:Core/Src/main.c ****                     pe14_time += encoder_delta * 100; // шаг 1 сек
+ 275              		.loc 1 87 35 is_stmt 0 view .LVU78
+ 276 0092 4C4B     		ldr	r3, .L34+24
+ 277 0094 1A68     		ldr	r2, [r3]
+  87:Core/Src/main.c ****                     pe14_time += encoder_delta * 100; // шаг 1 сек
+ 278              		.loc 1 87 24 view .LVU79
+ 279 0096 41F27073 		movw	r3, #6000
+ 280 009a 9A42     		cmp	r2, r3
+ 281 009c 03D9     		bls	.L16
+  87:Core/Src/main.c ****                     pe14_time += encoder_delta * 100; // шаг 1 сек
+ 282              		.loc 1 87 43 is_stmt 1 discriminator 1 view .LVU80
+  87:Core/Src/main.c ****                     pe14_time += encoder_delta * 100; // шаг 1 сек
+ 283              		.loc 1 87 53 is_stmt 0 discriminator 1 view .LVU81
+ 284 009e 494B     		ldr	r3, .L34+24
+ 285 00a0 41F27072 		movw	r2, #6000
+ 286 00a4 1A60     		str	r2, [r3]
+ 287              	.L16:
+  88:Core/Src/main.c ****                     if (pe14_time < 70) pe14_time = 70;
+ 288              		.loc 1 88 21 is_stmt 1 view .LVU82
+  88:Core/Src/main.c ****                     if (pe14_time < 70) pe14_time = 70;
+ 289              		.loc 1 88 31 is_stmt 0 view .LVU83
+ 290 00a6 484B     		ldr	r3, .L34+28
+ 291 00a8 1A68     		ldr	r2, [r3]
+ 292 00aa 2244     		add	r2, r2, r4
+ 293 00ac 1A60     		str	r2, [r3]
+  89:Core/Src/main.c ****                     if (pe14_time > 3500) pe14_time = 3500; // 5 минут макс
+ 294              		.loc 1 89 21 is_stmt 1 view .LVU84
+  89:Core/Src/main.c ****                     if (pe14_time > 3500) pe14_time = 3500; // 5 минут макс
+ 295              		.loc 1 89 35 is_stmt 0 view .LVU85
+ 296 00ae 1B68     		ldr	r3, [r3]
+  89:Core/Src/main.c ****                     if (pe14_time > 3500) pe14_time = 3500; // 5 минут макс
+ 297              		.loc 1 89 24 view .LVU86
+ 298 00b0 452B     		cmp	r3, #69
+ 299 00b2 02D8     		bhi	.L17
+  89:Core/Src/main.c ****                     if (pe14_time > 3500) pe14_time = 3500; // 5 минут макс
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 9
+
+
+ 300              		.loc 1 89 41 is_stmt 1 discriminator 1 view .LVU87
+  89:Core/Src/main.c ****                     if (pe14_time > 3500) pe14_time = 3500; // 5 минут макс
+ 301              		.loc 1 89 51 is_stmt 0 discriminator 1 view .LVU88
+ 302 00b4 444B     		ldr	r3, .L34+28
+ 303 00b6 4622     		movs	r2, #70
+ 304 00b8 1A60     		str	r2, [r3]
+ 305              	.L17:
+  90:Core/Src/main.c ****                     pe11_time += encoder_delta * 100; // шаг 100мс
+ 306              		.loc 1 90 21 is_stmt 1 view .LVU89
+  90:Core/Src/main.c ****                     pe11_time += encoder_delta * 100; // шаг 100мс
+ 307              		.loc 1 90 35 is_stmt 0 view .LVU90
+ 308 00ba 434B     		ldr	r3, .L34+28
+ 309 00bc 1A68     		ldr	r2, [r3]
+  90:Core/Src/main.c ****                     pe11_time += encoder_delta * 100; // шаг 100мс
+ 310              		.loc 1 90 24 view .LVU91
+ 311 00be 40F6AC53 		movw	r3, #3500
+ 312 00c2 9A42     		cmp	r2, r3
+ 313 00c4 03D9     		bls	.L18
+  90:Core/Src/main.c ****                     pe11_time += encoder_delta * 100; // шаг 100мс
+ 314              		.loc 1 90 43 is_stmt 1 discriminator 1 view .LVU92
+  90:Core/Src/main.c ****                     pe11_time += encoder_delta * 100; // шаг 100мс
+ 315              		.loc 1 90 53 is_stmt 0 discriminator 1 view .LVU93
+ 316 00c6 404B     		ldr	r3, .L34+28
+ 317 00c8 40F6AC52 		movw	r2, #3500
+ 318 00cc 1A60     		str	r2, [r3]
+ 319              	.L18:
+  91:Core/Src/main.c ****                     if (pe11_time < 70) pe11_time = 70;
+ 320              		.loc 1 91 21 is_stmt 1 view .LVU94
+  91:Core/Src/main.c ****                     if (pe11_time < 70) pe11_time = 70;
+ 321              		.loc 1 91 31 is_stmt 0 view .LVU95
+ 322 00ce 3A4B     		ldr	r3, .L34+12
+ 323 00d0 1A68     		ldr	r2, [r3]
+ 324 00d2 2244     		add	r2, r2, r4
+ 325 00d4 1A60     		str	r2, [r3]
+  92:Core/Src/main.c ****                     if (pe11_time > 3500) pe11_time = 3500;
+ 326              		.loc 1 92 21 is_stmt 1 view .LVU96
+  92:Core/Src/main.c ****                     if (pe11_time > 3500) pe11_time = 3500;
+ 327              		.loc 1 92 35 is_stmt 0 view .LVU97
+ 328 00d6 1B68     		ldr	r3, [r3]
+  92:Core/Src/main.c ****                     if (pe11_time > 3500) pe11_time = 3500;
+ 329              		.loc 1 92 24 view .LVU98
+ 330 00d8 452B     		cmp	r3, #69
+ 331 00da 02D8     		bhi	.L19
+  92:Core/Src/main.c ****                     if (pe11_time > 3500) pe11_time = 3500;
+ 332              		.loc 1 92 41 is_stmt 1 discriminator 1 view .LVU99
+  92:Core/Src/main.c ****                     if (pe11_time > 3500) pe11_time = 3500;
+ 333              		.loc 1 92 51 is_stmt 0 discriminator 1 view .LVU100
+ 334 00dc 364B     		ldr	r3, .L34+12
+ 335 00de 4622     		movs	r2, #70
+ 336 00e0 1A60     		str	r2, [r3]
+ 337              	.L19:
+  93:Core/Src/main.c ****                     pe14_11_time += encoder_delta * 100; // шаг 1 сек
+ 338              		.loc 1 93 21 is_stmt 1 view .LVU101
+  93:Core/Src/main.c ****                     pe14_11_time += encoder_delta * 100; // шаг 1 сек
+ 339              		.loc 1 93 35 is_stmt 0 view .LVU102
+ 340 00e2 354B     		ldr	r3, .L34+12
+ 341 00e4 1A68     		ldr	r2, [r3]
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 10
+
+
+  93:Core/Src/main.c ****                     pe14_11_time += encoder_delta * 100; // шаг 1 сек
+ 342              		.loc 1 93 24 view .LVU103
+ 343 00e6 40F6AC53 		movw	r3, #3500
+ 344 00ea 9A42     		cmp	r2, r3
+ 345 00ec 03D9     		bls	.L20
+  93:Core/Src/main.c ****                     pe14_11_time += encoder_delta * 100; // шаг 1 сек
+ 346              		.loc 1 93 43 is_stmt 1 discriminator 1 view .LVU104
+  93:Core/Src/main.c ****                     pe14_11_time += encoder_delta * 100; // шаг 1 сек
+ 347              		.loc 1 93 53 is_stmt 0 discriminator 1 view .LVU105
+ 348 00ee 324B     		ldr	r3, .L34+12
+ 349 00f0 40F6AC52 		movw	r2, #3500
+ 350 00f4 1A60     		str	r2, [r3]
+ 351              	.L20:
+  94:Core/Src/main.c ****                     if (pe14_11_time < 30) pe14_11_time = 30;
+ 352              		.loc 1 94 21 is_stmt 1 view .LVU106
+  94:Core/Src/main.c ****                     if (pe14_11_time < 30) pe14_11_time = 30;
+ 353              		.loc 1 94 34 is_stmt 0 view .LVU107
+ 354 00f6 314B     		ldr	r3, .L34+16
+ 355 00f8 1A68     		ldr	r2, [r3]
+ 356 00fa 1444     		add	r4, r4, r2
+ 357 00fc 1C60     		str	r4, [r3]
+  95:Core/Src/main.c ****                     if (pe14_11_time > 1500) pe14_11_time = 1500;
+ 358              		.loc 1 95 21 is_stmt 1 view .LVU108
+  95:Core/Src/main.c ****                     if (pe14_11_time > 1500) pe14_11_time = 1500;
+ 359              		.loc 1 95 38 is_stmt 0 view .LVU109
+ 360 00fe 1B68     		ldr	r3, [r3]
+  95:Core/Src/main.c ****                     if (pe14_11_time > 1500) pe14_11_time = 1500;
+ 361              		.loc 1 95 24 view .LVU110
+ 362 0100 1D2B     		cmp	r3, #29
+ 363 0102 02D8     		bhi	.L21
+  95:Core/Src/main.c ****                     if (pe14_11_time > 1500) pe14_11_time = 1500;
+ 364              		.loc 1 95 44 is_stmt 1 discriminator 1 view .LVU111
+  95:Core/Src/main.c ****                     if (pe14_11_time > 1500) pe14_11_time = 1500;
+ 365              		.loc 1 95 57 is_stmt 0 discriminator 1 view .LVU112
+ 366 0104 2D4B     		ldr	r3, .L34+16
+ 367 0106 1E22     		movs	r2, #30
+ 368 0108 1A60     		str	r2, [r3]
+ 369              	.L21:
+  96:Core/Src/main.c ****                     
+ 370              		.loc 1 96 21 is_stmt 1 view .LVU113
+  96:Core/Src/main.c ****                     
+ 371              		.loc 1 96 38 is_stmt 0 view .LVU114
+ 372 010a 2C4B     		ldr	r3, .L34+16
+ 373 010c 1A68     		ldr	r2, [r3]
+  96:Core/Src/main.c ****                     
+ 374              		.loc 1 96 24 view .LVU115
+ 375 010e 40F2DC53 		movw	r3, #1500
+ 376 0112 9A42     		cmp	r2, r3
+ 377 0114 03D9     		bls	.L14
+  96:Core/Src/main.c ****                     
+ 378              		.loc 1 96 46 is_stmt 1 discriminator 1 view .LVU116
+  96:Core/Src/main.c ****                     
+ 379              		.loc 1 96 59 is_stmt 0 discriminator 1 view .LVU117
+ 380 0116 294B     		ldr	r3, .L34+16
+ 381 0118 40F2DC52 		movw	r2, #1500
+ 382 011c 1A60     		str	r2, [r3]
+ 383              	.L14:
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 11
+
+
+ 102:Core/Src/main.c ****         uint32_t current_phase_time = 0;
+ 384              		.loc 1 102 9 is_stmt 1 view .LVU118
+ 102:Core/Src/main.c ****         uint32_t current_phase_time = 0;
+ 385              		.loc 1 102 49 is_stmt 0 view .LVU119
+ 386 011e 244B     		ldr	r3, .L34+4
+ 387 0120 1B68     		ldr	r3, [r3]
+ 388 0122 244A     		ldr	r2, .L34+8
+ 389 0124 1268     		ldr	r2, [r2]
+ 102:Core/Src/main.c ****         uint32_t current_phase_time = 0;
+ 390              		.loc 1 102 18 view .LVU120
+ 391 0126 9A1A     		subs	r2, r3, r2
+ 392              	.LVL24:
+ 103:Core/Src/main.c ****         
+ 393              		.loc 1 103 9 is_stmt 1 view .LVU121
+ 105:Core/Src/main.c ****             case 0: current_phase_time = pe13_time; break;
+ 394              		.loc 1 105 9 view .LVU122
+ 395 0128 284B     		ldr	r3, .L34+32
+ 396 012a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 397 012c DBB2     		uxtb	r3, r3
+ 398 012e 012B     		cmp	r3, #1
+ 399 0130 3FF47EAF 		beq	.L22
+ 400 0134 022B     		cmp	r3, #2
+ 401 0136 3FF47EAF 		beq	.L23
+ 402 013a 1BB9     		cbnz	r3, .L24
+ 106:Core/Src/main.c ****             case 1: current_phase_time = pe11_time; break;
+ 403              		.loc 1 106 21 view .LVU123
+ 106:Core/Src/main.c ****             case 1: current_phase_time = pe11_time; break;
+ 404              		.loc 1 106 40 is_stmt 0 view .LVU124
+ 405 013c 214B     		ldr	r3, .L34+24
+ 406 013e 1B68     		ldr	r3, [r3]
+ 407              	.LVL25:
+ 106:Core/Src/main.c ****             case 1: current_phase_time = pe11_time; break;
+ 408              		.loc 1 106 53 is_stmt 1 view .LVU125
+ 409              	.L25:
+ 111:Core/Src/main.c ****             current_phase = (current_phase + 1) % 3;
+ 410              		.loc 1 111 9 view .LVU126
+ 111:Core/Src/main.c ****             current_phase = (current_phase + 1) % 3;
+ 411              		.loc 1 111 12 is_stmt 0 view .LVU127
+ 412 0140 9342     		cmp	r3, r2
+ 413 0142 12D8     		bhi	.L26
+ 414              	.LVL26:
+ 415              	.L24:
+ 112:Core/Src/main.c ****             phase_start_time = systemTickCount;
+ 416              		.loc 1 112 13 is_stmt 1 view .LVU128
+ 112:Core/Src/main.c ****             phase_start_time = systemTickCount;
+ 417              		.loc 1 112 44 is_stmt 0 view .LVU129
+ 418 0144 2149     		ldr	r1, .L34+32
+ 419 0146 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 420              	.LVL27:
+ 112:Core/Src/main.c ****             phase_start_time = systemTickCount;
+ 421              		.loc 1 112 44 view .LVU130
+ 422 0148 0132     		adds	r2, r2, #1
+ 112:Core/Src/main.c ****             phase_start_time = systemTickCount;
+ 423              		.loc 1 112 49 view .LVU131
+ 424 014a 214B     		ldr	r3, .L34+36
+ 425 014c 83FB0243 		smull	r4, r3, r3, r2
+ 426 0150 03EB4303 		add	r3, r3, r3, lsl #1
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 12
+
+
+ 427 0154 D31A     		subs	r3, r2, r3
+ 112:Core/Src/main.c ****             phase_start_time = systemTickCount;
+ 428              		.loc 1 112 27 view .LVU132
+ 429 0156 DBB2     		uxtb	r3, r3
+ 430 0158 0B70     		strb	r3, [r1]
+ 113:Core/Src/main.c ****             current_led = current_phase;
+ 431              		.loc 1 113 13 is_stmt 1 view .LVU133
+ 113:Core/Src/main.c ****             current_led = current_phase;
+ 432              		.loc 1 113 30 is_stmt 0 view .LVU134
+ 433 015a 154B     		ldr	r3, .L34+4
+ 434 015c 1A68     		ldr	r2, [r3]
+ 435 015e 154B     		ldr	r3, .L34+8
+ 436 0160 1A60     		str	r2, [r3]
+ 114:Core/Src/main.c ****         }
+ 437              		.loc 1 114 13 is_stmt 1 view .LVU135
+ 114:Core/Src/main.c ****         }
+ 438              		.loc 1 114 25 is_stmt 0 view .LVU136
+ 439 0162 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 440 0164 DBB2     		uxtb	r3, r3
+ 441 0166 1B4A     		ldr	r2, .L34+40
+ 442 0168 1370     		strb	r3, [r2]
+ 443              	.L26:
+ 118:Core/Src/main.c ****             case 0: // PE13 горит
+ 444              		.loc 1 118 9 is_stmt 1 view .LVU137
+ 445 016a 184B     		ldr	r3, .L34+32
+ 446 016c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 447 016e DBB2     		uxtb	r3, r3
+ 448 0170 012B     		cmp	r3, #1
+ 449 0172 05D0     		beq	.L27
+ 450 0174 022B     		cmp	r3, #2
+ 451 0176 0ED0     		beq	.L28
+ 452 0178 002B     		cmp	r3, #0
+ 453 017a 7FF469AF 		bne	.L29
+ 454 017e 5DE7     		b	.L33
+ 455              	.L27:
+ 125:Core/Src/main.c ****                 
+ 126:Core/Src/main.c ****             case 1: // PE11 горит
+ 127:Core/Src/main.c ****                 TIM1->CCR2 = pwm_value; // PE11 вкл
+ 456              		.loc 1 127 17 view .LVU138
+ 457              		.loc 1 127 28 is_stmt 0 view .LVU139
+ 458 0180 80B2     		uxth	r0, r0
+ 459              		.loc 1 127 28 view .LVU140
+ 460 0182 0F4B     		ldr	r3, .L34+20
+ 461 0184 9863     		str	r0, [r3, #56]
+ 128:Core/Src/main.c ****                 TIM1->CCR3 = 0;         // PE13 выкл
+ 462              		.loc 1 128 17 is_stmt 1 view .LVU141
+ 463              		.loc 1 128 28 is_stmt 0 view .LVU142
+ 464 0186 0022     		movs	r2, #0
+ 465 0188 DA63     		str	r2, [r3, #60]
+ 129:Core/Src/main.c ****                 TIM1->CCR4 = 0;         // PE14 выкл
+ 466              		.loc 1 129 17 is_stmt 1 view .LVU143
+ 467              		.loc 1 129 28 is_stmt 0 view .LVU144
+ 468 018a 1A64     		str	r2, [r3, #64]
+ 130:Core/Src/main.c ****                 Beep(3000);
+ 469              		.loc 1 130 17 is_stmt 1 view .LVU145
+ 470 018c 40F6B830 		movw	r0, #3000
+ 471              	.LVL28:
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 13
+
+
+ 472              		.loc 1 130 17 is_stmt 0 view .LVU146
+ 473 0190 FFF7FEFF 		bl	Beep
+ 474              	.LVL29:
+ 131:Core/Src/main.c ****                 break;
+ 475              		.loc 1 131 17 is_stmt 1 view .LVU147
+ 476 0194 5CE7     		b	.L29
+ 477              	.LVL30:
+ 478              	.L28:
+ 132:Core/Src/main.c ****                 
+ 133:Core/Src/main.c ****             case 2: // PE14+PE11 горят
+ 134:Core/Src/main.c ****                 TIM1->CCR2 = pwm_value; // PE11 вкл
+ 479              		.loc 1 134 17 view .LVU148
+ 480              		.loc 1 134 28 is_stmt 0 view .LVU149
+ 481 0196 80B2     		uxth	r0, r0
+ 482              		.loc 1 134 28 view .LVU150
+ 483 0198 094B     		ldr	r3, .L34+20
+ 484 019a 9863     		str	r0, [r3, #56]
+ 135:Core/Src/main.c ****                 TIM1->CCR3 = 0;         // PE13 выкл
+ 485              		.loc 1 135 17 is_stmt 1 view .LVU151
+ 486              		.loc 1 135 28 is_stmt 0 view .LVU152
+ 487 019c 0022     		movs	r2, #0
+ 488 019e DA63     		str	r2, [r3, #60]
+ 136:Core/Src/main.c ****                 TIM1->CCR4 = pwm_value; // PE14 вкл
+ 489              		.loc 1 136 17 is_stmt 1 view .LVU153
+ 490              		.loc 1 136 28 is_stmt 0 view .LVU154
+ 491 01a0 1864     		str	r0, [r3, #64]
+ 137:Core/Src/main.c ****                 Beep(4500);
+ 492              		.loc 1 137 17 is_stmt 1 view .LVU155
+ 493 01a2 41F29410 		movw	r0, #4500
+ 494              	.LVL31:
+ 495              		.loc 1 137 17 is_stmt 0 view .LVU156
+ 496 01a6 FFF7FEFF 		bl	Beep
+ 497              	.LVL32:
+ 138:Core/Src/main.c ****                 break;
+ 498              		.loc 1 138 17 is_stmt 1 view .LVU157
+ 499 01aa 51E7     		b	.L29
+ 500              	.L35:
+ 501              		.align	2
+ 502              	.L34:
+ 503 01ac 00000000 		.word	prev_encoder_count
+ 504 01b0 00000000 		.word	systemTickCount
+ 505 01b4 00000000 		.word	phase_start_time
+ 506 01b8 00000000 		.word	pe11_time
+ 507 01bc 00000000 		.word	pe14_11_time
+ 508 01c0 00000140 		.word	1073807360
+ 509 01c4 00000000 		.word	pe13_time
+ 510 01c8 00000000 		.word	pe14_time
+ 511 01cc 00000000 		.word	current_phase
+ 512 01d0 56555555 		.word	1431655766
+ 513 01d4 00000000 		.word	current_led
+ 514              	.LBE3:
+ 515              		.cfi_endproc
+ 516              	.LFE132:
+ 518              		.global	pe14_11_time
+ 519              		.section	.data.pe14_11_time,"aw"
+ 520              		.align	2
+ 523              	pe14_11_time:
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 14
+
+
+ 524 0000 F4010000 		.word	500
+ 525              		.global	pe11_time
+ 526              		.section	.data.pe11_time,"aw"
+ 527              		.align	2
+ 530              	pe11_time:
+ 531 0000 E8030000 		.word	1000
+ 532              		.global	pe14_time
+ 533              		.section	.data.pe14_time,"aw"
+ 534              		.align	2
+ 537              	pe14_time:
+ 538 0000 F4010000 		.word	500
+ 539              		.global	pe13_time
+ 540              		.section	.data.pe13_time,"aw"
+ 541              		.align	2
+ 544              	pe13_time:
+ 545 0000 E8030000 		.word	1000
+ 546              		.global	current_phase
+ 547              		.section	.bss.current_phase,"aw",%nobits
+ 550              	current_phase:
+ 551 0000 00       		.space	1
+ 552              		.global	phase_start_time
+ 553              		.section	.bss.phase_start_time,"aw",%nobits
+ 554              		.align	2
+ 557              	phase_start_time:
+ 558 0000 00000000 		.space	4
+ 559              		.global	base_time
+ 560              		.section	.data.base_time,"aw"
+ 561              		.align	2
+ 564              	base_time:
+ 565 0000 E8030000 		.word	1000
+ 566              		.global	systemTickCount
+ 567              		.section	.bss.systemTickCount,"aw",%nobits
+ 568              		.align	2
+ 571              	systemTickCount:
+ 572 0000 00000000 		.space	4
+ 573              		.global	prev_encoder_count
+ 574              		.section	.bss.prev_encoder_count,"aw",%nobits
+ 575              		.align	1
+ 578              	prev_encoder_count:
+ 579 0000 0000     		.space	2
+ 580              		.global	last_switch_time
+ 581              		.section	.bss.last_switch_time,"aw",%nobits
+ 582              		.align	2
+ 585              	last_switch_time:
+ 586 0000 00000000 		.space	4
+ 587              		.global	switch_speed
+ 588              		.section	.data.switch_speed,"aw"
+ 589              		.align	2
+ 592              	switch_speed:
+ 593 0000 F4010000 		.word	500
+ 594              		.global	pwm_value
+ 595              		.section	.data.pwm_value,"aw"
+ 596              		.align	1
+ 599              	pwm_value:
+ 600 0000 F401     		.short	500
+ 601              		.global	current_led
+ 602              		.section	.bss.current_led,"aw",%nobits
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 15
+
+
+ 605              	current_led:
+ 606 0000 00       		.space	1
+ 607              		.global	adc
+ 608              		.section	.bss.adc,"aw",%nobits
+ 609              		.align	1
+ 612              	adc:
+ 613 0000 0000     		.space	2
+ 614              		.global	flag
+ 615              		.section	.bss.flag,"aw",%nobits
+ 618              	flag:
+ 619 0000 00       		.space	1
+ 620              		.global	mode
+ 621              		.section	.bss.mode,"aw",%nobits
+ 624              	mode:
+ 625 0000 00       		.space	1
+ 626              		.global	shortState
+ 627              		.section	.bss.shortState,"aw",%nobits
+ 630              	shortState:
+ 631 0000 00       		.space	1
+ 632              		.global	holdTime
+ 633              		.section	.bss.holdTime,"aw",%nobits
+ 634              		.align	2
+ 637              	holdTime:
+ 638 0000 00000000 		.space	4
+ 639              		.text
+ 640              	.Letext0:
+ 641              		.file 2 "C:/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_ty
+ 642              		.file 3 "C:/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 643              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI/stm32f429xx.h"
+ 644              		.file 5 "Core/Inc/it_handlers.h"
+ 645              		.file 6 "Core/Inc/../Inc/init.h"
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s 			page 16
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:21     .text.Beep:00000000 $t
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:27     .text.Beep:00000000 Beep
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:70     .text.Beep:0000001c $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:76     .text.ADC_Read:00000000 $t
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:82     .text.ADC_Read:00000000 ADC_Read
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:113    .text.ADC_Read:0000001c $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:118    .text.main:00000000 $t
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:124    .text.main:00000000 main
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:503    .text.main:000001ac $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:578    .bss.prev_encoder_count:00000000 prev_encoder_count
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:571    .bss.systemTickCount:00000000 systemTickCount
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:557    .bss.phase_start_time:00000000 phase_start_time
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:530    .data.pe11_time:00000000 pe11_time
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:523    .data.pe14_11_time:00000000 pe14_11_time
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:544    .data.pe13_time:00000000 pe13_time
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:537    .data.pe14_time:00000000 pe14_time
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:550    .bss.current_phase:00000000 current_phase
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:605    .bss.current_led:00000000 current_led
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:520    .data.pe14_11_time:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:527    .data.pe11_time:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:534    .data.pe14_time:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:541    .data.pe13_time:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:551    .bss.current_phase:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:554    .bss.phase_start_time:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:564    .data.base_time:00000000 base_time
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:561    .data.base_time:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:568    .bss.systemTickCount:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:575    .bss.prev_encoder_count:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:585    .bss.last_switch_time:00000000 last_switch_time
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:582    .bss.last_switch_time:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:592    .data.switch_speed:00000000 switch_speed
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:589    .data.switch_speed:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:599    .data.pwm_value:00000000 pwm_value
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:596    .data.pwm_value:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:606    .bss.current_led:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:612    .bss.adc:00000000 adc
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:609    .bss.adc:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:618    .bss.flag:00000000 flag
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:619    .bss.flag:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:624    .bss.mode:00000000 mode
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:625    .bss.mode:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:630    .bss.shortState:00000000 shortState
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:631    .bss.shortState:00000000 $d
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:637    .bss.holdTime:00000000 holdTime
+C:\Users\Bebra\AppData\Local\Temp\ccSLCveB.s:634    .bss.holdTime:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init
+ADC_Init
+TIM_Init
+SysTick_Init

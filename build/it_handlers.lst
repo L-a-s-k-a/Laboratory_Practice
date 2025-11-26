@@ -1,0 +1,185 @@
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "../Inc/init.h"
+   2:Core/Src/it_handlers.c **** #include <stdint.h>
+   3:Core/Src/it_handlers.c **** #include "../../CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI/stm32f429xx.h"
+   4:Core/Src/it_handlers.c **** #include "stm32f4xx.h"
+   5:Core/Src/it_handlers.c **** #include "../Inc/it_handlers.h"
+   6:Core/Src/it_handlers.c **** #define DELAY_BUTTON_FILTER 200  // уменьшили время фильтра дребезга
+   7:Core/Src/it_handlers.c **** 
+   8:Core/Src/it_handlers.c **** 
+   9:Core/Src/it_handlers.c **** // void EXTI3_IRQHandler(void)
+  10:Core/Src/it_handlers.c **** // {
+  11:Core/Src/it_handlers.c **** //     if (READ_BIT(EXTI->PR, EXTI_PR_PR3)) 
+  12:Core/Src/it_handlers.c **** //     {
+  13:Core/Src/it_handlers.c **** //         SET_BIT(EXTI->PR, EXTI_PR_PR3); 
+  14:Core/Src/it_handlers.c ****         
+  15:Core/Src/it_handlers.c **** //         if (systemTickCount >= DELAY_BUTTON_FILTER)
+  16:Core/Src/it_handlers.c **** //         {
+  17:Core/Src/it_handlers.c **** //             if (buttonState == 0)
+  18:Core/Src/it_handlers.c **** //             {
+  19:Core/Src/it_handlers.c **** //                 buttonPressTime = systemTickCount;
+  20:Core/Src/it_handlers.c **** //                 buttonState = 1;
+  21:Core/Src/it_handlers.c **** //                 longPressTriggered = 0; 
+  22:Core/Src/it_handlers.c **** 
+  23:Core/Src/it_handlers.c **** //             }
+  24:Core/Src/it_handlers.c **** //             else
+  25:Core/Src/it_handlers.c **** //             {
+  26:Core/Src/it_handlers.c **** //                 holdTime = systemTickCount - buttonPressTime;
+  27:Core/Src/it_handlers.c ****                 
+  28:Core/Src/it_handlers.c **** //                 if (holdTime > 200 && holdTime <= 2000 && !longPressTriggered)
+  29:Core/Src/it_handlers.c **** //                 {
+  30:Core/Src/it_handlers.c **** //                     shortState = 1;
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s 			page 2
+
+
+  31:Core/Src/it_handlers.c **** //                 }
+  32:Core/Src/it_handlers.c ****                 
+  33:Core/Src/it_handlers.c **** //                 buttonState = 0;
+  34:Core/Src/it_handlers.c **** //                 systemTickCount = 0;
+  35:Core/Src/it_handlers.c **** //             }
+  36:Core/Src/it_handlers.c **** //         }
+  37:Core/Src/it_handlers.c **** //     }
+  38:Core/Src/it_handlers.c **** // }
+  39:Core/Src/it_handlers.c **** 
+  40:Core/Src/it_handlers.c **** void SysTick_Handler(void)
+  41:Core/Src/it_handlers.c **** {
+  29              		.loc 1 41 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  42:Core/Src/it_handlers.c ****     systemTickCount++;
+  34              		.loc 1 42 5 view .LVU1
+  35              		.loc 1 42 20 is_stmt 0 view .LVU2
+  36 0000 024A     		ldr	r2, .L2
+  37 0002 1368     		ldr	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1360     		str	r3, [r2]
+  43:Core/Src/it_handlers.c ****      
+  44:Core/Src/it_handlers.c ****     // if (buttonState == 1 && !longPressTriggered)
+  45:Core/Src/it_handlers.c ****     // {
+  46:Core/Src/it_handlers.c ****     //     holdTime = systemTickCount - buttonPressTime;
+  47:Core/Src/it_handlers.c ****     //     if (holdTime > 2000) 
+  48:Core/Src/it_handlers.c ****     //     {
+  49:Core/Src/it_handlers.c ****     //         mode=!mode;
+  50:Core/Src/it_handlers.c ****              
+  51:Core/Src/it_handlers.c ****     //         longPressTriggered = 1; 
+  52:Core/Src/it_handlers.c ****     //     }
+  53:Core/Src/it_handlers.c ****         
+  54:Core/Src/it_handlers.c ****     // }
+  55:Core/Src/it_handlers.c **** }
+  40              		.loc 1 55 1 view .LVU3
+  41 0008 7047     		bx	lr
+  42              	.L3:
+  43 000a 00BF     		.align	2
+  44              	.L2:
+  45 000c 00000000 		.word	systemTickCount
+  46              		.cfi_endproc
+  47              	.LFE130:
+  49              		.section	.text.ADC_IRQHandler,"ax",%progbits
+  50              		.align	1
+  51              		.global	ADC_IRQHandler
+  52              		.syntax unified
+  53              		.thumb
+  54              		.thumb_func
+  56              	ADC_IRQHandler:
+  57              	.LFB131:
+  56:Core/Src/it_handlers.c **** 
+  57:Core/Src/it_handlers.c **** 
+  58:Core/Src/it_handlers.c **** void ADC_IRQHandler(void)
+  59:Core/Src/it_handlers.c **** {
+  58              		.loc 1 59 1 is_stmt 1 view -0
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s 			page 3
+
+
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+  60:Core/Src/it_handlers.c ****     flag = 1;
+  63              		.loc 1 60 5 view .LVU5
+  64              		.loc 1 60 10 is_stmt 0 view .LVU6
+  65 0000 084B     		ldr	r3, .L5
+  66 0002 0122     		movs	r2, #1
+  67 0004 1A70     		strb	r2, [r3]
+  61:Core/Src/it_handlers.c ****     SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); 
+  68              		.loc 1 61 5 is_stmt 1 view .LVU7
+  69 0006 084B     		ldr	r3, .L5+4
+  70 0008 9A68     		ldr	r2, [r3, #8]
+  71 000a 42F08042 		orr	r2, r2, #1073741824
+  72 000e 9A60     		str	r2, [r3, #8]
+  62:Core/Src/it_handlers.c ****     adc =  ADC1->DR; 
+  73              		.loc 1 62 5 view .LVU8
+  74              		.loc 1 62 16 is_stmt 0 view .LVU9
+  75 0010 DA6C     		ldr	r2, [r3, #76]
+  76              		.loc 1 62 9 view .LVU10
+  77 0012 92B2     		uxth	r2, r2
+  78 0014 0549     		ldr	r1, .L5+8
+  79 0016 0A80     		strh	r2, [r1]	@ movhi
+  63:Core/Src/it_handlers.c ****     CLEAR_BIT(ADC1->SR, ADC_SR_EOC);
+  80              		.loc 1 63 5 is_stmt 1 view .LVU11
+  81 0018 1A68     		ldr	r2, [r3]
+  82 001a 22F00202 		bic	r2, r2, #2
+  83 001e 1A60     		str	r2, [r3]
+  64:Core/Src/it_handlers.c **** }...
+  84              		.loc 1 64 1 is_stmt 0 view .LVU12
+  85 0020 7047     		bx	lr
+  86              	.L6:
+  87 0022 00BF     		.align	2
+  88              	.L5:
+  89 0024 00000000 		.word	flag
+  90 0028 00200140 		.word	1073815552
+  91 002c 00000000 		.word	adc
+  92              		.cfi_endproc
+  93              	.LFE131:
+  95              		.text
+  96              	.Letext0:
+  97              		.file 2 "C:/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_ty
+  98              		.file 3 "C:/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+  99              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/STM32F4xx/Inc/STM32F429ZI/stm32f429xx.h"
+ 100              		.file 5 "Core/Src/../Inc/it_handlers.h"
+ARM GAS  C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s:45     .text.SysTick_Handler:0000000c $d
+C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s:50     .text.ADC_IRQHandler:00000000 $t
+C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s:56     .text.ADC_IRQHandler:00000000 ADC_IRQHandler
+C:\Users\Bebra\AppData\Local\Temp\ccRYNX3k.s:89     .text.ADC_IRQHandler:00000024 $d
+
+UNDEFINED SYMBOLS
+systemTickCount
+flag
+adc
