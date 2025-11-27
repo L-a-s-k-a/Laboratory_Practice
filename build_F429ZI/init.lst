@@ -1,0 +1,254 @@
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "CCore/Scr/init.c"
+  20              		.section	.text.RCC_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	RCC_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	RCC_Init:
+  28              	.LFB130:
+   1:CCore/Scr/init.c **** #include "../Inc/init.h"
+   2:CCore/Scr/init.c **** 
+   3:CCore/Scr/init.c **** void RCC_Init(void)
+   4:CCore/Scr/init.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:CCore/Scr/init.c ****     /* Предварительная очистка регистров RCC */
+   6:CCore/Scr/init.c ****     MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
+  34              		.loc 1 6 5 view .LVU1
+  35 0000 3B4A     		ldr	r2, .L7
+  36 0002 1368     		ldr	r3, [r2]
+  37 0004 23F0F803 		bic	r3, r3, #248
+  38 0008 43F08003 		orr	r3, r3, #128
+  39 000c 1360     		str	r3, [r2]
+   7:CCore/Scr/init.c ****     CLEAR_REG(RCC->CFGR);
+  40              		.loc 1 7 5 view .LVU2
+  41 000e 0023     		movs	r3, #0
+  42 0010 9360     		str	r3, [r2, #8]
+   8:CCore/Scr/init.c ****     while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
+  43              		.loc 1 8 5 view .LVU3
+  44              	.L2:
+  45              		.loc 1 8 46 discriminator 1 view .LVU4
+  46              		.loc 1 8 12 is_stmt 0 discriminator 1 view .LVU5
+  47 0012 374B     		ldr	r3, .L7
+  48 0014 9B68     		ldr	r3, [r3, #8]
+  49              		.loc 1 8 46 discriminator 1 view .LVU6
+  50 0016 13F00C0F 		tst	r3, #12
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s 			page 2
+
+
+  51 001a FAD1     		bne	.L2
+   9:CCore/Scr/init.c ****     CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
+  52              		.loc 1 9 5 is_stmt 1 view .LVU7
+  53 001c 344A     		ldr	r2, .L7
+  54 001e 1368     		ldr	r3, [r2]
+  55 0020 23F08073 		bic	r3, r3, #16777216
+  56 0024 1360     		str	r3, [r2]
+  10:CCore/Scr/init.c ****     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
+  57              		.loc 1 10 5 view .LVU8
+  58              	.L3:
+  59              		.loc 1 10 45 discriminator 1 view .LVU9
+  60              		.loc 1 10 12 is_stmt 0 discriminator 1 view .LVU10
+  61 0026 324B     		ldr	r3, .L7
+  62 0028 1B68     		ldr	r3, [r3]
+  63              		.loc 1 10 45 discriminator 1 view .LVU11
+  64 002a 13F0007F 		tst	r3, #33554432
+  65 002e FAD1     		bne	.L3
+  11:CCore/Scr/init.c ****     CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON);
+  66              		.loc 1 11 5 is_stmt 1 view .LVU12
+  67 0030 2F4A     		ldr	r2, .L7
+  68 0032 1368     		ldr	r3, [r2]
+  69 0034 23F41023 		bic	r3, r3, #589824
+  70 0038 1360     		str	r3, [r2]
+  12:CCore/Scr/init.c ****     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET);
+  71              		.loc 1 12 5 view .LVU13
+  72              	.L4:
+  73              		.loc 1 12 45 discriminator 1 view .LVU14
+  74              		.loc 1 12 12 is_stmt 0 discriminator 1 view .LVU15
+  75 003a 2D4B     		ldr	r3, .L7
+  76 003c 1B68     		ldr	r3, [r3]
+  77              		.loc 1 12 45 discriminator 1 view .LVU16
+  78 003e 13F4003F 		tst	r3, #131072
+  79 0042 FAD1     		bne	.L4
+  13:CCore/Scr/init.c ****     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
+  80              		.loc 1 13 5 is_stmt 1 view .LVU17
+  81 0044 2A4B     		ldr	r3, .L7
+  82 0046 1A68     		ldr	r2, [r3]
+  83 0048 22F48022 		bic	r2, r2, #262144
+  84 004c 1A60     		str	r2, [r3]
+  14:CCore/Scr/init.c ****     /* Настройка главного регистра RCC */
+  15:CCore/Scr/init.c ****     SET_BIT(RCC->CR, RCC_CR_HSEON);                                                 // Запуск
+  85              		.loc 1 15 5 view .LVU18
+  86 004e 1A68     		ldr	r2, [r3]
+  87 0050 42F48032 		orr	r2, r2, #65536
+  88 0054 1A60     		str	r2, [r3]
+  16:CCore/Scr/init.c ****     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);                              // Ждём п�
+  89              		.loc 1 16 5 view .LVU19
+  90              	.L5:
+  91              		.loc 1 16 45 discriminator 1 view .LVU20
+  92              		.loc 1 16 12 is_stmt 0 discriminator 1 view .LVU21
+  93 0056 264B     		ldr	r3, .L7
+  94 0058 1B68     		ldr	r3, [r3]
+  95              		.loc 1 16 45 discriminator 1 view .LVU22
+  96 005a 13F4003F 		tst	r3, #131072
+  97 005e FAD0     		beq	.L5
+  17:CCore/Scr/init.c ****     SET_BIT(RCC->CR, RCC_CR_CSSON);
+  98              		.loc 1 17 5 is_stmt 1 view .LVU23
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s 			page 3
+
+
+  99 0060 234B     		ldr	r3, .L7
+ 100 0062 1A68     		ldr	r2, [r3]
+ 101 0064 42F40022 		orr	r2, r2, #524288
+ 102 0068 1A60     		str	r2, [r3]
+  18:CCore/Scr/init.c ****     SET_BIT(RCC->CR, RCC_CR_HSEBYP);
+ 103              		.loc 1 18 5 view .LVU24
+ 104 006a 1A68     		ldr	r2, [r3]
+ 105 006c 42F48022 		orr	r2, r2, #262144
+ 106 0070 1A60     		str	r2, [r3]
+  19:CCore/Scr/init.c ****     CLEAR_BIT(RCC->CR, RCC_CR_HSION);
+ 107              		.loc 1 19 5 view .LVU25
+ 108 0072 1A68     		ldr	r2, [r3]
+ 109 0074 22F00102 		bic	r2, r2, #1
+ 110 0078 1A60     		str	r2, [r3]
+  20:CCore/Scr/init.c **** 
+  21:CCore/Scr/init.c ****     CLEAR_REG(RCC->PLLCFGR);
+ 111              		.loc 1 21 5 view .LVU26
+ 112 007a 0022     		movs	r2, #0
+ 113 007c 5A60     		str	r2, [r3, #4]
+  22:CCore/Scr/init.c ****     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);                                  // Источн
+ 114              		.loc 1 22 5 view .LVU27
+ 115 007e 5A68     		ldr	r2, [r3, #4]
+ 116 0080 42F48002 		orr	r2, r2, #4194304
+ 117 0084 5A60     		str	r2, [r3, #4]
+  23:CCore/Scr/init.c ****     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM_2);                                      // Делени
+ 118              		.loc 1 23 5 view .LVU28
+ 119 0086 5A68     		ldr	r2, [r3, #4]
+ 120 0088 42F00402 		orr	r2, r2, #4
+ 121 008c 5A60     		str	r2, [r3, #4]
+  24:CCore/Scr/init.c ****     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_8 | RCC_PLLCFGR_PLLN_6 
+ 122              		.loc 1 24 5 view .LVU29
+ 123 008e 5A68     		ldr	r2, [r3, #4]
+ 124 0090 42F4B442 		orr	r2, r2, #23040
+ 125 0094 5A60     		str	r2, [r3, #4]
+  25:CCore/Scr/init.c ****                         | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_3);                 // Настро
+  26:CCore/Scr/init.c ****     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_0);                                      // Делите
+ 126              		.loc 1 26 5 view .LVU30
+ 127 0096 5A68     		ldr	r2, [r3, #4]
+ 128 0098 42F48032 		orr	r2, r2, #65536
+ 129 009c 5A60     		str	r2, [r3, #4]
+  27:CCore/Scr/init.c ****     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_0 | RCC_PLLCFGR_PLLQ_1 
+ 130              		.loc 1 27 5 view .LVU31
+ 131 009e 5A68     		ldr	r2, [r3, #4]
+ 132 00a0 42F07062 		orr	r2, r2, #251658240
+ 133 00a4 5A60     		str	r2, [r3, #4]
+  28:CCore/Scr/init.c ****                         | RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLQ_3);                 // Делите
+  29:CCore/Scr/init.c **** 
+  30:CCore/Scr/init.c ****     SET_BIT(RCC->CFGR, RCC_CFGR_SW_PLL);                                            // Источн
+ 134              		.loc 1 30 5 view .LVU32
+ 135 00a6 9A68     		ldr	r2, [r3, #8]
+ 136 00a8 42F00202 		orr	r2, r2, #2
+ 137 00ac 9A60     		str	r2, [r3, #8]
+  31:CCore/Scr/init.c ****     CLEAR_BIT(RCC->CFGR, RCC_CFGR_HPRE_DIV1);                                       // Делите
+ 138              		.loc 1 31 5 view .LVU33
+ 139 00ae 9A68     		ldr	r2, [r3, #8]
+ 140 00b0 9A60     		str	r2, [r3, #8]
+  32:CCore/Scr/init.c ****     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV4);                                        // Делите
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s 			page 4
+
+
+ 141              		.loc 1 32 5 view .LVU34
+ 142 00b2 9A68     		ldr	r2, [r3, #8]
+ 143 00b4 42F4A052 		orr	r2, r2, #5120
+ 144 00b8 9A60     		str	r2, [r3, #8]
+  33:CCore/Scr/init.c ****     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV2);                                        // Делите
+ 145              		.loc 1 33 5 view .LVU35
+ 146 00ba 9A68     		ldr	r2, [r3, #8]
+ 147 00bc 42F40042 		orr	r2, r2, #32768
+ 148 00c0 9A60     		str	r2, [r3, #8]
+  34:CCore/Scr/init.c ****     CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);                                            // Выход M
+ 149              		.loc 1 34 5 view .LVU36
+ 150 00c2 9A68     		ldr	r2, [r3, #8]
+ 151 00c4 22F04042 		bic	r2, r2, #-1073741824
+ 152 00c8 9A60     		str	r2, [r3, #8]
+  35:CCore/Scr/init.c ****     SET_BIT(RCC->CFGR, RCC_CFGR_MCO2PRE_2 | RCC_CFGR_MCO2PRE_1);                    // Делите
+ 153              		.loc 1 35 5 view .LVU37
+ 154 00ca 9A68     		ldr	r2, [r3, #8]
+ 155 00cc 42F04052 		orr	r2, r2, #805306368
+ 156 00d0 9A60     		str	r2, [r3, #8]
+  36:CCore/Scr/init.c **** 
+  37:CCore/Scr/init.c ****     SET_BIT(FLASH->ACR, FLASH_ACR_LATENCY_5WS);
+ 157              		.loc 1 37 5 view .LVU38
+ 158 00d2 0849     		ldr	r1, .L7+4
+ 159 00d4 0A68     		ldr	r2, [r1]
+ 160 00d6 42F00502 		orr	r2, r2, #5
+ 161 00da 0A60     		str	r2, [r1]
+  38:CCore/Scr/init.c **** 
+  39:CCore/Scr/init.c ****     SET_BIT(RCC->CR, RCC_CR_PLLON);
+ 162              		.loc 1 39 5 view .LVU39
+ 163 00dc 1A68     		ldr	r2, [r3]
+ 164 00de 42F08072 		orr	r2, r2, #16777216
+ 165 00e2 1A60     		str	r2, [r3]
+  40:CCore/Scr/init.c ****     while(READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
+ 166              		.loc 1 40 5 view .LVU40
+ 167              	.L6:
+ 168              		.loc 1 40 44 discriminator 1 view .LVU41
+ 169              		.loc 1 40 11 is_stmt 0 discriminator 1 view .LVU42
+ 170 00e4 024B     		ldr	r3, .L7
+ 171 00e6 1B68     		ldr	r3, [r3]
+ 172              		.loc 1 40 44 discriminator 1 view .LVU43
+ 173 00e8 13F0007F 		tst	r3, #33554432
+ 174 00ec FAD0     		beq	.L6
+  41:CCore/Scr/init.c **** }...
+ 175              		.loc 1 41 1 view .LVU44
+ 176 00ee 7047     		bx	lr
+ 177              	.L8:
+ 178              		.align	2
+ 179              	.L7:
+ 180 00f0 00380240 		.word	1073887232
+ 181 00f4 003C0240 		.word	1073888256
+ 182              		.cfi_endproc
+ 183              	.LFE130:
+ 185              		.text
+ 186              	.Letext0:
+ 187              		.file 2 "D:/Work/Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 188              		.file 3 "D:/Work/Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ 189              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s 			page 5
+
+
+ 190              		.file 5 "CCore/Scr/../Inc/../../CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s:21     .text.RCC_Init:00000000 $t
+C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s:27     .text.RCC_Init:00000000 RCC_Init
+C:\Users\stepa\AppData\Local\Temp\ccuj7zLd.s:180    .text.RCC_Init:000000f0 $d
+
+NO UNDEFINED SYMBOLS

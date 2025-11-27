@@ -1,0 +1,134 @@
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccKz9ZsF.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "CCore/Scr/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:CCore/Scr/main.c **** #include "../Inc/init.h"
+   2:CCore/Scr/main.c **** 
+   3:CCore/Scr/main.c **** int main(void)
+   4:CCore/Scr/main.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   5:CCore/Scr/main.c **** 
+   6:CCore/Scr/main.c ****     RCC_Init();
+  39              		.loc 1 6 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	RCC_Init
+  41              	.LVL0:
+   7:CCore/Scr/main.c **** 
+   8:CCore/Scr/main.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+  42              		.loc 1 8 5 view .LVU2
+  43 0006 134A     		ldr	r2, .L4
+  44 0008 136B     		ldr	r3, [r2, #48]
+  45 000a 43F00603 		orr	r3, r3, #6
+  46 000e 1363     		str	r3, [r2, #48]
+   9:CCore/Scr/main.c **** 
+  10:CCore/Scr/main.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER7_0);
+  47              		.loc 1 10 5 view .LVU3
+  48 0010 114B     		ldr	r3, .L4+4
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccKz9ZsF.s 			page 2
+
+
+  49 0012 1A68     		ldr	r2, [r3]
+  50 0014 42F48042 		orr	r2, r2, #16384
+  51 0018 1A60     		str	r2, [r3]
+  11:CCore/Scr/main.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED7_0);
+  52              		.loc 1 11 5 view .LVU4
+  53 001a 9A68     		ldr	r2, [r3, #8]
+  54 001c 42F48042 		orr	r2, r2, #16384
+  55 0020 9A60     		str	r2, [r3, #8]
+  12:CCore/Scr/main.c ****     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+  56              		.loc 1 12 5 view .LVU5
+  57 0022 9A69     		ldr	r2, [r3, #24]
+  58 0024 42F40002 		orr	r2, r2, #8388608
+  59 0028 9A61     		str	r2, [r3, #24]
+  13:CCore/Scr/main.c **** 
+  14:CCore/Scr/main.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER9_1);              // Настраиваем пин на 
+  60              		.loc 1 14 5 view .LVU6
+  61 002a 03F58063 		add	r3, r3, #1024
+  62 002e 1A68     		ldr	r2, [r3]
+  63 0030 42F40022 		orr	r2, r2, #524288
+  64 0034 1A60     		str	r2, [r3]
+  15:CCore/Scr/main.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED9_Msk);       // Настраиваем пин на 
+  65              		.loc 1 15 5 view .LVU7
+  66 0036 9A68     		ldr	r2, [r3, #8]
+  67 0038 42F44022 		orr	r2, r2, #786432
+  68 003c 9A60     		str	r2, [r3, #8]
+  16:CCore/Scr/main.c ****     MODIFY_REG(GPIOC->AFR[1], GPIO_AFRH_AFSEL9_Msk, 0x00UL); // Выбираем тип альте�
+  69              		.loc 1 16 5 view .LVU8
+  70 003e 5A6A     		ldr	r2, [r3, #36]
+  71 0040 22F0F002 		bic	r2, r2, #240
+  72 0044 5A62     		str	r2, [r3, #36]
+  73              	.L2:
+  17:CCore/Scr/main.c **** 
+  18:CCore/Scr/main.c ****     while (1)
+  74              		.loc 1 18 5 view .LVU9
+  19:CCore/Scr/main.c ****     {
+  20:CCore/Scr/main.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+  75              		.loc 1 20 9 discriminator 1 view .LVU10
+  76 0046 044A     		ldr	r2, .L4+4
+  77 0048 9369     		ldr	r3, [r2, #24]
+  78 004a 43F08003 		orr	r3, r3, #128
+  79 004e 9361     		str	r3, [r2, #24]
+  18:CCore/Scr/main.c ****     {
+  80              		.loc 1 18 11 view .LVU11
+  81 0050 F9E7     		b	.L2
+  82              	.L5:
+  83 0052 00BF     		.align	2
+  84              	.L4:
+  85 0054 00380240 		.word	1073887232
+  86 0058 00040240 		.word	1073873920
+  87              		.cfi_endproc
+  88              	.LFE130:
+  90              		.text
+  91              	.Letext0:
+  92              		.file 2 "D:/Work/Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+  93              		.file 3 "D:/Work/Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+  94              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+  95              		.file 5 "CCore/Scr/../Inc/init.h"
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccKz9ZsF.s 			page 3
+
+
+ARM GAS  C:\Users\stepa\AppData\Local\Temp\ccKz9ZsF.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\stepa\AppData\Local\Temp\ccKz9ZsF.s:21     .text.main:00000000 $t
+C:\Users\stepa\AppData\Local\Temp\ccKz9ZsF.s:27     .text.main:00000000 main
+C:\Users\stepa\AppData\Local\Temp\ccKz9ZsF.s:85     .text.main:00000054 $d
+
+UNDEFINED SYMBOLS
+RCC_Init

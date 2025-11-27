@@ -134,7 +134,9 @@ endif
 # C sources
 C_SOURCES =  \
 $(SYS) \
-Core/Src/main.c \
+CCore/Src/main.c \
+CCore/Scr/init.c \
+CCore/Scr/interrupt.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -193,6 +195,8 @@ C_INCLUDES =  \
 -I$(CMSIS_INC_UNIT) \
 -I$(CMSIS_INC) \
 -ICore/Inc \
+-ICMSIS/Devices \
+-ICMSIS/Include
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
