@@ -1,0 +1,1726 @@
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.Button2_Task,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	Button2_Task:
+  27              	.LFB132:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** #include "init.h"
+   3:Core/Src/main.c **** #include "Interrupt.h"
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** // Для начала работы режима 2: по одному светодиоду кажд
+   6:Core/Src/main.c **** volatile uint8_t mode2_ramp_done = 0U;       // 0 - ещё набираем светодиоды, 1
+   7:Core/Src/main.c **** volatile uint32_t mode2_last_enable_ms = 0U; // когда последний раз включал
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** #define MODE2_ENABLE_STEP_MS 500U  // шаг включения новых светодиодов
+  10:Core/Src/main.c **** #define MODE2_ALL_ON_HOLD_MS 1000U // сколько все вместе просто горят д
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c **** // Фазы режима 2:
+  13:Core/Src/main.c **** // 0 - включаем по одному
+  14:Core/Src/main.c **** // 1 - все включены, держим просто включёнными
+  15:Core/Src/main.c **** // 2 - режим мерцания
+  16:Core/Src/main.c **** volatile uint8_t mode2_stage = 0U;
+  17:Core/Src/main.c **** volatile uint8_t mode2_enabled_count = 0U;   // сколько уже включено (0..6)
+  18:Core/Src/main.c **** volatile uint32_t mode2_all_on_time_ms = 0U; // когда все 6 стали гореть
+  19:Core/Src/main.c **** /* Время от SysTick, мс и секунды */
+  20:Core/Src/main.c **** volatile uint32_t system_time_ms = 0U;
+  21:Core/Src/main.c **** volatile uint32_t seconds = 0U;
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c **** /* Флаги событий от кнопок (ставятся в прерываниях) */
+  24:Core/Src/main.c **** volatile uint8_t button1_press_flag = 0U; // Кнопка 1 (смена режима)
+  25:Core/Src/main.c **** volatile uint8_t button2_press_flag = 0U; // Кнопка 2 (смена частоты)
+  26:Core/Src/main.c **** volatile uint8_t button3_press_flag = 0U; // Кнопка 3 (смена номера LED)
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c **** volatile uint32_t button1_last_irq_time_ms = 0U; // для антидребезга
+  29:Core/Src/main.c **** volatile uint32_t button2_last_irq_time_ms = 0U;
+  30:Core/Src/main.c **** volatile uint32_t button3_last_irq_time_ms = 0U;
+  31:Core/Src/main.c **** 
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 2
+
+
+  32:Core/Src/main.c **** //Кол-во светодиодов
+  33:Core/Src/main.c **** #define LED_COUNT 6U
+  34:Core/Src/main.c **** 
+  35:Core/Src/main.c **** /*
+  36:Core/Src/main.c ****  * mode = 0 → Режим 1: пары светодиодов
+  37:Core/Src/main.c ****  * mode = 1 → Режим 2: индивидуальное мерцание каждого свет
+  38:Core/Src/main.c ****  */
+  39:Core/Src/main.c **** volatile uint8_t current_mode = 0U;
+  40:Core/Src/main.c ****  /* --------------------- Режим 1--------------------- */
+  41:Core/Src/main.c **** 
+  42:Core/Src/main.c **** /*
+  43:Core/Src/main.c ****  * Порядок пар (по индексу светодиода 0..5):
+  44:Core/Src/main.c ****  *  0: 3-й и 4-й светодиоды → индексы 2 и 3
+  45:Core/Src/main.c ****  *  1: 2-й и 5-й → индексы 1 и 4
+  46:Core/Src/main.c ****  *  2: 1-й и 6-й → индексы 0 и 5
+  47:Core/Src/main.c ****  */
+  48:Core/Src/main.c **** volatile uint8_t pair_index = 0U;  // 0..2, какая пара сейчас горит
+  49:Core/Src/main.c **** volatile uint8_t freq1_index = 0U; // 0..2, индекс частоты режима 1
+  50:Core/Src/main.c **** 
+  51:Core/Src/main.c **** /* Частоты для режима 1: 0.5 Гц, 1.7 Гц, 2.2 Гц
+  52:Core/Src/main.c ****  * Храним период переключения пары (T) в мс
+  53:Core/Src/main.c ****  * 0.5 Гц → T = 2000 мс
+  54:Core/Src/main.c ****  * 1.7 Гц → T ≈ 588 мс
+  55:Core/Src/main.c ****  * 2.2 Гц → T ≈ 455 мс
+  56:Core/Src/main.c ****  */
+  57:Core/Src/main.c **** static const uint32_t mode1_intervals_ms[3] = {2000U, 588U, 455U};
+  58:Core/Src/main.c **** volatile uint32_t last_pair_switch_ms = 0U;
+  59:Core/Src/main.c **** 
+  60:Core/Src/main.c **** /* --------------------- Режим 2 (индивидуальное мерцание) -------------
+  61:Core/Src/main.c **** 
+  62:Core/Src/main.c **** /*
+  63:Core/Src/main.c ****  * Для каждого светодиода храним:
+  64:Core/Src/main.c ****  *  freq2_index[i] — индекс частоты 0..2
+  65:Core/Src/main.c ****  *  last_toggle_ms[i] — момент последнего переключения состоян
+  66:Core/Src/main.c ****  *  led_state[i] — 0 = выключен, 1 = включен
+  67:Core/Src/main.c ****  *
+  68:Core/Src/main.c ****  * Частоты: 0.3 Гц, 0.8 Гц, 1.4 Гц
+  69:Core/Src/main.c ****  * Храним полупериод (T/2) в мс, т.к. мы "переключаем" (toggle) �
+  70:Core/Src/main.c ****  *
+  71:Core/Src/main.c ****  * 0.3 Гц → T ≈ 3333 мс → T/2 ≈ 1666 мс
+  72:Core/Src/main.c ****  * 0.8 Гц → T = 1250 мс → T/2 = 625 мс
+  73:Core/Src/main.c ****  * 1.4 Гц → T ≈ 714 мс → T/2 ≈ 357 мс
+  74:Core/Src/main.c ****  */
+  75:Core/Src/main.c **** volatile uint8_t selected_led = 0U; // какой LED сейчас настраиваем (0..5)
+  76:Core/Src/main.c **** volatile uint8_t freq2_index[LED_COUNT] = {0U, 0U, 0U, 0U, 0U, 0U};
+  77:Core/Src/main.c **** volatile uint32_t last_toggle_ms[LED_COUNT] = {0U};
+  78:Core/Src/main.c **** volatile uint8_t led_state[LED_COUNT] = {0U}; // текущее состояние LED (для ре
+  79:Core/Src/main.c **** 
+  80:Core/Src/main.c **** static const uint32_t mode2_intervals_ms[3] = {1666U, 625U, 357U};
+  81:Core/Src/main.c **** 
+  82:Core/Src/main.c **** static void Button1_Task(void);
+  83:Core/Src/main.c **** static void Button2_Task(void);
+  84:Core/Src/main.c **** static void Button3_Task(void);
+  85:Core/Src/main.c **** 
+  86:Core/Src/main.c **** static void Mode1_Task(void);
+  87:Core/Src/main.c **** static void Mode2_Task(void);
+  88:Core/Src/main.c **** 
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 3
+
+
+  89:Core/Src/main.c **** int main(void)
+  90:Core/Src/main.c **** {
+  91:Core/Src/main.c ****     //Тактирование и таймер SysTick
+  92:Core/Src/main.c ****     Clock_Init_HSE_PLL_168MHz();
+  93:Core/Src/main.c ****     SysTick_Init_1ms();
+  94:Core/Src/main.c **** 
+  95:Core/Src/main.c ****     //Инициализация GPIO
+  96:Core/Src/main.c ****     LEDs_GPIO_Init();
+  97:Core/Src/main.c ****     Buttons_GPIO_Init();
+  98:Core/Src/main.c ****     Buttons_EXTI_Init();
+  99:Core/Src/main.c **** 
+ 100:Core/Src/main.c ****     // Начальное состояние: всё погашено
+ 101:Core/Src/main.c ****     LED_AllOff();
+ 102:Core/Src/main.c **** 
+ 103:Core/Src/main.c ****     //Обнулим счётчики для режимов
+ 104:Core/Src/main.c **** 
+ 105:Core/Src/main.c ****     last_pair_switch_ms = system_time_ms;
+ 106:Core/Src/main.c ****     for (uint8_t i = 0; i < LED_COUNT; i++)
+ 107:Core/Src/main.c ****     {
+ 108:Core/Src/main.c ****         last_toggle_ms[i] = system_time_ms;
+ 109:Core/Src/main.c ****         led_state[i] = 0U;
+ 110:Core/Src/main.c ****         freq2_index[i] = 0U; // начнём со самой медленной частоты
+ 111:Core/Src/main.c ****     }
+ 112:Core/Src/main.c **** 
+ 113:Core/Src/main.c ****     selected_led = 0U; // по умолчанию настраиваем первый светод�
+ 114:Core/Src/main.c ****     extern volatile uint8_t Diana_Button3;
+ 115:Core/Src/main.c **** 
+ 116:Core/Src/main.c ****     while (1)
+ 117:Core/Src/main.c ****     {
+ 118:Core/Src/main.c ****         Button1_Task(); // смена режима
+ 119:Core/Src/main.c ****         Button2_Task(); // смена частоты
+ 120:Core/Src/main.c ****         Button3_Task(); // смена номера настраиваемого LED (в режим�
+ 121:Core/Src/main.c **** 
+ 122:Core/Src/main.c ****         //В зависимости от режима вызываем соответствующу
+ 123:Core/Src/main.c ****         if (current_mode == 0U)
+ 124:Core/Src/main.c ****         {
+ 125:Core/Src/main.c ****             Mode1_Task(); // пары 3-4, 2-5, 1-6
+ 126:Core/Src/main.c ****         }
+ 127:Core/Src/main.c ****         else
+ 128:Core/Src/main.c ****         {
+ 129:Core/Src/main.c ****             Mode2_Task(); // индивидуальное мерцание всех 6 светод�
+ 130:Core/Src/main.c ****         }
+ 131:Core/Src/main.c ****     }
+ 132:Core/Src/main.c **** }
+ 133:Core/Src/main.c **** 
+ 134:Core/Src/main.c **** /* Кнопка 1: смена режима работы гирлянды (0 ↔ 1) */
+ 135:Core/Src/main.c **** static void Button1_Task(void)
+ 136:Core/Src/main.c **** {
+ 137:Core/Src/main.c ****     if (button1_press_flag == 0U)
+ 138:Core/Src/main.c ****         return;
+ 139:Core/Src/main.c **** 
+ 140:Core/Src/main.c ****     button1_press_flag = 0U;
+ 141:Core/Src/main.c **** 
+ 142:Core/Src/main.c ****     /* Переключаем режим: 0 → 1 → 0 → ... */
+ 143:Core/Src/main.c ****     current_mode ^= 1U; // XOR с 1: 0→1, 1→0
+ 144:Core/Src/main.c **** 
+ 145:Core/Src/main.c ****     /* При смене режима — гасим всё и сбрасываем служебн�
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 4
+
+
+ 146:Core/Src/main.c ****     LED_AllOff();
+ 147:Core/Src/main.c **** 
+ 148:Core/Src/main.c ****     if (current_mode == 0U)
+ 149:Core/Src/main.c ****     {
+ 150:Core/Src/main.c ****         /* Переход в режим 1 (пары) */
+ 151:Core/Src/main.c ****         pair_index = 0U;
+ 152:Core/Src/main.c ****         freq1_index = 0U; // можно начать с самой медленной частот�
+ 153:Core/Src/main.c ****         last_pair_switch_ms = system_time_ms;
+ 154:Core/Src/main.c ****     }
+ 155:Core/Src/main.c ****     else
+ 156:Core/Src/main.c ****     {
+ 157:Core/Src/main.c ****         /* Переход в режим 2 (индивидуальное мерцание) */
+ 158:Core/Src/main.c **** 
+ 159:Core/Src/main.c ****         LED_AllOff();
+ 160:Core/Src/main.c **** 
+ 161:Core/Src/main.c ****         for (uint8_t i = 0; i < LED_COUNT; i++)
+ 162:Core/Src/main.c ****         {
+ 163:Core/Src/main.c ****             led_state[i] = 0U;
+ 164:Core/Src/main.c ****             last_toggle_ms[i] = system_time_ms;
+ 165:Core/Src/main.c ****             /* freq2_index[i] можно НЕ трогать, чтобы частоты сохра�
+ 166:Core/Src/main.c ****         }
+ 167:Core/Src/main.c **** 
+ 168:Core/Src/main.c ****         selected_led = 0U;
+ 169:Core/Src/main.c **** 
+ 170:Core/Src/main.c ****         /* Сбрасываем "фазы" режима 2 */
+ 171:Core/Src/main.c ****         mode2_stage = 0U;                      // начинаем с набора
+ 172:Core/Src/main.c ****         mode2_enabled_count = 0U;              // пока ни один не включен
+ 173:Core/Src/main.c ****         mode2_last_enable_ms = system_time_ms; // старт таймера набора
+ 174:Core/Src/main.c ****         mode2_all_on_time_ms = 0U;             // пока не все включены
+ 175:Core/Src/main.c ****     }
+ 176:Core/Src/main.c **** }
+ 177:Core/Src/main.c **** 
+ 178:Core/Src/main.c **** /* Кнопка 2:
+ 179:Core/Src/main.c ****  *  - в режиме 1: меняет частоту переключения пар (0.5 / 1.7 / 2
+ 180:Core/Src/main.c ****  *  - в режиме 2: меняет частоту мерцания выбранного свет
+ 181:Core/Src/main.c ****  */
+ 182:Core/Src/main.c **** static void Button2_Task(void)
+ 183:Core/Src/main.c **** {
+  28              		.loc 1 183 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 184:Core/Src/main.c ****     if (button2_press_flag == 0U)
+  33              		.loc 1 184 5 view .LVU1
+  34              		.loc 1 184 28 is_stmt 0 view .LVU2
+  35 0000 134B     		ldr	r3, .L4
+  36 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  37              		.loc 1 184 8 view .LVU3
+  38 0004 1BB3     		cbz	r3, .L1
+ 185:Core/Src/main.c ****         return;
+ 186:Core/Src/main.c **** 
+ 187:Core/Src/main.c ****     button2_press_flag = 0U;
+  39              		.loc 1 187 5 is_stmt 1 view .LVU4
+  40              		.loc 1 187 24 is_stmt 0 view .LVU5
+  41 0006 124B     		ldr	r3, .L4
+  42 0008 0022     		movs	r2, #0
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 5
+
+
+  43 000a 1A70     		strb	r2, [r3]
+ 188:Core/Src/main.c **** 
+ 189:Core/Src/main.c ****     if (current_mode == 0U)
+  44              		.loc 1 189 5 is_stmt 1 view .LVU6
+  45              		.loc 1 189 22 is_stmt 0 view .LVU7
+  46 000c 114B     		ldr	r3, .L4+4
+  47 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  48              		.loc 1 189 8 view .LVU8
+  49 0010 63B9     		cbnz	r3, .L3
+ 190:Core/Src/main.c ****     {
+ 191:Core/Src/main.c ****         /* Режим 1 — переключаем частоту для всех пар */
+ 192:Core/Src/main.c ****         freq1_index++;
+  50              		.loc 1 192 9 is_stmt 1 view .LVU9
+  51              		.loc 1 192 20 is_stmt 0 view .LVU10
+  52 0012 114A     		ldr	r2, .L4+8
+  53 0014 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  54 0016 0133     		adds	r3, r3, #1
+  55 0018 DBB2     		uxtb	r3, r3
+  56 001a 1370     		strb	r3, [r2]
+ 193:Core/Src/main.c ****         if (freq1_index >= 3U)
+  57              		.loc 1 193 9 is_stmt 1 view .LVU11
+  58              		.loc 1 193 25 is_stmt 0 view .LVU12
+  59 001c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  60 001e DBB2     		uxtb	r3, r3
+  61              		.loc 1 193 12 view .LVU13
+  62 0020 022B     		cmp	r3, #2
+  63 0022 14D9     		bls	.L1
+ 194:Core/Src/main.c ****             freq1_index = 0U;
+  64              		.loc 1 194 13 is_stmt 1 view .LVU14
+  65              		.loc 1 194 25 is_stmt 0 view .LVU15
+  66 0024 1346     		mov	r3, r2
+  67 0026 0022     		movs	r2, #0
+  68 0028 1A70     		strb	r2, [r3]
+  69 002a 7047     		bx	lr
+  70              	.L3:
+  71              	.LBB2:
+ 195:Core/Src/main.c ****     }
+ 196:Core/Src/main.c ****     else
+ 197:Core/Src/main.c ****     {
+ 198:Core/Src/main.c ****         /* Режим 2 — меняем частоту только для выбранного с
+ 199:Core/Src/main.c ****         uint8_t led = selected_led;
+  72              		.loc 1 199 9 is_stmt 1 view .LVU16
+  73              		.loc 1 199 17 is_stmt 0 view .LVU17
+  74 002c 0B4B     		ldr	r3, .L4+12
+  75 002e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  76 0030 DBB2     		uxtb	r3, r3
+  77              	.LVL0:
+ 200:Core/Src/main.c ****         if (led < LED_COUNT)
+  78              		.loc 1 200 9 is_stmt 1 view .LVU18
+  79              		.loc 1 200 12 is_stmt 0 view .LVU19
+  80 0032 052B     		cmp	r3, #5
+  81 0034 0BD8     		bhi	.L1
+ 201:Core/Src/main.c ****         {
+ 202:Core/Src/main.c ****             freq2_index[led]++;
+  82              		.loc 1 202 13 is_stmt 1 view .LVU20
+  83              		.loc 1 202 24 is_stmt 0 view .LVU21
+  84 0036 0A49     		ldr	r1, .L4+16
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 6
+
+
+  85 0038 CA5C     		ldrb	r2, [r1, r3]	@ zero_extendqisi2
+  86              		.loc 1 202 29 view .LVU22
+  87 003a 0132     		adds	r2, r2, #1
+  88 003c D2B2     		uxtb	r2, r2
+  89 003e CA54     		strb	r2, [r1, r3]
+ 203:Core/Src/main.c ****             if (freq2_index[led] >= 3U)
+  90              		.loc 1 203 13 is_stmt 1 view .LVU23
+  91              		.loc 1 203 28 is_stmt 0 view .LVU24
+  92 0040 CA5C     		ldrb	r2, [r1, r3]	@ zero_extendqisi2
+  93 0042 D2B2     		uxtb	r2, r2
+  94              		.loc 1 203 16 view .LVU25
+  95 0044 022A     		cmp	r2, #2
+  96 0046 02D9     		bls	.L1
+ 204:Core/Src/main.c ****                 freq2_index[led] = 0U;
+  97              		.loc 1 204 17 is_stmt 1 view .LVU26
+  98              		.loc 1 204 34 is_stmt 0 view .LVU27
+  99 0048 0A46     		mov	r2, r1
+ 100 004a 0021     		movs	r1, #0
+ 101 004c D154     		strb	r1, [r2, r3]
+ 102              	.LVL1:
+ 103              	.L1:
+ 104              		.loc 1 204 34 view .LVU28
+ 105              	.LBE2:
+ 205:Core/Src/main.c ****         }
+ 206:Core/Src/main.c ****     }
+ 207:Core/Src/main.c **** }
+ 106              		.loc 1 207 1 view .LVU29
+ 107 004e 7047     		bx	lr
+ 108              	.L5:
+ 109              		.align	2
+ 110              	.L4:
+ 111 0050 00000000 		.word	button2_press_flag
+ 112 0054 00000000 		.word	current_mode
+ 113 0058 00000000 		.word	freq1_index
+ 114 005c 00000000 		.word	selected_led
+ 115 0060 00000000 		.word	freq2_index
+ 116              		.cfi_endproc
+ 117              	.LFE132:
+ 119              		.section	.text.Button3_Task,"ax",%progbits
+ 120              		.align	1
+ 121              		.syntax unified
+ 122              		.thumb
+ 123              		.thumb_func
+ 125              	Button3_Task:
+ 126              	.LFB133:
+ 208:Core/Src/main.c **** 
+ 209:Core/Src/main.c **** /* Кнопка 3:
+ 210:Core/Src/main.c ****  *  - в режиме 2: циклически выбирает светодиод (0..5),
+ 211:Core/Src/main.c ****  *    для которого кнопка 2 будет менять частоту
+ 212:Core/Src/main.c ****  *  - в режиме 1: можно игнорировать (по заданию нужна в р�
+ 213:Core/Src/main.c ****  */
+ 214:Core/Src/main.c ****  static void Button3_Task(void)
+ 215:Core/Src/main.c **** {
+ 127              		.loc 1 215 1 is_stmt 1 view -0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 0
+ 130              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 7
+
+
+ 131              		@ link register save eliminated.
+ 216:Core/Src/main.c ****      
+ 217:Core/Src/main.c ****     if (button3_press_flag == 0U)
+ 132              		.loc 1 217 5 view .LVU31
+ 133              		.loc 1 217 28 is_stmt 0 view .LVU32
+ 134 0000 0C4B     		ldr	r3, .L9
+ 135 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 136              		.loc 1 217 8 view .LVU33
+ 137 0004 3BB1     		cbz	r3, .L6
+ 218:Core/Src/main.c ****         return;
+ 219:Core/Src/main.c **** 
+ 220:Core/Src/main.c ****     button3_press_flag = 0U;
+ 138              		.loc 1 220 5 is_stmt 1 view .LVU34
+ 139              		.loc 1 220 24 is_stmt 0 view .LVU35
+ 140 0006 0B4B     		ldr	r3, .L9
+ 141 0008 0022     		movs	r2, #0
+ 142 000a 1A70     		strb	r2, [r3]
+ 221:Core/Src/main.c **** 
+ 222:Core/Src/main.c ****     if (current_mode == 1U)
+ 143              		.loc 1 222 5 is_stmt 1 view .LVU36
+ 144              		.loc 1 222 22 is_stmt 0 view .LVU37
+ 145 000c 0A4B     		ldr	r3, .L9+4
+ 146 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 147 0010 DBB2     		uxtb	r3, r3
+ 148              		.loc 1 222 8 view .LVU38
+ 149 0012 012B     		cmp	r3, #1
+ 150 0014 00D0     		beq	.L8
+ 151              	.L6:
+ 223:Core/Src/main.c ****     {
+ 224:Core/Src/main.c ****         selected_led++;
+ 225:Core/Src/main.c ****         if (selected_led >= LED_COUNT)
+ 226:Core/Src/main.c ****             selected_led = 0U;
+ 227:Core/Src/main.c ****     }
+ 228:Core/Src/main.c **** }
+ 152              		.loc 1 228 1 view .LVU39
+ 153 0016 7047     		bx	lr
+ 154              	.L8:
+ 224:Core/Src/main.c ****         if (selected_led >= LED_COUNT)
+ 155              		.loc 1 224 9 is_stmt 1 view .LVU40
+ 224:Core/Src/main.c ****         if (selected_led >= LED_COUNT)
+ 156              		.loc 1 224 21 is_stmt 0 view .LVU41
+ 157 0018 084A     		ldr	r2, .L9+8
+ 158 001a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 159 001c 0133     		adds	r3, r3, #1
+ 160 001e DBB2     		uxtb	r3, r3
+ 161 0020 1370     		strb	r3, [r2]
+ 225:Core/Src/main.c ****             selected_led = 0U;
+ 162              		.loc 1 225 9 is_stmt 1 view .LVU42
+ 225:Core/Src/main.c ****             selected_led = 0U;
+ 163              		.loc 1 225 26 is_stmt 0 view .LVU43
+ 164 0022 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 165 0024 DBB2     		uxtb	r3, r3
+ 225:Core/Src/main.c ****             selected_led = 0U;
+ 166              		.loc 1 225 12 view .LVU44
+ 167 0026 052B     		cmp	r3, #5
+ 168 0028 F5D9     		bls	.L6
+ 226:Core/Src/main.c ****     }
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 8
+
+
+ 169              		.loc 1 226 13 is_stmt 1 view .LVU45
+ 226:Core/Src/main.c ****     }
+ 170              		.loc 1 226 26 is_stmt 0 view .LVU46
+ 171 002a 1346     		mov	r3, r2
+ 172 002c 0022     		movs	r2, #0
+ 173 002e 1A70     		strb	r2, [r3]
+ 174 0030 F1E7     		b	.L6
+ 175              	.L10:
+ 176 0032 00BF     		.align	2
+ 177              	.L9:
+ 178 0034 00000000 		.word	button3_press_flag
+ 179 0038 00000000 		.word	current_mode
+ 180 003c 00000000 		.word	selected_led
+ 181              		.cfi_endproc
+ 182              	.LFE133:
+ 184              		.section	.text.Button1_Task,"ax",%progbits
+ 185              		.align	1
+ 186              		.syntax unified
+ 187              		.thumb
+ 188              		.thumb_func
+ 190              	Button1_Task:
+ 191              	.LFB131:
+ 136:Core/Src/main.c ****     if (button1_press_flag == 0U)
+ 192              		.loc 1 136 1 is_stmt 1 view -0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137:Core/Src/main.c ****         return;
+ 196              		.loc 1 137 5 view .LVU48
+ 137:Core/Src/main.c ****         return;
+ 197              		.loc 1 137 28 is_stmt 0 view .LVU49
+ 198 0000 1B4B     		ldr	r3, .L21
+ 199 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 137:Core/Src/main.c ****         return;
+ 200              		.loc 1 137 8 view .LVU50
+ 201 0004 03B9     		cbnz	r3, .L20
+ 202 0006 7047     		bx	lr
+ 203              	.L20:
+ 136:Core/Src/main.c ****     if (button1_press_flag == 0U)
+ 204              		.loc 1 136 1 view .LVU51
+ 205 0008 10B5     		push	{r4, lr}
+ 206              	.LCFI0:
+ 207              		.cfi_def_cfa_offset 8
+ 208              		.cfi_offset 4, -8
+ 209              		.cfi_offset 14, -4
+ 140:Core/Src/main.c **** 
+ 210              		.loc 1 140 5 is_stmt 1 view .LVU52
+ 140:Core/Src/main.c **** 
+ 211              		.loc 1 140 24 is_stmt 0 view .LVU53
+ 212 000a 194B     		ldr	r3, .L21
+ 213 000c 0022     		movs	r2, #0
+ 214 000e 1A70     		strb	r2, [r3]
+ 143:Core/Src/main.c **** 
+ 215              		.loc 1 143 5 is_stmt 1 view .LVU54
+ 143:Core/Src/main.c **** 
+ 216              		.loc 1 143 18 is_stmt 0 view .LVU55
+ 217 0010 184C     		ldr	r4, .L21+4
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 9
+
+
+ 218 0012 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 219 0014 83F00103 		eor	r3, r3, #1
+ 220 0018 2370     		strb	r3, [r4]
+ 146:Core/Src/main.c **** 
+ 221              		.loc 1 146 5 is_stmt 1 view .LVU56
+ 222 001a FFF7FEFF 		bl	LED_AllOff
+ 223              	.LVL2:
+ 148:Core/Src/main.c ****     {
+ 224              		.loc 1 148 5 view .LVU57
+ 148:Core/Src/main.c ****     {
+ 225              		.loc 1 148 22 is_stmt 0 view .LVU58
+ 226 001e 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 148:Core/Src/main.c ****     {
+ 227              		.loc 1 148 8 view .LVU59
+ 228 0020 43B9     		cbnz	r3, .L13
+ 151:Core/Src/main.c ****         freq1_index = 0U; // можно начать с самой медленной частот�
+ 229              		.loc 1 151 9 is_stmt 1 view .LVU60
+ 151:Core/Src/main.c ****         freq1_index = 0U; // можно начать с самой медленной частот�
+ 230              		.loc 1 151 20 is_stmt 0 view .LVU61
+ 231 0022 154A     		ldr	r2, .L21+8
+ 232 0024 1370     		strb	r3, [r2]
+ 152:Core/Src/main.c ****         last_pair_switch_ms = system_time_ms;
+ 233              		.loc 1 152 9 is_stmt 1 view .LVU62
+ 152:Core/Src/main.c ****         last_pair_switch_ms = system_time_ms;
+ 234              		.loc 1 152 21 is_stmt 0 view .LVU63
+ 235 0026 154A     		ldr	r2, .L21+12
+ 236 0028 1370     		strb	r3, [r2]
+ 153:Core/Src/main.c ****     }
+ 237              		.loc 1 153 9 is_stmt 1 view .LVU64
+ 153:Core/Src/main.c ****     }
+ 238              		.loc 1 153 29 is_stmt 0 view .LVU65
+ 239 002a 154B     		ldr	r3, .L21+16
+ 240 002c 1A68     		ldr	r2, [r3]
+ 241 002e 154B     		ldr	r3, .L21+20
+ 242 0030 1A60     		str	r2, [r3]
+ 243              	.L11:
+ 176:Core/Src/main.c **** 
+ 244              		.loc 1 176 1 view .LVU66
+ 245 0032 10BD     		pop	{r4, pc}
+ 246              	.L13:
+ 159:Core/Src/main.c **** 
+ 247              		.loc 1 159 9 is_stmt 1 view .LVU67
+ 248 0034 FFF7FEFF 		bl	LED_AllOff
+ 249              	.LVL3:
+ 161:Core/Src/main.c ****         {
+ 250              		.loc 1 161 9 view .LVU68
+ 251              	.LBB3:
+ 161:Core/Src/main.c ****         {
+ 252              		.loc 1 161 14 view .LVU69
+ 161:Core/Src/main.c ****         {
+ 253              		.loc 1 161 22 is_stmt 0 view .LVU70
+ 254 0038 0023     		movs	r3, #0
+ 161:Core/Src/main.c ****         {
+ 255              		.loc 1 161 9 view .LVU71
+ 256 003a 09E0     		b	.L14
+ 257              	.LVL4:
+ 258              	.L15:
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 10
+
+
+ 163:Core/Src/main.c ****             last_toggle_ms[i] = system_time_ms;
+ 259              		.loc 1 163 13 is_stmt 1 view .LVU72
+ 163:Core/Src/main.c ****             last_toggle_ms[i] = system_time_ms;
+ 260              		.loc 1 163 26 is_stmt 0 view .LVU73
+ 261 003c 124A     		ldr	r2, .L21+24
+ 262 003e 0021     		movs	r1, #0
+ 263 0040 D154     		strb	r1, [r2, r3]
+ 164:Core/Src/main.c ****             /* freq2_index[i] можно НЕ трогать, чтобы частоты сохра�
+ 264              		.loc 1 164 13 is_stmt 1 view .LVU74
+ 164:Core/Src/main.c ****             /* freq2_index[i] можно НЕ трогать, чтобы частоты сохра�
+ 265              		.loc 1 164 31 is_stmt 0 view .LVU75
+ 266 0042 0F4A     		ldr	r2, .L21+16
+ 267 0044 1168     		ldr	r1, [r2]
+ 268 0046 114A     		ldr	r2, .L21+28
+ 269 0048 42F82310 		str	r1, [r2, r3, lsl #2]
+ 161:Core/Src/main.c ****         {
+ 270              		.loc 1 161 45 is_stmt 1 discriminator 3 view .LVU76
+ 271 004c 0133     		adds	r3, r3, #1
+ 272              	.LVL5:
+ 161:Core/Src/main.c ****         {
+ 273              		.loc 1 161 45 is_stmt 0 discriminator 3 view .LVU77
+ 274 004e DBB2     		uxtb	r3, r3
+ 275              	.LVL6:
+ 276              	.L14:
+ 161:Core/Src/main.c ****         {
+ 277              		.loc 1 161 31 is_stmt 1 discriminator 1 view .LVU78
+ 278 0050 052B     		cmp	r3, #5
+ 279 0052 F3D9     		bls	.L15
+ 280              	.LBE3:
+ 168:Core/Src/main.c **** 
+ 281              		.loc 1 168 9 view .LVU79
+ 168:Core/Src/main.c **** 
+ 282              		.loc 1 168 22 is_stmt 0 view .LVU80
+ 283 0054 0023     		movs	r3, #0
+ 284              	.LVL7:
+ 168:Core/Src/main.c **** 
+ 285              		.loc 1 168 22 view .LVU81
+ 286 0056 0E4A     		ldr	r2, .L21+32
+ 287 0058 1370     		strb	r3, [r2]
+ 171:Core/Src/main.c ****         mode2_enabled_count = 0U;              // пока ни один не включен
+ 288              		.loc 1 171 9 is_stmt 1 view .LVU82
+ 171:Core/Src/main.c ****         mode2_enabled_count = 0U;              // пока ни один не включен
+ 289              		.loc 1 171 21 is_stmt 0 view .LVU83
+ 290 005a 0E4A     		ldr	r2, .L21+36
+ 291 005c 1370     		strb	r3, [r2]
+ 172:Core/Src/main.c ****         mode2_last_enable_ms = system_time_ms; // старт таймера набора
+ 292              		.loc 1 172 9 is_stmt 1 view .LVU84
+ 172:Core/Src/main.c ****         mode2_last_enable_ms = system_time_ms; // старт таймера набора
+ 293              		.loc 1 172 29 is_stmt 0 view .LVU85
+ 294 005e 0E4A     		ldr	r2, .L21+40
+ 295 0060 1370     		strb	r3, [r2]
+ 173:Core/Src/main.c ****         mode2_all_on_time_ms = 0U;             // пока не все включены
+ 296              		.loc 1 173 9 is_stmt 1 view .LVU86
+ 173:Core/Src/main.c ****         mode2_all_on_time_ms = 0U;             // пока не все включены
+ 297              		.loc 1 173 30 is_stmt 0 view .LVU87
+ 298 0062 074A     		ldr	r2, .L21+16
+ 299 0064 1168     		ldr	r1, [r2]
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 11
+
+
+ 300 0066 0D4A     		ldr	r2, .L21+44
+ 301 0068 1160     		str	r1, [r2]
+ 174:Core/Src/main.c ****     }
+ 302              		.loc 1 174 9 is_stmt 1 view .LVU88
+ 174:Core/Src/main.c ****     }
+ 303              		.loc 1 174 30 is_stmt 0 view .LVU89
+ 304 006a 0D4A     		ldr	r2, .L21+48
+ 305 006c 1360     		str	r3, [r2]
+ 306 006e E0E7     		b	.L11
+ 307              	.L22:
+ 308              		.align	2
+ 309              	.L21:
+ 310 0070 00000000 		.word	button1_press_flag
+ 311 0074 00000000 		.word	current_mode
+ 312 0078 00000000 		.word	pair_index
+ 313 007c 00000000 		.word	freq1_index
+ 314 0080 00000000 		.word	system_time_ms
+ 315 0084 00000000 		.word	last_pair_switch_ms
+ 316 0088 00000000 		.word	led_state
+ 317 008c 00000000 		.word	last_toggle_ms
+ 318 0090 00000000 		.word	selected_led
+ 319 0094 00000000 		.word	mode2_stage
+ 320 0098 00000000 		.word	mode2_enabled_count
+ 321 009c 00000000 		.word	mode2_last_enable_ms
+ 322 00a0 00000000 		.word	mode2_all_on_time_ms
+ 323              		.cfi_endproc
+ 324              	.LFE131:
+ 326              		.section	.text.Mode1_Task,"ax",%progbits
+ 327              		.align	1
+ 328              		.syntax unified
+ 329              		.thumb
+ 330              		.thumb_func
+ 332              	Mode1_Task:
+ 333              	.LFB134:
+ 229:Core/Src/main.c **** 
+ 230:Core/Src/main.c **** /* =================== Реализация режимов =================== */
+ 231:Core/Src/main.c **** 
+ 232:Core/Src/main.c **** /* Режим 1:
+ 233:Core/Src/main.c ****  * Светодиоды включаются и выключаются по 2 штуки:
+ 234:Core/Src/main.c ****  *   1) LED3 и LED4 (индексы 2 и 3)
+ 235:Core/Src/main.c ****  *   2) LED2 и LED5 (индексы 1 и 4)
+ 236:Core/Src/main.c ****  *   3) LED1 и LED6 (индексы 0 и 5)
+ 237:Core/Src/main.c ****  * Частота переключения пар задаётся freq1_index.
+ 238:Core/Src/main.c ****  */
+ 239:Core/Src/main.c **** static void Mode1_Task(void)
+ 240:Core/Src/main.c **** {
+ 334              		.loc 1 240 1 is_stmt 1 view -0
+ 335              		.cfi_startproc
+ 336              		@ args = 0, pretend = 0, frame = 0
+ 337              		@ frame_needed = 0, uses_anonymous_args = 0
+ 338 0000 08B5     		push	{r3, lr}
+ 339              	.LCFI1:
+ 340              		.cfi_def_cfa_offset 8
+ 341              		.cfi_offset 3, -8
+ 342              		.cfi_offset 14, -4
+ 241:Core/Src/main.c ****     if (current_mode != 0U)
+ 343              		.loc 1 241 5 view .LVU91
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 12
+
+
+ 344              		.loc 1 241 22 is_stmt 0 view .LVU92
+ 345 0002 1E4B     		ldr	r3, .L32
+ 346 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 347              		.loc 1 241 8 view .LVU93
+ 348 0006 5BB9     		cbnz	r3, .L23
+ 242:Core/Src/main.c ****         return;
+ 243:Core/Src/main.c **** 
+ 244:Core/Src/main.c ****     uint32_t now = system_time_ms;
+ 349              		.loc 1 244 5 is_stmt 1 view .LVU94
+ 350              		.loc 1 244 14 is_stmt 0 view .LVU95
+ 351 0008 1D4B     		ldr	r3, .L32+4
+ 352 000a 1A68     		ldr	r2, [r3]
+ 353              	.LVL8:
+ 245:Core/Src/main.c ****     uint32_t interval = mode1_intervals_ms[freq1_index];
+ 354              		.loc 1 245 5 is_stmt 1 view .LVU96
+ 355              		.loc 1 245 43 is_stmt 0 view .LVU97
+ 356 000c 1D4B     		ldr	r3, .L32+8
+ 357 000e 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 358              		.loc 1 245 14 view .LVU98
+ 359 0010 1D4B     		ldr	r3, .L32+12
+ 360 0012 53F82110 		ldr	r1, [r3, r1, lsl #2]
+ 361              	.LVL9:
+ 246:Core/Src/main.c **** 
+ 247:Core/Src/main.c ****     if ((now - last_pair_switch_ms) < interval)
+ 362              		.loc 1 247 5 is_stmt 1 view .LVU99
+ 363              		.loc 1 247 14 is_stmt 0 view .LVU100
+ 364 0016 1D4B     		ldr	r3, .L32+16
+ 365 0018 1B68     		ldr	r3, [r3]
+ 366 001a D31A     		subs	r3, r2, r3
+ 367              		.loc 1 247 8 view .LVU101
+ 368 001c 8B42     		cmp	r3, r1
+ 369 001e 00D2     		bcs	.L31
+ 370              	.LVL10:
+ 371              	.L23:
+ 248:Core/Src/main.c ****         return;
+ 249:Core/Src/main.c **** 
+ 250:Core/Src/main.c ****     /* Время переключить пару */
+ 251:Core/Src/main.c ****     last_pair_switch_ms = now;
+ 252:Core/Src/main.c **** 
+ 253:Core/Src/main.c ****     /* Сначала всё выключаем */
+ 254:Core/Src/main.c ****     LED_AllOff();
+ 255:Core/Src/main.c **** 
+ 256:Core/Src/main.c ****     switch (pair_index)
+ 257:Core/Src/main.c ****     {
+ 258:Core/Src/main.c ****     case 0U:
+ 259:Core/Src/main.c ****         /* 3-й и 4-й светодиоды → индексы 2 и 3 */
+ 260:Core/Src/main.c ****         LED_On_Index(2U);
+ 261:Core/Src/main.c ****         LED_On_Index(3U);
+ 262:Core/Src/main.c ****         break;
+ 263:Core/Src/main.c **** 
+ 264:Core/Src/main.c ****     case 1U:
+ 265:Core/Src/main.c ****         /* 2-й и 5-й светодиоды → индексы 1 и 4 */
+ 266:Core/Src/main.c ****         LED_On_Index(1U);
+ 267:Core/Src/main.c ****         LED_On_Index(4U);
+ 268:Core/Src/main.c ****         break;
+ 269:Core/Src/main.c **** 
+ 270:Core/Src/main.c ****     case 2U:
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 13
+
+
+ 271:Core/Src/main.c ****     default:
+ 272:Core/Src/main.c ****         /* 1-й и 6-й светодиоды → индексы 0 и 5 */
+ 273:Core/Src/main.c ****         LED_On_Index(0U);
+ 274:Core/Src/main.c ****         LED_On_Index(5U);
+ 275:Core/Src/main.c ****         break;
+ 276:Core/Src/main.c ****     }
+ 277:Core/Src/main.c **** 
+ 278:Core/Src/main.c ****     /* Переходим к следующей паре */
+ 279:Core/Src/main.c ****     pair_index++;
+ 280:Core/Src/main.c ****     if (pair_index >= 3U)
+ 281:Core/Src/main.c ****         pair_index = 0U;
+ 282:Core/Src/main.c **** }
+ 372              		.loc 1 282 1 view .LVU102
+ 373 0020 08BD     		pop	{r3, pc}
+ 374              	.LVL11:
+ 375              	.L31:
+ 251:Core/Src/main.c **** 
+ 376              		.loc 1 251 5 is_stmt 1 view .LVU103
+ 251:Core/Src/main.c **** 
+ 377              		.loc 1 251 25 is_stmt 0 view .LVU104
+ 378 0022 1A4B     		ldr	r3, .L32+16
+ 379 0024 1A60     		str	r2, [r3]
+ 254:Core/Src/main.c **** 
+ 380              		.loc 1 254 5 is_stmt 1 view .LVU105
+ 381 0026 FFF7FEFF 		bl	LED_AllOff
+ 382              	.LVL12:
+ 256:Core/Src/main.c ****     {
+ 383              		.loc 1 256 5 view .LVU106
+ 384 002a 194B     		ldr	r3, .L32+20
+ 385 002c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 386 002e 03F0FF02 		and	r2, r3, #255
+ 387 0032 43B1     		cbz	r3, .L25
+ 388 0034 012A     		cmp	r2, #1
+ 389 0036 19D0     		beq	.L26
+ 390              	.LBB4:
+ 273:Core/Src/main.c ****         LED_On_Index(5U);
+ 391              		.loc 1 273 9 view .LVU107
+ 392 0038 0020     		movs	r0, #0
+ 393 003a FFF7FEFF 		bl	LED_On_Index
+ 394              	.LVL13:
+ 274:Core/Src/main.c ****         break;
+ 395              		.loc 1 274 9 view .LVU108
+ 396 003e 0520     		movs	r0, #5
+ 397 0040 FFF7FEFF 		bl	LED_On_Index
+ 398              	.LVL14:
+ 275:Core/Src/main.c ****     }
+ 399              		.loc 1 275 9 view .LVU109
+ 400 0044 05E0     		b	.L28
+ 401              	.L25:
+ 260:Core/Src/main.c ****         LED_On_Index(3U);
+ 402              		.loc 1 260 9 view .LVU110
+ 403 0046 0220     		movs	r0, #2
+ 404 0048 FFF7FEFF 		bl	LED_On_Index
+ 405              	.LVL15:
+ 261:Core/Src/main.c ****         break;
+ 406              		.loc 1 261 9 view .LVU111
+ 407 004c 0320     		movs	r0, #3
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 14
+
+
+ 408 004e FFF7FEFF 		bl	LED_On_Index
+ 409              	.LVL16:
+ 262:Core/Src/main.c **** 
+ 410              		.loc 1 262 9 view .LVU112
+ 411              	.L28:
+ 412              	.LBE4:
+ 279:Core/Src/main.c ****     if (pair_index >= 3U)
+ 413              		.loc 1 279 5 view .LVU113
+ 279:Core/Src/main.c ****     if (pair_index >= 3U)
+ 414              		.loc 1 279 15 is_stmt 0 view .LVU114
+ 415 0052 0F4A     		ldr	r2, .L32+20
+ 416 0054 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 417 0056 0133     		adds	r3, r3, #1
+ 418 0058 DBB2     		uxtb	r3, r3
+ 419 005a 1370     		strb	r3, [r2]
+ 280:Core/Src/main.c ****         pair_index = 0U;
+ 420              		.loc 1 280 5 is_stmt 1 view .LVU115
+ 280:Core/Src/main.c ****         pair_index = 0U;
+ 421              		.loc 1 280 20 is_stmt 0 view .LVU116
+ 422 005c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 423 005e DBB2     		uxtb	r3, r3
+ 280:Core/Src/main.c ****         pair_index = 0U;
+ 424              		.loc 1 280 8 view .LVU117
+ 425 0060 022B     		cmp	r3, #2
+ 426 0062 DDD9     		bls	.L23
+ 281:Core/Src/main.c **** }
+ 427              		.loc 1 281 9 is_stmt 1 view .LVU118
+ 281:Core/Src/main.c **** }
+ 428              		.loc 1 281 20 is_stmt 0 view .LVU119
+ 429 0064 1346     		mov	r3, r2
+ 430 0066 0022     		movs	r2, #0
+ 431 0068 1A70     		strb	r2, [r3]
+ 432 006a D9E7     		b	.L23
+ 433              	.L26:
+ 434              	.LBB5:
+ 266:Core/Src/main.c ****         LED_On_Index(4U);
+ 435              		.loc 1 266 9 is_stmt 1 view .LVU120
+ 436 006c 0120     		movs	r0, #1
+ 437 006e FFF7FEFF 		bl	LED_On_Index
+ 438              	.LVL17:
+ 267:Core/Src/main.c ****         break;
+ 439              		.loc 1 267 9 view .LVU121
+ 440 0072 0420     		movs	r0, #4
+ 441 0074 FFF7FEFF 		bl	LED_On_Index
+ 442              	.LVL18:
+ 268:Core/Src/main.c **** 
+ 443              		.loc 1 268 9 view .LVU122
+ 444 0078 EBE7     		b	.L28
+ 445              	.L33:
+ 446 007a 00BF     		.align	2
+ 447              	.L32:
+ 448 007c 00000000 		.word	current_mode
+ 449 0080 00000000 		.word	system_time_ms
+ 450 0084 00000000 		.word	freq1_index
+ 451 0088 00000000 		.word	mode1_intervals_ms
+ 452 008c 00000000 		.word	last_pair_switch_ms
+ 453 0090 00000000 		.word	pair_index
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 15
+
+
+ 454              	.LBE5:
+ 455              		.cfi_endproc
+ 456              	.LFE134:
+ 458              		.section	.text.Mode2_Task,"ax",%progbits
+ 459              		.align	1
+ 460              		.syntax unified
+ 461              		.thumb
+ 462              		.thumb_func
+ 464              	Mode2_Task:
+ 465              	.LFB135:
+ 283:Core/Src/main.c **** 
+ 284:Core/Src/main.c **** /* Режим 2:
+ 285:Core/Src/main.c ****  * Каждый светодиод мигает (мерцает) со своей частотой.
+ 286:Core/Src/main.c ****  * Частота каждого задаётся freq2_index[i].
+ 287:Core/Src/main.c ****  */
+ 288:Core/Src/main.c **** static void Mode2_Task(void)
+ 289:Core/Src/main.c **** {
+ 466              		.loc 1 289 1 view -0
+ 467              		.cfi_startproc
+ 468              		@ args = 0, pretend = 0, frame = 0
+ 469              		@ frame_needed = 0, uses_anonymous_args = 0
+ 290:Core/Src/main.c ****     if (current_mode != 1U)
+ 470              		.loc 1 290 5 view .LVU124
+ 471              		.loc 1 290 22 is_stmt 0 view .LVU125
+ 472 0000 424B     		ldr	r3, .L60
+ 473 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 474 0004 DBB2     		uxtb	r3, r3
+ 475              		.loc 1 290 8 view .LVU126
+ 476 0006 012B     		cmp	r3, #1
+ 477 0008 7FD1     		bne	.L53
+ 289:Core/Src/main.c ****     if (current_mode != 1U)
+ 478              		.loc 1 289 1 view .LVU127
+ 479 000a 70B5     		push	{r4, r5, r6, lr}
+ 480              	.LCFI2:
+ 481              		.cfi_def_cfa_offset 16
+ 482              		.cfi_offset 4, -16
+ 483              		.cfi_offset 5, -12
+ 484              		.cfi_offset 6, -8
+ 485              		.cfi_offset 14, -4
+ 291:Core/Src/main.c ****         return;
+ 292:Core/Src/main.c **** 
+ 293:Core/Src/main.c ****     uint32_t now = system_time_ms;
+ 486              		.loc 1 293 5 is_stmt 1 view .LVU128
+ 487              		.loc 1 293 14 is_stmt 0 view .LVU129
+ 488 000c 404B     		ldr	r3, .L60+4
+ 489 000e 1D68     		ldr	r5, [r3]
+ 490              	.LVL19:
+ 294:Core/Src/main.c **** 
+ 295:Core/Src/main.c ****     /* === СТАДИЯ 0: включаем по одному каждые MODE2_ENABLE_STEP_MS ===
+ 296:Core/Src/main.c ****     if (mode2_stage == 0U)
+ 491              		.loc 1 296 5 is_stmt 1 view .LVU130
+ 492              		.loc 1 296 21 is_stmt 0 view .LVU131
+ 493 0010 404B     		ldr	r3, .L60+8
+ 494 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 495              		.loc 1 296 8 view .LVU132
+ 496 0014 53B1     		cbz	r3, .L56
+ 297:Core/Src/main.c ****     {
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 16
+
+
+ 298:Core/Src/main.c ****         if (mode2_enabled_count < LED_COUNT)
+ 299:Core/Src/main.c ****         {
+ 300:Core/Src/main.c ****             if ((now - mode2_last_enable_ms) >= MODE2_ENABLE_STEP_MS)
+ 301:Core/Src/main.c ****             {
+ 302:Core/Src/main.c ****                 uint8_t led = mode2_enabled_count; // включаем следующий по по
+ 303:Core/Src/main.c **** 
+ 304:Core/Src/main.c ****                 mode2_last_enable_ms = now;
+ 305:Core/Src/main.c **** 
+ 306:Core/Src/main.c ****                 LED_On_Index(led);
+ 307:Core/Src/main.c ****                 led_state[led] = 1U;
+ 308:Core/Src/main.c ****                 last_toggle_ms[led] = now; // от этой точки потом будем счи
+ 309:Core/Src/main.c **** 
+ 310:Core/Src/main.c ****                 mode2_enabled_count++;
+ 311:Core/Src/main.c **** 
+ 312:Core/Src/main.c ****                 // Если только что включили последний (6-й), фик�
+ 313:Core/Src/main.c ****                 if (mode2_enabled_count >= LED_COUNT)
+ 314:Core/Src/main.c ****                 {
+ 315:Core/Src/main.c ****                     mode2_stage = 1U;           // переходим к стадии "все го�
+ 316:Core/Src/main.c ****                     mode2_all_on_time_ms = now; // запоминаем, когда все заго
+ 317:Core/Src/main.c ****                 }
+ 318:Core/Src/main.c ****             }
+ 319:Core/Src/main.c ****         }
+ 320:Core/Src/main.c **** 
+ 321:Core/Src/main.c ****         /* Пока не доросли до полной шестерки — вообще нич�
+ 322:Core/Src/main.c ****         return;
+ 323:Core/Src/main.c ****     }
+ 324:Core/Src/main.c **** 
+ 325:Core/Src/main.c ****     /* === СТАДИЯ 1: все 6 горят постоянно ещё MODE2_ALL_ON_HOLD_MS === *
+ 326:Core/Src/main.c ****     if (mode2_stage == 1U)
+ 497              		.loc 1 326 5 is_stmt 1 view .LVU133
+ 498              		.loc 1 326 21 is_stmt 0 view .LVU134
+ 499 0016 3F4B     		ldr	r3, .L60+8
+ 500 0018 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 501 001a DBB2     		uxtb	r3, r3
+ 502              		.loc 1 326 8 view .LVU135
+ 503 001c 012B     		cmp	r3, #1
+ 504 001e 3AD0     		beq	.L57
+ 327:Core/Src/main.c ****     {
+ 328:Core/Src/main.c ****         /* На всякий случай убедимся, что все включены */
+ 329:Core/Src/main.c ****         for (uint8_t i = 0; i < LED_COUNT; i++)
+ 330:Core/Src/main.c ****         {
+ 331:Core/Src/main.c ****             if (led_state[i] == 0U)
+ 332:Core/Src/main.c ****             {
+ 333:Core/Src/main.c ****                 LED_On_Index(i);
+ 334:Core/Src/main.c ****                 led_state[i] = 1U;
+ 335:Core/Src/main.c ****             }
+ 336:Core/Src/main.c ****         }
+ 337:Core/Src/main.c **** 
+ 338:Core/Src/main.c ****         /* Ждём примерно секунду, прежде чем начать мерцан�
+ 339:Core/Src/main.c ****         if ((now - mode2_all_on_time_ms) >= MODE2_ALL_ON_HOLD_MS)
+ 340:Core/Src/main.c ****         {
+ 341:Core/Src/main.c ****             mode2_stage = 2U;
+ 342:Core/Src/main.c **** 
+ 343:Core/Src/main.c ****             /* Обнулим "отсчёт" для мерцания, чтобы все начал�
+ 344:Core/Src/main.c ****                (каждый всё равно будет мигать со своей частот
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ 346:Core/Src/main.c ****             {
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 17
+
+
+ 347:Core/Src/main.c ****                 last_toggle_ms[i] = now;
+ 348:Core/Src/main.c ****             }
+ 349:Core/Src/main.c ****         }
+ 350:Core/Src/main.c **** 
+ 351:Core/Src/main.c ****         return;
+ 352:Core/Src/main.c ****     }
+ 353:Core/Src/main.c **** 
+ 354:Core/Src/main.c ****     /* === СТАДИЯ 2: обычное мерцание каждого светодиода по
+ 355:Core/Src/main.c ****     if (mode2_stage == 2U)
+ 505              		.loc 1 355 5 is_stmt 1 view .LVU136
+ 506              		.loc 1 355 21 is_stmt 0 view .LVU137
+ 507 0020 3C4B     		ldr	r3, .L60+8
+ 508 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 509 0024 DBB2     		uxtb	r3, r3
+ 510              		.loc 1 355 8 view .LVU138
+ 511 0026 022B     		cmp	r3, #2
+ 512 0028 6DD0     		beq	.L58
+ 513              	.L34:
+ 356:Core/Src/main.c ****     {
+ 357:Core/Src/main.c ****         for (uint8_t i = 0U; i < LED_COUNT; i++)
+ 358:Core/Src/main.c ****         {
+ 359:Core/Src/main.c ****             uint8_t fi = freq2_index[i];                // 0..2
+ 360:Core/Src/main.c ****             uint32_t interval = mode2_intervals_ms[fi]; // T/2 для данного LED
+ 361:Core/Src/main.c **** 
+ 362:Core/Src/main.c ****             if ((now - last_toggle_ms[i]) >= interval)
+ 363:Core/Src/main.c ****             {
+ 364:Core/Src/main.c ****                 last_toggle_ms[i] = now;
+ 365:Core/Src/main.c **** 
+ 366:Core/Src/main.c ****                 if (led_state[i] == 0U)
+ 367:Core/Src/main.c ****                 {
+ 368:Core/Src/main.c ****                     LED_On_Index(i);
+ 369:Core/Src/main.c ****                     led_state[i] = 1U;
+ 370:Core/Src/main.c ****                 }
+ 371:Core/Src/main.c ****                 else
+ 372:Core/Src/main.c ****                 {
+ 373:Core/Src/main.c ****                     LED_Off_Index(i);
+ 374:Core/Src/main.c ****                     led_state[i] = 0U;
+ 375:Core/Src/main.c ****                 }
+ 376:Core/Src/main.c ****             }
+ 377:Core/Src/main.c ****         }
+ 378:Core/Src/main.c ****     }
+ 379:Core/Src/main.c **** }...
+ 514              		.loc 1 379 1 view .LVU139
+ 515 002a 70BD     		pop	{r4, r5, r6, pc}
+ 516              	.LVL20:
+ 517              	.L56:
+ 298:Core/Src/main.c ****         if (mode2_enabled_count < LED_COUNT)
+ 518              		.loc 1 298 9 is_stmt 1 view .LVU140
+ 298:Core/Src/main.c ****         if (mode2_enabled_count < LED_COUNT)
+ 519              		.loc 1 298 33 is_stmt 0 view .LVU141
+ 520 002c 3A4B     		ldr	r3, .L60+12
+ 521 002e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 522 0030 DBB2     		uxtb	r3, r3
+ 298:Core/Src/main.c ****         if (mode2_enabled_count < LED_COUNT)
+ 523              		.loc 1 298 12 view .LVU142
+ 524 0032 052B     		cmp	r3, #5
+ 525 0034 F9D8     		bhi	.L34
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 18
+
+
+ 300:Core/Src/main.c ****             if ((now - mode2_last_enable_ms) >= MODE2_ENABLE_STEP_MS)
+ 526              		.loc 1 300 13 is_stmt 1 view .LVU143
+ 300:Core/Src/main.c ****             if ((now - mode2_last_enable_ms) >= MODE2_ENABLE_STEP_MS)
+ 527              		.loc 1 300 22 is_stmt 0 view .LVU144
+ 528 0036 394B     		ldr	r3, .L60+16
+ 529 0038 1B68     		ldr	r3, [r3]
+ 530 003a EB1A     		subs	r3, r5, r3
+ 300:Core/Src/main.c ****             if ((now - mode2_last_enable_ms) >= MODE2_ENABLE_STEP_MS)
+ 531              		.loc 1 300 16 view .LVU145
+ 532 003c B3F5FA7F 		cmp	r3, #500
+ 533 0040 F3D3     		bcc	.L34
+ 534              	.LBB6:
+ 302:Core/Src/main.c ****                 uint8_t led = mode2_enabled_count; // включаем следующий по по
+ 535              		.loc 1 302 17 is_stmt 1 view .LVU146
+ 302:Core/Src/main.c ****                 uint8_t led = mode2_enabled_count; // включаем следующий по по
+ 536              		.loc 1 302 25 is_stmt 0 view .LVU147
+ 537 0042 354E     		ldr	r6, .L60+12
+ 538 0044 3478     		ldrb	r4, [r6]	@ zero_extendqisi2
+ 539 0046 E4B2     		uxtb	r4, r4
+ 540              	.LVL21:
+ 304:Core/Src/main.c ****                 mode2_last_enable_ms = now;
+ 541              		.loc 1 304 17 is_stmt 1 view .LVU148
+ 304:Core/Src/main.c ****                 mode2_last_enable_ms = now;
+ 542              		.loc 1 304 38 is_stmt 0 view .LVU149
+ 543 0048 344B     		ldr	r3, .L60+16
+ 544 004a 1D60     		str	r5, [r3]
+ 306:Core/Src/main.c ****                 LED_On_Index(led);
+ 545              		.loc 1 306 17 is_stmt 1 view .LVU150
+ 546 004c 2046     		mov	r0, r4
+ 547 004e FFF7FEFF 		bl	LED_On_Index
+ 548              	.LVL22:
+ 307:Core/Src/main.c ****                 led_state[led] = 1U;
+ 549              		.loc 1 307 17 view .LVU151
+ 307:Core/Src/main.c ****                 led_state[led] = 1U;
+ 550              		.loc 1 307 32 is_stmt 0 view .LVU152
+ 551 0052 334B     		ldr	r3, .L60+20
+ 552 0054 0122     		movs	r2, #1
+ 553 0056 1A55     		strb	r2, [r3, r4]
+ 308:Core/Src/main.c ****                 last_toggle_ms[led] = now; // от этой точки потом будем счи
+ 554              		.loc 1 308 17 is_stmt 1 view .LVU153
+ 308:Core/Src/main.c ****                 last_toggle_ms[led] = now; // от этой точки потом будем счи
+ 555              		.loc 1 308 37 is_stmt 0 view .LVU154
+ 556 0058 324B     		ldr	r3, .L60+24
+ 557 005a 43F82450 		str	r5, [r3, r4, lsl #2]
+ 310:Core/Src/main.c ****                 mode2_enabled_count++;
+ 558              		.loc 1 310 17 is_stmt 1 view .LVU155
+ 310:Core/Src/main.c ****                 mode2_enabled_count++;
+ 559              		.loc 1 310 36 is_stmt 0 view .LVU156
+ 560 005e 3378     		ldrb	r3, [r6]	@ zero_extendqisi2
+ 561 0060 1344     		add	r3, r3, r2
+ 562 0062 DBB2     		uxtb	r3, r3
+ 563 0064 3370     		strb	r3, [r6]
+ 313:Core/Src/main.c ****                 if (mode2_enabled_count >= LED_COUNT)
+ 564              		.loc 1 313 17 is_stmt 1 view .LVU157
+ 313:Core/Src/main.c ****                 if (mode2_enabled_count >= LED_COUNT)
+ 565              		.loc 1 313 41 is_stmt 0 view .LVU158
+ 566 0066 3378     		ldrb	r3, [r6]	@ zero_extendqisi2
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 19
+
+
+ 567 0068 DBB2     		uxtb	r3, r3
+ 313:Core/Src/main.c ****                 if (mode2_enabled_count >= LED_COUNT)
+ 568              		.loc 1 313 20 view .LVU159
+ 569 006a 052B     		cmp	r3, #5
+ 570 006c DDD9     		bls	.L34
+ 315:Core/Src/main.c ****                     mode2_stage = 1U;           // переходим к стадии "все го�
+ 571              		.loc 1 315 21 is_stmt 1 view .LVU160
+ 315:Core/Src/main.c ****                     mode2_stage = 1U;           // переходим к стадии "все го�
+ 572              		.loc 1 315 33 is_stmt 0 view .LVU161
+ 573 006e 294B     		ldr	r3, .L60+8
+ 574 0070 1A70     		strb	r2, [r3]
+ 316:Core/Src/main.c ****                     mode2_all_on_time_ms = now; // запоминаем, когда все заго
+ 575              		.loc 1 316 21 is_stmt 1 view .LVU162
+ 316:Core/Src/main.c ****                     mode2_all_on_time_ms = now; // запоминаем, когда все заго
+ 576              		.loc 1 316 42 is_stmt 0 view .LVU163
+ 577 0072 2D4B     		ldr	r3, .L60+28
+ 578 0074 1D60     		str	r5, [r3]
+ 579              	.LBE6:
+ 322:Core/Src/main.c ****         return;
+ 580              		.loc 1 322 9 is_stmt 1 view .LVU164
+ 581 0076 D8E7     		b	.L34
+ 582              	.LVL23:
+ 583              	.L40:
+ 584              	.LBB7:
+ 329:Core/Src/main.c ****         for (uint8_t i = 0; i < LED_COUNT; i++)
+ 585              		.loc 1 329 45 discriminator 2 view .LVU165
+ 586 0078 0134     		adds	r4, r4, #1
+ 587              	.LVL24:
+ 329:Core/Src/main.c ****         for (uint8_t i = 0; i < LED_COUNT; i++)
+ 588              		.loc 1 329 45 is_stmt 0 discriminator 2 view .LVU166
+ 589 007a E4B2     		uxtb	r4, r4
+ 590              	.LVL25:
+ 591              	.L38:
+ 329:Core/Src/main.c ****         for (uint8_t i = 0; i < LED_COUNT; i++)
+ 592              		.loc 1 329 31 is_stmt 1 discriminator 1 view .LVU167
+ 593 007c 052C     		cmp	r4, #5
+ 594 007e 0CD8     		bhi	.L59
+ 331:Core/Src/main.c ****             if (led_state[i] == 0U)
+ 595              		.loc 1 331 13 view .LVU168
+ 331:Core/Src/main.c ****             if (led_state[i] == 0U)
+ 596              		.loc 1 331 26 is_stmt 0 view .LVU169
+ 597 0080 274B     		ldr	r3, .L60+20
+ 598 0082 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ 331:Core/Src/main.c ****             if (led_state[i] == 0U)
+ 599              		.loc 1 331 16 view .LVU170
+ 600 0084 002B     		cmp	r3, #0
+ 601 0086 F7D1     		bne	.L40
+ 602              	.LBB8:
+ 333:Core/Src/main.c ****                 LED_On_Index(i);
+ 603              		.loc 1 333 17 is_stmt 1 view .LVU171
+ 604 0088 2046     		mov	r0, r4
+ 605 008a FFF7FEFF 		bl	LED_On_Index
+ 606              	.LVL26:
+ 334:Core/Src/main.c ****                 led_state[i] = 1U;
+ 607              		.loc 1 334 17 view .LVU172
+ 334:Core/Src/main.c ****                 led_state[i] = 1U;
+ 608              		.loc 1 334 30 is_stmt 0 view .LVU173
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 20
+
+
+ 609 008e 244B     		ldr	r3, .L60+20
+ 610 0090 0122     		movs	r2, #1
+ 611 0092 1A55     		strb	r2, [r3, r4]
+ 612 0094 F0E7     		b	.L40
+ 613              	.LVL27:
+ 614              	.L57:
+ 334:Core/Src/main.c ****                 led_state[i] = 1U;
+ 615              		.loc 1 334 30 view .LVU174
+ 616              	.LBE8:
+ 329:Core/Src/main.c ****         for (uint8_t i = 0; i < LED_COUNT; i++)
+ 617              		.loc 1 329 22 view .LVU175
+ 618 0096 0024     		movs	r4, #0
+ 619 0098 F0E7     		b	.L38
+ 620              	.LVL28:
+ 621              	.L59:
+ 329:Core/Src/main.c ****         for (uint8_t i = 0; i < LED_COUNT; i++)
+ 622              		.loc 1 329 22 view .LVU176
+ 623              	.LBE7:
+ 339:Core/Src/main.c ****         if ((now - mode2_all_on_time_ms) >= MODE2_ALL_ON_HOLD_MS)
+ 624              		.loc 1 339 9 is_stmt 1 view .LVU177
+ 339:Core/Src/main.c ****         if ((now - mode2_all_on_time_ms) >= MODE2_ALL_ON_HOLD_MS)
+ 625              		.loc 1 339 18 is_stmt 0 view .LVU178
+ 626 009a 234B     		ldr	r3, .L60+28
+ 627 009c 1B68     		ldr	r3, [r3]
+ 628 009e EB1A     		subs	r3, r5, r3
+ 339:Core/Src/main.c ****         if ((now - mode2_all_on_time_ms) >= MODE2_ALL_ON_HOLD_MS)
+ 629              		.loc 1 339 12 view .LVU179
+ 630 00a0 B3F57A7F 		cmp	r3, #1000
+ 631 00a4 C1D3     		bcc	.L34
+ 341:Core/Src/main.c ****             mode2_stage = 2U;
+ 632              		.loc 1 341 13 is_stmt 1 view .LVU180
+ 341:Core/Src/main.c ****             mode2_stage = 2U;
+ 633              		.loc 1 341 25 is_stmt 0 view .LVU181
+ 634 00a6 1B4B     		ldr	r3, .L60+8
+ 635 00a8 0222     		movs	r2, #2
+ 636 00aa 1A70     		strb	r2, [r3]
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ 637              		.loc 1 345 13 is_stmt 1 view .LVU182
+ 638              	.LBB9:
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ 639              		.loc 1 345 18 view .LVU183
+ 640              	.LVL29:
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ 641              		.loc 1 345 26 is_stmt 0 view .LVU184
+ 642 00ac 0023     		movs	r3, #0
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ 643              		.loc 1 345 13 view .LVU185
+ 644 00ae 04E0     		b	.L43
+ 645              	.LVL30:
+ 646              	.L44:
+ 347:Core/Src/main.c ****                 last_toggle_ms[i] = now;
+ 647              		.loc 1 347 17 is_stmt 1 view .LVU186
+ 347:Core/Src/main.c ****                 last_toggle_ms[i] = now;
+ 648              		.loc 1 347 35 is_stmt 0 view .LVU187
+ 649 00b0 1C4A     		ldr	r2, .L60+24
+ 650 00b2 42F82350 		str	r5, [r2, r3, lsl #2]
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 21
+
+
+ 651              		.loc 1 345 49 is_stmt 1 discriminator 3 view .LVU188
+ 652 00b6 0133     		adds	r3, r3, #1
+ 653              	.LVL31:
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ 654              		.loc 1 345 49 is_stmt 0 discriminator 3 view .LVU189
+ 655 00b8 DBB2     		uxtb	r3, r3
+ 656              	.LVL32:
+ 657              	.L43:
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ 658              		.loc 1 345 35 is_stmt 1 discriminator 1 view .LVU190
+ 659 00ba 052B     		cmp	r3, #5
+ 660 00bc F8D9     		bls	.L44
+ 661 00be B4E7     		b	.L34
+ 662              	.LVL33:
+ 663              	.L47:
+ 345:Core/Src/main.c ****             for (uint8_t i = 0; i < LED_COUNT; i++)
+ 664              		.loc 1 345 35 is_stmt 0 discriminator 1 view .LVU191
+ 665              	.LBE9:
+ 666              	.LBB10:
+ 667              	.LBB11:
+ 668              	.LBB12:
+ 373:Core/Src/main.c ****                     LED_Off_Index(i);
+ 669              		.loc 1 373 21 is_stmt 1 view .LVU192
+ 670 00c0 2046     		mov	r0, r4
+ 671 00c2 FFF7FEFF 		bl	LED_Off_Index
+ 672              	.LVL34:
+ 374:Core/Src/main.c ****                     led_state[i] = 0U;
+ 673              		.loc 1 374 21 view .LVU193
+ 374:Core/Src/main.c ****                     led_state[i] = 0U;
+ 674              		.loc 1 374 34 is_stmt 0 view .LVU194
+ 675 00c6 164B     		ldr	r3, .L60+20
+ 676 00c8 0022     		movs	r2, #0
+ 677 00ca 1A55     		strb	r2, [r3, r4]
+ 678              	.L46:
+ 679              	.LBE12:
+ 680              	.LBE11:
+ 357:Core/Src/main.c ****         for (uint8_t i = 0U; i < LED_COUNT; i++)
+ 681              		.loc 1 357 46 is_stmt 1 discriminator 2 view .LVU195
+ 682 00cc 0134     		adds	r4, r4, #1
+ 683              	.LVL35:
+ 357:Core/Src/main.c ****         for (uint8_t i = 0U; i < LED_COUNT; i++)
+ 684              		.loc 1 357 46 is_stmt 0 discriminator 2 view .LVU196
+ 685 00ce E4B2     		uxtb	r4, r4
+ 686              	.LVL36:
+ 687              	.L45:
+ 357:Core/Src/main.c ****         for (uint8_t i = 0U; i < LED_COUNT; i++)
+ 688              		.loc 1 357 32 is_stmt 1 discriminator 1 view .LVU197
+ 689 00d0 052C     		cmp	r4, #5
+ 690 00d2 AAD8     		bhi	.L34
+ 691              	.LBB14:
+ 359:Core/Src/main.c ****             uint8_t fi = freq2_index[i];                // 0..2
+ 692              		.loc 1 359 13 view .LVU198
+ 359:Core/Src/main.c ****             uint8_t fi = freq2_index[i];                // 0..2
+ 693              		.loc 1 359 21 is_stmt 0 view .LVU199
+ 694 00d4 154B     		ldr	r3, .L60+32
+ 695 00d6 1A5D     		ldrb	r2, [r3, r4]	@ zero_extendqisi2
+ 696              	.LVL37:
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 22
+
+
+ 360:Core/Src/main.c ****             uint32_t interval = mode2_intervals_ms[fi]; // T/2 для данного LED
+ 697              		.loc 1 360 13 is_stmt 1 view .LVU200
+ 360:Core/Src/main.c ****             uint32_t interval = mode2_intervals_ms[fi]; // T/2 для данного LED
+ 698              		.loc 1 360 22 is_stmt 0 view .LVU201
+ 699 00d8 154B     		ldr	r3, .L60+36
+ 700 00da 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 701              	.LVL38:
+ 362:Core/Src/main.c ****             if ((now - last_toggle_ms[i]) >= interval)
+ 702              		.loc 1 362 13 is_stmt 1 view .LVU202
+ 362:Core/Src/main.c ****             if ((now - last_toggle_ms[i]) >= interval)
+ 703              		.loc 1 362 38 is_stmt 0 view .LVU203
+ 704 00de 114B     		ldr	r3, .L60+24
+ 705 00e0 53F82430 		ldr	r3, [r3, r4, lsl #2]
+ 362:Core/Src/main.c ****             if ((now - last_toggle_ms[i]) >= interval)
+ 706              		.loc 1 362 22 view .LVU204
+ 707 00e4 EB1A     		subs	r3, r5, r3
+ 362:Core/Src/main.c ****             if ((now - last_toggle_ms[i]) >= interval)
+ 708              		.loc 1 362 16 view .LVU205
+ 709 00e6 9342     		cmp	r3, r2
+ 710 00e8 F0D3     		bcc	.L46
+ 364:Core/Src/main.c ****                 last_toggle_ms[i] = now;
+ 711              		.loc 1 364 17 is_stmt 1 view .LVU206
+ 364:Core/Src/main.c ****                 last_toggle_ms[i] = now;
+ 712              		.loc 1 364 35 is_stmt 0 view .LVU207
+ 713 00ea 0E4B     		ldr	r3, .L60+24
+ 714 00ec 43F82450 		str	r5, [r3, r4, lsl #2]
+ 366:Core/Src/main.c ****                 if (led_state[i] == 0U)
+ 715              		.loc 1 366 17 is_stmt 1 view .LVU208
+ 366:Core/Src/main.c ****                 if (led_state[i] == 0U)
+ 716              		.loc 1 366 30 is_stmt 0 view .LVU209
+ 717 00f0 0B4B     		ldr	r3, .L60+20
+ 718 00f2 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ 366:Core/Src/main.c ****                 if (led_state[i] == 0U)
+ 719              		.loc 1 366 20 view .LVU210
+ 720 00f4 002B     		cmp	r3, #0
+ 721 00f6 E3D1     		bne	.L47
+ 722              	.LBB13:
+ 368:Core/Src/main.c ****                     LED_On_Index(i);
+ 723              		.loc 1 368 21 is_stmt 1 view .LVU211
+ 724 00f8 2046     		mov	r0, r4
+ 725 00fa FFF7FEFF 		bl	LED_On_Index
+ 726              	.LVL39:
+ 369:Core/Src/main.c ****                     led_state[i] = 1U;
+ 727              		.loc 1 369 21 view .LVU212
+ 369:Core/Src/main.c ****                     led_state[i] = 1U;
+ 728              		.loc 1 369 34 is_stmt 0 view .LVU213
+ 729 00fe 084B     		ldr	r3, .L60+20
+ 730 0100 0122     		movs	r2, #1
+ 731 0102 1A55     		strb	r2, [r3, r4]
+ 732              	.LBE13:
+ 733 0104 E2E7     		b	.L46
+ 734              	.LVL40:
+ 735              	.L58:
+ 369:Core/Src/main.c ****                     led_state[i] = 1U;
+ 736              		.loc 1 369 34 view .LVU214
+ 737              	.LBE14:
+ 357:Core/Src/main.c ****         for (uint8_t i = 0U; i < LED_COUNT; i++)
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 23
+
+
+ 738              		.loc 1 357 22 view .LVU215
+ 739 0106 0024     		movs	r4, #0
+ 740 0108 E2E7     		b	.L45
+ 741              	.LVL41:
+ 742              	.L53:
+ 743              	.LCFI3:
+ 744              		.cfi_def_cfa_offset 0
+ 745              		.cfi_restore 4
+ 746              		.cfi_restore 5
+ 747              		.cfi_restore 6
+ 748              		.cfi_restore 14
+ 357:Core/Src/main.c ****         for (uint8_t i = 0U; i < LED_COUNT; i++)
+ 749              		.loc 1 357 22 view .LVU216
+ 750 010a 7047     		bx	lr
+ 751              	.L61:
+ 752              		.align	2
+ 753              	.L60:
+ 754 010c 00000000 		.word	current_mode
+ 755 0110 00000000 		.word	system_time_ms
+ 756 0114 00000000 		.word	mode2_stage
+ 757 0118 00000000 		.word	mode2_enabled_count
+ 758 011c 00000000 		.word	mode2_last_enable_ms
+ 759 0120 00000000 		.word	led_state
+ 760 0124 00000000 		.word	last_toggle_ms
+ 761 0128 00000000 		.word	mode2_all_on_time_ms
+ 762 012c 00000000 		.word	freq2_index
+ 763 0130 00000000 		.word	mode2_intervals_ms
+ 764              	.LBE10:
+ 765              		.cfi_endproc
+ 766              	.LFE135:
+ 768              		.section	.text.main,"ax",%progbits
+ 769              		.align	1
+ 770              		.global	main
+ 771              		.syntax unified
+ 772              		.thumb
+ 773              		.thumb_func
+ 775              	main:
+ 776              	.LFB130:
+  90:Core/Src/main.c **** {
+ 777              		.loc 1 90 1 is_stmt 1 view -0
+ 778              		.cfi_startproc
+ 779              		@ args = 0, pretend = 0, frame = 0
+ 780              		@ frame_needed = 0, uses_anonymous_args = 0
+ 781 0000 08B5     		push	{r3, lr}
+ 782              	.LCFI4:
+ 783              		.cfi_def_cfa_offset 8
+ 784              		.cfi_offset 3, -8
+ 785              		.cfi_offset 14, -4
+  92:Core/Src/main.c ****     Clock_Init_HSE_PLL_168MHz();
+ 786              		.loc 1 92 5 view .LVU218
+ 787 0002 FFF7FEFF 		bl	Clock_Init_HSE_PLL_168MHz
+ 788              	.LVL42:
+  93:Core/Src/main.c ****     SysTick_Init_1ms();
+ 789              		.loc 1 93 5 view .LVU219
+ 790 0006 FFF7FEFF 		bl	SysTick_Init_1ms
+ 791              	.LVL43:
+  96:Core/Src/main.c ****     LEDs_GPIO_Init();
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 24
+
+
+ 792              		.loc 1 96 5 view .LVU220
+ 793 000a FFF7FEFF 		bl	LEDs_GPIO_Init
+ 794              	.LVL44:
+  97:Core/Src/main.c ****     Buttons_GPIO_Init();
+ 795              		.loc 1 97 5 view .LVU221
+ 796 000e FFF7FEFF 		bl	Buttons_GPIO_Init
+ 797              	.LVL45:
+  98:Core/Src/main.c ****     Buttons_EXTI_Init();
+ 798              		.loc 1 98 5 view .LVU222
+ 799 0012 FFF7FEFF 		bl	Buttons_EXTI_Init
+ 800              	.LVL46:
+ 101:Core/Src/main.c ****     LED_AllOff();
+ 801              		.loc 1 101 5 view .LVU223
+ 802 0016 FFF7FEFF 		bl	LED_AllOff
+ 803              	.LVL47:
+ 105:Core/Src/main.c ****     last_pair_switch_ms = system_time_ms;
+ 804              		.loc 1 105 5 view .LVU224
+ 105:Core/Src/main.c ****     last_pair_switch_ms = system_time_ms;
+ 805              		.loc 1 105 25 is_stmt 0 view .LVU225
+ 806 001a 134B     		ldr	r3, .L70
+ 807 001c 1A68     		ldr	r2, [r3]
+ 808 001e 134B     		ldr	r3, .L70+4
+ 809 0020 1A60     		str	r2, [r3]
+ 106:Core/Src/main.c ****     for (uint8_t i = 0; i < LED_COUNT; i++)
+ 810              		.loc 1 106 5 is_stmt 1 view .LVU226
+ 811              	.LBB15:
+ 106:Core/Src/main.c ****     for (uint8_t i = 0; i < LED_COUNT; i++)
+ 812              		.loc 1 106 10 view .LVU227
+ 813              	.LVL48:
+ 106:Core/Src/main.c ****     for (uint8_t i = 0; i < LED_COUNT; i++)
+ 814              		.loc 1 106 18 is_stmt 0 view .LVU228
+ 815 0022 0023     		movs	r3, #0
+ 106:Core/Src/main.c ****     for (uint8_t i = 0; i < LED_COUNT; i++)
+ 816              		.loc 1 106 5 view .LVU229
+ 817 0024 0BE0     		b	.L63
+ 818              	.LVL49:
+ 819              	.L64:
+ 108:Core/Src/main.c ****         last_toggle_ms[i] = system_time_ms;
+ 820              		.loc 1 108 9 is_stmt 1 view .LVU230
+ 108:Core/Src/main.c ****         last_toggle_ms[i] = system_time_ms;
+ 821              		.loc 1 108 27 is_stmt 0 view .LVU231
+ 822 0026 104A     		ldr	r2, .L70
+ 823 0028 1168     		ldr	r1, [r2]
+ 824 002a 114A     		ldr	r2, .L70+8
+ 825 002c 42F82310 		str	r1, [r2, r3, lsl #2]
+ 109:Core/Src/main.c ****         led_state[i] = 0U;
+ 826              		.loc 1 109 9 is_stmt 1 view .LVU232
+ 109:Core/Src/main.c ****         led_state[i] = 0U;
+ 827              		.loc 1 109 22 is_stmt 0 view .LVU233
+ 828 0030 0022     		movs	r2, #0
+ 829 0032 1049     		ldr	r1, .L70+12
+ 830 0034 CA54     		strb	r2, [r1, r3]
+ 110:Core/Src/main.c ****         freq2_index[i] = 0U; // начнём со самой медленной частоты
+ 831              		.loc 1 110 9 is_stmt 1 view .LVU234
+ 110:Core/Src/main.c ****         freq2_index[i] = 0U; // начнём со самой медленной частоты
+ 832              		.loc 1 110 24 is_stmt 0 view .LVU235
+ 833 0036 1049     		ldr	r1, .L70+16
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 25
+
+
+ 834 0038 CA54     		strb	r2, [r1, r3]
+ 106:Core/Src/main.c ****     for (uint8_t i = 0; i < LED_COUNT; i++)
+ 835              		.loc 1 106 41 is_stmt 1 discriminator 3 view .LVU236
+ 836 003a 0133     		adds	r3, r3, #1
+ 837              	.LVL50:
+ 106:Core/Src/main.c ****     for (uint8_t i = 0; i < LED_COUNT; i++)
+ 838              		.loc 1 106 41 is_stmt 0 discriminator 3 view .LVU237
+ 839 003c DBB2     		uxtb	r3, r3
+ 840              	.LVL51:
+ 841              	.L63:
+ 106:Core/Src/main.c ****     for (uint8_t i = 0; i < LED_COUNT; i++)
+ 842              		.loc 1 106 27 is_stmt 1 discriminator 1 view .LVU238
+ 843 003e 052B     		cmp	r3, #5
+ 844 0040 F1D9     		bls	.L64
+ 845              	.LBE15:
+ 113:Core/Src/main.c ****     selected_led = 0U; // по умолчанию настраиваем первый светод�
+ 846              		.loc 1 113 5 view .LVU239
+ 113:Core/Src/main.c ****     selected_led = 0U; // по умолчанию настраиваем первый светод�
+ 847              		.loc 1 113 18 is_stmt 0 view .LVU240
+ 848 0042 0E4B     		ldr	r3, .L70+20
+ 849              	.LVL52:
+ 113:Core/Src/main.c ****     selected_led = 0U; // по умолчанию настраиваем первый светод�
+ 850              		.loc 1 113 18 view .LVU241
+ 851 0044 0022     		movs	r2, #0
+ 852 0046 1A70     		strb	r2, [r3]
+ 853 0048 01E0     		b	.L65
+ 854              	.L69:
+ 125:Core/Src/main.c ****             Mode1_Task(); // пары 3-4, 2-5, 1-6
+ 855              		.loc 1 125 13 is_stmt 1 view .LVU242
+ 856 004a FFF7FEFF 		bl	Mode1_Task
+ 857              	.LVL53:
+ 858              	.L65:
+ 114:Core/Src/main.c ****     extern volatile uint8_t Diana_Button3;
+ 859              		.loc 1 114 5 view .LVU243
+ 116:Core/Src/main.c ****     while (1)
+ 860              		.loc 1 116 5 view .LVU244
+ 118:Core/Src/main.c ****         Button1_Task(); // смена режима
+ 861              		.loc 1 118 9 view .LVU245
+ 862 004e FFF7FEFF 		bl	Button1_Task
+ 863              	.LVL54:
+ 119:Core/Src/main.c ****         Button2_Task(); // смена частоты
+ 864              		.loc 1 119 9 view .LVU246
+ 865 0052 FFF7FEFF 		bl	Button2_Task
+ 866              	.LVL55:
+ 120:Core/Src/main.c ****         Button3_Task(); // смена номера настраиваемого LED (в режим�
+ 867              		.loc 1 120 9 view .LVU247
+ 868 0056 FFF7FEFF 		bl	Button3_Task
+ 869              	.LVL56:
+ 123:Core/Src/main.c ****         if (current_mode == 0U)
+ 870              		.loc 1 123 9 view .LVU248
+ 123:Core/Src/main.c ****         if (current_mode == 0U)
+ 871              		.loc 1 123 26 is_stmt 0 view .LVU249
+ 872 005a 094B     		ldr	r3, .L70+24
+ 873 005c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 123:Core/Src/main.c ****         if (current_mode == 0U)
+ 874              		.loc 1 123 12 view .LVU250
+ 875 005e 002B     		cmp	r3, #0
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 26
+
+
+ 876 0060 F3D0     		beq	.L69
+ 129:Core/Src/main.c ****             Mode2_Task(); // индивидуальное мерцание всех 6 светод�
+ 877              		.loc 1 129 13 is_stmt 1 view .LVU251
+ 878 0062 FFF7FEFF 		bl	Mode2_Task
+ 879              	.LVL57:
+ 880 0066 F2E7     		b	.L65
+ 881              	.L71:
+ 882              		.align	2
+ 883              	.L70:
+ 884 0068 00000000 		.word	system_time_ms
+ 885 006c 00000000 		.word	last_pair_switch_ms
+ 886 0070 00000000 		.word	last_toggle_ms
+ 887 0074 00000000 		.word	led_state
+ 888 0078 00000000 		.word	freq2_index
+ 889 007c 00000000 		.word	selected_led
+ 890 0080 00000000 		.word	current_mode
+ 891              		.cfi_endproc
+ 892              	.LFE130:
+ 894              		.section	.rodata.mode2_intervals_ms,"a"
+ 895              		.align	2
+ 898              	mode2_intervals_ms:
+ 899 0000 82060000 		.word	1666
+ 900 0004 71020000 		.word	625
+ 901 0008 65010000 		.word	357
+ 902              		.global	led_state
+ 903              		.section	.bss.led_state,"aw",%nobits
+ 904              		.align	2
+ 907              	led_state:
+ 908 0000 00000000 		.space	6
+ 908      0000
+ 909              		.global	last_toggle_ms
+ 910              		.section	.bss.last_toggle_ms,"aw",%nobits
+ 911              		.align	2
+ 914              	last_toggle_ms:
+ 915 0000 00000000 		.space	24
+ 915      00000000 
+ 915      00000000 
+ 915      00000000 
+ 915      00000000 
+ 916              		.global	freq2_index
+ 917              		.section	.bss.freq2_index,"aw",%nobits
+ 918              		.align	2
+ 921              	freq2_index:
+ 922 0000 00000000 		.space	6
+ 922      0000
+ 923              		.global	selected_led
+ 924              		.section	.bss.selected_led,"aw",%nobits
+ 927              	selected_led:
+ 928 0000 00       		.space	1
+ 929              		.global	last_pair_switch_ms
+ 930              		.section	.bss.last_pair_switch_ms,"aw",%nobits
+ 931              		.align	2
+ 934              	last_pair_switch_ms:
+ 935 0000 00000000 		.space	4
+ 936              		.section	.rodata.mode1_intervals_ms,"a"
+ 937              		.align	2
+ 940              	mode1_intervals_ms:
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 27
+
+
+ 941 0000 D0070000 		.word	2000
+ 942 0004 4C020000 		.word	588
+ 943 0008 C7010000 		.word	455
+ 944              		.global	freq1_index
+ 945              		.section	.bss.freq1_index,"aw",%nobits
+ 948              	freq1_index:
+ 949 0000 00       		.space	1
+ 950              		.global	pair_index
+ 951              		.section	.bss.pair_index,"aw",%nobits
+ 954              	pair_index:
+ 955 0000 00       		.space	1
+ 956              		.global	current_mode
+ 957              		.section	.bss.current_mode,"aw",%nobits
+ 960              	current_mode:
+ 961 0000 00       		.space	1
+ 962              		.global	button3_last_irq_time_ms
+ 963              		.section	.bss.button3_last_irq_time_ms,"aw",%nobits
+ 964              		.align	2
+ 967              	button3_last_irq_time_ms:
+ 968 0000 00000000 		.space	4
+ 969              		.global	button2_last_irq_time_ms
+ 970              		.section	.bss.button2_last_irq_time_ms,"aw",%nobits
+ 971              		.align	2
+ 974              	button2_last_irq_time_ms:
+ 975 0000 00000000 		.space	4
+ 976              		.global	button1_last_irq_time_ms
+ 977              		.section	.bss.button1_last_irq_time_ms,"aw",%nobits
+ 978              		.align	2
+ 981              	button1_last_irq_time_ms:
+ 982 0000 00000000 		.space	4
+ 983              		.global	button3_press_flag
+ 984              		.section	.bss.button3_press_flag,"aw",%nobits
+ 987              	button3_press_flag:
+ 988 0000 00       		.space	1
+ 989              		.global	button2_press_flag
+ 990              		.section	.bss.button2_press_flag,"aw",%nobits
+ 993              	button2_press_flag:
+ 994 0000 00       		.space	1
+ 995              		.global	button1_press_flag
+ 996              		.section	.bss.button1_press_flag,"aw",%nobits
+ 999              	button1_press_flag:
+ 1000 0000 00       		.space	1
+ 1001              		.global	seconds
+ 1002              		.section	.bss.seconds,"aw",%nobits
+ 1003              		.align	2
+ 1006              	seconds:
+ 1007 0000 00000000 		.space	4
+ 1008              		.global	system_time_ms
+ 1009              		.section	.bss.system_time_ms,"aw",%nobits
+ 1010              		.align	2
+ 1013              	system_time_ms:
+ 1014 0000 00000000 		.space	4
+ 1015              		.global	mode2_all_on_time_ms
+ 1016              		.section	.bss.mode2_all_on_time_ms,"aw",%nobits
+ 1017              		.align	2
+ 1020              	mode2_all_on_time_ms:
+ 1021 0000 00000000 		.space	4
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 28
+
+
+ 1022              		.global	mode2_enabled_count
+ 1023              		.section	.bss.mode2_enabled_count,"aw",%nobits
+ 1026              	mode2_enabled_count:
+ 1027 0000 00       		.space	1
+ 1028              		.global	mode2_stage
+ 1029              		.section	.bss.mode2_stage,"aw",%nobits
+ 1032              	mode2_stage:
+ 1033 0000 00       		.space	1
+ 1034              		.global	mode2_last_enable_ms
+ 1035              		.section	.bss.mode2_last_enable_ms,"aw",%nobits
+ 1036              		.align	2
+ 1039              	mode2_last_enable_ms:
+ 1040 0000 00000000 		.space	4
+ 1041              		.global	mode2_ramp_done
+ 1042              		.section	.bss.mode2_ramp_done,"aw",%nobits
+ 1045              	mode2_ramp_done:
+ 1046 0000 00       		.space	1
+ 1047              		.text
+ 1048              	.Letext0:
+ 1049              		.file 2 "C:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 1050              		.file 3 "C:/tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 29
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:21     .text.Button2_Task:00000000 $t
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:26     .text.Button2_Task:00000000 Button2_Task
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:111    .text.Button2_Task:00000050 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:993    .bss.button2_press_flag:00000000 button2_press_flag
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:960    .bss.current_mode:00000000 current_mode
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:948    .bss.freq1_index:00000000 freq1_index
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:927    .bss.selected_led:00000000 selected_led
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:921    .bss.freq2_index:00000000 freq2_index
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:120    .text.Button3_Task:00000000 $t
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:125    .text.Button3_Task:00000000 Button3_Task
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:178    .text.Button3_Task:00000034 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:987    .bss.button3_press_flag:00000000 button3_press_flag
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:185    .text.Button1_Task:00000000 $t
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:190    .text.Button1_Task:00000000 Button1_Task
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:310    .text.Button1_Task:00000070 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:999    .bss.button1_press_flag:00000000 button1_press_flag
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:954    .bss.pair_index:00000000 pair_index
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1013   .bss.system_time_ms:00000000 system_time_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:934    .bss.last_pair_switch_ms:00000000 last_pair_switch_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:907    .bss.led_state:00000000 led_state
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:914    .bss.last_toggle_ms:00000000 last_toggle_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1032   .bss.mode2_stage:00000000 mode2_stage
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1026   .bss.mode2_enabled_count:00000000 mode2_enabled_count
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1039   .bss.mode2_last_enable_ms:00000000 mode2_last_enable_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1020   .bss.mode2_all_on_time_ms:00000000 mode2_all_on_time_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:327    .text.Mode1_Task:00000000 $t
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:332    .text.Mode1_Task:00000000 Mode1_Task
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:448    .text.Mode1_Task:0000007c $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:940    .rodata.mode1_intervals_ms:00000000 mode1_intervals_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:459    .text.Mode2_Task:00000000 $t
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:464    .text.Mode2_Task:00000000 Mode2_Task
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:754    .text.Mode2_Task:0000010c $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:898    .rodata.mode2_intervals_ms:00000000 mode2_intervals_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:769    .text.main:00000000 $t
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:775    .text.main:00000000 main
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:884    .text.main:00000068 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:895    .rodata.mode2_intervals_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:904    .bss.led_state:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:911    .bss.last_toggle_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:918    .bss.freq2_index:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:928    .bss.selected_led:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:931    .bss.last_pair_switch_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:937    .rodata.mode1_intervals_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:949    .bss.freq1_index:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:955    .bss.pair_index:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:961    .bss.current_mode:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:967    .bss.button3_last_irq_time_ms:00000000 button3_last_irq_time_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:964    .bss.button3_last_irq_time_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:974    .bss.button2_last_irq_time_ms:00000000 button2_last_irq_time_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:971    .bss.button2_last_irq_time_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:981    .bss.button1_last_irq_time_ms:00000000 button1_last_irq_time_ms
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:978    .bss.button1_last_irq_time_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:988    .bss.button3_press_flag:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:994    .bss.button2_press_flag:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1000   .bss.button1_press_flag:00000000 $d
+ARM GAS  C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s 			page 30
+
+
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1006   .bss.seconds:00000000 seconds
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1003   .bss.seconds:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1010   .bss.system_time_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1017   .bss.mode2_all_on_time_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1027   .bss.mode2_enabled_count:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1033   .bss.mode2_stage:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1036   .bss.mode2_last_enable_ms:00000000 $d
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1045   .bss.mode2_ramp_done:00000000 mode2_ramp_done
+C:\Users\diana\AppData\Local\Temp\ccAzXN9G.s:1046   .bss.mode2_ramp_done:00000000 $d
+
+UNDEFINED SYMBOLS
+LED_AllOff
+LED_On_Index
+LED_Off_Index
+Clock_Init_HSE_PLL_168MHz
+SysTick_Init_1ms
+LEDs_GPIO_Init
+Buttons_GPIO_Init
+Buttons_EXTI_Init
