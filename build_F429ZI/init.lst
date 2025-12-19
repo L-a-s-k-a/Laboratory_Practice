@@ -1,0 +1,677 @@
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.RCC_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	RCC_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	RCC_Init:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void RCC_Init(void)
+   4:Core/Src/init.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****    MODIFY_REG(RCC->CR,RCC_CR_HSITRIM, 0x80U);//Калибровка точности внутрен
+  34              		.loc 1 5 4 view .LVU1
+  35 0000 3F4A     		ldr	r2, .L7
+  36 0002 1368     		ldr	r3, [r2]
+  37 0004 23F0F803 		bic	r3, r3, #248
+  38 0008 43F08003 		orr	r3, r3, #128
+  39 000c 1360     		str	r3, [r2]
+   6:Core/Src/init.c ****    CLEAR_REG(RCC->CFGR);// Сброс всех настроек делителей и мульти�
+  40              		.loc 1 6 4 view .LVU2
+  41 000e 0023     		movs	r3, #0
+  42 0010 9360     		str	r3, [r2, #8]
+   7:Core/Src/init.c ****    while(READ_BIT(RCC->CFGR,RCC_CFGR_SWS) != RESET);//Ожидание пока система пе
+  43              		.loc 1 7 4 view .LVU3
+  44              	.L2:
+  45              		.loc 1 7 43 discriminator 1 view .LVU4
+  46              		.loc 1 7 10 is_stmt 0 discriminator 1 view .LVU5
+  47 0012 3B4B     		ldr	r3, .L7
+  48 0014 9B68     		ldr	r3, [r3, #8]
+  49              		.loc 1 7 43 discriminator 1 view .LVU6
+  50 0016 13F00C0F 		tst	r3, #12
+  51 001a FAD1     		bne	.L2
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 2
+
+
+   8:Core/Src/init.c ****    CLEAR_BIT(RCC->CR, RCC_CR_PLLON);//Выключение системы умножения час
+  52              		.loc 1 8 4 is_stmt 1 view .LVU7
+  53 001c 384A     		ldr	r2, .L7
+  54 001e 1368     		ldr	r3, [r2]
+  55 0020 23F08073 		bic	r3, r3, #16777216
+  56 0024 1360     		str	r3, [r2]
+   9:Core/Src/init.c ****    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);//Ожидание полного выключ�
+  57              		.loc 1 9 4 view .LVU8
+  58              	.L3:
+  59              		.loc 1 9 43 discriminator 1 view .LVU9
+  60              		.loc 1 9 10 is_stmt 0 discriminator 1 view .LVU10
+  61 0026 364B     		ldr	r3, .L7
+  62 0028 1B68     		ldr	r3, [r3]
+  63              		.loc 1 9 43 discriminator 1 view .LVU11
+  64 002a 13F0007F 		tst	r3, #33554432
+  65 002e FAD1     		bne	.L3
+  10:Core/Src/init.c ****    CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON);// Одновременное выключени
+  66              		.loc 1 10 4 is_stmt 1 view .LVU12
+  67 0030 334A     		ldr	r2, .L7
+  68 0032 1368     		ldr	r3, [r2]
+  69 0034 23F41023 		bic	r3, r3, #589824
+  70 0038 1360     		str	r3, [r2]
+  11:Core/Src/init.c ****    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET);//Ожидание полного выключ
+  71              		.loc 1 11 4 view .LVU13
+  72              	.L4:
+  73              		.loc 1 11 44 discriminator 1 view .LVU14
+  74              		.loc 1 11 11 is_stmt 0 discriminator 1 view .LVU15
+  75 003a 314B     		ldr	r3, .L7
+  76 003c 1B68     		ldr	r3, [r3]
+  77              		.loc 1 11 44 discriminator 1 view .LVU16
+  78 003e 13F4003F 		tst	r3, #131072
+  79 0042 FAD1     		bne	.L4
+  12:Core/Src/init.c ****    CLEAR_BIT(RCC->CR,RCC_CR_HSEBYP);//Отключение режима обхода HSE
+  80              		.loc 1 12 4 is_stmt 1 view .LVU17
+  81 0044 2E4B     		ldr	r3, .L7
+  82 0046 1A68     		ldr	r2, [r3]
+  83 0048 22F48022 		bic	r2, r2, #262144
+  84 004c 1A60     		str	r2, [r3]
+  13:Core/Src/init.c ****    
+  14:Core/Src/init.c ****    SET_BIT(RCC->CR, RCC_CR_HSEON);//Включение внешнего кварцевого ген
+  85              		.loc 1 14 4 view .LVU18
+  86 004e 1A68     		ldr	r2, [r3]
+  87 0050 42F48032 		orr	r2, r2, #65536
+  88 0054 1A60     		str	r2, [r3]
+  15:Core/Src/init.c ****    while(READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);//Ожидание стабилизации HSE
+  89              		.loc 1 15 4 view .LVU19
+  90              	.L5:
+  91              		.loc 1 15 43 discriminator 1 view .LVU20
+  92              		.loc 1 15 10 is_stmt 0 discriminator 1 view .LVU21
+  93 0056 2A4B     		ldr	r3, .L7
+  94 0058 1B68     		ldr	r3, [r3]
+  95              		.loc 1 15 43 discriminator 1 view .LVU22
+  96 005a 13F4003F 		tst	r3, #131072
+  97 005e FAD0     		beq	.L5
+  16:Core/Src/init.c ****    CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);// Повторное подтверждение исполь�
+  98              		.loc 1 16 4 is_stmt 1 view .LVU23
+  99 0060 274B     		ldr	r3, .L7
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 3
+
+
+ 100 0062 1A68     		ldr	r2, [r3]
+ 101 0064 22F48022 		bic	r2, r2, #262144
+ 102 0068 1A60     		str	r2, [r3]
+  17:Core/Src/init.c ****    SET_BIT(RCC->CR, RCC_CR_CSSON);//Включение детектора отказа HSE, есл�
+ 103              		.loc 1 17 4 view .LVU24
+ 104 006a 1A68     		ldr	r2, [r3]
+ 105 006c 42F40022 		orr	r2, r2, #524288
+ 106 0070 1A60     		str	r2, [r3]
+  18:Core/Src/init.c **** 
+  19:Core/Src/init.c ****    CLEAR_REG(RCC->PLLCFGR);//Полная очистка регистра PLL
+ 107              		.loc 1 19 4 view .LVU25
+ 108 0072 0022     		movs	r2, #0
+ 109 0074 5A60     		str	r2, [r3, #4]
+  20:Core/Src/init.c ****    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);// Выбор HSE как источника так
+ 110              		.loc 1 20 4 view .LVU26
+ 111 0076 5A68     		ldr	r2, [r3, #4]
+ 112 0078 42F48002 		orr	r2, r2, #4194304
+ 113 007c 5A60     		str	r2, [r3, #4]
+  21:Core/Src/init.c ****    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2);// Установка делит�
+ 114              		.loc 1 21 4 view .LVU27
+ 115 007e 5A68     		ldr	r2, [r3, #4]
+ 116 0080 22F03F02 		bic	r2, r2, #63
+ 117 0084 42F00402 		orr	r2, r2, #4
+ 118 0088 5A60     		str	r2, [r3, #4]
+  22:Core/Src/init.c ****    MODIFY_REG(RCC->PLLCFGR,RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 | 
+ 119              		.loc 1 22 4 view .LVU28
+ 120 008a 5A68     		ldr	r2, [r3, #4]
+ 121 008c 6FF38E12 		bfc	r2, #6, #9
+ 122 0090 42F43452 		orr	r2, r2, #11520
+ 123 0094 5A60     		str	r2, [r3, #4]
+  23:Core/Src/init.c ****     RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7);//Установка умножителя PLLN рав�
+  24:Core/Src/init.c ****    CLEAR_BIT(RCC->PLLCFGR,RCC_PLLCFGR_PLLP_Msk);// Установка делителя PLLP рав�
+ 124              		.loc 1 24 4 view .LVU29
+ 125 0096 5A68     		ldr	r2, [r3, #4]
+ 126 0098 22F44032 		bic	r2, r2, #196608
+ 127 009c 5A60     		str	r2, [r3, #4]
+  25:Core/Src/init.c ****    SET_BIT(RCC->CR, RCC_CR_PLLON);//Запуск PLL с новой конфигурацией
+ 128              		.loc 1 25 4 view .LVU30
+ 129 009e 1A68     		ldr	r2, [r3]
+ 130 00a0 42F08072 		orr	r2, r2, #16777216
+ 131 00a4 1A60     		str	r2, [r3]
+  26:Core/Src/init.c ****    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY));//Ожидание готовности PLL
+ 132              		.loc 1 26 4 view .LVU31
+ 133              	.L6:
+ 134              		.loc 1 26 10 discriminator 1 view .LVU32
+ 135 00a6 164B     		ldr	r3, .L7
+ 136 00a8 1B68     		ldr	r3, [r3]
+ 137 00aa 13F0007F 		tst	r3, #33554432
+ 138 00ae FAD1     		bne	.L6
+  27:Core/Src/init.c **** 
+  28:Core/Src/init.c ****    MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);//Переключение системно�
+ 139              		.loc 1 28 4 view .LVU33
+ 140 00b0 134B     		ldr	r3, .L7
+ 141 00b2 9A68     		ldr	r2, [r3, #8]
+ 142 00b4 22F00302 		bic	r2, r2, #3
+ 143 00b8 42F00202 		orr	r2, r2, #2
+ 144 00bc 9A60     		str	r2, [r3, #8]
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 4
+
+
+  29:Core/Src/init.c ****    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);//Установка делителя �
+ 145              		.loc 1 29 4 view .LVU34
+ 146 00be 9A68     		ldr	r2, [r3, #8]
+ 147 00c0 22F0F002 		bic	r2, r2, #240
+ 148 00c4 9A60     		str	r2, [r3, #8]
+  30:Core/Src/init.c ****    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4);//Установка делителя
+ 149              		.loc 1 30 4 view .LVU35
+ 150 00c6 9A68     		ldr	r2, [r3, #8]
+ 151 00c8 22F4E052 		bic	r2, r2, #7168
+ 152 00cc 42F4A052 		orr	r2, r2, #5120
+ 153 00d0 9A60     		str	r2, [r3, #8]
+  31:Core/Src/init.c ****    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2);//Установка делителя
+ 154              		.loc 1 31 4 view .LVU36
+ 155 00d2 9A68     		ldr	r2, [r3, #8]
+ 156 00d4 22F46042 		bic	r2, r2, #57344
+ 157 00d8 42F40042 		orr	r2, r2, #32768
+ 158 00dc 9A60     		str	r2, [r3, #8]
+  32:Core/Src/init.c ****    MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk);//Установка максим�
+ 159              		.loc 1 32 4 view .LVU37
+ 160 00de 9A68     		ldr	r2, [r3, #8]
+ 161 00e0 42F06052 		orr	r2, r2, #939524096
+ 162 00e4 9A60     		str	r2, [r3, #8]
+  33:Core/Src/init.c ****    CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);// Выбор SYSCLK как источника для MCO2
+ 163              		.loc 1 33 4 view .LVU38
+ 164 00e6 9A68     		ldr	r2, [r3, #8]
+ 165 00e8 22F04042 		bic	r2, r2, #-1073741824
+ 166 00ec 9A60     		str	r2, [r3, #8]
+  34:Core/Src/init.c ****    MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);//Установка задер
+ 167              		.loc 1 34 4 view .LVU39
+ 168 00ee 054A     		ldr	r2, .L7+4
+ 169 00f0 1368     		ldr	r3, [r2]
+ 170 00f2 23F00F03 		bic	r3, r3, #15
+ 171 00f6 43F00503 		orr	r3, r3, #5
+ 172 00fa 1360     		str	r3, [r2]
+  35:Core/Src/init.c **** }
+ 173              		.loc 1 35 1 is_stmt 0 view .LVU40
+ 174 00fc 7047     		bx	lr
+ 175              	.L8:
+ 176 00fe 00BF     		.align	2
+ 177              	.L7:
+ 178 0100 00380240 		.word	1073887232
+ 179 0104 003C0240 		.word	1073888256
+ 180              		.cfi_endproc
+ 181              	.LFE130:
+ 183              		.section	.text.GPIO_Init,"ax",%progbits
+ 184              		.align	1
+ 185              		.global	GPIO_Init
+ 186              		.syntax unified
+ 187              		.thumb
+ 188              		.thumb_func
+ 190              	GPIO_Init:
+ 191              	.LFB131:
+  36:Core/Src/init.c **** 
+  37:Core/Src/init.c **** void GPIO_Init(void)
+  38:Core/Src/init.c **** {
+ 192              		.loc 1 38 1 is_stmt 1 view -0
+ 193              		.cfi_startproc
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 5
+
+
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 196              		@ link register save eliminated.
+  39:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);//Включение тактирования GPIOB
+ 197              		.loc 1 39 5 view .LVU42
+ 198 0000 3C4A     		ldr	r2, .L10
+ 199 0002 136B     		ldr	r3, [r2, #48]
+ 200 0004 43F00203 		orr	r3, r3, #2
+ 201 0008 1363     		str	r3, [r2, #48]
+  40:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);//Установка режима ввода для �
+ 202              		.loc 1 40 5 view .LVU43
+ 203 000a 3B4B     		ldr	r3, .L10+4
+ 204 000c 1968     		ldr	r1, [r3]
+ 205 000e 41F00101 		orr	r1, r1, #1
+ 206 0012 1960     		str	r1, [r3]
+  41:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT0);//Установка пина PB0 как выход p
+ 207              		.loc 1 41 5 view .LVU44
+ 208 0014 5968     		ldr	r1, [r3, #4]
+ 209 0016 21F00101 		bic	r1, r1, #1
+ 210 001a 5960     		str	r1, [r3, #4]
+  42:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);//Установка низкой скоро�
+ 211              		.loc 1 42 5 view .LVU45
+ 212 001c 9968     		ldr	r1, [r3, #8]
+ 213 001e 41F00101 		orr	r1, r1, #1
+ 214 0022 9960     		str	r1, [r3, #8]
+  43:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0 | GPIO_PUPDR_PUPDR0_1);//Отключение по�
+ 215              		.loc 1 43 5 view .LVU46
+ 216 0024 D968     		ldr	r1, [r3, #12]
+ 217 0026 21F00301 		bic	r1, r1, #3
+ 218 002a D960     		str	r1, [r3, #12]
+  44:Core/Src/init.c **** 
+  45:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0);//Установка режима ввода для �
+ 219              		.loc 1 45 5 view .LVU47
+ 220 002c 1968     		ldr	r1, [r3]
+ 221 002e 41F48041 		orr	r1, r1, #16384
+ 222 0032 1960     		str	r1, [r3]
+  46:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT7);//Установка пина PB7 как выход p
+ 223              		.loc 1 46 5 view .LVU48
+ 224 0034 5968     		ldr	r1, [r3, #4]
+ 225 0036 21F08001 		bic	r1, r1, #128
+ 226 003a 5960     		str	r1, [r3, #4]
+  47:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);//Установка низкой скоро�
+ 227              		.loc 1 47 5 view .LVU49
+ 228 003c 9968     		ldr	r1, [r3, #8]
+ 229 003e 41F48041 		orr	r1, r1, #16384
+ 230 0042 9960     		str	r1, [r3, #8]
+  48:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0 | GPIO_PUPDR_PUPDR7_1);//Отключение по�
+ 231              		.loc 1 48 5 view .LVU50
+ 232 0044 D968     		ldr	r1, [r3, #12]
+ 233 0046 21F44041 		bic	r1, r1, #49152
+ 234 004a D960     		str	r1, [r3, #12]
+  49:Core/Src/init.c **** 
+  50:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0);//Установка режима ввода для 
+ 235              		.loc 1 50 5 view .LVU51
+ 236 004c 1968     		ldr	r1, [r3]
+ 237 004e 41F08051 		orr	r1, r1, #268435456
+ 238 0052 1960     		str	r1, [r3]
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 6
+
+
+  51:Core/Src/init.c ****     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT14);//Установка пина PB14 как выход
+ 239              		.loc 1 51 5 view .LVU52
+ 240 0054 5968     		ldr	r1, [r3, #4]
+ 241 0056 21F48041 		bic	r1, r1, #16384
+ 242 005a 5960     		str	r1, [r3, #4]
+  52:Core/Src/init.c ****     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);//Установка низкой скоро
+ 243              		.loc 1 52 5 view .LVU53
+ 244 005c 9968     		ldr	r1, [r3, #8]
+ 245 005e 41F08051 		orr	r1, r1, #268435456
+ 246 0062 9960     		str	r1, [r3, #8]
+  53:Core/Src/init.c ****     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0 | GPIO_PUPDR_PUPDR14_1);//Отключение п�
+ 247              		.loc 1 53 5 view .LVU54
+ 248 0064 D968     		ldr	r1, [r3, #12]
+ 249 0066 21F04051 		bic	r1, r1, #805306368
+ 250 006a D960     		str	r1, [r3, #12]
+  54:Core/Src/init.c **** 
+  55:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIODEN);//Включение тактирования GPIOD
+ 251              		.loc 1 55 5 view .LVU55
+ 252 006c 136B     		ldr	r3, [r2, #48]
+ 253 006e 43F00803 		orr	r3, r3, #8
+ 254 0072 1363     		str	r3, [r2, #48]
+  56:Core/Src/init.c ****     SET_BIT(GPIOD->MODER, GPIO_MODER_MODE0_0);//Установка режима ввода для �
+ 255              		.loc 1 56 5 view .LVU56
+ 256 0074 214B     		ldr	r3, .L10+8
+ 257 0076 1968     		ldr	r1, [r3]
+ 258 0078 41F00101 		orr	r1, r1, #1
+ 259 007c 1960     		str	r1, [r3]
+  57:Core/Src/init.c ****     CLEAR_BIT(GPIOD->OTYPER, GPIO_OTYPER_OT0);//Установка пина PD0 как выход p
+ 260              		.loc 1 57 5 view .LVU57
+ 261 007e 5968     		ldr	r1, [r3, #4]
+ 262 0080 21F00101 		bic	r1, r1, #1
+ 263 0084 5960     		str	r1, [r3, #4]
+  58:Core/Src/init.c ****     SET_BIT(GPIOD->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);//Установка низкой скоро�
+ 264              		.loc 1 58 5 view .LVU58
+ 265 0086 9968     		ldr	r1, [r3, #8]
+ 266 0088 41F00101 		orr	r1, r1, #1
+ 267 008c 9960     		str	r1, [r3, #8]
+  59:Core/Src/init.c ****     CLEAR_BIT(GPIOD->PUPDR, GPIO_PUPDR_PUPDR0_0 | GPIO_PUPDR_PUPDR0_1);//Отключение по�
+ 268              		.loc 1 59 5 view .LVU59
+ 269 008e D968     		ldr	r1, [r3, #12]
+ 270 0090 21F00301 		bic	r1, r1, #3
+ 271 0094 D960     		str	r1, [r3, #12]
+  60:Core/Src/init.c **** 
+  61:Core/Src/init.c ****     SET_BIT(GPIOD->MODER, GPIO_MODER_MODE1_0);//Установка режима ввода для �
+ 272              		.loc 1 61 5 view .LVU60
+ 273 0096 1968     		ldr	r1, [r3]
+ 274 0098 41F00401 		orr	r1, r1, #4
+ 275 009c 1960     		str	r1, [r3]
+  62:Core/Src/init.c ****     CLEAR_BIT(GPIOD->OTYPER, GPIO_OTYPER_OT1);//Установка пина PD1 как выход p
+ 276              		.loc 1 62 5 view .LVU61
+ 277 009e 5968     		ldr	r1, [r3, #4]
+ 278 00a0 21F00201 		bic	r1, r1, #2
+ 279 00a4 5960     		str	r1, [r3, #4]
+  63:Core/Src/init.c ****     SET_BIT(GPIOD->OSPEEDR, GPIO_OSPEEDER_OSPEEDR1_0);//Установка низкой скоро�
+ 280              		.loc 1 63 5 view .LVU62
+ 281 00a6 9968     		ldr	r1, [r3, #8]
+ 282 00a8 41F00401 		orr	r1, r1, #4
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 7
+
+
+ 283 00ac 9960     		str	r1, [r3, #8]
+  64:Core/Src/init.c ****     CLEAR_BIT(GPIOD->PUPDR, GPIO_PUPDR_PUPDR1_0 | GPIO_PUPDR_PUPDR1_1);//Отключение по�
+ 284              		.loc 1 64 5 view .LVU63
+ 285 00ae D968     		ldr	r1, [r3, #12]
+ 286 00b0 21F00C01 		bic	r1, r1, #12
+ 287 00b4 D960     		str	r1, [r3, #12]
+  65:Core/Src/init.c **** 
+  66:Core/Src/init.c ****     SET_BIT(GPIOD->MODER, GPIO_MODER_MODE2_0);//Установка режима ввода для �
+ 288              		.loc 1 66 5 view .LVU64
+ 289 00b6 1968     		ldr	r1, [r3]
+ 290 00b8 41F01001 		orr	r1, r1, #16
+ 291 00bc 1960     		str	r1, [r3]
+  67:Core/Src/init.c ****     CLEAR_BIT(GPIOD->OTYPER, GPIO_OTYPER_OT2);//Установка пина PD2 как выход p
+ 292              		.loc 1 67 5 view .LVU65
+ 293 00be 5968     		ldr	r1, [r3, #4]
+ 294 00c0 21F00401 		bic	r1, r1, #4
+ 295 00c4 5960     		str	r1, [r3, #4]
+  68:Core/Src/init.c ****     SET_BIT(GPIOD->OSPEEDR, GPIO_OSPEEDER_OSPEEDR2_0);//Установка низкой скоро�
+ 296              		.loc 1 68 5 view .LVU66
+ 297 00c6 9968     		ldr	r1, [r3, #8]
+ 298 00c8 41F01001 		orr	r1, r1, #16
+ 299 00cc 9960     		str	r1, [r3, #8]
+  69:Core/Src/init.c ****     CLEAR_BIT(GPIOD->PUPDR, GPIO_PUPDR_PUPDR2_0 | GPIO_PUPDR_PUPDR2_1);//Отключение по�
+ 300              		.loc 1 69 5 view .LVU67
+ 301 00ce D968     		ldr	r1, [r3, #12]
+ 302 00d0 21F03001 		bic	r1, r1, #48
+ 303 00d4 D960     		str	r1, [r3, #12]
+  70:Core/Src/init.c **** 
+  71:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOCEN);//Включение тактирования GPIOC
+ 304              		.loc 1 71 5 view .LVU68
+ 305 00d6 136B     		ldr	r3, [r2, #48]
+ 306 00d8 43F00403 		orr	r3, r3, #4
+ 307 00dc 1363     		str	r3, [r2, #48]
+  72:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODE13);// Установка пина PC13 в режим в
+ 308              		.loc 1 72 5 view .LVU69
+ 309 00de 084B     		ldr	r3, .L10+12
+ 310 00e0 1A68     		ldr	r2, [r3]
+ 311 00e2 22F04062 		bic	r2, r2, #201326592
+ 312 00e6 1A60     		str	r2, [r3]
+  73:Core/Src/init.c **** 
+  74:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPD13);//Отключение подтягивающих р
+ 313              		.loc 1 74 5 view .LVU70
+ 314 00e8 DA68     		ldr	r2, [r3, #12]
+ 315 00ea 22F04062 		bic	r2, r2, #201326592
+ 316 00ee DA60     		str	r2, [r3, #12]
+  75:Core/Src/init.c **** }
+ 317              		.loc 1 75 1 is_stmt 0 view .LVU71
+ 318 00f0 7047     		bx	lr
+ 319              	.L11:
+ 320 00f2 00BF     		.align	2
+ 321              	.L10:
+ 322 00f4 00380240 		.word	1073887232
+ 323 00f8 00040240 		.word	1073873920
+ 324 00fc 000C0240 		.word	1073875968
+ 325 0100 00080240 		.word	1073874944
+ 326              		.cfi_endproc
+ 327              	.LFE131:
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 8
+
+
+ 329              		.section	.text.SetLED,"ax",%progbits
+ 330              		.align	1
+ 331              		.global	SetLED
+ 332              		.syntax unified
+ 333              		.thumb
+ 334              		.thumb_func
+ 336              	SetLED:
+ 337              	.LVL0:
+ 338              	.LFB132:
+  76:Core/Src/init.c **** 
+  77:Core/Src/init.c **** void SetLED(uint8_t led_num, uint8_t state)
+  78:Core/Src/init.c **** {
+ 339              		.loc 1 78 1 is_stmt 1 view -0
+ 340              		.cfi_startproc
+ 341              		@ args = 0, pretend = 0, frame = 0
+ 342              		@ frame_needed = 0, uses_anonymous_args = 0
+ 343              		@ link register save eliminated.
+  79:Core/Src/init.c ****     switch(led_num)//Проверка всех возможных значений счётчика
+ 344              		.loc 1 79 5 view .LVU73
+ 345 0000 0138     		subs	r0, r0, #1
+ 346              	.LVL1:
+ 347              		.loc 1 79 5 is_stmt 0 view .LVU74
+ 348 0002 0528     		cmp	r0, #5
+ 349 0004 6DD8     		bhi	.L12
+ 350 0006 DFE800F0 		tbb	[pc, r0]
+ 351              	.L15:
+ 352 000a 03       		.byte	(.L20-.L15)/2
+ 353 000b 16       		.byte	(.L19-.L15)/2
+ 354 000c 27       		.byte	(.L18-.L15)/2
+ 355 000d 38       		.byte	(.L17-.L15)/2
+ 356 000e 4B       		.byte	(.L16-.L15)/2
+ 357 000f 5C       		.byte	(.L14-.L15)/2
+ 358              		.p2align 1
+ 359              	.L20:
+  80:Core/Src/init.c ****     {
+  81:Core/Src/init.c ****         case 1:
+  82:Core/Src/init.c ****             if (state) {//Если нужно включить первый светодиод
+ 360              		.loc 1 82 13 is_stmt 1 view .LVU75
+ 361              		.loc 1 82 16 is_stmt 0 view .LVU76
+ 362 0010 59B1     		cbz	r1, .L21
+  83:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR2);//Выключение светодиода н�
+ 363              		.loc 1 83 17 is_stmt 1 view .LVU77
+ 364 0012 344A     		ldr	r2, .L28
+ 365 0014 9369     		ldr	r3, [r2, #24]
+ 366 0016 43F48023 		orr	r3, r3, #262144
+ 367 001a 9361     		str	r3, [r2, #24]
+  84:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);//Включение светодиода на 
+ 368              		.loc 1 84 17 view .LVU78
+ 369 001c A2F50062 		sub	r2, r2, #2048
+ 370 0020 9369     		ldr	r3, [r2, #24]
+ 371 0022 43F00103 		orr	r3, r3, #1
+ 372 0026 9361     		str	r3, [r2, #24]
+ 373 0028 7047     		bx	lr
+ 374              	.L21:
+  85:Core/Src/init.c ****             } else {
+  86:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);//Иначе выключение PB0
+ 375              		.loc 1 86 17 view .LVU79
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 9
+
+
+ 376 002a 2F4A     		ldr	r2, .L28+4
+ 377 002c 9369     		ldr	r3, [r2, #24]
+ 378 002e 43F48033 		orr	r3, r3, #65536
+ 379 0032 9361     		str	r3, [r2, #24]
+ 380 0034 7047     		bx	lr
+ 381              	.L19:
+  87:Core/Src/init.c ****             }
+  88:Core/Src/init.c ****             break;//Выход
+  89:Core/Src/init.c ****         case 2:
+  90:Core/Src/init.c ****             if (state) {//Если нужно включить второй светодиод
+ 382              		.loc 1 90 13 view .LVU80
+ 383              		.loc 1 90 16 is_stmt 0 view .LVU81
+ 384 0036 49B1     		cbz	r1, .L22
+  91:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);//Выключение светодиода н�
+ 385              		.loc 1 91 17 is_stmt 1 view .LVU82
+ 386 0038 2B4B     		ldr	r3, .L28+4
+ 387 003a 9A69     		ldr	r2, [r3, #24]
+ 388 003c 42F48032 		orr	r2, r2, #65536
+ 389 0040 9A61     		str	r2, [r3, #24]
+  92:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);//Включение светодиода на 
+ 390              		.loc 1 92 17 view .LVU83
+ 391 0042 9A69     		ldr	r2, [r3, #24]
+ 392 0044 42F08002 		orr	r2, r2, #128
+ 393 0048 9A61     		str	r2, [r3, #24]
+ 394 004a 7047     		bx	lr
+ 395              	.L22:
+  93:Core/Src/init.c ****             } else {
+  94:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//Иначе выключение PB7
+ 396              		.loc 1 94 17 view .LVU84
+ 397 004c 264A     		ldr	r2, .L28+4
+ 398 004e 9369     		ldr	r3, [r2, #24]
+ 399 0050 43F40003 		orr	r3, r3, #8388608
+ 400 0054 9361     		str	r3, [r2, #24]
+ 401 0056 7047     		bx	lr
+ 402              	.L18:
+  95:Core/Src/init.c ****             }
+  96:Core/Src/init.c ****             break;//Выход
+  97:Core/Src/init.c ****         case 3:
+  98:Core/Src/init.c ****             if (state) {//Если нужно включить третий светодиод
+ 403              		.loc 1 98 13 view .LVU85
+ 404              		.loc 1 98 16 is_stmt 0 view .LVU86
+ 405 0058 49B1     		cbz	r1, .L23
+  99:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//Выключение светодиода н�
+ 406              		.loc 1 99 17 is_stmt 1 view .LVU87
+ 407 005a 234B     		ldr	r3, .L28+4
+ 408 005c 9A69     		ldr	r2, [r3, #24]
+ 409 005e 42F40002 		orr	r2, r2, #8388608
+ 410 0062 9A61     		str	r2, [r3, #24]
+ 100:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);//Включение светодиода на
+ 411              		.loc 1 100 17 view .LVU88
+ 412 0064 9A69     		ldr	r2, [r3, #24]
+ 413 0066 42F48042 		orr	r2, r2, #16384
+ 414 006a 9A61     		str	r2, [r3, #24]
+ 415 006c 7047     		bx	lr
+ 416              	.L23:
+ 101:Core/Src/init.c ****             } else {
+ 102:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);//Иначе выключение PB14
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 10
+
+
+ 417              		.loc 1 102 17 view .LVU89
+ 418 006e 1E4A     		ldr	r2, .L28+4
+ 419 0070 9369     		ldr	r3, [r2, #24]
+ 420 0072 43F08043 		orr	r3, r3, #1073741824
+ 421 0076 9361     		str	r3, [r2, #24]
+ 422 0078 7047     		bx	lr
+ 423              	.L17:
+ 103:Core/Src/init.c ****             }
+ 104:Core/Src/init.c ****             break;//Выход
+ 105:Core/Src/init.c ****         case 4:
+ 106:Core/Src/init.c ****             if (state) {//Если нужно включить четвертый светодио�
+ 424              		.loc 1 106 13 view .LVU90
+ 425              		.loc 1 106 16 is_stmt 0 view .LVU91
+ 426 007a 59B1     		cbz	r1, .L24
+ 107:Core/Src/init.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);//Выключение светодиода н
+ 427              		.loc 1 107 17 is_stmt 1 view .LVU92
+ 428 007c 1A4A     		ldr	r2, .L28+4
+ 429 007e 9369     		ldr	r3, [r2, #24]
+ 430 0080 43F08043 		orr	r3, r3, #1073741824
+ 431 0084 9361     		str	r3, [r2, #24]
+ 108:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS0);//Включение светодиода на 
+ 432              		.loc 1 108 17 view .LVU93
+ 433 0086 02F50062 		add	r2, r2, #2048
+ 434 008a 9369     		ldr	r3, [r2, #24]
+ 435 008c 43F00103 		orr	r3, r3, #1
+ 436 0090 9361     		str	r3, [r2, #24]
+ 437 0092 7047     		bx	lr
+ 438              	.L24:
+ 109:Core/Src/init.c ****             } else {
+ 110:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR0);//Иначе выключение PD0
+ 439              		.loc 1 110 17 view .LVU94
+ 440 0094 134A     		ldr	r2, .L28
+ 441 0096 9369     		ldr	r3, [r2, #24]
+ 442 0098 43F48033 		orr	r3, r3, #65536
+ 443 009c 9361     		str	r3, [r2, #24]
+ 444 009e 7047     		bx	lr
+ 445              	.L16:
+ 111:Core/Src/init.c ****             }
+ 112:Core/Src/init.c ****             break;//Выход
+ 113:Core/Src/init.c ****         case 5:
+ 114:Core/Src/init.c ****             if (state) {//Если нужно включить пятый светодиод
+ 446              		.loc 1 114 13 view .LVU95
+ 447              		.loc 1 114 16 is_stmt 0 view .LVU96
+ 448 00a0 49B1     		cbz	r1, .L25
+ 115:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR0);//Выключение светодиода н�
+ 449              		.loc 1 115 17 is_stmt 1 view .LVU97
+ 450 00a2 104B     		ldr	r3, .L28
+ 451 00a4 9A69     		ldr	r2, [r3, #24]
+ 452 00a6 42F48032 		orr	r2, r2, #65536
+ 453 00aa 9A61     		str	r2, [r3, #24]
+ 116:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS1);//Включение светодиода на 
+ 454              		.loc 1 116 17 view .LVU98
+ 455 00ac 9A69     		ldr	r2, [r3, #24]
+ 456 00ae 42F00202 		orr	r2, r2, #2
+ 457 00b2 9A61     		str	r2, [r3, #24]
+ 458 00b4 7047     		bx	lr
+ 459              	.L25:
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 11
+
+
+ 117:Core/Src/init.c ****             } else {
+ 118:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR1);//Иначе выключение PD1
+ 460              		.loc 1 118 17 view .LVU99
+ 461 00b6 0B4A     		ldr	r2, .L28
+ 462 00b8 9369     		ldr	r3, [r2, #24]
+ 463 00ba 43F40033 		orr	r3, r3, #131072
+ 464 00be 9361     		str	r3, [r2, #24]
+ 465 00c0 7047     		bx	lr
+ 466              	.L14:
+ 119:Core/Src/init.c ****             }
+ 120:Core/Src/init.c ****             break;//Выход
+ 121:Core/Src/init.c ****         case 6:
+ 122:Core/Src/init.c ****             if (state) {//Если нужно включить шестой светодиод
+ 467              		.loc 1 122 13 view .LVU100
+ 468              		.loc 1 122 16 is_stmt 0 view .LVU101
+ 469 00c2 49B1     		cbz	r1, .L26
+ 123:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR1);//Выключение светодиода н�
+ 470              		.loc 1 123 17 is_stmt 1 view .LVU102
+ 471 00c4 074B     		ldr	r3, .L28
+ 472 00c6 9A69     		ldr	r2, [r3, #24]
+ 473 00c8 42F40032 		orr	r2, r2, #131072
+ 474 00cc 9A61     		str	r2, [r3, #24]
+ 124:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BS2);//Включение светодиода на 
+ 475              		.loc 1 124 17 view .LVU103
+ 476 00ce 9A69     		ldr	r2, [r3, #24]
+ 477 00d0 42F00402 		orr	r2, r2, #4
+ 478 00d4 9A61     		str	r2, [r3, #24]
+ 479 00d6 7047     		bx	lr
+ 480              	.L26:
+ 125:Core/Src/init.c ****             } else {
+ 126:Core/Src/init.c ****                 SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR2);//Иначе выключение PD2
+ 481              		.loc 1 126 17 view .LVU104
+ 482 00d8 024A     		ldr	r2, .L28
+ 483 00da 9369     		ldr	r3, [r2, #24]
+ 484 00dc 43F48023 		orr	r3, r3, #262144
+ 485 00e0 9361     		str	r3, [r2, #24]
+ 486              	.L12:
+ 127:Core/Src/init.c ****             }
+ 128:Core/Src/init.c ****             break;//Выход
+ 129:Core/Src/init.c ****     }
+ 130:Core/Src/init.c **** }...
+ 487              		.loc 1 130 1 is_stmt 0 view .LVU105
+ 488 00e2 7047     		bx	lr
+ 489              	.L29:
+ 490              		.align	2
+ 491              	.L28:
+ 492 00e4 000C0240 		.word	1073875968
+ 493 00e8 00040240 		.word	1073873920
+ 494              		.cfi_endproc
+ 495              	.LFE132:
+ 497              		.text
+ 498              	.Letext0:
+ 499              		.file 2 "E:/Toolsformc/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_t
+ 500              		.file 3 "E:/Toolsformc/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 501              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 502              		.file 5 "Core/Inc/../../CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:21     .text.RCC_Init:00000000 $t
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:27     .text.RCC_Init:00000000 RCC_Init
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:178    .text.RCC_Init:00000100 $d
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:184    .text.GPIO_Init:00000000 $t
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:190    .text.GPIO_Init:00000000 GPIO_Init
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:322    .text.GPIO_Init:000000f4 $d
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:330    .text.SetLED:00000000 $t
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:336    .text.SetLED:00000000 SetLED
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:352    .text.SetLED:0000000a $d
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:358    .text.SetLED:00000010 $t
+C:\Users\Tim\AppData\Local\Temp\cc4MhoTH.s:492    .text.SetLED:000000e4 $d
+
+NO UNDEFINED SYMBOLS

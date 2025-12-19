@@ -1,0 +1,427 @@
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h" //Подключение заголовочного файла с инициал�
+   2:Core/Src/main.c **** #include "it_handlers.h" //Подключение файла с обработчиками прер
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** volatile uint8_t led = 0; // Инициализация переменной для определ�
+   5:Core/Src/main.c **** volatile uint32_t GlobalTickCount = 0; //Инициализация переменной для с�
+   6:Core/Src/main.c **** volatile uint8_t LedMode = 0;  //Инициализация переменной для опред�
+   7:Core/Src/main.c **** volatile uint8_t LedChanged = 0;  // Иниициализация переменной маркер
+   8:Core/Src/main.c **** volatile uint8_t FreqIndex = 0;  // Инициализация переменной для опре
+   9:Core/Src/main.c **** volatile uint8_t FreqChanged = 0;  // Инициализация переменной маркер�
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c **** static const uint16_t BLINK_PERIODS[3] = {1666, 333, 227};// Создание массива со �
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c **** int main(void)
+  15:Core/Src/main.c **** {
+  29              		.loc 1 15 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  16:Core/Src/main.c ****     static uint32_t LastBlinkTime = 0;// Инициализация переменной, кото�
+  39              		.loc 1 16 5 view .LVU1
+  17:Core/Src/main.c ****     static uint8_t BlinkState = 0;// Инициализация переменной, котора�
+  40              		.loc 1 17 5 view .LVU2
+  18:Core/Src/main.c ****     
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s 			page 2
+
+
+  19:Core/Src/main.c ****     RCC_Init();//Вызов функции настройки тактирования
+  41              		.loc 1 19 5 view .LVU3
+  42 0002 FFF7FEFF 		bl	RCC_Init
+  43              	.LVL0:
+  20:Core/Src/main.c ****     GPIO_Init();//Вызов функции настройки портов GPIO
+  44              		.loc 1 20 5 view .LVU4
+  45 0006 FFF7FEFF 		bl	GPIO_Init
+  46              	.LVL1:
+  21:Core/Src/main.c ****     EXTI_ITR_Init();// Вызов функции инициализирующей внешние п
+  47              		.loc 1 21 5 view .LVU5
+  48 000a FFF7FEFF 		bl	EXTI_ITR_Init
+  49              	.LVL2:
+  22:Core/Src/main.c ****     SysTick_Init();// Вызов функции инициализации системного т�
+  50              		.loc 1 22 5 view .LVU6
+  51 000e FFF7FEFF 		bl	SysTick_Init
+  52              	.LVL3:
+  53 0012 17E0     		b	.L2
+  54              	.L9:
+  55              	.LBB2:
+  23:Core/Src/main.c ****     
+  24:Core/Src/main.c ****     while(1)
+  25:Core/Src/main.c ****     {
+  26:Core/Src/main.c ****         if (LedChanged)// Если горящий светодиод сменился
+  27:Core/Src/main.c ****         {
+  28:Core/Src/main.c ****             LedChanged = 0;//Сброс маркера изменения горящего свет
+  29:Core/Src/main.c ****             LastBlinkTime = GlobalTickCount;//Сохранение текущего времени,
+  30:Core/Src/main.c ****             BlinkState = 1;  //Светодиод который должен зажечься на
+  31:Core/Src/main.c ****             
+  32:Core/Src/main.c ****             if (led >= 1 && led <= 6)//Если значение счётчика соответс�
+  33:Core/Src/main.c ****             {
+  34:Core/Src/main.c ****                 SetLED(led, 1);  //Использование функции включения с�
+  56              		.loc 1 34 17 view .LVU7
+  57 0014 314B     		ldr	r3, .L11
+  58 0016 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  59 0018 1146     		mov	r1, r2
+  60 001a FFF7FEFF 		bl	SetLED
+  61              	.LVL4:
+  62 001e 26E0     		b	.L3
+  63              	.L10:
+  64              	.LBE2:
+  65              	.LBB3:
+  35:Core/Src/main.c ****             }
+  36:Core/Src/main.c ****         }
+  37:Core/Src/main.c **** 
+  38:Core/Src/main.c ****         if (FreqChanged)// Если частота мигания была изменена 
+  39:Core/Src/main.c ****         {
+  40:Core/Src/main.c ****             FreqChanged = 0;// Сброс маркера изменения частоты до н�
+  41:Core/Src/main.c ****             LastBlinkTime = GlobalTickCount;//Сохранение текущего времени
+  42:Core/Src/main.c ****             BlinkState = 1;  //Светодиод на котором мы поменяли час�
+  43:Core/Src/main.c ****             
+  44:Core/Src/main.c ****             if (led >= 1 && led <= 6)//Если значение счётчика соответс�
+  45:Core/Src/main.c ****             {
+  46:Core/Src/main.c ****                 SetLED(led, 1);  //Использование функции включения с�
+  66              		.loc 1 46 17 view .LVU8
+  67 0020 2E4B     		ldr	r3, .L11
+  68 0022 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  69 0024 1146     		mov	r1, r2
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s 			page 3
+
+
+  70 0026 FFF7FEFF 		bl	SetLED
+  71              	.LVL5:
+  72 002a 35E0     		b	.L4
+  73              	.L6:
+  74              	.LBE3:
+  47:Core/Src/main.c ****             }
+  48:Core/Src/main.c ****         }
+  49:Core/Src/main.c ****         
+  50:Core/Src/main.c ****         if (led >= 1 && led <= 6)//Если значение счётчтка верное
+  51:Core/Src/main.c ****         {
+  52:Core/Src/main.c ****             if (LedMode == 0)  // Если сейчас включен режим постоянн�
+  53:Core/Src/main.c ****             {
+  54:Core/Src/main.c ****                 SetLED(led, 1);// ИСпользование функции включения св
+  55:Core/Src/main.c ****             }
+  56:Core/Src/main.c ****             else  // Иначе если активен режим мигания светодио�
+  57:Core/Src/main.c ****             {
+  58:Core/Src/main.c ****                 if ((GlobalTickCount - LastBlinkTime) >= BLINK_PERIODS[FreqIndex])//Если пер
+  75              		.loc 1 58 17 view .LVU9
+  76              		.loc 1 58 38 is_stmt 0 view .LVU10
+  77 002c 2C4B     		ldr	r3, .L11+4
+  78 002e 1B68     		ldr	r3, [r3]
+  79 0030 2C4A     		ldr	r2, .L11+8
+  80 0032 1268     		ldr	r2, [r2]
+  81 0034 9B1A     		subs	r3, r3, r2
+  82              		.loc 1 58 71 view .LVU11
+  83 0036 2C4A     		ldr	r2, .L11+12
+  84 0038 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+  85 003a 2C4A     		ldr	r2, .L11+16
+  86 003c 32F81120 		ldrh	r2, [r2, r1, lsl #1]
+  87              		.loc 1 58 20 view .LVU12
+  88 0040 9342     		cmp	r3, r2
+  89 0042 3CD2     		bcs	.L8
+  90              	.L2:
+  24:Core/Src/main.c ****     {
+  91              		.loc 1 24 5 is_stmt 1 view .LVU13
+  26:Core/Src/main.c ****         {
+  92              		.loc 1 26 9 view .LVU14
+  26:Core/Src/main.c ****         {
+  93              		.loc 1 26 13 is_stmt 0 view .LVU15
+  94 0044 2A4B     		ldr	r3, .L11+20
+  95 0046 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  26:Core/Src/main.c ****         {
+  96              		.loc 1 26 12 view .LVU16
+  97 0048 8BB1     		cbz	r3, .L3
+  28:Core/Src/main.c ****             LastBlinkTime = GlobalTickCount;//Сохранение текущего времени,
+  98              		.loc 1 28 13 is_stmt 1 view .LVU17
+  28:Core/Src/main.c ****             LastBlinkTime = GlobalTickCount;//Сохранение текущего времени,
+  99              		.loc 1 28 24 is_stmt 0 view .LVU18
+ 100 004a 294B     		ldr	r3, .L11+20
+ 101 004c 0022     		movs	r2, #0
+ 102 004e 1A70     		strb	r2, [r3]
+  29:Core/Src/main.c ****             BlinkState = 1;  //Светодиод который должен зажечься на
+ 103              		.loc 1 29 13 is_stmt 1 view .LVU19
+  29:Core/Src/main.c ****             BlinkState = 1;  //Светодиод который должен зажечься на
+ 104              		.loc 1 29 27 is_stmt 0 view .LVU20
+ 105 0050 234B     		ldr	r3, .L11+4
+ 106 0052 1A68     		ldr	r2, [r3]
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s 			page 4
+
+
+ 107 0054 234B     		ldr	r3, .L11+8
+ 108 0056 1A60     		str	r2, [r3]
+  30:Core/Src/main.c ****             
+ 109              		.loc 1 30 13 is_stmt 1 view .LVU21
+  30:Core/Src/main.c ****             
+ 110              		.loc 1 30 24 is_stmt 0 view .LVU22
+ 111 0058 264B     		ldr	r3, .L11+24
+ 112 005a 0122     		movs	r2, #1
+ 113 005c 1A70     		strb	r2, [r3]
+  32:Core/Src/main.c ****             {
+ 114              		.loc 1 32 13 is_stmt 1 view .LVU23
+  32:Core/Src/main.c ****             {
+ 115              		.loc 1 32 21 is_stmt 0 view .LVU24
+ 116 005e 1F4B     		ldr	r3, .L11
+ 117 0060 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  32:Core/Src/main.c ****             {
+ 118              		.loc 1 32 16 view .LVU25
+ 119 0062 23B1     		cbz	r3, .L3
+  32:Core/Src/main.c ****             {
+ 120              		.loc 1 32 33 discriminator 1 view .LVU26
+ 121 0064 1D4B     		ldr	r3, .L11
+ 122 0066 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 123 0068 DBB2     		uxtb	r3, r3
+  32:Core/Src/main.c ****             {
+ 124              		.loc 1 32 26 discriminator 1 view .LVU27
+ 125 006a 062B     		cmp	r3, #6
+ 126 006c D2D9     		bls	.L9
+ 127              	.L3:
+  38:Core/Src/main.c ****         {
+ 128              		.loc 1 38 9 is_stmt 1 view .LVU28
+  38:Core/Src/main.c ****         {
+ 129              		.loc 1 38 13 is_stmt 0 view .LVU29
+ 130 006e 224B     		ldr	r3, .L11+28
+ 131 0070 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  38:Core/Src/main.c ****         {
+ 132              		.loc 1 38 12 view .LVU30
+ 133 0072 8BB1     		cbz	r3, .L4
+  40:Core/Src/main.c ****             LastBlinkTime = GlobalTickCount;//Сохранение текущего времени
+ 134              		.loc 1 40 13 is_stmt 1 view .LVU31
+  40:Core/Src/main.c ****             LastBlinkTime = GlobalTickCount;//Сохранение текущего времени
+ 135              		.loc 1 40 25 is_stmt 0 view .LVU32
+ 136 0074 204B     		ldr	r3, .L11+28
+ 137 0076 0022     		movs	r2, #0
+ 138 0078 1A70     		strb	r2, [r3]
+  41:Core/Src/main.c ****             BlinkState = 1;  //Светодиод на котором мы поменяли час�
+ 139              		.loc 1 41 13 is_stmt 1 view .LVU33
+  41:Core/Src/main.c ****             BlinkState = 1;  //Светодиод на котором мы поменяли час�
+ 140              		.loc 1 41 27 is_stmt 0 view .LVU34
+ 141 007a 194B     		ldr	r3, .L11+4
+ 142 007c 1A68     		ldr	r2, [r3]
+ 143 007e 194B     		ldr	r3, .L11+8
+ 144 0080 1A60     		str	r2, [r3]
+  42:Core/Src/main.c ****             
+ 145              		.loc 1 42 13 is_stmt 1 view .LVU35
+  42:Core/Src/main.c ****             
+ 146              		.loc 1 42 24 is_stmt 0 view .LVU36
+ 147 0082 1C4B     		ldr	r3, .L11+24
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s 			page 5
+
+
+ 148 0084 0122     		movs	r2, #1
+ 149 0086 1A70     		strb	r2, [r3]
+  44:Core/Src/main.c ****             {
+ 150              		.loc 1 44 13 is_stmt 1 view .LVU37
+  44:Core/Src/main.c ****             {
+ 151              		.loc 1 44 21 is_stmt 0 view .LVU38
+ 152 0088 144B     		ldr	r3, .L11
+ 153 008a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  44:Core/Src/main.c ****             {
+ 154              		.loc 1 44 16 view .LVU39
+ 155 008c 23B1     		cbz	r3, .L4
+  44:Core/Src/main.c ****             {
+ 156              		.loc 1 44 33 discriminator 1 view .LVU40
+ 157 008e 134B     		ldr	r3, .L11
+ 158 0090 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 159 0092 DBB2     		uxtb	r3, r3
+  44:Core/Src/main.c ****             {
+ 160              		.loc 1 44 26 discriminator 1 view .LVU41
+ 161 0094 062B     		cmp	r3, #6
+ 162 0096 C3D9     		bls	.L10
+ 163              	.L4:
+  50:Core/Src/main.c ****         {
+ 164              		.loc 1 50 9 is_stmt 1 view .LVU42
+  50:Core/Src/main.c ****         {
+ 165              		.loc 1 50 17 is_stmt 0 view .LVU43
+ 166 0098 104B     		ldr	r3, .L11
+ 167 009a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  50:Core/Src/main.c ****         {
+ 168              		.loc 1 50 12 view .LVU44
+ 169 009c 002B     		cmp	r3, #0
+ 170 009e D1D0     		beq	.L2
+  50:Core/Src/main.c ****         {
+ 171              		.loc 1 50 29 discriminator 1 view .LVU45
+ 172 00a0 0E4B     		ldr	r3, .L11
+ 173 00a2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 174 00a4 DBB2     		uxtb	r3, r3
+  50:Core/Src/main.c ****         {
+ 175              		.loc 1 50 22 discriminator 1 view .LVU46
+ 176 00a6 062B     		cmp	r3, #6
+ 177 00a8 CCD8     		bhi	.L2
+  52:Core/Src/main.c ****             {
+ 178              		.loc 1 52 13 is_stmt 1 view .LVU47
+  52:Core/Src/main.c ****             {
+ 179              		.loc 1 52 25 is_stmt 0 view .LVU48
+ 180 00aa 144B     		ldr	r3, .L11+32
+ 181 00ac 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  52:Core/Src/main.c ****             {
+ 182              		.loc 1 52 16 view .LVU49
+ 183 00ae 002B     		cmp	r3, #0
+ 184 00b0 BCD1     		bne	.L6
+ 185              	.LBB4:
+  54:Core/Src/main.c ****             }
+ 186              		.loc 1 54 17 is_stmt 1 view .LVU50
+ 187 00b2 0A4B     		ldr	r3, .L11
+ 188 00b4 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 189 00b6 0121     		movs	r1, #1
+ 190 00b8 FFF7FEFF 		bl	SetLED
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s 			page 6
+
+
+ 191              	.LVL6:
+ 192              	.LBE4:
+ 193 00bc C2E7     		b	.L2
+ 194              	.L8:
+ 195              	.LBB5:
+  59:Core/Src/main.c ****                 {
+  60:Core/Src/main.c ****                     BlinkState = !BlinkState;//Инвертируем состояние миган
+ 196              		.loc 1 60 21 view .LVU51
+ 197              		.loc 1 60 34 is_stmt 0 view .LVU52
+ 198 00be 0D4B     		ldr	r3, .L11+24
+ 199 00c0 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 200 00c2 B1FA81F1 		clz	r1, r1
+ 201 00c6 4909     		lsrs	r1, r1, #5
+ 202              		.loc 1 60 32 view .LVU53
+ 203 00c8 1970     		strb	r1, [r3]
+  61:Core/Src/main.c ****                     SetLED(led, BlinkState);//Устанавливаем новое состоян�
+ 204              		.loc 1 61 21 is_stmt 1 view .LVU54
+ 205 00ca 044B     		ldr	r3, .L11
+ 206 00cc 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 207 00ce FFF7FEFF 		bl	SetLED
+ 208              	.LVL7:
+  62:Core/Src/main.c ****                     LastBlinkTime = GlobalTickCount;//Сохраняем время переклю�
+ 209              		.loc 1 62 21 view .LVU55
+ 210              		.loc 1 62 35 is_stmt 0 view .LVU56
+ 211 00d2 034B     		ldr	r3, .L11+4
+ 212 00d4 1A68     		ldr	r2, [r3]
+ 213 00d6 034B     		ldr	r3, .L11+8
+ 214 00d8 1A60     		str	r2, [r3]
+ 215 00da B3E7     		b	.L2
+ 216              	.L12:
+ 217              		.align	2
+ 218              	.L11:
+ 219 00dc 00000000 		.word	led
+ 220 00e0 00000000 		.word	GlobalTickCount
+ 221 00e4 00000000 		.word	LastBlinkTime.1
+ 222 00e8 00000000 		.word	FreqIndex
+ 223 00ec 00000000 		.word	BLINK_PERIODS
+ 224 00f0 00000000 		.word	LedChanged
+ 225 00f4 00000000 		.word	BlinkState.0
+ 226 00f8 00000000 		.word	FreqChanged
+ 227 00fc 00000000 		.word	LedMode
+ 228              	.LBE5:
+ 229              		.cfi_endproc
+ 230              	.LFE130:
+ 232              		.section	.bss.BlinkState.0,"aw",%nobits
+ 235              	BlinkState.0:
+ 236 0000 00       		.space	1
+ 237              		.section	.bss.LastBlinkTime.1,"aw",%nobits
+ 238              		.align	2
+ 241              	LastBlinkTime.1:
+ 242 0000 00000000 		.space	4
+ 243              		.section	.rodata.BLINK_PERIODS,"a"
+ 244              		.align	2
+ 247              	BLINK_PERIODS:
+ 248 0000 8206     		.short	1666
+ 249 0002 4D01     		.short	333
+ 250 0004 E300     		.short	227
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s 			page 7
+
+
+ 251              		.global	FreqChanged
+ 252              		.section	.bss.FreqChanged,"aw",%nobits
+ 255              	FreqChanged:
+ 256 0000 00       		.space	1
+ 257              		.global	FreqIndex
+ 258              		.section	.bss.FreqIndex,"aw",%nobits
+ 261              	FreqIndex:
+ 262 0000 00       		.space	1
+ 263              		.global	LedChanged
+ 264              		.section	.bss.LedChanged,"aw",%nobits
+ 267              	LedChanged:
+ 268 0000 00       		.space	1
+ 269              		.global	LedMode
+ 270              		.section	.bss.LedMode,"aw",%nobits
+ 273              	LedMode:
+ 274 0000 00       		.space	1
+ 275              		.global	GlobalTickCount
+ 276              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 277              		.align	2
+ 280              	GlobalTickCount:
+ 281 0000 00000000 		.space	4
+ 282              		.global	led
+ 283              		.section	.bss.led,"aw",%nobits
+ 286              	led:
+ 287 0000 00       		.space	1
+ 288              		.text
+ 289              	.Letext0:
+ 290              		.file 2 "E:/Toolsformc/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_t
+ 291              		.file 3 "E:/Toolsformc/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 292              		.file 4 "Core/Inc/it_handlers.h"
+ 293              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:21     .text.main:00000000 $t
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:27     .text.main:00000000 main
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:219    .text.main:000000dc $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:286    .bss.led:00000000 led
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:280    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:241    .bss.LastBlinkTime.1:00000000 LastBlinkTime.1
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:261    .bss.FreqIndex:00000000 FreqIndex
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:247    .rodata.BLINK_PERIODS:00000000 BLINK_PERIODS
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:267    .bss.LedChanged:00000000 LedChanged
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:235    .bss.BlinkState.0:00000000 BlinkState.0
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:255    .bss.FreqChanged:00000000 FreqChanged
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:273    .bss.LedMode:00000000 LedMode
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:236    .bss.BlinkState.0:00000000 $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:238    .bss.LastBlinkTime.1:00000000 $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:244    .rodata.BLINK_PERIODS:00000000 $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:256    .bss.FreqChanged:00000000 $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:262    .bss.FreqIndex:00000000 $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:268    .bss.LedChanged:00000000 $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:274    .bss.LedMode:00000000 $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:277    .bss.GlobalTickCount:00000000 $d
+C:\Users\Tim\AppData\Local\Temp\ccDtbMrf.s:287    .bss.led:00000000 $d
+
+UNDEFINED SYMBOLS
+RCC_Init
+GPIO_Init
+EXTI_ITR_Init
+SysTick_Init
+SetLED
