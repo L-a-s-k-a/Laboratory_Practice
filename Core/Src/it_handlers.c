@@ -18,7 +18,7 @@ void EXTI15_10_IRQHandler(void)
 { 
     SET_BIT(EXTI->PR, EXTI_PR_PR12); 
     // при нажатии кнопки обнуляем счетчик
-    if (!READ_BIT(GPIOB->IDR, GPIO_IDR_ID12))   
+    if (!READ_BIT(GPIOC->IDR, GPIO_IDR_ID12))   
     {
         ButtonTickCount = 0;
     }
