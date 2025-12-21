@@ -1,7 +1,6 @@
 #include "C:\Users\parni\Git_repos\Laboratory_Practice\Core\Inc\init.h"
 
 uint16_t FrequencyTickCount = 0;
-extern bool led1;
 void SysTick_Init(void)
 {
     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);                                      // Выключим счетчик
