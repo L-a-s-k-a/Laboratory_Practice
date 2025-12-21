@@ -179,9 +179,10 @@ void first_led_mode(uint8_t freq_mode)
         {
             SetLEDState(0, 0, 0, 0, 0, 1);
         }
-        else if (7 * freq_0_4Hz <= FrequencyTickCount)
+        else if (7 * freq_0_4Hz < FrequencyTickCount)
         {
             FrequencyTickCount = 0;
+            SetLEDState(0, 0, 0, 0, 0, 0);
         }
     }
     else if (freq_mode == 1)
@@ -210,9 +211,10 @@ void first_led_mode(uint8_t freq_mode)
         {
             SetLEDState(0, 0, 0, 0, 0, 1);
         }
-        else if (7 * freq_1_9Hz <= FrequencyTickCount)
+        else if (7 * freq_1_9Hz < FrequencyTickCount)
         {
             FrequencyTickCount = 0;
+            SetLEDState(0, 0, 0, 0, 0, 0);
         }
     }
     else if (freq_mode == 2)
@@ -241,9 +243,10 @@ void first_led_mode(uint8_t freq_mode)
         {
             SetLEDState(0, 0, 0, 0, 0, 1);
         }
-        else if (7 * freq_2_6Hz <= FrequencyTickCount)
+        else if (7 * freq_2_6Hz < FrequencyTickCount)
         {
             FrequencyTickCount = 0;
+            SetLEDState(0, 0, 0, 0, 0, 0);
         }
     }
 }
@@ -264,9 +267,10 @@ void second_led_mode(uint8_t freq_mode)
         {
             SetLEDState(0, 0, 1, 0, 0, 1);
         }
-        else if (3 * freq_0_3Hz <= FrequencyTickCount)
+        else if (3 * freq_0_3Hz < FrequencyTickCount)
         {
             FrequencyTickCount = 0;
+            SetLEDState(0, 0, 0, 0, 0, 0);
         }
     }
     else if (freq_mode == 1)
@@ -283,9 +287,10 @@ void second_led_mode(uint8_t freq_mode)
         {
             SetLEDState(0, 0, 1, 0, 0, 1);
         }
-        else if (3 * freq_1_6Hz <= FrequencyTickCount)
+        else if (3 * freq_1_6Hz < FrequencyTickCount)
         {
             FrequencyTickCount = 0;
+            SetLEDState(0, 0, 0, 0, 0, 0);
         }
     }
     else if (freq_mode == 2)
@@ -302,9 +307,10 @@ void second_led_mode(uint8_t freq_mode)
         {
             SetLEDState(0, 0, 1, 0, 0, 1);
         }
-        else if (3 * freq_2_3Hz <= FrequencyTickCount)
+        else if (3 * freq_2_3Hz < FrequencyTickCount)
         {
             FrequencyTickCount = 0;
+            SetLEDState(0, 0, 0, 0, 0, 0);
         }
     }
 }
