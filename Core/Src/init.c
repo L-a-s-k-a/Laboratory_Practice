@@ -119,7 +119,7 @@ void GPIO_Init(void)
 }
 
 // выбор включенного светодиода
-void SetLEDState(bool ledB1, bool ledB15, bool ledB14, bool ledB13, bool ledB10, bool ledB4)
+void SetLEDState(bool ledB1, bool ledB15, bool ledB14, bool ledB13, bool ledB10, bool ledB5)
 {
     if (ledB1)
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS1);
@@ -145,7 +145,7 @@ void SetLEDState(bool ledB1, bool ledB15, bool ledB14, bool ledB13, bool ledB10,
     else
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);
 
-    if (ledB4)
+    if (ledB5)
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS5);
     else
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5);
