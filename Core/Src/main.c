@@ -5,13 +5,8 @@ bool led_mode = 0;
 uint16_t ButtonTickCount = 0;
 uint8_t freq_mode = 0;
 
-bool led1 = 0;
-
-
-
 int main(void)
 {
-    
     RCC_Init();
     GPIO_Init();
     ITR_Init();
@@ -23,13 +18,13 @@ int main(void)
         //Первый режим мерцания светодиодов
         if (led_mode == 0)
         {
-            //SetLEDState(0, 0, 0, 0, 0, 0);
+            SetLEDState(0, 0, 0, 0, 0, 0);
             first_led_mode(freq_mode);
         }
         //Второй режим мерцания светодиодов
         else if (led_mode == 1)
         {
-            //SetLEDState(0, 0, 0, 0, 0, 0);
+            SetLEDState(0, 0, 0, 0, 0, 0);
             second_led_mode(freq_mode);               
         }
         
