@@ -135,6 +135,9 @@ endif
 C_SOURCES =  \
 $(SYS) \
 Core/Src/main.c \
+Core/Src/init.c \
+Core/Src/handlers.c \
+Core/Src/task.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -255,7 +258,7 @@ $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf: $(OBJECTS) Makefile
 	@echo "-----------------------------------------------------"	
 
 $(BUILD_DIR):
-	@"mkdir" $@
+	@mkdir $@
 
 #######################################
 # clean up

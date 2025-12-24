@@ -1,0 +1,170 @@
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** #include "task.h"
+   3:Core/Src/main.c **** #include "handlers.h"
+   4:Core/Src/main.c **** #include <stdint.h>
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** volatile uint32_t tick_count = 0;
+   7:Core/Src/main.c **** volatile uint8_t btn9_pressed = 0; // PB9  смена частоты   
+   8:Core/Src/main.c **** volatile uint32_t btn9_press_time = 0;   // время нажатия PB9
+   9:Core/Src/main.c **** volatile uint8_t counter1 = 0;
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** volatile uint8_t  btn8_pressed = 0; // PB8 переключение LED
+  12:Core/Src/main.c **** volatile uint32_t btn8_press_time = 0;
+  13:Core/Src/main.c **** volatile uint8_t pwm_mode = 0;
+  14:Core/Src/main.c **** 
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c **** int main(void)
+  17:Core/Src/main.c **** {
+  29              		.loc 1 17 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  18:Core/Src/main.c ****     GPIO_Ini();
+  39              		.loc 1 18 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Ini
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s 			page 2
+
+
+  41              	.LVL0:
+  19:Core/Src/main.c ****     //RCC_Init();
+  20:Core/Src/main.c ****     IRO_INInt();
+  42              		.loc 1 20 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	IRO_INInt
+  44              	.LVL1:
+  21:Core/Src/main.c ****     TIM10_Init();
+  45              		.loc 1 21 5 view .LVU3
+  46 000a FFF7FEFF 		bl	TIM10_Init
+  47              	.LVL2:
+  22:Core/Src/main.c ****     TIM2_PWM_Init();
+  48              		.loc 1 22 5 view .LVU4
+  49 000e FFF7FEFF 		bl	TIM2_PWM_Init
+  50              	.LVL3:
+  23:Core/Src/main.c ****     TIM3_PWM_Init();
+  51              		.loc 1 23 5 view .LVU5
+  52 0012 FFF7FEFF 		bl	TIM3_PWM_Init
+  53              	.LVL4:
+  24:Core/Src/main.c ****     TIM1_PWM_Init();
+  54              		.loc 1 24 5 view .LVU6
+  55 0016 FFF7FEFF 		bl	TIM1_PWM_Init
+  56              	.LVL5:
+  57              	.L2:
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c ****     while (1)
+  58              		.loc 1 26 5 view .LVU7
+  27:Core/Src/main.c ****     {
+  28:Core/Src/main.c ****        
+  29:Core/Src/main.c ****     //task1();
+  30:Core/Src/main.c ****      
+  31:Core/Src/main.c ****     }
+  59              		.loc 1 31 5 view .LVU8
+  26:Core/Src/main.c ****     {
+  60              		.loc 1 26 11 view .LVU9
+  61 001a FEE7     		b	.L2
+  62              		.cfi_endproc
+  63              	.LFE130:
+  65              		.global	pwm_mode
+  66              		.section	.bss.pwm_mode,"aw",%nobits
+  69              	pwm_mode:
+  70 0000 00       		.space	1
+  71              		.global	btn8_press_time
+  72              		.section	.bss.btn8_press_time,"aw",%nobits
+  73              		.align	2
+  76              	btn8_press_time:
+  77 0000 00000000 		.space	4
+  78              		.global	btn8_pressed
+  79              		.section	.bss.btn8_pressed,"aw",%nobits
+  82              	btn8_pressed:
+  83 0000 00       		.space	1
+  84              		.global	counter1
+  85              		.section	.bss.counter1,"aw",%nobits
+  88              	counter1:
+  89 0000 00       		.space	1
+  90              		.global	btn9_press_time
+  91              		.section	.bss.btn9_press_time,"aw",%nobits
+  92              		.align	2
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s 			page 3
+
+
+  95              	btn9_press_time:
+  96 0000 00000000 		.space	4
+  97              		.global	btn9_pressed
+  98              		.section	.bss.btn9_pressed,"aw",%nobits
+ 101              	btn9_pressed:
+ 102 0000 00       		.space	1
+ 103              		.global	tick_count
+ 104              		.section	.bss.tick_count,"aw",%nobits
+ 105              		.align	2
+ 108              	tick_count:
+ 109 0000 00000000 		.space	4
+ 110              		.text
+ 111              	.Letext0:
+ 112              		.file 2 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 113              		.file 3 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 114              		.file 4 "Core/Inc/task.h"
+ 115              		.file 5 "Core/Inc/handlers.h"
+ 116              		.file 6 "Core/Inc/init.h"
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:21     .text.main:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:27     .text.main:00000000 main
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:69     .bss.pwm_mode:00000000 pwm_mode
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:70     .bss.pwm_mode:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:76     .bss.btn8_press_time:00000000 btn8_press_time
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:73     .bss.btn8_press_time:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:82     .bss.btn8_pressed:00000000 btn8_pressed
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:83     .bss.btn8_pressed:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:88     .bss.counter1:00000000 counter1
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:89     .bss.counter1:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:95     .bss.btn9_press_time:00000000 btn9_press_time
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:92     .bss.btn9_press_time:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:101    .bss.btn9_pressed:00000000 btn9_pressed
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:102    .bss.btn9_pressed:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:108    .bss.tick_count:00000000 tick_count
+C:\Users\Life\AppData\Local\Temp\ccdtjfhI.s:105    .bss.tick_count:00000000 $d
+
+UNDEFINED SYMBOLS
+GPIO_Ini
+IRO_INInt
+TIM10_Init
+TIM2_PWM_Init
+TIM3_PWM_Init
+TIM1_PWM_Init

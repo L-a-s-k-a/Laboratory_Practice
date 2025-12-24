@@ -1,0 +1,519 @@
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"task.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/task.c"
+  20              		.section	.text.Set_All_LEDs_Brightness,"ax",%progbits
+  21              		.align	1
+  22              		.global	Set_All_LEDs_Brightness
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	Set_All_LEDs_Brightness:
+  28              	.LFB132:
+   1:Core/Src/task.c **** #include "task.h"
+   2:Core/Src/task.c **** #include "handlers.h"
+   3:Core/Src/task.c **** 
+   4:Core/Src/task.c **** 
+   5:Core/Src/task.c **** void task1(void){
+   6:Core/Src/task.c ****     if(btn9_pressed){
+   7:Core/Src/task.c ****         pwm_mode = (pwm_mode + 1) % 6
+   8:Core/Src/task.c ****         ;
+   9:Core/Src/task.c ****         btn9_pressed=0;
+  10:Core/Src/task.c ****           Switch_PWM();
+  11:Core/Src/task.c ****     }
+  12:Core/Src/task.c ****     if(btn8_pressed){
+  13:Core/Src/task.c ****         counter1 = (counter1 + 1) % 5;
+  14:Core/Src/task.c ****         btn8_pressed = 0;
+  15:Core/Src/task.c ****         Set_All_LEDs_Brightness();
+  16:Core/Src/task.c ****     }
+  17:Core/Src/task.c **** }
+  18:Core/Src/task.c **** 
+  19:Core/Src/task.c **** 
+  20:Core/Src/task.c **** void Switch_PWM(void)
+  21:Core/Src/task.c **** {
+  22:Core/Src/task.c ****     // ВЫКЛЮЧАЕМ ВСЕ КАНАЛЫ
+  23:Core/Src/task.c ****     CLEAR_BIT(TIM3->CCER, TIM_CCER_CC1E | TIM_CCER_CC2E);
+  24:Core/Src/task.c ****     CLEAR_BIT(TIM2->CCER, TIM_CCER_CC1E | TIM_CCER_CC2E);
+  25:Core/Src/task.c ****      CLEAR_BIT(TIM1->CCER, TIM_CCER_CC1E | TIM_CCER_CC2E);
+  26:Core/Src/task.c ****     
+  27:Core/Src/task.c ****     
+  28:Core/Src/task.c ****     // ВКЛЮЧАЕМ ТОЛЬКО ОДИН КАНАЛ
+  29:Core/Src/task.c ****     switch(pwm_mode) {
+  30:Core/Src/task.c ****         case 0: 
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 2
+
+
+  31:Core/Src/task.c ****             SET_BIT(TIM2->CCER, TIM_CCER_CC1E);  
+  32:Core/Src/task.c ****             break;
+  33:Core/Src/task.c ****             
+  34:Core/Src/task.c ****         case 1: 
+  35:Core/Src/task.c ****             SET_BIT(TIM2->CCER, TIM_CCER_CC2E);  
+  36:Core/Src/task.c ****             break;
+  37:Core/Src/task.c ****             
+  38:Core/Src/task.c ****         case 2: 
+  39:Core/Src/task.c ****             SET_BIT(TIM1->CCER, TIM_CCER_CC1E); 
+  40:Core/Src/task.c ****             break;
+  41:Core/Src/task.c ****             
+  42:Core/Src/task.c ****         case 3: 
+  43:Core/Src/task.c ****             SET_BIT(TIM1->CCER, TIM_CCER_CC2E);
+  44:Core/Src/task.c ****             break;
+  45:Core/Src/task.c ****             
+  46:Core/Src/task.c ****         case 4: 
+  47:Core/Src/task.c ****             SET_BIT(TIM3->CCER, TIM_CCER_CC1E);  
+  48:Core/Src/task.c ****             break;
+  49:Core/Src/task.c ****             
+  50:Core/Src/task.c ****         case 5: 
+  51:Core/Src/task.c ****             SET_BIT(TIM3->CCER, TIM_CCER_CC2E);  
+  52:Core/Src/task.c ****             break;
+  53:Core/Src/task.c ****     }
+  54:Core/Src/task.c ****     
+  55:Core/Src/task.c ****     Set_All_LEDs_Brightness();
+  56:Core/Src/task.c **** }
+  57:Core/Src/task.c **** 
+  58:Core/Src/task.c **** 
+  59:Core/Src/task.c **** void Set_All_LEDs_Brightness(void)
+  60:Core/Src/task.c **** {
+  29              		.loc 1 60 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  61:Core/Src/task.c ****     uint32_t duty_cycle;
+  34              		.loc 1 61 5 view .LVU1
+  62:Core/Src/task.c ****     
+  63:Core/Src/task.c ****     switch(counter1) {
+  35              		.loc 1 63 5 view .LVU2
+  36 0000 1C4B     		ldr	r3, .L9
+  37 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  38 0004 013B     		subs	r3, r3, #1
+  39 0006 032B     		cmp	r3, #3
+  40 0008 03D8     		bhi	.L2
+  41 000a DFE803F0 		tbb	[pc, r3]
+  42              	.L4:
+  43 000e 0D       		.byte	(.L8-.L4)/2
+  44 000f 04       		.byte	(.L6-.L4)/2
+  45 0010 07       		.byte	(.L5-.L4)/2
+  46 0011 0A       		.byte	(.L3-.L4)/2
+  47              		.p2align 1
+  48              	.L2:
+  49 0012 0023     		movs	r3, #0
+  50 0014 09E0     		b	.L7
+  51              	.L6:
+  64:Core/Src/task.c ****         case 0: 
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 3
+
+
+  65:Core/Src/task.c ****             duty_cycle = 0;
+  66:Core/Src/task.c ****             break;
+  67:Core/Src/task.c ****         case 1: // 25%
+  68:Core/Src/task.c ****             duty_cycle = 200;   // 799 * 0.25 ≈ 200
+  69:Core/Src/task.c ****             break;
+  70:Core/Src/task.c ****         case 2: // 50%
+  71:Core/Src/task.c ****             duty_cycle = 400;   // 799 * 0.5 ≈ 400
+  52              		.loc 1 71 13 view .LVU3
+  53              	.LVL0:
+  72:Core/Src/task.c ****             break;
+  54              		.loc 1 72 13 view .LVU4
+  71:Core/Src/task.c ****             break;
+  55              		.loc 1 71 24 is_stmt 0 view .LVU5
+  56 0016 4FF4C873 		mov	r3, #400
+  57              		.loc 1 72 13 view .LVU6
+  58 001a 06E0     		b	.L7
+  59              	.LVL1:
+  60              	.L5:
+  73:Core/Src/task.c ****         case 3: // 75%
+  74:Core/Src/task.c ****             duty_cycle = 600;   // 799 * 0.75 ≈ 600
+  61              		.loc 1 74 13 is_stmt 1 view .LVU7
+  75:Core/Src/task.c ****             break;
+  62              		.loc 1 75 13 view .LVU8
+  74:Core/Src/task.c ****             break;
+  63              		.loc 1 74 24 is_stmt 0 view .LVU9
+  64 001c 4FF41673 		mov	r3, #600
+  65              		.loc 1 75 13 view .LVU10
+  66 0020 03E0     		b	.L7
+  67              	.LVL2:
+  68              	.L3:
+  76:Core/Src/task.c ****         case 4: // 100%
+  77:Core/Src/task.c ****             duty_cycle = 799;   // Полная яркость
+  69              		.loc 1 77 13 is_stmt 1 view .LVU11
+  78:Core/Src/task.c ****             break;
+  70              		.loc 1 78 13 view .LVU12
+  77:Core/Src/task.c ****             break;
+  71              		.loc 1 77 24 is_stmt 0 view .LVU13
+  72 0022 40F21F33 		movw	r3, #799
+  73              		.loc 1 78 13 view .LVU14
+  74 0026 00E0     		b	.L7
+  75              	.LVL3:
+  76              	.L8:
+  68:Core/Src/task.c ****             break;
+  77              		.loc 1 68 24 view .LVU15
+  78 0028 C823     		movs	r3, #200
+  79              	.L7:
+  80              	.LVL4:
+  79:Core/Src/task.c ****         default:
+  80:Core/Src/task.c ****             duty_cycle = 0;
+  81:Core/Src/task.c ****             break;
+  82:Core/Src/task.c ****     }
+  83:Core/Src/task.c ****     MODIFY_REG(TIM3->CCR1, TIM_CCR1_CCR1_Msk, duty_cycle);
+  81              		.loc 1 83 5 is_stmt 1 view .LVU16
+  82 002a 1349     		ldr	r1, .L9+4
+  83 002c 4A6B     		ldr	r2, [r1, #52]
+  84 002e 6FF30F02 		bfc	r2, #0, #16
+  85 0032 1A43     		orrs	r2, r2, r3
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 4
+
+
+  86 0034 4A63     		str	r2, [r1, #52]
+  84:Core/Src/task.c ****     MODIFY_REG(TIM3->CCR2, TIM_CCR2_CCR2_Msk, duty_cycle);
+  87              		.loc 1 84 5 view .LVU17
+  88 0036 8A6B     		ldr	r2, [r1, #56]
+  89 0038 6FF30F02 		bfc	r2, #0, #16
+  90 003c 1A43     		orrs	r2, r2, r3
+  91 003e 8A63     		str	r2, [r1, #56]
+  85:Core/Src/task.c **** 
+  86:Core/Src/task.c ****     MODIFY_REG(TIM2->CCR1, TIM_CCR1_CCR1_Msk, duty_cycle);  
+  92              		.loc 1 86 5 view .LVU18
+  93 0040 4FF08041 		mov	r1, #1073741824
+  94 0044 4A6B     		ldr	r2, [r1, #52]
+  95 0046 6FF30F02 		bfc	r2, #0, #16
+  96 004a 1A43     		orrs	r2, r2, r3
+  97 004c 4A63     		str	r2, [r1, #52]
+  87:Core/Src/task.c ****     MODIFY_REG(TIM2->CCR2, TIM_CCR2_CCR2_Msk, duty_cycle); 
+  98              		.loc 1 87 5 view .LVU19
+  99 004e 8A6B     		ldr	r2, [r1, #56]
+ 100 0050 6FF30F02 		bfc	r2, #0, #16
+ 101 0054 1A43     		orrs	r2, r2, r3
+ 102 0056 8A63     		str	r2, [r1, #56]
+  88:Core/Src/task.c ****     
+  89:Core/Src/task.c ****     MODIFY_REG(TIM1->CCR1, TIM_CCR1_CCR1_Msk, duty_cycle);
+ 103              		.loc 1 89 5 view .LVU20
+ 104 0058 01F58031 		add	r1, r1, #65536
+ 105 005c 4A6B     		ldr	r2, [r1, #52]
+ 106 005e 6FF30F02 		bfc	r2, #0, #16
+ 107 0062 1A43     		orrs	r2, r2, r3
+ 108 0064 4A63     		str	r2, [r1, #52]
+  90:Core/Src/task.c ****     MODIFY_REG(TIM1->CCR2, TIM_CCR2_CCR2_Msk, duty_cycle);
+ 109              		.loc 1 90 5 view .LVU21
+ 110 0066 8A6B     		ldr	r2, [r1, #56]
+ 111 0068 6FF30F02 		bfc	r2, #0, #16
+ 112 006c 1343     		orrs	r3, r3, r2
+ 113              	.LVL5:
+ 114              		.loc 1 90 5 is_stmt 0 view .LVU22
+ 115 006e 8B63     		str	r3, [r1, #56]
+  91:Core/Src/task.c **** }...
+ 116              		.loc 1 91 1 view .LVU23
+ 117 0070 7047     		bx	lr
+ 118              	.L10:
+ 119 0072 00BF     		.align	2
+ 120              	.L9:
+ 121 0074 00000000 		.word	counter1
+ 122 0078 00040040 		.word	1073742848
+ 123              		.cfi_endproc
+ 124              	.LFE132:
+ 126              		.section	.text.Switch_PWM,"ax",%progbits
+ 127              		.align	1
+ 128              		.global	Switch_PWM
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	Switch_PWM:
+ 134              	.LFB131:
+  21:Core/Src/task.c **** {
+ 135              		.loc 1 21 1 is_stmt 1 view -0
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 5
+
+
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 0
+ 138              		@ frame_needed = 0, uses_anonymous_args = 0
+ 139 0000 08B5     		push	{r3, lr}
+ 140              	.LCFI0:
+ 141              		.cfi_def_cfa_offset 8
+ 142              		.cfi_offset 3, -8
+ 143              		.cfi_offset 14, -4
+  23:Core/Src/task.c ****     CLEAR_BIT(TIM3->CCER, TIM_CCER_CC1E | TIM_CCER_CC2E);
+ 144              		.loc 1 23 5 view .LVU25
+ 145 0002 214A     		ldr	r2, .L22
+ 146 0004 136A     		ldr	r3, [r2, #32]
+ 147 0006 23F01103 		bic	r3, r3, #17
+ 148 000a 1362     		str	r3, [r2, #32]
+  24:Core/Src/task.c ****     CLEAR_BIT(TIM2->CCER, TIM_CCER_CC1E | TIM_CCER_CC2E);
+ 149              		.loc 1 24 5 view .LVU26
+ 150 000c 4FF08042 		mov	r2, #1073741824
+ 151 0010 136A     		ldr	r3, [r2, #32]
+ 152 0012 23F01103 		bic	r3, r3, #17
+ 153 0016 1362     		str	r3, [r2, #32]
+  25:Core/Src/task.c ****      CLEAR_BIT(TIM1->CCER, TIM_CCER_CC1E | TIM_CCER_CC2E);
+ 154              		.loc 1 25 6 view .LVU27
+ 155 0018 02F58032 		add	r2, r2, #65536
+ 156 001c 136A     		ldr	r3, [r2, #32]
+ 157 001e 23F01103 		bic	r3, r3, #17
+ 158 0022 1362     		str	r3, [r2, #32]
+  29:Core/Src/task.c ****     switch(pwm_mode) {
+ 159              		.loc 1 29 5 view .LVU28
+ 160 0024 194B     		ldr	r3, .L22+4
+ 161 0026 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 162 0028 DBB2     		uxtb	r3, r3
+ 163 002a 052B     		cmp	r3, #5
+ 164 002c 0AD8     		bhi	.L12
+ 165 002e DFE803F0 		tbb	[pc, r3]
+ 166              	.L14:
+ 167 0032 03       		.byte	(.L19-.L14)/2
+ 168 0033 0C       		.byte	(.L18-.L14)/2
+ 169 0034 13       		.byte	(.L17-.L14)/2
+ 170 0035 19       		.byte	(.L16-.L14)/2
+ 171 0036 1F       		.byte	(.L15-.L14)/2
+ 172 0037 25       		.byte	(.L13-.L14)/2
+ 173              		.p2align 1
+ 174              	.L19:
+  31:Core/Src/task.c ****             SET_BIT(TIM2->CCER, TIM_CCER_CC1E);  
+ 175              		.loc 1 31 13 view .LVU29
+ 176 0038 4FF08042 		mov	r2, #1073741824
+ 177 003c 136A     		ldr	r3, [r2, #32]
+ 178 003e 43F00103 		orr	r3, r3, #1
+ 179 0042 1362     		str	r3, [r2, #32]
+  32:Core/Src/task.c ****             break;
+ 180              		.loc 1 32 13 view .LVU30
+ 181              	.L12:
+  55:Core/Src/task.c ****     Set_All_LEDs_Brightness();
+ 182              		.loc 1 55 5 view .LVU31
+ 183 0044 FFF7FEFF 		bl	Set_All_LEDs_Brightness
+ 184              	.LVL6:
+  56:Core/Src/task.c **** }
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 6
+
+
+ 185              		.loc 1 56 1 is_stmt 0 view .LVU32
+ 186 0048 08BD     		pop	{r3, pc}
+ 187              	.L18:
+  35:Core/Src/task.c ****             SET_BIT(TIM2->CCER, TIM_CCER_CC2E);  
+ 188              		.loc 1 35 13 is_stmt 1 view .LVU33
+ 189 004a 4FF08042 		mov	r2, #1073741824
+ 190 004e 136A     		ldr	r3, [r2, #32]
+ 191 0050 43F01003 		orr	r3, r3, #16
+ 192 0054 1362     		str	r3, [r2, #32]
+  36:Core/Src/task.c ****             break;
+ 193              		.loc 1 36 13 view .LVU34
+ 194 0056 F5E7     		b	.L12
+ 195              	.L17:
+  39:Core/Src/task.c ****             SET_BIT(TIM1->CCER, TIM_CCER_CC1E); 
+ 196              		.loc 1 39 13 view .LVU35
+ 197 0058 0D4A     		ldr	r2, .L22+8
+ 198 005a 136A     		ldr	r3, [r2, #32]
+ 199 005c 43F00103 		orr	r3, r3, #1
+ 200 0060 1362     		str	r3, [r2, #32]
+  40:Core/Src/task.c ****             break;
+ 201              		.loc 1 40 13 view .LVU36
+ 202 0062 EFE7     		b	.L12
+ 203              	.L16:
+  43:Core/Src/task.c ****             SET_BIT(TIM1->CCER, TIM_CCER_CC2E);
+ 204              		.loc 1 43 13 view .LVU37
+ 205 0064 0A4A     		ldr	r2, .L22+8
+ 206 0066 136A     		ldr	r3, [r2, #32]
+ 207 0068 43F01003 		orr	r3, r3, #16
+ 208 006c 1362     		str	r3, [r2, #32]
+  44:Core/Src/task.c ****             break;
+ 209              		.loc 1 44 13 view .LVU38
+ 210 006e E9E7     		b	.L12
+ 211              	.L15:
+  47:Core/Src/task.c ****             SET_BIT(TIM3->CCER, TIM_CCER_CC1E);  
+ 212              		.loc 1 47 13 view .LVU39
+ 213 0070 054A     		ldr	r2, .L22
+ 214 0072 136A     		ldr	r3, [r2, #32]
+ 215 0074 43F00103 		orr	r3, r3, #1
+ 216 0078 1362     		str	r3, [r2, #32]
+  48:Core/Src/task.c ****             break;
+ 217              		.loc 1 48 13 view .LVU40
+ 218 007a E3E7     		b	.L12
+ 219              	.L13:
+  51:Core/Src/task.c ****             SET_BIT(TIM3->CCER, TIM_CCER_CC2E);  
+ 220              		.loc 1 51 13 view .LVU41
+ 221 007c 024A     		ldr	r2, .L22
+ 222 007e 136A     		ldr	r3, [r2, #32]
+ 223 0080 43F01003 		orr	r3, r3, #16
+ 224 0084 1362     		str	r3, [r2, #32]
+  52:Core/Src/task.c ****             break;
+ 225              		.loc 1 52 13 view .LVU42
+ 226 0086 DDE7     		b	.L12
+ 227              	.L23:
+ 228              		.align	2
+ 229              	.L22:
+ 230 0088 00040040 		.word	1073742848
+ 231 008c 00000000 		.word	pwm_mode
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 7
+
+
+ 232 0090 00000140 		.word	1073807360
+ 233              		.cfi_endproc
+ 234              	.LFE131:
+ 236              		.section	.text.task1,"ax",%progbits
+ 237              		.align	1
+ 238              		.global	task1
+ 239              		.syntax unified
+ 240              		.thumb
+ 241              		.thumb_func
+ 243              	task1:
+ 244              	.LFB130:
+   5:Core/Src/task.c ****     if(btn9_pressed){
+ 245              		.loc 1 5 17 view -0
+ 246              		.cfi_startproc
+ 247              		@ args = 0, pretend = 0, frame = 0
+ 248              		@ frame_needed = 0, uses_anonymous_args = 0
+ 249 0000 08B5     		push	{r3, lr}
+ 250              	.LCFI1:
+ 251              		.cfi_def_cfa_offset 8
+ 252              		.cfi_offset 3, -8
+ 253              		.cfi_offset 14, -4
+   6:Core/Src/task.c ****         pwm_mode = (pwm_mode + 1) % 6
+ 254              		.loc 1 6 5 view .LVU44
+   6:Core/Src/task.c ****         pwm_mode = (pwm_mode + 1) % 6
+ 255              		.loc 1 6 8 is_stmt 0 view .LVU45
+ 256 0002 154B     		ldr	r3, .L30
+ 257 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+   6:Core/Src/task.c ****         pwm_mode = (pwm_mode + 1) % 6
+ 258              		.loc 1 6 7 view .LVU46
+ 259 0006 1BB9     		cbnz	r3, .L28
+ 260              	.L25:
+  12:Core/Src/task.c ****     if(btn8_pressed){
+ 261              		.loc 1 12 5 is_stmt 1 view .LVU47
+  12:Core/Src/task.c ****     if(btn8_pressed){
+ 262              		.loc 1 12 8 is_stmt 0 view .LVU48
+ 263 0008 144B     		ldr	r3, .L30+4
+ 264 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  12:Core/Src/task.c ****     if(btn8_pressed){
+ 265              		.loc 1 12 7 view .LVU49
+ 266 000c 93B9     		cbnz	r3, .L29
+ 267              	.L24:
+  17:Core/Src/task.c **** }
+ 268              		.loc 1 17 1 view .LVU50
+ 269 000e 08BD     		pop	{r3, pc}
+ 270              	.L28:
+   7:Core/Src/task.c ****         pwm_mode = (pwm_mode + 1) % 6
+ 271              		.loc 1 7 9 is_stmt 1 view .LVU51
+   7:Core/Src/task.c ****         pwm_mode = (pwm_mode + 1) % 6
+ 272              		.loc 1 7 30 is_stmt 0 view .LVU52
+ 273 0010 1349     		ldr	r1, .L30+8
+ 274 0012 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 275 0014 0132     		adds	r2, r2, #1
+   7:Core/Src/task.c ****         pwm_mode = (pwm_mode + 1) % 6
+ 276              		.loc 1 7 35 view .LVU53
+ 277 0016 134B     		ldr	r3, .L30+12
+ 278 0018 83FB0203 		smull	r0, r3, r3, r2
+ 279 001c 03EB4303 		add	r3, r3, r3, lsl #1
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 8
+
+
+ 280 0020 5800     		lsls	r0, r3, #1
+ 281 0022 131A     		subs	r3, r2, r0
+   7:Core/Src/task.c ****         pwm_mode = (pwm_mode + 1) % 6
+ 282              		.loc 1 7 18 view .LVU54
+ 283 0024 DBB2     		uxtb	r3, r3
+ 284 0026 0B70     		strb	r3, [r1]
+   9:Core/Src/task.c ****         btn9_pressed=0;
+ 285              		.loc 1 9 9 is_stmt 1 view .LVU55
+   9:Core/Src/task.c ****         btn9_pressed=0;
+ 286              		.loc 1 9 21 is_stmt 0 view .LVU56
+ 287 0028 0B4B     		ldr	r3, .L30
+ 288 002a 0022     		movs	r2, #0
+ 289 002c 1A70     		strb	r2, [r3]
+  10:Core/Src/task.c ****           Switch_PWM();
+ 290              		.loc 1 10 11 is_stmt 1 view .LVU57
+ 291 002e FFF7FEFF 		bl	Switch_PWM
+ 292              	.LVL7:
+ 293 0032 E9E7     		b	.L25
+ 294              	.L29:
+  13:Core/Src/task.c ****         counter1 = (counter1 + 1) % 5;
+ 295              		.loc 1 13 9 view .LVU58
+  13:Core/Src/task.c ****         counter1 = (counter1 + 1) % 5;
+ 296              		.loc 1 13 30 is_stmt 0 view .LVU59
+ 297 0034 0C49     		ldr	r1, .L30+16
+ 298 0036 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 299 0038 0132     		adds	r2, r2, #1
+  13:Core/Src/task.c ****         counter1 = (counter1 + 1) % 5;
+ 300              		.loc 1 13 35 view .LVU60
+ 301 003a 0C4B     		ldr	r3, .L30+20
+ 302 003c 83FB0203 		smull	r0, r3, r3, r2
+ 303 0040 5B10     		asrs	r3, r3, #1
+ 304 0042 03EB8303 		add	r3, r3, r3, lsl #2
+ 305 0046 D31A     		subs	r3, r2, r3
+  13:Core/Src/task.c ****         counter1 = (counter1 + 1) % 5;
+ 306              		.loc 1 13 18 view .LVU61
+ 307 0048 DBB2     		uxtb	r3, r3
+ 308 004a 0B70     		strb	r3, [r1]
+  14:Core/Src/task.c ****         btn8_pressed = 0;
+ 309              		.loc 1 14 9 is_stmt 1 view .LVU62
+  14:Core/Src/task.c ****         btn8_pressed = 0;
+ 310              		.loc 1 14 22 is_stmt 0 view .LVU63
+ 311 004c 034B     		ldr	r3, .L30+4
+ 312 004e 0022     		movs	r2, #0
+ 313 0050 1A70     		strb	r2, [r3]
+  15:Core/Src/task.c ****         Set_All_LEDs_Brightness();
+ 314              		.loc 1 15 9 is_stmt 1 view .LVU64
+ 315 0052 FFF7FEFF 		bl	Set_All_LEDs_Brightness
+ 316              	.LVL8:
+  17:Core/Src/task.c **** }
+ 317              		.loc 1 17 1 is_stmt 0 view .LVU65
+ 318 0056 DAE7     		b	.L24
+ 319              	.L31:
+ 320              		.align	2
+ 321              	.L30:
+ 322 0058 00000000 		.word	btn9_pressed
+ 323 005c 00000000 		.word	btn8_pressed
+ 324 0060 00000000 		.word	pwm_mode
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 9
+
+
+ 325 0064 ABAAAA2A 		.word	715827883
+ 326 0068 00000000 		.word	counter1
+ 327 006c 67666666 		.word	1717986919
+ 328              		.cfi_endproc
+ 329              	.LFE130:
+ 331              		.text
+ 332              	.Letext0:
+ 333              		.file 2 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 334              		.file 3 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 335              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 336              		.file 5 "Core/Inc/task.h"
+ 337              		.file 6 "Core/Inc/handlers.h"
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 task.c
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:21     .text.Set_All_LEDs_Brightness:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:27     .text.Set_All_LEDs_Brightness:00000000 Set_All_LEDs_Brightness
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:43     .text.Set_All_LEDs_Brightness:0000000e $d
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:47     .text.Set_All_LEDs_Brightness:00000012 $t
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:121    .text.Set_All_LEDs_Brightness:00000074 $d
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:127    .text.Switch_PWM:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:133    .text.Switch_PWM:00000000 Switch_PWM
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:167    .text.Switch_PWM:00000032 $d
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:173    .text.Switch_PWM:00000038 $t
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:230    .text.Switch_PWM:00000088 $d
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:237    .text.task1:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:243    .text.task1:00000000 task1
+C:\Users\Life\AppData\Local\Temp\ccvPbIp3.s:322    .text.task1:00000058 $d
+
+UNDEFINED SYMBOLS
+counter1
+pwm_mode
+btn9_pressed
+btn8_pressed

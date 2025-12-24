@@ -1,0 +1,136 @@
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main2.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main2.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main2.c **** #include "init2.h"
+   2:Core/Src/main2.c **** #include <stdint.h>
+   3:Core/Src/main2.c **** 
+   4:Core/Src/main2.c **** uint8_t btn8_pressed = 0; // PB8 — переключение LED
+   5:Core/Src/main2.c **** uint8_t btn9_pressed = 0; // PB9 — смена частоты
+   6:Core/Src/main2.c **** uint8_t btn9_hold = 0;    // PB9 — удержание >2 сек
+   7:Core/Src/main2.c **** uint32_t btn9_time = 0;   // время нажатия PB9
+   8:Core/Src/main2.c **** uint32_t tick_count = 0;
+   9:Core/Src/main2.c **** int main(void)
+  10:Core/Src/main2.c **** {
+  29              		.loc 1 10 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  11:Core/Src/main2.c ****     SysTick_Handler();
+  39              		.loc 1 11 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	SysTick_Handler
+  41              	.LVL0:
+  12:Core/Src/main2.c **** 
+  13:Core/Src/main2.c ****     RCC_Init();
+  42              		.loc 1 13 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	RCC_Init
+  44              	.LVL1:
+  14:Core/Src/main2.c ****     GPIO_Ini();
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s 			page 2
+
+
+  45              		.loc 1 14 5 view .LVU3
+  46 000a FFF7FEFF 		bl	GPIO_Ini
+  47              	.LVL2:
+  48              	.L2:
+  15:Core/Src/main2.c ****     while (1)
+  49              		.loc 1 15 5 view .LVU4
+  16:Core/Src/main2.c ****     {
+  17:Core/Src/main2.c ****         SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS12);
+  50              		.loc 1 17 9 discriminator 1 view .LVU5
+  51 000e 034A     		ldr	r2, .L4
+  52 0010 9369     		ldr	r3, [r2, #24]
+  53 0012 43F48053 		orr	r3, r3, #4096
+  54 0016 9361     		str	r3, [r2, #24]
+  15:Core/Src/main2.c ****     while (1)
+  55              		.loc 1 15 11 view .LVU6
+  56 0018 F9E7     		b	.L2
+  57              	.L5:
+  58 001a 00BF     		.align	2
+  59              	.L4:
+  60 001c 00080240 		.word	1073874944
+  61              		.cfi_endproc
+  62              	.LFE130:
+  64              		.global	tick_count
+  65              		.section	.bss.tick_count,"aw",%nobits
+  66              		.align	2
+  69              	tick_count:
+  70 0000 00000000 		.space	4
+  71              		.global	btn9_time
+  72              		.section	.bss.btn9_time,"aw",%nobits
+  73              		.align	2
+  76              	btn9_time:
+  77 0000 00000000 		.space	4
+  78              		.global	btn9_hold
+  79              		.section	.bss.btn9_hold,"aw",%nobits
+  82              	btn9_hold:
+  83 0000 00       		.space	1
+  84              		.global	btn9_pressed
+  85              		.section	.bss.btn9_pressed,"aw",%nobits
+  88              	btn9_pressed:
+  89 0000 00       		.space	1
+  90              		.global	btn8_pressed
+  91              		.section	.bss.btn8_pressed,"aw",%nobits
+  94              	btn8_pressed:
+  95 0000 00       		.space	1
+  96              		.text
+  97              	.Letext0:
+  98              		.file 2 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+  99              		.file 3 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 100              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 101              		.file 5 "Core/Inc/init2.h"
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main2.c
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:21     .text.main:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:27     .text.main:00000000 main
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:60     .text.main:0000001c $d
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:69     .bss.tick_count:00000000 tick_count
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:66     .bss.tick_count:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:76     .bss.btn9_time:00000000 btn9_time
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:73     .bss.btn9_time:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:82     .bss.btn9_hold:00000000 btn9_hold
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:83     .bss.btn9_hold:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:88     .bss.btn9_pressed:00000000 btn9_pressed
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:89     .bss.btn9_pressed:00000000 $d
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:94     .bss.btn8_pressed:00000000 btn8_pressed
+C:\Users\Life\AppData\Local\Temp\ccxZjIuM.s:95     .bss.btn8_pressed:00000000 $d
+
+UNDEFINED SYMBOLS
+SysTick_Handler
+RCC_Init
+GPIO_Ini
