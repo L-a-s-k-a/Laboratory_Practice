@@ -1,0 +1,902 @@
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"interrupt.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/interrupt.c"
+  20              		.section	.text.get_mode0_period_by_index,"ax",%progbits
+  21              		.align	1
+  22              		.global	get_mode0_period_by_index
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	get_mode0_period_by_index:
+  28              	.LVL0:
+  29              	.LFB130:
+   1:Core/Src/interrupt.c **** #include "interrupt.h"
+   2:Core/Src/interrupt.c **** #include "init.h" // для определения пинов/констант
+   3:Core/Src/interrupt.c **** 
+   4:Core/Src/interrupt.c **** /* ------------------ Глобальные переменные (определения) ----------
+   5:Core/Src/interrupt.c **** uint32_t msTicks = 0;
+   6:Core/Src/interrupt.c **** uint8_t ledMode = 0; // 0 = парный, 1 = по одному
+   7:Core/Src/interrupt.c **** 
+   8:Core/Src/interrupt.c **** // mode0 (парные группы)
+   9:Core/Src/interrupt.c **** uint8_t mode0_group_sel = 0;
+  10:Core/Src/interrupt.c **** uint8_t mode0_group_freq[3] = {0,0,0};
+  11:Core/Src/interrupt.c **** uint32_t mode0_pair_tick = 0;
+  12:Core/Src/interrupt.c **** uint8_t  mode0_pair_index = 0;
+  13:Core/Src/interrupt.c **** 
+  14:Core/Src/interrupt.c **** // mode1 (по одному)
+  15:Core/Src/interrupt.c **** uint8_t mode1_led_sel = 0;
+  16:Core/Src/interrupt.c **** uint8_t mode1_led_freq[6] = {0,0,0,0,0,0};
+  17:Core/Src/interrupt.c **** bool    mode1_led_active[6] = {false,false,false,false,false,false};
+  18:Core/Src/interrupt.c **** uint32_t mode1_led_ticks[6] = {0,0,0,0,0,0};
+  19:Core/Src/interrupt.c **** uint32_t staging_tick = 0;
+  20:Core/Src/interrupt.c **** uint8_t  staging_index = 0;
+  21:Core/Src/interrupt.c **** 
+  22:Core/Src/interrupt.c **** /* ------------------ Debounce state ------------------ */
+  23:Core/Src/interrupt.c **** uint32_t last_time_user = 0;
+  24:Core/Src/interrupt.c **** uint32_t last_time_freq = 0;
+  25:Core/Src/interrupt.c **** uint32_t last_time_sel  = 0;
+  26:Core/Src/interrupt.c **** 
+  27:Core/Src/interrupt.c **** /* ------------------ Вспомогательные функции ------------------ */
+  28:Core/Src/interrupt.c **** uint32_t get_mode0_period_by_index(uint8_t idx)
+  29:Core/Src/interrupt.c **** {
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 2
+
+
+  30              		.loc 1 29 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  30:Core/Src/interrupt.c ****     switch(idx)
+  35              		.loc 1 30 5 view .LVU1
+  36 0000 0128     		cmp	r0, #1
+  37 0002 04D0     		beq	.L3
+  38 0004 0228     		cmp	r0, #2
+  39 0006 05D1     		bne	.L4
+  31:Core/Src/interrupt.c ****     {
+  32:Core/Src/interrupt.c ****         case 0: return MODE0_FREQ0_MS;
+  33:Core/Src/interrupt.c ****         case 1: return MODE0_FREQ1_MS;
+  34:Core/Src/interrupt.c ****         case 2: return MODE0_FREQ2_MS;
+  40              		.loc 1 34 24 is_stmt 0 view .LVU2
+  41 0008 4FF4E370 		mov	r0, #454
+  42              	.LVL1:
+  43              		.loc 1 34 24 view .LVU3
+  44 000c 7047     		bx	lr
+  45              	.LVL2:
+  46              	.L3:
+  33:Core/Src/interrupt.c ****         case 2: return MODE0_FREQ2_MS;
+  47              		.loc 1 33 24 view .LVU4
+  48 000e 4FF41370 		mov	r0, #588
+  49              	.LVL3:
+  33:Core/Src/interrupt.c ****         case 2: return MODE0_FREQ2_MS;
+  50              		.loc 1 33 24 view .LVU5
+  51 0012 7047     		bx	lr
+  52              	.LVL4:
+  53              	.L4:
+  30:Core/Src/interrupt.c ****     switch(idx)
+  54              		.loc 1 30 5 view .LVU6
+  55 0014 4FF4FA60 		mov	r0, #2000
+  56              	.LVL5:
+  35:Core/Src/interrupt.c ****         default: return MODE0_FREQ0_MS;
+  36:Core/Src/interrupt.c ****     }
+  37:Core/Src/interrupt.c **** }
+  57              		.loc 1 37 1 view .LVU7
+  58 0018 7047     		bx	lr
+  59              		.cfi_endproc
+  60              	.LFE130:
+  62              		.section	.text.get_mode1_period_by_index,"ax",%progbits
+  63              		.align	1
+  64              		.global	get_mode1_period_by_index
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  69              	get_mode1_period_by_index:
+  70              	.LVL6:
+  71              	.LFB131:
+  38:Core/Src/interrupt.c **** uint32_t get_mode1_period_by_index(uint8_t idx)
+  39:Core/Src/interrupt.c **** {
+  72              		.loc 1 39 1 is_stmt 1 view -0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 3
+
+
+  76              		@ link register save eliminated.
+  40:Core/Src/interrupt.c ****     switch(idx)
+  77              		.loc 1 40 5 view .LVU9
+  78 0000 0128     		cmp	r0, #1
+  79 0002 04D0     		beq	.L7
+  80 0004 0228     		cmp	r0, #2
+  81 0006 05D1     		bne	.L8
+  41:Core/Src/interrupt.c ****     {
+  42:Core/Src/interrupt.c ****         case 0: return MODE1_FREQ0_MS;
+  43:Core/Src/interrupt.c ****         case 1: return MODE1_FREQ1_MS;
+  44:Core/Src/interrupt.c ****         case 2: return MODE1_FREQ2_MS;
+  82              		.loc 1 44 24 is_stmt 0 view .LVU10
+  83 0008 40F2CA20 		movw	r0, #714
+  84              	.LVL7:
+  85              		.loc 1 44 24 view .LVU11
+  86 000c 7047     		bx	lr
+  87              	.LVL8:
+  88              	.L7:
+  43:Core/Src/interrupt.c ****         case 2: return MODE1_FREQ2_MS;
+  89              		.loc 1 43 24 view .LVU12
+  90 000e 40F2E240 		movw	r0, #1250
+  91              	.LVL9:
+  43:Core/Src/interrupt.c ****         case 2: return MODE1_FREQ2_MS;
+  92              		.loc 1 43 24 view .LVU13
+  93 0012 7047     		bx	lr
+  94              	.LVL10:
+  95              	.L8:
+  40:Core/Src/interrupt.c ****     switch(idx)
+  96              		.loc 1 40 5 view .LVU14
+  97 0014 40F60550 		movw	r0, #3333
+  98              	.LVL11:
+  45:Core/Src/interrupt.c ****         default: return MODE1_FREQ0_MS;
+  46:Core/Src/interrupt.c ****     }
+  47:Core/Src/interrupt.c **** }
+  99              		.loc 1 47 1 view .LVU15
+ 100 0018 7047     		bx	lr
+ 101              		.cfi_endproc
+ 102              	.LFE131:
+ 104              		.section	.text.SysTick_Handler,"ax",%progbits
+ 105              		.align	1
+ 106              		.global	SysTick_Handler
+ 107              		.syntax unified
+ 108              		.thumb
+ 109              		.thumb_func
+ 111              	SysTick_Handler:
+ 112              	.LFB132:
+  48:Core/Src/interrupt.c **** 
+  49:Core/Src/interrupt.c **** /* ------------------ Обработчики прерываний ------------------ */
+  50:Core/Src/interrupt.c **** 
+  51:Core/Src/interrupt.c **** // SysTick - 1 ms
+  52:Core/Src/interrupt.c **** void SysTick_Handler(void)
+  53:Core/Src/interrupt.c **** {
+ 113              		.loc 1 53 1 is_stmt 1 view -0
+ 114              		.cfi_startproc
+ 115              		@ args = 0, pretend = 0, frame = 0
+ 116              		@ frame_needed = 0, uses_anonymous_args = 0
+ 117              		@ link register save eliminated.
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 4
+
+
+  54:Core/Src/interrupt.c ****     msTicks++;
+ 118              		.loc 1 54 5 view .LVU17
+ 119              		.loc 1 54 12 is_stmt 0 view .LVU18
+ 120 0000 0C4A     		ldr	r2, .L12
+ 121 0002 1368     		ldr	r3, [r2]
+ 122 0004 0133     		adds	r3, r3, #1
+ 123 0006 1360     		str	r3, [r2]
+  55:Core/Src/interrupt.c ****     mode0_pair_tick++;
+ 124              		.loc 1 55 5 is_stmt 1 view .LVU19
+ 125              		.loc 1 55 20 is_stmt 0 view .LVU20
+ 126 0008 0B4A     		ldr	r2, .L12+4
+ 127 000a 1368     		ldr	r3, [r2]
+ 128 000c 0133     		adds	r3, r3, #1
+ 129 000e 1360     		str	r3, [r2]
+  56:Core/Src/interrupt.c ****     for(uint8_t i=0;i<6;i++) mode1_led_ticks[i]++;
+ 130              		.loc 1 56 5 is_stmt 1 view .LVU21
+ 131              	.LBB2:
+ 132              		.loc 1 56 9 view .LVU22
+ 133              	.LVL12:
+ 134              		.loc 1 56 17 is_stmt 0 view .LVU23
+ 135 0010 0023     		movs	r3, #0
+ 136              		.loc 1 56 5 view .LVU24
+ 137 0012 07E0     		b	.L10
+ 138              	.LVL13:
+ 139              	.L11:
+ 140              		.loc 1 56 30 is_stmt 1 discriminator 3 view .LVU25
+ 141              		.loc 1 56 45 is_stmt 0 discriminator 3 view .LVU26
+ 142 0014 0949     		ldr	r1, .L12+8
+ 143 0016 51F82320 		ldr	r2, [r1, r3, lsl #2]
+ 144              		.loc 1 56 48 discriminator 3 view .LVU27
+ 145 001a 0132     		adds	r2, r2, #1
+ 146 001c 41F82320 		str	r2, [r1, r3, lsl #2]
+ 147              		.loc 1 56 26 is_stmt 1 discriminator 3 view .LVU28
+ 148 0020 0133     		adds	r3, r3, #1
+ 149              	.LVL14:
+ 150              		.loc 1 56 26 is_stmt 0 discriminator 3 view .LVU29
+ 151 0022 DBB2     		uxtb	r3, r3
+ 152              	.LVL15:
+ 153              	.L10:
+ 154              		.loc 1 56 22 is_stmt 1 discriminator 1 view .LVU30
+ 155 0024 052B     		cmp	r3, #5
+ 156 0026 F5D9     		bls	.L11
+ 157              	.LBE2:
+  57:Core/Src/interrupt.c ****     staging_tick++;
+ 158              		.loc 1 57 5 view .LVU31
+ 159              		.loc 1 57 17 is_stmt 0 view .LVU32
+ 160 0028 054A     		ldr	r2, .L12+12
+ 161 002a 1368     		ldr	r3, [r2]
+ 162              	.LVL16:
+ 163              		.loc 1 57 17 view .LVU33
+ 164 002c 0133     		adds	r3, r3, #1
+ 165 002e 1360     		str	r3, [r2]
+  58:Core/Src/interrupt.c **** }
+ 166              		.loc 1 58 1 view .LVU34
+ 167 0030 7047     		bx	lr
+ 168              	.L13:
+ 169 0032 00BF     		.align	2
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 5
+
+
+ 170              	.L12:
+ 171 0034 00000000 		.word	msTicks
+ 172 0038 00000000 		.word	mode0_pair_tick
+ 173 003c 00000000 		.word	mode1_led_ticks
+ 174 0040 00000000 		.word	staging_tick
+ 175              		.cfi_endproc
+ 176              	.LFE132:
+ 178              		.section	.text.EXTI4_IRQHandler,"ax",%progbits
+ 179              		.align	1
+ 180              		.global	EXTI4_IRQHandler
+ 181              		.syntax unified
+ 182              		.thumb
+ 183              		.thumb_func
+ 185              	EXTI4_IRQHandler:
+ 186              	.LFB133:
+  59:Core/Src/interrupt.c **** 
+  60:Core/Src/interrupt.c **** // EXTI4 - PC4 (BTN_SEL) - reaccion on falling (press)
+  61:Core/Src/interrupt.c **** void EXTI4_IRQHandler(void)
+  62:Core/Src/interrupt.c **** {
+ 187              		.loc 1 62 1 is_stmt 1 view -0
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 0
+ 190              		@ frame_needed = 0, uses_anonymous_args = 0
+ 191              		@ link register save eliminated.
+  63:Core/Src/interrupt.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR4);
+ 192              		.loc 1 63 5 view .LVU36
+ 193 0000 154A     		ldr	r2, .L18
+ 194 0002 5369     		ldr	r3, [r2, #20]
+ 195 0004 43F01003 		orr	r3, r3, #16
+ 196 0008 5361     		str	r3, [r2, #20]
+  64:Core/Src/interrupt.c **** 
+  65:Core/Src/interrupt.c ****     if(!(GPIOC->IDR & (1U << BTN_SEL_PIN)))
+ 197              		.loc 1 65 5 view .LVU37
+ 198              		.loc 1 65 15 is_stmt 0 view .LVU38
+ 199 000a 144B     		ldr	r3, .L18+4
+ 200 000c 1B69     		ldr	r3, [r3, #16]
+ 201              		.loc 1 65 7 view .LVU39
+ 202 000e 13F0100F 		tst	r3, #16
+ 203 0012 15D1     		bne	.L14
+ 204              	.LBB3:
+  66:Core/Src/interrupt.c ****     {
+  67:Core/Src/interrupt.c ****         uint32_t now = msTicks;
+ 205              		.loc 1 67 9 is_stmt 1 view .LVU40
+ 206              		.loc 1 67 18 is_stmt 0 view .LVU41
+ 207 0014 124B     		ldr	r3, .L18+8
+ 208 0016 1A68     		ldr	r2, [r3]
+ 209              	.LVL17:
+  68:Core/Src/interrupt.c ****         if((now - last_time_sel) >= DEBOUNCE_MS)
+ 210              		.loc 1 68 9 is_stmt 1 view .LVU42
+ 211              		.loc 1 68 17 is_stmt 0 view .LVU43
+ 212 0018 124B     		ldr	r3, .L18+12
+ 213 001a 1B68     		ldr	r3, [r3]
+ 214 001c D31A     		subs	r3, r2, r3
+ 215              		.loc 1 68 11 view .LVU44
+ 216 001e 312B     		cmp	r3, #49
+ 217 0020 0ED9     		bls	.L14
+  69:Core/Src/interrupt.c ****         {
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 6
+
+
+  70:Core/Src/interrupt.c ****             if(ledMode == 0)
+ 218              		.loc 1 70 13 is_stmt 1 view .LVU45
+ 219              		.loc 1 70 24 is_stmt 0 view .LVU46
+ 220 0022 114B     		ldr	r3, .L18+16
+ 221 0024 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 222              		.loc 1 70 15 view .LVU47
+ 223 0026 63B9     		cbnz	r3, .L16
+  71:Core/Src/interrupt.c ****             {
+  72:Core/Src/interrupt.c ****                 mode0_group_sel++;
+ 224              		.loc 1 72 17 is_stmt 1 view .LVU48
+ 225              		.loc 1 72 32 is_stmt 0 view .LVU49
+ 226 0028 1049     		ldr	r1, .L18+20
+ 227 002a 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 228 002c 0133     		adds	r3, r3, #1
+ 229 002e DBB2     		uxtb	r3, r3
+ 230 0030 0B70     		strb	r3, [r1]
+  73:Core/Src/interrupt.c ****                 if(mode0_group_sel >= 3) mode0_group_sel = 0;
+ 231              		.loc 1 73 17 is_stmt 1 view .LVU50
+ 232              		.loc 1 73 19 is_stmt 0 view .LVU51
+ 233 0032 022B     		cmp	r3, #2
+ 234 0034 02D9     		bls	.L17
+ 235              		.loc 1 73 42 is_stmt 1 discriminator 1 view .LVU52
+ 236              		.loc 1 73 58 is_stmt 0 discriminator 1 view .LVU53
+ 237 0036 0B46     		mov	r3, r1
+ 238 0038 0021     		movs	r1, #0
+ 239 003a 1970     		strb	r1, [r3]
+ 240              	.L17:
+  74:Core/Src/interrupt.c ****             }
+  75:Core/Src/interrupt.c ****             else
+  76:Core/Src/interrupt.c ****             {
+  77:Core/Src/interrupt.c ****                 mode1_led_sel++;
+  78:Core/Src/interrupt.c ****                 if(mode1_led_sel >= 6) mode1_led_sel = 0;
+  79:Core/Src/interrupt.c ****             }
+  80:Core/Src/interrupt.c ****             last_time_sel = now;
+ 241              		.loc 1 80 13 is_stmt 1 view .LVU54
+ 242              		.loc 1 80 27 is_stmt 0 view .LVU55
+ 243 003c 094B     		ldr	r3, .L18+12
+ 244 003e 1A60     		str	r2, [r3]
+ 245              	.LVL18:
+ 246              	.L14:
+ 247              		.loc 1 80 27 view .LVU56
+ 248              	.LBE3:
+  81:Core/Src/interrupt.c ****         }
+  82:Core/Src/interrupt.c ****     }
+  83:Core/Src/interrupt.c **** }
+ 249              		.loc 1 83 1 view .LVU57
+ 250 0040 7047     		bx	lr
+ 251              	.LVL19:
+ 252              	.L16:
+ 253              	.LBB4:
+  77:Core/Src/interrupt.c ****                 if(mode1_led_sel >= 6) mode1_led_sel = 0;
+ 254              		.loc 1 77 17 is_stmt 1 view .LVU58
+  77:Core/Src/interrupt.c ****                 if(mode1_led_sel >= 6) mode1_led_sel = 0;
+ 255              		.loc 1 77 30 is_stmt 0 view .LVU59
+ 256 0042 0B49     		ldr	r1, .L18+24
+ 257 0044 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 258 0046 0133     		adds	r3, r3, #1
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 7
+
+
+ 259 0048 DBB2     		uxtb	r3, r3
+ 260 004a 0B70     		strb	r3, [r1]
+  78:Core/Src/interrupt.c ****             }
+ 261              		.loc 1 78 17 is_stmt 1 view .LVU60
+  78:Core/Src/interrupt.c ****             }
+ 262              		.loc 1 78 19 is_stmt 0 view .LVU61
+ 263 004c 052B     		cmp	r3, #5
+ 264 004e F5D9     		bls	.L17
+  78:Core/Src/interrupt.c ****             }
+ 265              		.loc 1 78 40 is_stmt 1 discriminator 1 view .LVU62
+  78:Core/Src/interrupt.c ****             }
+ 266              		.loc 1 78 54 is_stmt 0 discriminator 1 view .LVU63
+ 267 0050 0B46     		mov	r3, r1
+ 268 0052 0021     		movs	r1, #0
+ 269 0054 1970     		strb	r1, [r3]
+ 270 0056 F1E7     		b	.L17
+ 271              	.L19:
+ 272              		.align	2
+ 273              	.L18:
+ 274 0058 003C0140 		.word	1073822720
+ 275 005c 00080240 		.word	1073874944
+ 276 0060 00000000 		.word	msTicks
+ 277 0064 00000000 		.word	last_time_sel
+ 278 0068 00000000 		.word	ledMode
+ 279 006c 00000000 		.word	mode0_group_sel
+ 280 0070 00000000 		.word	mode1_led_sel
+ 281              	.LBE4:
+ 282              		.cfi_endproc
+ 283              	.LFE133:
+ 285              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ 286              		.align	1
+ 287              		.global	EXTI15_10_IRQHandler
+ 288              		.syntax unified
+ 289              		.thumb
+ 290              		.thumb_func
+ 292              	EXTI15_10_IRQHandler:
+ 293              	.LFB134:
+  84:Core/Src/interrupt.c **** 
+  85:Core/Src/interrupt.c **** // EXTI15_10 - PC13 (USER) and PB12 (BTN_FREQ)
+  86:Core/Src/interrupt.c **** void EXTI15_10_IRQHandler(void)
+  87:Core/Src/interrupt.c **** {
+ 294              		.loc 1 87 1 is_stmt 1 view -0
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 0
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              		@ link register save eliminated.
+  88:Core/Src/interrupt.c ****     // PC13 - USER
+  89:Core/Src/interrupt.c ****     if(READ_BIT(EXTI->PR, EXTI_PR_PR13))
+ 299              		.loc 1 89 5 view .LVU65
+ 300              		.loc 1 89 8 is_stmt 0 view .LVU66
+ 301 0000 364B     		ldr	r3, .L30
+ 302 0002 5B69     		ldr	r3, [r3, #20]
+ 303              		.loc 1 89 7 view .LVU67
+ 304 0004 13F4005F 		tst	r3, #8192
+ 305 0008 2BD0     		beq	.L21
+  90:Core/Src/interrupt.c ****     {
+  91:Core/Src/interrupt.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13);
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 8
+
+
+ 306              		.loc 1 91 9 is_stmt 1 view .LVU68
+ 307 000a 344A     		ldr	r2, .L30
+ 308 000c 5369     		ldr	r3, [r2, #20]
+ 309 000e 43F40053 		orr	r3, r3, #8192
+ 310 0012 5361     		str	r3, [r2, #20]
+  92:Core/Src/interrupt.c ****         if(!(GPIOC->IDR & (1U << BTN_USER_PIN)))
+ 311              		.loc 1 92 9 view .LVU69
+ 312              		.loc 1 92 19 is_stmt 0 view .LVU70
+ 313 0014 324B     		ldr	r3, .L30+4
+ 314 0016 1B69     		ldr	r3, [r3, #16]
+ 315              		.loc 1 92 11 view .LVU71
+ 316 0018 13F4005F 		tst	r3, #8192
+ 317 001c 21D1     		bne	.L21
+ 318              	.LBB5:
+  93:Core/Src/interrupt.c ****         {
+  94:Core/Src/interrupt.c ****             uint32_t now = msTicks;
+ 319              		.loc 1 94 13 is_stmt 1 view .LVU72
+ 320              		.loc 1 94 22 is_stmt 0 view .LVU73
+ 321 001e 314B     		ldr	r3, .L30+8
+ 322 0020 1868     		ldr	r0, [r3]
+ 323              	.LVL20:
+  95:Core/Src/interrupt.c ****             if((now - last_time_user) >= DEBOUNCE_MS)
+ 324              		.loc 1 95 13 is_stmt 1 view .LVU74
+ 325              		.loc 1 95 21 is_stmt 0 view .LVU75
+ 326 0022 314B     		ldr	r3, .L30+12
+ 327 0024 1B68     		ldr	r3, [r3]
+ 328 0026 C31A     		subs	r3, r0, r3
+ 329              		.loc 1 95 15 view .LVU76
+ 330 0028 312B     		cmp	r3, #49
+ 331 002a 1AD9     		bls	.L21
+  96:Core/Src/interrupt.c ****             {
+  97:Core/Src/interrupt.c ****                 ledMode ^= 1;
+ 332              		.loc 1 97 17 is_stmt 1 view .LVU77
+ 333              		.loc 1 97 25 is_stmt 0 view .LVU78
+ 334 002c 2F4A     		ldr	r2, .L30+16
+ 335 002e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 336 0030 83F00103 		eor	r3, r3, #1
+ 337 0034 1370     		strb	r3, [r2]
+  98:Core/Src/interrupt.c ****                 // сброс синхронизации стартовых значений
+  99:Core/Src/interrupt.c ****                 mode0_pair_tick = 0;
+ 338              		.loc 1 99 17 is_stmt 1 view .LVU79
+ 339              		.loc 1 99 33 is_stmt 0 view .LVU80
+ 340 0036 0023     		movs	r3, #0
+ 341 0038 2D4A     		ldr	r2, .L30+20
+ 342 003a 1360     		str	r3, [r2]
+ 100:Core/Src/interrupt.c ****                 mode0_pair_index = 0;
+ 343              		.loc 1 100 17 is_stmt 1 view .LVU81
+ 344              		.loc 1 100 34 is_stmt 0 view .LVU82
+ 345 003c 2D4A     		ldr	r2, .L30+24
+ 346 003e 1370     		strb	r3, [r2]
+ 101:Core/Src/interrupt.c ****                 staging_tick = 0;
+ 347              		.loc 1 101 17 is_stmt 1 view .LVU83
+ 348              		.loc 1 101 30 is_stmt 0 view .LVU84
+ 349 0040 2D4A     		ldr	r2, .L30+28
+ 350 0042 1360     		str	r3, [r2]
+ 102:Core/Src/interrupt.c ****                 staging_index = 0;
+ 351              		.loc 1 102 17 is_stmt 1 view .LVU85
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 9
+
+
+ 352              		.loc 1 102 31 is_stmt 0 view .LVU86
+ 353 0044 2D4A     		ldr	r2, .L30+32
+ 354 0046 1370     		strb	r3, [r2]
+ 103:Core/Src/interrupt.c ****                 for(uint8_t i=0;i<6;i++)
+ 355              		.loc 1 103 17 is_stmt 1 view .LVU87
+ 356              	.LBB6:
+ 357              		.loc 1 103 21 view .LVU88
+ 358              	.LVL21:
+ 359              		.loc 1 103 17 is_stmt 0 view .LVU89
+ 360 0048 07E0     		b	.L22
+ 361              	.LVL22:
+ 362              	.L23:
+ 104:Core/Src/interrupt.c ****                 {
+ 105:Core/Src/interrupt.c ****                     mode1_led_active[i] = false;
+ 363              		.loc 1 105 21 is_stmt 1 view .LVU90
+ 364              		.loc 1 105 41 is_stmt 0 view .LVU91
+ 365 004a 0022     		movs	r2, #0
+ 366 004c 2C49     		ldr	r1, .L30+36
+ 367 004e CA54     		strb	r2, [r1, r3]
+ 106:Core/Src/interrupt.c ****                     mode1_led_ticks[i] = 0;
+ 368              		.loc 1 106 21 is_stmt 1 view .LVU92
+ 369              		.loc 1 106 40 is_stmt 0 view .LVU93
+ 370 0050 2C49     		ldr	r1, .L30+40
+ 371 0052 41F82320 		str	r2, [r1, r3, lsl #2]
+ 103:Core/Src/interrupt.c ****                 for(uint8_t i=0;i<6;i++)
+ 372              		.loc 1 103 38 is_stmt 1 discriminator 3 view .LVU94
+ 373 0056 0133     		adds	r3, r3, #1
+ 374              	.LVL23:
+ 103:Core/Src/interrupt.c ****                 for(uint8_t i=0;i<6;i++)
+ 375              		.loc 1 103 38 is_stmt 0 discriminator 3 view .LVU95
+ 376 0058 DBB2     		uxtb	r3, r3
+ 377              	.LVL24:
+ 378              	.L22:
+ 103:Core/Src/interrupt.c ****                 for(uint8_t i=0;i<6;i++)
+ 379              		.loc 1 103 34 is_stmt 1 discriminator 1 view .LVU96
+ 380 005a 052B     		cmp	r3, #5
+ 381 005c F5D9     		bls	.L23
+ 382              	.LBE6:
+ 107:Core/Src/interrupt.c ****                 }
+ 108:Core/Src/interrupt.c ****                 last_time_user = now;
+ 383              		.loc 1 108 17 view .LVU97
+ 384              		.loc 1 108 32 is_stmt 0 view .LVU98
+ 385 005e 224B     		ldr	r3, .L30+12
+ 386              	.LVL25:
+ 387              		.loc 1 108 32 view .LVU99
+ 388 0060 1860     		str	r0, [r3]
+ 389              	.LVL26:
+ 390              	.L21:
+ 391              		.loc 1 108 32 view .LVU100
+ 392              	.LBE5:
+ 109:Core/Src/interrupt.c ****             }
+ 110:Core/Src/interrupt.c ****         }
+ 111:Core/Src/interrupt.c ****     }
+ 112:Core/Src/interrupt.c **** 
+ 113:Core/Src/interrupt.c ****     // PB12 - BTN_FREQ (смена частоты)
+ 114:Core/Src/interrupt.c ****     if(READ_BIT(EXTI->PR, EXTI_PR_PR12))
+ 393              		.loc 1 114 5 is_stmt 1 view .LVU101
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 10
+
+
+ 394              		.loc 1 114 8 is_stmt 0 view .LVU102
+ 395 0062 1E4B     		ldr	r3, .L30
+ 396 0064 5B69     		ldr	r3, [r3, #20]
+ 397              		.loc 1 114 7 view .LVU103
+ 398 0066 13F4805F 		tst	r3, #4096
+ 399 006a 25D0     		beq	.L20
+ 115:Core/Src/interrupt.c ****     {
+ 116:Core/Src/interrupt.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR12);
+ 400              		.loc 1 116 9 is_stmt 1 view .LVU104
+ 401 006c 1B4A     		ldr	r2, .L30
+ 402 006e 5369     		ldr	r3, [r2, #20]
+ 403 0070 43F48053 		orr	r3, r3, #4096
+ 404 0074 5361     		str	r3, [r2, #20]
+ 117:Core/Src/interrupt.c ****         if(!(GPIOB->IDR & (1U << BTN_FREQ_PIN)))
+ 405              		.loc 1 117 9 view .LVU105
+ 406              		.loc 1 117 19 is_stmt 0 view .LVU106
+ 407 0076 244B     		ldr	r3, .L30+44
+ 408 0078 1B69     		ldr	r3, [r3, #16]
+ 409              		.loc 1 117 11 view .LVU107
+ 410 007a 13F4805F 		tst	r3, #4096
+ 411 007e 1BD1     		bne	.L20
+ 412              	.LBB7:
+ 118:Core/Src/interrupt.c ****         {
+ 119:Core/Src/interrupt.c ****             uint32_t now = msTicks;
+ 413              		.loc 1 119 13 is_stmt 1 view .LVU108
+ 414              		.loc 1 119 22 is_stmt 0 view .LVU109
+ 415 0080 184B     		ldr	r3, .L30+8
+ 416 0082 1A68     		ldr	r2, [r3]
+ 417              	.LVL27:
+ 120:Core/Src/interrupt.c ****             if((now - last_time_freq) >= DEBOUNCE_MS)
+ 418              		.loc 1 120 13 is_stmt 1 view .LVU110
+ 419              		.loc 1 120 21 is_stmt 0 view .LVU111
+ 420 0084 214B     		ldr	r3, .L30+48
+ 421 0086 1B68     		ldr	r3, [r3]
+ 422 0088 D31A     		subs	r3, r2, r3
+ 423              		.loc 1 120 15 view .LVU112
+ 424 008a 312B     		cmp	r3, #49
+ 425 008c 14D9     		bls	.L20
+ 121:Core/Src/interrupt.c ****             {
+ 122:Core/Src/interrupt.c ****                 if(ledMode == 0)
+ 426              		.loc 1 122 17 is_stmt 1 view .LVU113
+ 427              		.loc 1 122 28 is_stmt 0 view .LVU114
+ 428 008e 174B     		ldr	r3, .L30+16
+ 429 0090 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 430              		.loc 1 122 19 view .LVU115
+ 431 0092 91B9     		cbnz	r1, .L25
+ 432              	.LBB8:
+ 123:Core/Src/interrupt.c ****                 {
+ 124:Core/Src/interrupt.c ****                     // режим 0: смена частоты для выбранной групп
+ 125:Core/Src/interrupt.c ****                     uint8_t prev = mode0_group_freq[mode0_group_sel];
+ 433              		.loc 1 125 21 is_stmt 1 view .LVU116
+ 434              		.loc 1 125 52 is_stmt 0 view .LVU117
+ 435 0094 1E4B     		ldr	r3, .L30+52
+ 436 0096 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 437              		.loc 1 125 29 view .LVU118
+ 438 0098 1E4B     		ldr	r3, .L30+56
+ 439 009a 1B5C     		ldrb	r3, [r3, r0]	@ zero_extendqisi2
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 11
+
+
+ 440              	.LVL28:
+ 126:Core/Src/interrupt.c ****                     uint8_t next = prev + 1;
+ 441              		.loc 1 126 21 is_stmt 1 view .LVU119
+ 442              		.loc 1 126 29 is_stmt 0 view .LVU120
+ 443 009c 0133     		adds	r3, r3, #1
+ 444 009e DBB2     		uxtb	r3, r3
+ 445              	.LVL29:
+ 127:Core/Src/interrupt.c ****                     if(next >= 3) next = 0;
+ 446              		.loc 1 127 21 is_stmt 1 view .LVU121
+ 447              		.loc 1 127 23 is_stmt 0 view .LVU122
+ 448 00a0 022B     		cmp	r3, #2
+ 449 00a2 00D8     		bhi	.L26
+ 126:Core/Src/interrupt.c ****                     uint8_t next = prev + 1;
+ 450              		.loc 1 126 29 view .LVU123
+ 451 00a4 1946     		mov	r1, r3
+ 452              	.L26:
+ 453              	.LVL30:
+ 128:Core/Src/interrupt.c ****                     mode0_group_freq[mode0_group_sel] = next;
+ 454              		.loc 1 128 21 is_stmt 1 view .LVU124
+ 455              		.loc 1 128 55 is_stmt 0 view .LVU125
+ 456 00a6 1B4B     		ldr	r3, .L30+56
+ 457              	.LVL31:
+ 458              		.loc 1 128 55 view .LVU126
+ 459 00a8 1954     		strb	r1, [r3, r0]
+ 460              	.LVL32:
+ 129:Core/Src/interrupt.c **** 
+ 130:Core/Src/interrupt.c ****                     // Перезапускаем цикл с начала (первая пара) 
+ 131:Core/Src/interrupt.c ****                     mode0_pair_index = 0;  // начинаем с пары 3&4
+ 461              		.loc 1 131 21 is_stmt 1 view .LVU127
+ 462              		.loc 1 131 38 is_stmt 0 view .LVU128
+ 463 00aa 0023     		movs	r3, #0
+ 464 00ac 1149     		ldr	r1, .L30+24
+ 465              	.LVL33:
+ 466              		.loc 1 131 38 view .LVU129
+ 467 00ae 0B70     		strb	r3, [r1]
+ 132:Core/Src/interrupt.c ****                     mode0_pair_tick  = 0;  // начинаем новый период с нуля
+ 468              		.loc 1 132 21 is_stmt 1 view .LVU130
+ 469              		.loc 1 132 38 is_stmt 0 view .LVU131
+ 470 00b0 0F49     		ldr	r1, .L30+20
+ 471 00b2 0B60     		str	r3, [r1]
+ 472              	.LVL34:
+ 473              	.L27:
+ 474              		.loc 1 132 38 view .LVU132
+ 475              	.LBE8:
+ 133:Core/Src/interrupt.c **** 
+ 134:Core/Src/interrupt.c ****                     // (если нужно, можно сразу посчитать newP, но т
+ 135:Core/Src/interrupt.c ****                     // новый период будет применён естественно)
+ 136:Core/Src/interrupt.c ****                 }
+ 137:Core/Src/interrupt.c ****                 else
+ 138:Core/Src/interrupt.c ****                 {
+ 139:Core/Src/interrupt.c ****                     // режим 1: смена частоты для выбранного LED — 
+ 140:Core/Src/interrupt.c ****                     uint8_t prev = mode1_led_freq[mode1_led_sel];
+ 141:Core/Src/interrupt.c ****                     uint8_t next = prev + 1;
+ 142:Core/Src/interrupt.c ****                     if(next >= 3) next = 0;
+ 143:Core/Src/interrupt.c ****                     mode1_led_freq[mode1_led_sel] = next;
+ 144:Core/Src/interrupt.c **** 
+ 145:Core/Src/interrupt.c ****                     // Сбрасываем тик конкретного LED, чтобы нова�
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 12
+
+
+ 146:Core/Src/interrupt.c ****                     mode1_led_ticks[mode1_led_sel] = 0;
+ 147:Core/Src/interrupt.c ****                 }
+ 148:Core/Src/interrupt.c ****                 last_time_freq = now;
+ 476              		.loc 1 148 17 is_stmt 1 view .LVU133
+ 477              		.loc 1 148 32 is_stmt 0 view .LVU134
+ 478 00b4 154B     		ldr	r3, .L30+48
+ 479 00b6 1A60     		str	r2, [r3]
+ 480              	.LVL35:
+ 481              	.L20:
+ 482              		.loc 1 148 32 view .LVU135
+ 483              	.LBE7:
+ 149:Core/Src/interrupt.c ****             }
+ 150:Core/Src/interrupt.c ****         }
+ 151:Core/Src/interrupt.c ****     }
+ 152:Core/Src/interrupt.c **** }
+ 484              		.loc 1 152 1 view .LVU136
+ 485 00b8 7047     		bx	lr
+ 486              	.LVL36:
+ 487              	.L25:
+ 488              	.LBB10:
+ 489              	.LBB9:
+ 140:Core/Src/interrupt.c ****                     uint8_t next = prev + 1;
+ 490              		.loc 1 140 21 is_stmt 1 view .LVU137
+ 140:Core/Src/interrupt.c ****                     uint8_t next = prev + 1;
+ 491              		.loc 1 140 50 is_stmt 0 view .LVU138
+ 492 00ba 174B     		ldr	r3, .L30+60
+ 493 00bc 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 140:Core/Src/interrupt.c ****                     uint8_t next = prev + 1;
+ 494              		.loc 1 140 29 view .LVU139
+ 495 00be 174B     		ldr	r3, .L30+64
+ 496 00c0 5B5C     		ldrb	r3, [r3, r1]	@ zero_extendqisi2
+ 497              	.LVL37:
+ 141:Core/Src/interrupt.c ****                     if(next >= 3) next = 0;
+ 498              		.loc 1 141 21 is_stmt 1 view .LVU140
+ 141:Core/Src/interrupt.c ****                     if(next >= 3) next = 0;
+ 499              		.loc 1 141 29 is_stmt 0 view .LVU141
+ 500 00c2 0133     		adds	r3, r3, #1
+ 501 00c4 DBB2     		uxtb	r3, r3
+ 502              	.LVL38:
+ 142:Core/Src/interrupt.c ****                     mode1_led_freq[mode1_led_sel] = next;
+ 503              		.loc 1 142 21 is_stmt 1 view .LVU142
+ 142:Core/Src/interrupt.c ****                     mode1_led_freq[mode1_led_sel] = next;
+ 504              		.loc 1 142 23 is_stmt 0 view .LVU143
+ 505 00c6 022B     		cmp	r3, #2
+ 506 00c8 00D9     		bls	.L28
+ 142:Core/Src/interrupt.c ****                     mode1_led_freq[mode1_led_sel] = next;
+ 507              		.loc 1 142 40 discriminator 1 view .LVU144
+ 508 00ca 0023     		movs	r3, #0
+ 509              	.LVL39:
+ 510              	.L28:
+ 143:Core/Src/interrupt.c **** 
+ 511              		.loc 1 143 21 is_stmt 1 view .LVU145
+ 143:Core/Src/interrupt.c **** 
+ 512              		.loc 1 143 51 is_stmt 0 view .LVU146
+ 513 00cc 1348     		ldr	r0, .L30+64
+ 514              	.LVL40:
+ 143:Core/Src/interrupt.c **** 
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 13
+
+
+ 515              		.loc 1 143 51 view .LVU147
+ 516 00ce 4354     		strb	r3, [r0, r1]
+ 517              	.LVL41:
+ 146:Core/Src/interrupt.c ****                 }
+ 518              		.loc 1 146 21 is_stmt 1 view .LVU148
+ 146:Core/Src/interrupt.c ****                 }
+ 519              		.loc 1 146 52 is_stmt 0 view .LVU149
+ 520 00d0 0C4B     		ldr	r3, .L30+40
+ 521              	.LVL42:
+ 146:Core/Src/interrupt.c ****                 }
+ 522              		.loc 1 146 52 view .LVU150
+ 523 00d2 0020     		movs	r0, #0
+ 524              	.LVL43:
+ 146:Core/Src/interrupt.c ****                 }
+ 525              		.loc 1 146 52 view .LVU151
+ 526 00d4 43F82100 		str	r0, [r3, r1, lsl #2]
+ 527 00d8 ECE7     		b	.L27
+ 528              	.L31:
+ 529 00da 00BF     		.align	2
+ 530              	.L30:
+ 531 00dc 003C0140 		.word	1073822720
+ 532 00e0 00080240 		.word	1073874944
+ 533 00e4 00000000 		.word	msTicks
+ 534 00e8 00000000 		.word	last_time_user
+ 535 00ec 00000000 		.word	ledMode
+ 536 00f0 00000000 		.word	mode0_pair_tick
+ 537 00f4 00000000 		.word	mode0_pair_index
+ 538 00f8 00000000 		.word	staging_tick
+ 539 00fc 00000000 		.word	staging_index
+ 540 0100 00000000 		.word	mode1_led_active
+ 541 0104 00000000 		.word	mode1_led_ticks
+ 542 0108 00040240 		.word	1073873920
+ 543 010c 00000000 		.word	last_time_freq
+ 544 0110 00000000 		.word	mode0_group_sel
+ 545 0114 00000000 		.word	mode0_group_freq
+ 546 0118 00000000 		.word	mode1_led_sel
+ 547 011c 00000000 		.word	mode1_led_freq
+ 548              	.LBE9:
+ 549              	.LBE10:
+ 550              		.cfi_endproc
+ 551              	.LFE134:
+ 553              		.global	last_time_sel
+ 554              		.section	.bss.last_time_sel,"aw",%nobits
+ 555              		.align	2
+ 558              	last_time_sel:
+ 559 0000 00000000 		.space	4
+ 560              		.global	last_time_freq
+ 561              		.section	.bss.last_time_freq,"aw",%nobits
+ 562              		.align	2
+ 565              	last_time_freq:
+ 566 0000 00000000 		.space	4
+ 567              		.global	last_time_user
+ 568              		.section	.bss.last_time_user,"aw",%nobits
+ 569              		.align	2
+ 572              	last_time_user:
+ 573 0000 00000000 		.space	4
+ 574              		.global	staging_index
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 14
+
+
+ 575              		.section	.bss.staging_index,"aw",%nobits
+ 578              	staging_index:
+ 579 0000 00       		.space	1
+ 580              		.global	staging_tick
+ 581              		.section	.bss.staging_tick,"aw",%nobits
+ 582              		.align	2
+ 585              	staging_tick:
+ 586 0000 00000000 		.space	4
+ 587              		.global	mode1_led_ticks
+ 588              		.section	.bss.mode1_led_ticks,"aw",%nobits
+ 589              		.align	2
+ 592              	mode1_led_ticks:
+ 593 0000 00000000 		.space	24
+ 593      00000000 
+ 593      00000000 
+ 593      00000000 
+ 593      00000000 
+ 594              		.global	mode1_led_active
+ 595              		.section	.bss.mode1_led_active,"aw",%nobits
+ 596              		.align	2
+ 599              	mode1_led_active:
+ 600 0000 00000000 		.space	6
+ 600      0000
+ 601              		.global	mode1_led_freq
+ 602              		.section	.bss.mode1_led_freq,"aw",%nobits
+ 603              		.align	2
+ 606              	mode1_led_freq:
+ 607 0000 00000000 		.space	6
+ 607      0000
+ 608              		.global	mode1_led_sel
+ 609              		.section	.bss.mode1_led_sel,"aw",%nobits
+ 612              	mode1_led_sel:
+ 613 0000 00       		.space	1
+ 614              		.global	mode0_pair_index
+ 615              		.section	.bss.mode0_pair_index,"aw",%nobits
+ 618              	mode0_pair_index:
+ 619 0000 00       		.space	1
+ 620              		.global	mode0_pair_tick
+ 621              		.section	.bss.mode0_pair_tick,"aw",%nobits
+ 622              		.align	2
+ 625              	mode0_pair_tick:
+ 626 0000 00000000 		.space	4
+ 627              		.global	mode0_group_freq
+ 628              		.section	.bss.mode0_group_freq,"aw",%nobits
+ 629              		.align	2
+ 632              	mode0_group_freq:
+ 633 0000 000000   		.space	3
+ 634              		.global	mode0_group_sel
+ 635              		.section	.bss.mode0_group_sel,"aw",%nobits
+ 638              	mode0_group_sel:
+ 639 0000 00       		.space	1
+ 640              		.global	ledMode
+ 641              		.section	.bss.ledMode,"aw",%nobits
+ 644              	ledMode:
+ 645 0000 00       		.space	1
+ 646              		.global	msTicks
+ 647              		.section	.bss.msTicks,"aw",%nobits
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 15
+
+
+ 648              		.align	2
+ 651              	msTicks:
+ 652 0000 00000000 		.space	4
+ 653              		.text
+ 654              	.Letext0:
+ 655              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 656              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 657              		.file 4 "Core/Inc/interrupt.h"
+ 658              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s 			page 16
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 interrupt.c
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:21     .text.get_mode0_period_by_index:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:27     .text.get_mode0_period_by_index:00000000 get_mode0_period_by_index
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:63     .text.get_mode1_period_by_index:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:69     .text.get_mode1_period_by_index:00000000 get_mode1_period_by_index
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:105    .text.SysTick_Handler:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:111    .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:171    .text.SysTick_Handler:00000034 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:651    .bss.msTicks:00000000 msTicks
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:625    .bss.mode0_pair_tick:00000000 mode0_pair_tick
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:592    .bss.mode1_led_ticks:00000000 mode1_led_ticks
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:585    .bss.staging_tick:00000000 staging_tick
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:179    .text.EXTI4_IRQHandler:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:185    .text.EXTI4_IRQHandler:00000000 EXTI4_IRQHandler
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:274    .text.EXTI4_IRQHandler:00000058 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:558    .bss.last_time_sel:00000000 last_time_sel
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:644    .bss.ledMode:00000000 ledMode
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:638    .bss.mode0_group_sel:00000000 mode0_group_sel
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:612    .bss.mode1_led_sel:00000000 mode1_led_sel
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:286    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:292    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:531    .text.EXTI15_10_IRQHandler:000000dc $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:572    .bss.last_time_user:00000000 last_time_user
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:618    .bss.mode0_pair_index:00000000 mode0_pair_index
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:578    .bss.staging_index:00000000 staging_index
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:599    .bss.mode1_led_active:00000000 mode1_led_active
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:565    .bss.last_time_freq:00000000 last_time_freq
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:632    .bss.mode0_group_freq:00000000 mode0_group_freq
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:606    .bss.mode1_led_freq:00000000 mode1_led_freq
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:555    .bss.last_time_sel:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:562    .bss.last_time_freq:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:569    .bss.last_time_user:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:579    .bss.staging_index:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:582    .bss.staging_tick:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:589    .bss.mode1_led_ticks:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:596    .bss.mode1_led_active:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:603    .bss.mode1_led_freq:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:613    .bss.mode1_led_sel:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:619    .bss.mode0_pair_index:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:622    .bss.mode0_pair_tick:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:629    .bss.mode0_group_freq:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:639    .bss.mode0_group_sel:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:645    .bss.ledMode:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccDGH7kr.s:648    .bss.msTicks:00000000 $d
+
+NO UNDEFINED SYMBOLS
