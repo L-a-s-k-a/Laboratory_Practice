@@ -1,0 +1,521 @@
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.Green_LED_ON,"ax",%progbits
+  21              		.align	1
+  22              		.global	Green_LED_ON
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	Green_LED_ON:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** // PB0 - зеленый светодиод
+   4:Core/Src/init.c **** void Green_LED_ON(void){ 
+  29              		.loc 1 4 24 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****    SET_BIT(GPIOB->MODER, GPIO_MODER_MODER0_0);
+  34              		.loc 1 5 4 view .LVU1
+  35 0000 084B     		ldr	r3, .L2
+  36 0002 1A68     		ldr	r2, [r3]
+  37 0004 42F00102 		orr	r2, r2, #1
+  38 0008 1A60     		str	r2, [r3]
+   6:Core/Src/init.c ****    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_0);
+  39              		.loc 1 6 4 view .LVU2
+  40 000a 5A68     		ldr	r2, [r3, #4]
+  41 000c 22F00102 		bic	r2, r2, #1
+  42 0010 5A60     		str	r2, [r3, #4]
+   7:Core/Src/init.c ****    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR0_0);
+  43              		.loc 1 7 4 view .LVU3
+  44 0012 9A68     		ldr	r2, [r3, #8]
+  45 0014 42F00102 		orr	r2, r2, #1
+  46 0018 9A60     		str	r2, [r3, #8]
+   8:Core/Src/init.c ****    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR0_0);
+  47              		.loc 1 8 4 view .LVU4
+  48 001a DA68     		ldr	r2, [r3, #12]
+  49 001c 22F00102 		bic	r2, r2, #1
+  50 0020 DA60     		str	r2, [r3, #12]
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 2
+
+
+   9:Core/Src/init.c **** }
+  51              		.loc 1 9 1 is_stmt 0 view .LVU5
+  52 0022 7047     		bx	lr
+  53              	.L3:
+  54              		.align	2
+  55              	.L2:
+  56 0024 00040240 		.word	1073873920
+  57              		.cfi_endproc
+  58              	.LFE130:
+  60              		.section	.text.Blue_LED_ON,"ax",%progbits
+  61              		.align	1
+  62              		.global	Blue_LED_ON
+  63              		.syntax unified
+  64              		.thumb
+  65              		.thumb_func
+  67              	Blue_LED_ON:
+  68              	.LFB131:
+  10:Core/Src/init.c **** 
+  11:Core/Src/init.c **** // PB7 - синий светодиод
+  12:Core/Src/init.c **** void Blue_LED_ON(void){ //напрямую
+  69              		.loc 1 12 23 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  73              		@ link register save eliminated.
+  13:Core/Src/init.c ****    
+  14:Core/Src/init.c ****    *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x4000; 
+  74              		.loc 1 14 4 view .LVU7
+  75 0000 064B     		ldr	r3, .L5
+  76 0002 D3F80024 		ldr	r2, [r3, #1024]
+  77              		.loc 1 14 40 is_stmt 0 view .LVU8
+  78 0006 42F48042 		orr	r2, r2, #16384
+  79 000a C3F80024 		str	r2, [r3, #1024]
+  15:Core/Src/init.c ****    
+  16:Core/Src/init.c ****    *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00; 
+  80              		.loc 1 16 4 is_stmt 1 view .LVU9
+  17:Core/Src/init.c **** 
+  18:Core/Src/init.c ****    *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x4000;
+  81              		.loc 1 18 4 view .LVU10
+  82 000e D3F80824 		ldr	r2, [r3, #1032]
+  83              		.loc 1 18 40 is_stmt 0 view .LVU11
+  84 0012 42F48042 		orr	r2, r2, #16384
+  85 0016 C3F80824 		str	r2, [r3, #1032]
+  19:Core/Src/init.c **** 
+  20:Core/Src/init.c ****    *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00;
+  86              		.loc 1 20 4 is_stmt 1 view .LVU12
+  21:Core/Src/init.c **** }
+  87              		.loc 1 21 1 is_stmt 0 view .LVU13
+  88 001a 7047     		bx	lr
+  89              	.L6:
+  90              		.align	2
+  91              	.L5:
+  92 001c 00000240 		.word	1073872896
+  93              		.cfi_endproc
+  94              	.LFE131:
+  96              		.section	.text.Red_LED_ON,"ax",%progbits
+  97              		.align	1
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 3
+
+
+  98              		.global	Red_LED_ON
+  99              		.syntax unified
+ 100              		.thumb
+ 101              		.thumb_func
+ 103              	Red_LED_ON:
+ 104              	.LFB132:
+  22:Core/Src/init.c **** 
+  23:Core/Src/init.c **** // PB14 - красный светодиод
+  24:Core/Src/init.c **** void Red_LED_ON(void){
+ 105              		.loc 1 24 22 is_stmt 1 view -0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109              		@ link register save eliminated.
+  25:Core/Src/init.c **** 
+  26:Core/Src/init.c ****     BIT_SET(GPIOB_MODER, GPIOB_OUTPUT_MODE_PIN_14);
+ 110              		.loc 1 26 5 view .LVU15
+ 111 0000 094B     		ldr	r3, .L8
+ 112 0002 D3F80024 		ldr	r2, [r3, #1024]
+ 113 0006 42F08052 		orr	r2, r2, #268435456
+ 114 000a C3F80024 		str	r2, [r3, #1024]
+  27:Core/Src/init.c ****     BIT_SET(GPIOB_OSPEEDR, GPIOB_OUTPUT_MEDIUM_PIN_14);
+ 115              		.loc 1 27 5 view .LVU16
+ 116 000e D3F80824 		ldr	r2, [r3, #1032]
+ 117 0012 42F08052 		orr	r2, r2, #268435456
+ 118 0016 C3F80824 		str	r2, [r3, #1032]
+  28:Core/Src/init.c **** 
+  29:Core/Src/init.c ****     BIT_CLEAR(GPIOB_PUPDR, GPIOB_PP_PIN_14);
+ 119              		.loc 1 29 5 view .LVU17
+ 120 001a D3F80C24 		ldr	r2, [r3, #1036]
+ 121 001e 22F04052 		bic	r2, r2, #805306368
+ 122 0022 C3F80C24 		str	r2, [r3, #1036]
+  30:Core/Src/init.c ****     
+  31:Core/Src/init.c **** }
+ 123              		.loc 1 31 1 is_stmt 0 view .LVU18
+ 124 0026 7047     		bx	lr
+ 125              	.L9:
+ 126              		.align	2
+ 127              	.L8:
+ 128 0028 00000240 		.word	1073872896
+ 129              		.cfi_endproc
+ 130              	.LFE132:
+ 132              		.section	.text.GPIOC10_Set_Output,"ax",%progbits
+ 133              		.align	1
+ 134              		.global	GPIOC10_Set_Output
+ 135              		.syntax unified
+ 136              		.thumb
+ 137              		.thumb_func
+ 139              	GPIOC10_Set_Output:
+ 140              	.LFB133:
+  32:Core/Src/init.c **** 
+  33:Core/Src/init.c **** // PC10
+  34:Core/Src/init.c **** void GPIOC10_Set_Output(void){
+ 141              		.loc 1 34 30 is_stmt 1 view -0
+ 142              		.cfi_startproc
+ 143              		@ args = 0, pretend = 0, frame = 0
+ 144              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 4
+
+
+ 145              		@ link register save eliminated.
+  35:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER10_0);
+ 146              		.loc 1 35 5 view .LVU20
+ 147 0000 084B     		ldr	r3, .L11
+ 148 0002 1A68     		ldr	r2, [r3]
+ 149 0004 42F48012 		orr	r2, r2, #1048576
+ 150 0008 1A60     		str	r2, [r3]
+  36:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_10);
+ 151              		.loc 1 36 5 view .LVU21
+ 152 000a 5A68     		ldr	r2, [r3, #4]
+ 153 000c 22F48062 		bic	r2, r2, #1024
+ 154 0010 5A60     		str	r2, [r3, #4]
+  37:Core/Src/init.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR10_0);
+ 155              		.loc 1 37 5 view .LVU22
+ 156 0012 9A68     		ldr	r2, [r3, #8]
+ 157 0014 42F48012 		orr	r2, r2, #1048576
+ 158 0018 9A60     		str	r2, [r3, #8]
+  38:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR10_0);
+ 159              		.loc 1 38 5 view .LVU23
+ 160 001a DA68     		ldr	r2, [r3, #12]
+ 161 001c 22F48012 		bic	r2, r2, #1048576
+ 162 0020 DA60     		str	r2, [r3, #12]
+  39:Core/Src/init.c **** }
+ 163              		.loc 1 39 1 is_stmt 0 view .LVU24
+ 164 0022 7047     		bx	lr
+ 165              	.L12:
+ 166              		.align	2
+ 167              	.L11:
+ 168 0024 00080240 		.word	1073874944
+ 169              		.cfi_endproc
+ 170              	.LFE133:
+ 172              		.section	.text.GPIOC10_Set_Input,"ax",%progbits
+ 173              		.align	1
+ 174              		.global	GPIOC10_Set_Input
+ 175              		.syntax unified
+ 176              		.thumb
+ 177              		.thumb_func
+ 179              	GPIOC10_Set_Input:
+ 180              	.LFB134:
+  40:Core/Src/init.c **** 
+  41:Core/Src/init.c **** void GPIOC10_Set_Input(void){
+ 181              		.loc 1 41 29 is_stmt 1 view -0
+ 182              		.cfi_startproc
+ 183              		@ args = 0, pretend = 0, frame = 0
+ 184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 185              		@ link register save eliminated.
+  42:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER10_0);
+ 186              		.loc 1 42 5 view .LVU26
+ 187 0000 064B     		ldr	r3, .L14
+ 188 0002 1A68     		ldr	r2, [r3]
+ 189 0004 22F48012 		bic	r2, r2, #1048576
+ 190 0008 1A60     		str	r2, [r3]
+  43:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR10_0);
+ 191              		.loc 1 43 5 view .LVU27
+ 192 000a 9A68     		ldr	r2, [r3, #8]
+ 193 000c 22F48012 		bic	r2, r2, #1048576
+ 194 0010 9A60     		str	r2, [r3, #8]
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 5
+
+
+  44:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR10_0);
+ 195              		.loc 1 44 5 view .LVU28
+ 196 0012 DA68     		ldr	r2, [r3, #12]
+ 197 0014 22F48012 		bic	r2, r2, #1048576
+ 198 0018 DA60     		str	r2, [r3, #12]
+  45:Core/Src/init.c **** }
+ 199              		.loc 1 45 1 is_stmt 0 view .LVU29
+ 200 001a 7047     		bx	lr
+ 201              	.L15:
+ 202              		.align	2
+ 203              	.L14:
+ 204 001c 00080240 		.word	1073874944
+ 205              		.cfi_endproc
+ 206              	.LFE134:
+ 208              		.section	.text.GPIOC11_Set_Output,"ax",%progbits
+ 209              		.align	1
+ 210              		.global	GPIOC11_Set_Output
+ 211              		.syntax unified
+ 212              		.thumb
+ 213              		.thumb_func
+ 215              	GPIOC11_Set_Output:
+ 216              	.LFB135:
+  46:Core/Src/init.c **** 
+  47:Core/Src/init.c **** // PC11
+  48:Core/Src/init.c **** void GPIOC11_Set_Output(void){
+ 217              		.loc 1 48 30 is_stmt 1 view -0
+ 218              		.cfi_startproc
+ 219              		@ args = 0, pretend = 0, frame = 0
+ 220              		@ frame_needed = 0, uses_anonymous_args = 0
+ 221              		@ link register save eliminated.
+  49:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER11_0);
+ 222              		.loc 1 49 5 view .LVU31
+ 223 0000 084B     		ldr	r3, .L17
+ 224 0002 1A68     		ldr	r2, [r3]
+ 225 0004 42F48002 		orr	r2, r2, #4194304
+ 226 0008 1A60     		str	r2, [r3]
+  50:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_11);
+ 227              		.loc 1 50 5 view .LVU32
+ 228 000a 5A68     		ldr	r2, [r3, #4]
+ 229 000c 22F40062 		bic	r2, r2, #2048
+ 230 0010 5A60     		str	r2, [r3, #4]
+  51:Core/Src/init.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR11_0);
+ 231              		.loc 1 51 5 view .LVU33
+ 232 0012 9A68     		ldr	r2, [r3, #8]
+ 233 0014 42F48002 		orr	r2, r2, #4194304
+ 234 0018 9A60     		str	r2, [r3, #8]
+  52:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR11_0);
+ 235              		.loc 1 52 5 view .LVU34
+ 236 001a DA68     		ldr	r2, [r3, #12]
+ 237 001c 22F48002 		bic	r2, r2, #4194304
+ 238 0020 DA60     		str	r2, [r3, #12]
+  53:Core/Src/init.c **** }
+ 239              		.loc 1 53 1 is_stmt 0 view .LVU35
+ 240 0022 7047     		bx	lr
+ 241              	.L18:
+ 242              		.align	2
+ 243              	.L17:
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 6
+
+
+ 244 0024 00080240 		.word	1073874944
+ 245              		.cfi_endproc
+ 246              	.LFE135:
+ 248              		.section	.text.GPIOC11_Set_Input,"ax",%progbits
+ 249              		.align	1
+ 250              		.global	GPIOC11_Set_Input
+ 251              		.syntax unified
+ 252              		.thumb
+ 253              		.thumb_func
+ 255              	GPIOC11_Set_Input:
+ 256              	.LFB136:
+  54:Core/Src/init.c **** 
+  55:Core/Src/init.c **** void GPIOC11_Set_Input(void){
+ 257              		.loc 1 55 29 is_stmt 1 view -0
+ 258              		.cfi_startproc
+ 259              		@ args = 0, pretend = 0, frame = 0
+ 260              		@ frame_needed = 0, uses_anonymous_args = 0
+ 261              		@ link register save eliminated.
+  56:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER11_0);
+ 262              		.loc 1 56 5 view .LVU37
+ 263 0000 064B     		ldr	r3, .L20
+ 264 0002 1A68     		ldr	r2, [r3]
+ 265 0004 22F48002 		bic	r2, r2, #4194304
+ 266 0008 1A60     		str	r2, [r3]
+  57:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR11_0);
+ 267              		.loc 1 57 5 view .LVU38
+ 268 000a 9A68     		ldr	r2, [r3, #8]
+ 269 000c 22F48002 		bic	r2, r2, #4194304
+ 270 0010 9A60     		str	r2, [r3, #8]
+  58:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR11_0);
+ 271              		.loc 1 58 5 view .LVU39
+ 272 0012 DA68     		ldr	r2, [r3, #12]
+ 273 0014 22F48002 		bic	r2, r2, #4194304
+ 274 0018 DA60     		str	r2, [r3, #12]
+  59:Core/Src/init.c **** }
+ 275              		.loc 1 59 1 is_stmt 0 view .LVU40
+ 276 001a 7047     		bx	lr
+ 277              	.L21:
+ 278              		.align	2
+ 279              	.L20:
+ 280 001c 00080240 		.word	1073874944
+ 281              		.cfi_endproc
+ 282              	.LFE136:
+ 284              		.section	.text.GPIOC12_Set_Output,"ax",%progbits
+ 285              		.align	1
+ 286              		.global	GPIOC12_Set_Output
+ 287              		.syntax unified
+ 288              		.thumb
+ 289              		.thumb_func
+ 291              	GPIOC12_Set_Output:
+ 292              	.LFB137:
+  60:Core/Src/init.c **** 
+  61:Core/Src/init.c **** // PC12
+  62:Core/Src/init.c **** void GPIOC12_Set_Output(void){
+ 293              		.loc 1 62 30 is_stmt 1 view -0
+ 294              		.cfi_startproc
+ 295              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 7
+
+
+ 296              		@ frame_needed = 0, uses_anonymous_args = 0
+ 297              		@ link register save eliminated.
+  63:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER12_0);
+ 298              		.loc 1 63 5 view .LVU42
+ 299 0000 084B     		ldr	r3, .L23
+ 300 0002 1A68     		ldr	r2, [r3]
+ 301 0004 42F08072 		orr	r2, r2, #16777216
+ 302 0008 1A60     		str	r2, [r3]
+  64:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OTYPER, GPIO_OTYPER_OT_12);
+ 303              		.loc 1 64 5 view .LVU43
+ 304 000a 5A68     		ldr	r2, [r3, #4]
+ 305 000c 22F48052 		bic	r2, r2, #4096
+ 306 0010 5A60     		str	r2, [r3, #4]
+  65:Core/Src/init.c ****     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR12_0);
+ 307              		.loc 1 65 5 view .LVU44
+ 308 0012 9A68     		ldr	r2, [r3, #8]
+ 309 0014 42F08072 		orr	r2, r2, #16777216
+ 310 0018 9A60     		str	r2, [r3, #8]
+  66:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR12_0);
+ 311              		.loc 1 66 5 view .LVU45
+ 312 001a DA68     		ldr	r2, [r3, #12]
+ 313 001c 22F08072 		bic	r2, r2, #16777216
+ 314 0020 DA60     		str	r2, [r3, #12]
+  67:Core/Src/init.c **** }
+ 315              		.loc 1 67 1 is_stmt 0 view .LVU46
+ 316 0022 7047     		bx	lr
+ 317              	.L24:
+ 318              		.align	2
+ 319              	.L23:
+ 320 0024 00080240 		.word	1073874944
+ 321              		.cfi_endproc
+ 322              	.LFE137:
+ 324              		.section	.text.GPIOC12_Set_Input,"ax",%progbits
+ 325              		.align	1
+ 326              		.global	GPIOC12_Set_Input
+ 327              		.syntax unified
+ 328              		.thumb
+ 329              		.thumb_func
+ 331              	GPIOC12_Set_Input:
+ 332              	.LFB138:
+  68:Core/Src/init.c **** 
+  69:Core/Src/init.c **** void GPIOC12_Set_Input(void){
+ 333              		.loc 1 69 29 is_stmt 1 view -0
+ 334              		.cfi_startproc
+ 335              		@ args = 0, pretend = 0, frame = 0
+ 336              		@ frame_needed = 0, uses_anonymous_args = 0
+ 337              		@ link register save eliminated.
+  70:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER12_0);
+ 338              		.loc 1 70 5 view .LVU48
+ 339 0000 064B     		ldr	r3, .L26
+ 340 0002 1A68     		ldr	r2, [r3]
+ 341 0004 22F08072 		bic	r2, r2, #16777216
+ 342 0008 1A60     		str	r2, [r3]
+  71:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR12_0);
+ 343              		.loc 1 71 5 view .LVU49
+ 344 000a 9A68     		ldr	r2, [r3, #8]
+ 345 000c 22F08072 		bic	r2, r2, #16777216
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 8
+
+
+ 346 0010 9A60     		str	r2, [r3, #8]
+  72:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR12_0);
+ 347              		.loc 1 72 5 view .LVU50
+ 348 0012 DA68     		ldr	r2, [r3, #12]
+ 349 0014 22F08072 		bic	r2, r2, #16777216
+ 350 0018 DA60     		str	r2, [r3, #12]
+  73:Core/Src/init.c **** }
+ 351              		.loc 1 73 1 is_stmt 0 view .LVU51
+ 352 001a 7047     		bx	lr
+ 353              	.L27:
+ 354              		.align	2
+ 355              	.L26:
+ 356 001c 00080240 		.word	1073874944
+ 357              		.cfi_endproc
+ 358              	.LFE138:
+ 360              		.section	.text.GPIOC13_Set_Input,"ax",%progbits
+ 361              		.align	1
+ 362              		.global	GPIOC13_Set_Input
+ 363              		.syntax unified
+ 364              		.thumb
+ 365              		.thumb_func
+ 367              	GPIOC13_Set_Input:
+ 368              	.LFB139:
+  74:Core/Src/init.c **** 
+  75:Core/Src/init.c **** //PC13 - кнопка на плате
+  76:Core/Src/init.c **** void GPIOC13_Set_Input(void){
+ 369              		.loc 1 76 29 is_stmt 1 view -0
+ 370              		.cfi_startproc
+ 371              		@ args = 0, pretend = 0, frame = 0
+ 372              		@ frame_needed = 0, uses_anonymous_args = 0
+ 373              		@ link register save eliminated.
+  77:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER13_0 | GPIO_MODER_MODER13_1);
+ 374              		.loc 1 77 5 view .LVU53
+ 375 0000 044B     		ldr	r3, .L29
+ 376 0002 1A68     		ldr	r2, [r3]
+ 377 0004 22F04062 		bic	r2, r2, #201326592
+ 378 0008 1A60     		str	r2, [r3]
+  78:Core/Src/init.c ****     CLEAR_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDER_OSPEEDR13_0 | GPIO_OSPEEDER_OSPEEDR13_1);
+ 379              		.loc 1 78 5 view .LVU54
+ 380 000a 9A68     		ldr	r2, [r3, #8]
+ 381 000c 22F04062 		bic	r2, r2, #201326592
+ 382 0010 9A60     		str	r2, [r3, #8]
+  79:Core/Src/init.c ****     
+  80:Core/Src/init.c ****     //SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR13_0);
+  81:Core/Src/init.c **** }
+ 383              		.loc 1 81 1 is_stmt 0 view .LVU55
+ 384 0012 7047     		bx	lr
+ 385              	.L30:
+ 386              		.align	2
+ 387              	.L29:
+ 388 0014 00080240 		.word	1073874944
+ 389              		.cfi_endproc
+ 390              	.LFE139:
+ 392              		.text
+ 393              	.Letext0:
+ 394              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 395              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 9
+
+
+ 396              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:21     .text.Green_LED_ON:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:27     .text.Green_LED_ON:00000000 Green_LED_ON
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:56     .text.Green_LED_ON:00000024 $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:61     .text.Blue_LED_ON:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:67     .text.Blue_LED_ON:00000000 Blue_LED_ON
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:92     .text.Blue_LED_ON:0000001c $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:97     .text.Red_LED_ON:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:103    .text.Red_LED_ON:00000000 Red_LED_ON
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:128    .text.Red_LED_ON:00000028 $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:133    .text.GPIOC10_Set_Output:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:139    .text.GPIOC10_Set_Output:00000000 GPIOC10_Set_Output
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:168    .text.GPIOC10_Set_Output:00000024 $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:173    .text.GPIOC10_Set_Input:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:179    .text.GPIOC10_Set_Input:00000000 GPIOC10_Set_Input
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:204    .text.GPIOC10_Set_Input:0000001c $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:209    .text.GPIOC11_Set_Output:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:215    .text.GPIOC11_Set_Output:00000000 GPIOC11_Set_Output
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:244    .text.GPIOC11_Set_Output:00000024 $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:249    .text.GPIOC11_Set_Input:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:255    .text.GPIOC11_Set_Input:00000000 GPIOC11_Set_Input
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:280    .text.GPIOC11_Set_Input:0000001c $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:285    .text.GPIOC12_Set_Output:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:291    .text.GPIOC12_Set_Output:00000000 GPIOC12_Set_Output
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:320    .text.GPIOC12_Set_Output:00000024 $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:325    .text.GPIOC12_Set_Input:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:331    .text.GPIOC12_Set_Input:00000000 GPIOC12_Set_Input
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:356    .text.GPIOC12_Set_Input:0000001c $d
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:361    .text.GPIOC13_Set_Input:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:367    .text.GPIOC13_Set_Input:00000000 GPIOC13_Set_Input
+C:\Users\Niki\AppData\Local\Temp\ccxbM2Z0.s:388    .text.GPIOC13_Set_Input:00000014 $d
+
+NO UNDEFINED SYMBOLS

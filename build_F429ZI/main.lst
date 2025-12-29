@@ -1,0 +1,752 @@
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "../Inc/init.h"
+   2:Core/Src/main.c **** #include <stdint.h>
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** uint8_t flag_PC10 = 0; // для кнопки 2 по умолчанию 0-вход 1-выход
+   5:Core/Src/main.c **** uint8_t flag_PC11 = 0; // для кнопки 3
+   6:Core/Src/main.c **** uint8_t flag_PC12 = 0; // для кнопки 4
+   7:Core/Src/main.c **** uint8_t flag_PC13 = 0; // флаг для кнопки на плате (1)
+   8:Core/Src/main.c **** uint32_t count_PC13 = 0; // счетчик для кол-ва нажатий 
+   9:Core/Src/main.c **** uint8_t button_pressed = 0; // флаг нажатия кнопки
+  10:Core/Src/main.c **** uint8_t button_pressed1 = 0; // флаг нажатия кнопки для защиты от др�
+  11:Core/Src/main.c **** uint32_t filter;
+  12:Core/Src/main.c **** // кнопка 1 - PC13 
+  13:Core/Src/main.c **** // кнопка 2 и светодиод  - PC10
+  14:Core/Src/main.c **** // кнопка 3 и светодиод  - PC11
+  15:Core/Src/main.c **** // кнопка 4 и светодиод  - PC12
+  16:Core/Src/main.c **** // светодиоды на плате PB0 - зеленый, PB7 - синий, PB14 - красны
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** int main(void) {
+  29              		.loc 1 18 16 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  19:Core/Src/main.c ****     //SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); // включение та�
+  20:Core/Src/main.c ****     BIT_SET(RCC_AHB1ENR, RCC_GPIOB_EN | RCC_GPIOC_EN);
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 2
+
+
+  39              		.loc 1 20 5 view .LVU1
+  40 0002 874A     		ldr	r2, .L34
+  41 0004 D2F83038 		ldr	r3, [r2, #2096]
+  42 0008 43F00603 		orr	r3, r3, #6
+  43 000c C2F83038 		str	r3, [r2, #2096]
+  21:Core/Src/main.c ****     // Инициализация светодиодов
+  22:Core/Src/main.c ****     Green_LED_ON();
+  44              		.loc 1 22 5 view .LVU2
+  45 0010 FFF7FEFF 		bl	Green_LED_ON
+  46              	.LVL0:
+  23:Core/Src/main.c ****     Blue_LED_ON();
+  47              		.loc 1 23 5 view .LVU3
+  48 0014 FFF7FEFF 		bl	Blue_LED_ON
+  49              	.LVL1:
+  24:Core/Src/main.c ****     Red_LED_ON();
+  50              		.loc 1 24 5 view .LVU4
+  51 0018 FFF7FEFF 		bl	Red_LED_ON
+  52              	.LVL2:
+  25:Core/Src/main.c ****     
+  26:Core/Src/main.c ****     // Инициализация кнопки PC13 (вход)
+  27:Core/Src/main.c ****     GPIOC13_Set_Input();
+  53              		.loc 1 27 5 view .LVU5
+  54 001c FFF7FEFF 		bl	GPIOC13_Set_Input
+  55              	.LVL3:
+  28:Core/Src/main.c ****     
+  29:Core/Src/main.c ****     // Изначально все порты PC10-PC12 как вход
+  30:Core/Src/main.c ****     GPIOC10_Set_Input();
+  56              		.loc 1 30 5 view .LVU6
+  57 0020 FFF7FEFF 		bl	GPIOC10_Set_Input
+  58              	.LVL4:
+  31:Core/Src/main.c ****     GPIOC11_Set_Input();
+  59              		.loc 1 31 5 view .LVU7
+  60 0024 FFF7FEFF 		bl	GPIOC11_Set_Input
+  61              	.LVL5:
+  32:Core/Src/main.c ****     GPIOC12_Set_Input();
+  62              		.loc 1 32 5 view .LVU8
+  63 0028 FFF7FEFF 		bl	GPIOC12_Set_Input
+  64              	.LVL6:
+  65 002c 5DE0     		b	.L25
+  66              	.L3:
+  33:Core/Src/main.c **** 
+  34:Core/Src/main.c ****     while (1) {
+  35:Core/Src/main.c ****         
+  36:Core/Src/main.c ****         //Обработка кнопки 1 (PC13) - управление режимами порт
+  37:Core/Src/main.c ****         if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13)) {
+  38:Core/Src/main.c ****             filter = 2000;
+  39:Core/Src/main.c ****             button_pressed1 = 1;
+  40:Core/Src/main.c ****         }
+  41:Core/Src/main.c ****         else if(filter == 0){
+  67              		.loc 1 41 14 view .LVU9
+  68              		.loc 1 41 24 is_stmt 0 view .LVU10
+  69 002e 7D4B     		ldr	r3, .L34+4
+  70 0030 1B68     		ldr	r3, [r3]
+  71              		.loc 1 41 16 view .LVU11
+  72 0032 1BB9     		cbnz	r3, .L5
+  42:Core/Src/main.c ****             button_pressed1 = 0;
+  73              		.loc 1 42 13 is_stmt 1 view .LVU12
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 3
+
+
+  74              		.loc 1 42 29 is_stmt 0 view .LVU13
+  75 0034 7C4B     		ldr	r3, .L34+8
+  76 0036 0022     		movs	r2, #0
+  77 0038 1A70     		strb	r2, [r3]
+  78 003a 62E0     		b	.L4
+  79              	.L5:
+  43:Core/Src/main.c ****         }    
+  44:Core/Src/main.c ****         else if(filter > 0){
+  80              		.loc 1 44 14 is_stmt 1 view .LVU14
+  45:Core/Src/main.c ****             filter = filter - 1;
+  81              		.loc 1 45 13 view .LVU15
+  82              		.loc 1 45 29 is_stmt 0 view .LVU16
+  83 003c 013B     		subs	r3, r3, #1
+  84              		.loc 1 45 20 view .LVU17
+  85 003e 794A     		ldr	r2, .L34+4
+  86 0040 1360     		str	r3, [r2]
+  87 0042 5EE0     		b	.L4
+  88              	.L6:
+  46:Core/Src/main.c ****         }
+  47:Core/Src/main.c **** 
+  48:Core/Src/main.c ****         if(button_pressed == 0 & button_pressed1 == 1) {
+  49:Core/Src/main.c ****             button_pressed = 1;            
+  50:Core/Src/main.c ****             count_PC13++;
+  51:Core/Src/main.c ****         }
+  52:Core/Src/main.c ****         else if(button_pressed1 == 0){
+  89              		.loc 1 52 14 is_stmt 1 view .LVU18
+  90              		.loc 1 52 16 is_stmt 0 view .LVU19
+  91 0044 002B     		cmp	r3, #0
+  92 0046 6BD1     		bne	.L7
+  53:Core/Src/main.c ****             button_pressed = 0;
+  93              		.loc 1 53 13 is_stmt 1 view .LVU20
+  94              		.loc 1 53 28 is_stmt 0 view .LVU21
+  95 0048 784B     		ldr	r3, .L34+12
+  96 004a 0022     		movs	r2, #0
+  97 004c 1A70     		strb	r2, [r3]
+  98 004e 67E0     		b	.L7
+  99              	.L14:
+  54:Core/Src/main.c ****         } 
+  55:Core/Src/main.c ****                 
+  56:Core/Src/main.c ****         if(count_PC13 == 1) {
+  57:Core/Src/main.c ****             GPIOC10_Set_Output();
+ 100              		.loc 1 57 13 is_stmt 1 view .LVU22
+ 101 0050 FFF7FEFF 		bl	GPIOC10_Set_Output
+ 102              	.LVL7:
+  58:Core/Src/main.c ****             GPIOC11_Set_Input();
+ 103              		.loc 1 58 13 view .LVU23
+ 104 0054 FFF7FEFF 		bl	GPIOC11_Set_Input
+ 105              	.LVL8:
+  59:Core/Src/main.c ****             GPIOC12_Set_Input();
+ 106              		.loc 1 59 13 view .LVU24
+ 107 0058 FFF7FEFF 		bl	GPIOC12_Set_Input
+ 108              	.LVL9:
+  60:Core/Src/main.c ****             flag_PC10 = 1;
+ 109              		.loc 1 60 13 view .LVU25
+ 110              		.loc 1 60 23 is_stmt 0 view .LVU26
+ 111 005c 744B     		ldr	r3, .L34+16
+ 112 005e 0122     		movs	r2, #1
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 4
+
+
+ 113 0060 1A70     		strb	r2, [r3]
+  61:Core/Src/main.c ****             flag_PC11 = 0;
+ 114              		.loc 1 61 13 is_stmt 1 view .LVU27
+ 115              		.loc 1 61 23 is_stmt 0 view .LVU28
+ 116 0062 0023     		movs	r3, #0
+ 117 0064 734A     		ldr	r2, .L34+20
+ 118 0066 1370     		strb	r3, [r2]
+  62:Core/Src/main.c ****             flag_PC12 = 0;
+ 119              		.loc 1 62 13 is_stmt 1 view .LVU29
+ 120              		.loc 1 62 23 is_stmt 0 view .LVU30
+ 121 0068 734A     		ldr	r2, .L34+24
+ 122 006a 1370     		strb	r3, [r2]
+ 123              	.L8:
+  63:Core/Src/main.c **** 
+  64:Core/Src/main.c ****         }
+  65:Core/Src/main.c ****         else if(count_PC13 == 2) {
+  66:Core/Src/main.c ****             GPIOC11_Set_Output();
+  67:Core/Src/main.c ****             GPIOC10_Set_Input();
+  68:Core/Src/main.c ****             GPIOC12_Set_Input();
+  69:Core/Src/main.c ****             flag_PC10 = 0;
+  70:Core/Src/main.c ****             flag_PC11 = 1;
+  71:Core/Src/main.c ****             flag_PC12 = 0;
+  72:Core/Src/main.c ****         }
+  73:Core/Src/main.c ****         else if(count_PC13 == 3) {
+  74:Core/Src/main.c ****             GPIOC11_Set_Input();
+  75:Core/Src/main.c ****             GPIOC10_Set_Input();
+  76:Core/Src/main.c ****             GPIOC12_Set_Output();
+  77:Core/Src/main.c ****             flag_PC10 = 0;
+  78:Core/Src/main.c ****             flag_PC11 = 0;
+  79:Core/Src/main.c ****             flag_PC12 = 1;
+  80:Core/Src/main.c ****         }
+  81:Core/Src/main.c ****         else if(count_PC13 == 4) {
+  82:Core/Src/main.c ****             GPIOC10_Set_Output();
+  83:Core/Src/main.c ****             GPIOC11_Set_Output();
+  84:Core/Src/main.c ****             GPIOC12_Set_Output();
+  85:Core/Src/main.c ****             flag_PC10 = 1;
+  86:Core/Src/main.c ****             flag_PC11 = 1;
+  87:Core/Src/main.c ****             flag_PC12 = 1;
+  88:Core/Src/main.c ****         }
+  89:Core/Src/main.c ****         else if(count_PC13 == 5) {
+  90:Core/Src/main.c ****             GPIOC10_Set_Input();
+  91:Core/Src/main.c ****             GPIOC11_Set_Input();
+  92:Core/Src/main.c ****             GPIOC12_Set_Input();
+  93:Core/Src/main.c ****             flag_PC10 = 0;
+  94:Core/Src/main.c ****             flag_PC11 = 0;
+  95:Core/Src/main.c ****             flag_PC12 = 0;
+  96:Core/Src/main.c ****             count_PC13 = 0;
+  97:Core/Src/main.c ****         }
+  98:Core/Src/main.c ****         
+  99:Core/Src/main.c ****         if(flag_PC10 == 1) {  //выход
+ 124              		.loc 1 99 9 is_stmt 1 view .LVU31
+ 125              		.loc 1 99 22 is_stmt 0 view .LVU32
+ 126 006c 704B     		ldr	r3, .L34+16
+ 127 006e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 128              		.loc 1 99 11 view .LVU33
+ 129 0070 012B     		cmp	r3, #1
+ 130 0072 00F0A380 		beq	.L30
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 5
+
+
+ 100:Core/Src/main.c ****             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS10); 
+ 101:Core/Src/main.c ****         } 
+ 102:Core/Src/main.c ****         else { 
+ 103:Core/Src/main.c ****             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR10); 
+ 131              		.loc 1 103 13 is_stmt 1 view .LVU34
+ 132 0076 7149     		ldr	r1, .L34+28
+ 133 0078 8A69     		ldr	r2, [r1, #24]
+ 134 007a 42F08062 		orr	r2, r2, #67108864
+ 135 007e 8A61     		str	r2, [r1, #24]
+ 136              	.L16:
+ 104:Core/Src/main.c ****         }
+ 105:Core/Src/main.c **** 
+ 106:Core/Src/main.c ****         if(flag_PC10 == 0) { // вход
+ 137              		.loc 1 106 9 view .LVU35
+ 138              		.loc 1 106 11 is_stmt 0 view .LVU36
+ 139 0080 6BB9     		cbnz	r3, .L17
+ 107:Core/Src/main.c ****             if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_10)) {
+ 140              		.loc 1 107 13 is_stmt 1 view .LVU37
+ 141              		.loc 1 107 16 is_stmt 0 view .LVU38
+ 142 0082 03F18043 		add	r3, r3, #1073741824
+ 143 0086 03F50233 		add	r3, r3, #133120
+ 144 008a 1B69     		ldr	r3, [r3, #16]
+ 145              		.loc 1 107 15 view .LVU39
+ 146 008c 13F4806F 		tst	r3, #1024
+ 147 0090 00F09A80 		beq	.L18
+ 108:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0); 
+ 148              		.loc 1 108 17 is_stmt 1 view .LVU40
+ 149 0094 6A4A     		ldr	r2, .L34+32
+ 150 0096 9369     		ldr	r3, [r2, #24]
+ 151 0098 43F00103 		orr	r3, r3, #1
+ 152 009c 9361     		str	r3, [r2, #24]
+ 153              	.L17:
+ 109:Core/Src/main.c ****             } 
+ 110:Core/Src/main.c ****             else {
+ 111:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0); 
+ 112:Core/Src/main.c ****             }
+ 113:Core/Src/main.c ****         } 
+ 114:Core/Src/main.c ****         
+ 115:Core/Src/main.c ****         if(flag_PC11 == 1) { 
+ 154              		.loc 1 115 9 view .LVU41
+ 155              		.loc 1 115 22 is_stmt 0 view .LVU42
+ 156 009e 654B     		ldr	r3, .L34+20
+ 157 00a0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 158              		.loc 1 115 11 view .LVU43
+ 159 00a2 012B     		cmp	r3, #1
+ 160 00a4 00F09680 		beq	.L31
+ 116:Core/Src/main.c ****             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS11); 
+ 117:Core/Src/main.c ****         } 
+ 118:Core/Src/main.c ****         else { 
+ 119:Core/Src/main.c ****             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR11); 
+ 161              		.loc 1 119 13 is_stmt 1 view .LVU44
+ 162 00a8 6449     		ldr	r1, .L34+28
+ 163 00aa 8A69     		ldr	r2, [r1, #24]
+ 164 00ac 42F00062 		orr	r2, r2, #134217728
+ 165 00b0 8A61     		str	r2, [r1, #24]
+ 166              	.L20:
+ 120:Core/Src/main.c ****             
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 6
+
+
+ 121:Core/Src/main.c ****         }
+ 122:Core/Src/main.c **** 
+ 123:Core/Src/main.c ****         if(flag_PC11 == 0) {
+ 167              		.loc 1 123 9 view .LVU45
+ 168              		.loc 1 123 11 is_stmt 0 view .LVU46
+ 169 00b2 6BB9     		cbnz	r3, .L21
+ 124:Core/Src/main.c ****             if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_11)) {
+ 170              		.loc 1 124 13 is_stmt 1 view .LVU47
+ 171              		.loc 1 124 16 is_stmt 0 view .LVU48
+ 172 00b4 03F18043 		add	r3, r3, #1073741824
+ 173 00b8 03F50233 		add	r3, r3, #133120
+ 174 00bc 1B69     		ldr	r3, [r3, #16]
+ 175              		.loc 1 124 15 view .LVU49
+ 176 00be 13F4006F 		tst	r3, #2048
+ 177 00c2 00F08D80 		beq	.L22
+ 125:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);
+ 178              		.loc 1 125 17 is_stmt 1 view .LVU50
+ 179 00c6 5E4A     		ldr	r2, .L34+32
+ 180 00c8 9369     		ldr	r3, [r2, #24]
+ 181 00ca 43F08003 		orr	r3, r3, #128
+ 182 00ce 9361     		str	r3, [r2, #24]
+ 183              	.L21:
+ 126:Core/Src/main.c ****             } 
+ 127:Core/Src/main.c ****             else {
+ 128:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); 
+ 129:Core/Src/main.c ****             }
+ 130:Core/Src/main.c ****         } 
+ 131:Core/Src/main.c **** 
+ 132:Core/Src/main.c ****         if(flag_PC12 == 1) { 
+ 184              		.loc 1 132 9 view .LVU51
+ 185              		.loc 1 132 22 is_stmt 0 view .LVU52
+ 186 00d0 594B     		ldr	r3, .L34+24
+ 187 00d2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 188              		.loc 1 132 11 view .LVU53
+ 189 00d4 012B     		cmp	r3, #1
+ 190 00d6 00F08980 		beq	.L32
+ 133:Core/Src/main.c ****             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS12); 
+ 134:Core/Src/main.c ****         } 
+ 135:Core/Src/main.c ****         else { 
+ 136:Core/Src/main.c ****             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR12); 
+ 191              		.loc 1 136 13 is_stmt 1 view .LVU54
+ 192 00da 5849     		ldr	r1, .L34+28
+ 193 00dc 8A69     		ldr	r2, [r1, #24]
+ 194 00de 42F08052 		orr	r2, r2, #268435456
+ 195 00e2 8A61     		str	r2, [r1, #24]
+ 196              	.L24:
+ 137:Core/Src/main.c ****             
+ 138:Core/Src/main.c ****         }
+ 139:Core/Src/main.c **** 
+ 140:Core/Src/main.c ****         if(flag_PC12 == 0) { 
+ 197              		.loc 1 140 9 view .LVU55
+ 198              		.loc 1 140 11 is_stmt 0 view .LVU56
+ 199 00e4 002B     		cmp	r3, #0
+ 200 00e6 00F08780 		beq	.L33
+ 201              	.L25:
+  34:Core/Src/main.c ****         
+ 202              		.loc 1 34 5 is_stmt 1 view .LVU57
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 7
+
+
+  37:Core/Src/main.c ****             filter = 2000;
+ 203              		.loc 1 37 9 view .LVU58
+  37:Core/Src/main.c ****             filter = 2000;
+ 204              		.loc 1 37 12 is_stmt 0 view .LVU59
+ 205 00ea 544B     		ldr	r3, .L34+28
+ 206 00ec 1B69     		ldr	r3, [r3, #16]
+  37:Core/Src/main.c ****             filter = 2000;
+ 207              		.loc 1 37 11 view .LVU60
+ 208 00ee 13F4005F 		tst	r3, #8192
+ 209 00f2 9CD0     		beq	.L3
+  38:Core/Src/main.c ****             button_pressed1 = 1;
+ 210              		.loc 1 38 13 is_stmt 1 view .LVU61
+  38:Core/Src/main.c ****             button_pressed1 = 1;
+ 211              		.loc 1 38 20 is_stmt 0 view .LVU62
+ 212 00f4 4B4B     		ldr	r3, .L34+4
+ 213 00f6 4FF4FA62 		mov	r2, #2000
+ 214 00fa 1A60     		str	r2, [r3]
+  39:Core/Src/main.c ****         }
+ 215              		.loc 1 39 13 is_stmt 1 view .LVU63
+  39:Core/Src/main.c ****         }
+ 216              		.loc 1 39 29 is_stmt 0 view .LVU64
+ 217 00fc 4A4B     		ldr	r3, .L34+8
+ 218 00fe 0122     		movs	r2, #1
+ 219 0100 1A70     		strb	r2, [r3]
+ 220              	.L4:
+  48:Core/Src/main.c ****             button_pressed = 1;            
+ 221              		.loc 1 48 9 is_stmt 1 view .LVU65
+  48:Core/Src/main.c ****             button_pressed = 1;            
+ 222              		.loc 1 48 32 is_stmt 0 view .LVU66
+ 223 0102 494B     		ldr	r3, .L34+8
+ 224 0104 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 225 0106 494A     		ldr	r2, .L34+12
+ 226 0108 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  48:Core/Src/main.c ****             button_pressed = 1;            
+ 227              		.loc 1 48 11 view .LVU67
+ 228 010a 002A     		cmp	r2, #0
+ 229 010c 08BF     		it	eq
+ 230 010e 012B     		cmpeq	r3, #1
+ 231 0110 98D1     		bne	.L6
+  49:Core/Src/main.c ****             count_PC13++;
+ 232              		.loc 1 49 13 is_stmt 1 view .LVU68
+  49:Core/Src/main.c ****             count_PC13++;
+ 233              		.loc 1 49 28 is_stmt 0 view .LVU69
+ 234 0112 464B     		ldr	r3, .L34+12
+ 235 0114 0122     		movs	r2, #1
+ 236 0116 1A70     		strb	r2, [r3]
+  50:Core/Src/main.c ****         }
+ 237              		.loc 1 50 13 is_stmt 1 view .LVU70
+  50:Core/Src/main.c ****         }
+ 238              		.loc 1 50 23 is_stmt 0 view .LVU71
+ 239 0118 4A4A     		ldr	r2, .L34+36
+ 240 011a 1368     		ldr	r3, [r2]
+ 241 011c 0133     		adds	r3, r3, #1
+ 242 011e 1360     		str	r3, [r2]
+ 243              	.L7:
+  56:Core/Src/main.c ****             GPIOC10_Set_Output();
+ 244              		.loc 1 56 9 is_stmt 1 view .LVU72
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 8
+
+
+  56:Core/Src/main.c ****             GPIOC10_Set_Output();
+ 245              		.loc 1 56 23 is_stmt 0 view .LVU73
+ 246 0120 484B     		ldr	r3, .L34+36
+ 247 0122 1B68     		ldr	r3, [r3]
+ 248 0124 013B     		subs	r3, r3, #1
+ 249 0126 042B     		cmp	r3, #4
+ 250 0128 A0D8     		bhi	.L8
+ 251 012a 01A2     		adr	r2, .L10
+ 252 012c 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 253              		.p2align 2
+ 254              	.L10:
+ 255 0130 51000000 		.word	.L14+1
+ 256 0134 45010000 		.word	.L13+1
+ 257 0138 63010000 		.word	.L12+1
+ 258 013c 81010000 		.word	.L11+1
+ 259 0140 9D010000 		.word	.L9+1
+ 260              		.p2align 1
+ 261              	.L13:
+  66:Core/Src/main.c ****             GPIOC10_Set_Input();
+ 262              		.loc 1 66 13 is_stmt 1 view .LVU74
+ 263 0144 FFF7FEFF 		bl	GPIOC11_Set_Output
+ 264              	.LVL10:
+  67:Core/Src/main.c ****             GPIOC12_Set_Input();
+ 265              		.loc 1 67 13 view .LVU75
+ 266 0148 FFF7FEFF 		bl	GPIOC10_Set_Input
+ 267              	.LVL11:
+  68:Core/Src/main.c ****             flag_PC10 = 0;
+ 268              		.loc 1 68 13 view .LVU76
+ 269 014c FFF7FEFF 		bl	GPIOC12_Set_Input
+ 270              	.LVL12:
+  69:Core/Src/main.c ****             flag_PC11 = 1;
+ 271              		.loc 1 69 13 view .LVU77
+  69:Core/Src/main.c ****             flag_PC11 = 1;
+ 272              		.loc 1 69 23 is_stmt 0 view .LVU78
+ 273 0150 0023     		movs	r3, #0
+ 274 0152 374A     		ldr	r2, .L34+16
+ 275 0154 1370     		strb	r3, [r2]
+  70:Core/Src/main.c ****             flag_PC12 = 0;
+ 276              		.loc 1 70 13 is_stmt 1 view .LVU79
+  70:Core/Src/main.c ****             flag_PC12 = 0;
+ 277              		.loc 1 70 23 is_stmt 0 view .LVU80
+ 278 0156 374A     		ldr	r2, .L34+20
+ 279 0158 0121     		movs	r1, #1
+ 280 015a 1170     		strb	r1, [r2]
+  71:Core/Src/main.c ****         }
+ 281              		.loc 1 71 13 is_stmt 1 view .LVU81
+  71:Core/Src/main.c ****         }
+ 282              		.loc 1 71 23 is_stmt 0 view .LVU82
+ 283 015c 364A     		ldr	r2, .L34+24
+ 284 015e 1370     		strb	r3, [r2]
+ 285 0160 84E7     		b	.L8
+ 286              	.L12:
+  74:Core/Src/main.c ****             GPIOC10_Set_Input();
+ 287              		.loc 1 74 13 is_stmt 1 view .LVU83
+ 288 0162 FFF7FEFF 		bl	GPIOC11_Set_Input
+ 289              	.LVL13:
+  75:Core/Src/main.c ****             GPIOC12_Set_Output();
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 9
+
+
+ 290              		.loc 1 75 13 view .LVU84
+ 291 0166 FFF7FEFF 		bl	GPIOC10_Set_Input
+ 292              	.LVL14:
+  76:Core/Src/main.c ****             flag_PC10 = 0;
+ 293              		.loc 1 76 13 view .LVU85
+ 294 016a FFF7FEFF 		bl	GPIOC12_Set_Output
+ 295              	.LVL15:
+  77:Core/Src/main.c ****             flag_PC11 = 0;
+ 296              		.loc 1 77 13 view .LVU86
+  77:Core/Src/main.c ****             flag_PC11 = 0;
+ 297              		.loc 1 77 23 is_stmt 0 view .LVU87
+ 298 016e 0023     		movs	r3, #0
+ 299 0170 2F4A     		ldr	r2, .L34+16
+ 300 0172 1370     		strb	r3, [r2]
+  78:Core/Src/main.c ****             flag_PC12 = 1;
+ 301              		.loc 1 78 13 is_stmt 1 view .LVU88
+  78:Core/Src/main.c ****             flag_PC12 = 1;
+ 302              		.loc 1 78 23 is_stmt 0 view .LVU89
+ 303 0174 2F4A     		ldr	r2, .L34+20
+ 304 0176 1370     		strb	r3, [r2]
+  79:Core/Src/main.c ****         }
+ 305              		.loc 1 79 13 is_stmt 1 view .LVU90
+  79:Core/Src/main.c ****         }
+ 306              		.loc 1 79 23 is_stmt 0 view .LVU91
+ 307 0178 2F4B     		ldr	r3, .L34+24
+ 308 017a 0122     		movs	r2, #1
+ 309 017c 1A70     		strb	r2, [r3]
+ 310 017e 75E7     		b	.L8
+ 311              	.L11:
+  82:Core/Src/main.c ****             GPIOC11_Set_Output();
+ 312              		.loc 1 82 13 is_stmt 1 view .LVU92
+ 313 0180 FFF7FEFF 		bl	GPIOC10_Set_Output
+ 314              	.LVL16:
+  83:Core/Src/main.c ****             GPIOC12_Set_Output();
+ 315              		.loc 1 83 13 view .LVU93
+ 316 0184 FFF7FEFF 		bl	GPIOC11_Set_Output
+ 317              	.LVL17:
+  84:Core/Src/main.c ****             flag_PC10 = 1;
+ 318              		.loc 1 84 13 view .LVU94
+ 319 0188 FFF7FEFF 		bl	GPIOC12_Set_Output
+ 320              	.LVL18:
+  85:Core/Src/main.c ****             flag_PC11 = 1;
+ 321              		.loc 1 85 13 view .LVU95
+  85:Core/Src/main.c ****             flag_PC11 = 1;
+ 322              		.loc 1 85 23 is_stmt 0 view .LVU96
+ 323 018c 0123     		movs	r3, #1
+ 324 018e 284A     		ldr	r2, .L34+16
+ 325 0190 1370     		strb	r3, [r2]
+  86:Core/Src/main.c ****             flag_PC12 = 1;
+ 326              		.loc 1 86 13 is_stmt 1 view .LVU97
+  86:Core/Src/main.c ****             flag_PC12 = 1;
+ 327              		.loc 1 86 23 is_stmt 0 view .LVU98
+ 328 0192 284A     		ldr	r2, .L34+20
+ 329 0194 1370     		strb	r3, [r2]
+  87:Core/Src/main.c ****         }
+ 330              		.loc 1 87 13 is_stmt 1 view .LVU99
+  87:Core/Src/main.c ****         }
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 10
+
+
+ 331              		.loc 1 87 23 is_stmt 0 view .LVU100
+ 332 0196 284A     		ldr	r2, .L34+24
+ 333 0198 1370     		strb	r3, [r2]
+ 334 019a 67E7     		b	.L8
+ 335              	.L9:
+  90:Core/Src/main.c ****             GPIOC11_Set_Input();
+ 336              		.loc 1 90 13 is_stmt 1 view .LVU101
+ 337 019c FFF7FEFF 		bl	GPIOC10_Set_Input
+ 338              	.LVL19:
+  91:Core/Src/main.c ****             GPIOC12_Set_Input();
+ 339              		.loc 1 91 13 view .LVU102
+ 340 01a0 FFF7FEFF 		bl	GPIOC11_Set_Input
+ 341              	.LVL20:
+  92:Core/Src/main.c ****             flag_PC10 = 0;
+ 342              		.loc 1 92 13 view .LVU103
+ 343 01a4 FFF7FEFF 		bl	GPIOC12_Set_Input
+ 344              	.LVL21:
+  93:Core/Src/main.c ****             flag_PC11 = 0;
+ 345              		.loc 1 93 13 view .LVU104
+  93:Core/Src/main.c ****             flag_PC11 = 0;
+ 346              		.loc 1 93 23 is_stmt 0 view .LVU105
+ 347 01a8 0023     		movs	r3, #0
+ 348 01aa 214A     		ldr	r2, .L34+16
+ 349 01ac 1370     		strb	r3, [r2]
+  94:Core/Src/main.c ****             flag_PC12 = 0;
+ 350              		.loc 1 94 13 is_stmt 1 view .LVU106
+  94:Core/Src/main.c ****             flag_PC12 = 0;
+ 351              		.loc 1 94 23 is_stmt 0 view .LVU107
+ 352 01ae 214A     		ldr	r2, .L34+20
+ 353 01b0 1370     		strb	r3, [r2]
+  95:Core/Src/main.c ****             count_PC13 = 0;
+ 354              		.loc 1 95 13 is_stmt 1 view .LVU108
+  95:Core/Src/main.c ****             count_PC13 = 0;
+ 355              		.loc 1 95 23 is_stmt 0 view .LVU109
+ 356 01b2 214A     		ldr	r2, .L34+24
+ 357 01b4 1370     		strb	r3, [r2]
+  96:Core/Src/main.c ****         }
+ 358              		.loc 1 96 13 is_stmt 1 view .LVU110
+  96:Core/Src/main.c ****         }
+ 359              		.loc 1 96 24 is_stmt 0 view .LVU111
+ 360 01b6 234A     		ldr	r2, .L34+36
+ 361 01b8 1360     		str	r3, [r2]
+ 362 01ba 57E7     		b	.L8
+ 363              	.L30:
+ 100:Core/Src/main.c ****         } 
+ 364              		.loc 1 100 13 is_stmt 1 view .LVU112
+ 365 01bc 1F49     		ldr	r1, .L34+28
+ 366 01be 8A69     		ldr	r2, [r1, #24]
+ 367 01c0 42F48062 		orr	r2, r2, #1024
+ 368 01c4 8A61     		str	r2, [r1, #24]
+ 369 01c6 5BE7     		b	.L16
+ 370              	.L18:
+ 111:Core/Src/main.c ****             }
+ 371              		.loc 1 111 17 view .LVU113
+ 372 01c8 1D4A     		ldr	r2, .L34+32
+ 373 01ca 9369     		ldr	r3, [r2, #24]
+ 374 01cc 43F48033 		orr	r3, r3, #65536
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 11
+
+
+ 375 01d0 9361     		str	r3, [r2, #24]
+ 376 01d2 64E7     		b	.L17
+ 377              	.L31:
+ 116:Core/Src/main.c ****         } 
+ 378              		.loc 1 116 13 view .LVU114
+ 379 01d4 1949     		ldr	r1, .L34+28
+ 380 01d6 8A69     		ldr	r2, [r1, #24]
+ 381 01d8 42F40062 		orr	r2, r2, #2048
+ 382 01dc 8A61     		str	r2, [r1, #24]
+ 383 01de 68E7     		b	.L20
+ 384              	.L22:
+ 128:Core/Src/main.c ****             }
+ 385              		.loc 1 128 17 view .LVU115
+ 386 01e0 174A     		ldr	r2, .L34+32
+ 387 01e2 9369     		ldr	r3, [r2, #24]
+ 388 01e4 43F40003 		orr	r3, r3, #8388608
+ 389 01e8 9361     		str	r3, [r2, #24]
+ 390 01ea 71E7     		b	.L21
+ 391              	.L32:
+ 133:Core/Src/main.c ****         } 
+ 392              		.loc 1 133 13 view .LVU116
+ 393 01ec 1349     		ldr	r1, .L34+28
+ 394 01ee 8A69     		ldr	r2, [r1, #24]
+ 395 01f0 42F48052 		orr	r2, r2, #4096
+ 396 01f4 8A61     		str	r2, [r1, #24]
+ 397 01f6 75E7     		b	.L24
+ 398              	.L33:
+ 141:Core/Src/main.c ****             if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_12)) {
+ 399              		.loc 1 141 13 view .LVU117
+ 400              		.loc 1 141 16 is_stmt 0 view .LVU118
+ 401 01f8 03F18043 		add	r3, r3, #1073741824
+ 402 01fc 03F50233 		add	r3, r3, #133120
+ 403 0200 1B69     		ldr	r3, [r3, #16]
+ 404              		.loc 1 141 15 view .LVU119
+ 405 0202 13F4805F 		tst	r3, #4096
+ 406 0206 05D0     		beq	.L26
+ 142:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14); 
+ 407              		.loc 1 142 17 is_stmt 1 view .LVU120
+ 408 0208 0D4A     		ldr	r2, .L34+32
+ 409 020a 9369     		ldr	r3, [r2, #24]
+ 410 020c 43F48043 		orr	r3, r3, #16384
+ 411 0210 9361     		str	r3, [r2, #24]
+ 412 0212 6AE7     		b	.L25
+ 413              	.L26:
+ 143:Core/Src/main.c ****             } 
+ 144:Core/Src/main.c ****             else {
+ 145:Core/Src/main.c ****                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14); 
+ 414              		.loc 1 145 17 view .LVU121
+ 415 0214 0A4A     		ldr	r2, .L34+32
+ 416 0216 9369     		ldr	r3, [r2, #24]
+ 417 0218 43F08043 		orr	r3, r3, #1073741824
+ 418 021c 9361     		str	r3, [r2, #24]
+ 419 021e 64E7     		b	.L25
+ 420              	.L35:
+ 421              		.align	2
+ 422              	.L34:
+ 423 0220 00300240 		.word	1073885184
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 12
+
+
+ 424 0224 00000000 		.word	filter
+ 425 0228 00000000 		.word	button_pressed1
+ 426 022c 00000000 		.word	button_pressed
+ 427 0230 00000000 		.word	flag_PC10
+ 428 0234 00000000 		.word	flag_PC11
+ 429 0238 00000000 		.word	flag_PC12
+ 430 023c 00080240 		.word	1073874944
+ 431 0240 00040240 		.word	1073873920
+ 432 0244 00000000 		.word	count_PC13
+ 433              		.cfi_endproc
+ 434              	.LFE130:
+ 436              		.global	filter
+ 437              		.section	.bss.filter,"aw",%nobits
+ 438              		.align	2
+ 441              	filter:
+ 442 0000 00000000 		.space	4
+ 443              		.global	button_pressed1
+ 444              		.section	.bss.button_pressed1,"aw",%nobits
+ 447              	button_pressed1:
+ 448 0000 00       		.space	1
+ 449              		.global	button_pressed
+ 450              		.section	.bss.button_pressed,"aw",%nobits
+ 453              	button_pressed:
+ 454 0000 00       		.space	1
+ 455              		.global	count_PC13
+ 456              		.section	.bss.count_PC13,"aw",%nobits
+ 457              		.align	2
+ 460              	count_PC13:
+ 461 0000 00000000 		.space	4
+ 462              		.global	flag_PC13
+ 463              		.section	.bss.flag_PC13,"aw",%nobits
+ 466              	flag_PC13:
+ 467 0000 00       		.space	1
+ 468              		.global	flag_PC12
+ 469              		.section	.bss.flag_PC12,"aw",%nobits
+ 472              	flag_PC12:
+ 473 0000 00       		.space	1
+ 474              		.global	flag_PC11
+ 475              		.section	.bss.flag_PC11,"aw",%nobits
+ 478              	flag_PC11:
+ 479 0000 00       		.space	1
+ 480              		.global	flag_PC10
+ 481              		.section	.bss.flag_PC10,"aw",%nobits
+ 484              	flag_PC10:
+ 485 0000 00       		.space	1
+ 486              		.text
+ 487              	.Letext0:
+ 488              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 489              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 490              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 491              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:21     .text.main:00000000 $t
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:27     .text.main:00000000 main
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:255    .text.main:00000130 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:260    .text.main:00000144 $t
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:423    .text.main:00000220 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:441    .bss.filter:00000000 filter
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:447    .bss.button_pressed1:00000000 button_pressed1
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:453    .bss.button_pressed:00000000 button_pressed
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:484    .bss.flag_PC10:00000000 flag_PC10
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:478    .bss.flag_PC11:00000000 flag_PC11
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:472    .bss.flag_PC12:00000000 flag_PC12
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:460    .bss.count_PC13:00000000 count_PC13
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:438    .bss.filter:00000000 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:448    .bss.button_pressed1:00000000 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:454    .bss.button_pressed:00000000 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:457    .bss.count_PC13:00000000 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:466    .bss.flag_PC13:00000000 flag_PC13
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:467    .bss.flag_PC13:00000000 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:473    .bss.flag_PC12:00000000 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:479    .bss.flag_PC11:00000000 $d
+C:\Users\Niki\AppData\Local\Temp\ccVVRMVQ.s:485    .bss.flag_PC10:00000000 $d
+
+UNDEFINED SYMBOLS
+Green_LED_ON
+Blue_LED_ON
+Red_LED_ON
+GPIOC13_Set_Input
+GPIOC10_Set_Input
+GPIOC11_Set_Input
+GPIOC12_Set_Input
+GPIOC10_Set_Output
+GPIOC11_Set_Output
+GPIOC12_Set_Output
