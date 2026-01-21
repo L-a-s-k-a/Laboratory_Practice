@@ -1,0 +1,167 @@
+ARM GAS  C:\Users\swalex\AppData\Local\Temp\ccgbxEoP.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** #define RCC_EN *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x02UL + 0x04UL;
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** int main(void)
+   7:Core/Src/main.c **** {
+  29              		.loc 1 7 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   8:Core/Src/main.c ****   GPIO_Init_With_Myself_Macros();
+  39              		.loc 1 8 3 view .LVU1
+  40 0002 FFF7FEFF 		bl	GPIO_Init_With_Myself_Macros
+  41              	.LVL0:
+   9:Core/Src/main.c ****   GPIO_Init_CMSIS();
+  42              		.loc 1 9 3 view .LVU2
+  43 0006 FFF7FEFF 		bl	GPIO_Init_CMSIS
+  44              	.LVL1:
+  45 000a 0CE0     		b	.L2
+  46              	.L3:
+  10:Core/Src/main.c ****     
+  11:Core/Src/main.c ****  //   RCC_EN;
+  12:Core/Src/main.c ****  //   *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x02UL + 0x04UL; // Включение тактиро
+ARM GAS  C:\Users\swalex\AppData\Local\Temp\ccgbxEoP.s 			page 2
+
+
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c ****  //   *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000UL; // Настройка редима рабо
+  15:Core/Src/main.c ****  //   *(uint32_t *)(0x40020400UL + 0x04UL) &= ~0x80UL;   // Настройка режима вых�
+  16:Core/Src/main.c ****  //   *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000UL; // Настройка сокрости ра
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c ****  //   *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000UL; // Предаварительное от�
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c ****     while (1)   
+  21:Core/Src/main.c ****     {
+  22:Core/Src/main.c ****  //         if (*(uint32_t *)(0x40020800UL + 0x10UL) & 0x2000UL)
+  23:Core/Src/main.c ****         /*---Чтение кнопки с помощью CMSIS---*/
+  24:Core/Src/main.c ****         if(READ_BIT(GPIOG->IDR, GPIO_IDR_ID1)){
+  25:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS0); // Включение светододов PE0
+  26:Core/Src/main.c ****             }
+  27:Core/Src/main.c ****         else{
+  28:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR0);  // Отключение светододов PE0
+  47              		.loc 1 28 13 view .LVU3
+  48 000c 124A     		ldr	r2, .L9
+  49 000e 9369     		ldr	r3, [r2, #24]
+  50 0010 43F48033 		orr	r3, r3, #65536
+  51 0014 9361     		str	r3, [r2, #24]
+  52 0016 10E0     		b	.L4
+  53              	.L8:
+  29:Core/Src/main.c ****         }    
+  30:Core/Src/main.c **** 
+  31:Core/Src/main.c ****         /*---Чтение кнопки с помощью собственных макросов---
+  32:Core/Src/main.c ****         if(BIT_READ(GPIOC_IDR, GPIO_PIN_13)){
+  33:Core/Src/main.c ****  //           *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80UL; // Влючение светодио�
+  34:Core/Src/main.c ****             BIT_SET(GPIOB_BSRR, GPIO_PIN_SET_7); // Включение светододов PB7, р
+  54              		.loc 1 34 13 view .LVU4
+  55 0018 104A     		ldr	r2, .L9+4
+  56 001a D2F81834 		ldr	r3, [r2, #1048]
+  57 001e 43F08003 		orr	r3, r3, #128
+  58 0022 C2F81834 		str	r3, [r2, #1048]
+  59              	.L2:
+  20:Core/Src/main.c ****     {
+  60              		.loc 1 20 5 view .LVU5
+  24:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS0); // Включение светододов PE0
+  61              		.loc 1 24 9 view .LVU6
+  24:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS0); // Включение светододов PE0
+  62              		.loc 1 24 12 is_stmt 0 view .LVU7
+  63 0026 0E4B     		ldr	r3, .L9+8
+  64 0028 1B69     		ldr	r3, [r3, #16]
+  24:Core/Src/main.c ****             SET_BIT(GPIOE->BSRR, GPIO_BSRR_BS0); // Включение светододов PE0
+  65              		.loc 1 24 11 view .LVU8
+  66 002a 13F0020F 		tst	r3, #2
+  67 002e EDD0     		beq	.L3
+  25:Core/Src/main.c ****             }
+  68              		.loc 1 25 13 is_stmt 1 view .LVU9
+  69 0030 094A     		ldr	r2, .L9
+  70 0032 9369     		ldr	r3, [r2, #24]
+  71 0034 43F00103 		orr	r3, r3, #1
+  72 0038 9361     		str	r3, [r2, #24]
+  73              	.L4:
+  32:Core/Src/main.c ****  //           *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80UL; // Влючение светодио�
+  74              		.loc 1 32 9 view .LVU10
+  32:Core/Src/main.c ****  //           *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80UL; // Влючение светодио�
+ARM GAS  C:\Users\swalex\AppData\Local\Temp\ccgbxEoP.s 			page 3
+
+
+  75              		.loc 1 32 12 is_stmt 0 view .LVU11
+  76 003a 084B     		ldr	r3, .L9+4
+  77 003c D3F81038 		ldr	r3, [r3, #2064]
+  32:Core/Src/main.c ****  //           *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80UL; // Влючение светодио�
+  78              		.loc 1 32 11 view .LVU12
+  79 0040 13F4005F 		tst	r3, #8192
+  80 0044 E8D1     		bne	.L8
+  35:Core/Src/main.c ****          }
+  36:Core/Src/main.c ****          else
+  37:Core/Src/main.c ****          {
+  38:Core/Src/main.c **** //             *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000UL; // Отключение свет
+  39:Core/Src/main.c ****             BIT_SET(GPIOB_BSRR, GPIO_PIN_RESET_7);// Отключение светододов PB7,
+  81              		.loc 1 39 13 is_stmt 1 view .LVU13
+  82 0046 054A     		ldr	r2, .L9+4
+  83 0048 D2F81834 		ldr	r3, [r2, #1048]
+  84 004c 43F40003 		orr	r3, r3, #8388608
+  85 0050 C2F81834 		str	r3, [r2, #1048]
+  86 0054 E7E7     		b	.L2
+  87              	.L10:
+  88 0056 00BF     		.align	2
+  89              	.L9:
+  90 0058 00100240 		.word	1073876992
+  91 005c 00000240 		.word	1073872896
+  92 0060 00180240 		.word	1073879040
+  93              		.cfi_endproc
+  94              	.LFE130:
+  96              		.text
+  97              	.Letext0:
+  98              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+  99              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 100              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 101              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\swalex\AppData\Local\Temp\ccgbxEoP.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\swalex\AppData\Local\Temp\ccgbxEoP.s:21     .text.main:00000000 $t
+C:\Users\swalex\AppData\Local\Temp\ccgbxEoP.s:27     .text.main:00000000 main
+C:\Users\swalex\AppData\Local\Temp\ccgbxEoP.s:90     .text.main:00000058 $d
+
+UNDEFINED SYMBOLS
+GPIO_Init_With_Myself_Macros
+GPIO_Init_CMSIS

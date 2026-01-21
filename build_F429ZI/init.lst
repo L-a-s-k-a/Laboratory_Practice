@@ -1,0 +1,153 @@
+ARM GAS  C:\Users\swalex\AppData\Local\Temp\cci0f49G.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Init_With_Myself_Macros,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Init_With_Myself_Macros
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Init_With_Myself_Macros:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** //#include "../core/inc/init.h" - другой вид подключния файла
+   3:Core/Src/init.c **** 
+   4:Core/Src/init.c **** void GPIO_Init_With_Myself_Macros(void){
+  29              		.loc 1 4 40 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/init.c ****     BIT_SET(RCC_AHB1ENT, RCC_GPIOB_EN | RCC_GPIOC_EN);   // Включение тактирован
+  34              		.loc 1 5 5 view .LVU1
+  35 0000 104A     		ldr	r2, .L2
+  36 0002 D2F83038 		ldr	r3, [r2, #2096]
+  37 0006 43F00603 		orr	r3, r3, #6
+  38 000a C2F83038 		str	r3, [r2, #2096]
+   6:Core/Src/init.c **** 
+   7:Core/Src/init.c **** BIT_SET(GPIOB_MODER, GPIO_OUTPUT_MODE_PIN_7);            // Настройка редима раб�
+  39              		.loc 1 7 1 view .LVU2
+  40 000e 0E4B     		ldr	r3, .L2+4
+  41 0010 D3F80024 		ldr	r2, [r3, #1024]
+  42 0014 42F48042 		orr	r2, r2, #16384
+  43 0018 C3F80024 		str	r2, [r3, #1024]
+   8:Core/Src/init.c **** BIT_CLEAR(GPIOB_OTYPER, GPIO_PP_PIN_7);                  // Настройка режима вых�
+  44              		.loc 1 8 1 view .LVU3
+  45 001c D3F80424 		ldr	r2, [r3, #1028]
+  46 0020 22F08002 		bic	r2, r2, #128
+  47 0024 C3F80424 		str	r2, [r3, #1028]
+   9:Core/Src/init.c **** BIT_SET(GPIOB_OSPEEDR, GPIO_SPEED_MEDIUM_PIN_7);         // Настройка сокрости р�
+  48              		.loc 1 9 1 view .LVU4
+  49 0028 D3F80824 		ldr	r2, [r3, #1032]
+ARM GAS  C:\Users\swalex\AppData\Local\Temp\cci0f49G.s 			page 2
+
+
+  50 002c 42F48042 		orr	r2, r2, #16384
+  51 0030 C3F80824 		str	r2, [r3, #1032]
+  10:Core/Src/init.c **** 
+  11:Core/Src/init.c **** BIT_SET(GPIOB_BSRR, GPIO_PIN_RESET_7);                   // Предаварительное отк
+  52              		.loc 1 11 1 view .LVU5
+  53 0034 D3F81824 		ldr	r2, [r3, #1048]
+  54 0038 42F40002 		orr	r2, r2, #8388608
+  55 003c C3F81824 		str	r2, [r3, #1048]
+  12:Core/Src/init.c **** 
+  13:Core/Src/init.c **** }
+  56              		.loc 1 13 1 is_stmt 0 view .LVU6
+  57 0040 7047     		bx	lr
+  58              	.L3:
+  59 0042 00BF     		.align	2
+  60              	.L2:
+  61 0044 00300240 		.word	1073885184
+  62 0048 00000240 		.word	1073872896
+  63              		.cfi_endproc
+  64              	.LFE130:
+  66              		.section	.text.GPIO_Init_CMSIS,"ax",%progbits
+  67              		.align	1
+  68              		.global	GPIO_Init_CMSIS
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	GPIO_Init_CMSIS:
+  74              	.LFB131:
+  14:Core/Src/init.c **** 
+  15:Core/Src/init.c **** void GPIO_Init_CMSIS(void){
+  75              		.loc 1 15 27 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              		@ link register save eliminated.
+  16:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOEEN | RCC_AHB1ENR_GPIOGEN);
+  80              		.loc 1 16 5 view .LVU8
+  81 0000 094A     		ldr	r2, .L5
+  82 0002 136B     		ldr	r3, [r2, #48]
+  83 0004 43F05003 		orr	r3, r3, #80
+  84 0008 1363     		str	r3, [r2, #48]
+  17:Core/Src/init.c **** 
+  18:Core/Src/init.c ****     SET_BIT(GPIOE->MODER, GPIO_MODER_MODER0_0);            // Настройка режима ра�
+  85              		.loc 1 18 5 view .LVU9
+  86 000a 084B     		ldr	r3, .L5+4
+  87 000c 1A68     		ldr	r2, [r3]
+  88 000e 42F00102 		orr	r2, r2, #1
+  89 0012 1A60     		str	r2, [r3]
+  19:Core/Src/init.c ****     SET_BIT(GPIOE->OSPEEDR, GPIO_OSPEEDR_OSPEED0_0);       // настрока скорости р�
+  90              		.loc 1 19 5 view .LVU10
+  91 0014 9A68     		ldr	r2, [r3, #8]
+  92 0016 42F00102 		orr	r2, r2, #1
+  93 001a 9A60     		str	r2, [r3, #8]
+  20:Core/Src/init.c ****     SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR0);                   // Выключение светодио
+  94              		.loc 1 20 5 view .LVU11
+  95 001c 9A69     		ldr	r2, [r3, #24]
+  96 001e 42F48032 		orr	r2, r2, #65536
+  97 0022 9A61     		str	r2, [r3, #24]
+ARM GAS  C:\Users\swalex\AppData\Local\Temp\cci0f49G.s 			page 3
+
+
+  21:Core/Src/init.c **** 
+  22:Core/Src/init.c **** 
+  23:Core/Src/init.c **** }...
+  98              		.loc 1 23 1 is_stmt 0 view .LVU12
+  99 0024 7047     		bx	lr
+ 100              	.L6:
+ 101 0026 00BF     		.align	2
+ 102              	.L5:
+ 103 0028 00380240 		.word	1073887232
+ 104 002c 00100240 		.word	1073876992
+ 105              		.cfi_endproc
+ 106              	.LFE131:
+ 108              		.text
+ 109              	.Letext0:
+ 110              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 111              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 112              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\swalex\AppData\Local\Temp\cci0f49G.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\swalex\AppData\Local\Temp\cci0f49G.s:21     .text.GPIO_Init_With_Myself_Macros:00000000 $t
+C:\Users\swalex\AppData\Local\Temp\cci0f49G.s:27     .text.GPIO_Init_With_Myself_Macros:00000000 GPIO_Init_With_Myself_Macros
+C:\Users\swalex\AppData\Local\Temp\cci0f49G.s:61     .text.GPIO_Init_With_Myself_Macros:00000044 $d
+C:\Users\swalex\AppData\Local\Temp\cci0f49G.s:67     .text.GPIO_Init_CMSIS:00000000 $t
+C:\Users\swalex\AppData\Local\Temp\cci0f49G.s:73     .text.GPIO_Init_CMSIS:00000000 GPIO_Init_CMSIS
+C:\Users\swalex\AppData\Local\Temp\cci0f49G.s:103    .text.GPIO_Init_CMSIS:00000028 $d
+
+NO UNDEFINED SYMBOLS
