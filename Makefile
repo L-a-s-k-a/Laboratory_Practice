@@ -15,8 +15,9 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F411
-TARGET_VERSION = RE
+TARGET_SERIES = STM32F429
+TARGET_VERSION = ZI
+
 
 ######################################
 # building variables
@@ -255,13 +256,13 @@ $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf: $(OBJECTS) Makefile
 	@echo "-----------------------------------------------------"	
 
 $(BUILD_DIR):
-	@"mkdir" $@
+	@mkdir $@ 
 
 #######################################
 # clean up
 #######################################
 clean:
-	@"rm" -fR $(BUILD_DIR)
+	@rm -fR $(BUILD_DIR)
   
 #######################################
 # openocd
