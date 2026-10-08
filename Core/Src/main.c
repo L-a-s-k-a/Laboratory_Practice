@@ -1,18 +1,21 @@
 #include "init.h"
 
-uint8_t flag;
-
 int main(void) {
+    //Функции для выполнения лабораторной работы без использования CMSIS и макросов
+    GPIO_Ini_Classic();
+    Task_Classic();
 
-    GPIO_Ini();
-    while(1){
-        if(READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) != 0){
-            flag = 1;
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7); 
-        }
-        else{
-            flag = 0;
-            SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7); 
-        }
-    }
+    //Функции для выполнения лабораторной работы с использованием макросов
+    //GPIO_Ini_Macros();
+    //Task_Macros();
+
+    //Функции для выполнения лабораторной работы с использованием CMSIS
+    //GPIO_Ini_CMSIS();
+    //Task_CMSIS();
+    
+    //Доп. задание для лабораторной работы с использованием CMSIS
+    //GPIO_Ini_CMSIS();
+    //Extra_Task_CMSIS();
 }
+
+   
