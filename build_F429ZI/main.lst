@@ -1,0 +1,439 @@
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB0:
+   1:Core/Src/main.c **** 
+   2:Core/Src/main.c **** // // код на CMSIS
+   3:Core/Src/main.c **** // #include "stm32f4xx.h"
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** // int main(void) {
+   6:Core/Src/main.c ****     
+   7:Core/Src/main.c **** //     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c ****     
+  10:Core/Src/main.c **** //     MODIFY_REG(GPIOB->MODER, GPIO_MODER_MODER0 | GPIO_MODER_MODER7 | GPIO_MODER_MODER14, 
+  11:Core/Src/main.c **** //                              GPIO_MODER_MODER0_0 | GPIO_MODER_MODER7_0 | GPIO_MODER_MODER14_0);
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c **** //     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER0 | GPIO_MODER_MODER2 | GPIO_MODER_MODER3);
+  14:Core/Src/main.c **** 
+  15:Core/Src/main.c **** //     MODIFY_REG(GPIOC->PUPDR, GPIO_PUPDR_PUPDR0 | GPIO_PUPDR_PUPDR2 | GPIO_PUPDR_PUPDR3, 
+  16:Core/Src/main.c **** //                              GPIO_PUPDR_PUPDR0_1 | GPIO_PUPDR_PUPDR2_1 | GPIO_PUPDR_PUPDR3_1);
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c **** //     uint8_t port_mode = 0;
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c **** //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS_7);  
+  21:Core/Src/main.c **** //     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR_14); 
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c **** //     while (1) {
+  24:Core/Src/main.c ****        
+  25:Core/Src/main.c **** //         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_0)) {
+  26:Core/Src/main.c **** //             port_mode = 0;
+  27:Core/Src/main.c ****             
+  28:Core/Src/main.c **** //             CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER3); 
+  29:Core/Src/main.c ****              
+  30:Core/Src/main.c **** //             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR_3); 
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 2
+
+
+  31:Core/Src/main.c ****             
+  32:Core/Src/main.c **** //             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS_7);   
+  33:Core/Src/main.c **** //             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR_14);  
+  34:Core/Src/main.c **** //         }
+  35:Core/Src/main.c **** //         else{
+  36:Core/Src/main.c **** //             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR_7);
+  37:Core/Src/main.c **** //         }
+  38:Core/Src/main.c **** 
+  39:Core/Src/main.c **** //         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_2)) {
+  40:Core/Src/main.c **** //             port_mode = 1;
+  41:Core/Src/main.c ****             
+  42:Core/Src/main.c **** //             MODIFY_REG(GPIOC->MODER, GPIO_MODER_MODER3, GPIO_MODER_MODER3_0); 
+  43:Core/Src/main.c ****             
+  44:Core/Src/main.c **** //             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS_3); 
+  45:Core/Src/main.c ****             
+  46:Core/Src/main.c **** //             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS_14);  
+  47:Core/Src/main.c **** //             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR_7);   
+  48:Core/Src/main.c **** //         }
+  49:Core/Src/main.c **** //         else{
+  50:Core/Src/main.c **** //             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR_14);
+  51:Core/Src/main.c **** //         }
+  52:Core/Src/main.c ****         
+  53:Core/Src/main.c **** //         if (port_mode == 0) { 
+  54:Core/Src/main.c ****             
+  55:Core/Src/main.c **** //             if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_3)) {
+  56:Core/Src/main.c **** //                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS_0);  
+  57:Core/Src/main.c **** //             } else {
+  58:Core/Src/main.c **** //                 SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR_0); 
+  59:Core/Src/main.c **** //             }
+  60:Core/Src/main.c **** //         } else { 
+  61:Core/Src/main.c ****            
+  62:Core/Src/main.c **** //             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR_0); 
+  63:Core/Src/main.c **** //         }
+  64:Core/Src/main.c **** //     }
+  65:Core/Src/main.c **** // }
+  66:Core/Src/main.c **** 
+  67:Core/Src/main.c **** 
+  68:Core/Src/main.c **** // код с прямым доступом к памяти
+  69:Core/Src/main.c **** #include <stdint.h>
+  70:Core/Src/main.c **** 
+  71:Core/Src/main.c **** int main(void) {
+  29              		.loc 1 71 16 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  72:Core/Src/main.c ****     // =========================================================================
+  73:Core/Src/main.c ****     // 1. ВКЛЮЧЕНИЕ ТАКТИРОВАНИЯ
+  74:Core/Src/main.c ****     // =========================================================================
+  75:Core/Src/main.c ****     // Включаем тактирование портов GPIOB (бит 1) и GPIOC (бит 2) 
+  76:Core/Src/main.c ****     *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x06UL;
+  34              		.loc 1 76 5 view .LVU1
+  35 0000 434A     		ldr	r2, .L9
+  36 0002 D2F83038 		ldr	r3, [r2, #2096]
+  37              		.loc 1 76 41 is_stmt 0 view .LVU2
+  38 0006 43F00603 		orr	r3, r3, #6
+  39 000a C2F83038 		str	r3, [r2, #2096]
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 3
+
+
+  77:Core/Src/main.c **** 
+  78:Core/Src/main.c ****     // =========================================================================
+  79:Core/Src/main.c ****     // 2. НАСТРОЙКА ПОРТА GPIOB (Светодиоды на плате)
+  80:Core/Src/main.c ****     // =========================================================================
+  81:Core/Src/main.c ****     // Настраиваем пины PB0 (Желтый), PB7 (Красный), PB14 (Синий) 
+  82:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x00UL) &= ~0x3000C003UL; // Маска очистки для пи�
+  40              		.loc 1 82 5 is_stmt 1 view .LVU3
+  41 000e 414B     		ldr	r3, .L9+4
+  42 0010 D3F80014 		ldr	r1, [r3, #1024]
+  43              		.loc 1 82 41 is_stmt 0 view .LVU4
+  44 0014 404A     		ldr	r2, .L9+8
+  45 0016 0A40     		ands	r2, r2, r1
+  46 0018 C3F80024 		str	r2, [r3, #1024]
+  83:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x10004001UL;  // Режим "Выход" (01)
+  47              		.loc 1 83 5 is_stmt 1 view .LVU5
+  48              		.loc 1 83 41 is_stmt 0 view .LVU6
+  49 001c 3F49     		ldr	r1, .L9+12
+  50 001e 1143     		orrs	r1, r1, r2
+  51 0020 C3F80014 		str	r1, [r3, #1024]
+  84:Core/Src/main.c **** 
+  85:Core/Src/main.c ****     // =========================================================================
+  86:Core/Src/main.c ****     // 3. НАСТРОЙКА ПОРТА GPIOC (Кнопки и управляемый порт)
+  87:Core/Src/main.c ****     // =========================================================================
+  88:Core/Src/main.c ****     // Настраиваем пины PC0 (Кнопка 1), PC2 (Кнопка 2) и PC3 (Упра�
+  89:Core/Src/main.c ****     // По умолчанию сбрасываем их все в режим "Вход" (00)
+  90:Core/Src/main.c ****     *(uint32_t*)(0x40020800UL + 0x00UL) &= ~0x000000F3UL; // Маска очистки для пи�
+  52              		.loc 1 90 5 is_stmt 1 view .LVU7
+  53 0024 D3F80028 		ldr	r2, [r3, #2048]
+  54              		.loc 1 90 41 is_stmt 0 view .LVU8
+  55 0028 22F0F302 		bic	r2, r2, #243
+  56 002c C3F80028 		str	r2, [r3, #2048]
+  91:Core/Src/main.c **** 
+  92:Core/Src/main.c ****     // Включаем внутреннюю подтяжку к земле Pull-down (режим 1
+  93:Core/Src/main.c ****     *(uint32_t*)(0x40020800UL + 0x0CUL) &= ~0x000000F3UL; // Сброс битов PUPDR
+  57              		.loc 1 93 5 is_stmt 1 view .LVU9
+  58 0030 D3F80C28 		ldr	r2, [r3, #2060]
+  59              		.loc 1 93 41 is_stmt 0 view .LVU10
+  60 0034 22F0F302 		bic	r2, r2, #243
+  61 0038 C3F80C28 		str	r2, [r3, #2060]
+  94:Core/Src/main.c ****     *(uint32_t*)(0x40020800UL + 0x0CUL) |= 0x000000A2UL;  // Установка 10 для пино�
+  62              		.loc 1 94 5 is_stmt 1 view .LVU11
+  63              		.loc 1 94 41 is_stmt 0 view .LVU12
+  64 003c 42F0A202 		orr	r2, r2, #162
+  65 0040 C3F80C28 		str	r2, [r3, #2060]
+  95:Core/Src/main.c **** 
+  96:Core/Src/main.c ****     // Переменная режима управляемого порта PC3: 0 - Вход, 1 -
+  97:Core/Src/main.c ****     uint8_t port_mode = 0; 
+  66              		.loc 1 97 5 is_stmt 1 view .LVU13
+  67              	.LVL0:
+  98:Core/Src/main.c **** 
+  99:Core/Src/main.c ****     // ИСПРАВЛЕНО: Исходное состояние — гасим все светод
+ 100:Core/Src/main.c ****     // Сдвиг на +16 бит в регистре BSRR для сброса в 0.
+ 101:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x18UL) = 0x00800000UL;   // BR_7 (Гасим Красный)
+  68              		.loc 1 101 5 view .LVU14
+  69              		.loc 1 101 41 is_stmt 0 view .LVU15
+  70 0044 4FF40002 		mov	r2, #8388608
+  71 0048 C3F81824 		str	r2, [r3, #1048]
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 4
+
+
+ 102:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x18UL) = 0x40000000UL;   // BR_14 (Гасим Синий)
+  72              		.loc 1 102 5 is_stmt 1 view .LVU16
+  73              		.loc 1 102 41 is_stmt 0 view .LVU17
+  74 004c 4FF08042 		mov	r2, #1073741824
+  75 0050 C3F81824 		str	r2, [r3, #1048]
+ 103:Core/Src/main.c ****     *(uint32_t*)(0x40020400UL + 0x18UL) = 0x00010000UL;   // BR_0 (Гасим Желтый)
+  76              		.loc 1 103 5 is_stmt 1 view .LVU18
+  77              		.loc 1 103 41 is_stmt 0 view .LVU19
+  78 0054 4FF48032 		mov	r2, #65536
+  79 0058 C3F81824 		str	r2, [r3, #1048]
+  97:Core/Src/main.c **** 
+  80              		.loc 1 97 13 view .LVU20
+  81 005c 0022     		movs	r2, #0
+  82 005e 20E0     		b	.L2
+  83              	.LVL1:
+  84              	.L3:
+ 104:Core/Src/main.c **** 
+ 105:Core/Src/main.c ****     // =========================================================================
+ 106:Core/Src/main.c ****     // ОСНОВНОЙ ЦИКЛ ПРОГРАММЫ
+ 107:Core/Src/main.c ****     // =========================================================================
+ 108:Core/Src/main.c ****     while(1) {
+ 109:Core/Src/main.c ****         
+ 110:Core/Src/main.c ****         // ---------------------------------------------------------------------
+ 111:Core/Src/main.c ****         // Опрос Кнопки 1 (PC0) -> Установка PC3 на ВХОД
+ 112:Core/Src/main.c ****         // ---------------------------------------------------------------------
+ 113:Core/Src/main.c ****         if((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x01UL) != 0) {
+ 114:Core/Src/main.c ****             port_mode = 0; 
+ 115:Core/Src/main.c ****             
+ 116:Core/Src/main.c ****             // Переводим PC3 в режим Входа: сбрасываем биты 7:6 �
+ 117:Core/Src/main.c ****             *(uint32_t*)(0x40020800UL + 0x00UL) &= ~0x000000C0UL; 
+ 118:Core/Src/main.c ****             
+ 119:Core/Src/main.c ****             // Сбрасываем внешний выходной уровень PC3 в 0 чер�
+ 120:Core/Src/main.c ****             *(uint32_t*)(0x40020800UL + 0x18UL) = 0x00080000UL; 
+ 121:Core/Src/main.c ****             
+ 122:Core/Src/main.c ****             // ИСПРАВЛЕНО: Включаем КРАСНЫЙ светодиод через 
+ 123:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) = 0x80UL; 
+ 124:Core/Src/main.c ****             // ИСПРАВЛЕНО: Гасим СИНИЙ светодиод через BR_14 (1 <
+ 125:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) = 0x40000000UL; 
+ 126:Core/Src/main.c ****         } else {
+ 127:Core/Src/main.c ****             // ИСПРАВЛЕНО: Если Кнопка 1 отпущена — гасим КРА
+ 128:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) = 0x00800000UL; 
+  85              		.loc 1 128 13 is_stmt 1 view .LVU21
+  86              		.loc 1 128 49 is_stmt 0 view .LVU22
+  87 0060 2C4B     		ldr	r3, .L9+4
+  88 0062 4FF40001 		mov	r1, #8388608
+  89 0066 C3F81814 		str	r1, [r3, #1048]
+  90 006a 33E0     		b	.L4
+  91              	.L5:
+ 129:Core/Src/main.c ****         }
+ 130:Core/Src/main.c **** 
+ 131:Core/Src/main.c ****         // ---------------------------------------------------------------------
+ 132:Core/Src/main.c ****         // Опрос Кнопки 2 (PC2) -> Установка PC3 на ВЫХОД
+ 133:Core/Src/main.c ****         // ---------------------------------------------------------------------
+ 134:Core/Src/main.c ****         if((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x04UL) != 0) {
+ 135:Core/Src/main.c ****             port_mode = 1; 
+ 136:Core/Src/main.c ****             
+ 137:Core/Src/main.c ****             // Переводим PC3 в режим Выхода: выставляем биты 7:6
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 5
+
+
+ 138:Core/Src/main.c ****             *(uint32_t*)(0x40020800UL + 0x00UL) &= ~0x000000C0UL; 
+ 139:Core/Src/main.c ****             *(uint32_t*)(0x40020800UL + 0x00UL) |= 0x00000040UL; 
+ 140:Core/Src/main.c ****             
+ 141:Core/Src/main.c ****             // Включаем внешний светодиод на управляемом по�
+ 142:Core/Src/main.c ****             *(uint32_t*)(0x40020800UL + 0x18UL) = 0x00000008UL; 
+ 143:Core/Src/main.c ****             
+ 144:Core/Src/main.c ****             // ИСПРАВЛЕНО: Включаем СИНИЙ светодиод через BS_1
+ 145:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) = 0x4000UL; 
+ 146:Core/Src/main.c ****             // ИСПРАВЛЕНО: Гасим КРАСНЫЙ светодиод через BR_7 (
+ 147:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) = 0x00800000UL; 
+ 148:Core/Src/main.c ****         } else {
+ 149:Core/Src/main.c ****             // ИСПРАВЛЕНО: Если Кнопка 2 отпущена — гасим СИН
+ 150:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) = 0x40000000UL; 
+  92              		.loc 1 150 13 is_stmt 1 view .LVU23
+  93              		.loc 1 150 49 is_stmt 0 view .LVU24
+  94 006c 294B     		ldr	r3, .L9+4
+  95 006e 4FF08041 		mov	r1, #1073741824
+  96 0072 C3F81814 		str	r1, [r3, #1048]
+ 151:Core/Src/main.c ****         }
+ 152:Core/Src/main.c **** 
+ 153:Core/Src/main.c ****         // ---------------------------------------------------------------------
+ 154:Core/Src/main.c ****         // ЛОГИКА РАБОТЫ УПРАВЛЯЕМОГО ПОРТА (PC3)
+ 155:Core/Src/main.c ****         // ---------------------------------------------------------------------
+ 156:Core/Src/main.c ****         if (port_mode == 0) { 
+  97              		.loc 1 156 9 is_stmt 1 view .LVU25
+  98              		.loc 1 156 12 is_stmt 0 view .LVU26
+  99 0076 7AB9     		cbnz	r2, .L6
+ 157:Core/Src/main.c ****             // Режим ВХОДА: Опрашиваем состояние пина PC3 (Кно�
+ 158:Core/Src/main.c ****             if((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x08UL) != 0) {
+ 100              		.loc 1 158 13 is_stmt 1 view .LVU27
+ 101              		.loc 1 158 17 is_stmt 0 view .LVU28
+ 102 0078 D3F81038 		ldr	r3, [r3, #2064]
+ 103              		.loc 1 158 15 view .LVU29
+ 104 007c 13F0080F 		tst	r3, #8
+ 105 0080 04D0     		beq	.L7
+ 159:Core/Src/main.c ****                 // ИСПРАВЛЕНО: Если кнопка зажата — включаем Ж
+ 160:Core/Src/main.c ****                 *(uint32_t*)(0x40020400UL + 0x18UL) = 0x01UL; 
+ 106              		.loc 1 160 17 is_stmt 1 view .LVU30
+ 107              		.loc 1 160 53 is_stmt 0 view .LVU31
+ 108 0082 244B     		ldr	r3, .L9+4
+ 109 0084 0121     		movs	r1, #1
+ 110 0086 C3F81814 		str	r1, [r3, #1048]
+ 111 008a 0AE0     		b	.L2
+ 112              	.L7:
+ 161:Core/Src/main.c ****             } else {
+ 162:Core/Src/main.c ****                 // ИСПРАВЛЕНО: Если отпущена — гасим ЖЕЛТЫЙ че
+ 163:Core/Src/main.c ****                 *(uint32_t*)(0x40020400UL + 0x18UL) = 0x00010000UL; 
+ 113              		.loc 1 163 17 is_stmt 1 view .LVU32
+ 114              		.loc 1 163 53 is_stmt 0 view .LVU33
+ 115 008c 214B     		ldr	r3, .L9+4
+ 116 008e 4FF48031 		mov	r1, #65536
+ 117 0092 C3F81814 		str	r1, [r3, #1048]
+ 118 0096 04E0     		b	.L2
+ 119              	.LVL2:
+ 120              	.L6:
+ 164:Core/Src/main.c ****             }
+ 165:Core/Src/main.c ****         } else {
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 6
+
+
+ 166:Core/Src/main.c ****             // Режим ВЫХОДА: Внешний светодиод на PC3 уже гори�
+ 167:Core/Src/main.c ****             // ИСПРАВЛЕНО: Гасим ЖЕЛТЫЙ светодиод платы чере
+ 168:Core/Src/main.c ****             *(uint32_t*)(0x40020400UL + 0x18UL) = 0x00010000UL; 
+ 121              		.loc 1 168 13 is_stmt 1 view .LVU34
+ 122              		.loc 1 168 49 is_stmt 0 view .LVU35
+ 123 0098 1E4B     		ldr	r3, .L9+4
+ 124 009a 4FF48031 		mov	r1, #65536
+ 125 009e C3F81814 		str	r1, [r3, #1048]
+ 126              	.L2:
+ 127              	.LVL3:
+ 108:Core/Src/main.c ****         
+ 128              		.loc 1 108 5 is_stmt 1 view .LVU36
+ 113:Core/Src/main.c ****             port_mode = 0; 
+ 129              		.loc 1 113 9 view .LVU37
+ 113:Core/Src/main.c ****             port_mode = 0; 
+ 130              		.loc 1 113 13 is_stmt 0 view .LVU38
+ 131 00a2 1C4B     		ldr	r3, .L9+4
+ 132 00a4 D3F81038 		ldr	r3, [r3, #2064]
+ 113:Core/Src/main.c ****             port_mode = 0; 
+ 133              		.loc 1 113 11 view .LVU39
+ 134 00a8 13F0010F 		tst	r3, #1
+ 135 00ac D8D0     		beq	.L3
+ 114:Core/Src/main.c ****             
+ 136              		.loc 1 114 13 is_stmt 1 view .LVU40
+ 137              	.LVL4:
+ 117:Core/Src/main.c ****             
+ 138              		.loc 1 117 13 view .LVU41
+ 139 00ae 194B     		ldr	r3, .L9+4
+ 140 00b0 D3F80028 		ldr	r2, [r3, #2048]
+ 117:Core/Src/main.c ****             
+ 141              		.loc 1 117 49 is_stmt 0 view .LVU42
+ 142 00b4 22F0C002 		bic	r2, r2, #192
+ 143 00b8 C3F80028 		str	r2, [r3, #2048]
+ 120:Core/Src/main.c ****             
+ 144              		.loc 1 120 13 is_stmt 1 view .LVU43
+ 120:Core/Src/main.c ****             
+ 145              		.loc 1 120 49 is_stmt 0 view .LVU44
+ 146 00bc 4FF40022 		mov	r2, #524288
+ 147 00c0 C3F81828 		str	r2, [r3, #2072]
+ 123:Core/Src/main.c ****             // ИСПРАВЛЕНО: Гасим СИНИЙ светодиод через BR_14 (1 <
+ 148              		.loc 1 123 13 is_stmt 1 view .LVU45
+ 123:Core/Src/main.c ****             // ИСПРАВЛЕНО: Гасим СИНИЙ светодиод через BR_14 (1 <
+ 149              		.loc 1 123 49 is_stmt 0 view .LVU46
+ 150 00c4 8022     		movs	r2, #128
+ 151 00c6 C3F81824 		str	r2, [r3, #1048]
+ 125:Core/Src/main.c ****         } else {
+ 152              		.loc 1 125 13 is_stmt 1 view .LVU47
+ 125:Core/Src/main.c ****         } else {
+ 153              		.loc 1 125 49 is_stmt 0 view .LVU48
+ 154 00ca 4FF08042 		mov	r2, #1073741824
+ 155 00ce C3F81824 		str	r2, [r3, #1048]
+ 114:Core/Src/main.c ****             
+ 156              		.loc 1 114 23 view .LVU49
+ 157 00d2 0022     		movs	r2, #0
+ 158              	.LVL5:
+ 159              	.L4:
+ 134:Core/Src/main.c ****             port_mode = 1; 
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 7
+
+
+ 160              		.loc 1 134 9 is_stmt 1 view .LVU50
+ 134:Core/Src/main.c ****             port_mode = 1; 
+ 161              		.loc 1 134 13 is_stmt 0 view .LVU51
+ 162 00d4 0F4B     		ldr	r3, .L9+4
+ 163 00d6 D3F81038 		ldr	r3, [r3, #2064]
+ 134:Core/Src/main.c ****             port_mode = 1; 
+ 164              		.loc 1 134 11 view .LVU52
+ 165 00da 13F0040F 		tst	r3, #4
+ 166 00de C5D0     		beq	.L5
+ 135:Core/Src/main.c ****             
+ 167              		.loc 1 135 13 is_stmt 1 view .LVU53
+ 168              	.LVL6:
+ 138:Core/Src/main.c ****             *(uint32_t*)(0x40020800UL + 0x00UL) |= 0x00000040UL; 
+ 169              		.loc 1 138 13 view .LVU54
+ 170 00e0 0C4B     		ldr	r3, .L9+4
+ 171 00e2 D3F80028 		ldr	r2, [r3, #2048]
+ 138:Core/Src/main.c ****             *(uint32_t*)(0x40020800UL + 0x00UL) |= 0x00000040UL; 
+ 172              		.loc 1 138 49 is_stmt 0 view .LVU55
+ 173 00e6 22F0C002 		bic	r2, r2, #192
+ 174 00ea C3F80028 		str	r2, [r3, #2048]
+ 139:Core/Src/main.c ****             
+ 175              		.loc 1 139 13 is_stmt 1 view .LVU56
+ 139:Core/Src/main.c ****             
+ 176              		.loc 1 139 49 is_stmt 0 view .LVU57
+ 177 00ee 42F04002 		orr	r2, r2, #64
+ 178 00f2 C3F80028 		str	r2, [r3, #2048]
+ 142:Core/Src/main.c ****             
+ 179              		.loc 1 142 13 is_stmt 1 view .LVU58
+ 142:Core/Src/main.c ****             
+ 180              		.loc 1 142 49 is_stmt 0 view .LVU59
+ 181 00f6 0822     		movs	r2, #8
+ 182 00f8 C3F81828 		str	r2, [r3, #2072]
+ 145:Core/Src/main.c ****             // ИСПРАВЛЕНО: Гасим КРАСНЫЙ светодиод через BR_7 (
+ 183              		.loc 1 145 13 is_stmt 1 view .LVU60
+ 145:Core/Src/main.c ****             // ИСПРАВЛЕНО: Гасим КРАСНЫЙ светодиод через BR_7 (
+ 184              		.loc 1 145 49 is_stmt 0 view .LVU61
+ 185 00fc 4FF48042 		mov	r2, #16384
+ 186 0100 C3F81824 		str	r2, [r3, #1048]
+ 147:Core/Src/main.c ****         } else {
+ 187              		.loc 1 147 13 is_stmt 1 view .LVU62
+ 147:Core/Src/main.c ****         } else {
+ 188              		.loc 1 147 49 is_stmt 0 view .LVU63
+ 189 0104 4FF40002 		mov	r2, #8388608
+ 190 0108 C3F81824 		str	r2, [r3, #1048]
+ 156:Core/Src/main.c ****             // Режим ВХОДА: Опрашиваем состояние пина PC3 (Кно�
+ 191              		.loc 1 156 9 is_stmt 1 view .LVU64
+ 135:Core/Src/main.c ****             
+ 192              		.loc 1 135 23 is_stmt 0 view .LVU65
+ 193 010c 0122     		movs	r2, #1
+ 194 010e C3E7     		b	.L6
+ 195              	.L10:
+ 196              		.align	2
+ 197              	.L9:
+ 198 0110 00300240 		.word	1073885184
+ 199 0114 00000240 		.word	1073872896
+ 200 0118 FC3FFFCF 		.word	-805355524
+ 201 011c 01400010 		.word	268451841
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 8
+
+
+ 202              		.cfi_endproc
+ 203              	.LFE0:
+ 205              		.text
+ 206              	.Letext0:
+ 207              		.file 2 "C:/Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 208              		.file 3 "C:/Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s:21     .text.main:00000000 $t
+C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s:27     .text.main:00000000 main
+C:\Users\admin\AppData\Local\Temp\cc9EQmOt.s:198    .text.main:00000110 $d
+
+NO UNDEFINED SYMBOLS
