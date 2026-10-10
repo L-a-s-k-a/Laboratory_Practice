@@ -1,0 +1,346 @@
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc12mUPF.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.SystemInit,"ax",%progbits
+  21              		.align	1
+  22              		.global	SystemInit
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SystemInit:
+  28              	.LFB0:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** // Обязательная пустая заглушка для совместимости со с
+   4:Core/Src/main.c **** void SystemInit(void) {
+  29              		.loc 1 4 23 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/main.c ****     
+   6:Core/Src/main.c **** }
+  34              		.loc 1 6 1 view .LVU1
+  35 0000 7047     		bx	lr
+  36              		.cfi_endproc
+  37              	.LFE0:
+  39              		.section	.text.main,"ax",%progbits
+  40              		.align	1
+  41              		.global	main
+  42              		.syntax unified
+  43              		.thumb
+  44              		.thumb_func
+  46              	main:
+  47              	.LFB1:
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** int main(void) {
+  48              		.loc 1 8 16 view -0
+  49              		.cfi_startproc
+  50              		@ args = 0, pretend = 0, frame = 0
+  51              		@ frame_needed = 0, uses_anonymous_args = 0
+  52              		@ link register save eliminated.
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc12mUPF.s 			page 2
+
+
+   9:Core/Src/main.c ****     // Включение тактирования портов B и C
+  10:Core/Src/main.c ****     SET_BIT(RCC_GPIO_EN, (RCC_GPIOB_EN | RCC_GPIOC_EN));
+  53              		.loc 1 10 5 view .LVU3
+  54 0000 464A     		ldr	r2, .L10
+  55 0002 D2F83038 		ldr	r3, [r2, #2096]
+  56 0006 43F00603 		orr	r3, r3, #6
+  57 000a C2F83038 		str	r3, [r2, #2096]
+  11:Core/Src/main.c **** 
+  12:Core/Src/main.c ****     // Настройка MODER для GPIOB (PB0, PB7, PB14 на вывод)
+  13:Core/Src/main.c ****     GPIOB_MODER &= ~0x3000C003UL; // Исправлено на полную маску очистк
+  58              		.loc 1 13 5 view .LVU4
+  59 000e 444B     		ldr	r3, .L10+4
+  60 0010 D3F80014 		ldr	r1, [r3, #1024]
+  61              		.loc 1 13 17 is_stmt 0 view .LVU5
+  62 0014 434A     		ldr	r2, .L10+8
+  63 0016 0A40     		ands	r2, r2, r1
+  64 0018 C3F80024 		str	r2, [r3, #1024]
+  14:Core/Src/main.c ****     GPIOB_MODER |=  0x10004001UL; 
+  65              		.loc 1 14 5 is_stmt 1 view .LVU6
+  66 001c D3F80014 		ldr	r1, [r3, #1024]
+  67              		.loc 1 14 17 is_stmt 0 view .LVU7
+  68 0020 414A     		ldr	r2, .L10+12
+  69 0022 0A43     		orrs	r2, r2, r1
+  70 0024 C3F80024 		str	r2, [r3, #1024]
+  15:Core/Src/main.c **** 
+  16:Core/Src/main.c ****     // Настройка MODER для GPIOC (PC0, PC2, PC3 по умолчанию на вход)
+  17:Core/Src/main.c ****     GPIOC_MODER &= ~0x000000F3UL; // Исправлено: маска 0xF3 затрагивает �
+  71              		.loc 1 17 5 is_stmt 1 view .LVU8
+  72 0028 D3F80028 		ldr	r2, [r3, #2048]
+  73              		.loc 1 17 17 is_stmt 0 view .LVU9
+  74 002c 22F0F302 		bic	r2, r2, #243
+  75 0030 C3F80028 		str	r2, [r3, #2048]
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c ****     // Настройка PUPDR для GPIOC (PC0, PC2, PC3 на Pull-down подтяжку)
+  20:Core/Src/main.c ****     GPIOC_PUPDR &= ~0x000000F3UL; // Исправлено: маска 0xF3
+  76              		.loc 1 20 5 is_stmt 1 view .LVU10
+  77 0034 D3F80C28 		ldr	r2, [r3, #2060]
+  78              		.loc 1 20 17 is_stmt 0 view .LVU11
+  79 0038 22F0F302 		bic	r2, r2, #243
+  80 003c C3F80C28 		str	r2, [r3, #2060]
+  21:Core/Src/main.c ****     GPIOC_PUPDR |=  0x000000A2UL; // Исправлено: комбинация 10 (Pull-down) дл
+  81              		.loc 1 21 5 is_stmt 1 view .LVU12
+  82 0040 D3F80C28 		ldr	r2, [r3, #2060]
+  83              		.loc 1 21 17 is_stmt 0 view .LVU13
+  84 0044 42F0A202 		orr	r2, r2, #162
+  85 0048 C3F80C28 		str	r2, [r3, #2060]
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c ****     uint8_t port_mode = 0;
+  86              		.loc 1 23 5 is_stmt 1 view .LVU14
+  87              	.LVL0:
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c ****     // Изначально гасим все три светодиода на плате чере�
+  26:Core/Src/main.c ****     WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET);
+  88              		.loc 1 26 5 view .LVU15
+  89 004c 4FF40002 		mov	r2, #8388608
+  90 0050 C3F81824 		str	r2, [r3, #1048]
+  27:Core/Src/main.c ****     WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN14_RESET);
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc12mUPF.s 			page 3
+
+
+  91              		.loc 1 27 5 view .LVU16
+  92 0054 4FF08042 		mov	r2, #1073741824
+  93 0058 C3F81824 		str	r2, [r3, #1048]
+  28:Core/Src/main.c ****     WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);
+  94              		.loc 1 28 5 view .LVU17
+  95 005c 4FF48032 		mov	r2, #65536
+  96 0060 C3F81824 		str	r2, [r3, #1048]
+  23:Core/Src/main.c **** 
+  97              		.loc 1 23 13 is_stmt 0 view .LVU18
+  98 0064 0022     		movs	r2, #0
+  99 0066 20E0     		b	.L3
+ 100              	.LVL1:
+ 101              	.L4:
+  29:Core/Src/main.c **** 
+  30:Core/Src/main.c ****     while (1) {
+  31:Core/Src/main.c ****         // ---------------------------------------------------------------------
+  32:Core/Src/main.c ****         // Опрос Кнопки 1 на PC0 -> Режим ВХОДА для PC3
+  33:Core/Src/main.c ****         // ---------------------------------------------------------------------
+  34:Core/Src/main.c ****         if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN0) != 0) {
+  35:Core/Src/main.c ****             port_mode = 0;
+  36:Core/Src/main.c ****             
+  37:Core/Src/main.c ****             // Переводим PC3 обратно на вход и сбрасываем его �
+  38:Core/Src/main.c ****             GPIOC_MODER &= ~0x000000C0UL;
+  39:Core/Src/main.c ****             WRITE_REG(GPIOC_BSRR, GPIOC_BSRR_PIN3_RESET);
+  40:Core/Src/main.c ****             
+  41:Core/Src/main.c ****             // Включаем КРАСНЫЙ (PB7), гасим СИНИЙ (PB14)
+  42:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET);
+  43:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN14_RESET);
+  44:Core/Src/main.c ****         } else {
+  45:Core/Src/main.c ****             // Кнопка 1 отпущена — гасим КРАСНЫЙ
+  46:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET);
+ 102              		.loc 1 46 13 is_stmt 1 view .LVU19
+ 103 0068 2D4B     		ldr	r3, .L10+4
+ 104 006a 4FF40001 		mov	r1, #8388608
+ 105 006e C3F81814 		str	r1, [r3, #1048]
+ 106 0072 33E0     		b	.L5
+ 107              	.L6:
+  47:Core/Src/main.c ****         }
+  48:Core/Src/main.c **** 
+  49:Core/Src/main.c ****         // ---------------------------------------------------------------------
+  50:Core/Src/main.c ****         // Опрос Кнопки 2 на PC2 -> Режим ВЫХОДА для PC3
+  51:Core/Src/main.c ****         // ---------------------------------------------------------------------
+  52:Core/Src/main.c ****         if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN2) != 0) {
+  53:Core/Src/main.c ****             port_mode = 1;
+  54:Core/Src/main.c ****             
+  55:Core/Src/main.c ****             // Переводим PC3 на выход и устанавливаем высокий 
+  56:Core/Src/main.c ****             GPIOC_MODER &= ~0x000000C0UL;
+  57:Core/Src/main.c ****             GPIOC_MODER |=  0x00000040UL;
+  58:Core/Src/main.c ****             WRITE_REG(GPIOC_BSRR, GPIOC_BSRR_PIN3_SET);
+  59:Core/Src/main.c ****             
+  60:Core/Src/main.c ****             // Включаем СИНИЙ (PB14), гасим КРАСНЫЙ (PB7)
+  61:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET);
+  62:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET);
+  63:Core/Src/main.c ****         } else {
+  64:Core/Src/main.c ****             // Кнопка 2 отпущена — гасим СИНИЙ
+  65:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN14_RESET);
+ 108              		.loc 1 65 13 view .LVU20
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc12mUPF.s 			page 4
+
+
+ 109 0074 2A4B     		ldr	r3, .L10+4
+ 110 0076 4FF08041 		mov	r1, #1073741824
+ 111 007a C3F81814 		str	r1, [r3, #1048]
+  66:Core/Src/main.c ****         }
+  67:Core/Src/main.c ****         
+  68:Core/Src/main.c ****         // ---------------------------------------------------------------------
+  69:Core/Src/main.c ****         // Логика работы с управляемым портом PC3
+  70:Core/Src/main.c ****         // ---------------------------------------------------------------------
+  71:Core/Src/main.c ****         if (port_mode == 0) {
+ 112              		.loc 1 71 9 view .LVU21
+ 113              		.loc 1 71 12 is_stmt 0 view .LVU22
+ 114 007e 7AB9     		cbnz	r2, .L7
+  72:Core/Src/main.c ****             // Если PC3 работает как ВХОД (Кнопка 3): управляем �
+  73:Core/Src/main.c ****             if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN3) != 0) {
+ 115              		.loc 1 73 13 is_stmt 1 view .LVU23
+ 116              		.loc 1 73 17 is_stmt 0 view .LVU24
+ 117 0080 D3F81038 		ldr	r3, [r3, #2064]
+ 118              		.loc 1 73 16 view .LVU25
+ 119 0084 13F0080F 		tst	r3, #8
+ 120 0088 04D0     		beq	.L8
+  74:Core/Src/main.c ****                 WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET);
+ 121              		.loc 1 74 17 is_stmt 1 view .LVU26
+ 122 008a 254B     		ldr	r3, .L10+4
+ 123 008c 0121     		movs	r1, #1
+ 124 008e C3F81814 		str	r1, [r3, #1048]
+ 125 0092 0AE0     		b	.L3
+ 126              	.L8:
+  75:Core/Src/main.c ****             } else {
+  76:Core/Src/main.c ****                 WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);
+ 127              		.loc 1 76 17 view .LVU27
+ 128 0094 224B     		ldr	r3, .L10+4
+ 129 0096 4FF48031 		mov	r1, #65536
+ 130 009a C3F81814 		str	r1, [r3, #1048]
+ 131 009e 04E0     		b	.L3
+ 132              	.LVL2:
+ 133              	.L7:
+  77:Core/Src/main.c ****             }
+  78:Core/Src/main.c ****         } else {
+  79:Core/Src/main.c ****             // Если PC3 работает как ВЫХОД: ЖЕЛТЫЙ светодиод н�
+  80:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);
+ 134              		.loc 1 80 13 view .LVU28
+ 135 00a0 1F4B     		ldr	r3, .L10+4
+ 136 00a2 4FF48031 		mov	r1, #65536
+ 137 00a6 C3F81814 		str	r1, [r3, #1048]
+ 138              	.L3:
+ 139              	.LVL3:
+  30:Core/Src/main.c ****         // ---------------------------------------------------------------------
+ 140              		.loc 1 30 5 view .LVU29
+  34:Core/Src/main.c ****             port_mode = 0;
+ 141              		.loc 1 34 9 view .LVU30
+  34:Core/Src/main.c ****             port_mode = 0;
+ 142              		.loc 1 34 13 is_stmt 0 view .LVU31
+ 143 00aa 1D4B     		ldr	r3, .L10+4
+ 144 00ac D3F81038 		ldr	r3, [r3, #2064]
+  34:Core/Src/main.c ****             port_mode = 0;
+ 145              		.loc 1 34 12 view .LVU32
+ 146 00b0 13F0010F 		tst	r3, #1
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc12mUPF.s 			page 5
+
+
+ 147 00b4 D8D0     		beq	.L4
+  35:Core/Src/main.c ****             
+ 148              		.loc 1 35 13 is_stmt 1 view .LVU33
+ 149              	.LVL4:
+  38:Core/Src/main.c ****             WRITE_REG(GPIOC_BSRR, GPIOC_BSRR_PIN3_RESET);
+ 150              		.loc 1 38 13 view .LVU34
+ 151 00b6 1A4B     		ldr	r3, .L10+4
+ 152 00b8 D3F80028 		ldr	r2, [r3, #2048]
+  38:Core/Src/main.c ****             WRITE_REG(GPIOC_BSRR, GPIOC_BSRR_PIN3_RESET);
+ 153              		.loc 1 38 25 is_stmt 0 view .LVU35
+ 154 00bc 22F0C002 		bic	r2, r2, #192
+ 155 00c0 C3F80028 		str	r2, [r3, #2048]
+  39:Core/Src/main.c ****             
+ 156              		.loc 1 39 13 is_stmt 1 view .LVU36
+ 157 00c4 4FF40022 		mov	r2, #524288
+ 158 00c8 C3F81828 		str	r2, [r3, #2072]
+  42:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN14_RESET);
+ 159              		.loc 1 42 13 view .LVU37
+ 160 00cc 8022     		movs	r2, #128
+ 161 00ce C3F81824 		str	r2, [r3, #1048]
+  43:Core/Src/main.c ****         } else {
+ 162              		.loc 1 43 13 view .LVU38
+ 163 00d2 4FF08042 		mov	r2, #1073741824
+ 164 00d6 C3F81824 		str	r2, [r3, #1048]
+  35:Core/Src/main.c ****             
+ 165              		.loc 1 35 23 is_stmt 0 view .LVU39
+ 166 00da 0022     		movs	r2, #0
+ 167              	.LVL5:
+ 168              	.L5:
+  52:Core/Src/main.c ****             port_mode = 1;
+ 169              		.loc 1 52 9 is_stmt 1 view .LVU40
+  52:Core/Src/main.c ****             port_mode = 1;
+ 170              		.loc 1 52 13 is_stmt 0 view .LVU41
+ 171 00dc 104B     		ldr	r3, .L10+4
+ 172 00de D3F81038 		ldr	r3, [r3, #2064]
+  52:Core/Src/main.c ****             port_mode = 1;
+ 173              		.loc 1 52 12 view .LVU42
+ 174 00e2 13F0040F 		tst	r3, #4
+ 175 00e6 C5D0     		beq	.L6
+  53:Core/Src/main.c ****             
+ 176              		.loc 1 53 13 is_stmt 1 view .LVU43
+ 177              	.LVL6:
+  56:Core/Src/main.c ****             GPIOC_MODER |=  0x00000040UL;
+ 178              		.loc 1 56 13 view .LVU44
+ 179 00e8 0D4B     		ldr	r3, .L10+4
+ 180 00ea D3F80028 		ldr	r2, [r3, #2048]
+  56:Core/Src/main.c ****             GPIOC_MODER |=  0x00000040UL;
+ 181              		.loc 1 56 25 is_stmt 0 view .LVU45
+ 182 00ee 22F0C002 		bic	r2, r2, #192
+ 183 00f2 C3F80028 		str	r2, [r3, #2048]
+  57:Core/Src/main.c ****             WRITE_REG(GPIOC_BSRR, GPIOC_BSRR_PIN3_SET);
+ 184              		.loc 1 57 13 is_stmt 1 view .LVU46
+ 185 00f6 D3F80028 		ldr	r2, [r3, #2048]
+  57:Core/Src/main.c ****             WRITE_REG(GPIOC_BSRR, GPIOC_BSRR_PIN3_SET);
+ 186              		.loc 1 57 25 is_stmt 0 view .LVU47
+ 187 00fa 42F04002 		orr	r2, r2, #64
+ 188 00fe C3F80028 		str	r2, [r3, #2048]
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc12mUPF.s 			page 6
+
+
+  58:Core/Src/main.c ****             
+ 189              		.loc 1 58 13 is_stmt 1 view .LVU48
+ 190 0102 0822     		movs	r2, #8
+ 191 0104 C3F81828 		str	r2, [r3, #2072]
+  61:Core/Src/main.c ****             WRITE_REG(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET);
+ 192              		.loc 1 61 13 view .LVU49
+ 193 0108 4FF48042 		mov	r2, #16384
+ 194 010c C3F81824 		str	r2, [r3, #1048]
+  62:Core/Src/main.c ****         } else {
+ 195              		.loc 1 62 13 view .LVU50
+ 196 0110 4FF40002 		mov	r2, #8388608
+ 197 0114 C3F81824 		str	r2, [r3, #1048]
+  71:Core/Src/main.c ****             // Если PC3 работает как ВХОД (Кнопка 3): управляем �
+ 198              		.loc 1 71 9 view .LVU51
+  53:Core/Src/main.c ****             
+ 199              		.loc 1 53 23 is_stmt 0 view .LVU52
+ 200 0118 0122     		movs	r2, #1
+ 201 011a C1E7     		b	.L7
+ 202              	.L11:
+ 203              		.align	2
+ 204              	.L10:
+ 205 011c 00300240 		.word	1073885184
+ 206 0120 00000240 		.word	1073872896
+ 207 0124 FC3FFFCF 		.word	-805355524
+ 208 0128 01400010 		.word	268451841
+ 209              		.cfi_endproc
+ 210              	.LFE1:
+ 212              		.text
+ 213              	.Letext0:
+ 214              		.file 2 "C:/Tools/SysGCC/arm-none-eabi/include/machine/_default_types.h"
+ 215              		.file 3 "C:/Tools/SysGCC/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\admin\AppData\Local\Temp\cc12mUPF.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\admin\AppData\Local\Temp\cc12mUPF.s:21     .text.SystemInit:00000000 $t
+C:\Users\admin\AppData\Local\Temp\cc12mUPF.s:27     .text.SystemInit:00000000 SystemInit
+C:\Users\admin\AppData\Local\Temp\cc12mUPF.s:40     .text.main:00000000 $t
+C:\Users\admin\AppData\Local\Temp\cc12mUPF.s:46     .text.main:00000000 main
+C:\Users\admin\AppData\Local\Temp\cc12mUPF.s:205    .text.main:0000011c $d
+
+NO UNDEFINED SYMBOLS
