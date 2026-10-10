@@ -15,8 +15,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F411
-TARGET_VERSION = RE
+TARGET_SERIES = STM32F429
+TARGET_VERSION = ZI
 
 ######################################
 # building variables
@@ -132,9 +132,9 @@ endif
 # source
 ######################################
 # C sources
-C_SOURCES =  \
-$(SYS) \
-Core/Src/main.c \
+
+C_SOURCES = \
+Core/Src/main.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -188,11 +188,10 @@ C_DEFS =  \
 AS_INCLUDES = 
 
 # C includes
-C_INCLUDES =  \
--I$(CMSIS_INC_DEV) \
--I$(CMSIS_INC_UNIT) \
--I$(CMSIS_INC) \
+C_INCLUDES = \
 -ICore/Inc \
+-ICMSIS/Include \
+-ICMSIS/Devices/STM32F4xx/Include
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
