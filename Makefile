@@ -15,8 +15,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F411
-TARGET_VERSION = RE
+TARGET_SERIES = STM32F429
+TARGET_VERSION = ZI
 
 ######################################
 # building variables
@@ -24,7 +24,7 @@ TARGET_VERSION = RE
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -Og
+OPT = -O0
 
 #######################################
 # paths
@@ -135,6 +135,7 @@ endif
 C_SOURCES =  \
 $(SYS) \
 Core/Src/main.c \
+Core/Src/init.c 
 
 # ASM sources
 ASM_SOURCES =  \
@@ -193,6 +194,8 @@ C_INCLUDES =  \
 -I$(CMSIS_INC_UNIT) \
 -I$(CMSIS_INC) \
 -ICore/Inc \
+-ICMSIS/Devices \
+-ICMSIS/Include \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
@@ -210,15 +213,13 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = $(LD) -Wl,--no-warn-rwx-segment # "-Wl,--no-warn-rwx-segment" - отключает вывод предупреждения о том,
-#										   # что .elf содержит сегмент LOAD с правами RWX (Read, Write, X)
-#										   # Нужно разбораться с этой проблемой  
-#										   #
+LDSCRIPT = $(LD) 
+
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
+#LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).map,--cref -Wl,--gc-sections -Wl,--no-warn-rwx-segment
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).map,--cref -Wl,--gc-sections
-
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).hex $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).bin 
 	@echo "==========================================="
@@ -255,13 +256,14 @@ $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf: $(OBJECTS) Makefile
 	@echo "-----------------------------------------------------"	
 
 $(BUILD_DIR):
-	@"mkdir" $@
+	@mkdir $@
 
 #######################################
 # clean up
 #######################################
 clean:
-	@"rm" -fR $(BUILD_DIR)
+	@if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
+	@echo clean $(BUILD_DIR) is done!
   
 #######################################
 # openocd
