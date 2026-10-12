@@ -1,0 +1,1239 @@
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Init:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** #define CONST_UGOL 0.036
+   3:Core/Src/init.c **** void GPIO_Init(void) {
+  29              		.loc 1 3 22 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   4:Core/Src/init.c ****      RCC->AHB1ENR |=RCC_AHB1ENR_GPIOBEN |RCC_AHB1ENR_GPIOEEN|RCC_AHB1ENR_GPIOAEN;
+  34              		.loc 1 4 6 view .LVU1
+  35              		.loc 1 4 9 is_stmt 0 view .LVU2
+  36 0000 024A     		ldr	r2, .L2
+  37 0002 136B     		ldr	r3, [r2, #48]
+  38              		.loc 1 4 19 view .LVU3
+  39 0004 43F01303 		orr	r3, r3, #19
+  40 0008 1363     		str	r3, [r2, #48]
+   5:Core/Src/init.c ****      /*Включаем пины*/
+   6:Core/Src/init.c **** }
+  41              		.loc 1 6 1 view .LVU4
+  42 000a 7047     		bx	lr
+  43              	.L3:
+  44              		.align	2
+  45              	.L2:
+  46 000c 00380240 		.word	1073887232
+  47              		.cfi_endproc
+  48              	.LFE130:
+  50              		.section	.text.DWT_Init,"ax",%progbits
+  51              		.align	1
+  52              		.global	DWT_Init
+  53              		.syntax unified
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 2
+
+
+  54              		.thumb
+  55              		.thumb_func
+  57              	DWT_Init:
+  58              	.LFB131:
+   7:Core/Src/init.c **** void DWT_Init(void) {
+  59              		.loc 1 7 21 is_stmt 1 view -0
+  60              		.cfi_startproc
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+  63              		@ link register save eliminated.
+   8:Core/Src/init.c ****     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Разрешаем доступ к трас�
+  64              		.loc 1 8 5 view .LVU6
+  65              		.loc 1 8 14 is_stmt 0 view .LVU7
+  66 0000 074A     		ldr	r2, .L5
+  67 0002 D2F8FC30 		ldr	r3, [r2, #252]
+  68              		.loc 1 8 22 view .LVU8
+  69 0006 43F08073 		orr	r3, r3, #16777216
+  70 000a C2F8FC30 		str	r3, [r2, #252]
+   9:Core/Src/init.c ****     DWT->CYCCNT = 0;                                // Обнуляем счетчик
+  71              		.loc 1 9 5 is_stmt 1 view .LVU9
+  72              		.loc 1 9 17 is_stmt 0 view .LVU10
+  73 000e 054B     		ldr	r3, .L5+4
+  74 0010 0022     		movs	r2, #0
+  75 0012 5A60     		str	r2, [r3, #4]
+  10:Core/Src/init.c ****     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;            // Включаем счетчик циклов
+  76              		.loc 1 10 5 is_stmt 1 view .LVU11
+  77              		.loc 1 10 8 is_stmt 0 view .LVU12
+  78 0014 1A68     		ldr	r2, [r3]
+  79              		.loc 1 10 15 view .LVU13
+  80 0016 42F00102 		orr	r2, r2, #1
+  81 001a 1A60     		str	r2, [r3]
+  11:Core/Src/init.c **** }
+  82              		.loc 1 11 1 view .LVU14
+  83 001c 7047     		bx	lr
+  84              	.L6:
+  85 001e 00BF     		.align	2
+  86              	.L5:
+  87 0020 00ED00E0 		.word	-536810240
+  88 0024 001000E0 		.word	-536866816
+  89              		.cfi_endproc
+  90              	.LFE131:
+  92              		.section	.text.delay_us,"ax",%progbits
+  93              		.align	1
+  94              		.global	delay_us
+  95              		.syntax unified
+  96              		.thumb
+  97              		.thumb_func
+  99              	delay_us:
+ 100              	.LVL0:
+ 101              	.LFB132:
+  12:Core/Src/init.c **** 
+  13:Core/Src/init.c **** 
+  14:Core/Src/init.c **** void delay_us(uint32_t us) {
+ 102              		.loc 1 14 28 is_stmt 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 3
+
+
+ 106              		@ link register save eliminated.
+  15:Core/Src/init.c ****     uint32_t start = DWT->CYCCNT;
+ 107              		.loc 1 15 5 view .LVU16
+ 108              		.loc 1 15 14 is_stmt 0 view .LVU17
+ 109 0000 084B     		ldr	r3, .L10
+ 110 0002 5A68     		ldr	r2, [r3, #4]
+ 111              	.LVL1:
+  16:Core/Src/init.c ****     uint32_t ticks = us * (SystemCoreClock / 1000000);
+ 112              		.loc 1 16 5 is_stmt 1 view .LVU18
+ 113              		.loc 1 16 44 is_stmt 0 view .LVU19
+ 114 0004 084B     		ldr	r3, .L10+4
+ 115 0006 1B68     		ldr	r3, [r3]
+ 116 0008 0849     		ldr	r1, .L10+8
+ 117 000a A1FB0313 		umull	r1, r3, r1, r3
+ 118 000e 9B0C     		lsrs	r3, r3, #18
+ 119              		.loc 1 16 14 view .LVU20
+ 120 0010 03FB00F0 		mul	r0, r3, r0
+ 121              	.LVL2:
+  17:Core/Src/init.c ****     while ((DWT->CYCCNT - start) < ticks) {
+ 122              		.loc 1 17 5 is_stmt 1 view .LVU21
+ 123              		.loc 1 17 11 is_stmt 0 view .LVU22
+ 124 0014 00E0     		b	.L8
+ 125              	.L9:
+  18:Core/Src/init.c ****         __NOP(); 
+ 126              		.loc 1 18 9 is_stmt 1 view .LVU23
+ 127              		.syntax unified
+ 128              	@ 18 "Core/Src/init.c" 1
+ 129 0016 00BF     		nop
+ 130              	@ 0 "" 2
+ 131              		.thumb
+ 132              		.syntax unified
+ 133              	.L8:
+  17:Core/Src/init.c ****     while ((DWT->CYCCNT - start) < ticks) {
+ 134              		.loc 1 17 34 view .LVU24
+  17:Core/Src/init.c ****     while ((DWT->CYCCNT - start) < ticks) {
+ 135              		.loc 1 17 16 is_stmt 0 view .LVU25
+ 136 0018 024B     		ldr	r3, .L10
+ 137 001a 5B68     		ldr	r3, [r3, #4]
+  17:Core/Src/init.c ****     while ((DWT->CYCCNT - start) < ticks) {
+ 138              		.loc 1 17 25 view .LVU26
+ 139 001c 9B1A     		subs	r3, r3, r2
+  17:Core/Src/init.c ****     while ((DWT->CYCCNT - start) < ticks) {
+ 140              		.loc 1 17 34 view .LVU27
+ 141 001e 8342     		cmp	r3, r0
+ 142 0020 F9D3     		bcc	.L9
+  19:Core/Src/init.c ****     }
+  20:Core/Src/init.c **** }
+ 143              		.loc 1 20 1 view .LVU28
+ 144 0022 7047     		bx	lr
+ 145              	.L11:
+ 146              		.align	2
+ 147              	.L10:
+ 148 0024 001000E0 		.word	-536866816
+ 149 0028 00000000 		.word	SystemCoreClock
+ 150 002c 83DE1B43 		.word	1125899907
+ 151              		.cfi_endproc
+ 152              	.LFE132:
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 4
+
+
+ 154              		.section	.text.delay_ms,"ax",%progbits
+ 155              		.align	1
+ 156              		.global	delay_ms
+ 157              		.syntax unified
+ 158              		.thumb
+ 159              		.thumb_func
+ 161              	delay_ms:
+ 162              	.LVL3:
+ 163              	.LFB133:
+  21:Core/Src/init.c **** 
+  22:Core/Src/init.c **** // 3. Задержка в миллисекундах
+  23:Core/Src/init.c **** void delay_ms(uint32_t ms) {
+ 164              		.loc 1 23 28 is_stmt 1 view -0
+ 165              		.cfi_startproc
+ 166              		@ args = 0, pretend = 0, frame = 0
+ 167              		@ frame_needed = 0, uses_anonymous_args = 0
+ 168              		.loc 1 23 28 is_stmt 0 view .LVU30
+ 169 0000 38B5     		push	{r3, r4, r5, lr}
+ 170              	.LCFI0:
+ 171              		.cfi_def_cfa_offset 16
+ 172              		.cfi_offset 3, -16
+ 173              		.cfi_offset 4, -12
+ 174              		.cfi_offset 5, -8
+ 175              		.cfi_offset 14, -4
+ 176 0002 0546     		mov	r5, r0
+  24:Core/Src/init.c ****     for (uint32_t i = 0; i < ms; i++) {
+ 177              		.loc 1 24 5 is_stmt 1 view .LVU31
+ 178              	.LBB2:
+ 179              		.loc 1 24 10 view .LVU32
+ 180              	.LVL4:
+ 181              		.loc 1 24 19 is_stmt 0 view .LVU33
+ 182 0004 0024     		movs	r4, #0
+ 183              		.loc 1 24 5 view .LVU34
+ 184 0006 04E0     		b	.L13
+ 185              	.LVL5:
+ 186              	.L14:
+  25:Core/Src/init.c ****         delay_us(1000); 
+ 187              		.loc 1 25 9 is_stmt 1 view .LVU35
+ 188 0008 4FF47A70 		mov	r0, #1000
+ 189 000c FFF7FEFF 		bl	delay_us
+ 190              	.LVL6:
+  24:Core/Src/init.c ****     for (uint32_t i = 0; i < ms; i++) {
+ 191              		.loc 1 24 35 discriminator 3 view .LVU36
+ 192 0010 0134     		adds	r4, r4, #1
+ 193              	.LVL7:
+ 194              	.L13:
+  24:Core/Src/init.c ****     for (uint32_t i = 0; i < ms; i++) {
+ 195              		.loc 1 24 28 discriminator 1 view .LVU37
+ 196 0012 AC42     		cmp	r4, r5
+ 197 0014 F8D3     		bcc	.L14
+ 198              	.LBE2:
+  26:Core/Src/init.c ****     }
+  27:Core/Src/init.c **** }
+ 199              		.loc 1 27 1 is_stmt 0 view .LVU38
+ 200 0016 38BD     		pop	{r3, r4, r5, pc}
+ 201              		.loc 1 27 1 view .LVU39
+ 202              		.cfi_endproc
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 5
+
+
+ 203              	.LFE133:
+ 205              		.section	.text.INIT_SVETODIOD,"ax",%progbits
+ 206              		.align	1
+ 207              		.global	INIT_SVETODIOD
+ 208              		.syntax unified
+ 209              		.thumb
+ 210              		.thumb_func
+ 212              	INIT_SVETODIOD:
+ 213              	.LFB134:
+  28:Core/Src/init.c **** 
+  29:Core/Src/init.c **** void INIT_SVETODIOD(){
+ 214              		.loc 1 29 22 is_stmt 1 view -0
+ 215              		.cfi_startproc
+ 216              		@ args = 0, pretend = 0, frame = 0
+ 217              		@ frame_needed = 0, uses_anonymous_args = 0
+ 218              		@ link register save eliminated.
+  30:Core/Src/init.c ****      /*Синий*/
+  31:Core/Src/init.c ****      PORT_SV->MODER &= ~(0x3U << (NUM_BLUE*2));
+ 219              		.loc 1 31 6 view .LVU41
+ 220              		.loc 1 31 13 is_stmt 0 view .LVU42
+ 221 0000 244B     		ldr	r3, .L17
+ 222 0002 1A68     		ldr	r2, [r3]
+ 223              		.loc 1 31 21 view .LVU43
+ 224 0004 22F44042 		bic	r2, r2, #49152
+ 225 0008 1A60     		str	r2, [r3]
+  32:Core/Src/init.c ****      PORT_SV->MODER |= (1U <<(NUM_BLUE*2));
+ 226              		.loc 1 32 6 is_stmt 1 view .LVU44
+ 227              		.loc 1 32 13 is_stmt 0 view .LVU45
+ 228 000a 1A68     		ldr	r2, [r3]
+ 229              		.loc 1 32 21 view .LVU46
+ 230 000c 42F48042 		orr	r2, r2, #16384
+ 231 0010 1A60     		str	r2, [r3]
+  33:Core/Src/init.c ****      PORT_SV->OTYPER &=~(1U <<(NUM_BLUE));
+ 232              		.loc 1 33 6 is_stmt 1 view .LVU47
+ 233              		.loc 1 33 13 is_stmt 0 view .LVU48
+ 234 0012 5A68     		ldr	r2, [r3, #4]
+ 235              		.loc 1 33 22 view .LVU49
+ 236 0014 22F08002 		bic	r2, r2, #128
+ 237 0018 5A60     		str	r2, [r3, #4]
+  34:Core/Src/init.c ****      PORT_SV->OSPEEDR &= ~(0x3U << (NUM_BLUE*2));
+ 238              		.loc 1 34 6 is_stmt 1 view .LVU50
+ 239              		.loc 1 34 13 is_stmt 0 view .LVU51
+ 240 001a 9A68     		ldr	r2, [r3, #8]
+ 241              		.loc 1 34 23 view .LVU52
+ 242 001c 22F44042 		bic	r2, r2, #49152
+ 243 0020 9A60     		str	r2, [r3, #8]
+  35:Core/Src/init.c ****      PORT_SV->OSPEEDR |=(2U <<(NUM_BLUE*2));
+ 244              		.loc 1 35 6 is_stmt 1 view .LVU53
+ 245              		.loc 1 35 13 is_stmt 0 view .LVU54
+ 246 0022 9A68     		ldr	r2, [r3, #8]
+ 247              		.loc 1 35 23 view .LVU55
+ 248 0024 42F40042 		orr	r2, r2, #32768
+ 249 0028 9A60     		str	r2, [r3, #8]
+  36:Core/Src/init.c ****      PORT_SV->PUPDR &=~(0x3U<<(NUM_BLUE*2));
+ 250              		.loc 1 36 6 is_stmt 1 view .LVU56
+ 251              		.loc 1 36 13 is_stmt 0 view .LVU57
+ 252 002a DA68     		ldr	r2, [r3, #12]
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 6
+
+
+ 253              		.loc 1 36 21 view .LVU58
+ 254 002c 22F44042 		bic	r2, r2, #49152
+ 255 0030 DA60     		str	r2, [r3, #12]
+  37:Core/Src/init.c ****      //Зеленный
+  38:Core/Src/init.c ****      PORT_SV->MODER &= ~(0x3U << (NUM_GREEN*2));
+ 256              		.loc 1 38 6 is_stmt 1 view .LVU59
+ 257              		.loc 1 38 13 is_stmt 0 view .LVU60
+ 258 0032 1A68     		ldr	r2, [r3]
+ 259              		.loc 1 38 21 view .LVU61
+ 260 0034 22F00302 		bic	r2, r2, #3
+ 261 0038 1A60     		str	r2, [r3]
+  39:Core/Src/init.c ****      PORT_SV->MODER |= (1U <<(NUM_GREEN*2));
+ 262              		.loc 1 39 6 is_stmt 1 view .LVU62
+ 263              		.loc 1 39 13 is_stmt 0 view .LVU63
+ 264 003a 1A68     		ldr	r2, [r3]
+ 265              		.loc 1 39 21 view .LVU64
+ 266 003c 42F00102 		orr	r2, r2, #1
+ 267 0040 1A60     		str	r2, [r3]
+  40:Core/Src/init.c ****      PORT_SV->OTYPER &=~(1U <<(NUM_GREEN));
+ 268              		.loc 1 40 6 is_stmt 1 view .LVU65
+ 269              		.loc 1 40 13 is_stmt 0 view .LVU66
+ 270 0042 5A68     		ldr	r2, [r3, #4]
+ 271              		.loc 1 40 22 view .LVU67
+ 272 0044 22F00102 		bic	r2, r2, #1
+ 273 0048 5A60     		str	r2, [r3, #4]
+  41:Core/Src/init.c ****      PORT_SV->OSPEEDR &= ~(0x3U << (NUM_GREEN*2));
+ 274              		.loc 1 41 6 is_stmt 1 view .LVU68
+ 275              		.loc 1 41 13 is_stmt 0 view .LVU69
+ 276 004a 9A68     		ldr	r2, [r3, #8]
+ 277              		.loc 1 41 23 view .LVU70
+ 278 004c 22F00302 		bic	r2, r2, #3
+ 279 0050 9A60     		str	r2, [r3, #8]
+  42:Core/Src/init.c ****      PORT_SV->OSPEEDR |=(2U <<(NUM_GREEN*2));
+ 280              		.loc 1 42 6 is_stmt 1 view .LVU71
+ 281              		.loc 1 42 13 is_stmt 0 view .LVU72
+ 282 0052 9A68     		ldr	r2, [r3, #8]
+ 283              		.loc 1 42 23 view .LVU73
+ 284 0054 42F00202 		orr	r2, r2, #2
+ 285 0058 9A60     		str	r2, [r3, #8]
+  43:Core/Src/init.c ****      PORT_SV->PUPDR &=~(0x3U<<(NUM_GREEN*2));
+ 286              		.loc 1 43 6 is_stmt 1 view .LVU74
+ 287              		.loc 1 43 13 is_stmt 0 view .LVU75
+ 288 005a DA68     		ldr	r2, [r3, #12]
+ 289              		.loc 1 43 21 view .LVU76
+ 290 005c 22F00302 		bic	r2, r2, #3
+ 291 0060 DA60     		str	r2, [r3, #12]
+  44:Core/Src/init.c ****      //Красный
+  45:Core/Src/init.c ****      PORT_SV->MODER &= ~(0x3U << (NUM_RED*2));
+ 292              		.loc 1 45 6 is_stmt 1 view .LVU77
+ 293              		.loc 1 45 13 is_stmt 0 view .LVU78
+ 294 0062 1A68     		ldr	r2, [r3]
+ 295              		.loc 1 45 21 view .LVU79
+ 296 0064 22F04052 		bic	r2, r2, #805306368
+ 297 0068 1A60     		str	r2, [r3]
+  46:Core/Src/init.c ****      PORT_SV->MODER |= (1U <<(NUM_RED*2));
+ 298              		.loc 1 46 6 is_stmt 1 view .LVU80
+ 299              		.loc 1 46 13 is_stmt 0 view .LVU81
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 7
+
+
+ 300 006a 1A68     		ldr	r2, [r3]
+ 301              		.loc 1 46 21 view .LVU82
+ 302 006c 42F08052 		orr	r2, r2, #268435456
+ 303 0070 1A60     		str	r2, [r3]
+  47:Core/Src/init.c ****      PORT_SV->OTYPER &=~(1U <<(NUM_RED));
+ 304              		.loc 1 47 6 is_stmt 1 view .LVU83
+ 305              		.loc 1 47 13 is_stmt 0 view .LVU84
+ 306 0072 5A68     		ldr	r2, [r3, #4]
+ 307              		.loc 1 47 22 view .LVU85
+ 308 0074 22F48042 		bic	r2, r2, #16384
+ 309 0078 5A60     		str	r2, [r3, #4]
+  48:Core/Src/init.c ****      PORT_SV->OSPEEDR &= ~(0x3U << (NUM_RED*2));
+ 310              		.loc 1 48 6 is_stmt 1 view .LVU86
+ 311              		.loc 1 48 13 is_stmt 0 view .LVU87
+ 312 007a 9A68     		ldr	r2, [r3, #8]
+ 313              		.loc 1 48 23 view .LVU88
+ 314 007c 22F04052 		bic	r2, r2, #805306368
+ 315 0080 9A60     		str	r2, [r3, #8]
+  49:Core/Src/init.c ****      PORT_SV->OSPEEDR |=(2U <<(NUM_RED*2));
+ 316              		.loc 1 49 6 is_stmt 1 view .LVU89
+ 317              		.loc 1 49 13 is_stmt 0 view .LVU90
+ 318 0082 9A68     		ldr	r2, [r3, #8]
+ 319              		.loc 1 49 23 view .LVU91
+ 320 0084 42F00052 		orr	r2, r2, #536870912
+ 321 0088 9A60     		str	r2, [r3, #8]
+  50:Core/Src/init.c ****      PORT_SV->PUPDR &=~(0x3U<<(NUM_RED*2));
+ 322              		.loc 1 50 6 is_stmt 1 view .LVU92
+ 323              		.loc 1 50 13 is_stmt 0 view .LVU93
+ 324 008a DA68     		ldr	r2, [r3, #12]
+ 325              		.loc 1 50 21 view .LVU94
+ 326 008c 22F04052 		bic	r2, r2, #805306368
+ 327 0090 DA60     		str	r2, [r3, #12]
+  51:Core/Src/init.c **** }
+ 328              		.loc 1 51 1 view .LVU95
+ 329 0092 7047     		bx	lr
+ 330              	.L18:
+ 331              		.align	2
+ 332              	.L17:
+ 333 0094 00040240 		.word	1073873920
+ 334              		.cfi_endproc
+ 335              	.LFE134:
+ 337              		.section	.text.INIT_UPRAVLENI_CCW,"ax",%progbits
+ 338              		.align	1
+ 339              		.global	INIT_UPRAVLENI_CCW
+ 340              		.syntax unified
+ 341              		.thumb
+ 342              		.thumb_func
+ 344              	INIT_UPRAVLENI_CCW:
+ 345              	.LVL8:
+ 346              	.LFB135:
+  52:Core/Src/init.c **** void INIT_UPRAVLENI_CCW(GPIO_TypeDef *port_ccw, uint8_t n2){ 
+ 347              		.loc 1 52 60 is_stmt 1 view -0
+ 348              		.cfi_startproc
+ 349              		@ args = 0, pretend = 0, frame = 0
+ 350              		@ frame_needed = 0, uses_anonymous_args = 0
+ 351              		.loc 1 52 60 is_stmt 0 view .LVU97
+ 352 0000 10B5     		push	{r4, lr}
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 8
+
+
+ 353              	.LCFI1:
+ 354              		.cfi_def_cfa_offset 8
+ 355              		.cfi_offset 4, -8
+ 356              		.cfi_offset 14, -4
+  53:Core/Src/init.c ****      // CCW
+  54:Core/Src/init.c ****      port_ccw->MODER &= ~(0x3U << n2*2);
+ 357              		.loc 1 54 6 is_stmt 1 view .LVU98
+ 358              		.loc 1 54 14 is_stmt 0 view .LVU99
+ 359 0002 0268     		ldr	r2, [r0]
+ 360              		.loc 1 54 37 view .LVU100
+ 361 0004 4FEA410C 		lsl	ip, r1, #1
+ 362              		.loc 1 54 32 view .LVU101
+ 363 0008 0323     		movs	r3, #3
+ 364 000a 03FA0CF3 		lsl	r3, r3, ip
+ 365              		.loc 1 54 22 view .LVU102
+ 366 000e 22EA0302 		bic	r2, r2, r3
+ 367 0012 0260     		str	r2, [r0]
+  55:Core/Src/init.c ****      port_ccw->MODER |= (1U <<n2*2);
+ 368              		.loc 1 55 6 is_stmt 1 view .LVU103
+ 369              		.loc 1 55 14 is_stmt 0 view .LVU104
+ 370 0014 0468     		ldr	r4, [r0]
+ 371              		.loc 1 55 29 view .LVU105
+ 372 0016 0122     		movs	r2, #1
+ 373 0018 02FA0CFE 		lsl	lr, r2, ip
+ 374              		.loc 1 55 22 view .LVU106
+ 375 001c 44EA0E04 		orr	r4, r4, lr
+ 376 0020 0460     		str	r4, [r0]
+  56:Core/Src/init.c ****      port_ccw->OTYPER &=~(1U <<n2);
+ 377              		.loc 1 56 6 is_stmt 1 view .LVU107
+ 378              		.loc 1 56 14 is_stmt 0 view .LVU108
+ 379 0022 4468     		ldr	r4, [r0, #4]
+ 380              		.loc 1 56 30 view .LVU109
+ 381 0024 8A40     		lsls	r2, r2, r1
+ 382              		.loc 1 56 23 view .LVU110
+ 383 0026 24EA0202 		bic	r2, r4, r2
+ 384 002a 4260     		str	r2, [r0, #4]
+  57:Core/Src/init.c ****      port_ccw->OSPEEDR &= ~(0x3U << n2*2);
+ 385              		.loc 1 57 6 is_stmt 1 view .LVU111
+ 386              		.loc 1 57 14 is_stmt 0 view .LVU112
+ 387 002c 8268     		ldr	r2, [r0, #8]
+ 388              		.loc 1 57 24 view .LVU113
+ 389 002e 22EA0302 		bic	r2, r2, r3
+ 390 0032 8260     		str	r2, [r0, #8]
+  58:Core/Src/init.c ****      port_ccw->OSPEEDR |=(2U <<n2*2);
+ 391              		.loc 1 58 6 is_stmt 1 view .LVU114
+ 392              		.loc 1 58 14 is_stmt 0 view .LVU115
+ 393 0034 8268     		ldr	r2, [r0, #8]
+ 394              		.loc 1 58 30 view .LVU116
+ 395 0036 0221     		movs	r1, #2
+ 396              	.LVL9:
+ 397              		.loc 1 58 30 view .LVU117
+ 398 0038 01FA0CF1 		lsl	r1, r1, ip
+ 399              		.loc 1 58 24 view .LVU118
+ 400 003c 0A43     		orrs	r2, r2, r1
+ 401 003e 8260     		str	r2, [r0, #8]
+  59:Core/Src/init.c ****      port_ccw->PUPDR &=~(0x3U<<n2*2);  
+ 402              		.loc 1 59 6 is_stmt 1 view .LVU119
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 9
+
+
+ 403              		.loc 1 59 14 is_stmt 0 view .LVU120
+ 404 0040 C268     		ldr	r2, [r0, #12]
+ 405              		.loc 1 59 22 view .LVU121
+ 406 0042 22EA0303 		bic	r3, r2, r3
+ 407 0046 C360     		str	r3, [r0, #12]
+  60:Core/Src/init.c **** 
+  61:Core/Src/init.c **** }
+ 408              		.loc 1 61 1 view .LVU122
+ 409 0048 10BD     		pop	{r4, pc}
+ 410              		.cfi_endproc
+ 411              	.LFE135:
+ 413              		.section	.text.INIT_UPRAVLENI_CW,"ax",%progbits
+ 414              		.align	1
+ 415              		.global	INIT_UPRAVLENI_CW
+ 416              		.syntax unified
+ 417              		.thumb
+ 418              		.thumb_func
+ 420              	INIT_UPRAVLENI_CW:
+ 421              	.LVL10:
+ 422              	.LFB136:
+  62:Core/Src/init.c **** void INIT_UPRAVLENI_CW( GPIO_TypeDef *port_cw ,uint8_t n1){
+ 423              		.loc 1 62 59 is_stmt 1 view -0
+ 424              		.cfi_startproc
+ 425              		@ args = 0, pretend = 0, frame = 0
+ 426              		@ frame_needed = 0, uses_anonymous_args = 0
+ 427              		.loc 1 62 59 is_stmt 0 view .LVU124
+ 428 0000 10B5     		push	{r4, lr}
+ 429              	.LCFI2:
+ 430              		.cfi_def_cfa_offset 8
+ 431              		.cfi_offset 4, -8
+ 432              		.cfi_offset 14, -4
+  63:Core/Src/init.c ****      // CW
+  64:Core/Src/init.c ****      port_cw->MODER &= ~(0x3U << n1*2);
+ 433              		.loc 1 64 6 is_stmt 1 view .LVU125
+ 434              		.loc 1 64 13 is_stmt 0 view .LVU126
+ 435 0002 0268     		ldr	r2, [r0]
+ 436              		.loc 1 64 36 view .LVU127
+ 437 0004 4FEA410C 		lsl	ip, r1, #1
+ 438              		.loc 1 64 31 view .LVU128
+ 439 0008 0323     		movs	r3, #3
+ 440 000a 03FA0CF3 		lsl	r3, r3, ip
+ 441              		.loc 1 64 21 view .LVU129
+ 442 000e 22EA0302 		bic	r2, r2, r3
+ 443 0012 0260     		str	r2, [r0]
+  65:Core/Src/init.c ****      port_cw->MODER |= (1U <<n1*2);
+ 444              		.loc 1 65 6 is_stmt 1 view .LVU130
+ 445              		.loc 1 65 13 is_stmt 0 view .LVU131
+ 446 0014 0468     		ldr	r4, [r0]
+ 447              		.loc 1 65 28 view .LVU132
+ 448 0016 0122     		movs	r2, #1
+ 449 0018 02FA0CFE 		lsl	lr, r2, ip
+ 450              		.loc 1 65 21 view .LVU133
+ 451 001c 44EA0E04 		orr	r4, r4, lr
+ 452 0020 0460     		str	r4, [r0]
+  66:Core/Src/init.c ****      port_cw->OTYPER &=~(1U <<n1);
+ 453              		.loc 1 66 6 is_stmt 1 view .LVU134
+ 454              		.loc 1 66 13 is_stmt 0 view .LVU135
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 10
+
+
+ 455 0022 4468     		ldr	r4, [r0, #4]
+ 456              		.loc 1 66 29 view .LVU136
+ 457 0024 8A40     		lsls	r2, r2, r1
+ 458              		.loc 1 66 22 view .LVU137
+ 459 0026 24EA0202 		bic	r2, r4, r2
+ 460 002a 4260     		str	r2, [r0, #4]
+  67:Core/Src/init.c ****      port_cw->OSPEEDR &= ~(0x3U << n1*2);
+ 461              		.loc 1 67 6 is_stmt 1 view .LVU138
+ 462              		.loc 1 67 13 is_stmt 0 view .LVU139
+ 463 002c 8268     		ldr	r2, [r0, #8]
+ 464              		.loc 1 67 23 view .LVU140
+ 465 002e 22EA0302 		bic	r2, r2, r3
+ 466 0032 8260     		str	r2, [r0, #8]
+  68:Core/Src/init.c ****      port_cw->OSPEEDR |=(2U <<n1*2);
+ 467              		.loc 1 68 6 is_stmt 1 view .LVU141
+ 468              		.loc 1 68 13 is_stmt 0 view .LVU142
+ 469 0034 8268     		ldr	r2, [r0, #8]
+ 470              		.loc 1 68 29 view .LVU143
+ 471 0036 0221     		movs	r1, #2
+ 472              	.LVL11:
+ 473              		.loc 1 68 29 view .LVU144
+ 474 0038 01FA0CF1 		lsl	r1, r1, ip
+ 475              		.loc 1 68 23 view .LVU145
+ 476 003c 0A43     		orrs	r2, r2, r1
+ 477 003e 8260     		str	r2, [r0, #8]
+  69:Core/Src/init.c ****      port_cw->PUPDR &=~(0x3U<<n1*2);  
+ 478              		.loc 1 69 6 is_stmt 1 view .LVU146
+ 479              		.loc 1 69 13 is_stmt 0 view .LVU147
+ 480 0040 C268     		ldr	r2, [r0, #12]
+ 481              		.loc 1 69 21 view .LVU148
+ 482 0042 22EA0303 		bic	r3, r2, r3
+ 483 0046 C360     		str	r3, [r0, #12]
+  70:Core/Src/init.c **** }
+ 484              		.loc 1 70 1 view .LVU149
+ 485 0048 10BD     		pop	{r4, pc}
+ 486              		.cfi_endproc
+ 487              	.LFE136:
+ 489              		.section	.text.SET_SVETODIOD,"ax",%progbits
+ 490              		.align	1
+ 491              		.global	SET_SVETODIOD
+ 492              		.syntax unified
+ 493              		.thumb
+ 494              		.thumb_func
+ 496              	SET_SVETODIOD:
+ 497              	.LVL12:
+ 498              	.LFB137:
+  71:Core/Src/init.c ****  //Для запуска светодиода необходимо записать его цвет
+  72:Core/Src/init.c ****  void SET_SVETODIOD(char svet){
+ 499              		.loc 1 72 31 is_stmt 1 view -0
+ 500              		.cfi_startproc
+ 501              		@ args = 0, pretend = 0, frame = 0
+ 502              		@ frame_needed = 0, uses_anonymous_args = 0
+ 503              		@ link register save eliminated.
+  73:Core/Src/init.c ****     if(svet=='G'){
+ 504              		.loc 1 73 5 view .LVU151
+ 505              		.loc 1 73 7 is_stmt 0 view .LVU152
+ 506 0000 4728     		cmp	r0, #71
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 11
+
+
+ 507 0002 04D0     		beq	.L27
+  74:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<NUM_GREEN);
+  75:Core/Src/init.c ****      }
+  76:Core/Src/init.c ****      else if (svet=='B'){
+ 508              		.loc 1 76 11 is_stmt 1 view .LVU153
+ 509              		.loc 1 76 14 is_stmt 0 view .LVU154
+ 510 0004 4228     		cmp	r0, #66
+ 511 0006 06D0     		beq	.L28
+  77:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<NUM_BLUE);
+  78:Core/Src/init.c ****      }
+  79:Core/Src/init.c ****      else if(svet=='R'){
+ 512              		.loc 1 79 11 is_stmt 1 view .LVU155
+ 513              		.loc 1 79 13 is_stmt 0 view .LVU156
+ 514 0008 5228     		cmp	r0, #82
+ 515 000a 08D0     		beq	.L29
+ 516              	.L23:
+  80:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<NUM_RED);
+  81:Core/Src/init.c ****      }
+  82:Core/Src/init.c ****  }
+ 517              		.loc 1 82 2 view .LVU157
+ 518 000c 7047     		bx	lr
+ 519              	.L27:
+  74:Core/Src/init.c ****      }
+ 520              		.loc 1 74 11 is_stmt 1 view .LVU158
+  74:Core/Src/init.c ****      }
+ 521              		.loc 1 74 24 is_stmt 0 view .LVU159
+ 522 000e 064B     		ldr	r3, .L30
+ 523 0010 0122     		movs	r2, #1
+ 524 0012 9A61     		str	r2, [r3, #24]
+ 525 0014 7047     		bx	lr
+ 526              	.L28:
+  77:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<NUM_BLUE);
+ 527              		.loc 1 77 11 is_stmt 1 view .LVU160
+  77:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<NUM_BLUE);
+ 528              		.loc 1 77 24 is_stmt 0 view .LVU161
+ 529 0016 044B     		ldr	r3, .L30
+ 530 0018 8022     		movs	r2, #128
+ 531 001a 9A61     		str	r2, [r3, #24]
+ 532 001c 7047     		bx	lr
+ 533              	.L29:
+  80:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<NUM_RED);
+ 534              		.loc 1 80 11 is_stmt 1 view .LVU162
+  80:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<NUM_RED);
+ 535              		.loc 1 80 24 is_stmt 0 view .LVU163
+ 536 001e 024B     		ldr	r3, .L30
+ 537 0020 4FF48042 		mov	r2, #16384
+ 538 0024 9A61     		str	r2, [r3, #24]
+ 539              		.loc 1 82 2 view .LVU164
+ 540 0026 F1E7     		b	.L23
+ 541              	.L31:
+ 542              		.align	2
+ 543              	.L30:
+ 544 0028 00040240 		.word	1073873920
+ 545              		.cfi_endproc
+ 546              	.LFE137:
+ 548              		.section	.text.RESET_SVETODIOD,"ax",%progbits
+ 549              		.align	1
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 12
+
+
+ 550              		.global	RESET_SVETODIOD
+ 551              		.syntax unified
+ 552              		.thumb
+ 553              		.thumb_func
+ 555              	RESET_SVETODIOD:
+ 556              	.LVL13:
+ 557              	.LFB138:
+  83:Core/Src/init.c ****  void RESET_SVETODIOD(char svet){
+ 558              		.loc 1 83 33 is_stmt 1 view -0
+ 559              		.cfi_startproc
+ 560              		@ args = 0, pretend = 0, frame = 0
+ 561              		@ frame_needed = 0, uses_anonymous_args = 0
+ 562              		@ link register save eliminated.
+  84:Core/Src/init.c ****      if(svet=='G'){
+ 563              		.loc 1 84 6 view .LVU166
+ 564              		.loc 1 84 8 is_stmt 0 view .LVU167
+ 565 0000 4728     		cmp	r0, #71
+ 566 0002 04D0     		beq	.L36
+  85:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<(NUM_GREEN+16));
+  86:Core/Src/init.c ****      }
+  87:Core/Src/init.c ****      else if (svet=='B'){
+ 567              		.loc 1 87 11 is_stmt 1 view .LVU168
+ 568              		.loc 1 87 14 is_stmt 0 view .LVU169
+ 569 0004 4228     		cmp	r0, #66
+ 570 0006 07D0     		beq	.L37
+  88:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<(NUM_BLUE+16));
+  89:Core/Src/init.c ****      }
+  90:Core/Src/init.c ****      else if(svet=='R'){
+ 571              		.loc 1 90 11 is_stmt 1 view .LVU170
+ 572              		.loc 1 90 13 is_stmt 0 view .LVU171
+ 573 0008 5228     		cmp	r0, #82
+ 574 000a 0AD0     		beq	.L38
+ 575              	.L32:
+  91:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<(NUM_RED+16));
+  92:Core/Src/init.c ****      }
+  93:Core/Src/init.c ****      
+  94:Core/Src/init.c ****  }
+ 576              		.loc 1 94 2 view .LVU172
+ 577 000c 7047     		bx	lr
+ 578              	.L36:
+  85:Core/Src/init.c ****      }
+ 579              		.loc 1 85 11 is_stmt 1 view .LVU173
+  85:Core/Src/init.c ****      }
+ 580              		.loc 1 85 24 is_stmt 0 view .LVU174
+ 581 000e 074B     		ldr	r3, .L39
+ 582 0010 4FF48032 		mov	r2, #65536
+ 583 0014 9A61     		str	r2, [r3, #24]
+ 584 0016 7047     		bx	lr
+ 585              	.L37:
+  88:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<(NUM_BLUE+16));
+ 586              		.loc 1 88 11 is_stmt 1 view .LVU175
+  88:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<(NUM_BLUE+16));
+ 587              		.loc 1 88 24 is_stmt 0 view .LVU176
+ 588 0018 044B     		ldr	r3, .L39
+ 589 001a 4FF40002 		mov	r2, #8388608
+ 590 001e 9A61     		str	r2, [r3, #24]
+ 591 0020 7047     		bx	lr
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 13
+
+
+ 592              	.L38:
+  91:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<(NUM_RED+16));
+ 593              		.loc 1 91 11 is_stmt 1 view .LVU177
+  91:Core/Src/init.c ****           PORT_SV->BSRR=(1U <<(NUM_RED+16));
+ 594              		.loc 1 91 24 is_stmt 0 view .LVU178
+ 595 0022 024B     		ldr	r3, .L39
+ 596 0024 4FF08042 		mov	r2, #1073741824
+ 597 0028 9A61     		str	r2, [r3, #24]
+ 598              		.loc 1 94 2 view .LVU179
+ 599 002a EFE7     		b	.L32
+ 600              	.L40:
+ 601              		.align	2
+ 602              	.L39:
+ 603 002c 00040240 		.word	1073873920
+ 604              		.cfi_endproc
+ 605              	.LFE138:
+ 607              		.section	.text.MoveCW,"ax",%progbits
+ 608              		.align	1
+ 609              		.global	MoveCW
+ 610              		.syntax unified
+ 611              		.thumb
+ 612              		.thumb_func
+ 614              	MoveCW:
+ 615              	.LVL14:
+ 616              	.LFB139:
+  95:Core/Src/init.c **** void MoveCW(GPIO_TypeDef *port_cw, uint8_t n, uint32_t steps, uint32_t min_time){
+ 617              		.loc 1 95 81 is_stmt 1 view -0
+ 618              		.cfi_startproc
+ 619              		@ args = 0, pretend = 0, frame = 0
+ 620              		@ frame_needed = 0, uses_anonymous_args = 0
+ 621              		.loc 1 95 81 is_stmt 0 view .LVU181
+ 622 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 623              	.LCFI3:
+ 624              		.cfi_def_cfa_offset 32
+ 625              		.cfi_offset 4, -32
+ 626              		.cfi_offset 5, -28
+ 627              		.cfi_offset 6, -24
+ 628              		.cfi_offset 7, -20
+ 629              		.cfi_offset 8, -16
+ 630              		.cfi_offset 9, -12
+ 631              		.cfi_offset 10, -8
+ 632              		.cfi_offset 14, -4
+ 633 0004 8046     		mov	r8, r0
+ 634 0006 0F46     		mov	r7, r1
+ 635 0008 9146     		mov	r9, r2
+ 636 000a 9A46     		mov	r10, r3
+  96:Core/Src/init.c ****       uint32_t start_time=2000;
+ 637              		.loc 1 96 7 is_stmt 1 view .LVU182
+ 638              	.LVL15:
+  97:Core/Src/init.c ****      uint16_t raznosti=100;
+ 639              		.loc 1 97 6 view .LVU183
+  98:Core/Src/init.c ****     
+  99:Core/Src/init.c ****      for(uint32_t i=0;i<steps;i++){
+ 640              		.loc 1 99 6 view .LVU184
+ 641              	.LBB3:
+ 642              		.loc 1 99 10 view .LVU185
+ 643              		.loc 1 99 19 is_stmt 0 view .LVU186
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 14
+
+
+ 644 000c 0025     		movs	r5, #0
+ 645              	.LBE3:
+  96:Core/Src/init.c ****      uint16_t raznosti=100;
+ 646              		.loc 1 96 16 view .LVU187
+ 647 000e 4FF4FA66 		mov	r6, #2000
+ 648              	.LBB4:
+ 649              		.loc 1 99 6 view .LVU188
+ 650 0012 03E0     		b	.L42
+ 651              	.LVL16:
+ 652              	.L43:
+ 100:Core/Src/init.c ****           port_cw->BSRR =(1U <<n);
+ 101:Core/Src/init.c ****           delay_us(2);
+ 102:Core/Src/init.c ****           port_cw->BSRR =(1U <<(n+16));
+ 103:Core/Src/init.c ****           if(start_time >= min_time){
+ 104:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 105:Core/Src/init.c ****           }
+ 106:Core/Src/init.c ****           delay_us(start_time);
+ 653              		.loc 1 106 11 is_stmt 1 view .LVU189
+ 654 0014 3046     		mov	r0, r6
+ 655 0016 FFF7FEFF 		bl	delay_us
+ 656              	.LVL17:
+  99:Core/Src/init.c ****           port_cw->BSRR =(1U <<n);
+ 657              		.loc 1 99 32 discriminator 2 view .LVU190
+ 658 001a 0135     		adds	r5, r5, #1
+ 659              	.LVL18:
+ 660              	.L42:
+  99:Core/Src/init.c ****           port_cw->BSRR =(1U <<n);
+ 661              		.loc 1 99 24 discriminator 1 view .LVU191
+ 662 001c 4D45     		cmp	r5, r9
+ 663 001e 10D2     		bcs	.L46
+ 100:Core/Src/init.c ****           port_cw->BSRR =(1U <<n);
+ 664              		.loc 1 100 11 view .LVU192
+ 100:Core/Src/init.c ****           port_cw->BSRR =(1U <<n);
+ 665              		.loc 1 100 30 is_stmt 0 view .LVU193
+ 666 0020 0124     		movs	r4, #1
+ 667 0022 04FA07F3 		lsl	r3, r4, r7
+ 100:Core/Src/init.c ****           port_cw->BSRR =(1U <<n);
+ 668              		.loc 1 100 25 view .LVU194
+ 669 0026 C8F81830 		str	r3, [r8, #24]
+ 101:Core/Src/init.c ****           port_cw->BSRR =(1U <<(n+16));
+ 670              		.loc 1 101 11 is_stmt 1 view .LVU195
+ 671 002a 0220     		movs	r0, #2
+ 672 002c FFF7FEFF 		bl	delay_us
+ 673              	.LVL19:
+ 102:Core/Src/init.c ****           if(start_time >= min_time){
+ 674              		.loc 1 102 11 view .LVU196
+ 102:Core/Src/init.c ****           if(start_time >= min_time){
+ 675              		.loc 1 102 34 is_stmt 0 view .LVU197
+ 676 0030 07F11003 		add	r3, r7, #16
+ 102:Core/Src/init.c ****           if(start_time >= min_time){
+ 677              		.loc 1 102 30 view .LVU198
+ 678 0034 9C40     		lsls	r4, r4, r3
+ 102:Core/Src/init.c ****           if(start_time >= min_time){
+ 679              		.loc 1 102 25 view .LVU199
+ 680 0036 C8F81840 		str	r4, [r8, #24]
+ 103:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 681              		.loc 1 103 11 is_stmt 1 view .LVU200
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 15
+
+
+ 103:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 682              		.loc 1 103 13 is_stmt 0 view .LVU201
+ 683 003a 5645     		cmp	r6, r10
+ 684 003c EAD3     		bcc	.L43
+ 104:Core/Src/init.c ****           }
+ 685              		.loc 1 104 16 is_stmt 1 view .LVU202
+ 104:Core/Src/init.c ****           }
+ 686              		.loc 1 104 26 is_stmt 0 view .LVU203
+ 687 003e 643E     		subs	r6, r6, #100
+ 688              	.LVL20:
+ 104:Core/Src/init.c ****           }
+ 689              		.loc 1 104 26 view .LVU204
+ 690 0040 E8E7     		b	.L43
+ 691              	.L46:
+ 104:Core/Src/init.c ****           }
+ 692              		.loc 1 104 26 view .LVU205
+ 693              	.LBE4:
+ 107:Core/Src/init.c **** 
+ 108:Core/Src/init.c ****      }
+ 109:Core/Src/init.c ****   }
+ 694              		.loc 1 109 3 view .LVU206
+ 695 0042 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 696              		.loc 1 109 3 view .LVU207
+ 697              		.cfi_endproc
+ 698              	.LFE139:
+ 700              		.section	.text.MoveCCW,"ax",%progbits
+ 701              		.align	1
+ 702              		.global	MoveCCW
+ 703              		.syntax unified
+ 704              		.thumb
+ 705              		.thumb_func
+ 707              	MoveCCW:
+ 708              	.LVL21:
+ 709              	.LFB140:
+ 110:Core/Src/init.c **** 
+ 111:Core/Src/init.c **** void MoveCCW(GPIO_TypeDef *port_ccw, uint8_t n, uint32_t steps, uint32_t min_time ){
+ 710              		.loc 1 111 84 is_stmt 1 view -0
+ 711              		.cfi_startproc
+ 712              		@ args = 0, pretend = 0, frame = 0
+ 713              		@ frame_needed = 0, uses_anonymous_args = 0
+ 714              		.loc 1 111 84 is_stmt 0 view .LVU209
+ 715 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 716              	.LCFI4:
+ 717              		.cfi_def_cfa_offset 32
+ 718              		.cfi_offset 4, -32
+ 719              		.cfi_offset 5, -28
+ 720              		.cfi_offset 6, -24
+ 721              		.cfi_offset 7, -20
+ 722              		.cfi_offset 8, -16
+ 723              		.cfi_offset 9, -12
+ 724              		.cfi_offset 10, -8
+ 725              		.cfi_offset 14, -4
+ 726 0004 8046     		mov	r8, r0
+ 727 0006 0F46     		mov	r7, r1
+ 728 0008 9146     		mov	r9, r2
+ 729 000a 9A46     		mov	r10, r3
+ 112:Core/Src/init.c ****      uint32_t start_time=2000;
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 16
+
+
+ 730              		.loc 1 112 6 is_stmt 1 view .LVU210
+ 731              	.LVL22:
+ 113:Core/Src/init.c ****      uint16_t raznosti=100;
+ 732              		.loc 1 113 6 view .LVU211
+ 114:Core/Src/init.c ****     
+ 115:Core/Src/init.c ****      for(uint32_t i=0;i<steps;i++){
+ 733              		.loc 1 115 6 view .LVU212
+ 734              	.LBB5:
+ 735              		.loc 1 115 10 view .LVU213
+ 736              		.loc 1 115 19 is_stmt 0 view .LVU214
+ 737 000c 0025     		movs	r5, #0
+ 738              	.LBE5:
+ 112:Core/Src/init.c ****      uint16_t raznosti=100;
+ 739              		.loc 1 112 15 view .LVU215
+ 740 000e 4FF4FA66 		mov	r6, #2000
+ 741              	.LBB6:
+ 742              		.loc 1 115 6 view .LVU216
+ 743 0012 03E0     		b	.L48
+ 744              	.LVL23:
+ 745              	.L49:
+ 116:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 117:Core/Src/init.c ****           delay_us(2);
+ 118:Core/Src/init.c ****           port_ccw->BSRR =(1U <<(n+16));
+ 119:Core/Src/init.c ****           if(start_time >= min_time){
+ 120:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 121:Core/Src/init.c ****           }
+ 122:Core/Src/init.c ****           delay_us(start_time);
+ 746              		.loc 1 122 11 is_stmt 1 view .LVU217
+ 747 0014 3046     		mov	r0, r6
+ 748 0016 FFF7FEFF 		bl	delay_us
+ 749              	.LVL24:
+ 115:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 750              		.loc 1 115 32 discriminator 2 view .LVU218
+ 751 001a 0135     		adds	r5, r5, #1
+ 752              	.LVL25:
+ 753              	.L48:
+ 115:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 754              		.loc 1 115 24 discriminator 1 view .LVU219
+ 755 001c 4D45     		cmp	r5, r9
+ 756 001e 10D2     		bcs	.L52
+ 116:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 757              		.loc 1 116 11 view .LVU220
+ 116:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 758              		.loc 1 116 31 is_stmt 0 view .LVU221
+ 759 0020 0124     		movs	r4, #1
+ 760 0022 04FA07F3 		lsl	r3, r4, r7
+ 116:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 761              		.loc 1 116 26 view .LVU222
+ 762 0026 C8F81830 		str	r3, [r8, #24]
+ 117:Core/Src/init.c ****           port_ccw->BSRR =(1U <<(n+16));
+ 763              		.loc 1 117 11 is_stmt 1 view .LVU223
+ 764 002a 0220     		movs	r0, #2
+ 765 002c FFF7FEFF 		bl	delay_us
+ 766              	.LVL26:
+ 118:Core/Src/init.c ****           if(start_time >= min_time){
+ 767              		.loc 1 118 11 view .LVU224
+ 118:Core/Src/init.c ****           if(start_time >= min_time){
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 17
+
+
+ 768              		.loc 1 118 35 is_stmt 0 view .LVU225
+ 769 0030 07F11003 		add	r3, r7, #16
+ 118:Core/Src/init.c ****           if(start_time >= min_time){
+ 770              		.loc 1 118 31 view .LVU226
+ 771 0034 9C40     		lsls	r4, r4, r3
+ 118:Core/Src/init.c ****           if(start_time >= min_time){
+ 772              		.loc 1 118 26 view .LVU227
+ 773 0036 C8F81840 		str	r4, [r8, #24]
+ 119:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 774              		.loc 1 119 11 is_stmt 1 view .LVU228
+ 119:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 775              		.loc 1 119 13 is_stmt 0 view .LVU229
+ 776 003a 5645     		cmp	r6, r10
+ 777 003c EAD3     		bcc	.L49
+ 120:Core/Src/init.c ****           }
+ 778              		.loc 1 120 16 is_stmt 1 view .LVU230
+ 120:Core/Src/init.c ****           }
+ 779              		.loc 1 120 26 is_stmt 0 view .LVU231
+ 780 003e 643E     		subs	r6, r6, #100
+ 781              	.LVL27:
+ 120:Core/Src/init.c ****           }
+ 782              		.loc 1 120 26 view .LVU232
+ 783 0040 E8E7     		b	.L49
+ 784              	.L52:
+ 120:Core/Src/init.c ****           }
+ 785              		.loc 1 120 26 view .LVU233
+ 786              	.LBE6:
+ 123:Core/Src/init.c **** 
+ 124:Core/Src/init.c ****      }
+ 125:Core/Src/init.c ****   }
+ 787              		.loc 1 125 3 view .LVU234
+ 788 0042 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 789              		.loc 1 125 3 view .LVU235
+ 790              		.cfi_endproc
+ 791              	.LFE140:
+ 793              		.global	__aeabi_i2d
+ 794              		.global	__aeabi_ddiv
+ 795              		.global	__aeabi_d2uiz
+ 796              		.section	.text.POVOROT_UGL,"ax",%progbits
+ 797              		.align	1
+ 798              		.global	POVOROT_UGL
+ 799              		.syntax unified
+ 800              		.thumb
+ 801              		.thumb_func
+ 803              	POVOROT_UGL:
+ 804              	.LVL28:
+ 805              	.LFB141:
+ 126:Core/Src/init.c **** void POVOROT_UGL(GPIO_TypeDef *port_ccw, uint8_t n, uint16_t ugol){
+ 806              		.loc 1 126 67 is_stmt 1 view -0
+ 807              		.cfi_startproc
+ 808              		@ args = 0, pretend = 0, frame = 0
+ 809              		@ frame_needed = 0, uses_anonymous_args = 0
+ 810              		.loc 1 126 67 is_stmt 0 view .LVU237
+ 811 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 812              	.LCFI5:
+ 813              		.cfi_def_cfa_offset 32
+ 814              		.cfi_offset 3, -32
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 18
+
+
+ 815              		.cfi_offset 4, -28
+ 816              		.cfi_offset 5, -24
+ 817              		.cfi_offset 6, -20
+ 818              		.cfi_offset 7, -16
+ 819              		.cfi_offset 8, -12
+ 820              		.cfi_offset 9, -8
+ 821              		.cfi_offset 14, -4
+ 822 0004 8046     		mov	r8, r0
+ 823 0006 0F46     		mov	r7, r1
+ 127:Core/Src/init.c ****      uint32_t steps= (ugol/CONST_UGOL);
+ 824              		.loc 1 127 6 is_stmt 1 view .LVU238
+ 825              		.loc 1 127 27 is_stmt 0 view .LVU239
+ 826 0008 1046     		mov	r0, r2
+ 827              	.LVL29:
+ 828              		.loc 1 127 27 view .LVU240
+ 829 000a FFF7FEFF 		bl	__aeabi_i2d
+ 830              	.LVL30:
+ 831              		.loc 1 127 27 view .LVU241
+ 832 000e 14A3     		adr	r3, .L59
+ 833 0010 D3E90023 		ldrd	r2, [r3]
+ 834 0014 FFF7FEFF 		bl	__aeabi_ddiv
+ 835              	.LVL31:
+ 836              		.loc 1 127 15 view .LVU242
+ 837 0018 FFF7FEFF 		bl	__aeabi_d2uiz
+ 838              	.LVL32:
+ 839 001c 8146     		mov	r9, r0
+ 840              	.LVL33:
+ 128:Core/Src/init.c ****      uint16_t start_time=2000;
+ 841              		.loc 1 128 6 is_stmt 1 view .LVU243
+ 129:Core/Src/init.c ****      uint8_t raznosti=100;
+ 842              		.loc 1 129 6 view .LVU244
+ 130:Core/Src/init.c ****      for(uint32_t i=0;i<steps;i++){
+ 843              		.loc 1 130 6 view .LVU245
+ 844              	.LBB7:
+ 845              		.loc 1 130 10 view .LVU246
+ 846              		.loc 1 130 19 is_stmt 0 view .LVU247
+ 847 001e 0026     		movs	r6, #0
+ 848              	.LBE7:
+ 128:Core/Src/init.c ****      uint16_t start_time=2000;
+ 849              		.loc 1 128 15 view .LVU248
+ 850 0020 4FF4FA65 		mov	r5, #2000
+ 851              	.LBB8:
+ 852              		.loc 1 130 6 view .LVU249
+ 853 0024 03E0     		b	.L54
+ 854              	.LVL34:
+ 855              	.L55:
+ 131:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 132:Core/Src/init.c ****           delay_us(2);
+ 133:Core/Src/init.c ****           port_ccw->BSRR =(1U <<(n+16));
+ 134:Core/Src/init.c ****           if(start_time >= 700){
+ 135:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 136:Core/Src/init.c ****           }
+ 137:Core/Src/init.c ****           delay_us(start_time);
+ 856              		.loc 1 137 11 is_stmt 1 view .LVU250
+ 857 0026 2846     		mov	r0, r5
+ 858 0028 FFF7FEFF 		bl	delay_us
+ 859              	.LVL35:
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 19
+
+
+ 130:Core/Src/init.c ****      for(uint32_t i=0;i<steps;i++){
+ 860              		.loc 1 130 32 discriminator 2 view .LVU251
+ 861 002c 0136     		adds	r6, r6, #1
+ 862              	.LVL36:
+ 863              	.L54:
+ 130:Core/Src/init.c ****      for(uint32_t i=0;i<steps;i++){
+ 864              		.loc 1 130 24 discriminator 1 view .LVU252
+ 865 002e 4E45     		cmp	r6, r9
+ 866 0030 12D2     		bcs	.L58
+ 131:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 867              		.loc 1 131 11 view .LVU253
+ 131:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 868              		.loc 1 131 31 is_stmt 0 view .LVU254
+ 869 0032 0124     		movs	r4, #1
+ 870 0034 04FA07F3 		lsl	r3, r4, r7
+ 131:Core/Src/init.c ****           port_ccw->BSRR =(1U <<n);
+ 871              		.loc 1 131 26 view .LVU255
+ 872 0038 C8F81830 		str	r3, [r8, #24]
+ 132:Core/Src/init.c ****           port_ccw->BSRR =(1U <<(n+16));
+ 873              		.loc 1 132 11 is_stmt 1 view .LVU256
+ 874 003c 0220     		movs	r0, #2
+ 875 003e FFF7FEFF 		bl	delay_us
+ 876              	.LVL37:
+ 133:Core/Src/init.c ****           if(start_time >= 700){
+ 877              		.loc 1 133 11 view .LVU257
+ 133:Core/Src/init.c ****           if(start_time >= 700){
+ 878              		.loc 1 133 35 is_stmt 0 view .LVU258
+ 879 0042 07F11003 		add	r3, r7, #16
+ 133:Core/Src/init.c ****           if(start_time >= 700){
+ 880              		.loc 1 133 31 view .LVU259
+ 881 0046 9C40     		lsls	r4, r4, r3
+ 133:Core/Src/init.c ****           if(start_time >= 700){
+ 882              		.loc 1 133 26 view .LVU260
+ 883 0048 C8F81840 		str	r4, [r8, #24]
+ 134:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 884              		.loc 1 134 11 is_stmt 1 view .LVU261
+ 134:Core/Src/init.c ****                start_time=start_time-raznosti;
+ 885              		.loc 1 134 13 is_stmt 0 view .LVU262
+ 886 004c B5F52F7F 		cmp	r5, #700
+ 887 0050 E9D3     		bcc	.L55
+ 135:Core/Src/init.c ****           }
+ 888              		.loc 1 135 16 is_stmt 1 view .LVU263
+ 135:Core/Src/init.c ****           }
+ 889              		.loc 1 135 26 is_stmt 0 view .LVU264
+ 890 0052 643D     		subs	r5, r5, #100
+ 891              	.LVL38:
+ 135:Core/Src/init.c ****           }
+ 892              		.loc 1 135 26 view .LVU265
+ 893 0054 ADB2     		uxth	r5, r5
+ 894              	.LVL39:
+ 135:Core/Src/init.c ****           }
+ 895              		.loc 1 135 26 view .LVU266
+ 896 0056 E6E7     		b	.L55
+ 897              	.L58:
+ 135:Core/Src/init.c ****           }
+ 898              		.loc 1 135 26 view .LVU267
+ 899              	.LBE8:
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 20
+
+
+ 138:Core/Src/init.c **** 
+ 139:Core/Src/init.c ****      }
+ 140:Core/Src/init.c **** }
+ 900              		.loc 1 140 1 view .LVU268
+ 901 0058 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 902              	.LVL40:
+ 903              	.L60:
+ 904              		.loc 1 140 1 view .LVU269
+ 905 005c AFF30080 		.align	3
+ 906              	.L59:
+ 907 0060 3BDF4F8D 		.word	-1924145349
+ 908 0064 976EA23F 		.word	1067609751
+ 909              		.cfi_endproc
+ 910              	.LFE141:
+ 912              		.section	.text.OSTANOVKA,"ax",%progbits
+ 913              		.align	1
+ 914              		.global	OSTANOVKA
+ 915              		.syntax unified
+ 916              		.thumb
+ 917              		.thumb_func
+ 919              	OSTANOVKA:
+ 920              	.LVL41:
+ 921              	.LFB142:
+ 141:Core/Src/init.c **** 
+ 142:Core/Src/init.c **** void OSTANOVKA(GPIO_TypeDef *port_ccw, uint8_t n){
+ 922              		.loc 1 142 50 is_stmt 1 view -0
+ 923              		.cfi_startproc
+ 924              		@ args = 0, pretend = 0, frame = 0
+ 925              		@ frame_needed = 0, uses_anonymous_args = 0
+ 926              		@ link register save eliminated.
+ 143:Core/Src/init.c ****      port_ccw->BSRR =(1U <<(n+16));
+ 927              		.loc 1 143 6 view .LVU271
+ 928              		.loc 1 143 30 is_stmt 0 view .LVU272
+ 929 0000 1031     		adds	r1, r1, #16
+ 930              	.LVL42:
+ 931              		.loc 1 143 26 view .LVU273
+ 932 0002 0123     		movs	r3, #1
+ 933 0004 8B40     		lsls	r3, r3, r1
+ 934              		.loc 1 143 21 view .LVU274
+ 935 0006 8361     		str	r3, [r0, #24]
+ 144:Core/Src/init.c **** }
+ 936              		.loc 1 144 1 view .LVU275
+ 937 0008 7047     		bx	lr
+ 938              		.cfi_endproc
+ 939              	.LFE142:
+ 941              		.text
+ 942              	.Letext0:
+ 943              		.file 2 "C:/Users/adminasus/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-a
+ 944              		.file 3 "C:/Users/adminasus/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-a
+ 945              		.file 4 "CMSIS/Include/../include/core_cm4.h"
+ 946              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 947              		.file 6 "CMSIS/Devices/STM32F4xx/Inc/system_stm32f4xx.h"
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s 			page 21
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:21     .text.GPIO_Init:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:27     .text.GPIO_Init:00000000 GPIO_Init
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:46     .text.GPIO_Init:0000000c $d
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:51     .text.DWT_Init:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:57     .text.DWT_Init:00000000 DWT_Init
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:87     .text.DWT_Init:00000020 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:93     .text.delay_us:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:99     .text.delay_us:00000000 delay_us
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:148    .text.delay_us:00000024 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:155    .text.delay_ms:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:161    .text.delay_ms:00000000 delay_ms
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:206    .text.INIT_SVETODIOD:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:212    .text.INIT_SVETODIOD:00000000 INIT_SVETODIOD
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:333    .text.INIT_SVETODIOD:00000094 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:338    .text.INIT_UPRAVLENI_CCW:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:344    .text.INIT_UPRAVLENI_CCW:00000000 INIT_UPRAVLENI_CCW
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:414    .text.INIT_UPRAVLENI_CW:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:420    .text.INIT_UPRAVLENI_CW:00000000 INIT_UPRAVLENI_CW
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:490    .text.SET_SVETODIOD:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:496    .text.SET_SVETODIOD:00000000 SET_SVETODIOD
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:544    .text.SET_SVETODIOD:00000028 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:549    .text.RESET_SVETODIOD:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:555    .text.RESET_SVETODIOD:00000000 RESET_SVETODIOD
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:603    .text.RESET_SVETODIOD:0000002c $d
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:608    .text.MoveCW:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:614    .text.MoveCW:00000000 MoveCW
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:701    .text.MoveCCW:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:707    .text.MoveCCW:00000000 MoveCCW
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:797    .text.POVOROT_UGL:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:803    .text.POVOROT_UGL:00000000 POVOROT_UGL
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:907    .text.POVOROT_UGL:00000060 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:913    .text.OSTANOVKA:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\ccvhdcUi.s:919    .text.OSTANOVKA:00000000 OSTANOVKA
+
+UNDEFINED SYMBOLS
+SystemCoreClock
+__aeabi_i2d
+__aeabi_ddiv
+__aeabi_d2uiz
