@@ -5,7 +5,7 @@ void main_delay(volatile uint32_t time) {
     while(time--) { __NOP(); }
 }
 
-int main(void) {
+int main() {
     // Настраиваем порты всеми тремя способами
     _init_CMSIS();      
     _init_myself_def(); 
