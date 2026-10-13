@@ -15,7 +15,7 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F411
+TARGET_SERIES = STM32F446
 TARGET_VERSION = RE
 
 ######################################
@@ -135,6 +135,9 @@ endif
 C_SOURCES =  \
 $(SYS) \
 Core/Src/main.c \
+Core/Src/init.c \
+Core/Src/extra.c
+
 
 # ASM sources
 ASM_SOURCES =  \
@@ -185,7 +188,11 @@ C_DEFS =  \
 -D$(DEF) \
 
 # AS includes
-AS_INCLUDES = 
+AS_INCLUDES = \
+-ICore/Inc \
+-ICMSIS/Devices/STM32F4xx/Inc \
+-ICMSIS/Devices/STM32F4xx/Inc/STM32F446xx \
+-ICMSIS/Include
 
 # C includes
 C_INCLUDES =  \
@@ -255,7 +262,7 @@ $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf: $(OBJECTS) Makefile
 	@echo "-----------------------------------------------------"	
 
 $(BUILD_DIR):
-	@"mkdir" $@
+	@mkdir -p $@
 
 #######################################
 # clean up
