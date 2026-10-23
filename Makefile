@@ -2,6 +2,7 @@
 # Generic Makefile (based on gcc)
 # ------------------------------------------------
 # List of supported controllers:
+#	STM32F767ZI -- Target series -> STM32F767 | Target version -> ZI
 #	STM32F446RE -- Target series -> STM32F446 | Target version -> RE
 # 	STM32F429ZI -- Target series -> STM32F429 | Target version -> ZI
 # 	STM32F411VE -- Target series -> STM32F411 | Target version -> VE
@@ -15,7 +16,7 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F429
+TARGET_SERIES = STM32F767
 TARGET_VERSION = ZI
 
 
@@ -31,7 +32,9 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F103C8)
+ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F767ZI)
+	BUILD_DIR = build_F767ZI
+else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F103C8)
 	BUILD_DIR = build_F103C8
 else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F103C6)
 	BUILD_DIR = build_F103C6
@@ -53,7 +56,20 @@ endif
 ######################################
 # C sources
 
-ifeq ($(TARGET_SERIES), STM32F103)
+ifeq ($(TARGET_SERIES), STM32F767)
+	SYS = CMSIS/Devices/STM32F7xx/Src/system_stm32f7xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	ASM = STMDevices/STM32F767xx/startup_stm32f767xx.s
+	CMSIS_INC_DEV = CMSIS/Devices/STM32F7xx/Inc
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F7xx/Inc/STM32F767xx
+	CMSIS_INC = CMSIS/Include
+	ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F767ZI)
+		LD = STMDevices/STM32F767xx/STM32F767ZITx_FLASH.ld
+	endif
+	DEF = STM32F767xx
+	MCPU = cortex-m7
+	MFPU = fpv5-sp-d16
+	TRGT_CFG = stm32f7x
+else ifeq ($(TARGET_SERIES), STM32F103)
 	SYS = CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
 	CMSIS_INC = CMSIS/Include
@@ -135,7 +151,7 @@ endif
 # C sources
 C_SOURCES =  \
 $(SYS) \
-Core/Src/main.c \
+core/Src/main.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -193,7 +209,7 @@ C_INCLUDES =  \
 -I$(CMSIS_INC_DEV) \
 -I$(CMSIS_INC_UNIT) \
 -I$(CMSIS_INC) \
--ICore/Inc \
+-Icore/Inc \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
