@@ -262,7 +262,7 @@ $(BUILD_DIR):
 # clean up
 #######################################
 clean:
-	@rm -fR $(BUILD_DIR)
+	@rmdir /s /q $(BUILD_DIR)
   
 #######################################
 # openocd
