@@ -1,0 +1,203 @@
+ARM GAS  C:\WINDOWS\TEMP\ccnd406r.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.__init_mem,"ax",%progbits
+  21              		.align	1
+  22              		.global	__init_mem
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	__init_mem:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include <init.h>
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** // Способ 1: прямые адреса. Порт B: PB9 - вход с подтяжкой (к�
+   4:Core/Src/init.c **** void __init_mem(void)
+   5:Core/Src/init.c **** {
+  29              		.loc 1 5 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   6:Core/Src/init.c ****     *(uint32_t *)(0x40020400UL + 0x0CUL) |= 0x40000UL; // GPIOB PUPDR PB9 pull-up
+  34              		.loc 1 6 5 view .LVU1
+  35 0000 034A     		ldr	r2, .L2
+  36 0002 D2F80C34 		ldr	r3, [r2, #1036]
+  37              		.loc 1 6 42 is_stmt 0 view .LVU2
+  38 0006 43F48023 		orr	r3, r3, #262144
+  39 000a C2F80C34 		str	r3, [r2, #1036]
+   7:Core/Src/init.c **** }
+  40              		.loc 1 7 1 view .LVU3
+  41 000e 7047     		bx	lr
+  42              	.L3:
+  43              		.align	2
+  44              	.L2:
+  45 0010 00000240 		.word	1073872896
+  46              		.cfi_endproc
+  47              	.LFE130:
+  49              		.section	.text.__init_myself_def,"ax",%progbits
+  50              		.align	1
+  51              		.global	__init_myself_def
+  52              		.syntax unified
+ARM GAS  C:\WINDOWS\TEMP\ccnd406r.s 			page 2
+
+
+  53              		.thumb
+  54              		.thumb_func
+  56              	__init_myself_def:
+  57              	.LFB131:
+   8:Core/Src/init.c **** 
+   9:Core/Src/init.c **** // Способ 2: свои макросы. Тактирование A, B, C и порт C: PC7 - �
+  10:Core/Src/init.c **** void __init_myself_def(void)
+  11:Core/Src/init.c **** {
+  58              		.loc 1 11 1 is_stmt 1 view -0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+  12:Core/Src/init.c ****     BIT_SET(RCC_AHB1ENR, RCC_GPIOA_EN | RCC_GPIOB_EN | RCC_GPIOC_EN); // включили такт�
+  63              		.loc 1 12 5 view .LVU5
+  64 0000 074A     		ldr	r2, .L5
+  65 0002 D2F83038 		ldr	r3, [r2, #2096]
+  66 0006 43F00703 		orr	r3, r3, #7
+  67 000a C2F83038 		str	r3, [r2, #2096]
+  13:Core/Src/init.c ****     BIT_SET(GPIOC_PUPDR, GPIO_PULLUP_7);                              // включили подт�
+  68              		.loc 1 13 5 view .LVU6
+  69 000e A2F54052 		sub	r2, r2, #12288
+  70 0012 D2F80C38 		ldr	r3, [r2, #2060]
+  71 0016 43F48043 		orr	r3, r3, #16384
+  72 001a C2F80C38 		str	r3, [r2, #2060]
+  14:Core/Src/init.c **** }
+  73              		.loc 1 14 1 is_stmt 0 view .LVU7
+  74 001e 7047     		bx	lr
+  75              	.L6:
+  76              		.align	2
+  77              	.L5:
+  78 0020 00300240 		.word	1073885184
+  79              		.cfi_endproc
+  80              	.LFE131:
+  82              		.section	.text.__init_CMSIS,"ax",%progbits
+  83              		.align	1
+  84              		.global	__init_CMSIS
+  85              		.syntax unified
+  86              		.thumb
+  87              		.thumb_func
+  89              	__init_CMSIS:
+  90              	.LFB132:
+  15:Core/Src/init.c **** 
+  16:Core/Src/init.c **** // Способ 3: CMSIS. Порт A: PA5, PA6, PA7 - выходы (светодиоды)
+  17:Core/Src/init.c **** void __init_CMSIS(void)
+  18:Core/Src/init.c **** {
+  91              		.loc 1 18 1 is_stmt 1 view -0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 0
+  94              		@ frame_needed = 0, uses_anonymous_args = 0
+  95              		@ link register save eliminated.
+  19:Core/Src/init.c ****     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER5_0 | GPIO_MODER_MODER6_0 | GPIO_MODER_MODER7_0);
+  96              		.loc 1 19 5 view .LVU9
+  97 0000 024A     		ldr	r2, .L8
+  98 0002 1368     		ldr	r3, [r2]
+  99 0004 43F4A843 		orr	r3, r3, #21504
+ 100 0008 1360     		str	r3, [r2]
+ARM GAS  C:\WINDOWS\TEMP\ccnd406r.s 			page 3
+
+
+  20:Core/Src/init.c **** }
+ 101              		.loc 1 20 1 is_stmt 0 view .LVU10
+ 102 000a 7047     		bx	lr
+ 103              	.L9:
+ 104              		.align	2
+ 105              	.L8:
+ 106 000c 00000240 		.word	1073872896
+ 107              		.cfi_endproc
+ 108              	.LFE132:
+ 110              		.section	.text.__dop_zadanie_init,"ax",%progbits
+ 111              		.align	1
+ 112              		.global	__dop_zadanie_init
+ 113              		.syntax unified
+ 114              		.thumb
+ 115              		.thumb_func
+ 117              	__dop_zadanie_init:
+ 118              	.LFB133:
+  21:Core/Src/init.c **** 
+  22:Core/Src/init.c **** // ДЛЯ ДОП ЗАДАНИЯ
+  23:Core/Src/init.c **** void __dop_zadanie_init(void)
+  24:Core/Src/init.c **** {
+ 119              		.loc 1 24 1 is_stmt 1 view -0
+ 120              		.cfi_startproc
+ 121              		@ args = 0, pretend = 0, frame = 0
+ 122              		@ frame_needed = 0, uses_anonymous_args = 0
+ 123              		@ link register save eliminated.
+  25:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);                       // вк
+ 124              		.loc 1 25 5 view .LVU12
+ 125 0000 084A     		ldr	r2, .L11
+ 126 0002 136B     		ldr	r3, [r2, #48]
+ 127 0004 43F00603 		orr	r3, r3, #6
+ 128 0008 1363     		str	r3, [r2, #48]
+  26:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER7_0);                                             // Св
+ 129              		.loc 1 26 5 view .LVU13
+ 130 000a A2F54052 		sub	r2, r2, #12288
+ 131 000e 1368     		ldr	r3, [r2]
+ 132 0010 43F48043 		orr	r3, r3, #16384
+ 133 0014 1360     		str	r3, [r2]
+  27:Core/Src/init.c ****     SET_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR9_0 | GPIO_PUPDR_PUPDR8_0 | GPIO_PUPDR_PUPDR6_0); // Вк
+ 134              		.loc 1 27 5 view .LVU14
+ 135 0016 A2F58062 		sub	r2, r2, #1024
+ 136 001a D368     		ldr	r3, [r2, #12]
+ 137 001c 43F4A223 		orr	r3, r3, #331776
+ 138 0020 D360     		str	r3, [r2, #12]
+  28:Core/Src/init.c **** }...
+ 139              		.loc 1 28 1 is_stmt 0 view .LVU15
+ 140 0022 7047     		bx	lr
+ 141              	.L12:
+ 142              		.align	2
+ 143              	.L11:
+ 144 0024 00380240 		.word	1073887232
+ 145              		.cfi_endproc
+ 146              	.LFE133:
+ 148              		.text
+ 149              	.Letext0:
+ 150              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 151              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\WINDOWS\TEMP\ccnd406r.s 			page 4
+
+
+ 152              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F446xx/stm32f446xx.h"
+ARM GAS  C:\WINDOWS\TEMP\ccnd406r.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\WINDOWS\TEMP\ccnd406r.s:21     .text.__init_mem:00000000 $t
+C:\WINDOWS\TEMP\ccnd406r.s:27     .text.__init_mem:00000000 __init_mem
+C:\WINDOWS\TEMP\ccnd406r.s:45     .text.__init_mem:00000010 $d
+C:\WINDOWS\TEMP\ccnd406r.s:50     .text.__init_myself_def:00000000 $t
+C:\WINDOWS\TEMP\ccnd406r.s:56     .text.__init_myself_def:00000000 __init_myself_def
+C:\WINDOWS\TEMP\ccnd406r.s:78     .text.__init_myself_def:00000020 $d
+C:\WINDOWS\TEMP\ccnd406r.s:83     .text.__init_CMSIS:00000000 $t
+C:\WINDOWS\TEMP\ccnd406r.s:89     .text.__init_CMSIS:00000000 __init_CMSIS
+C:\WINDOWS\TEMP\ccnd406r.s:106    .text.__init_CMSIS:0000000c $d
+C:\WINDOWS\TEMP\ccnd406r.s:111    .text.__dop_zadanie_init:00000000 $t
+C:\WINDOWS\TEMP\ccnd406r.s:117    .text.__dop_zadanie_init:00000000 __dop_zadanie_init
+C:\WINDOWS\TEMP\ccnd406r.s:144    .text.__dop_zadanie_init:00000024 $d
+
+NO UNDEFINED SYMBOLS

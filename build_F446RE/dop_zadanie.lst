@@ -1,0 +1,379 @@
+ARM GAS  C:\WINDOWS\TEMP\ccJm3e1A.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"dop_zadanie.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/dop_zadanie.c"
+  20              		.section	.text.dop_zadanie,"ax",%progbits
+  21              		.align	1
+  22              		.global	dop_zadanie
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	dop_zadanie:
+  28              	.LFB130:
+   1:Core/Src/dop_zadanie.c **** #include <init.h>
+   2:Core/Src/dop_zadanie.c **** 
+   3:Core/Src/dop_zadanie.c **** uint8_t status;
+   4:Core/Src/dop_zadanie.c **** 
+   5:Core/Src/dop_zadanie.c **** void dop_zadanie(void)
+   6:Core/Src/dop_zadanie.c **** {
+  29              		.loc 1 6 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 24
+  36              		.cfi_offset 3, -24
+  37              		.cfi_offset 4, -20
+  38              		.cfi_offset 5, -16
+  39              		.cfi_offset 6, -12
+  40              		.cfi_offset 7, -8
+  41              		.cfi_offset 14, -4
+   7:Core/Src/dop_zadanie.c ****     __dop_zadanie_init();
+  42              		.loc 1 7 5 view .LVU1
+  43 0002 FFF7FEFF 		bl	__dop_zadanie_init
+  44              	.LVL0:
+   8:Core/Src/dop_zadanie.c **** 
+   9:Core/Src/dop_zadanie.c ****     uint32_t T = 8000;     // Период ШИМ
+  45              		.loc 1 9 5 view .LVU2
+  10:Core/Src/dop_zadanie.c ****     int32_t bright = 4000; // Яркость
+  46              		.loc 1 10 5 view .LVU3
+  11:Core/Src/dop_zadanie.c **** 
+  12:Core/Src/dop_zadanie.c ****     uint32_t step_speed = 1;      // Шаг изменения яркости
+ARM GAS  C:\WINDOWS\TEMP\ccJm3e1A.s 			page 2
+
+
+  47              		.loc 1 12 5 view .LVU4
+  13:Core/Src/dop_zadanie.c ****     uint8_t but_pb8_press = 0;    // Нажатие кнопки PB8
+  48              		.loc 1 13 5 view .LVU5
+  49              		.loc 1 13 13 is_stmt 0 view .LVU6
+  50 0006 0026     		movs	r6, #0
+  12:Core/Src/dop_zadanie.c ****     uint8_t but_pb8_press = 0;    // Нажатие кнопки PB8
+  51              		.loc 1 12 14 view .LVU7
+  52 0008 0125     		movs	r5, #1
+  10:Core/Src/dop_zadanie.c **** 
+  53              		.loc 1 10 13 view .LVU8
+  54 000a 4FF47A64 		mov	r4, #4000
+  55 000e 00E0     		b	.L2
+  56              	.LVL1:
+  57              	.L10:
+  14:Core/Src/dop_zadanie.c **** 
+  15:Core/Src/dop_zadanie.c ****     while (1)
+  16:Core/Src/dop_zadanie.c ****     {
+  17:Core/Src/dop_zadanie.c ****         // Управление яркостью
+  18:Core/Src/dop_zadanie.c ****         if (bright > 0)
+  19:Core/Src/dop_zadanie.c ****         {
+  20:Core/Src/dop_zadanie.c ****             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS7); // Включаем светодиод PC7
+  21:Core/Src/dop_zadanie.c ****             status = 1;
+  22:Core/Src/dop_zadanie.c ****             delay(bright);                       // Время во включенном состо
+  23:Core/Src/dop_zadanie.c ****         }
+  24:Core/Src/dop_zadanie.c **** 
+  25:Core/Src/dop_zadanie.c ****         if (bright < T)
+  26:Core/Src/dop_zadanie.c ****         {
+  27:Core/Src/dop_zadanie.c ****             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR7); // Выключаем светодиод PC7
+  28:Core/Src/dop_zadanie.c ****             status = 0;
+  29:Core/Src/dop_zadanie.c ****             delay(T - bright);                   // Время в выключенном состо
+  30:Core/Src/dop_zadanie.c ****         }
+  31:Core/Src/dop_zadanie.c **** 
+  32:Core/Src/dop_zadanie.c ****         // Кнопка PB6: Увеличение яркости
+  33:Core/Src/dop_zadanie.c ****         if ((GPIOB->IDR & GPIO_IDR_ID6) == 0)
+  34:Core/Src/dop_zadanie.c ****         {
+  35:Core/Src/dop_zadanie.c ****             bright += step_speed; // Увеличиваем яркость на величину т
+  36:Core/Src/dop_zadanie.c ****             if (bright > T)
+  37:Core/Src/dop_zadanie.c ****             {
+  38:Core/Src/dop_zadanie.c ****                 bright = T; // Ограничение максимума
+  39:Core/Src/dop_zadanie.c ****             }
+  40:Core/Src/dop_zadanie.c ****         }
+  41:Core/Src/dop_zadanie.c **** 
+  42:Core/Src/dop_zadanie.c ****         // Кнопка PB9: Уменьшение яркости
+  43:Core/Src/dop_zadanie.c ****         if ((GPIOB->IDR & GPIO_IDR_ID9) == 0)
+  44:Core/Src/dop_zadanie.c ****         {
+  45:Core/Src/dop_zadanie.c ****             bright -= step_speed; // Уменьшаем яркость
+  46:Core/Src/dop_zadanie.c ****             if (bright < 0)
+  47:Core/Src/dop_zadanie.c ****             {
+  48:Core/Src/dop_zadanie.c ****                 bright = 0; // Ограничение минимума
+  49:Core/Src/dop_zadanie.c ****             }
+  50:Core/Src/dop_zadanie.c ****         }
+  51:Core/Src/dop_zadanie.c **** 
+  52:Core/Src/dop_zadanie.c ****         // Кнопка PB8): Изменение скорости
+  53:Core/Src/dop_zadanie.c ****         if ((GPIOB->IDR & GPIO_IDR_ID8) == 0)
+  54:Core/Src/dop_zadanie.c ****         {
+  55:Core/Src/dop_zadanie.c ****             if (!but_pb8_press)
+  56:Core/Src/dop_zadanie.c ****             {
+ARM GAS  C:\WINDOWS\TEMP\ccJm3e1A.s 			page 3
+
+
+  57:Core/Src/dop_zadanie.c ****                 but_pb8_press = 1;      // Запоминаем, что кнопка удержив
+  58:Core/Src/dop_zadanie.c **** 
+  59:Core/Src/dop_zadanie.c ****                 if (step_speed == 1)
+  60:Core/Src/dop_zadanie.c ****                 {
+  61:Core/Src/dop_zadanie.c ****                     step_speed = 3;     // Увеличили скорость после перв�
+  62:Core/Src/dop_zadanie.c ****                 }
+  63:Core/Src/dop_zadanie.c ****                 else if (step_speed == 3)
+  64:Core/Src/dop_zadanie.c ****                 {
+  65:Core/Src/dop_zadanie.c ****                     step_speed = 6;     // Увеличили скорость после втор�
+  66:Core/Src/dop_zadanie.c ****                 }
+  67:Core/Src/dop_zadanie.c ****                 else if (step_speed == 6)
+  68:Core/Src/dop_zadanie.c ****                 {
+  69:Core/Src/dop_zadanie.c ****                     step_speed = 12;    // Увеличили скорость после трет�
+  70:Core/Src/dop_zadanie.c ****                 }
+  71:Core/Src/dop_zadanie.c ****                 else
+  72:Core/Src/dop_zadanie.c ****                 {
+  73:Core/Src/dop_zadanie.c ****                     step_speed = 1;     // Вернулись к первоначальной ск�
+  74:Core/Src/dop_zadanie.c ****                 }
+  75:Core/Src/dop_zadanie.c ****                 
+  76:Core/Src/dop_zadanie.c ****             }
+  77:Core/Src/dop_zadanie.c ****         }
+  78:Core/Src/dop_zadanie.c ****         else
+  79:Core/Src/dop_zadanie.c ****         {
+  80:Core/Src/dop_zadanie.c ****             but_pb8_press = 0; // Кнопка отпущена
+  58              		.loc 1 80 27 view .LVU9
+  59 0010 0026     		movs	r6, #0
+  60              	.LVL2:
+  61              	.L2:
+  15:Core/Src/dop_zadanie.c ****     {
+  62              		.loc 1 15 5 is_stmt 1 view .LVU10
+  18:Core/Src/dop_zadanie.c ****         {
+  63              		.loc 1 18 9 view .LVU11
+  18:Core/Src/dop_zadanie.c ****         {
+  64              		.loc 1 18 12 is_stmt 0 view .LVU12
+  65 0012 002C     		cmp	r4, #0
+  66 0014 2EDC     		bgt	.L15
+  67              	.L3:
+  25:Core/Src/dop_zadanie.c ****         {
+  68              		.loc 1 25 9 is_stmt 1 view .LVU13
+  25:Core/Src/dop_zadanie.c ****         {
+  69              		.loc 1 25 20 is_stmt 0 view .LVU14
+  70 0016 2746     		mov	r7, r4
+  25:Core/Src/dop_zadanie.c ****         {
+  71              		.loc 1 25 12 view .LVU15
+  72 0018 B4F5FA5F 		cmp	r4, #8000
+  73 001c 36D3     		bcc	.L16
+  74              	.L4:
+  33:Core/Src/dop_zadanie.c ****         {
+  75              		.loc 1 33 9 is_stmt 1 view .LVU16
+  33:Core/Src/dop_zadanie.c ****         {
+  76              		.loc 1 33 19 is_stmt 0 view .LVU17
+  77 001e 234B     		ldr	r3, .L18
+  78 0020 1B69     		ldr	r3, [r3, #16]
+  33:Core/Src/dop_zadanie.c ****         {
+  79              		.loc 1 33 12 view .LVU18
+  80 0022 13F0400F 		tst	r3, #64
+  81 0026 05D1     		bne	.L5
+ARM GAS  C:\WINDOWS\TEMP\ccJm3e1A.s 			page 4
+
+
+  35:Core/Src/dop_zadanie.c ****             if (bright > T)
+  82              		.loc 1 35 13 is_stmt 1 view .LVU19
+  35:Core/Src/dop_zadanie.c ****             if (bright > T)
+  83              		.loc 1 35 20 is_stmt 0 view .LVU20
+  84 0028 7C19     		adds	r4, r7, r5
+  85              	.LVL3:
+  36:Core/Src/dop_zadanie.c ****             {
+  86              		.loc 1 36 13 is_stmt 1 view .LVU21
+  36:Core/Src/dop_zadanie.c ****             {
+  87              		.loc 1 36 16 is_stmt 0 view .LVU22
+  88 002a B4F5FA5F 		cmp	r4, #8000
+  89 002e 01D9     		bls	.L5
+  38:Core/Src/dop_zadanie.c ****             }
+  90              		.loc 1 38 24 view .LVU23
+  91 0030 4FF4FA54 		mov	r4, #8000
+  92              	.LVL4:
+  93              	.L5:
+  43:Core/Src/dop_zadanie.c ****         {
+  94              		.loc 1 43 9 is_stmt 1 view .LVU24
+  43:Core/Src/dop_zadanie.c ****         {
+  95              		.loc 1 43 19 is_stmt 0 view .LVU25
+  96 0034 1D4B     		ldr	r3, .L18
+  97 0036 1B69     		ldr	r3, [r3, #16]
+  43:Core/Src/dop_zadanie.c ****         {
+  98              		.loc 1 43 12 view .LVU26
+  99 0038 13F4007F 		tst	r3, #512
+ 100 003c 01D1     		bne	.L6
+  45:Core/Src/dop_zadanie.c ****             if (bright < 0)
+ 101              		.loc 1 45 13 is_stmt 1 view .LVU27
+ 102              	.LVL5:
+  46:Core/Src/dop_zadanie.c ****             {
+ 103              		.loc 1 46 13 view .LVU28
+  46:Core/Src/dop_zadanie.c ****             {
+ 104              		.loc 1 46 16 is_stmt 0 view .LVU29
+ 105 003e 641B     		subs	r4, r4, r5
+ 106              	.LVL6:
+  46:Core/Src/dop_zadanie.c ****             {
+ 107              		.loc 1 46 16 view .LVU30
+ 108 0040 31D4     		bmi	.L17
+ 109              	.LVL7:
+ 110              	.L6:
+  53:Core/Src/dop_zadanie.c ****         {
+ 111              		.loc 1 53 9 is_stmt 1 view .LVU31
+  53:Core/Src/dop_zadanie.c ****         {
+ 112              		.loc 1 53 19 is_stmt 0 view .LVU32
+ 113 0042 1A4B     		ldr	r3, .L18
+ 114 0044 1B69     		ldr	r3, [r3, #16]
+  53:Core/Src/dop_zadanie.c ****         {
+ 115              		.loc 1 53 12 view .LVU33
+ 116 0046 13F4807F 		tst	r3, #256
+ 117 004a E1D1     		bne	.L10
+  55:Core/Src/dop_zadanie.c ****             {
+ 118              		.loc 1 55 13 is_stmt 1 view .LVU34
+  55:Core/Src/dop_zadanie.c ****             {
+ 119              		.loc 1 55 16 is_stmt 0 view .LVU35
+ 120 004c 002E     		cmp	r6, #0
+ 121 004e E0D1     		bne	.L2
+ARM GAS  C:\WINDOWS\TEMP\ccJm3e1A.s 			page 5
+
+
+  57:Core/Src/dop_zadanie.c **** 
+ 122              		.loc 1 57 17 is_stmt 1 view .LVU36
+ 123              	.LVL8:
+  59:Core/Src/dop_zadanie.c ****                 {
+ 124              		.loc 1 59 17 view .LVU37
+ 125 0050 032D     		cmp	r5, #3
+ 126 0052 06D0     		beq	.L11
+ 127 0054 062D     		cmp	r5, #6
+ 128 0056 07D0     		beq	.L12
+ 129 0058 012D     		cmp	r5, #1
+ 130 005a 08D1     		bne	.L13
+  55:Core/Src/dop_zadanie.c ****             {
+ 131              		.loc 1 55 16 is_stmt 0 view .LVU38
+ 132 005c 0126     		movs	r6, #1
+ 133 005e 0325     		movs	r5, #3
+ 134              	.LVL9:
+  55:Core/Src/dop_zadanie.c ****             {
+ 135              		.loc 1 55 16 view .LVU39
+ 136 0060 D7E7     		b	.L2
+ 137              	.LVL10:
+ 138              	.L11:
+  55:Core/Src/dop_zadanie.c ****             {
+ 139              		.loc 1 55 16 view .LVU40
+ 140 0062 0126     		movs	r6, #1
+ 141 0064 0625     		movs	r5, #6
+ 142              	.LVL11:
+  55:Core/Src/dop_zadanie.c ****             {
+ 143              		.loc 1 55 16 view .LVU41
+ 144 0066 D4E7     		b	.L2
+ 145              	.LVL12:
+ 146              	.L12:
+  55:Core/Src/dop_zadanie.c ****             {
+ 147              		.loc 1 55 16 view .LVU42
+ 148 0068 0126     		movs	r6, #1
+ 149 006a 0C25     		movs	r5, #12
+ 150              	.LVL13:
+  55:Core/Src/dop_zadanie.c ****             {
+ 151              		.loc 1 55 16 view .LVU43
+ 152 006c D1E7     		b	.L2
+ 153              	.LVL14:
+ 154              	.L13:
+  55:Core/Src/dop_zadanie.c ****             {
+ 155              		.loc 1 55 16 view .LVU44
+ 156 006e 0126     		movs	r6, #1
+ 157 0070 3546     		mov	r5, r6
+ 158              	.LVL15:
+  55:Core/Src/dop_zadanie.c ****             {
+ 159              		.loc 1 55 16 view .LVU45
+ 160 0072 CEE7     		b	.L2
+ 161              	.LVL16:
+ 162              	.L15:
+  20:Core/Src/dop_zadanie.c ****             status = 1;
+ 163              		.loc 1 20 13 is_stmt 1 view .LVU46
+ 164 0074 0E4A     		ldr	r2, .L18+4
+ 165 0076 9369     		ldr	r3, [r2, #24]
+ 166 0078 43F08003 		orr	r3, r3, #128
+ 167 007c 9361     		str	r3, [r2, #24]
+ARM GAS  C:\WINDOWS\TEMP\ccJm3e1A.s 			page 6
+
+
+  21:Core/Src/dop_zadanie.c ****             delay(bright);                       // Время во включенном состо
+ 168              		.loc 1 21 13 view .LVU47
+  21:Core/Src/dop_zadanie.c ****             delay(bright);                       // Время во включенном состо
+ 169              		.loc 1 21 20 is_stmt 0 view .LVU48
+ 170 007e 0D4B     		ldr	r3, .L18+8
+ 171 0080 0122     		movs	r2, #1
+ 172 0082 1A70     		strb	r2, [r3]
+  22:Core/Src/dop_zadanie.c ****         }
+ 173              		.loc 1 22 13 is_stmt 1 view .LVU49
+ 174 0084 2046     		mov	r0, r4
+ 175 0086 FFF7FEFF 		bl	delay
+ 176              	.LVL17:
+ 177 008a C4E7     		b	.L3
+ 178              	.L16:
+  27:Core/Src/dop_zadanie.c ****             status = 0;
+ 179              		.loc 1 27 13 view .LVU50
+ 180 008c 084A     		ldr	r2, .L18+4
+ 181 008e 9369     		ldr	r3, [r2, #24]
+ 182 0090 43F40003 		orr	r3, r3, #8388608
+ 183 0094 9361     		str	r3, [r2, #24]
+  28:Core/Src/dop_zadanie.c ****             delay(T - bright);                   // Время в выключенном состо
+ 184              		.loc 1 28 13 view .LVU51
+  28:Core/Src/dop_zadanie.c ****             delay(T - bright);                   // Время в выключенном состо
+ 185              		.loc 1 28 20 is_stmt 0 view .LVU52
+ 186 0096 074B     		ldr	r3, .L18+8
+ 187 0098 0022     		movs	r2, #0
+ 188 009a 1A70     		strb	r2, [r3]
+  29:Core/Src/dop_zadanie.c ****         }
+ 189              		.loc 1 29 13 is_stmt 1 view .LVU53
+ 190 009c C4F5FA50 		rsb	r0, r4, #8000
+ 191 00a0 FFF7FEFF 		bl	delay
+ 192              	.LVL18:
+ 193 00a4 BBE7     		b	.L4
+ 194              	.L17:
+  48:Core/Src/dop_zadanie.c ****             }
+ 195              		.loc 1 48 24 is_stmt 0 view .LVU54
+ 196 00a6 0024     		movs	r4, #0
+ 197              	.LVL19:
+  48:Core/Src/dop_zadanie.c ****             }
+ 198              		.loc 1 48 24 view .LVU55
+ 199 00a8 CBE7     		b	.L6
+ 200              	.L19:
+ 201 00aa 00BF     		.align	2
+ 202              	.L18:
+ 203 00ac 00040240 		.word	1073873920
+ 204 00b0 00080240 		.word	1073874944
+ 205 00b4 00000000 		.word	status
+ 206              		.cfi_endproc
+ 207              	.LFE130:
+ 209              		.global	status
+ 210              		.section	.bss.status,"aw",%nobits
+ 213              	status:
+ 214 0000 00       		.space	1
+ 215              		.text
+ 216              	.Letext0:
+ 217              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 218              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\WINDOWS\TEMP\ccJm3e1A.s 			page 7
+
+
+ 219              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F446xx/stm32f446xx.h"
+ 220              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\WINDOWS\TEMP\ccJm3e1A.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 dop_zadanie.c
+C:\WINDOWS\TEMP\ccJm3e1A.s:21     .text.dop_zadanie:00000000 $t
+C:\WINDOWS\TEMP\ccJm3e1A.s:27     .text.dop_zadanie:00000000 dop_zadanie
+C:\WINDOWS\TEMP\ccJm3e1A.s:203    .text.dop_zadanie:000000ac $d
+C:\WINDOWS\TEMP\ccJm3e1A.s:213    .bss.status:00000000 status
+C:\WINDOWS\TEMP\ccJm3e1A.s:214    .bss.status:00000000 $d
+
+UNDEFINED SYMBOLS
+__dop_zadanie_init
+delay

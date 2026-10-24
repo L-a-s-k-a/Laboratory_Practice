@@ -15,7 +15,7 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F411
+TARGET_SERIES = STM32F446
 TARGET_VERSION = RE
 
 ######################################
@@ -135,6 +135,8 @@ endif
 C_SOURCES =  \
 $(SYS) \
 Core/Src/main.c \
+Core/Src/init.c \
+Core/Src/dop_zadanie.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -255,7 +257,7 @@ $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf: $(OBJECTS) Makefile
 	@echo "-----------------------------------------------------"	
 
 $(BUILD_DIR):
-	@"mkdir" $@
+	@mkdir -p $@
 
 #######################################
 # clean up
