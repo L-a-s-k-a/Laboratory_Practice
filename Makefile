@@ -16,8 +16,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F429
-TARGET_VERSION = ZI
+TARGET_SERIES = STM32F756
+TARGET_VERSION = ZG
 
 ######################################
 # building variables
@@ -133,7 +133,7 @@ else ifeq ($(TARGET_SERIES), STM32F756)
 	SYS = CMSIS/Devices/STM32F7xx/Src/system_stm32f7xx.c CMSIS/Devices/Src/syscalls.c CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F756xx/startup_stm32f756xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F7xx/Inc
-	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F756xx
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F7xx/Inc/STM32F756xx
 	CMSIS_INC = CMSIS/Include
 	ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F756ZG)
 		LD = STMDevices/STM32F756xx/STM32F756ZGTX_FLASH.ld
