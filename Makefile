@@ -2,6 +2,7 @@
 # Generic Makefile (based on gcc)
 # ------------------------------------------------
 # List of supported controllers:
+#   STM32F756ZG -- Target series -> STM32F756 | Target version -> ZG
 #	STM32F446RE -- Target series -> STM32F446 | Target version -> RE
 # 	STM32F429ZI -- Target series -> STM32F429 | Target version -> ZI
 # 	STM32F411VE -- Target series -> STM32F411 | Target version -> VE
@@ -15,8 +16,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F411
-TARGET_VERSION = RE
+TARGET_SERIES = STM32F429
+TARGET_VERSION = ZI
 
 ######################################
 # building variables
@@ -46,6 +47,8 @@ else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F429ZI)
 	BUILD_DIR = build_F429ZI
 else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F446RE)
 	BUILD_DIR = build_F446RE
+else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F756ZG)
+	BUILD_DIR = build_F756ZG
 endif
 ######################################
 # selecting source
@@ -53,7 +56,7 @@ endif
 # C sources
 
 ifeq ($(TARGET_SERIES), STM32F103)
-	SYS = CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	SYS = CMSIS/Devices/STM32F1xx/Src/system_stm32f1xx.c CMSIS/Devices/Src/syscalls.c CMSIS/Devices/Src/sysmem.c
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F1xx/Inc
 	CMSIS_INC = CMSIS/Include
 	ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F103C8)
@@ -71,7 +74,7 @@ ifeq ($(TARGET_SERIES), STM32F103)
 	MFPU = NONE
 	TRGT_CFG = stm32f1x
 else ifeq ($(TARGET_SERIES), STM32F407)
-	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c CMSIS/Devices/Src/syscalls.c CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F407xx/startup_stm32f407xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F407xx
@@ -84,7 +87,7 @@ else ifeq ($(TARGET_SERIES), STM32F407)
 	MFPU = fpv4-sp-d16 
 	TRGT_CFG = stm32f4x
 else ifeq ($(TARGET_SERIES), STM32F411)
-	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c CMSIS/Devices/Src/syscalls.c CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F411xe/startup_stm32f411xe.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F411xE
@@ -101,7 +104,7 @@ else ifeq ($(TARGET_SERIES), STM32F411)
 	MFPU = fpv4-sp-d16
 	TRGT_CFG = stm32f4x
 else ifeq ($(TARGET_SERIES), STM32F429)
-	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c CMSIS/Devices/Src/syscalls.c CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F429xx/startup_stm32f429xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F429xx
@@ -113,8 +116,8 @@ else ifeq ($(TARGET_SERIES), STM32F429)
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16  #"vfpv4-d16"
 	TRGT_CFG = stm32f4x
-else ifeq ($(TARGET_SERIES), STM32F446)
-	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+else ifeq ($(TARGET_SERIES), STM32F446) 
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c CMSIS/Devices/Src/syscalls.c CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F446xx/startup_stm32f446xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F446xx
@@ -126,6 +129,19 @@ else ifeq ($(TARGET_SERIES), STM32F446)
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16
 	TRGT_CFG = stm32f4x
+else ifeq ($(TARGET_SERIES), STM32F756) 
+	SYS = CMSIS/Devices/STM32F7xx/Src/system_stm32f7xx.c CMSIS/Devices/Src/syscalls.c CMSIS/Devices/Src/sysmem.c
+	ASM = STMDevices/STM32F756xx/startup_stm32f756xx.s
+	CMSIS_INC_DEV = CMSIS/Devices/STM32F7xx/Inc
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F756xx
+	CMSIS_INC = CMSIS/Include
+	ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F756ZG)
+		LD = STMDevices/STM32F756xx/STM32F756ZGTX_FLASH.ld
+	endif
+	DEF = STM32F756xx
+	MCPU = cortex-m7
+	MFPU = fpv5-sp-d16
+	TRGT_CFG = stm32f7x
 endif
 
 ######################################
@@ -134,7 +150,8 @@ endif
 # C sources
 C_SOURCES =  \
 $(SYS) \
-Core/Src/main.c \
+Core/src/main.c \
+Core/src/init.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -192,7 +209,7 @@ C_INCLUDES =  \
 -I$(CMSIS_INC_DEV) \
 -I$(CMSIS_INC_UNIT) \
 -I$(CMSIS_INC) \
--ICore/Inc \
+-ICore/inc \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
@@ -210,10 +227,10 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = $(LD) -Wl,--no-warn-rwx-segment # "-Wl,--no-warn-rwx-segment" - отключает вывод предупреждения о том,
-#										   # что .elf содержит сегмент LOAD с правами RWX (Read, Write, X)
-#										   # Нужно разбораться с этой проблемой  
-#										   #
+LDSCRIPT = $(LD) 				 # "-Wl,--no-warn-rwx-segment" - отключает вывод предупреждения о том,
+#								 # что .elf содержит сегмент LOAD с правами RWX (Read, Write, X)
+#								 # Нужно разбораться с этой проблемой  
+#								 #
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 

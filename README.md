@@ -10,6 +10,7 @@
 ## <a name="ru_description"></a> Лабораторный практикум по программированию микроконтроллеров
 Здесь будет находится стартовый проект для программирования лабораторного стенда Nucleo-144 на базе микроконтроллера STM32F429ZIT6. Помимо этого, данный проект позволяет программировать микроконтроллеры других серий.
 #### <a name="mk_list_ru"></a> Список поддерживаемых контроллеров
+- STM32F756ZGT6      (Target series -> STM32F756 | Target version -> ZG)
 - STM32F446RE        (Target series -> STM32F446 | Target version -> RE)
 - STM32F429ZI        (Target series -> STM32F429 | Target version -> ZI)
 - STM32F411VE/CE/RE  (Target series -> STM32F411 | Target version -> VE/CE/RE)
@@ -32,7 +33,7 @@
 
 **NAME.svd** - для каждого устройства уникален, находится в папках с устройствами, имеет расширение .svd, необходим для просмотра памяти устройства через VSCode.
 
-**startup_stm32fYYxx.s** - имеет расшщирение .s, является ассемблерным фалом, в котором прописаны все возможные вектора прерываний для микроконтроллеров приведенных выше. Он необходим для отслеживания прерываний и вызова их обработчиков.  
+**startup_stm32fYYxx.s** - имеет расшщирение .s, является ассемблерным файлом, в котором прописаны все возможные вектора прерываний для микроконтроллеров приведенных выше. Он необходим для отслеживания прерываний и вызова их обработчиков.  
 
 **CMSIS/Include** - папка содержащая заголовочные файлы, необходимые для корректной работы ядра микроконтролла.
 
@@ -47,6 +48,7 @@
 Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. In addition, this project allows you to program microcontrollers of other series.
 
 #### <a name="mk_list_en"></a> List of supported controllers
+- STM32F756ZGT6      (Target series -> STM32F756 | Target version -> ZG)
 - STM32F446RE        (Target series -> STM32F446 | Target version -> RE)
 - STM32F429ZI        (Target series -> STM32F429 | Target version -> ZI)
 - STM32F411VE/CE/RE  (Target series -> STM32F411 | Target version -> VE/CE/RE)

@@ -170,8 +170,8 @@
   #include "stm32f413xx.h"
 #elif defined(STM32F423xx)
   #include "stm32f423xx.h"
-// #else
-//  #error "Please select first the target STM32F4xx device used in your application (in stm32f4xx.h file)"
+#else
+ #error "Please select first the target STM32F4xx device used in your application (in stm32f4xx.h file)"
 #endif
 
 /**
