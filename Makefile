@@ -16,8 +16,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F756
-TARGET_VERSION = ZG
+TARGET_SERIES = STM32F429
+TARGET_VERSION = ZI
 
 ######################################
 # building variables
@@ -152,6 +152,7 @@ C_SOURCES =  \
 $(SYS) \
 Core/src/main.c \
 Core/src/init.c \
+# Core/src/it_handlers.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -234,7 +235,7 @@ LDSCRIPT = $(LD) 				 # "-Wl,--no-warn-rwx-segment" - отключает выв�
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).map,--cref -Wl,--gc-sections
+LDFLAGS = $(MCU) -specs=nano.specs -u _printf_float -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).map,--cref -Wl,--gc-sections
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).hex $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).bin 
