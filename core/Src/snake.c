@@ -1,4 +1,5 @@
 /*
+
  * HUB12 signals:
  *   OE=PF12 (ACTIVE-HIGH on this panel), A=PF14, B=PF15,
  *   S(CLOCK)=PF3, L(LATCH)=PF5, R(DATA)=PF10 (data LOW = pixel on)
