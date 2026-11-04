@@ -1,0 +1,3513 @@
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 6
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"init.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/init.c"
+  20              		.section	.text.GPIO_Init_CMSIS,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Init_CMSIS
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Init_CMSIS:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "main.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** //Инициализация с CMSIS
+   4:Core/Src/init.c **** void GPIO_Init_CMSIS(void) {
+  29              		.loc 1 4 28
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 1, uses_anonymous_args = 0
+  33 0000 80B5     		push	{r7, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 7, -8
+  37              		.cfi_offset 14, -4
+  38 0002 00AF     		add	r7, sp, #0
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_register 7
+   5:Core/Src/init.c ****     //Тактирование портов A и B
+   6:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN);
+  41              		.loc 1 6 5
+  42 0004 224B     		ldr	r3, .L2
+  43 0006 1B6B     		ldr	r3, [r3, #48]
+  44 0008 214A     		ldr	r2, .L2
+  45 000a 43F00103 		orr	r3, r3, #1
+  46 000e 1363     		str	r3, [r2, #48]
+   7:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);
+  47              		.loc 1 7 5
+  48 0010 1F4B     		ldr	r3, .L2
+  49 0012 1B6B     		ldr	r3, [r3, #48]
+  50 0014 1E4A     		ldr	r2, .L2
+  51 0016 43F00203 		orr	r3, r3, #2
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 2
+
+
+  52 001a 1363     		str	r3, [r2, #48]
+   8:Core/Src/init.c **** 
+   9:Core/Src/init.c ****     // PA6, PA7, PB0 — выходы 
+  10:Core/Src/init.c ****     SET_BIT(GPIOA->MODER, GPIO_MODER_MODE6_0);   // PA6
+  53              		.loc 1 10 5
+  54 001c 1D4B     		ldr	r3, .L2+4
+  55 001e 1B68     		ldr	r3, [r3]
+  56 0020 1C4A     		ldr	r2, .L2+4
+  57 0022 43F48053 		orr	r3, r3, #4096
+  58 0026 1360     		str	r3, [r2]
+  11:Core/Src/init.c ****     SET_BIT(GPIOA->MODER, GPIO_MODER_MODE7_0);   // PA7
+  59              		.loc 1 11 5
+  60 0028 1A4B     		ldr	r3, .L2+4
+  61 002a 1B68     		ldr	r3, [r3]
+  62 002c 194A     		ldr	r2, .L2+4
+  63 002e 43F48043 		orr	r3, r3, #16384
+  64 0032 1360     		str	r3, [r2]
+  12:Core/Src/init.c ****     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_0);   // PB0
+  65              		.loc 1 12 5
+  66 0034 184B     		ldr	r3, .L2+8
+  67 0036 1B68     		ldr	r3, [r3]
+  68 0038 174A     		ldr	r2, .L2+8
+  69 003a 43F00103 		orr	r3, r3, #1
+  70 003e 1360     		str	r3, [r2]
+  13:Core/Src/init.c **** 
+  14:Core/Src/init.c ****     // PA4 — вход с pull-up (по умолчанию)
+  15:Core/Src/init.c ****     CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE4);
+  71              		.loc 1 15 5
+  72 0040 144B     		ldr	r3, .L2+4
+  73 0042 1B68     		ldr	r3, [r3]
+  74 0044 134A     		ldr	r2, .L2+4
+  75 0046 23F44073 		bic	r3, r3, #768
+  76 004a 1360     		str	r3, [r2]
+  16:Core/Src/init.c ****     SET_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD4_0);   // pull-up
+  77              		.loc 1 16 5
+  78 004c 114B     		ldr	r3, .L2+4
+  79 004e DB68     		ldr	r3, [r3, #12]
+  80 0050 104A     		ldr	r2, .L2+4
+  81 0052 43F48073 		orr	r3, r3, #256
+  82 0056 D360     		str	r3, [r2, #12]
+  17:Core/Src/init.c ****     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD4_1);
+  83              		.loc 1 17 5
+  84 0058 0E4B     		ldr	r3, .L2+4
+  85 005a DB68     		ldr	r3, [r3, #12]
+  86 005c 0D4A     		ldr	r2, .L2+4
+  87 005e 23F40073 		bic	r3, r3, #512
+  88 0062 D360     		str	r3, [r2, #12]
+  18:Core/Src/init.c **** 
+  19:Core/Src/init.c ****     // PA0 — вход с pull-up (вторая кнопка)
+  20:Core/Src/init.c ****     CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE0);
+  89              		.loc 1 20 5
+  90 0064 0B4B     		ldr	r3, .L2+4
+  91 0066 1B68     		ldr	r3, [r3]
+  92 0068 0A4A     		ldr	r2, .L2+4
+  93 006a 23F00303 		bic	r3, r3, #3
+  94 006e 1360     		str	r3, [r2]
+  21:Core/Src/init.c ****     SET_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD0_0);   // pull-up
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 3
+
+
+  95              		.loc 1 21 5
+  96 0070 084B     		ldr	r3, .L2+4
+  97 0072 DB68     		ldr	r3, [r3, #12]
+  98 0074 074A     		ldr	r2, .L2+4
+  99 0076 43F00103 		orr	r3, r3, #1
+ 100 007a D360     		str	r3, [r2, #12]
+  22:Core/Src/init.c ****     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD0_1);
+ 101              		.loc 1 22 5
+ 102 007c 054B     		ldr	r3, .L2+4
+ 103 007e DB68     		ldr	r3, [r3, #12]
+ 104 0080 044A     		ldr	r2, .L2+4
+ 105 0082 23F00203 		bic	r3, r3, #2
+ 106 0086 D360     		str	r3, [r2, #12]
+  23:Core/Src/init.c **** 
+  24:Core/Src/init.c ****     clear_all_leds_CMSIS();
+ 107              		.loc 1 24 5
+ 108 0088 FFF7FEFF 		bl	clear_all_leds_CMSIS
+  25:Core/Src/init.c **** }
+ 109              		.loc 1 25 1
+ 110 008c 00BF     		nop
+ 111 008e 80BD     		pop	{r7, pc}
+ 112              	.L3:
+ 113              		.align	2
+ 114              	.L2:
+ 115 0090 00380240 		.word	1073887232
+ 116 0094 00000240 		.word	1073872896
+ 117 0098 00040240 		.word	1073873920
+ 118              		.cfi_endproc
+ 119              	.LFE130:
+ 121              		.section	.text.set_led_CMSIS,"ax",%progbits
+ 122              		.align	1
+ 123              		.global	set_led_CMSIS
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 128              	set_led_CMSIS:
+ 129              	.LFB131:
+  26:Core/Src/init.c **** 
+  27:Core/Src/init.c **** void set_led_CMSIS(uint8_t led_num) {
+ 130              		.loc 1 27 37
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 8
+ 133              		@ frame_needed = 1, uses_anonymous_args = 0
+ 134              		@ link register save eliminated.
+ 135 0000 80B4     		push	{r7}
+ 136              	.LCFI2:
+ 137              		.cfi_def_cfa_offset 4
+ 138              		.cfi_offset 7, -4
+ 139 0002 83B0     		sub	sp, sp, #12
+ 140              	.LCFI3:
+ 141              		.cfi_def_cfa_offset 16
+ 142 0004 00AF     		add	r7, sp, #0
+ 143              	.LCFI4:
+ 144              		.cfi_def_cfa_register 7
+ 145 0006 0346     		mov	r3, r0
+ 146 0008 FB71     		strb	r3, [r7, #7]
+  28:Core/Src/init.c ****     if (led_num == 1){
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 4
+
+
+ 147              		.loc 1 28 8
+ 148 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 149 000c 012B     		cmp	r3, #1
+ 150 000e 11D1     		bne	.L5
+  29:Core/Src/init.c ****         SET_BIT(GPIOA->MODER, GPIO_MODER_MODE4_0);
+ 151              		.loc 1 29 9
+ 152 0010 194B     		ldr	r3, .L10
+ 153 0012 1B68     		ldr	r3, [r3]
+ 154 0014 184A     		ldr	r2, .L10
+ 155 0016 43F48073 		orr	r3, r3, #256
+ 156 001a 1360     		str	r3, [r2]
+  30:Core/Src/init.c ****         CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE4_1);
+ 157              		.loc 1 30 9
+ 158 001c 164B     		ldr	r3, .L10
+ 159 001e 1B68     		ldr	r3, [r3]
+ 160 0020 154A     		ldr	r2, .L10
+ 161 0022 23F40073 		bic	r3, r3, #512
+ 162 0026 1360     		str	r3, [r2]
+  31:Core/Src/init.c ****         SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS4);   // PA4 = 1
+ 163              		.loc 1 31 9
+ 164 0028 134B     		ldr	r3, .L10
+ 165 002a 9B69     		ldr	r3, [r3, #24]
+ 166 002c 124A     		ldr	r2, .L10
+ 167 002e 43F01003 		orr	r3, r3, #16
+ 168 0032 9361     		str	r3, [r2, #24]
+ 169              	.L5:
+  32:Core/Src/init.c ****     }
+  33:Core/Src/init.c ****     if (led_num == 2){
+ 170              		.loc 1 33 8
+ 171 0034 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 172 0036 022B     		cmp	r3, #2
+ 173 0038 05D1     		bne	.L6
+  34:Core/Src/init.c ****         SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS6);
+ 174              		.loc 1 34 9
+ 175 003a 0F4B     		ldr	r3, .L10
+ 176 003c 9B69     		ldr	r3, [r3, #24]
+ 177 003e 0E4A     		ldr	r2, .L10
+ 178 0040 43F04003 		orr	r3, r3, #64
+ 179 0044 9361     		str	r3, [r2, #24]
+ 180              	.L6:
+  35:Core/Src/init.c ****     }
+  36:Core/Src/init.c ****     if (led_num == 3){
+ 181              		.loc 1 36 8
+ 182 0046 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 183 0048 032B     		cmp	r3, #3
+ 184 004a 05D1     		bne	.L7
+  37:Core/Src/init.c ****         SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS7);
+ 185              		.loc 1 37 9
+ 186 004c 0A4B     		ldr	r3, .L10
+ 187 004e 9B69     		ldr	r3, [r3, #24]
+ 188 0050 094A     		ldr	r2, .L10
+ 189 0052 43F08003 		orr	r3, r3, #128
+ 190 0056 9361     		str	r3, [r2, #24]
+ 191              	.L7:
+  38:Core/Src/init.c ****     }
+  39:Core/Src/init.c ****     if (led_num == 4){
+ 192              		.loc 1 39 8
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 5
+
+
+ 193 0058 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 194 005a 042B     		cmp	r3, #4
+ 195 005c 05D1     		bne	.L9
+  40:Core/Src/init.c ****         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);
+ 196              		.loc 1 40 9
+ 197 005e 074B     		ldr	r3, .L10+4
+ 198 0060 9B69     		ldr	r3, [r3, #24]
+ 199 0062 064A     		ldr	r2, .L10+4
+ 200 0064 43F00103 		orr	r3, r3, #1
+ 201 0068 9361     		str	r3, [r2, #24]
+ 202              	.L9:
+  41:Core/Src/init.c ****     }
+  42:Core/Src/init.c **** }
+ 203              		.loc 1 42 1
+ 204 006a 00BF     		nop
+ 205 006c 0C37     		adds	r7, r7, #12
+ 206              	.LCFI5:
+ 207              		.cfi_def_cfa_offset 4
+ 208 006e BD46     		mov	sp, r7
+ 209              	.LCFI6:
+ 210              		.cfi_def_cfa_register 13
+ 211              		@ sp needed
+ 212 0070 5DF8047B 		ldr	r7, [sp], #4
+ 213              	.LCFI7:
+ 214              		.cfi_restore 7
+ 215              		.cfi_def_cfa_offset 0
+ 216 0074 7047     		bx	lr
+ 217              	.L11:
+ 218 0076 00BF     		.align	2
+ 219              	.L10:
+ 220 0078 00000240 		.word	1073872896
+ 221 007c 00040240 		.word	1073873920
+ 222              		.cfi_endproc
+ 223              	.LFE131:
+ 225              		.section	.text.clear_led_CMSIS,"ax",%progbits
+ 226              		.align	1
+ 227              		.global	clear_led_CMSIS
+ 228              		.syntax unified
+ 229              		.thumb
+ 230              		.thumb_func
+ 232              	clear_led_CMSIS:
+ 233              	.LFB132:
+  43:Core/Src/init.c **** 
+  44:Core/Src/init.c **** void clear_led_CMSIS(uint8_t led_num) {
+ 234              		.loc 1 44 39
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 8
+ 237              		@ frame_needed = 1, uses_anonymous_args = 0
+ 238              		@ link register save eliminated.
+ 239 0000 80B4     		push	{r7}
+ 240              	.LCFI8:
+ 241              		.cfi_def_cfa_offset 4
+ 242              		.cfi_offset 7, -4
+ 243 0002 83B0     		sub	sp, sp, #12
+ 244              	.LCFI9:
+ 245              		.cfi_def_cfa_offset 16
+ 246 0004 00AF     		add	r7, sp, #0
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 6
+
+
+ 247              	.LCFI10:
+ 248              		.cfi_def_cfa_register 7
+ 249 0006 0346     		mov	r3, r0
+ 250 0008 FB71     		strb	r3, [r7, #7]
+  45:Core/Src/init.c ****     if (led_num == 1){
+ 251              		.loc 1 45 8
+ 252 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 253 000c 012B     		cmp	r3, #1
+ 254 000e 11D1     		bne	.L13
+  46:Core/Src/init.c ****         CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE4);   // PA4 - вход
+ 255              		.loc 1 46 9
+ 256 0010 164B     		ldr	r3, .L18
+ 257 0012 1B68     		ldr	r3, [r3]
+ 258 0014 154A     		ldr	r2, .L18
+ 259 0016 23F44073 		bic	r3, r3, #768
+ 260 001a 1360     		str	r3, [r2]
+  47:Core/Src/init.c ****         SET_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD4_0);   // pull-up
+ 261              		.loc 1 47 9
+ 262 001c 134B     		ldr	r3, .L18
+ 263 001e DB68     		ldr	r3, [r3, #12]
+ 264 0020 124A     		ldr	r2, .L18
+ 265 0022 43F48073 		orr	r3, r3, #256
+ 266 0026 D360     		str	r3, [r2, #12]
+  48:Core/Src/init.c ****         CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD4_1);
+ 267              		.loc 1 48 9
+ 268 0028 104B     		ldr	r3, .L18
+ 269 002a DB68     		ldr	r3, [r3, #12]
+ 270 002c 0F4A     		ldr	r2, .L18
+ 271 002e 23F40073 		bic	r3, r3, #512
+ 272 0032 D360     		str	r3, [r2, #12]
+ 273              	.L13:
+  49:Core/Src/init.c ****     }
+  50:Core/Src/init.c ****     if (led_num == 2){
+ 274              		.loc 1 50 8
+ 275 0034 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 276 0036 022B     		cmp	r3, #2
+ 277 0038 03D1     		bne	.L14
+  51:Core/Src/init.c ****         GPIOA->BSRR = GPIO_BSRR_BR6;  //сброс
+ 278              		.loc 1 51 14
+ 279 003a 0C4B     		ldr	r3, .L18
+ 280              		.loc 1 51 21
+ 281 003c 4FF48002 		mov	r2, #4194304
+ 282 0040 9A61     		str	r2, [r3, #24]
+ 283              	.L14:
+  52:Core/Src/init.c ****     }
+  53:Core/Src/init.c ****     if (led_num == 3){
+ 284              		.loc 1 53 8
+ 285 0042 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 286 0044 032B     		cmp	r3, #3
+ 287 0046 03D1     		bne	.L15
+  54:Core/Src/init.c ****         GPIOA->BSRR = GPIO_BSRR_BR7;  //сброс
+ 288              		.loc 1 54 14
+ 289 0048 084B     		ldr	r3, .L18
+ 290              		.loc 1 54 21
+ 291 004a 4FF40002 		mov	r2, #8388608
+ 292 004e 9A61     		str	r2, [r3, #24]
+ 293              	.L15:
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 7
+
+
+  55:Core/Src/init.c ****     }
+  56:Core/Src/init.c ****     if (led_num == 4){
+ 294              		.loc 1 56 8
+ 295 0050 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 296 0052 042B     		cmp	r3, #4
+ 297 0054 03D1     		bne	.L17
+  57:Core/Src/init.c ****         GPIOB->BSRR = GPIO_BSRR_BR0;  //сброс
+ 298              		.loc 1 57 14
+ 299 0056 064B     		ldr	r3, .L18+4
+ 300              		.loc 1 57 21
+ 301 0058 4FF48032 		mov	r2, #65536
+ 302 005c 9A61     		str	r2, [r3, #24]
+ 303              	.L17:
+  58:Core/Src/init.c ****     }
+  59:Core/Src/init.c **** }
+ 304              		.loc 1 59 1
+ 305 005e 00BF     		nop
+ 306 0060 0C37     		adds	r7, r7, #12
+ 307              	.LCFI11:
+ 308              		.cfi_def_cfa_offset 4
+ 309 0062 BD46     		mov	sp, r7
+ 310              	.LCFI12:
+ 311              		.cfi_def_cfa_register 13
+ 312              		@ sp needed
+ 313 0064 5DF8047B 		ldr	r7, [sp], #4
+ 314              	.LCFI13:
+ 315              		.cfi_restore 7
+ 316              		.cfi_def_cfa_offset 0
+ 317 0068 7047     		bx	lr
+ 318              	.L19:
+ 319 006a 00BF     		.align	2
+ 320              	.L18:
+ 321 006c 00000240 		.word	1073872896
+ 322 0070 00040240 		.word	1073873920
+ 323              		.cfi_endproc
+ 324              	.LFE132:
+ 326              		.section	.text.clear_all_leds_CMSIS,"ax",%progbits
+ 327              		.align	1
+ 328              		.global	clear_all_leds_CMSIS
+ 329              		.syntax unified
+ 330              		.thumb
+ 331              		.thumb_func
+ 333              	clear_all_leds_CMSIS:
+ 334              	.LFB133:
+  60:Core/Src/init.c **** 
+  61:Core/Src/init.c **** void clear_all_leds_CMSIS(void) {
+ 335              		.loc 1 61 33
+ 336              		.cfi_startproc
+ 337              		@ args = 0, pretend = 0, frame = 0
+ 338              		@ frame_needed = 1, uses_anonymous_args = 0
+ 339 0000 80B5     		push	{r7, lr}
+ 340              	.LCFI14:
+ 341              		.cfi_def_cfa_offset 8
+ 342              		.cfi_offset 7, -8
+ 343              		.cfi_offset 14, -4
+ 344 0002 00AF     		add	r7, sp, #0
+ 345              	.LCFI15:
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 8
+
+
+ 346              		.cfi_def_cfa_register 7
+  62:Core/Src/init.c ****     clear_led_CMSIS(1);
+ 347              		.loc 1 62 5
+ 348 0004 0120     		movs	r0, #1
+ 349 0006 FFF7FEFF 		bl	clear_led_CMSIS
+  63:Core/Src/init.c ****     clear_led_CMSIS(2);
+ 350              		.loc 1 63 5
+ 351 000a 0220     		movs	r0, #2
+ 352 000c FFF7FEFF 		bl	clear_led_CMSIS
+  64:Core/Src/init.c ****     clear_led_CMSIS(3);
+ 353              		.loc 1 64 5
+ 354 0010 0320     		movs	r0, #3
+ 355 0012 FFF7FEFF 		bl	clear_led_CMSIS
+  65:Core/Src/init.c ****     clear_led_CMSIS(4);
+ 356              		.loc 1 65 5
+ 357 0016 0420     		movs	r0, #4
+ 358 0018 FFF7FEFF 		bl	clear_led_CMSIS
+  66:Core/Src/init.c **** }
+ 359              		.loc 1 66 1
+ 360 001c 00BF     		nop
+ 361 001e 80BD     		pop	{r7, pc}
+ 362              		.cfi_endproc
+ 363              	.LFE133:
+ 365              		.section	.text.apply_leds_CMSIS,"ax",%progbits
+ 366              		.align	1
+ 367              		.global	apply_leds_CMSIS
+ 368              		.syntax unified
+ 369              		.thumb
+ 370              		.thumb_func
+ 372              	apply_leds_CMSIS:
+ 373              	.LFB134:
+  67:Core/Src/init.c **** void apply_leds_CMSIS(uint8_t led_a_on, uint8_t led_b_on, uint8_t led_c_on) {
+ 374              		.loc 1 67 77
+ 375              		.cfi_startproc
+ 376              		@ args = 0, pretend = 0, frame = 8
+ 377              		@ frame_needed = 1, uses_anonymous_args = 0
+ 378 0000 80B5     		push	{r7, lr}
+ 379              	.LCFI16:
+ 380              		.cfi_def_cfa_offset 8
+ 381              		.cfi_offset 7, -8
+ 382              		.cfi_offset 14, -4
+ 383 0002 82B0     		sub	sp, sp, #8
+ 384              	.LCFI17:
+ 385              		.cfi_def_cfa_offset 16
+ 386 0004 00AF     		add	r7, sp, #0
+ 387              	.LCFI18:
+ 388              		.cfi_def_cfa_register 7
+ 389 0006 0346     		mov	r3, r0
+ 390 0008 FB71     		strb	r3, [r7, #7]
+ 391 000a 0B46     		mov	r3, r1
+ 392 000c BB71     		strb	r3, [r7, #6]
+ 393 000e 1346     		mov	r3, r2
+ 394 0010 7B71     		strb	r3, [r7, #5]
+  68:Core/Src/init.c ****     if (led_a_on) set_led_CMSIS(2); else clear_led_CMSIS(2);
+ 395              		.loc 1 68 8
+ 396 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 397 0014 002B     		cmp	r3, #0
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 9
+
+
+ 398 0016 03D0     		beq	.L22
+ 399              		.loc 1 68 19 discriminator 1
+ 400 0018 0220     		movs	r0, #2
+ 401 001a FFF7FEFF 		bl	set_led_CMSIS
+ 402 001e 02E0     		b	.L23
+ 403              	.L22:
+ 404              		.loc 1 68 42 discriminator 2
+ 405 0020 0220     		movs	r0, #2
+ 406 0022 FFF7FEFF 		bl	clear_led_CMSIS
+ 407              	.L23:
+  69:Core/Src/init.c ****     if (led_b_on) set_led_CMSIS(3); else clear_led_CMSIS(3);
+ 408              		.loc 1 69 8
+ 409 0026 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 410 0028 002B     		cmp	r3, #0
+ 411 002a 03D0     		beq	.L24
+ 412              		.loc 1 69 19 discriminator 1
+ 413 002c 0320     		movs	r0, #3
+ 414 002e FFF7FEFF 		bl	set_led_CMSIS
+ 415 0032 02E0     		b	.L25
+ 416              	.L24:
+ 417              		.loc 1 69 42 discriminator 2
+ 418 0034 0320     		movs	r0, #3
+ 419 0036 FFF7FEFF 		bl	clear_led_CMSIS
+ 420              	.L25:
+  70:Core/Src/init.c ****     if (led_c_on) set_led_CMSIS(4); else clear_led_CMSIS(4);
+ 421              		.loc 1 70 8
+ 422 003a 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
+ 423 003c 002B     		cmp	r3, #0
+ 424 003e 03D0     		beq	.L26
+ 425              		.loc 1 70 19 discriminator 1
+ 426 0040 0420     		movs	r0, #4
+ 427 0042 FFF7FEFF 		bl	set_led_CMSIS
+  71:Core/Src/init.c **** }
+ 428              		.loc 1 71 1
+ 429 0046 02E0     		b	.L28
+ 430              	.L26:
+  70:Core/Src/init.c ****     if (led_c_on) set_led_CMSIS(4); else clear_led_CMSIS(4);
+ 431              		.loc 1 70 42 discriminator 2
+ 432 0048 0420     		movs	r0, #4
+ 433 004a FFF7FEFF 		bl	clear_led_CMSIS
+ 434              	.L28:
+ 435              		.loc 1 71 1
+ 436 004e 00BF     		nop
+ 437 0050 0837     		adds	r7, r7, #8
+ 438              	.LCFI19:
+ 439              		.cfi_def_cfa_offset 8
+ 440 0052 BD46     		mov	sp, r7
+ 441              	.LCFI20:
+ 442              		.cfi_def_cfa_register 13
+ 443              		@ sp needed
+ 444 0054 80BD     		pop	{r7, pc}
+ 445              		.cfi_endproc
+ 446              	.LFE134:
+ 448              		.section	.text.update_leds_CMSIS,"ax",%progbits
+ 449              		.align	1
+ 450              		.global	update_leds_CMSIS
+ 451              		.syntax unified
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 10
+
+
+ 452              		.thumb
+ 453              		.thumb_func
+ 455              	update_leds_CMSIS:
+ 456              	.LFB135:
+  72:Core/Src/init.c **** 
+  73:Core/Src/init.c **** void update_leds_CMSIS(uint8_t count) {
+ 457              		.loc 1 73 39
+ 458              		.cfi_startproc
+ 459              		@ args = 0, pretend = 0, frame = 8
+ 460              		@ frame_needed = 1, uses_anonymous_args = 0
+ 461 0000 80B5     		push	{r7, lr}
+ 462              	.LCFI21:
+ 463              		.cfi_def_cfa_offset 8
+ 464              		.cfi_offset 7, -8
+ 465              		.cfi_offset 14, -4
+ 466 0002 82B0     		sub	sp, sp, #8
+ 467              	.LCFI22:
+ 468              		.cfi_def_cfa_offset 16
+ 469 0004 00AF     		add	r7, sp, #0
+ 470              	.LCFI23:
+ 471              		.cfi_def_cfa_register 7
+ 472 0006 0346     		mov	r3, r0
+ 473 0008 FB71     		strb	r3, [r7, #7]
+  74:Core/Src/init.c ****     clear_led_CMSIS(2);
+ 474              		.loc 1 74 5
+ 475 000a 0220     		movs	r0, #2
+ 476 000c FFF7FEFF 		bl	clear_led_CMSIS
+  75:Core/Src/init.c ****     clear_led_CMSIS(3);
+ 477              		.loc 1 75 5
+ 478 0010 0320     		movs	r0, #3
+ 479 0012 FFF7FEFF 		bl	clear_led_CMSIS
+  76:Core/Src/init.c ****     clear_led_CMSIS(4);
+ 480              		.loc 1 76 5
+ 481 0016 0420     		movs	r0, #4
+ 482 0018 FFF7FEFF 		bl	clear_led_CMSIS
+  77:Core/Src/init.c **** 
+  78:Core/Src/init.c ****     if (count >= 1) set_led_CMSIS(2);  // PA6
+ 483              		.loc 1 78 8
+ 484 001c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 485 001e 002B     		cmp	r3, #0
+ 486 0020 02D0     		beq	.L30
+ 487              		.loc 1 78 21 discriminator 1
+ 488 0022 0220     		movs	r0, #2
+ 489 0024 FFF7FEFF 		bl	set_led_CMSIS
+ 490              	.L30:
+  79:Core/Src/init.c ****     if (count >= 2) set_led_CMSIS(3);  // PA7
+ 491              		.loc 1 79 8
+ 492 0028 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 493 002a 012B     		cmp	r3, #1
+ 494 002c 02D9     		bls	.L31
+ 495              		.loc 1 79 21 discriminator 1
+ 496 002e 0320     		movs	r0, #3
+ 497 0030 FFF7FEFF 		bl	set_led_CMSIS
+ 498              	.L31:
+  80:Core/Src/init.c ****     if (count >= 3) set_led_CMSIS(4);  // PB0
+ 499              		.loc 1 80 8
+ 500 0034 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 11
+
+
+ 501 0036 022B     		cmp	r3, #2
+ 502 0038 02D9     		bls	.L33
+ 503              		.loc 1 80 21 discriminator 1
+ 504 003a 0420     		movs	r0, #4
+ 505 003c FFF7FEFF 		bl	set_led_CMSIS
+ 506              	.L33:
+  81:Core/Src/init.c **** }
+ 507              		.loc 1 81 1
+ 508 0040 00BF     		nop
+ 509 0042 0837     		adds	r7, r7, #8
+ 510              	.LCFI24:
+ 511              		.cfi_def_cfa_offset 8
+ 512 0044 BD46     		mov	sp, r7
+ 513              	.LCFI25:
+ 514              		.cfi_def_cfa_register 13
+ 515              		@ sp needed
+ 516 0046 80BD     		pop	{r7, pc}
+ 517              		.cfi_endproc
+ 518              	.LFE135:
+ 520              		.section	.text.read_btn1_CMSIS,"ax",%progbits
+ 521              		.align	1
+ 522              		.global	read_btn1_CMSIS
+ 523              		.syntax unified
+ 524              		.thumb
+ 525              		.thumb_func
+ 527              	read_btn1_CMSIS:
+ 528              	.LFB136:
+  82:Core/Src/init.c **** 
+  83:Core/Src/init.c **** uint8_t read_btn1_CMSIS(void) {
+ 529              		.loc 1 83 31
+ 530              		.cfi_startproc
+ 531              		@ args = 0, pretend = 0, frame = 0
+ 532              		@ frame_needed = 1, uses_anonymous_args = 0
+ 533              		@ link register save eliminated.
+ 534 0000 80B4     		push	{r7}
+ 535              	.LCFI26:
+ 536              		.cfi_def_cfa_offset 4
+ 537              		.cfi_offset 7, -4
+ 538 0002 00AF     		add	r7, sp, #0
+ 539              	.LCFI27:
+ 540              		.cfi_def_cfa_register 7
+  84:Core/Src/init.c ****     if ((GPIOA->MODER & GPIO_MODER_MODE4) == 0) {
+ 541              		.loc 1 84 15
+ 542 0004 094B     		ldr	r3, .L37
+ 543 0006 1B68     		ldr	r3, [r3]
+ 544              		.loc 1 84 23
+ 545 0008 03F44073 		and	r3, r3, #768
+ 546              		.loc 1 84 8
+ 547 000c 002B     		cmp	r3, #0
+ 548 000e 07D1     		bne	.L35
+  85:Core/Src/init.c ****         if ((GPIOA->IDR & GPIO_IDR_ID4) == 0) {
+ 549              		.loc 1 85 19
+ 550 0010 064B     		ldr	r3, .L37
+ 551 0012 1B69     		ldr	r3, [r3, #16]
+ 552              		.loc 1 85 25
+ 553 0014 03F01003 		and	r3, r3, #16
+ 554              		.loc 1 85 12
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 12
+
+
+ 555 0018 002B     		cmp	r3, #0
+ 556 001a 01D1     		bne	.L35
+  86:Core/Src/init.c ****             return 1;  // нажата
+ 557              		.loc 1 86 20
+ 558 001c 0123     		movs	r3, #1
+ 559 001e 00E0     		b	.L36
+ 560              	.L35:
+  87:Core/Src/init.c ****         }
+  88:Core/Src/init.c ****     }
+  89:Core/Src/init.c ****     return 0;
+ 561              		.loc 1 89 12
+ 562 0020 0023     		movs	r3, #0
+ 563              	.L36:
+  90:Core/Src/init.c **** }
+ 564              		.loc 1 90 1
+ 565 0022 1846     		mov	r0, r3
+ 566 0024 BD46     		mov	sp, r7
+ 567              	.LCFI28:
+ 568              		.cfi_def_cfa_register 13
+ 569              		@ sp needed
+ 570 0026 5DF8047B 		ldr	r7, [sp], #4
+ 571              	.LCFI29:
+ 572              		.cfi_restore 7
+ 573              		.cfi_def_cfa_offset 0
+ 574 002a 7047     		bx	lr
+ 575              	.L38:
+ 576              		.align	2
+ 577              	.L37:
+ 578 002c 00000240 		.word	1073872896
+ 579              		.cfi_endproc
+ 580              	.LFE136:
+ 582              		.section	.text.read_btn2_CMSIS,"ax",%progbits
+ 583              		.align	1
+ 584              		.global	read_btn2_CMSIS
+ 585              		.syntax unified
+ 586              		.thumb
+ 587              		.thumb_func
+ 589              	read_btn2_CMSIS:
+ 590              	.LFB137:
+  91:Core/Src/init.c **** 
+  92:Core/Src/init.c **** uint8_t read_btn2_CMSIS(void) {
+ 591              		.loc 1 92 31
+ 592              		.cfi_startproc
+ 593              		@ args = 0, pretend = 0, frame = 0
+ 594              		@ frame_needed = 1, uses_anonymous_args = 0
+ 595              		@ link register save eliminated.
+ 596 0000 80B4     		push	{r7}
+ 597              	.LCFI30:
+ 598              		.cfi_def_cfa_offset 4
+ 599              		.cfi_offset 7, -4
+ 600 0002 00AF     		add	r7, sp, #0
+ 601              	.LCFI31:
+ 602              		.cfi_def_cfa_register 7
+  93:Core/Src/init.c ****     if ((GPIOA->IDR & GPIO_IDR_ID0) == 0) {
+ 603              		.loc 1 93 15
+ 604 0004 064B     		ldr	r3, .L42
+ 605 0006 1B69     		ldr	r3, [r3, #16]
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 13
+
+
+ 606              		.loc 1 93 21
+ 607 0008 03F00103 		and	r3, r3, #1
+ 608              		.loc 1 93 8
+ 609 000c 002B     		cmp	r3, #0
+ 610 000e 01D1     		bne	.L40
+  94:Core/Src/init.c ****         return 1;  // нажата
+ 611              		.loc 1 94 16
+ 612 0010 0123     		movs	r3, #1
+ 613 0012 00E0     		b	.L41
+ 614              	.L40:
+  95:Core/Src/init.c ****     }
+  96:Core/Src/init.c ****     return 0;
+ 615              		.loc 1 96 12
+ 616 0014 0023     		movs	r3, #0
+ 617              	.L41:
+  97:Core/Src/init.c **** }
+ 618              		.loc 1 97 1
+ 619 0016 1846     		mov	r0, r3
+ 620 0018 BD46     		mov	sp, r7
+ 621              	.LCFI32:
+ 622              		.cfi_def_cfa_register 13
+ 623              		@ sp needed
+ 624 001a 5DF8047B 		ldr	r7, [sp], #4
+ 625              	.LCFI33:
+ 626              		.cfi_restore 7
+ 627              		.cfi_def_cfa_offset 0
+ 628 001e 7047     		bx	lr
+ 629              	.L43:
+ 630              		.align	2
+ 631              	.L42:
+ 632 0020 00000240 		.word	1073872896
+ 633              		.cfi_endproc
+ 634              	.LFE137:
+ 636              		.section	.text.delay_ms,"ax",%progbits
+ 637              		.align	1
+ 638              		.global	delay_ms
+ 639              		.syntax unified
+ 640              		.thumb
+ 641              		.thumb_func
+ 643              	delay_ms:
+ 644              	.LFB138:
+  98:Core/Src/init.c **** 
+  99:Core/Src/init.c **** void delay_ms(uint32_t ms) {
+ 645              		.loc 1 99 28
+ 646              		.cfi_startproc
+ 647              		@ args = 0, pretend = 0, frame = 16
+ 648              		@ frame_needed = 1, uses_anonymous_args = 0
+ 649              		@ link register save eliminated.
+ 650 0000 80B4     		push	{r7}
+ 651              	.LCFI34:
+ 652              		.cfi_def_cfa_offset 4
+ 653              		.cfi_offset 7, -4
+ 654 0002 85B0     		sub	sp, sp, #20
+ 655              	.LCFI35:
+ 656              		.cfi_def_cfa_offset 24
+ 657 0004 00AF     		add	r7, sp, #0
+ 658              	.LCFI36:
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 14
+
+
+ 659              		.cfi_def_cfa_register 7
+ 660 0006 7860     		str	r0, [r7, #4]
+ 100:Core/Src/init.c ****     uint32_t count = 0;
+ 661              		.loc 1 100 14
+ 662 0008 0023     		movs	r3, #0
+ 663 000a FB60     		str	r3, [r7, #12]
+ 664              	.LBB2:
+ 101:Core/Src/init.c ****     for (uint32_t i = 0; i < ms; i++) {
+ 665              		.loc 1 101 19
+ 666 000c 0023     		movs	r3, #0
+ 667 000e BB60     		str	r3, [r7, #8]
+ 668              		.loc 1 101 5
+ 669 0010 0AE0     		b	.L45
+ 670              	.L47:
+ 102:Core/Src/init.c ****         while(count < 18000){
+ 103:Core/Src/init.c ****             count++;
+ 671              		.loc 1 103 18
+ 672 0012 FB68     		ldr	r3, [r7, #12]
+ 673 0014 0133     		adds	r3, r3, #1
+ 674 0016 FB60     		str	r3, [r7, #12]
+ 675              	.L46:
+ 102:Core/Src/init.c ****         while(count < 18000){
+ 676              		.loc 1 102 21
+ 677 0018 FB68     		ldr	r3, [r7, #12]
+ 678 001a 44F24F62 		movw	r2, #17999
+ 679 001e 9342     		cmp	r3, r2
+ 680 0020 F7D9     		bls	.L47
+ 101:Core/Src/init.c ****     for (uint32_t i = 0; i < ms; i++) {
+ 681              		.loc 1 101 35 discriminator 2
+ 682 0022 BB68     		ldr	r3, [r7, #8]
+ 683 0024 0133     		adds	r3, r3, #1
+ 684 0026 BB60     		str	r3, [r7, #8]
+ 685              	.L45:
+ 101:Core/Src/init.c ****     for (uint32_t i = 0; i < ms; i++) {
+ 686              		.loc 1 101 28 discriminator 1
+ 687 0028 BA68     		ldr	r2, [r7, #8]
+ 688 002a 7B68     		ldr	r3, [r7, #4]
+ 689 002c 9A42     		cmp	r2, r3
+ 690 002e F3D3     		bcc	.L46
+ 691              	.LBE2:
+ 104:Core/Src/init.c ****         }
+ 105:Core/Src/init.c ****     }
+ 106:Core/Src/init.c **** }
+ 692              		.loc 1 106 1
+ 693 0030 00BF     		nop
+ 694 0032 00BF     		nop
+ 695 0034 1437     		adds	r7, r7, #20
+ 696              	.LCFI37:
+ 697              		.cfi_def_cfa_offset 4
+ 698 0036 BD46     		mov	sp, r7
+ 699              	.LCFI38:
+ 700              		.cfi_def_cfa_register 13
+ 701              		@ sp needed
+ 702 0038 5DF8047B 		ldr	r7, [sp], #4
+ 703              	.LCFI39:
+ 704              		.cfi_restore 7
+ 705              		.cfi_def_cfa_offset 0
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 15
+
+
+ 706 003c 7047     		bx	lr
+ 707              		.cfi_endproc
+ 708              	.LFE138:
+ 710              		.section	.text.do_with_CMSIS,"ax",%progbits
+ 711              		.align	1
+ 712              		.global	do_with_CMSIS
+ 713              		.syntax unified
+ 714              		.thumb
+ 715              		.thumb_func
+ 717              	do_with_CMSIS:
+ 718              	.LFB139:
+ 107:Core/Src/init.c **** 
+ 108:Core/Src/init.c **** void do_with_CMSIS(void){
+ 719              		.loc 1 108 25
+ 720              		.cfi_startproc
+ 721              		@ args = 0, pretend = 0, frame = 16
+ 722              		@ frame_needed = 1, uses_anonymous_args = 0
+ 723 0000 80B5     		push	{r7, lr}
+ 724              	.LCFI40:
+ 725              		.cfi_def_cfa_offset 8
+ 726              		.cfi_offset 7, -8
+ 727              		.cfi_offset 14, -4
+ 728 0002 84B0     		sub	sp, sp, #16
+ 729              	.LCFI41:
+ 730              		.cfi_def_cfa_offset 24
+ 731 0004 00AF     		add	r7, sp, #0
+ 732              	.LCFI42:
+ 733              		.cfi_def_cfa_register 7
+ 109:Core/Src/init.c ****     uint8_t led_a_on = 0;
+ 734              		.loc 1 109 13
+ 735 0006 0023     		movs	r3, #0
+ 736 0008 FB73     		strb	r3, [r7, #15]
+ 110:Core/Src/init.c ****     uint8_t led_b_on = 0;
+ 737              		.loc 1 110 13
+ 738 000a 0023     		movs	r3, #0
+ 739 000c BB73     		strb	r3, [r7, #14]
+ 111:Core/Src/init.c ****     uint8_t led_c_on = 0;
+ 740              		.loc 1 111 13
+ 741 000e 0023     		movs	r3, #0
+ 742 0010 7B73     		strb	r3, [r7, #13]
+ 112:Core/Src/init.c **** 
+ 113:Core/Src/init.c ****     uint8_t saved_a = 0;    //состояние PA6
+ 743              		.loc 1 113 13
+ 744 0012 0023     		movs	r3, #0
+ 745 0014 3B73     		strb	r3, [r7, #12]
+ 114:Core/Src/init.c ****     uint8_t saved_b = 0;    //состояние PA7
+ 746              		.loc 1 114 13
+ 747 0016 0023     		movs	r3, #0
+ 748 0018 FB72     		strb	r3, [r7, #11]
+ 115:Core/Src/init.c ****     uint8_t saved_c = 0;    //состояние PB0
+ 749              		.loc 1 115 13
+ 750 001a 0023     		movs	r3, #0
+ 751 001c BB72     		strb	r3, [r7, #10]
+ 116:Core/Src/init.c **** 
+ 117:Core/Src/init.c ****     uint8_t btn2_pressed = 0;   // 0 - поочередное включение, 1 - PA4 гори�
+ 752              		.loc 1 117 13
+ 753 001e 0023     		movs	r3, #0
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 16
+
+
+ 754 0020 7B72     		strb	r3, [r7, #9]
+ 118:Core/Src/init.c ****     uint8_t btn1_released = 1;  //первая кнопка отпущена
+ 755              		.loc 1 118 13
+ 756 0022 0123     		movs	r3, #1
+ 757 0024 3B72     		strb	r3, [r7, #8]
+ 119:Core/Src/init.c ****     apply_leds_CMSIS(led_a_on, led_b_on, led_c_on);
+ 758              		.loc 1 119 5
+ 759 0026 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 760 0028 B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 761 002a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 762 002c 1846     		mov	r0, r3
+ 763 002e FFF7FEFF 		bl	apply_leds_CMSIS
+ 764              	.L62:
+ 765              	.LBB3:
+ 120:Core/Src/init.c **** 
+ 121:Core/Src/init.c ****     while (1) {
+ 122:Core/Src/init.c ****         //вторая кнопка: первое нажатие
+ 123:Core/Src/init.c ****         uint8_t btn2_now = read_btn2_CMSIS();
+ 766              		.loc 1 123 28
+ 767 0032 FFF7FEFF 		bl	read_btn2_CMSIS
+ 768 0036 0346     		mov	r3, r0
+ 769 0038 FB71     		strb	r3, [r7, #7]
+ 124:Core/Src/init.c ****         if (btn2_now == 1 && btn2_pressed == 0) {
+ 770              		.loc 1 124 12
+ 771 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 772 003c 012B     		cmp	r3, #1
+ 773 003e 2AD1     		bne	.L50
+ 774              		.loc 1 124 27 discriminator 1
+ 775 0040 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 776 0042 002B     		cmp	r3, #0
+ 777 0044 27D1     		bne	.L50
+ 125:Core/Src/init.c ****             delay_ms(20);
+ 778              		.loc 1 125 13
+ 779 0046 1420     		movs	r0, #20
+ 780 0048 FFF7FEFF 		bl	delay_ms
+ 126:Core/Src/init.c **** 
+ 127:Core/Src/init.c ****             if (read_btn2_CMSIS() == 1) {
+ 781              		.loc 1 127 17
+ 782 004c FFF7FEFF 		bl	read_btn2_CMSIS
+ 783 0050 0346     		mov	r3, r0
+ 784              		.loc 1 127 16 discriminator 1
+ 785 0052 012B     		cmp	r3, #1
+ 786 0054 1FD1     		bne	.L50
+ 128:Core/Src/init.c ****                 btn2_pressed = 1;
+ 787              		.loc 1 128 30
+ 788 0056 0123     		movs	r3, #1
+ 789 0058 7B72     		strb	r3, [r7, #9]
+ 129:Core/Src/init.c ****                 //запись состояния трёх светодиодов
+ 130:Core/Src/init.c ****                 saved_a = led_a_on;
+ 790              		.loc 1 130 25
+ 791 005a FB7B     		ldrb	r3, [r7, #15]
+ 792 005c 3B73     		strb	r3, [r7, #12]
+ 131:Core/Src/init.c ****                 saved_b = led_b_on;
+ 793              		.loc 1 131 25
+ 794 005e BB7B     		ldrb	r3, [r7, #14]
+ 795 0060 FB72     		strb	r3, [r7, #11]
+ 132:Core/Src/init.c ****                 saved_c = led_c_on;
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 17
+
+
+ 796              		.loc 1 132 25
+ 797 0062 7B7B     		ldrb	r3, [r7, #13]
+ 798 0064 BB72     		strb	r3, [r7, #10]
+ 133:Core/Src/init.c ****                 //выключаем
+ 134:Core/Src/init.c ****                 led_a_on = 0;
+ 799              		.loc 1 134 26
+ 800 0066 0023     		movs	r3, #0
+ 801 0068 FB73     		strb	r3, [r7, #15]
+ 135:Core/Src/init.c ****                 led_b_on = 0;
+ 802              		.loc 1 135 26
+ 803 006a 0023     		movs	r3, #0
+ 804 006c BB73     		strb	r3, [r7, #14]
+ 136:Core/Src/init.c ****                 led_c_on = 0;
+ 805              		.loc 1 136 26
+ 806 006e 0023     		movs	r3, #0
+ 807 0070 7B73     		strb	r3, [r7, #13]
+ 137:Core/Src/init.c ****                 apply_leds_CMSIS(led_a_on, led_b_on, led_c_on);
+ 808              		.loc 1 137 17
+ 809 0072 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 810 0074 B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 811 0076 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 812 0078 1846     		mov	r0, r3
+ 813 007a FFF7FEFF 		bl	apply_leds_CMSIS
+ 138:Core/Src/init.c **** 
+ 139:Core/Src/init.c **** 
+ 140:Core/Src/init.c ****                 //включаем первый светодиод (PA4 = выход на 3.3 В)
+ 141:Core/Src/init.c ****                 set_led_CMSIS(1);
+ 814              		.loc 1 141 17
+ 815 007e 0120     		movs	r0, #1
+ 816 0080 FFF7FEFF 		bl	set_led_CMSIS
+ 142:Core/Src/init.c **** 
+ 143:Core/Src/init.c ****                 //ожидание отпускания
+ 144:Core/Src/init.c ****                 while (read_btn2_CMSIS() == 1) {
+ 817              		.loc 1 144 23
+ 818 0084 02E0     		b	.L51
+ 819              	.L52:
+ 145:Core/Src/init.c ****                     delay_ms(1);
+ 820              		.loc 1 145 21
+ 821 0086 0120     		movs	r0, #1
+ 822 0088 FFF7FEFF 		bl	delay_ms
+ 823              	.L51:
+ 144:Core/Src/init.c ****                     delay_ms(1);
+ 824              		.loc 1 144 24
+ 825 008c FFF7FEFF 		bl	read_btn2_CMSIS
+ 826 0090 0346     		mov	r3, r0
+ 144:Core/Src/init.c ****                     delay_ms(1);
+ 827              		.loc 1 144 42 discriminator 1
+ 828 0092 012B     		cmp	r3, #1
+ 829 0094 F7D0     		beq	.L52
+ 830              	.L50:
+ 146:Core/Src/init.c ****                 }
+ 147:Core/Src/init.c ****             }
+ 148:Core/Src/init.c ****         }
+ 149:Core/Src/init.c ****         //второе нажатие
+ 150:Core/Src/init.c ****         if (btn2_now == 1 && btn2_pressed == 1) {
+ 831              		.loc 1 150 12
+ 832 0096 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 18
+
+
+ 833 0098 012B     		cmp	r3, #1
+ 834 009a 24D1     		bne	.L53
+ 835              		.loc 1 150 27 discriminator 1
+ 836 009c 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 837 009e 012B     		cmp	r3, #1
+ 838 00a0 21D1     		bne	.L53
+ 151:Core/Src/init.c ****             delay_ms(20);
+ 839              		.loc 1 151 13
+ 840 00a2 1420     		movs	r0, #20
+ 841 00a4 FFF7FEFF 		bl	delay_ms
+ 152:Core/Src/init.c ****             if (read_btn2_CMSIS() == 1) {
+ 842              		.loc 1 152 17
+ 843 00a8 FFF7FEFF 		bl	read_btn2_CMSIS
+ 844 00ac 0346     		mov	r3, r0
+ 845              		.loc 1 152 16 discriminator 1
+ 846 00ae 012B     		cmp	r3, #1
+ 847 00b0 19D1     		bne	.L53
+ 153:Core/Src/init.c ****                 btn2_pressed = 0;
+ 848              		.loc 1 153 30
+ 849 00b2 0023     		movs	r3, #0
+ 850 00b4 7B72     		strb	r3, [r7, #9]
+ 154:Core/Src/init.c ****                 //выключаем первый светодиод (PA4 - вход, pull-up)
+ 155:Core/Src/init.c ****                 clear_led_CMSIS(1);
+ 851              		.loc 1 155 17
+ 852 00b6 0120     		movs	r0, #1
+ 853 00b8 FFF7FEFF 		bl	clear_led_CMSIS
+ 156:Core/Src/init.c **** 
+ 157:Core/Src/init.c ****                 //возврат состояний
+ 158:Core/Src/init.c ****                 led_a_on = saved_a;
+ 854              		.loc 1 158 26
+ 855 00bc 3B7B     		ldrb	r3, [r7, #12]
+ 856 00be FB73     		strb	r3, [r7, #15]
+ 159:Core/Src/init.c ****                 led_b_on = saved_b;
+ 857              		.loc 1 159 26
+ 858 00c0 FB7A     		ldrb	r3, [r7, #11]
+ 859 00c2 BB73     		strb	r3, [r7, #14]
+ 160:Core/Src/init.c ****                 led_c_on = saved_c;
+ 860              		.loc 1 160 26
+ 861 00c4 BB7A     		ldrb	r3, [r7, #10]
+ 862 00c6 7B73     		strb	r3, [r7, #13]
+ 161:Core/Src/init.c ****                 apply_leds_CMSIS(led_a_on, led_b_on, led_c_on);
+ 863              		.loc 1 161 17
+ 864 00c8 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 865 00ca B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 866 00cc FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 867 00ce 1846     		mov	r0, r3
+ 868 00d0 FFF7FEFF 		bl	apply_leds_CMSIS
+ 162:Core/Src/init.c **** 
+ 163:Core/Src/init.c **** 
+ 164:Core/Src/init.c ****                 //ожидание отпускания
+ 165:Core/Src/init.c ****                 while (read_btn2_CMSIS() == 1) {
+ 869              		.loc 1 165 23
+ 870 00d4 02E0     		b	.L54
+ 871              	.L55:
+ 166:Core/Src/init.c ****                     delay_ms(1);
+ 872              		.loc 1 166 21
+ 873 00d6 0120     		movs	r0, #1
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 19
+
+
+ 874 00d8 FFF7FEFF 		bl	delay_ms
+ 875              	.L54:
+ 165:Core/Src/init.c ****                     delay_ms(1);
+ 876              		.loc 1 165 24
+ 877 00dc FFF7FEFF 		bl	read_btn2_CMSIS
+ 878 00e0 0346     		mov	r3, r0
+ 165:Core/Src/init.c ****                     delay_ms(1);
+ 879              		.loc 1 165 42 discriminator 1
+ 880 00e2 012B     		cmp	r3, #1
+ 881 00e4 F7D0     		beq	.L55
+ 882              	.L53:
+ 167:Core/Src/init.c ****                 }
+ 168:Core/Src/init.c ****             }
+ 169:Core/Src/init.c ****         }
+ 170:Core/Src/init.c ****         //первая кнопка
+ 171:Core/Src/init.c ****         if (btn2_pressed == 0) {
+ 883              		.loc 1 171 12
+ 884 00e6 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 885 00e8 002B     		cmp	r3, #0
+ 886 00ea A2D1     		bne	.L62
+ 887              	.LBB4:
+ 172:Core/Src/init.c ****             uint8_t btn1_now = read_btn1_CMSIS();
+ 888              		.loc 1 172 32
+ 889 00ec FFF7FEFF 		bl	read_btn1_CMSIS
+ 890 00f0 0346     		mov	r3, r0
+ 891 00f2 BB71     		strb	r3, [r7, #6]
+ 173:Core/Src/init.c ****             //ожидание отпускания
+ 174:Core/Src/init.c ****             if (btn1_now == 0) {
+ 892              		.loc 1 174 16
+ 893 00f4 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 894 00f6 002B     		cmp	r3, #0
+ 895 00f8 0CD1     		bne	.L57
+ 175:Core/Src/init.c ****                 if (btn1_released == 0) {
+ 896              		.loc 1 175 20
+ 897 00fa 3B7A     		ldrb	r3, [r7, #8]	@ zero_extendqisi2
+ 898 00fc 002B     		cmp	r3, #0
+ 899 00fe 09D1     		bne	.L57
+ 176:Core/Src/init.c ****                     delay_ms(20);
+ 900              		.loc 1 176 21
+ 901 0100 1420     		movs	r0, #20
+ 902 0102 FFF7FEFF 		bl	delay_ms
+ 177:Core/Src/init.c ****                     if (read_btn1_CMSIS() == 0) {
+ 903              		.loc 1 177 25
+ 904 0106 FFF7FEFF 		bl	read_btn1_CMSIS
+ 905 010a 0346     		mov	r3, r0
+ 906              		.loc 1 177 24 discriminator 1
+ 907 010c 002B     		cmp	r3, #0
+ 908 010e 01D1     		bne	.L57
+ 178:Core/Src/init.c ****                         btn1_released = 1;
+ 909              		.loc 1 178 39
+ 910 0110 0123     		movs	r3, #1
+ 911 0112 3B72     		strb	r3, [r7, #8]
+ 912              	.L57:
+ 179:Core/Src/init.c ****                     }
+ 180:Core/Src/init.c ****                 }
+ 181:Core/Src/init.c ****             }
+ 182:Core/Src/init.c ****             //считывание нажатия
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 20
+
+
+ 183:Core/Src/init.c ****             if (btn1_now == 1 && btn1_released == 1) {
+ 913              		.loc 1 183 16
+ 914 0114 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 915 0116 012B     		cmp	r3, #1
+ 916 0118 8BD1     		bne	.L62
+ 917              		.loc 1 183 31 discriminator 1
+ 918 011a 3B7A     		ldrb	r3, [r7, #8]	@ zero_extendqisi2
+ 919 011c 012B     		cmp	r3, #1
+ 920 011e 88D1     		bne	.L62
+ 184:Core/Src/init.c ****                 delay_ms(20);
+ 921              		.loc 1 184 17
+ 922 0120 1420     		movs	r0, #20
+ 923 0122 FFF7FEFF 		bl	delay_ms
+ 185:Core/Src/init.c **** 
+ 186:Core/Src/init.c ****                 if (read_btn1_CMSIS() == 1) {
+ 924              		.loc 1 186 21
+ 925 0126 FFF7FEFF 		bl	read_btn1_CMSIS
+ 926 012a 0346     		mov	r3, r0
+ 927              		.loc 1 186 20 discriminator 1
+ 928 012c 012B     		cmp	r3, #1
+ 929 012e 80D1     		bne	.L62
+ 187:Core/Src/init.c ****                     btn1_released = 0;
+ 930              		.loc 1 187 35
+ 931 0130 0023     		movs	r3, #0
+ 932 0132 3B72     		strb	r3, [r7, #8]
+ 188:Core/Src/init.c **** 
+ 189:Core/Src/init.c ****                     //поочерное включение
+ 190:Core/Src/init.c ****                     if (!led_a_on && !led_b_on && !led_c_on) {
+ 933              		.loc 1 190 24
+ 934 0134 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 935 0136 002B     		cmp	r3, #0
+ 936 0138 08D1     		bne	.L58
+ 937              		.loc 1 190 35 discriminator 1
+ 938 013a BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 939 013c 002B     		cmp	r3, #0
+ 940 013e 05D1     		bne	.L58
+ 941              		.loc 1 190 48 discriminator 2
+ 942 0140 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 943 0142 002B     		cmp	r3, #0
+ 944 0144 02D1     		bne	.L58
+ 191:Core/Src/init.c ****                         led_a_on = 1;
+ 945              		.loc 1 191 34
+ 946 0146 0123     		movs	r3, #1
+ 947 0148 FB73     		strb	r3, [r7, #15]
+ 948 014a 26E0     		b	.L59
+ 949              	.L58:
+ 192:Core/Src/init.c ****                     } else if (led_a_on && !led_b_on && !led_c_on) {
+ 950              		.loc 1 192 31
+ 951 014c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 952 014e 002B     		cmp	r3, #0
+ 953 0150 08D0     		beq	.L60
+ 954              		.loc 1 192 41 discriminator 1
+ 955 0152 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 956 0154 002B     		cmp	r3, #0
+ 957 0156 05D1     		bne	.L60
+ 958              		.loc 1 192 54 discriminator 2
+ 959 0158 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 21
+
+
+ 960 015a 002B     		cmp	r3, #0
+ 961 015c 02D1     		bne	.L60
+ 193:Core/Src/init.c ****                         led_b_on = 1;
+ 962              		.loc 1 193 34
+ 963 015e 0123     		movs	r3, #1
+ 964 0160 BB73     		strb	r3, [r7, #14]
+ 965 0162 1AE0     		b	.L59
+ 966              	.L60:
+ 194:Core/Src/init.c ****                     } else if (led_a_on && led_b_on && !led_c_on) {
+ 967              		.loc 1 194 31
+ 968 0164 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 969 0166 002B     		cmp	r3, #0
+ 970 0168 08D0     		beq	.L61
+ 971              		.loc 1 194 41 discriminator 1
+ 972 016a BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 973 016c 002B     		cmp	r3, #0
+ 974 016e 05D0     		beq	.L61
+ 975              		.loc 1 194 53 discriminator 2
+ 976 0170 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 977 0172 002B     		cmp	r3, #0
+ 978 0174 02D1     		bne	.L61
+ 195:Core/Src/init.c ****                         led_c_on = 1;
+ 979              		.loc 1 195 34
+ 980 0176 0123     		movs	r3, #1
+ 981 0178 7B73     		strb	r3, [r7, #13]
+ 982 017a 0EE0     		b	.L59
+ 983              	.L61:
+ 196:Core/Src/init.c ****                     } else if (led_a_on && led_b_on && led_c_on) {
+ 984              		.loc 1 196 31
+ 985 017c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 986 017e 002B     		cmp	r3, #0
+ 987 0180 0BD0     		beq	.L59
+ 988              		.loc 1 196 41 discriminator 1
+ 989 0182 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 990 0184 002B     		cmp	r3, #0
+ 991 0186 08D0     		beq	.L59
+ 992              		.loc 1 196 53 discriminator 2
+ 993 0188 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 994 018a 002B     		cmp	r3, #0
+ 995 018c 05D0     		beq	.L59
+ 197:Core/Src/init.c ****                         led_a_on = 0;
+ 996              		.loc 1 197 34
+ 997 018e 0023     		movs	r3, #0
+ 998 0190 FB73     		strb	r3, [r7, #15]
+ 198:Core/Src/init.c ****                         led_b_on = 0;
+ 999              		.loc 1 198 34
+ 1000 0192 0023     		movs	r3, #0
+ 1001 0194 BB73     		strb	r3, [r7, #14]
+ 199:Core/Src/init.c ****                         led_c_on = 0;
+ 1002              		.loc 1 199 34
+ 1003 0196 0023     		movs	r3, #0
+ 1004 0198 7B73     		strb	r3, [r7, #13]
+ 1005              	.L59:
+ 200:Core/Src/init.c ****                     }
+ 201:Core/Src/init.c ****                     apply_leds_CMSIS(led_a_on, led_b_on, led_c_on);
+ 1006              		.loc 1 201 21
+ 1007 019a 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 22
+
+
+ 1008 019c B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 1009 019e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1010 01a0 1846     		mov	r0, r3
+ 1011 01a2 FFF7FEFF 		bl	apply_leds_CMSIS
+ 1012              	.LBE4:
+ 1013              	.LBE3:
+ 121:Core/Src/init.c ****         //вторая кнопка: первое нажатие
+ 1014              		.loc 1 121 15
+ 1015 01a6 44E7     		b	.L62
+ 1016              		.cfi_endproc
+ 1017              	.LFE139:
+ 1019              		.section	.text.GPIO_Init_without_CMSIS_and_macros,"ax",%progbits
+ 1020              		.align	1
+ 1021              		.global	GPIO_Init_without_CMSIS_and_macros
+ 1022              		.syntax unified
+ 1023              		.thumb
+ 1024              		.thumb_func
+ 1026              	GPIO_Init_without_CMSIS_and_macros:
+ 1027              	.LFB140:
+ 202:Core/Src/init.c **** 
+ 203:Core/Src/init.c ****                 }
+ 204:Core/Src/init.c ****             }
+ 205:Core/Src/init.c ****         }
+ 206:Core/Src/init.c ****     }
+ 207:Core/Src/init.c **** }
+ 208:Core/Src/init.c **** 
+ 209:Core/Src/init.c **** 
+ 210:Core/Src/init.c **** 
+ 211:Core/Src/init.c **** 
+ 212:Core/Src/init.c **** //Без CMSIS и макросов
+ 213:Core/Src/init.c **** 
+ 214:Core/Src/init.c **** void GPIO_Init_without_CMSIS_and_macros(void) {
+ 1028              		.loc 1 214 47
+ 1029              		.cfi_startproc
+ 1030              		@ args = 0, pretend = 0, frame = 0
+ 1031              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1032 0000 80B5     		push	{r7, lr}
+ 1033              	.LCFI43:
+ 1034              		.cfi_def_cfa_offset 8
+ 1035              		.cfi_offset 7, -8
+ 1036              		.cfi_offset 14, -4
+ 1037 0002 00AF     		add	r7, sp, #0
+ 1038              	.LCFI44:
+ 1039              		.cfi_def_cfa_register 7
+ 215:Core/Src/init.c ****     //тактирование GPIOA (бит 0) и GPIOB (бит 1)
+ 216:Core/Src/init.c ****     RCC_AHB1ENR |= (1u << 0);
+ 1040              		.loc 1 216 5
+ 1041 0004 254B     		ldr	r3, .L64
+ 1042 0006 1B68     		ldr	r3, [r3]
+ 1043 0008 244A     		ldr	r2, .L64
+ 1044              		.loc 1 216 17
+ 1045 000a 43F00103 		orr	r3, r3, #1
+ 1046 000e 1360     		str	r3, [r2]
+ 217:Core/Src/init.c ****     RCC_AHB1ENR |= (1u << 1);
+ 1047              		.loc 1 217 5
+ 1048 0010 224B     		ldr	r3, .L64
+ 1049 0012 1B68     		ldr	r3, [r3]
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 23
+
+
+ 1050 0014 214A     		ldr	r2, .L64
+ 1051              		.loc 1 217 17
+ 1052 0016 43F00203 		orr	r3, r3, #2
+ 1053 001a 1360     		str	r3, [r2]
+ 218:Core/Src/init.c **** 
+ 219:Core/Src/init.c ****     //PA6, PA7 - выход (01 в MODER[13:12] и [15:14])
+ 220:Core/Src/init.c ****     GPIOA_MODER &= ~((3u << 12) | (3u << 14));
+ 1054              		.loc 1 220 5
+ 1055 001c 204B     		ldr	r3, .L64+4
+ 1056 001e 1B68     		ldr	r3, [r3]
+ 1057 0020 1F4A     		ldr	r2, .L64+4
+ 1058              		.loc 1 220 17
+ 1059 0022 23F47043 		bic	r3, r3, #61440
+ 1060 0026 1360     		str	r3, [r2]
+ 221:Core/Src/init.c ****     GPIOA_MODER |=  ((1u << 12) | (1u << 14));
+ 1061              		.loc 1 221 5
+ 1062 0028 1D4B     		ldr	r3, .L64+4
+ 1063 002a 1B68     		ldr	r3, [r3]
+ 1064 002c 1C4A     		ldr	r2, .L64+4
+ 1065              		.loc 1 221 17
+ 1066 002e 43F4A043 		orr	r3, r3, #20480
+ 1067 0032 1360     		str	r3, [r2]
+ 222:Core/Src/init.c **** 
+ 223:Core/Src/init.c ****     //PB0 - выход
+ 224:Core/Src/init.c ****     GPIOB_MODER &= ~(3u << 0);
+ 1068              		.loc 1 224 5
+ 1069 0034 1B4B     		ldr	r3, .L64+8
+ 1070 0036 1B68     		ldr	r3, [r3]
+ 1071 0038 1A4A     		ldr	r2, .L64+8
+ 1072              		.loc 1 224 17
+ 1073 003a 23F00303 		bic	r3, r3, #3
+ 1074 003e 1360     		str	r3, [r2]
+ 225:Core/Src/init.c ****     GPIOB_MODER |=  (1u << 0);
+ 1075              		.loc 1 225 5
+ 1076 0040 184B     		ldr	r3, .L64+8
+ 1077 0042 1B68     		ldr	r3, [r3]
+ 1078 0044 174A     		ldr	r2, .L64+8
+ 1079              		.loc 1 225 17
+ 1080 0046 43F00103 		orr	r3, r3, #1
+ 1081 004a 1360     		str	r3, [r2]
+ 226:Core/Src/init.c **** 
+ 227:Core/Src/init.c ****     //PA4 - вход (00) + pull-up (01 в PUPDR[9:8])
+ 228:Core/Src/init.c ****     GPIOA_MODER &= ~(3u << 8);
+ 1082              		.loc 1 228 5
+ 1083 004c 144B     		ldr	r3, .L64+4
+ 1084 004e 1B68     		ldr	r3, [r3]
+ 1085 0050 134A     		ldr	r2, .L64+4
+ 1086              		.loc 1 228 17
+ 1087 0052 23F44073 		bic	r3, r3, #768
+ 1088 0056 1360     		str	r3, [r2]
+ 229:Core/Src/init.c ****     GPIOA_PUPDR &= ~(3u << 8);
+ 1089              		.loc 1 229 5
+ 1090 0058 134B     		ldr	r3, .L64+12
+ 1091 005a 1B68     		ldr	r3, [r3]
+ 1092 005c 124A     		ldr	r2, .L64+12
+ 1093              		.loc 1 229 17
+ 1094 005e 23F44073 		bic	r3, r3, #768
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 24
+
+
+ 1095 0062 1360     		str	r3, [r2]
+ 230:Core/Src/init.c ****     GPIOA_PUPDR |=  (1u << 8);
+ 1096              		.loc 1 230 5
+ 1097 0064 104B     		ldr	r3, .L64+12
+ 1098 0066 1B68     		ldr	r3, [r3]
+ 1099 0068 0F4A     		ldr	r2, .L64+12
+ 1100              		.loc 1 230 17
+ 1101 006a 43F48073 		orr	r3, r3, #256
+ 1102 006e 1360     		str	r3, [r2]
+ 231:Core/Src/init.c **** 
+ 232:Core/Src/init.c ****     //PA0 - вход + pull-up
+ 233:Core/Src/init.c ****     GPIOA_MODER &= ~(3u << 0);
+ 1103              		.loc 1 233 5
+ 1104 0070 0B4B     		ldr	r3, .L64+4
+ 1105 0072 1B68     		ldr	r3, [r3]
+ 1106 0074 0A4A     		ldr	r2, .L64+4
+ 1107              		.loc 1 233 17
+ 1108 0076 23F00303 		bic	r3, r3, #3
+ 1109 007a 1360     		str	r3, [r2]
+ 234:Core/Src/init.c ****     GPIOA_PUPDR &= ~(3u << 0);
+ 1110              		.loc 1 234 5
+ 1111 007c 0A4B     		ldr	r3, .L64+12
+ 1112 007e 1B68     		ldr	r3, [r3]
+ 1113 0080 094A     		ldr	r2, .L64+12
+ 1114              		.loc 1 234 17
+ 1115 0082 23F00303 		bic	r3, r3, #3
+ 1116 0086 1360     		str	r3, [r2]
+ 235:Core/Src/init.c ****     GPIOA_PUPDR |=  (1u << 0);
+ 1117              		.loc 1 235 5
+ 1118 0088 074B     		ldr	r3, .L64+12
+ 1119 008a 1B68     		ldr	r3, [r3]
+ 1120 008c 064A     		ldr	r2, .L64+12
+ 1121              		.loc 1 235 17
+ 1122 008e 43F00103 		orr	r3, r3, #1
+ 1123 0092 1360     		str	r3, [r2]
+ 236:Core/Src/init.c **** 
+ 237:Core/Src/init.c ****     clear_all_leds_without();
+ 1124              		.loc 1 237 5
+ 1125 0094 FFF7FEFF 		bl	clear_all_leds_without
+ 238:Core/Src/init.c **** }
+ 1126              		.loc 1 238 1
+ 1127 0098 00BF     		nop
+ 1128 009a 80BD     		pop	{r7, pc}
+ 1129              	.L65:
+ 1130              		.align	2
+ 1131              	.L64:
+ 1132 009c 30380240 		.word	1073887280
+ 1133 00a0 00000240 		.word	1073872896
+ 1134 00a4 00040240 		.word	1073873920
+ 1135 00a8 0C000240 		.word	1073872908
+ 1136              		.cfi_endproc
+ 1137              	.LFE140:
+ 1139              		.section	.text.set_led_without,"ax",%progbits
+ 1140              		.align	1
+ 1141              		.global	set_led_without
+ 1142              		.syntax unified
+ 1143              		.thumb
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 25
+
+
+ 1144              		.thumb_func
+ 1146              	set_led_without:
+ 1147              	.LFB141:
+ 239:Core/Src/init.c **** 
+ 240:Core/Src/init.c **** void set_led_without(uint8_t led_num) {
+ 1148              		.loc 1 240 39
+ 1149              		.cfi_startproc
+ 1150              		@ args = 0, pretend = 0, frame = 8
+ 1151              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1152              		@ link register save eliminated.
+ 1153 0000 80B4     		push	{r7}
+ 1154              	.LCFI45:
+ 1155              		.cfi_def_cfa_offset 4
+ 1156              		.cfi_offset 7, -4
+ 1157 0002 83B0     		sub	sp, sp, #12
+ 1158              	.LCFI46:
+ 1159              		.cfi_def_cfa_offset 16
+ 1160 0004 00AF     		add	r7, sp, #0
+ 1161              	.LCFI47:
+ 1162              		.cfi_def_cfa_register 7
+ 1163 0006 0346     		mov	r3, r0
+ 1164 0008 FB71     		strb	r3, [r7, #7]
+ 241:Core/Src/init.c ****     if (led_num == 1) {
+ 1165              		.loc 1 241 8
+ 1166 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1167 000c 012B     		cmp	r3, #1
+ 1168 000e 0ED1     		bne	.L67
+ 242:Core/Src/init.c ****         GPIOA_MODER &= ~(3u << 8);
+ 1169              		.loc 1 242 9
+ 1170 0010 134B     		ldr	r3, .L72
+ 1171 0012 1B68     		ldr	r3, [r3]
+ 1172 0014 124A     		ldr	r2, .L72
+ 1173              		.loc 1 242 21
+ 1174 0016 23F44073 		bic	r3, r3, #768
+ 1175 001a 1360     		str	r3, [r2]
+ 243:Core/Src/init.c ****         GPIOA_MODER |=  (1u << 8);
+ 1176              		.loc 1 243 9
+ 1177 001c 104B     		ldr	r3, .L72
+ 1178 001e 1B68     		ldr	r3, [r3]
+ 1179 0020 0F4A     		ldr	r2, .L72
+ 1180              		.loc 1 243 21
+ 1181 0022 43F48073 		orr	r3, r3, #256
+ 1182 0026 1360     		str	r3, [r2]
+ 244:Core/Src/init.c ****         GPIOA_BSRR = (1u << 4);
+ 1183              		.loc 1 244 9
+ 1184 0028 0E4B     		ldr	r3, .L72+4
+ 1185              		.loc 1 244 20
+ 1186 002a 1022     		movs	r2, #16
+ 1187 002c 1A60     		str	r2, [r3]
+ 1188              	.L67:
+ 245:Core/Src/init.c ****     }
+ 246:Core/Src/init.c ****     if (led_num == 2) GPIOA_BSRR = (1u << 6);
+ 1189              		.loc 1 246 8
+ 1190 002e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1191 0030 022B     		cmp	r3, #2
+ 1192 0032 02D1     		bne	.L68
+ 1193              		.loc 1 246 23 discriminator 1
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 26
+
+
+ 1194 0034 0B4B     		ldr	r3, .L72+4
+ 1195              		.loc 1 246 34 discriminator 1
+ 1196 0036 4022     		movs	r2, #64
+ 1197 0038 1A60     		str	r2, [r3]
+ 1198              	.L68:
+ 247:Core/Src/init.c ****     if (led_num == 3) GPIOA_BSRR = (1u << 7);
+ 1199              		.loc 1 247 8
+ 1200 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1201 003c 032B     		cmp	r3, #3
+ 1202 003e 02D1     		bne	.L69
+ 1203              		.loc 1 247 23 discriminator 1
+ 1204 0040 084B     		ldr	r3, .L72+4
+ 1205              		.loc 1 247 34 discriminator 1
+ 1206 0042 8022     		movs	r2, #128
+ 1207 0044 1A60     		str	r2, [r3]
+ 1208              	.L69:
+ 248:Core/Src/init.c ****     if (led_num == 4) GPIOB_BSRR = (1u << 0);
+ 1209              		.loc 1 248 8
+ 1210 0046 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1211 0048 042B     		cmp	r3, #4
+ 1212 004a 02D1     		bne	.L71
+ 1213              		.loc 1 248 23 discriminator 1
+ 1214 004c 064B     		ldr	r3, .L72+8
+ 1215              		.loc 1 248 34 discriminator 1
+ 1216 004e 0122     		movs	r2, #1
+ 1217 0050 1A60     		str	r2, [r3]
+ 1218              	.L71:
+ 249:Core/Src/init.c **** }
+ 1219              		.loc 1 249 1
+ 1220 0052 00BF     		nop
+ 1221 0054 0C37     		adds	r7, r7, #12
+ 1222              	.LCFI48:
+ 1223              		.cfi_def_cfa_offset 4
+ 1224 0056 BD46     		mov	sp, r7
+ 1225              	.LCFI49:
+ 1226              		.cfi_def_cfa_register 13
+ 1227              		@ sp needed
+ 1228 0058 5DF8047B 		ldr	r7, [sp], #4
+ 1229              	.LCFI50:
+ 1230              		.cfi_restore 7
+ 1231              		.cfi_def_cfa_offset 0
+ 1232 005c 7047     		bx	lr
+ 1233              	.L73:
+ 1234 005e 00BF     		.align	2
+ 1235              	.L72:
+ 1236 0060 00000240 		.word	1073872896
+ 1237 0064 18000240 		.word	1073872920
+ 1238 0068 18040240 		.word	1073873944
+ 1239              		.cfi_endproc
+ 1240              	.LFE141:
+ 1242              		.section	.text.clear_led_without,"ax",%progbits
+ 1243              		.align	1
+ 1244              		.global	clear_led_without
+ 1245              		.syntax unified
+ 1246              		.thumb
+ 1247              		.thumb_func
+ 1249              	clear_led_without:
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 27
+
+
+ 1250              	.LFB142:
+ 250:Core/Src/init.c **** 
+ 251:Core/Src/init.c **** void clear_led_without(uint8_t led_num) {
+ 1251              		.loc 1 251 41
+ 1252              		.cfi_startproc
+ 1253              		@ args = 0, pretend = 0, frame = 8
+ 1254              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1255              		@ link register save eliminated.
+ 1256 0000 80B4     		push	{r7}
+ 1257              	.LCFI51:
+ 1258              		.cfi_def_cfa_offset 4
+ 1259              		.cfi_offset 7, -4
+ 1260 0002 83B0     		sub	sp, sp, #12
+ 1261              	.LCFI52:
+ 1262              		.cfi_def_cfa_offset 16
+ 1263 0004 00AF     		add	r7, sp, #0
+ 1264              	.LCFI53:
+ 1265              		.cfi_def_cfa_register 7
+ 1266 0006 0346     		mov	r3, r0
+ 1267 0008 FB71     		strb	r3, [r7, #7]
+ 252:Core/Src/init.c ****     if (led_num == 1) {
+ 1268              		.loc 1 252 8
+ 1269 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1270 000c 012B     		cmp	r3, #1
+ 1271 000e 11D1     		bne	.L75
+ 253:Core/Src/init.c ****         GPIOA_MODER &= ~(3u << 8);
+ 1272              		.loc 1 253 9
+ 1273 0010 164B     		ldr	r3, .L80
+ 1274 0012 1B68     		ldr	r3, [r3]
+ 1275 0014 154A     		ldr	r2, .L80
+ 1276              		.loc 1 253 21
+ 1277 0016 23F44073 		bic	r3, r3, #768
+ 1278 001a 1360     		str	r3, [r2]
+ 254:Core/Src/init.c ****         GPIOA_PUPDR &= ~(3u << 8);
+ 1279              		.loc 1 254 9
+ 1280 001c 144B     		ldr	r3, .L80+4
+ 1281 001e 1B68     		ldr	r3, [r3]
+ 1282 0020 134A     		ldr	r2, .L80+4
+ 1283              		.loc 1 254 21
+ 1284 0022 23F44073 		bic	r3, r3, #768
+ 1285 0026 1360     		str	r3, [r2]
+ 255:Core/Src/init.c ****         GPIOA_PUPDR |=  (1u << 8);
+ 1286              		.loc 1 255 9
+ 1287 0028 114B     		ldr	r3, .L80+4
+ 1288 002a 1B68     		ldr	r3, [r3]
+ 1289 002c 104A     		ldr	r2, .L80+4
+ 1290              		.loc 1 255 21
+ 1291 002e 43F48073 		orr	r3, r3, #256
+ 1292 0032 1360     		str	r3, [r2]
+ 1293              	.L75:
+ 256:Core/Src/init.c ****     }
+ 257:Core/Src/init.c ****     if (led_num == 2) GPIOA_BSRR = (1u << (6 + 16));
+ 1294              		.loc 1 257 8
+ 1295 0034 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1296 0036 022B     		cmp	r3, #2
+ 1297 0038 03D1     		bne	.L76
+ 1298              		.loc 1 257 23 discriminator 1
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 28
+
+
+ 1299 003a 0E4B     		ldr	r3, .L80+8
+ 1300              		.loc 1 257 34 discriminator 1
+ 1301 003c 4FF48002 		mov	r2, #4194304
+ 1302 0040 1A60     		str	r2, [r3]
+ 1303              	.L76:
+ 258:Core/Src/init.c ****     if (led_num == 3) GPIOA_BSRR = (1u << (7 + 16));
+ 1304              		.loc 1 258 8
+ 1305 0042 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1306 0044 032B     		cmp	r3, #3
+ 1307 0046 03D1     		bne	.L77
+ 1308              		.loc 1 258 23 discriminator 1
+ 1309 0048 0A4B     		ldr	r3, .L80+8
+ 1310              		.loc 1 258 34 discriminator 1
+ 1311 004a 4FF40002 		mov	r2, #8388608
+ 1312 004e 1A60     		str	r2, [r3]
+ 1313              	.L77:
+ 259:Core/Src/init.c ****     if (led_num == 4) GPIOB_BSRR = (1u << (0 + 16));
+ 1314              		.loc 1 259 8
+ 1315 0050 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1316 0052 042B     		cmp	r3, #4
+ 1317 0054 03D1     		bne	.L79
+ 1318              		.loc 1 259 23 discriminator 1
+ 1319 0056 084B     		ldr	r3, .L80+12
+ 1320              		.loc 1 259 34 discriminator 1
+ 1321 0058 4FF48032 		mov	r2, #65536
+ 1322 005c 1A60     		str	r2, [r3]
+ 1323              	.L79:
+ 260:Core/Src/init.c **** }
+ 1324              		.loc 1 260 1
+ 1325 005e 00BF     		nop
+ 1326 0060 0C37     		adds	r7, r7, #12
+ 1327              	.LCFI54:
+ 1328              		.cfi_def_cfa_offset 4
+ 1329 0062 BD46     		mov	sp, r7
+ 1330              	.LCFI55:
+ 1331              		.cfi_def_cfa_register 13
+ 1332              		@ sp needed
+ 1333 0064 5DF8047B 		ldr	r7, [sp], #4
+ 1334              	.LCFI56:
+ 1335              		.cfi_restore 7
+ 1336              		.cfi_def_cfa_offset 0
+ 1337 0068 7047     		bx	lr
+ 1338              	.L81:
+ 1339 006a 00BF     		.align	2
+ 1340              	.L80:
+ 1341 006c 00000240 		.word	1073872896
+ 1342 0070 0C000240 		.word	1073872908
+ 1343 0074 18000240 		.word	1073872920
+ 1344 0078 18040240 		.word	1073873944
+ 1345              		.cfi_endproc
+ 1346              	.LFE142:
+ 1348              		.section	.text.clear_all_leds_without,"ax",%progbits
+ 1349              		.align	1
+ 1350              		.global	clear_all_leds_without
+ 1351              		.syntax unified
+ 1352              		.thumb
+ 1353              		.thumb_func
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 29
+
+
+ 1355              	clear_all_leds_without:
+ 1356              	.LFB143:
+ 261:Core/Src/init.c **** 
+ 262:Core/Src/init.c **** void clear_all_leds_without(void) {
+ 1357              		.loc 1 262 35
+ 1358              		.cfi_startproc
+ 1359              		@ args = 0, pretend = 0, frame = 0
+ 1360              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1361 0000 80B5     		push	{r7, lr}
+ 1362              	.LCFI57:
+ 1363              		.cfi_def_cfa_offset 8
+ 1364              		.cfi_offset 7, -8
+ 1365              		.cfi_offset 14, -4
+ 1366 0002 00AF     		add	r7, sp, #0
+ 1367              	.LCFI58:
+ 1368              		.cfi_def_cfa_register 7
+ 263:Core/Src/init.c ****     clear_led_without(1);
+ 1369              		.loc 1 263 5
+ 1370 0004 0120     		movs	r0, #1
+ 1371 0006 FFF7FEFF 		bl	clear_led_without
+ 264:Core/Src/init.c ****     clear_led_without(2);
+ 1372              		.loc 1 264 5
+ 1373 000a 0220     		movs	r0, #2
+ 1374 000c FFF7FEFF 		bl	clear_led_without
+ 265:Core/Src/init.c ****     clear_led_without(3);
+ 1375              		.loc 1 265 5
+ 1376 0010 0320     		movs	r0, #3
+ 1377 0012 FFF7FEFF 		bl	clear_led_without
+ 266:Core/Src/init.c ****     clear_led_without(4);
+ 1378              		.loc 1 266 5
+ 1379 0016 0420     		movs	r0, #4
+ 1380 0018 FFF7FEFF 		bl	clear_led_without
+ 267:Core/Src/init.c **** }
+ 1381              		.loc 1 267 1
+ 1382 001c 00BF     		nop
+ 1383 001e 80BD     		pop	{r7, pc}
+ 1384              		.cfi_endproc
+ 1385              	.LFE143:
+ 1387              		.section	.text.read_btn1_without,"ax",%progbits
+ 1388              		.align	1
+ 1389              		.global	read_btn1_without
+ 1390              		.syntax unified
+ 1391              		.thumb
+ 1392              		.thumb_func
+ 1394              	read_btn1_without:
+ 1395              	.LFB144:
+ 268:Core/Src/init.c **** 
+ 269:Core/Src/init.c **** uint8_t read_btn1_without(void) {
+ 1396              		.loc 1 269 33
+ 1397              		.cfi_startproc
+ 1398              		@ args = 0, pretend = 0, frame = 0
+ 1399              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1400              		@ link register save eliminated.
+ 1401 0000 80B4     		push	{r7}
+ 1402              	.LCFI59:
+ 1403              		.cfi_def_cfa_offset 4
+ 1404              		.cfi_offset 7, -4
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 30
+
+
+ 1405 0002 00AF     		add	r7, sp, #0
+ 1406              	.LCFI60:
+ 1407              		.cfi_def_cfa_register 7
+ 270:Core/Src/init.c ****     if ((GPIOA_MODER & (3u << 8)) == 0u) {
+ 1408              		.loc 1 270 10
+ 1409 0004 094B     		ldr	r3, .L86
+ 1410 0006 1B68     		ldr	r3, [r3]
+ 1411              		.loc 1 270 22
+ 1412 0008 03F44073 		and	r3, r3, #768
+ 1413              		.loc 1 270 8
+ 1414 000c 002B     		cmp	r3, #0
+ 1415 000e 07D1     		bne	.L84
+ 271:Core/Src/init.c ****         if ((GPIOA_IDR & (1u << 4)) == 0u) {
+ 1416              		.loc 1 271 14
+ 1417 0010 074B     		ldr	r3, .L86+4
+ 1418 0012 1B68     		ldr	r3, [r3]
+ 1419              		.loc 1 271 24
+ 1420 0014 03F01003 		and	r3, r3, #16
+ 1421              		.loc 1 271 12
+ 1422 0018 002B     		cmp	r3, #0
+ 1423 001a 01D1     		bne	.L84
+ 272:Core/Src/init.c ****             return 1u;
+ 1424              		.loc 1 272 20
+ 1425 001c 0123     		movs	r3, #1
+ 1426 001e 00E0     		b	.L85
+ 1427              	.L84:
+ 273:Core/Src/init.c ****         }
+ 274:Core/Src/init.c ****     }
+ 275:Core/Src/init.c ****     return 0u;
+ 1428              		.loc 1 275 12
+ 1429 0020 0023     		movs	r3, #0
+ 1430              	.L85:
+ 276:Core/Src/init.c **** }
+ 1431              		.loc 1 276 1
+ 1432 0022 1846     		mov	r0, r3
+ 1433 0024 BD46     		mov	sp, r7
+ 1434              	.LCFI61:
+ 1435              		.cfi_def_cfa_register 13
+ 1436              		@ sp needed
+ 1437 0026 5DF8047B 		ldr	r7, [sp], #4
+ 1438              	.LCFI62:
+ 1439              		.cfi_restore 7
+ 1440              		.cfi_def_cfa_offset 0
+ 1441 002a 7047     		bx	lr
+ 1442              	.L87:
+ 1443              		.align	2
+ 1444              	.L86:
+ 1445 002c 00000240 		.word	1073872896
+ 1446 0030 10000240 		.word	1073872912
+ 1447              		.cfi_endproc
+ 1448              	.LFE144:
+ 1450              		.section	.text.read_btn2_without,"ax",%progbits
+ 1451              		.align	1
+ 1452              		.global	read_btn2_without
+ 1453              		.syntax unified
+ 1454              		.thumb
+ 1455              		.thumb_func
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 31
+
+
+ 1457              	read_btn2_without:
+ 1458              	.LFB145:
+ 277:Core/Src/init.c **** 
+ 278:Core/Src/init.c **** uint8_t read_btn2_without(void) {
+ 1459              		.loc 1 278 33
+ 1460              		.cfi_startproc
+ 1461              		@ args = 0, pretend = 0, frame = 0
+ 1462              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1463              		@ link register save eliminated.
+ 1464 0000 80B4     		push	{r7}
+ 1465              	.LCFI63:
+ 1466              		.cfi_def_cfa_offset 4
+ 1467              		.cfi_offset 7, -4
+ 1468 0002 00AF     		add	r7, sp, #0
+ 1469              	.LCFI64:
+ 1470              		.cfi_def_cfa_register 7
+ 279:Core/Src/init.c ****     if ((GPIOA_IDR & (1u << 0)) == 0u) {
+ 1471              		.loc 1 279 10
+ 1472 0004 064B     		ldr	r3, .L91
+ 1473 0006 1B68     		ldr	r3, [r3]
+ 1474              		.loc 1 279 20
+ 1475 0008 03F00103 		and	r3, r3, #1
+ 1476              		.loc 1 279 8
+ 1477 000c 002B     		cmp	r3, #0
+ 1478 000e 01D1     		bne	.L89
+ 280:Core/Src/init.c ****         return 1u;
+ 1479              		.loc 1 280 16
+ 1480 0010 0123     		movs	r3, #1
+ 1481 0012 00E0     		b	.L90
+ 1482              	.L89:
+ 281:Core/Src/init.c ****     }
+ 282:Core/Src/init.c ****     return 0u;
+ 1483              		.loc 1 282 12
+ 1484 0014 0023     		movs	r3, #0
+ 1485              	.L90:
+ 283:Core/Src/init.c **** }
+ 1486              		.loc 1 283 1
+ 1487 0016 1846     		mov	r0, r3
+ 1488 0018 BD46     		mov	sp, r7
+ 1489              	.LCFI65:
+ 1490              		.cfi_def_cfa_register 13
+ 1491              		@ sp needed
+ 1492 001a 5DF8047B 		ldr	r7, [sp], #4
+ 1493              	.LCFI66:
+ 1494              		.cfi_restore 7
+ 1495              		.cfi_def_cfa_offset 0
+ 1496 001e 7047     		bx	lr
+ 1497              	.L92:
+ 1498              		.align	2
+ 1499              	.L91:
+ 1500 0020 10000240 		.word	1073872912
+ 1501              		.cfi_endproc
+ 1502              	.LFE145:
+ 1504              		.section	.text.apply_leds_without,"ax",%progbits
+ 1505              		.align	1
+ 1506              		.global	apply_leds_without
+ 1507              		.syntax unified
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 32
+
+
+ 1508              		.thumb
+ 1509              		.thumb_func
+ 1511              	apply_leds_without:
+ 1512              	.LFB146:
+ 284:Core/Src/init.c **** 
+ 285:Core/Src/init.c **** 
+ 286:Core/Src/init.c **** void apply_leds_without(uint8_t led_a_on, uint8_t led_b_on, uint8_t led_c_on) {
+ 1513              		.loc 1 286 79
+ 1514              		.cfi_startproc
+ 1515              		@ args = 0, pretend = 0, frame = 8
+ 1516              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1517 0000 80B5     		push	{r7, lr}
+ 1518              	.LCFI67:
+ 1519              		.cfi_def_cfa_offset 8
+ 1520              		.cfi_offset 7, -8
+ 1521              		.cfi_offset 14, -4
+ 1522 0002 82B0     		sub	sp, sp, #8
+ 1523              	.LCFI68:
+ 1524              		.cfi_def_cfa_offset 16
+ 1525 0004 00AF     		add	r7, sp, #0
+ 1526              	.LCFI69:
+ 1527              		.cfi_def_cfa_register 7
+ 1528 0006 0346     		mov	r3, r0
+ 1529 0008 FB71     		strb	r3, [r7, #7]
+ 1530 000a 0B46     		mov	r3, r1
+ 1531 000c BB71     		strb	r3, [r7, #6]
+ 1532 000e 1346     		mov	r3, r2
+ 1533 0010 7B71     		strb	r3, [r7, #5]
+ 287:Core/Src/init.c ****     if (led_a_on) set_led_without(2); else clear_led_without(2);
+ 1534              		.loc 1 287 8
+ 1535 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1536 0014 002B     		cmp	r3, #0
+ 1537 0016 03D0     		beq	.L94
+ 1538              		.loc 1 287 19 discriminator 1
+ 1539 0018 0220     		movs	r0, #2
+ 1540 001a FFF7FEFF 		bl	set_led_without
+ 1541 001e 02E0     		b	.L95
+ 1542              	.L94:
+ 1543              		.loc 1 287 44 discriminator 2
+ 1544 0020 0220     		movs	r0, #2
+ 1545 0022 FFF7FEFF 		bl	clear_led_without
+ 1546              	.L95:
+ 288:Core/Src/init.c ****     if (led_b_on) set_led_without(3); else clear_led_without(3);
+ 1547              		.loc 1 288 8
+ 1548 0026 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 1549 0028 002B     		cmp	r3, #0
+ 1550 002a 03D0     		beq	.L96
+ 1551              		.loc 1 288 19 discriminator 1
+ 1552 002c 0320     		movs	r0, #3
+ 1553 002e FFF7FEFF 		bl	set_led_without
+ 1554 0032 02E0     		b	.L97
+ 1555              	.L96:
+ 1556              		.loc 1 288 44 discriminator 2
+ 1557 0034 0320     		movs	r0, #3
+ 1558 0036 FFF7FEFF 		bl	clear_led_without
+ 1559              	.L97:
+ 289:Core/Src/init.c ****     if (led_c_on) set_led_without(4); else clear_led_without(4);
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 33
+
+
+ 1560              		.loc 1 289 8
+ 1561 003a 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
+ 1562 003c 002B     		cmp	r3, #0
+ 1563 003e 03D0     		beq	.L98
+ 1564              		.loc 1 289 19 discriminator 1
+ 1565 0040 0420     		movs	r0, #4
+ 1566 0042 FFF7FEFF 		bl	set_led_without
+ 290:Core/Src/init.c **** }
+ 1567              		.loc 1 290 1
+ 1568 0046 02E0     		b	.L100
+ 1569              	.L98:
+ 289:Core/Src/init.c ****     if (led_c_on) set_led_without(4); else clear_led_without(4);
+ 1570              		.loc 1 289 44 discriminator 2
+ 1571 0048 0420     		movs	r0, #4
+ 1572 004a FFF7FEFF 		bl	clear_led_without
+ 1573              	.L100:
+ 1574              		.loc 1 290 1
+ 1575 004e 00BF     		nop
+ 1576 0050 0837     		adds	r7, r7, #8
+ 1577              	.LCFI70:
+ 1578              		.cfi_def_cfa_offset 8
+ 1579 0052 BD46     		mov	sp, r7
+ 1580              	.LCFI71:
+ 1581              		.cfi_def_cfa_register 13
+ 1582              		@ sp needed
+ 1583 0054 80BD     		pop	{r7, pc}
+ 1584              		.cfi_endproc
+ 1585              	.LFE146:
+ 1587              		.section	.text.do_without_CMSIS_and_macros,"ax",%progbits
+ 1588              		.align	1
+ 1589              		.global	do_without_CMSIS_and_macros
+ 1590              		.syntax unified
+ 1591              		.thumb
+ 1592              		.thumb_func
+ 1594              	do_without_CMSIS_and_macros:
+ 1595              	.LFB147:
+ 291:Core/Src/init.c **** 
+ 292:Core/Src/init.c **** void do_without_CMSIS_and_macros(void){
+ 1596              		.loc 1 292 39
+ 1597              		.cfi_startproc
+ 1598              		@ args = 0, pretend = 0, frame = 16
+ 1599              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1600 0000 80B5     		push	{r7, lr}
+ 1601              	.LCFI72:
+ 1602              		.cfi_def_cfa_offset 8
+ 1603              		.cfi_offset 7, -8
+ 1604              		.cfi_offset 14, -4
+ 1605 0002 84B0     		sub	sp, sp, #16
+ 1606              	.LCFI73:
+ 1607              		.cfi_def_cfa_offset 24
+ 1608 0004 00AF     		add	r7, sp, #0
+ 1609              	.LCFI74:
+ 1610              		.cfi_def_cfa_register 7
+ 293:Core/Src/init.c **** 
+ 294:Core/Src/init.c ****     uint8_t led_a_on = 0;   //PA6 
+ 1611              		.loc 1 294 13
+ 1612 0006 0023     		movs	r3, #0
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 34
+
+
+ 1613 0008 FB73     		strb	r3, [r7, #15]
+ 295:Core/Src/init.c ****     uint8_t led_b_on = 0;   //PA7
+ 1614              		.loc 1 295 13
+ 1615 000a 0023     		movs	r3, #0
+ 1616 000c BB73     		strb	r3, [r7, #14]
+ 296:Core/Src/init.c ****     uint8_t led_c_on = 0;   //PB0
+ 1617              		.loc 1 296 13
+ 1618 000e 0023     		movs	r3, #0
+ 1619 0010 7B73     		strb	r3, [r7, #13]
+ 297:Core/Src/init.c ****     apply_leds_without(led_a_on, led_b_on, led_c_on);
+ 1620              		.loc 1 297 5
+ 1621 0012 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 1622 0014 B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 1623 0016 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1624 0018 1846     		mov	r0, r3
+ 1625 001a FFF7FEFF 		bl	apply_leds_without
+ 298:Core/Src/init.c **** 
+ 299:Core/Src/init.c ****     uint8_t saved_a = 0;    //состояние PA6 
+ 1626              		.loc 1 299 13
+ 1627 001e 0023     		movs	r3, #0
+ 1628 0020 3B73     		strb	r3, [r7, #12]
+ 300:Core/Src/init.c ****     uint8_t saved_b = 0;    //состояние PA7
+ 1629              		.loc 1 300 13
+ 1630 0022 0023     		movs	r3, #0
+ 1631 0024 FB72     		strb	r3, [r7, #11]
+ 301:Core/Src/init.c ****     uint8_t saved_c = 0;    //состояние PB0
+ 1632              		.loc 1 301 13
+ 1633 0026 0023     		movs	r3, #0
+ 1634 0028 BB72     		strb	r3, [r7, #10]
+ 302:Core/Src/init.c **** 
+ 303:Core/Src/init.c ****     uint8_t btn2_pressed = 0;   // 0 - поочередное включение, 1 - PA4 гори�
+ 1635              		.loc 1 303 13
+ 1636 002a 0023     		movs	r3, #0
+ 1637 002c 7B72     		strb	r3, [r7, #9]
+ 304:Core/Src/init.c ****     uint8_t btn1_released = 1;  //первая кнопка отпущена
+ 1638              		.loc 1 304 13
+ 1639 002e 0123     		movs	r3, #1
+ 1640 0030 3B72     		strb	r3, [r7, #8]
+ 1641              	.L114:
+ 1642              	.LBB5:
+ 305:Core/Src/init.c ****     
+ 306:Core/Src/init.c ****     while (1) {
+ 307:Core/Src/init.c ****         //вторая кнопка: первое нажатие
+ 308:Core/Src/init.c ****         uint8_t btn2_now = read_btn2_without();
+ 1643              		.loc 1 308 28
+ 1644 0032 FFF7FEFF 		bl	read_btn2_without
+ 1645 0036 0346     		mov	r3, r0
+ 1646 0038 FB71     		strb	r3, [r7, #7]
+ 309:Core/Src/init.c ****         if (btn2_now == 1 && btn2_pressed == 0) {
+ 1647              		.loc 1 309 12
+ 1648 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1649 003c 012B     		cmp	r3, #1
+ 1650 003e 2AD1     		bne	.L102
+ 1651              		.loc 1 309 27 discriminator 1
+ 1652 0040 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 1653 0042 002B     		cmp	r3, #0
+ 1654 0044 27D1     		bne	.L102
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 35
+
+
+ 310:Core/Src/init.c ****             delay_ms(20);
+ 1655              		.loc 1 310 13
+ 1656 0046 1420     		movs	r0, #20
+ 1657 0048 FFF7FEFF 		bl	delay_ms
+ 311:Core/Src/init.c **** 
+ 312:Core/Src/init.c ****             if (read_btn2_without() == 1) {
+ 1658              		.loc 1 312 17
+ 1659 004c FFF7FEFF 		bl	read_btn2_without
+ 1660 0050 0346     		mov	r3, r0
+ 1661              		.loc 1 312 16 discriminator 1
+ 1662 0052 012B     		cmp	r3, #1
+ 1663 0054 1FD1     		bne	.L102
+ 313:Core/Src/init.c ****                 btn2_pressed = 1;
+ 1664              		.loc 1 313 30
+ 1665 0056 0123     		movs	r3, #1
+ 1666 0058 7B72     		strb	r3, [r7, #9]
+ 314:Core/Src/init.c ****                 //запись состояния трёх светодиодов
+ 315:Core/Src/init.c ****                 saved_a = led_a_on;
+ 1667              		.loc 1 315 25
+ 1668 005a FB7B     		ldrb	r3, [r7, #15]
+ 1669 005c 3B73     		strb	r3, [r7, #12]
+ 316:Core/Src/init.c ****                 saved_b = led_b_on;
+ 1670              		.loc 1 316 25
+ 1671 005e BB7B     		ldrb	r3, [r7, #14]
+ 1672 0060 FB72     		strb	r3, [r7, #11]
+ 317:Core/Src/init.c ****                 saved_c = led_c_on;
+ 1673              		.loc 1 317 25
+ 1674 0062 7B7B     		ldrb	r3, [r7, #13]
+ 1675 0064 BB72     		strb	r3, [r7, #10]
+ 318:Core/Src/init.c ****                 //выключаем
+ 319:Core/Src/init.c ****                 led_a_on = 0;
+ 1676              		.loc 1 319 26
+ 1677 0066 0023     		movs	r3, #0
+ 1678 0068 FB73     		strb	r3, [r7, #15]
+ 320:Core/Src/init.c ****                 led_b_on = 0;
+ 1679              		.loc 1 320 26
+ 1680 006a 0023     		movs	r3, #0
+ 1681 006c BB73     		strb	r3, [r7, #14]
+ 321:Core/Src/init.c ****                 led_c_on = 0;
+ 1682              		.loc 1 321 26
+ 1683 006e 0023     		movs	r3, #0
+ 1684 0070 7B73     		strb	r3, [r7, #13]
+ 322:Core/Src/init.c ****                 apply_leds_without(led_a_on, led_b_on, led_c_on);
+ 1685              		.loc 1 322 17
+ 1686 0072 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 1687 0074 B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 1688 0076 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1689 0078 1846     		mov	r0, r3
+ 1690 007a FFF7FEFF 		bl	apply_leds_without
+ 323:Core/Src/init.c **** 
+ 324:Core/Src/init.c ****                 //включаем первый светодиод (PA4 = выход на 3.3 В)
+ 325:Core/Src/init.c ****                 set_led_without(1);
+ 1691              		.loc 1 325 17
+ 1692 007e 0120     		movs	r0, #1
+ 1693 0080 FFF7FEFF 		bl	set_led_without
+ 326:Core/Src/init.c **** 
+ 327:Core/Src/init.c ****                 //ожидание отпускания
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 36
+
+
+ 328:Core/Src/init.c ****                 while (read_btn2_without() == 1) {
+ 1694              		.loc 1 328 23
+ 1695 0084 02E0     		b	.L103
+ 1696              	.L104:
+ 329:Core/Src/init.c ****                     delay_ms(1);
+ 1697              		.loc 1 329 21
+ 1698 0086 0120     		movs	r0, #1
+ 1699 0088 FFF7FEFF 		bl	delay_ms
+ 1700              	.L103:
+ 328:Core/Src/init.c ****                     delay_ms(1);
+ 1701              		.loc 1 328 24
+ 1702 008c FFF7FEFF 		bl	read_btn2_without
+ 1703 0090 0346     		mov	r3, r0
+ 328:Core/Src/init.c ****                     delay_ms(1);
+ 1704              		.loc 1 328 44 discriminator 1
+ 1705 0092 012B     		cmp	r3, #1
+ 1706 0094 F7D0     		beq	.L104
+ 1707              	.L102:
+ 330:Core/Src/init.c ****                 }
+ 331:Core/Src/init.c ****             }
+ 332:Core/Src/init.c ****         }
+ 333:Core/Src/init.c ****         //второе нажатие
+ 334:Core/Src/init.c ****         if (btn2_now == 1 && btn2_pressed == 1) {
+ 1708              		.loc 1 334 12
+ 1709 0096 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1710 0098 012B     		cmp	r3, #1
+ 1711 009a 24D1     		bne	.L105
+ 1712              		.loc 1 334 27 discriminator 1
+ 1713 009c 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 1714 009e 012B     		cmp	r3, #1
+ 1715 00a0 21D1     		bne	.L105
+ 335:Core/Src/init.c ****             delay_ms(20);
+ 1716              		.loc 1 335 13
+ 1717 00a2 1420     		movs	r0, #20
+ 1718 00a4 FFF7FEFF 		bl	delay_ms
+ 336:Core/Src/init.c ****             if (read_btn2_without() == 1) {
+ 1719              		.loc 1 336 17
+ 1720 00a8 FFF7FEFF 		bl	read_btn2_without
+ 1721 00ac 0346     		mov	r3, r0
+ 1722              		.loc 1 336 16 discriminator 1
+ 1723 00ae 012B     		cmp	r3, #1
+ 1724 00b0 19D1     		bne	.L105
+ 337:Core/Src/init.c ****                 btn2_pressed = 0;
+ 1725              		.loc 1 337 30
+ 1726 00b2 0023     		movs	r3, #0
+ 1727 00b4 7B72     		strb	r3, [r7, #9]
+ 338:Core/Src/init.c ****                 //выключаем первый светодиод (PA4 - вход, pull-up)
+ 339:Core/Src/init.c ****                 clear_led_without(1);
+ 1728              		.loc 1 339 17
+ 1729 00b6 0120     		movs	r0, #1
+ 1730 00b8 FFF7FEFF 		bl	clear_led_without
+ 340:Core/Src/init.c **** 
+ 341:Core/Src/init.c ****                 //возврат состояний
+ 342:Core/Src/init.c ****                 led_a_on = saved_a;
+ 1731              		.loc 1 342 26
+ 1732 00bc 3B7B     		ldrb	r3, [r7, #12]
+ 1733 00be FB73     		strb	r3, [r7, #15]
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 37
+
+
+ 343:Core/Src/init.c ****                 led_b_on = saved_b;
+ 1734              		.loc 1 343 26
+ 1735 00c0 FB7A     		ldrb	r3, [r7, #11]
+ 1736 00c2 BB73     		strb	r3, [r7, #14]
+ 344:Core/Src/init.c ****                 led_c_on = saved_c;
+ 1737              		.loc 1 344 26
+ 1738 00c4 BB7A     		ldrb	r3, [r7, #10]
+ 1739 00c6 7B73     		strb	r3, [r7, #13]
+ 345:Core/Src/init.c ****                 apply_leds_without(led_a_on, led_b_on, led_c_on);
+ 1740              		.loc 1 345 17
+ 1741 00c8 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 1742 00ca B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 1743 00cc FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1744 00ce 1846     		mov	r0, r3
+ 1745 00d0 FFF7FEFF 		bl	apply_leds_without
+ 346:Core/Src/init.c **** 
+ 347:Core/Src/init.c ****                 //ожидание отпускания
+ 348:Core/Src/init.c ****                 while (read_btn2_without() == 1) {
+ 1746              		.loc 1 348 23
+ 1747 00d4 02E0     		b	.L106
+ 1748              	.L107:
+ 349:Core/Src/init.c ****                     delay_ms(1);
+ 1749              		.loc 1 349 21
+ 1750 00d6 0120     		movs	r0, #1
+ 1751 00d8 FFF7FEFF 		bl	delay_ms
+ 1752              	.L106:
+ 348:Core/Src/init.c ****                     delay_ms(1);
+ 1753              		.loc 1 348 24
+ 1754 00dc FFF7FEFF 		bl	read_btn2_without
+ 1755 00e0 0346     		mov	r3, r0
+ 348:Core/Src/init.c ****                     delay_ms(1);
+ 1756              		.loc 1 348 44 discriminator 1
+ 1757 00e2 012B     		cmp	r3, #1
+ 1758 00e4 F7D0     		beq	.L107
+ 1759              	.L105:
+ 350:Core/Src/init.c ****                 }
+ 351:Core/Src/init.c ****             }
+ 352:Core/Src/init.c ****         }
+ 353:Core/Src/init.c ****         //первая кнопка
+ 354:Core/Src/init.c ****         if (btn2_pressed == 0) {
+ 1760              		.loc 1 354 12
+ 1761 00e6 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 1762 00e8 002B     		cmp	r3, #0
+ 1763 00ea A2D1     		bne	.L114
+ 1764              	.LBB6:
+ 355:Core/Src/init.c ****             uint8_t btn1_now = read_btn1_without();
+ 1765              		.loc 1 355 32
+ 1766 00ec FFF7FEFF 		bl	read_btn1_without
+ 1767 00f0 0346     		mov	r3, r0
+ 1768 00f2 BB71     		strb	r3, [r7, #6]
+ 356:Core/Src/init.c ****             //ожидание отпускания
+ 357:Core/Src/init.c ****             if (btn1_now == 0) {
+ 1769              		.loc 1 357 16
+ 1770 00f4 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 1771 00f6 002B     		cmp	r3, #0
+ 1772 00f8 0CD1     		bne	.L109
+ 358:Core/Src/init.c ****                 if (btn1_released == 0) {
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 38
+
+
+ 1773              		.loc 1 358 20
+ 1774 00fa 3B7A     		ldrb	r3, [r7, #8]	@ zero_extendqisi2
+ 1775 00fc 002B     		cmp	r3, #0
+ 1776 00fe 09D1     		bne	.L109
+ 359:Core/Src/init.c ****                     delay_ms(20);
+ 1777              		.loc 1 359 21
+ 1778 0100 1420     		movs	r0, #20
+ 1779 0102 FFF7FEFF 		bl	delay_ms
+ 360:Core/Src/init.c ****                     if (read_btn1_without() == 0) {
+ 1780              		.loc 1 360 25
+ 1781 0106 FFF7FEFF 		bl	read_btn1_without
+ 1782 010a 0346     		mov	r3, r0
+ 1783              		.loc 1 360 24 discriminator 1
+ 1784 010c 002B     		cmp	r3, #0
+ 1785 010e 01D1     		bne	.L109
+ 361:Core/Src/init.c ****                         btn1_released = 1;
+ 1786              		.loc 1 361 39
+ 1787 0110 0123     		movs	r3, #1
+ 1788 0112 3B72     		strb	r3, [r7, #8]
+ 1789              	.L109:
+ 362:Core/Src/init.c ****                     }
+ 363:Core/Src/init.c ****                 }
+ 364:Core/Src/init.c ****             }
+ 365:Core/Src/init.c ****             //считывание нажатия
+ 366:Core/Src/init.c ****             if (btn1_now == 1 && btn1_released == 1) {
+ 1790              		.loc 1 366 16
+ 1791 0114 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 1792 0116 012B     		cmp	r3, #1
+ 1793 0118 8BD1     		bne	.L114
+ 1794              		.loc 1 366 31 discriminator 1
+ 1795 011a 3B7A     		ldrb	r3, [r7, #8]	@ zero_extendqisi2
+ 1796 011c 012B     		cmp	r3, #1
+ 1797 011e 88D1     		bne	.L114
+ 367:Core/Src/init.c ****                 delay_ms(20);
+ 1798              		.loc 1 367 17
+ 1799 0120 1420     		movs	r0, #20
+ 1800 0122 FFF7FEFF 		bl	delay_ms
+ 368:Core/Src/init.c **** 
+ 369:Core/Src/init.c ****                 if (read_btn1_without() == 1) {
+ 1801              		.loc 1 369 21
+ 1802 0126 FFF7FEFF 		bl	read_btn1_without
+ 1803 012a 0346     		mov	r3, r0
+ 1804              		.loc 1 369 20 discriminator 1
+ 1805 012c 012B     		cmp	r3, #1
+ 1806 012e 80D1     		bne	.L114
+ 370:Core/Src/init.c ****                     btn1_released = 0;
+ 1807              		.loc 1 370 35
+ 1808 0130 0023     		movs	r3, #0
+ 1809 0132 3B72     		strb	r3, [r7, #8]
+ 371:Core/Src/init.c **** 
+ 372:Core/Src/init.c ****                     //поочерное включение
+ 373:Core/Src/init.c ****                     if (!led_a_on && !led_b_on && !led_c_on) {
+ 1810              		.loc 1 373 24
+ 1811 0134 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1812 0136 002B     		cmp	r3, #0
+ 1813 0138 08D1     		bne	.L110
+ 1814              		.loc 1 373 35 discriminator 1
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 39
+
+
+ 1815 013a BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 1816 013c 002B     		cmp	r3, #0
+ 1817 013e 05D1     		bne	.L110
+ 1818              		.loc 1 373 48 discriminator 2
+ 1819 0140 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 1820 0142 002B     		cmp	r3, #0
+ 1821 0144 02D1     		bne	.L110
+ 374:Core/Src/init.c ****                         led_a_on = 1;
+ 1822              		.loc 1 374 34
+ 1823 0146 0123     		movs	r3, #1
+ 1824 0148 FB73     		strb	r3, [r7, #15]
+ 1825 014a 26E0     		b	.L111
+ 1826              	.L110:
+ 375:Core/Src/init.c ****                     } else if (led_a_on && !led_b_on && !led_c_on) {
+ 1827              		.loc 1 375 31
+ 1828 014c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1829 014e 002B     		cmp	r3, #0
+ 1830 0150 08D0     		beq	.L112
+ 1831              		.loc 1 375 41 discriminator 1
+ 1832 0152 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 1833 0154 002B     		cmp	r3, #0
+ 1834 0156 05D1     		bne	.L112
+ 1835              		.loc 1 375 54 discriminator 2
+ 1836 0158 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 1837 015a 002B     		cmp	r3, #0
+ 1838 015c 02D1     		bne	.L112
+ 376:Core/Src/init.c ****                         led_b_on = 1;
+ 1839              		.loc 1 376 34
+ 1840 015e 0123     		movs	r3, #1
+ 1841 0160 BB73     		strb	r3, [r7, #14]
+ 1842 0162 1AE0     		b	.L111
+ 1843              	.L112:
+ 377:Core/Src/init.c ****                     } else if (led_a_on && led_b_on && !led_c_on) {
+ 1844              		.loc 1 377 31
+ 1845 0164 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1846 0166 002B     		cmp	r3, #0
+ 1847 0168 08D0     		beq	.L113
+ 1848              		.loc 1 377 41 discriminator 1
+ 1849 016a BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 1850 016c 002B     		cmp	r3, #0
+ 1851 016e 05D0     		beq	.L113
+ 1852              		.loc 1 377 53 discriminator 2
+ 1853 0170 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 1854 0172 002B     		cmp	r3, #0
+ 1855 0174 02D1     		bne	.L113
+ 378:Core/Src/init.c ****                         led_c_on = 1;
+ 1856              		.loc 1 378 34
+ 1857 0176 0123     		movs	r3, #1
+ 1858 0178 7B73     		strb	r3, [r7, #13]
+ 1859 017a 0EE0     		b	.L111
+ 1860              	.L113:
+ 379:Core/Src/init.c ****                     } else if (led_a_on && led_b_on && led_c_on) {
+ 1861              		.loc 1 379 31
+ 1862 017c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1863 017e 002B     		cmp	r3, #0
+ 1864 0180 0BD0     		beq	.L111
+ 1865              		.loc 1 379 41 discriminator 1
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 40
+
+
+ 1866 0182 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 1867 0184 002B     		cmp	r3, #0
+ 1868 0186 08D0     		beq	.L111
+ 1869              		.loc 1 379 53 discriminator 2
+ 1870 0188 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 1871 018a 002B     		cmp	r3, #0
+ 1872 018c 05D0     		beq	.L111
+ 380:Core/Src/init.c ****                         led_a_on = 0;
+ 1873              		.loc 1 380 34
+ 1874 018e 0023     		movs	r3, #0
+ 1875 0190 FB73     		strb	r3, [r7, #15]
+ 381:Core/Src/init.c ****                         led_b_on = 0;
+ 1876              		.loc 1 381 34
+ 1877 0192 0023     		movs	r3, #0
+ 1878 0194 BB73     		strb	r3, [r7, #14]
+ 382:Core/Src/init.c ****                         led_c_on = 0;
+ 1879              		.loc 1 382 34
+ 1880 0196 0023     		movs	r3, #0
+ 1881 0198 7B73     		strb	r3, [r7, #13]
+ 1882              	.L111:
+ 383:Core/Src/init.c ****                     }
+ 384:Core/Src/init.c ****                     apply_leds_without(led_a_on, led_b_on, led_c_on);
+ 1883              		.loc 1 384 21
+ 1884 019a 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 1885 019c B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 1886 019e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1887 01a0 1846     		mov	r0, r3
+ 1888 01a2 FFF7FEFF 		bl	apply_leds_without
+ 1889              	.LBE6:
+ 1890              	.LBE5:
+ 306:Core/Src/init.c ****         //вторая кнопка: первое нажатие
+ 1891              		.loc 1 306 15
+ 1892 01a6 44E7     		b	.L114
+ 1893              		.cfi_endproc
+ 1894              	.LFE147:
+ 1896              		.section	.text.GPIO_Init_macros,"ax",%progbits
+ 1897              		.align	1
+ 1898              		.global	GPIO_Init_macros
+ 1899              		.syntax unified
+ 1900              		.thumb
+ 1901              		.thumb_func
+ 1903              	GPIO_Init_macros:
+ 1904              	.LFB148:
+ 385:Core/Src/init.c ****                 }
+ 386:Core/Src/init.c ****             }
+ 387:Core/Src/init.c ****         }
+ 388:Core/Src/init.c ****     }
+ 389:Core/Src/init.c **** }
+ 390:Core/Src/init.c **** 
+ 391:Core/Src/init.c **** 
+ 392:Core/Src/init.c **** //С макросами
+ 393:Core/Src/init.c **** void GPIO_Init_macros(void) {
+ 1905              		.loc 1 393 29
+ 1906              		.cfi_startproc
+ 1907              		@ args = 0, pretend = 0, frame = 0
+ 1908              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1909 0000 80B5     		push	{r7, lr}
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 41
+
+
+ 1910              	.LCFI75:
+ 1911              		.cfi_def_cfa_offset 8
+ 1912              		.cfi_offset 7, -8
+ 1913              		.cfi_offset 14, -4
+ 1914 0002 00AF     		add	r7, sp, #0
+ 1915              	.LCFI76:
+ 1916              		.cfi_def_cfa_register 7
+ 394:Core/Src/init.c ****     CLK_GPIOA_ON();
+ 1917              		.loc 1 394 5
+ 1918 0004 2B4B     		ldr	r3, .L116
+ 1919 0006 1B6B     		ldr	r3, [r3, #48]
+ 1920 0008 2A4A     		ldr	r2, .L116
+ 1921 000a 43F00103 		orr	r3, r3, #1
+ 1922 000e 1363     		str	r3, [r2, #48]
+ 395:Core/Src/init.c ****     CLK_GPIOB_ON();
+ 1923              		.loc 1 395 5
+ 1924 0010 284B     		ldr	r3, .L116
+ 1925 0012 1B6B     		ldr	r3, [r3, #48]
+ 1926 0014 274A     		ldr	r2, .L116
+ 1927 0016 43F00203 		orr	r3, r3, #2
+ 1928 001a 1363     		str	r3, [r2, #48]
+ 396:Core/Src/init.c **** 
+ 397:Core/Src/init.c ****     //PA6, PA7, PB0 — выходы
+ 398:Core/Src/init.c ****     PIN_MODE_OUT(GPIOA, 6);
+ 1929              		.loc 1 398 5
+ 1930 001c 264B     		ldr	r3, .L116+4
+ 1931 001e 1B68     		ldr	r3, [r3]
+ 1932 0020 254A     		ldr	r2, .L116+4
+ 1933 0022 23F44053 		bic	r3, r3, #12288
+ 1934 0026 1360     		str	r3, [r2]
+ 1935 0028 234B     		ldr	r3, .L116+4
+ 1936 002a 1B68     		ldr	r3, [r3]
+ 1937 002c 224A     		ldr	r2, .L116+4
+ 1938 002e 43F48053 		orr	r3, r3, #4096
+ 1939 0032 1360     		str	r3, [r2]
+ 399:Core/Src/init.c ****     PIN_MODE_OUT(GPIOA, 7);
+ 1940              		.loc 1 399 5
+ 1941 0034 204B     		ldr	r3, .L116+4
+ 1942 0036 1B68     		ldr	r3, [r3]
+ 1943 0038 1F4A     		ldr	r2, .L116+4
+ 1944 003a 23F44043 		bic	r3, r3, #49152
+ 1945 003e 1360     		str	r3, [r2]
+ 1946 0040 1D4B     		ldr	r3, .L116+4
+ 1947 0042 1B68     		ldr	r3, [r3]
+ 1948 0044 1C4A     		ldr	r2, .L116+4
+ 1949 0046 43F48043 		orr	r3, r3, #16384
+ 1950 004a 1360     		str	r3, [r2]
+ 400:Core/Src/init.c ****     PIN_MODE_OUT(GPIOB, 0);
+ 1951              		.loc 1 400 5
+ 1952 004c 1B4B     		ldr	r3, .L116+8
+ 1953 004e 1B68     		ldr	r3, [r3]
+ 1954 0050 1A4A     		ldr	r2, .L116+8
+ 1955 0052 23F00303 		bic	r3, r3, #3
+ 1956 0056 1360     		str	r3, [r2]
+ 1957 0058 184B     		ldr	r3, .L116+8
+ 1958 005a 1B68     		ldr	r3, [r3]
+ 1959 005c 174A     		ldr	r2, .L116+8
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 42
+
+
+ 1960 005e 43F00103 		orr	r3, r3, #1
+ 1961 0062 1360     		str	r3, [r2]
+ 401:Core/Src/init.c **** 
+ 402:Core/Src/init.c ****     //PA4 — вход с pull-up
+ 403:Core/Src/init.c ****     PIN_MODE_IN(GPIOA, 4);
+ 1962              		.loc 1 403 5
+ 1963 0064 144B     		ldr	r3, .L116+4
+ 1964 0066 1B68     		ldr	r3, [r3]
+ 1965 0068 134A     		ldr	r2, .L116+4
+ 1966 006a 23F44073 		bic	r3, r3, #768
+ 1967 006e 1360     		str	r3, [r2]
+ 404:Core/Src/init.c ****     PIN_PULLUP(GPIOA, 4);
+ 1968              		.loc 1 404 5
+ 1969 0070 114B     		ldr	r3, .L116+4
+ 1970 0072 DB68     		ldr	r3, [r3, #12]
+ 1971 0074 104A     		ldr	r2, .L116+4
+ 1972 0076 23F44073 		bic	r3, r3, #768
+ 1973 007a D360     		str	r3, [r2, #12]
+ 1974 007c 0E4B     		ldr	r3, .L116+4
+ 1975 007e DB68     		ldr	r3, [r3, #12]
+ 1976 0080 0D4A     		ldr	r2, .L116+4
+ 1977 0082 43F48073 		orr	r3, r3, #256
+ 1978 0086 D360     		str	r3, [r2, #12]
+ 405:Core/Src/init.c **** 
+ 406:Core/Src/init.c ****     //PA0 — вход с pull-up
+ 407:Core/Src/init.c ****     PIN_MODE_IN(GPIOA, 0);
+ 1979              		.loc 1 407 5
+ 1980 0088 0B4B     		ldr	r3, .L116+4
+ 1981 008a 1B68     		ldr	r3, [r3]
+ 1982 008c 0A4A     		ldr	r2, .L116+4
+ 1983 008e 23F00303 		bic	r3, r3, #3
+ 1984 0092 1360     		str	r3, [r2]
+ 408:Core/Src/init.c ****     PIN_PULLUP(GPIOA, 0);
+ 1985              		.loc 1 408 5
+ 1986 0094 084B     		ldr	r3, .L116+4
+ 1987 0096 DB68     		ldr	r3, [r3, #12]
+ 1988 0098 074A     		ldr	r2, .L116+4
+ 1989 009a 23F00303 		bic	r3, r3, #3
+ 1990 009e D360     		str	r3, [r2, #12]
+ 1991 00a0 054B     		ldr	r3, .L116+4
+ 1992 00a2 DB68     		ldr	r3, [r3, #12]
+ 1993 00a4 044A     		ldr	r2, .L116+4
+ 1994 00a6 43F00103 		orr	r3, r3, #1
+ 1995 00aa D360     		str	r3, [r2, #12]
+ 409:Core/Src/init.c **** 
+ 410:Core/Src/init.c ****     clear_all_leds_macros();
+ 1996              		.loc 1 410 5
+ 1997 00ac FFF7FEFF 		bl	clear_all_leds_macros
+ 411:Core/Src/init.c **** }
+ 1998              		.loc 1 411 1
+ 1999 00b0 00BF     		nop
+ 2000 00b2 80BD     		pop	{r7, pc}
+ 2001              	.L117:
+ 2002              		.align	2
+ 2003              	.L116:
+ 2004 00b4 00380240 		.word	1073887232
+ 2005 00b8 00000240 		.word	1073872896
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 43
+
+
+ 2006 00bc 00040240 		.word	1073873920
+ 2007              		.cfi_endproc
+ 2008              	.LFE148:
+ 2010              		.section	.text.set_led_macros,"ax",%progbits
+ 2011              		.align	1
+ 2012              		.global	set_led_macros
+ 2013              		.syntax unified
+ 2014              		.thumb
+ 2015              		.thumb_func
+ 2017              	set_led_macros:
+ 2018              	.LFB149:
+ 412:Core/Src/init.c **** 
+ 413:Core/Src/init.c **** void set_led_macros(uint8_t led_num) {
+ 2019              		.loc 1 413 38
+ 2020              		.cfi_startproc
+ 2021              		@ args = 0, pretend = 0, frame = 8
+ 2022              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2023              		@ link register save eliminated.
+ 2024 0000 80B4     		push	{r7}
+ 2025              	.LCFI77:
+ 2026              		.cfi_def_cfa_offset 4
+ 2027              		.cfi_offset 7, -4
+ 2028 0002 83B0     		sub	sp, sp, #12
+ 2029              	.LCFI78:
+ 2030              		.cfi_def_cfa_offset 16
+ 2031 0004 00AF     		add	r7, sp, #0
+ 2032              	.LCFI79:
+ 2033              		.cfi_def_cfa_register 7
+ 2034 0006 0346     		mov	r3, r0
+ 2035 0008 FB71     		strb	r3, [r7, #7]
+ 414:Core/Src/init.c ****     if (led_num == 1) LED1_ON();
+ 2036              		.loc 1 414 8
+ 2037 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2038 000c 012B     		cmp	r3, #1
+ 2039 000e 0ED1     		bne	.L119
+ 2040              		.loc 1 414 23 discriminator 1
+ 2041 0010 134B     		ldr	r3, .L124
+ 2042 0012 1B68     		ldr	r3, [r3]
+ 2043 0014 124A     		ldr	r2, .L124
+ 2044 0016 23F44073 		bic	r3, r3, #768
+ 2045 001a 1360     		str	r3, [r2]
+ 2046 001c 104B     		ldr	r3, .L124
+ 2047 001e 1B68     		ldr	r3, [r3]
+ 2048 0020 0F4A     		ldr	r2, .L124
+ 2049 0022 43F48073 		orr	r3, r3, #256
+ 2050 0026 1360     		str	r3, [r2]
+ 2051 0028 0D4B     		ldr	r3, .L124
+ 2052 002a 1022     		movs	r2, #16
+ 2053 002c 9A61     		str	r2, [r3, #24]
+ 2054              	.L119:
+ 415:Core/Src/init.c ****     if (led_num == 2) LED2_ON();
+ 2055              		.loc 1 415 8
+ 2056 002e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2057 0030 022B     		cmp	r3, #2
+ 2058 0032 02D1     		bne	.L120
+ 2059              		.loc 1 415 23 discriminator 1
+ 2060 0034 0A4B     		ldr	r3, .L124
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 44
+
+
+ 2061 0036 4022     		movs	r2, #64
+ 2062 0038 9A61     		str	r2, [r3, #24]
+ 2063              	.L120:
+ 416:Core/Src/init.c ****     if (led_num == 3) LED3_ON();
+ 2064              		.loc 1 416 8
+ 2065 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2066 003c 032B     		cmp	r3, #3
+ 2067 003e 02D1     		bne	.L121
+ 2068              		.loc 1 416 23 discriminator 1
+ 2069 0040 074B     		ldr	r3, .L124
+ 2070 0042 8022     		movs	r2, #128
+ 2071 0044 9A61     		str	r2, [r3, #24]
+ 2072              	.L121:
+ 417:Core/Src/init.c ****     if (led_num == 4) LED4_ON();
+ 2073              		.loc 1 417 8
+ 2074 0046 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2075 0048 042B     		cmp	r3, #4
+ 2076 004a 02D1     		bne	.L123
+ 2077              		.loc 1 417 23 discriminator 1
+ 2078 004c 054B     		ldr	r3, .L124+4
+ 2079 004e 0122     		movs	r2, #1
+ 2080 0050 9A61     		str	r2, [r3, #24]
+ 2081              	.L123:
+ 418:Core/Src/init.c **** }
+ 2082              		.loc 1 418 1
+ 2083 0052 00BF     		nop
+ 2084 0054 0C37     		adds	r7, r7, #12
+ 2085              	.LCFI80:
+ 2086              		.cfi_def_cfa_offset 4
+ 2087 0056 BD46     		mov	sp, r7
+ 2088              	.LCFI81:
+ 2089              		.cfi_def_cfa_register 13
+ 2090              		@ sp needed
+ 2091 0058 5DF8047B 		ldr	r7, [sp], #4
+ 2092              	.LCFI82:
+ 2093              		.cfi_restore 7
+ 2094              		.cfi_def_cfa_offset 0
+ 2095 005c 7047     		bx	lr
+ 2096              	.L125:
+ 2097 005e 00BF     		.align	2
+ 2098              	.L124:
+ 2099 0060 00000240 		.word	1073872896
+ 2100 0064 00040240 		.word	1073873920
+ 2101              		.cfi_endproc
+ 2102              	.LFE149:
+ 2104              		.section	.text.clear_led_macros,"ax",%progbits
+ 2105              		.align	1
+ 2106              		.global	clear_led_macros
+ 2107              		.syntax unified
+ 2108              		.thumb
+ 2109              		.thumb_func
+ 2111              	clear_led_macros:
+ 2112              	.LFB150:
+ 419:Core/Src/init.c **** 
+ 420:Core/Src/init.c **** void clear_led_macros(uint8_t led_num) {
+ 2113              		.loc 1 420 40
+ 2114              		.cfi_startproc
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 45
+
+
+ 2115              		@ args = 0, pretend = 0, frame = 8
+ 2116              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2117              		@ link register save eliminated.
+ 2118 0000 80B4     		push	{r7}
+ 2119              	.LCFI83:
+ 2120              		.cfi_def_cfa_offset 4
+ 2121              		.cfi_offset 7, -4
+ 2122 0002 83B0     		sub	sp, sp, #12
+ 2123              	.LCFI84:
+ 2124              		.cfi_def_cfa_offset 16
+ 2125 0004 00AF     		add	r7, sp, #0
+ 2126              	.LCFI85:
+ 2127              		.cfi_def_cfa_register 7
+ 2128 0006 0346     		mov	r3, r0
+ 2129 0008 FB71     		strb	r3, [r7, #7]
+ 421:Core/Src/init.c ****     if (led_num == 1) LED1_OFF();
+ 2130              		.loc 1 421 8
+ 2131 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2132 000c 012B     		cmp	r3, #1
+ 2133 000e 11D1     		bne	.L127
+ 2134              		.loc 1 421 23 discriminator 1
+ 2135 0010 164B     		ldr	r3, .L132
+ 2136 0012 1B68     		ldr	r3, [r3]
+ 2137 0014 154A     		ldr	r2, .L132
+ 2138 0016 23F44073 		bic	r3, r3, #768
+ 2139 001a 1360     		str	r3, [r2]
+ 2140 001c 134B     		ldr	r3, .L132
+ 2141 001e DB68     		ldr	r3, [r3, #12]
+ 2142 0020 124A     		ldr	r2, .L132
+ 2143 0022 23F44073 		bic	r3, r3, #768
+ 2144 0026 D360     		str	r3, [r2, #12]
+ 2145 0028 104B     		ldr	r3, .L132
+ 2146 002a DB68     		ldr	r3, [r3, #12]
+ 2147 002c 0F4A     		ldr	r2, .L132
+ 2148 002e 43F48073 		orr	r3, r3, #256
+ 2149 0032 D360     		str	r3, [r2, #12]
+ 2150              	.L127:
+ 422:Core/Src/init.c ****     if (led_num == 2) LED2_OFF();
+ 2151              		.loc 1 422 8
+ 2152 0034 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2153 0036 022B     		cmp	r3, #2
+ 2154 0038 03D1     		bne	.L128
+ 2155              		.loc 1 422 23 discriminator 1
+ 2156 003a 0C4B     		ldr	r3, .L132
+ 2157 003c 4FF48002 		mov	r2, #4194304
+ 2158 0040 9A61     		str	r2, [r3, #24]
+ 2159              	.L128:
+ 423:Core/Src/init.c ****     if (led_num == 3) LED3_OFF();
+ 2160              		.loc 1 423 8
+ 2161 0042 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2162 0044 032B     		cmp	r3, #3
+ 2163 0046 03D1     		bne	.L129
+ 2164              		.loc 1 423 23 discriminator 1
+ 2165 0048 084B     		ldr	r3, .L132
+ 2166 004a 4FF40002 		mov	r2, #8388608
+ 2167 004e 9A61     		str	r2, [r3, #24]
+ 2168              	.L129:
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 46
+
+
+ 424:Core/Src/init.c ****     if (led_num == 4) LED4_OFF();
+ 2169              		.loc 1 424 8
+ 2170 0050 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2171 0052 042B     		cmp	r3, #4
+ 2172 0054 03D1     		bne	.L131
+ 2173              		.loc 1 424 23 discriminator 1
+ 2174 0056 064B     		ldr	r3, .L132+4
+ 2175 0058 4FF48032 		mov	r2, #65536
+ 2176 005c 9A61     		str	r2, [r3, #24]
+ 2177              	.L131:
+ 425:Core/Src/init.c **** }
+ 2178              		.loc 1 425 1
+ 2179 005e 00BF     		nop
+ 2180 0060 0C37     		adds	r7, r7, #12
+ 2181              	.LCFI86:
+ 2182              		.cfi_def_cfa_offset 4
+ 2183 0062 BD46     		mov	sp, r7
+ 2184              	.LCFI87:
+ 2185              		.cfi_def_cfa_register 13
+ 2186              		@ sp needed
+ 2187 0064 5DF8047B 		ldr	r7, [sp], #4
+ 2188              	.LCFI88:
+ 2189              		.cfi_restore 7
+ 2190              		.cfi_def_cfa_offset 0
+ 2191 0068 7047     		bx	lr
+ 2192              	.L133:
+ 2193 006a 00BF     		.align	2
+ 2194              	.L132:
+ 2195 006c 00000240 		.word	1073872896
+ 2196 0070 00040240 		.word	1073873920
+ 2197              		.cfi_endproc
+ 2198              	.LFE150:
+ 2200              		.section	.text.clear_all_leds_macros,"ax",%progbits
+ 2201              		.align	1
+ 2202              		.global	clear_all_leds_macros
+ 2203              		.syntax unified
+ 2204              		.thumb
+ 2205              		.thumb_func
+ 2207              	clear_all_leds_macros:
+ 2208              	.LFB151:
+ 426:Core/Src/init.c **** 
+ 427:Core/Src/init.c **** void clear_all_leds_macros(void) {
+ 2209              		.loc 1 427 34
+ 2210              		.cfi_startproc
+ 2211              		@ args = 0, pretend = 0, frame = 0
+ 2212              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2213 0000 80B5     		push	{r7, lr}
+ 2214              	.LCFI89:
+ 2215              		.cfi_def_cfa_offset 8
+ 2216              		.cfi_offset 7, -8
+ 2217              		.cfi_offset 14, -4
+ 2218 0002 00AF     		add	r7, sp, #0
+ 2219              	.LCFI90:
+ 2220              		.cfi_def_cfa_register 7
+ 428:Core/Src/init.c ****     clear_led_macros(1);
+ 2221              		.loc 1 428 5
+ 2222 0004 0120     		movs	r0, #1
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 47
+
+
+ 2223 0006 FFF7FEFF 		bl	clear_led_macros
+ 429:Core/Src/init.c ****     clear_led_macros(2);
+ 2224              		.loc 1 429 5
+ 2225 000a 0220     		movs	r0, #2
+ 2226 000c FFF7FEFF 		bl	clear_led_macros
+ 430:Core/Src/init.c ****     clear_led_macros(3);
+ 2227              		.loc 1 430 5
+ 2228 0010 0320     		movs	r0, #3
+ 2229 0012 FFF7FEFF 		bl	clear_led_macros
+ 431:Core/Src/init.c ****     clear_led_macros(4);
+ 2230              		.loc 1 431 5
+ 2231 0016 0420     		movs	r0, #4
+ 2232 0018 FFF7FEFF 		bl	clear_led_macros
+ 432:Core/Src/init.c **** }
+ 2233              		.loc 1 432 1
+ 2234 001c 00BF     		nop
+ 2235 001e 80BD     		pop	{r7, pc}
+ 2236              		.cfi_endproc
+ 2237              	.LFE151:
+ 2239              		.section	.text.apply_leds_macros,"ax",%progbits
+ 2240              		.align	1
+ 2241              		.global	apply_leds_macros
+ 2242              		.syntax unified
+ 2243              		.thumb
+ 2244              		.thumb_func
+ 2246              	apply_leds_macros:
+ 2247              	.LFB152:
+ 433:Core/Src/init.c **** 
+ 434:Core/Src/init.c **** void apply_leds_macros(uint8_t led_a_on, uint8_t led_b_on, uint8_t led_c_on) {
+ 2248              		.loc 1 434 78
+ 2249              		.cfi_startproc
+ 2250              		@ args = 0, pretend = 0, frame = 8
+ 2251              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2252 0000 80B5     		push	{r7, lr}
+ 2253              	.LCFI91:
+ 2254              		.cfi_def_cfa_offset 8
+ 2255              		.cfi_offset 7, -8
+ 2256              		.cfi_offset 14, -4
+ 2257 0002 82B0     		sub	sp, sp, #8
+ 2258              	.LCFI92:
+ 2259              		.cfi_def_cfa_offset 16
+ 2260 0004 00AF     		add	r7, sp, #0
+ 2261              	.LCFI93:
+ 2262              		.cfi_def_cfa_register 7
+ 2263 0006 0346     		mov	r3, r0
+ 2264 0008 FB71     		strb	r3, [r7, #7]
+ 2265 000a 0B46     		mov	r3, r1
+ 2266 000c BB71     		strb	r3, [r7, #6]
+ 2267 000e 1346     		mov	r3, r2
+ 2268 0010 7B71     		strb	r3, [r7, #5]
+ 435:Core/Src/init.c ****     if (led_a_on) set_led_macros(2); else clear_led_macros(2);
+ 2269              		.loc 1 435 8
+ 2270 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2271 0014 002B     		cmp	r3, #0
+ 2272 0016 03D0     		beq	.L136
+ 2273              		.loc 1 435 19 discriminator 1
+ 2274 0018 0220     		movs	r0, #2
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 48
+
+
+ 2275 001a FFF7FEFF 		bl	set_led_macros
+ 2276 001e 02E0     		b	.L137
+ 2277              	.L136:
+ 2278              		.loc 1 435 43 discriminator 2
+ 2279 0020 0220     		movs	r0, #2
+ 2280 0022 FFF7FEFF 		bl	clear_led_macros
+ 2281              	.L137:
+ 436:Core/Src/init.c ****     if (led_b_on) set_led_macros(3); else clear_led_macros(3);
+ 2282              		.loc 1 436 8
+ 2283 0026 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 2284 0028 002B     		cmp	r3, #0
+ 2285 002a 03D0     		beq	.L138
+ 2286              		.loc 1 436 19 discriminator 1
+ 2287 002c 0320     		movs	r0, #3
+ 2288 002e FFF7FEFF 		bl	set_led_macros
+ 2289 0032 02E0     		b	.L139
+ 2290              	.L138:
+ 2291              		.loc 1 436 43 discriminator 2
+ 2292 0034 0320     		movs	r0, #3
+ 2293 0036 FFF7FEFF 		bl	clear_led_macros
+ 2294              	.L139:
+ 437:Core/Src/init.c ****     if (led_c_on) set_led_macros(4); else clear_led_macros(4);
+ 2295              		.loc 1 437 8
+ 2296 003a 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
+ 2297 003c 002B     		cmp	r3, #0
+ 2298 003e 03D0     		beq	.L140
+ 2299              		.loc 1 437 19 discriminator 1
+ 2300 0040 0420     		movs	r0, #4
+ 2301 0042 FFF7FEFF 		bl	set_led_macros
+ 438:Core/Src/init.c **** }
+ 2302              		.loc 1 438 1
+ 2303 0046 02E0     		b	.L142
+ 2304              	.L140:
+ 437:Core/Src/init.c ****     if (led_c_on) set_led_macros(4); else clear_led_macros(4);
+ 2305              		.loc 1 437 43 discriminator 2
+ 2306 0048 0420     		movs	r0, #4
+ 2307 004a FFF7FEFF 		bl	clear_led_macros
+ 2308              	.L142:
+ 2309              		.loc 1 438 1
+ 2310 004e 00BF     		nop
+ 2311 0050 0837     		adds	r7, r7, #8
+ 2312              	.LCFI94:
+ 2313              		.cfi_def_cfa_offset 8
+ 2314 0052 BD46     		mov	sp, r7
+ 2315              	.LCFI95:
+ 2316              		.cfi_def_cfa_register 13
+ 2317              		@ sp needed
+ 2318 0054 80BD     		pop	{r7, pc}
+ 2319              		.cfi_endproc
+ 2320              	.LFE152:
+ 2322              		.section	.text.read_btn1_macros,"ax",%progbits
+ 2323              		.align	1
+ 2324              		.global	read_btn1_macros
+ 2325              		.syntax unified
+ 2326              		.thumb
+ 2327              		.thumb_func
+ 2329              	read_btn1_macros:
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 49
+
+
+ 2330              	.LFB153:
+ 439:Core/Src/init.c **** 
+ 440:Core/Src/init.c **** uint8_t read_btn1_macros(void) {
+ 2331              		.loc 1 440 32
+ 2332              		.cfi_startproc
+ 2333              		@ args = 0, pretend = 0, frame = 0
+ 2334              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2335              		@ link register save eliminated.
+ 2336 0000 80B4     		push	{r7}
+ 2337              	.LCFI96:
+ 2338              		.cfi_def_cfa_offset 4
+ 2339              		.cfi_offset 7, -4
+ 2340 0002 00AF     		add	r7, sp, #0
+ 2341              	.LCFI97:
+ 2342              		.cfi_def_cfa_register 7
+ 441:Core/Src/init.c ****     return BTN1_PRESSED() ? 1u : 0u;
+ 2343              		.loc 1 441 12
+ 2344 0004 0A4B     		ldr	r3, .L147
+ 2345 0006 1B68     		ldr	r3, [r3]
+ 2346 0008 1B0A     		lsrs	r3, r3, #8
+ 2347 000a 03F00303 		and	r3, r3, #3
+ 2348              		.loc 1 441 32
+ 2349 000e 002B     		cmp	r3, #0
+ 2350 0010 08D1     		bne	.L144
+ 2351              		.loc 1 441 12 discriminator 1
+ 2352 0012 074B     		ldr	r3, .L147
+ 2353 0014 1B69     		ldr	r3, [r3, #16]
+ 2354 0016 1B09     		lsrs	r3, r3, #4
+ 2355 0018 03F00103 		and	r3, r3, #1
+ 2356 001c 002B     		cmp	r3, #0
+ 2357 001e 01D1     		bne	.L144
+ 2358              		.loc 1 441 32 discriminator 3
+ 2359 0020 0123     		movs	r3, #1
+ 2360              		.loc 1 441 32 is_stmt 0
+ 2361 0022 00E0     		b	.L145
+ 2362              	.L144:
+ 2363              		.loc 1 441 32 discriminator 4
+ 2364 0024 0023     		movs	r3, #0
+ 2365              	.L145:
+ 442:Core/Src/init.c **** }
+ 2366              		.loc 1 442 1 is_stmt 1
+ 2367 0026 1846     		mov	r0, r3
+ 2368 0028 BD46     		mov	sp, r7
+ 2369              	.LCFI98:
+ 2370              		.cfi_def_cfa_register 13
+ 2371              		@ sp needed
+ 2372 002a 5DF8047B 		ldr	r7, [sp], #4
+ 2373              	.LCFI99:
+ 2374              		.cfi_restore 7
+ 2375              		.cfi_def_cfa_offset 0
+ 2376 002e 7047     		bx	lr
+ 2377              	.L148:
+ 2378              		.align	2
+ 2379              	.L147:
+ 2380 0030 00000240 		.word	1073872896
+ 2381              		.cfi_endproc
+ 2382              	.LFE153:
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 50
+
+
+ 2384              		.section	.text.read_btn2_macros,"ax",%progbits
+ 2385              		.align	1
+ 2386              		.global	read_btn2_macros
+ 2387              		.syntax unified
+ 2388              		.thumb
+ 2389              		.thumb_func
+ 2391              	read_btn2_macros:
+ 2392              	.LFB154:
+ 443:Core/Src/init.c **** 
+ 444:Core/Src/init.c **** uint8_t read_btn2_macros(void) {
+ 2393              		.loc 1 444 32
+ 2394              		.cfi_startproc
+ 2395              		@ args = 0, pretend = 0, frame = 0
+ 2396              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2397              		@ link register save eliminated.
+ 2398 0000 80B4     		push	{r7}
+ 2399              	.LCFI100:
+ 2400              		.cfi_def_cfa_offset 4
+ 2401              		.cfi_offset 7, -4
+ 2402 0002 00AF     		add	r7, sp, #0
+ 2403              	.LCFI101:
+ 2404              		.cfi_def_cfa_register 7
+ 445:Core/Src/init.c ****     return BTN2_PRESSED() ? 1u : 0u;
+ 2405              		.loc 1 445 12
+ 2406 0004 064B     		ldr	r3, .L153
+ 2407 0006 1B69     		ldr	r3, [r3, #16]
+ 2408 0008 03F00103 		and	r3, r3, #1
+ 2409              		.loc 1 445 32
+ 2410 000c 002B     		cmp	r3, #0
+ 2411 000e 01D1     		bne	.L150
+ 2412              		.loc 1 445 32 is_stmt 0 discriminator 1
+ 2413 0010 0123     		movs	r3, #1
+ 2414 0012 00E0     		b	.L151
+ 2415              	.L150:
+ 2416              		.loc 1 445 32 discriminator 2
+ 2417 0014 0023     		movs	r3, #0
+ 2418              	.L151:
+ 446:Core/Src/init.c **** }
+ 2419              		.loc 1 446 1 is_stmt 1
+ 2420 0016 1846     		mov	r0, r3
+ 2421 0018 BD46     		mov	sp, r7
+ 2422              	.LCFI102:
+ 2423              		.cfi_def_cfa_register 13
+ 2424              		@ sp needed
+ 2425 001a 5DF8047B 		ldr	r7, [sp], #4
+ 2426              	.LCFI103:
+ 2427              		.cfi_restore 7
+ 2428              		.cfi_def_cfa_offset 0
+ 2429 001e 7047     		bx	lr
+ 2430              	.L154:
+ 2431              		.align	2
+ 2432              	.L153:
+ 2433 0020 00000240 		.word	1073872896
+ 2434              		.cfi_endproc
+ 2435              	.LFE154:
+ 2437              		.section	.text.do_with_macros,"ax",%progbits
+ 2438              		.align	1
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 51
+
+
+ 2439              		.global	do_with_macros
+ 2440              		.syntax unified
+ 2441              		.thumb
+ 2442              		.thumb_func
+ 2444              	do_with_macros:
+ 2445              	.LFB155:
+ 447:Core/Src/init.c **** 
+ 448:Core/Src/init.c **** void do_with_macros(){
+ 2446              		.loc 1 448 22
+ 2447              		.cfi_startproc
+ 2448              		@ args = 0, pretend = 0, frame = 16
+ 2449              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2450 0000 80B5     		push	{r7, lr}
+ 2451              	.LCFI104:
+ 2452              		.cfi_def_cfa_offset 8
+ 2453              		.cfi_offset 7, -8
+ 2454              		.cfi_offset 14, -4
+ 2455 0002 84B0     		sub	sp, sp, #16
+ 2456              	.LCFI105:
+ 2457              		.cfi_def_cfa_offset 24
+ 2458 0004 00AF     		add	r7, sp, #0
+ 2459              	.LCFI106:
+ 2460              		.cfi_def_cfa_register 7
+ 449:Core/Src/init.c ****     uint8_t led_a_on = 0;   //PA6
+ 2461              		.loc 1 449 13
+ 2462 0006 0023     		movs	r3, #0
+ 2463 0008 FB73     		strb	r3, [r7, #15]
+ 450:Core/Src/init.c ****     uint8_t led_b_on = 0;   //PA7
+ 2464              		.loc 1 450 13
+ 2465 000a 0023     		movs	r3, #0
+ 2466 000c BB73     		strb	r3, [r7, #14]
+ 451:Core/Src/init.c ****     uint8_t led_c_on = 0;   //PB0
+ 2467              		.loc 1 451 13
+ 2468 000e 0023     		movs	r3, #0
+ 2469 0010 7B73     		strb	r3, [r7, #13]
+ 452:Core/Src/init.c **** 
+ 453:Core/Src/init.c ****     uint8_t saved_a = 0;    //состояние PA6
+ 2470              		.loc 1 453 13
+ 2471 0012 0023     		movs	r3, #0
+ 2472 0014 3B73     		strb	r3, [r7, #12]
+ 454:Core/Src/init.c ****     uint8_t saved_b = 0;    //состояние PA7
+ 2473              		.loc 1 454 13
+ 2474 0016 0023     		movs	r3, #0
+ 2475 0018 FB72     		strb	r3, [r7, #11]
+ 455:Core/Src/init.c ****     uint8_t saved_c = 0;    //состояние PB0
+ 2476              		.loc 1 455 13
+ 2477 001a 0023     		movs	r3, #0
+ 2478 001c BB72     		strb	r3, [r7, #10]
+ 456:Core/Src/init.c **** 
+ 457:Core/Src/init.c ****     uint8_t btn2_pressed = 0;   // 0 - поочередное включение, 1 - PA4 гори�
+ 2479              		.loc 1 457 13
+ 2480 001e 0023     		movs	r3, #0
+ 2481 0020 7B72     		strb	r3, [r7, #9]
+ 458:Core/Src/init.c ****     uint8_t btn1_released = 1;  //первая кнопка отпущена
+ 2482              		.loc 1 458 13
+ 2483 0022 0123     		movs	r3, #1
+ 2484 0024 3B72     		strb	r3, [r7, #8]
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 52
+
+
+ 459:Core/Src/init.c **** 
+ 460:Core/Src/init.c ****     GPIO_Init_macros();
+ 2485              		.loc 1 460 5
+ 2486 0026 FFF7FEFF 		bl	GPIO_Init_macros
+ 461:Core/Src/init.c ****     apply_leds_macros(led_a_on, led_b_on, led_c_on);
+ 2487              		.loc 1 461 5
+ 2488 002a 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 2489 002c B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 2490 002e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 2491 0030 1846     		mov	r0, r3
+ 2492 0032 FFF7FEFF 		bl	apply_leds_macros
+ 2493              	.L168:
+ 2494              	.LBB7:
+ 462:Core/Src/init.c **** 
+ 463:Core/Src/init.c ****     while (1) {
+ 464:Core/Src/init.c ****         //вторая кнопка: первое нажатие
+ 465:Core/Src/init.c ****         uint8_t btn2_now = read_btn2_macros();
+ 2495              		.loc 1 465 28
+ 2496 0036 FFF7FEFF 		bl	read_btn2_macros
+ 2497 003a 0346     		mov	r3, r0
+ 2498 003c FB71     		strb	r3, [r7, #7]
+ 466:Core/Src/init.c ****         if (btn2_now == 1 && btn2_pressed == 0) {
+ 2499              		.loc 1 466 12
+ 2500 003e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2501 0040 012B     		cmp	r3, #1
+ 2502 0042 2AD1     		bne	.L156
+ 2503              		.loc 1 466 27 discriminator 1
+ 2504 0044 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 2505 0046 002B     		cmp	r3, #0
+ 2506 0048 27D1     		bne	.L156
+ 467:Core/Src/init.c ****             delay_ms(20);
+ 2507              		.loc 1 467 13
+ 2508 004a 1420     		movs	r0, #20
+ 2509 004c FFF7FEFF 		bl	delay_ms
+ 468:Core/Src/init.c **** 
+ 469:Core/Src/init.c ****             if (read_btn2_macros() == 1) {
+ 2510              		.loc 1 469 17
+ 2511 0050 FFF7FEFF 		bl	read_btn2_macros
+ 2512 0054 0346     		mov	r3, r0
+ 2513              		.loc 1 469 16 discriminator 1
+ 2514 0056 012B     		cmp	r3, #1
+ 2515 0058 1FD1     		bne	.L156
+ 470:Core/Src/init.c ****                 btn2_pressed = 1;
+ 2516              		.loc 1 470 30
+ 2517 005a 0123     		movs	r3, #1
+ 2518 005c 7B72     		strb	r3, [r7, #9]
+ 471:Core/Src/init.c ****                 //запись состояния трёх светодиодов
+ 472:Core/Src/init.c ****                 saved_a = led_a_on;
+ 2519              		.loc 1 472 25
+ 2520 005e FB7B     		ldrb	r3, [r7, #15]
+ 2521 0060 3B73     		strb	r3, [r7, #12]
+ 473:Core/Src/init.c ****                 saved_b = led_b_on;
+ 2522              		.loc 1 473 25
+ 2523 0062 BB7B     		ldrb	r3, [r7, #14]
+ 2524 0064 FB72     		strb	r3, [r7, #11]
+ 474:Core/Src/init.c ****                 saved_c = led_c_on;
+ 2525              		.loc 1 474 25
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 53
+
+
+ 2526 0066 7B7B     		ldrb	r3, [r7, #13]
+ 2527 0068 BB72     		strb	r3, [r7, #10]
+ 475:Core/Src/init.c ****                 //выключаем
+ 476:Core/Src/init.c ****                 led_a_on = 0;
+ 2528              		.loc 1 476 26
+ 2529 006a 0023     		movs	r3, #0
+ 2530 006c FB73     		strb	r3, [r7, #15]
+ 477:Core/Src/init.c ****                 led_b_on = 0;
+ 2531              		.loc 1 477 26
+ 2532 006e 0023     		movs	r3, #0
+ 2533 0070 BB73     		strb	r3, [r7, #14]
+ 478:Core/Src/init.c ****                 led_c_on = 0;
+ 2534              		.loc 1 478 26
+ 2535 0072 0023     		movs	r3, #0
+ 2536 0074 7B73     		strb	r3, [r7, #13]
+ 479:Core/Src/init.c ****                 apply_leds_macros(led_a_on, led_b_on, led_c_on);
+ 2537              		.loc 1 479 17
+ 2538 0076 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 2539 0078 B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 2540 007a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 2541 007c 1846     		mov	r0, r3
+ 2542 007e FFF7FEFF 		bl	apply_leds_macros
+ 480:Core/Src/init.c **** 
+ 481:Core/Src/init.c ****                 //включаем первый светодиод (PA4 = выход на 3.3 В)
+ 482:Core/Src/init.c ****                 set_led_macros(1);
+ 2543              		.loc 1 482 17
+ 2544 0082 0120     		movs	r0, #1
+ 2545 0084 FFF7FEFF 		bl	set_led_macros
+ 483:Core/Src/init.c **** 
+ 484:Core/Src/init.c ****                 //ожидание отпускания
+ 485:Core/Src/init.c ****                 while (read_btn2_macros() == 1) {
+ 2546              		.loc 1 485 23
+ 2547 0088 02E0     		b	.L157
+ 2548              	.L158:
+ 486:Core/Src/init.c ****                     delay_ms(1);
+ 2549              		.loc 1 486 21
+ 2550 008a 0120     		movs	r0, #1
+ 2551 008c FFF7FEFF 		bl	delay_ms
+ 2552              	.L157:
+ 485:Core/Src/init.c ****                     delay_ms(1);
+ 2553              		.loc 1 485 24
+ 2554 0090 FFF7FEFF 		bl	read_btn2_macros
+ 2555 0094 0346     		mov	r3, r0
+ 485:Core/Src/init.c ****                     delay_ms(1);
+ 2556              		.loc 1 485 43 discriminator 1
+ 2557 0096 012B     		cmp	r3, #1
+ 2558 0098 F7D0     		beq	.L158
+ 2559              	.L156:
+ 487:Core/Src/init.c ****                 }
+ 488:Core/Src/init.c ****             }
+ 489:Core/Src/init.c ****         }
+ 490:Core/Src/init.c ****         //второе нажатие
+ 491:Core/Src/init.c ****         if (btn2_now == 1 && btn2_pressed == 1) {
+ 2560              		.loc 1 491 12
+ 2561 009a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 2562 009c 012B     		cmp	r3, #1
+ 2563 009e 24D1     		bne	.L159
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 54
+
+
+ 2564              		.loc 1 491 27 discriminator 1
+ 2565 00a0 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 2566 00a2 012B     		cmp	r3, #1
+ 2567 00a4 21D1     		bne	.L159
+ 492:Core/Src/init.c ****             delay_ms(20);
+ 2568              		.loc 1 492 13
+ 2569 00a6 1420     		movs	r0, #20
+ 2570 00a8 FFF7FEFF 		bl	delay_ms
+ 493:Core/Src/init.c ****             if (read_btn2_macros() == 1) {
+ 2571              		.loc 1 493 17
+ 2572 00ac FFF7FEFF 		bl	read_btn2_macros
+ 2573 00b0 0346     		mov	r3, r0
+ 2574              		.loc 1 493 16 discriminator 1
+ 2575 00b2 012B     		cmp	r3, #1
+ 2576 00b4 19D1     		bne	.L159
+ 494:Core/Src/init.c ****                 btn2_pressed = 0;
+ 2577              		.loc 1 494 30
+ 2578 00b6 0023     		movs	r3, #0
+ 2579 00b8 7B72     		strb	r3, [r7, #9]
+ 495:Core/Src/init.c ****                 //выключаем первый светодиод (PA4 - вход, pull-up)
+ 496:Core/Src/init.c ****                 clear_led_macros(1);
+ 2580              		.loc 1 496 17
+ 2581 00ba 0120     		movs	r0, #1
+ 2582 00bc FFF7FEFF 		bl	clear_led_macros
+ 497:Core/Src/init.c **** 
+ 498:Core/Src/init.c ****                 //возврат состояний
+ 499:Core/Src/init.c ****                 led_a_on = saved_a;
+ 2583              		.loc 1 499 26
+ 2584 00c0 3B7B     		ldrb	r3, [r7, #12]
+ 2585 00c2 FB73     		strb	r3, [r7, #15]
+ 500:Core/Src/init.c ****                 led_b_on = saved_b;
+ 2586              		.loc 1 500 26
+ 2587 00c4 FB7A     		ldrb	r3, [r7, #11]
+ 2588 00c6 BB73     		strb	r3, [r7, #14]
+ 501:Core/Src/init.c ****                 led_c_on = saved_c;
+ 2589              		.loc 1 501 26
+ 2590 00c8 BB7A     		ldrb	r3, [r7, #10]
+ 2591 00ca 7B73     		strb	r3, [r7, #13]
+ 502:Core/Src/init.c ****                 apply_leds_macros(led_a_on, led_b_on, led_c_on);
+ 2592              		.loc 1 502 17
+ 2593 00cc 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 2594 00ce B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 2595 00d0 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 2596 00d2 1846     		mov	r0, r3
+ 2597 00d4 FFF7FEFF 		bl	apply_leds_macros
+ 503:Core/Src/init.c **** 
+ 504:Core/Src/init.c ****                 //ожидание отпускания
+ 505:Core/Src/init.c ****                 while (read_btn2_macros() == 1) {
+ 2598              		.loc 1 505 23
+ 2599 00d8 02E0     		b	.L160
+ 2600              	.L161:
+ 506:Core/Src/init.c ****                     delay_ms(1);
+ 2601              		.loc 1 506 21
+ 2602 00da 0120     		movs	r0, #1
+ 2603 00dc FFF7FEFF 		bl	delay_ms
+ 2604              	.L160:
+ 505:Core/Src/init.c ****                     delay_ms(1);
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 55
+
+
+ 2605              		.loc 1 505 24
+ 2606 00e0 FFF7FEFF 		bl	read_btn2_macros
+ 2607 00e4 0346     		mov	r3, r0
+ 505:Core/Src/init.c ****                     delay_ms(1);
+ 2608              		.loc 1 505 43 discriminator 1
+ 2609 00e6 012B     		cmp	r3, #1
+ 2610 00e8 F7D0     		beq	.L161
+ 2611              	.L159:
+ 507:Core/Src/init.c ****                 }
+ 508:Core/Src/init.c ****             }
+ 509:Core/Src/init.c ****         }
+ 510:Core/Src/init.c ****         //первая кнопка
+ 511:Core/Src/init.c ****         if (btn2_pressed == 0) {
+ 2612              		.loc 1 511 12
+ 2613 00ea 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 2614 00ec 002B     		cmp	r3, #0
+ 2615 00ee A2D1     		bne	.L168
+ 2616              	.LBB8:
+ 512:Core/Src/init.c ****             uint8_t btn1_now = read_btn1_macros();
+ 2617              		.loc 1 512 32
+ 2618 00f0 FFF7FEFF 		bl	read_btn1_macros
+ 2619 00f4 0346     		mov	r3, r0
+ 2620 00f6 BB71     		strb	r3, [r7, #6]
+ 513:Core/Src/init.c ****             //ожидание отпускания
+ 514:Core/Src/init.c ****             if (btn1_now == 0) {
+ 2621              		.loc 1 514 16
+ 2622 00f8 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 2623 00fa 002B     		cmp	r3, #0
+ 2624 00fc 0CD1     		bne	.L163
+ 515:Core/Src/init.c ****                 if (btn1_released == 0) {
+ 2625              		.loc 1 515 20
+ 2626 00fe 3B7A     		ldrb	r3, [r7, #8]	@ zero_extendqisi2
+ 2627 0100 002B     		cmp	r3, #0
+ 2628 0102 09D1     		bne	.L163
+ 516:Core/Src/init.c ****                     delay_ms(20);
+ 2629              		.loc 1 516 21
+ 2630 0104 1420     		movs	r0, #20
+ 2631 0106 FFF7FEFF 		bl	delay_ms
+ 517:Core/Src/init.c ****                     if (read_btn1_macros() == 0) {
+ 2632              		.loc 1 517 25
+ 2633 010a FFF7FEFF 		bl	read_btn1_macros
+ 2634 010e 0346     		mov	r3, r0
+ 2635              		.loc 1 517 24 discriminator 1
+ 2636 0110 002B     		cmp	r3, #0
+ 2637 0112 01D1     		bne	.L163
+ 518:Core/Src/init.c ****                         btn1_released = 1;
+ 2638              		.loc 1 518 39
+ 2639 0114 0123     		movs	r3, #1
+ 2640 0116 3B72     		strb	r3, [r7, #8]
+ 2641              	.L163:
+ 519:Core/Src/init.c ****                     }
+ 520:Core/Src/init.c ****                 }
+ 521:Core/Src/init.c ****             }
+ 522:Core/Src/init.c ****             //считывание нажатия
+ 523:Core/Src/init.c ****             if (btn1_now == 1 && btn1_released == 1) {
+ 2642              		.loc 1 523 16
+ 2643 0118 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 56
+
+
+ 2644 011a 012B     		cmp	r3, #1
+ 2645 011c 8BD1     		bne	.L168
+ 2646              		.loc 1 523 31 discriminator 1
+ 2647 011e 3B7A     		ldrb	r3, [r7, #8]	@ zero_extendqisi2
+ 2648 0120 012B     		cmp	r3, #1
+ 2649 0122 88D1     		bne	.L168
+ 524:Core/Src/init.c ****                 delay_ms(20);
+ 2650              		.loc 1 524 17
+ 2651 0124 1420     		movs	r0, #20
+ 2652 0126 FFF7FEFF 		bl	delay_ms
+ 525:Core/Src/init.c **** 
+ 526:Core/Src/init.c ****                 if (read_btn1_macros() == 1) {
+ 2653              		.loc 1 526 21
+ 2654 012a FFF7FEFF 		bl	read_btn1_macros
+ 2655 012e 0346     		mov	r3, r0
+ 2656              		.loc 1 526 20 discriminator 1
+ 2657 0130 012B     		cmp	r3, #1
+ 2658 0132 80D1     		bne	.L168
+ 527:Core/Src/init.c ****                     btn1_released = 0;
+ 2659              		.loc 1 527 35
+ 2660 0134 0023     		movs	r3, #0
+ 2661 0136 3B72     		strb	r3, [r7, #8]
+ 528:Core/Src/init.c **** 
+ 529:Core/Src/init.c ****                     //поочерное включение
+ 530:Core/Src/init.c ****                     if (!led_a_on && !led_b_on && !led_c_on) {
+ 2662              		.loc 1 530 24
+ 2663 0138 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 2664 013a 002B     		cmp	r3, #0
+ 2665 013c 08D1     		bne	.L164
+ 2666              		.loc 1 530 35 discriminator 1
+ 2667 013e BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 2668 0140 002B     		cmp	r3, #0
+ 2669 0142 05D1     		bne	.L164
+ 2670              		.loc 1 530 48 discriminator 2
+ 2671 0144 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 2672 0146 002B     		cmp	r3, #0
+ 2673 0148 02D1     		bne	.L164
+ 531:Core/Src/init.c ****                         led_a_on = 1;
+ 2674              		.loc 1 531 34
+ 2675 014a 0123     		movs	r3, #1
+ 2676 014c FB73     		strb	r3, [r7, #15]
+ 2677 014e 26E0     		b	.L165
+ 2678              	.L164:
+ 532:Core/Src/init.c ****                     } else if (led_a_on && !led_b_on && !led_c_on) {
+ 2679              		.loc 1 532 31
+ 2680 0150 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 2681 0152 002B     		cmp	r3, #0
+ 2682 0154 08D0     		beq	.L166
+ 2683              		.loc 1 532 41 discriminator 1
+ 2684 0156 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 2685 0158 002B     		cmp	r3, #0
+ 2686 015a 05D1     		bne	.L166
+ 2687              		.loc 1 532 54 discriminator 2
+ 2688 015c 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 2689 015e 002B     		cmp	r3, #0
+ 2690 0160 02D1     		bne	.L166
+ 533:Core/Src/init.c ****                         led_b_on = 1;
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 57
+
+
+ 2691              		.loc 1 533 34
+ 2692 0162 0123     		movs	r3, #1
+ 2693 0164 BB73     		strb	r3, [r7, #14]
+ 2694 0166 1AE0     		b	.L165
+ 2695              	.L166:
+ 534:Core/Src/init.c ****                     } else if (led_a_on && led_b_on && !led_c_on) {
+ 2696              		.loc 1 534 31
+ 2697 0168 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 2698 016a 002B     		cmp	r3, #0
+ 2699 016c 08D0     		beq	.L167
+ 2700              		.loc 1 534 41 discriminator 1
+ 2701 016e BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 2702 0170 002B     		cmp	r3, #0
+ 2703 0172 05D0     		beq	.L167
+ 2704              		.loc 1 534 53 discriminator 2
+ 2705 0174 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 2706 0176 002B     		cmp	r3, #0
+ 2707 0178 02D1     		bne	.L167
+ 535:Core/Src/init.c ****                         led_c_on = 1;
+ 2708              		.loc 1 535 34
+ 2709 017a 0123     		movs	r3, #1
+ 2710 017c 7B73     		strb	r3, [r7, #13]
+ 2711 017e 0EE0     		b	.L165
+ 2712              	.L167:
+ 536:Core/Src/init.c ****                     } else if (led_a_on && led_b_on && led_c_on) {
+ 2713              		.loc 1 536 31
+ 2714 0180 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 2715 0182 002B     		cmp	r3, #0
+ 2716 0184 0BD0     		beq	.L165
+ 2717              		.loc 1 536 41 discriminator 1
+ 2718 0186 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 2719 0188 002B     		cmp	r3, #0
+ 2720 018a 08D0     		beq	.L165
+ 2721              		.loc 1 536 53 discriminator 2
+ 2722 018c 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
+ 2723 018e 002B     		cmp	r3, #0
+ 2724 0190 05D0     		beq	.L165
+ 537:Core/Src/init.c ****                         led_a_on = 0;
+ 2725              		.loc 1 537 34
+ 2726 0192 0023     		movs	r3, #0
+ 2727 0194 FB73     		strb	r3, [r7, #15]
+ 538:Core/Src/init.c ****                         led_b_on = 0;
+ 2728              		.loc 1 538 34
+ 2729 0196 0023     		movs	r3, #0
+ 2730 0198 BB73     		strb	r3, [r7, #14]
+ 539:Core/Src/init.c ****                         led_c_on = 0;
+ 2731              		.loc 1 539 34
+ 2732 019a 0023     		movs	r3, #0
+ 2733 019c 7B73     		strb	r3, [r7, #13]
+ 2734              	.L165:
+ 540:Core/Src/init.c ****                     }
+ 541:Core/Src/init.c ****                     apply_leds_macros(led_a_on, led_b_on, led_c_on);
+ 2735              		.loc 1 541 21
+ 2736 019e 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 2737 01a0 B97B     		ldrb	r1, [r7, #14]	@ zero_extendqisi2
+ 2738 01a2 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 2739 01a4 1846     		mov	r0, r3
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 58
+
+
+ 2740 01a6 FFF7FEFF 		bl	apply_leds_macros
+ 2741              	.LBE8:
+ 2742              	.LBE7:
+ 463:Core/Src/init.c ****         //вторая кнопка: первое нажатие
+ 2743              		.loc 1 463 15
+ 2744 01aa 44E7     		b	.L168
+ 2745              		.cfi_endproc
+ 2746              	.LFE155:
+ 2748              		.text
+ 2749              	.Letext0:
+ 2750              		.file 2 "C:/CMPT/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_t
+ 2751              		.file 3 "C:/CMPT/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 2752              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 59
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 init.c
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:21     .text.GPIO_Init_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:27     .text.GPIO_Init_CMSIS:00000000 GPIO_Init_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:333    .text.clear_all_leds_CMSIS:00000000 clear_all_leds_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:115    .text.GPIO_Init_CMSIS:00000090 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:122    .text.set_led_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:128    .text.set_led_CMSIS:00000000 set_led_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:220    .text.set_led_CMSIS:00000078 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:226    .text.clear_led_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:232    .text.clear_led_CMSIS:00000000 clear_led_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:321    .text.clear_led_CMSIS:0000006c $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:327    .text.clear_all_leds_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:366    .text.apply_leds_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:372    .text.apply_leds_CMSIS:00000000 apply_leds_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:449    .text.update_leds_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:455    .text.update_leds_CMSIS:00000000 update_leds_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:521    .text.read_btn1_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:527    .text.read_btn1_CMSIS:00000000 read_btn1_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:578    .text.read_btn1_CMSIS:0000002c $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:583    .text.read_btn2_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:589    .text.read_btn2_CMSIS:00000000 read_btn2_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:632    .text.read_btn2_CMSIS:00000020 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:637    .text.delay_ms:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:643    .text.delay_ms:00000000 delay_ms
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:711    .text.do_with_CMSIS:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:717    .text.do_with_CMSIS:00000000 do_with_CMSIS
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1020   .text.GPIO_Init_without_CMSIS_and_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1026   .text.GPIO_Init_without_CMSIS_and_macros:00000000 GPIO_Init_without_CMSIS_and_macros
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1355   .text.clear_all_leds_without:00000000 clear_all_leds_without
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1132   .text.GPIO_Init_without_CMSIS_and_macros:0000009c $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1140   .text.set_led_without:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1146   .text.set_led_without:00000000 set_led_without
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1236   .text.set_led_without:00000060 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1243   .text.clear_led_without:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1249   .text.clear_led_without:00000000 clear_led_without
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1341   .text.clear_led_without:0000006c $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1349   .text.clear_all_leds_without:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1388   .text.read_btn1_without:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1394   .text.read_btn1_without:00000000 read_btn1_without
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1445   .text.read_btn1_without:0000002c $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1451   .text.read_btn2_without:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1457   .text.read_btn2_without:00000000 read_btn2_without
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1500   .text.read_btn2_without:00000020 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1505   .text.apply_leds_without:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1511   .text.apply_leds_without:00000000 apply_leds_without
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1588   .text.do_without_CMSIS_and_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1594   .text.do_without_CMSIS_and_macros:00000000 do_without_CMSIS_and_macros
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1897   .text.GPIO_Init_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:1903   .text.GPIO_Init_macros:00000000 GPIO_Init_macros
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2207   .text.clear_all_leds_macros:00000000 clear_all_leds_macros
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2004   .text.GPIO_Init_macros:000000b4 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2011   .text.set_led_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2017   .text.set_led_macros:00000000 set_led_macros
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2099   .text.set_led_macros:00000060 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2105   .text.clear_led_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2111   .text.clear_led_macros:00000000 clear_led_macros
+ARM GAS  C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s 			page 60
+
+
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2195   .text.clear_led_macros:0000006c $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2201   .text.clear_all_leds_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2240   .text.apply_leds_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2246   .text.apply_leds_macros:00000000 apply_leds_macros
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2323   .text.read_btn1_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2329   .text.read_btn1_macros:00000000 read_btn1_macros
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2380   .text.read_btn1_macros:00000030 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2385   .text.read_btn2_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2391   .text.read_btn2_macros:00000000 read_btn2_macros
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2433   .text.read_btn2_macros:00000020 $d
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2438   .text.do_with_macros:00000000 $t
+C:\Users\LaBuBa\AppData\Local\Temp\ccm5jdZC.s:2444   .text.do_with_macros:00000000 do_with_macros
+
+NO UNDEFINED SYMBOLS

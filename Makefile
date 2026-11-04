@@ -24,7 +24,7 @@ TARGET_VERSION = ZI
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -Og
+OPT = -O0
 
 #######################################
 # paths
@@ -101,7 +101,7 @@ else ifeq ($(TARGET_SERIES), STM32F411)
 	MFPU = fpv4-sp-d16
 	TRGT_CFG = stm32f4x
 else ifeq ($(TARGET_SERIES), STM32F429)
-	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c CMSIS/Devices/Src/syscalls.c CMSIS/Devices/Src/sysmem.c
 	ASM = STMDevices/STM32F429xx/startup_stm32f429xx.s
 	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
 	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F429xx
@@ -133,9 +133,9 @@ endif
 ######################################
 # C sources
 C_SOURCES =  \
-$(SYS) \
-Core/Src/main.c \
-
+	$(SYS) \
+	Core/Src/init.c \
+	Core/Src/main.c 
 # ASM sources
 ASM_SOURCES =  \
 $(ASM)
@@ -193,6 +193,8 @@ C_INCLUDES =  \
 -I$(CMSIS_INC_UNIT) \
 -I$(CMSIS_INC) \
 -ICore/Inc \
+-ICMSIS/Devices \
+-ICMSIS/Include 
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
@@ -210,13 +212,12 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = $(LD) -Wl,--no-warn-rwx-segment # "-Wl,--no-warn-rwx-segment" - отключает вывод предупреждения о том,
-#										   # что .elf содержит сегмент LOAD с правами RWX (Read, Write, X)
-#										   # Нужно разбораться с этой проблемой  
-#										   #
+LDSCRIPT = $(LD) 
+
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
+#LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).map,--cref -Wl,--gc-sections -Wl,--no-warn-rwx-segment
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).map,--cref -Wl,--gc-sections
 
 # default action: build all
@@ -255,13 +256,14 @@ $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf: $(OBJECTS) Makefile
 	@echo "-----------------------------------------------------"	
 
 $(BUILD_DIR):
-	@"mkdir" $@
+	@mkdir $@
 
 #######################################
 # clean up
 #######################################
 clean:
-	@"rm" -fR $(BUILD_DIR)
+	@if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
+	@echo clean $(BUILD_DIR) is done!
   
 #######################################
 # openocd
