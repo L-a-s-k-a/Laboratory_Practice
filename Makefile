@@ -16,8 +16,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F429
-TARGET_VERSION = ZI
+TARGET_SERIES = STM32F756
+TARGET_VERSION = ZG
 
 ######################################
 # building variables
@@ -152,7 +152,7 @@ C_SOURCES =  \
 $(SYS) \
 Core/src/main.c \
 Core/src/init.c \
-# Core/src/it_handlers.c \
+Core/src/it_handlers.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -285,7 +285,10 @@ clean:
 # openocd
 #######################################
 flash: all
-	openocd -f interface/stlink.cfg -f target/$(TRGT_CFG).cfg -c "program $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf verify reset exit"
+	openocd -f interface/stlink.cfg -f target/$(TRGT_CFG).cfg \
+			-c "reset_config srst_only srst_nogate connect_assert_srst" \
+			-c "program $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf verify reset exit"
+# 	openocd -f interface/stlink.cfg -f target/$(TRGT_CFG).cfg -c "program $(BUILD_DIR)/$(TARGET_SERIES)$(TARGET_VERSION).elf verify reset exit"
 	@echo "=================================="
 	@echo "|| The download was successful! ||"
 	@echo "=================================="
