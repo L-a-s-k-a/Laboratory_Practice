@@ -1,5 +1,4 @@
 #include <stdint.h>
-//#include <init.h>
 #include <stm32f429xx.h>
 #define MAX_TIME_LED 5.32e6
 #define MAX_TIME_SHIM 100
