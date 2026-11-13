@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccW3nnrK.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccmyddzc.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,11 +20,185 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccW3nnrK.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/init.c"
-  20              	.Letext0:
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccW3nnrK.s 			page 2
+  20              		.section	.text.GPIO_Ini,"ax",%progbits
+  21              		.align	1
+  22              		.global	GPIO_Ini
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Ini:
+  28              	.LFB130:
+   1:Core/Src/init.c **** #include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** void GPIO_Ini(void) {
+  29              		.loc 1 3 21 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   4:Core/Src/init.c ****     // Включение тактирования портов GPIOB и GPIOC через CMSIS
+   5:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+  34              		.loc 1 5 5 view .LVU1
+  35 0000 304A     		ldr	r2, .L2
+  36 0002 136B     		ldr	r3, [r2, #48]
+  37 0004 43F00603 		orr	r3, r3, #6
+  38 0008 1363     		str	r3, [r2, #48]
+   6:Core/Src/init.c **** 
+   7:Core/Src/init.c ****     /* 
+   8:Core/Src/init.c ****        1. Настройка LED 1 (PB0) - ПРЯМЫМ ОБРАЩЕНИЕМ К ПАМЯТИ
+   9:Core/Src/init.c ****         */
+  10:Core/Src/init.c ****     *(volatile uint32_t*)(0x40020400UL + 0x00UL) |= (0x01UL << 0);
+  39              		.loc 1 10 5 view .LVU2
+  40 000a 2F4B     		ldr	r3, .L2+4
+  41 000c D3F80024 		ldr	r2, [r3, #1024]
+  42              		.loc 1 10 50 is_stmt 0 view .LVU3
+  43 0010 42F00102 		orr	r2, r2, #1
+  44 0014 C3F80024 		str	r2, [r3, #1024]
+  11:Core/Src/init.c ****     *(volatile uint32_t*)(0x40020400UL + 0x04UL) &= ~(0x01UL << 0);
+  45              		.loc 1 11 5 is_stmt 1 view .LVU4
+  46              		.loc 1 11 50 is_stmt 0 view .LVU5
+  47 0018 D3F80424 		ldr	r2, [r3, #1028]
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccmyddzc.s 			page 2
+
+
+  48 001c 22F00102 		bic	r2, r2, #1
+  49 0020 C3F80424 		str	r2, [r3, #1028]
+  12:Core/Src/init.c ****     *(volatile uint32_t*)(0x40020400UL + 0x08UL) |= (0x01UL << 0);
+  50              		.loc 1 12 5 is_stmt 1 view .LVU6
+  51 0024 D3F80824 		ldr	r2, [r3, #1032]
+  52              		.loc 1 12 50 is_stmt 0 view .LVU7
+  53 0028 42F00102 		orr	r2, r2, #1
+  54 002c C3F80824 		str	r2, [r3, #1032]
+  13:Core/Src/init.c ****     *(volatile uint32_t*)(0x40020400UL + 0x0CUL) &= ~(0x03UL << 0);
+  55              		.loc 1 13 5 is_stmt 1 view .LVU8
+  56              		.loc 1 13 50 is_stmt 0 view .LVU9
+  57 0030 D3F80C24 		ldr	r2, [r3, #1036]
+  58 0034 22F00302 		bic	r2, r2, #3
+  59 0038 C3F80C24 		str	r2, [r3, #1036]
+  14:Core/Src/init.c **** 
+  15:Core/Src/init.c ****     /* 
+  16:Core/Src/init.c ****        2. Настройка LED 2 (PB7) - СОБСТВЕННЫМИ МАКРОСАМИ
+  17:Core/Src/init.c ****        */
+  18:Core/Src/init.c ****     MY_SET_BIT(MY_GPIOB_MODER, MY_PIN7_MODE_OUT);
+  60              		.loc 1 18 5 is_stmt 1 view .LVU10
+  61 003c D3F80024 		ldr	r2, [r3, #1024]
+  62 0040 42F48042 		orr	r2, r2, #16384
+  63 0044 C3F80024 		str	r2, [r3, #1024]
+  19:Core/Src/init.c ****     MY_CLEAR_BIT(MY_GPIOB_OTYPER, (1UL << 7));
+  64              		.loc 1 19 5 view .LVU11
+  65 0048 D3F80424 		ldr	r2, [r3, #1028]
+  66 004c 22F08002 		bic	r2, r2, #128
+  67 0050 C3F80424 		str	r2, [r3, #1028]
+  20:Core/Src/init.c ****     MY_SET_BIT(MY_GPIOB_OSPEEDR, MY_PIN7_OSPEED_MID);
+  68              		.loc 1 20 5 view .LVU12
+  69 0054 D3F80824 		ldr	r2, [r3, #1032]
+  70 0058 42F48042 		orr	r2, r2, #16384
+  71 005c C3F80824 		str	r2, [r3, #1032]
+  21:Core/Src/init.c ****     MY_CLEAR_BIT(MY_GPIOB_PUPDR, (3UL << 14));
+  72              		.loc 1 21 5 view .LVU13
+  73 0060 D3F80C24 		ldr	r2, [r3, #1036]
+  74 0064 22F44042 		bic	r2, r2, #49152
+  75 0068 C3F80C24 		str	r2, [r3, #1036]
+  22:Core/Src/init.c **** 
+  23:Core/Src/init.c ****     /* 
+  24:Core/Src/init.c ****        3. Настройка LED 3..6 (PB14, PB1, PB2, PB15) - ЧЕРЕЗ CMSIS
+  25:Core/Src/init.c ****        */
+  26:Core/Src/init.c ****     GPIOB->MODER |= (GPIO_MODER_MODER1_0 | GPIO_MODER_MODER2_0 | 
+  76              		.loc 1 26 5 view .LVU14
+  77              		.loc 1 26 10 is_stmt 0 view .LVU15
+  78 006c 03F58063 		add	r3, r3, #1024
+  79 0070 1A68     		ldr	r2, [r3]
+  80              		.loc 1 26 18 view .LVU16
+  81 0072 42F0A042 		orr	r2, r2, #1342177280
+  82 0076 42F01402 		orr	r2, r2, #20
+  83 007a 1A60     		str	r2, [r3]
+  27:Core/Src/init.c ****                      GPIO_MODER_MODER14_0 | GPIO_MODER_MODER15_0);
+  28:Core/Src/init.c **** 
+  29:Core/Src/init.c ****     GPIOB->OTYPER &= ~(GPIO_OTYPER_OT1 | GPIO_OTYPER_OT2 | 
+  84              		.loc 1 29 5 is_stmt 1 view .LVU17
+  85              		.loc 1 29 10 is_stmt 0 view .LVU18
+  86 007c 5A68     		ldr	r2, [r3, #4]
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccmyddzc.s 			page 3
+
+
+  87              		.loc 1 29 19 view .LVU19
+  88 007e 22F44042 		bic	r2, r2, #49152
+  89 0082 22F00602 		bic	r2, r2, #6
+  90 0086 5A60     		str	r2, [r3, #4]
+  30:Core/Src/init.c ****                        GPIO_OTYPER_OT14 | GPIO_OTYPER_OT15);
+  31:Core/Src/init.c **** 
+  32:Core/Src/init.c ****     GPIOB->OSPEEDR |= (GPIO_OSPEEDER_OSPEEDR1_0 | GPIO_OSPEEDER_OSPEEDR2_0 | 
+  91              		.loc 1 32 5 is_stmt 1 view .LVU20
+  92              		.loc 1 32 10 is_stmt 0 view .LVU21
+  93 0088 9A68     		ldr	r2, [r3, #8]
+  94              		.loc 1 32 20 view .LVU22
+  95 008a 42F0A042 		orr	r2, r2, #1342177280
+  96 008e 42F01402 		orr	r2, r2, #20
+  97 0092 9A60     		str	r2, [r3, #8]
+  33:Core/Src/init.c ****                        GPIO_OSPEEDER_OSPEEDR14_0 | GPIO_OSPEEDER_OSPEEDR15_0);
+  34:Core/Src/init.c **** 
+  35:Core/Src/init.c ****     GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD1 | GPIO_PUPDR_PUPD2 | 
+  98              		.loc 1 35 5 is_stmt 1 view .LVU23
+  99              		.loc 1 35 10 is_stmt 0 view .LVU24
+ 100 0094 DA68     		ldr	r2, [r3, #12]
+ 101              		.loc 1 35 18 view .LVU25
+ 102 0096 22F07042 		bic	r2, r2, #-268435456
+ 103 009a 22F03C02 		bic	r2, r2, #60
+ 104 009e DA60     		str	r2, [r3, #12]
+  36:Core/Src/init.c ****                       GPIO_PUPDR_PUPD14 | GPIO_PUPDR_PUPD15);
+  37:Core/Src/init.c **** 
+  38:Core/Src/init.c ****   
+  39:Core/Src/init.c ****     GPIOC->MODER &= ~(GPIO_MODER_MODER0 | GPIO_MODER_MODER1 | 
+ 105              		.loc 1 39 5 is_stmt 1 view .LVU26
+ 106              		.loc 1 39 10 is_stmt 0 view .LVU27
+ 107 00a0 03F58063 		add	r3, r3, #1024
+ 108 00a4 1A68     		ldr	r2, [r3]
+ 109              		.loc 1 39 18 view .LVU28
+ 110 00a6 22F04062 		bic	r2, r2, #201326592
+ 111 00aa 22F0CF02 		bic	r2, r2, #207
+ 112 00ae 1A60     		str	r2, [r3]
+  40:Core/Src/init.c ****                       GPIO_MODER_MODER3 | GPIO_MODER_MODER13);
+  41:Core/Src/init.c **** 
+  42:Core/Src/init.c ****     // Подтяжка к земле (Pull-Down, 10) для внешних входов PC0, PC1, 
+  43:Core/Src/init.c ****     GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPD0 | GPIO_PUPDR_PUPD1 | GPIO_PUPDR_PUPD3);
+ 113              		.loc 1 43 5 is_stmt 1 view .LVU29
+ 114              		.loc 1 43 10 is_stmt 0 view .LVU30
+ 115 00b0 DA68     		ldr	r2, [r3, #12]
+ 116              		.loc 1 43 18 view .LVU31
+ 117 00b2 22F0CF02 		bic	r2, r2, #207
+ 118 00b6 DA60     		str	r2, [r3, #12]
+  44:Core/Src/init.c ****     GPIOC->PUPDR |= (GPIO_PUPDR_PUPD0_1 | GPIO_PUPDR_PUPD1_1 | GPIO_PUPDR_PUPD3_1);
+ 119              		.loc 1 44 5 is_stmt 1 view .LVU32
+ 120              		.loc 1 44 10 is_stmt 0 view .LVU33
+ 121 00b8 DA68     		ldr	r2, [r3, #12]
+ 122              		.loc 1 44 18 view .LVU34
+ 123 00ba 42F08A02 		orr	r2, r2, #138
+ 124 00be DA60     		str	r2, [r3, #12]
+  45:Core/Src/init.c **** }...
+ 125              		.loc 1 45 1 view .LVU35
+ 126 00c0 7047     		bx	lr
+ 127              	.L3:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccmyddzc.s 			page 4
+
+
+ 128 00c2 00BF     		.align	2
+ 129              	.L2:
+ 130 00c4 00380240 		.word	1073887232
+ 131 00c8 00000240 		.word	1073872896
+ 132              		.cfi_endproc
+ 133              	.LFE130:
+ 135              		.text
+ 136              	.Letext0:
+ 137              		.file 2 "D:/ZAVOZ/xpack-arm-none-eabi-gcc-15.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 138              		.file 3 "D:/ZAVOZ/xpack-arm-none-eabi-gcc-15.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 139              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccmyddzc.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
+C:\Users\User\AppData\Local\Temp\ccmyddzc.s:21     .text.GPIO_Ini:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccmyddzc.s:27     .text.GPIO_Ini:00000000 GPIO_Ini
+C:\Users\User\AppData\Local\Temp\ccmyddzc.s:130    .text.GPIO_Ini:000000c4 $d
 
 NO UNDEFINED SYMBOLS

@@ -1,86 +1,91 @@
 #include "init.h"
-volatile uint8_t led_count = 0; 
-volatile uint8_t swap_mode = 0; 
 
-// Массивы битов регистра BSRR для управления PB0, PB7, PB14, PB1, PB2, PB15
-static const uint32_t LED_SET[6] = {
-    GPIO_BSRR_BS0,   // LED1 (PB0)
-    GPIO_BSRR_BS7,   // LED2 (PB7)
-    GPIO_BSRR_BS14,  // LED3 (PB14)
-    GPIO_BSRR_BS1,   // LED4 (PB1)
-    GPIO_BSRR_BS2,   // LED5 (PB2)
-    GPIO_BSRR_BS15   // LED6 (PB15)
-};
+uint8_t led_count = 0; // Количество включенных светодиодов (0..6)
+uint8_t swap_mode = 0; // Режим кнопок (0 - обычный, 1 - кнопки 1 и 2 поменяны местами)
 
-static const uint32_t LED_RESET[6] = {
-    GPIO_BSRR_BR0,
-    GPIO_BSRR_BR7,
-    GPIO_BSRR_BR14,
-    GPIO_BSRR_BR1,
-    GPIO_BSRR_BR2,
-    GPIO_BSRR_BR15
-};
-
-// Функция обновления состояния светодиодов
-void update_leds(uint8_t count) {
-    for (int i = 0; i < 6; i++) {
-        if (i < count) {
-            GPIOB->BSRR = LED_SET[i];   
-        } else {
-            GPIOB->BSRR = LED_RESET[i]; 
-        }
-    }
-}
-
-void delay_ms(volatile uint32_t ms) {
-    for (volatile uint32_t i = 0; i < ms * 4000; i++) {
-        __NOP();
-    }
-}
-
-int main(void) {
+int main(void)
+{
     GPIO_Ini();
-    update_leds(led_count);
 
-    uint8_t btn1_prev = 0;
-    uint8_t btn2_prev = 0;
-    uint8_t btn3_prev = 0;
+    // Гасим все 6 светодиодов на старте через старшие биты регистра BSRR
+    *(uint32_t*)(0x40020400UL + 0x18UL) |= 0xC0870000UL;
 
-    while (1) {
-        uint8_t btn1_cur = (READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) != 0); // Кнопка 1 (PC13)
-        uint8_t btn2_cur = (READ_BIT(GPIOC->IDR, GPIO_IDR_ID0)  != 0); // Кнопка 2 (PC0)
-        uint8_t btn3_cur = (READ_BIT(GPIOC->IDR, GPIO_IDR_ID1)  != 0); // Кнопка 3 (PC1)
+    uint8_t btn1_flag = 0;
+    uint8_t btn2_flag = 0;
+    uint8_t btn3_flag = 0;
 
-        if (btn3_cur && !btn3_prev) {
-            delay_ms(40); // Антидребезг
-            if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID1) != 0) {
-                swap_mode = !swap_mode; // Инвертируем флаг
+    // Запоминаем исходное состояние внешних кнопок PC0 и PC3
+    uint32_t btn2_start = (*(uint32_t*)(0x40020800UL + 0x10UL) & 0x0001UL);
+    uint32_t btn3_start = (*(uint32_t*)(0x40020800UL + 0x10UL) & 0x0008UL);
+
+    while (1)
+    {
+        // кнопка 3
+        if ((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x0008UL) != btn3_start)
+        {
+            if (btn3_flag == 0)
+            {
+                if (swap_mode == 0) swap_mode = 1;
+                else swap_mode = 0;
+                btn3_flag = 1;
             }
         }
-        btn3_prev = btn3_cur;
+        else
+        {
+            btn3_flag = 0;
+        }
 
-        uint8_t trigger_inc = swap_mode ? btn2_cur : btn1_cur;
-        uint8_t trigger_dec = swap_mode ? btn1_cur : btn2_cur;
-        
-        static uint8_t inc_prev = 0;
-        static uint8_t dec_prev = 0;
-
-        if (trigger_inc && !inc_prev) {
-            delay_ms(40);
-            if (led_count < 6) {
-                led_count++;
-                update_leds(led_count);
+        // кнопка 1
+        if ((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x2000UL) != 0)
+        {
+            if (btn1_flag == 0)
+            {
+                if (swap_mode == 0)
+                {
+                    if (led_count < 6) led_count = led_count + 1;
+                }
+                else
+                {
+                    if (led_count > 0) led_count = led_count - 1;
+                }
+                btn1_flag = 1;
             }
         }
-        inc_prev = trigger_inc;
+        else
+        {
+            btn1_flag = 0;
+        }
 
-        if (trigger_dec && !dec_prev) {
-            delay_ms(40);
-            if (led_count > 0) {
-                led_count--;
-                update_leds(led_count);
+        // кнопка 2
+        if ((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x0001UL) != btn2_start)
+        {
+            if (btn2_flag == 0)
+            {
+                if (swap_mode == 0)
+                {
+                    if (led_count > 0) led_count = led_count - 1;
+                }
+                else
+                {
+                    if (led_count < 6) led_count = led_count + 1;
+                }
+                btn2_flag = 1;
             }
         }
-        dec_prev = trigger_dec;
+        else
+        {
+            btn2_flag = 0;
+        }
+
+        //  Включение/выключение светодиодов через регистр BSRR 
+        if (led_count >= 1) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x0001UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x00010000UL; // PB0
+        if (led_count >= 2) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x0080UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x00800000UL; // PB7
+        if (led_count >= 3) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x4000UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL; // PB14
+        if (led_count >= 4) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x0002UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x00020000UL; // PB1
+        if (led_count >= 5) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x0004UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x00040000UL; // PB2
+        if (led_count >= 6) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x8000UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80000000UL; // PB15
+
+        // Задержка от дребезга контактов
+        for (volatile int i = 0; i < 30000; i++);
     }
 }
