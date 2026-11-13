@@ -11,8 +11,8 @@
 #define MY_GPIOB_OSPEEDR        (*(volatile uint32_t*)(0x40020400UL + 0x08UL))
 #define MY_GPIOB_PUPDR          (*(volatile uint32_t*)(0x40020400UL + 0x0CUL))
 
-#define MY_PIN7_MODE_OUT        (0x01UL << 14) // MODER7 = 01 (General purpose output)
-#define MY_PIN7_OSPEED_MID      (0x01UL << 14) // OSPEEDR7 = 01 (Medium speed)
+#define MY_PIN7_MODE_OUT        (0x01UL << 14) 
+#define MY_PIN7_OSPEED_MID      (0x01UL << 14) 
 
 // Собственные макросы
 #define MY_SET_BIT(REG, BIT)    ((REG) |= (BIT))
