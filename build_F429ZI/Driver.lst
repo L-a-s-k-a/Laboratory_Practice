@@ -1,0 +1,1948 @@
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"Driver.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/Driver.c"
+  20              		.section	.text.DWT_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	DWT_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	DWT_Init:
+  28              	.LFB130:
+   1:Core/Src/Driver.c **** #include "Driver.h"
+   2:Core/Src/Driver.c **** #include <stddef.h>
+   3:Core/Src/Driver.c **** 
+   4:Core/Src/Driver.c **** // Глобальные структуры для хранения состояния систем�
+   5:Core/Src/Driver.c **** Parametrs_Motor  param_m;
+   6:Core/Src/Driver.c **** Parametrs_Driver param_d;
+   7:Core/Src/Driver.c **** Parametrs_Now    param_n;
+   8:Core/Src/Driver.c **** Parametrs_TIM    param_t;
+   9:Core/Src/Driver.c **** Parametrs_UGL    param_ugl;
+  10:Core/Src/Driver.c ****   
+  11:Core/Src/Driver.c **** void DWT_Init(void) {
+  29              		.loc 1 11 21 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  12:Core/Src/Driver.c ****     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Разрешаем доступ к отла�
+  34              		.loc 1 12 5 view .LVU1
+  35              		.loc 1 12 14 is_stmt 0 view .LVU2
+  36 0000 074A     		ldr	r2, .L2
+  37 0002 D2F8FC30 		ldr	r3, [r2, #252]
+  38              		.loc 1 12 22 view .LVU3
+  39 0006 43F08073 		orr	r3, r3, #16777216
+  40 000a C2F8FC30 		str	r3, [r2, #252]
+  13:Core/Src/Driver.c ****     DWT->CYCCNT = 0;                                // Обнуляем счетчик циклов
+  41              		.loc 1 13 5 is_stmt 1 view .LVU4
+  42              		.loc 1 13 17 is_stmt 0 view .LVU5
+  43 000e 054B     		ldr	r3, .L2+4
+  44 0010 0022     		movs	r2, #0
+  45 0012 5A60     		str	r2, [r3, #4]
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 2
+
+
+  14:Core/Src/Driver.c ****     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;            // Запускаем счетчик цикло
+  46              		.loc 1 14 5 is_stmt 1 view .LVU6
+  47              		.loc 1 14 8 is_stmt 0 view .LVU7
+  48 0014 1A68     		ldr	r2, [r3]
+  49              		.loc 1 14 15 view .LVU8
+  50 0016 42F00102 		orr	r2, r2, #1
+  51 001a 1A60     		str	r2, [r3]
+  15:Core/Src/Driver.c **** }
+  52              		.loc 1 15 1 view .LVU9
+  53 001c 7047     		bx	lr
+  54              	.L3:
+  55 001e 00BF     		.align	2
+  56              	.L2:
+  57 0020 00ED00E0 		.word	-536810240
+  58 0024 001000E0 		.word	-536866816
+  59              		.cfi_endproc
+  60              	.LFE130:
+  62              		.section	.text.delay_us,"ax",%progbits
+  63              		.align	1
+  64              		.global	delay_us
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  69              	delay_us:
+  70              	.LVL0:
+  71              	.LFB131:
+  16:Core/Src/Driver.c **** 
+  17:Core/Src/Driver.c **** void delay_us(uint32_t us) {
+  72              		.loc 1 17 28 is_stmt 1 view -0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76              		@ link register save eliminated.
+  18:Core/Src/Driver.c ****     uint32_t start = DWT->CYCCNT;
+  77              		.loc 1 18 5 view .LVU11
+  78              		.loc 1 18 14 is_stmt 0 view .LVU12
+  79 0000 084B     		ldr	r3, .L7
+  80 0002 5A68     		ldr	r2, [r3, #4]
+  81              	.LVL1:
+  19:Core/Src/Driver.c ****     uint32_t ticks = us * (SystemCoreClock / 1000000U); // Расчет количества тик
+  82              		.loc 1 19 5 is_stmt 1 view .LVU13
+  83              		.loc 1 19 44 is_stmt 0 view .LVU14
+  84 0004 084B     		ldr	r3, .L7+4
+  85 0006 1B68     		ldr	r3, [r3]
+  86 0008 0849     		ldr	r1, .L7+8
+  87 000a A1FB0313 		umull	r1, r3, r1, r3
+  88 000e 9B0C     		lsrs	r3, r3, #18
+  89              		.loc 1 19 14 view .LVU15
+  90 0010 03FB00F0 		mul	r0, r3, r0
+  91              	.LVL2:
+  20:Core/Src/Driver.c ****     while ((DWT->CYCCNT - start) < ticks) { __NOP(); }  // Ожидаем, пока счетчик 
+  92              		.loc 1 20 5 is_stmt 1 view .LVU16
+  93              		.loc 1 20 11 is_stmt 0 view .LVU17
+  94 0014 00E0     		b	.L5
+  95              	.L6:
+  96              		.loc 1 20 45 is_stmt 1 discriminator 2 view .LVU18
+  97              		.syntax unified
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 3
+
+
+  98              	@ 20 "Core/Src/Driver.c" 1
+  99 0016 00BF     		nop
+ 100              	@ 0 "" 2
+ 101              		.thumb
+ 102              		.syntax unified
+ 103              	.L5:
+ 104              		.loc 1 20 34 discriminator 1 view .LVU19
+ 105              		.loc 1 20 16 is_stmt 0 discriminator 1 view .LVU20
+ 106 0018 024B     		ldr	r3, .L7
+ 107 001a 5B68     		ldr	r3, [r3, #4]
+ 108              		.loc 1 20 25 discriminator 1 view .LVU21
+ 109 001c 9B1A     		subs	r3, r3, r2
+ 110              		.loc 1 20 34 discriminator 1 view .LVU22
+ 111 001e 8342     		cmp	r3, r0
+ 112 0020 F9D3     		bcc	.L6
+  21:Core/Src/Driver.c **** }
+ 113              		.loc 1 21 1 view .LVU23
+ 114 0022 7047     		bx	lr
+ 115              	.L8:
+ 116              		.align	2
+ 117              	.L7:
+ 118 0024 001000E0 		.word	-536866816
+ 119 0028 00000000 		.word	SystemCoreClock
+ 120 002c 83DE1B43 		.word	1125899907
+ 121              		.cfi_endproc
+ 122              	.LFE131:
+ 124              		.section	.text.delay_ms,"ax",%progbits
+ 125              		.align	1
+ 126              		.global	delay_ms
+ 127              		.syntax unified
+ 128              		.thumb
+ 129              		.thumb_func
+ 131              	delay_ms:
+ 132              	.LVL3:
+ 133              	.LFB132:
+  22:Core/Src/Driver.c **** 
+  23:Core/Src/Driver.c **** void delay_ms(uint32_t ms) {
+ 134              		.loc 1 23 28 is_stmt 1 view -0
+ 135              		.cfi_startproc
+ 136              		@ args = 0, pretend = 0, frame = 0
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138              		.loc 1 23 28 is_stmt 0 view .LVU25
+ 139 0000 38B5     		push	{r3, r4, r5, lr}
+ 140              	.LCFI0:
+ 141              		.cfi_def_cfa_offset 16
+ 142              		.cfi_offset 3, -16
+ 143              		.cfi_offset 4, -12
+ 144              		.cfi_offset 5, -8
+ 145              		.cfi_offset 14, -4
+ 146 0002 0546     		mov	r5, r0
+  24:Core/Src/Driver.c ****     for (uint32_t i = 0; i < ms; i++) { delay_us(1000U); } // Вызываем микросекун
+ 147              		.loc 1 24 5 is_stmt 1 view .LVU26
+ 148              	.LBB2:
+ 149              		.loc 1 24 10 view .LVU27
+ 150              	.LVL4:
+ 151              		.loc 1 24 19 is_stmt 0 view .LVU28
+ 152 0004 0024     		movs	r4, #0
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 4
+
+
+ 153              		.loc 1 24 5 view .LVU29
+ 154 0006 04E0     		b	.L10
+ 155              	.LVL5:
+ 156              	.L11:
+ 157              		.loc 1 24 41 is_stmt 1 discriminator 3 view .LVU30
+ 158 0008 4FF47A70 		mov	r0, #1000
+ 159 000c FFF7FEFF 		bl	delay_us
+ 160              	.LVL6:
+ 161              		.loc 1 24 35 discriminator 3 view .LVU31
+ 162 0010 0134     		adds	r4, r4, #1
+ 163              	.LVL7:
+ 164              	.L10:
+ 165              		.loc 1 24 28 discriminator 2 view .LVU32
+ 166 0012 AC42     		cmp	r4, r5
+ 167 0014 F8D3     		bcc	.L11
+ 168              	.LBE2:
+  25:Core/Src/Driver.c **** }
+ 169              		.loc 1 25 1 is_stmt 0 view .LVU33
+ 170 0016 38BD     		pop	{r3, r4, r5, pc}
+ 171              		.loc 1 25 1 view .LVU34
+ 172              		.cfi_endproc
+ 173              	.LFE132:
+ 175              		.section	.text.Motor_Init,"ax",%progbits
+ 176              		.align	1
+ 177              		.global	Motor_Init
+ 178              		.syntax unified
+ 179              		.thumb
+ 180              		.thumb_func
+ 182              	Motor_Init:
+ 183              	.LVL8:
+ 184              	.LFB133:
+  26:Core/Src/Driver.c **** 
+  27:Core/Src/Driver.c **** void Motor_Init(uint32_t steps, float c_ugol, uint32_t rpm) {
+ 185              		.loc 1 27 61 is_stmt 1 view -0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              		@ link register save eliminated.
+  28:Core/Src/Driver.c ****     // в этой функции пользователь вводит параметры двиг
+  29:Core/Src/Driver.c ****     param_m.const_steps = steps; // количество шагов на 1 оборот
+ 190              		.loc 1 29 5 view .LVU36
+ 191              		.loc 1 29 25 is_stmt 0 view .LVU37
+ 192 0000 064B     		ldr	r3, .L14
+ 193 0002 1860     		str	r0, [r3]
+  30:Core/Src/Driver.c ****     param_m.const_ugol = c_ugol; // угол микрошага
+ 194              		.loc 1 30 5 is_stmt 1 view .LVU38
+ 195              		.loc 1 30 24 is_stmt 0 view .LVU39
+ 196 0004 83ED010A 		vstr.32	s0, [r3, #4]
+  31:Core/Src/Driver.c ****     param_m.max_rpm = rpm;       // максимальная скорость в оборотах �
+ 197              		.loc 1 31 5 is_stmt 1 view .LVU40
+ 198              		.loc 1 31 21 is_stmt 0 view .LVU41
+ 199 0008 9960     		str	r1, [r3, #8]
+  32:Core/Src/Driver.c ****     
+  33:Core/Src/Driver.c ****     // в блоке ниже приведены параметры, необходимые для 
+  34:Core/Src/Driver.c ****     param_d.frequency = 0U;
+ 200              		.loc 1 34 5 is_stmt 1 view .LVU42
+ 201              		.loc 1 34 23 is_stmt 0 view .LVU43
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 5
+
+
+ 202 000a 054A     		ldr	r2, .L14+4
+ 203 000c 0023     		movs	r3, #0
+ 204 000e 1360     		str	r3, [r2]
+  35:Core/Src/Driver.c ****     param_d.rpm = 0U;
+ 205              		.loc 1 35 5 is_stmt 1 view .LVU44
+ 206              		.loc 1 35 17 is_stmt 0 view .LVU45
+ 207 0010 5360     		str	r3, [r2, #4]
+  36:Core/Src/Driver.c ****     param_n.sost_mot = 0;        // Сброс статуса: мотор остановлен
+ 208              		.loc 1 36 5 is_stmt 1 view .LVU46
+ 209              		.loc 1 36 22 is_stmt 0 view .LVU47
+ 210 0012 044A     		ldr	r2, .L14+8
+ 211 0014 1371     		strb	r3, [r2, #4]
+  37:Core/Src/Driver.c ****     param_n.freq_now = 0;
+ 212              		.loc 1 37 5 is_stmt 1 view .LVU48
+ 213              		.loc 1 37 22 is_stmt 0 view .LVU49
+ 214 0016 1360     		str	r3, [r2]
+  38:Core/Src/Driver.c **** }
+ 215              		.loc 1 38 1 view .LVU50
+ 216 0018 7047     		bx	lr
+ 217              	.L15:
+ 218 001a 00BF     		.align	2
+ 219              	.L14:
+ 220 001c 00000000 		.word	param_m
+ 221 0020 00000000 		.word	param_d
+ 222 0024 00000000 		.word	param_n
+ 223              		.cfi_endproc
+ 224              	.LFE133:
+ 226              		.section	.text.Calculation_Freq,"ax",%progbits
+ 227              		.align	1
+ 228              		.global	Calculation_Freq
+ 229              		.syntax unified
+ 230              		.thumb
+ 231              		.thumb_func
+ 233              	Calculation_Freq:
+ 234              	.LVL9:
+ 235              	.LFB134:
+  39:Core/Src/Driver.c **** 
+  40:Core/Src/Driver.c **** uint32_t Calculation_Freq(uint32_t freq) {
+ 236              		.loc 1 40 42 is_stmt 1 view -0
+ 237              		.cfi_startproc
+ 238              		@ args = 0, pretend = 0, frame = 0
+ 239              		@ frame_needed = 0, uses_anonymous_args = 0
+ 240              		@ link register save eliminated.
+  41:Core/Src/Driver.c ****     if (freq == 0U) return 0xFFFFU; // защита от частоты, равной нулю
+ 241              		.loc 1 41 5 view .LVU52
+ 242              		.loc 1 41 8 is_stmt 0 view .LVU53
+ 243 0000 0246     		mov	r2, r0
+ 244 0002 90B1     		cbz	r0, .L19
+  42:Core/Src/Driver.c ****     uint32_t tick_hz = param_t.freq_PROC / (param_t.psc + 1U); // расчет реальной ч�
+ 245              		.loc 1 42 5 is_stmt 1 view .LVU54
+ 246              		.loc 1 42 31 is_stmt 0 view .LVU55
+ 247 0004 0C4B     		ldr	r3, .L24
+ 248 0006 1868     		ldr	r0, [r3]
+ 249              	.LVL10:
+ 250              		.loc 1 42 52 view .LVU56
+ 251 0008 5B68     		ldr	r3, [r3, #4]
+ 252              		.loc 1 42 57 view .LVU57
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 6
+
+
+ 253 000a 0133     		adds	r3, r3, #1
+ 254              		.loc 1 42 14 view .LVU58
+ 255 000c B0FBF3F0 		udiv	r0, r0, r3
+ 256              	.LVL11:
+  43:Core/Src/Driver.c ****     uint32_t period = (tick_hz + freq / 2U) / freq; // расчет периода с матема�
+ 257              		.loc 1 43 5 is_stmt 1 view .LVU59
+ 258              		.loc 1 43 32 is_stmt 0 view .LVU60
+ 259 0010 00EB5200 		add	r0, r0, r2, lsr #1
+ 260              	.LVL12:
+ 261              		.loc 1 43 14 view .LVU61
+ 262 0014 B0FBF2F0 		udiv	r0, r0, r2
+ 263              	.LVL13:
+  44:Core/Src/Driver.c ****     if (period < 2U) period = 2U; // защита от ошибки, если период arr=0 и
+ 264              		.loc 1 44 5 is_stmt 1 view .LVU62
+ 265              		.loc 1 44 8 is_stmt 0 view .LVU63
+ 266 0018 0128     		cmp	r0, #1
+ 267 001a 04D9     		bls	.L22
+ 268              	.LVL14:
+ 269              	.L18:
+  45:Core/Src/Driver.c ****     uint32_t arr = period - 1U;   // расчет значения для регистра arr (с�
+ 270              		.loc 1 45 5 is_stmt 1 view .LVU64
+ 271              		.loc 1 45 14 is_stmt 0 view .LVU65
+ 272 001c 0138     		subs	r0, r0, #1
+ 273              	.LVL15:
+  46:Core/Src/Driver.c ****     
+  47:Core/Src/Driver.c ****     // Аппаратная защита: обрезаем значение, если оно не �
+  48:Core/Src/Driver.c ****     if (arr > 0xFFFFU) {
+ 274              		.loc 1 48 5 is_stmt 1 view .LVU66
+ 275              		.loc 1 48 8 is_stmt 0 view .LVU67
+ 276 001e B0F5803F 		cmp	r0, #65536
+ 277 0022 05D2     		bcs	.L23
+ 278              	.LVL16:
+ 279              	.L16:
+  49:Core/Src/Driver.c ****         arr = 0xFFFFU;
+  50:Core/Src/Driver.c ****     }
+  51:Core/Src/Driver.c ****     return arr;
+  52:Core/Src/Driver.c **** }
+ 280              		.loc 1 52 1 view .LVU68
+ 281 0024 7047     		bx	lr
+ 282              	.LVL17:
+ 283              	.L22:
+  44:Core/Src/Driver.c ****     uint32_t arr = period - 1U;   // расчет значения для регистра arr (с�
+ 284              		.loc 1 44 29 discriminator 1 view .LVU69
+ 285 0026 0220     		movs	r0, #2
+ 286              	.LVL18:
+  44:Core/Src/Driver.c ****     uint32_t arr = period - 1U;   // расчет значения для регистра arr (с�
+ 287              		.loc 1 44 29 discriminator 1 view .LVU70
+ 288 0028 F8E7     		b	.L18
+ 289              	.LVL19:
+ 290              	.L19:
+  41:Core/Src/Driver.c ****     uint32_t tick_hz = param_t.freq_PROC / (param_t.psc + 1U); // расчет реальной ч�
+ 291              		.loc 1 41 28 discriminator 1 view .LVU71
+ 292 002a 4FF6FF70 		movw	r0, #65535
+ 293              	.LVL20:
+  41:Core/Src/Driver.c ****     uint32_t tick_hz = param_t.freq_PROC / (param_t.psc + 1U); // расчет реальной ч�
+ 294              		.loc 1 41 28 discriminator 1 view .LVU72
+ 295 002e 7047     		bx	lr
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 7
+
+
+ 296              	.LVL21:
+ 297              	.L23:
+  49:Core/Src/Driver.c ****         arr = 0xFFFFU;
+ 298              		.loc 1 49 13 view .LVU73
+ 299 0030 4FF6FF70 		movw	r0, #65535
+ 300              	.LVL22:
+  49:Core/Src/Driver.c ****         arr = 0xFFFFU;
+ 301              		.loc 1 49 13 view .LVU74
+ 302 0034 F6E7     		b	.L16
+ 303              	.L25:
+ 304 0036 00BF     		.align	2
+ 305              	.L24:
+ 306 0038 00000000 		.word	param_t
+ 307              		.cfi_endproc
+ 308              	.LFE134:
+ 310              		.section	.text.Sync_Timer_Params,"ax",%progbits
+ 311              		.align	1
+ 312              		.global	Sync_Timer_Params
+ 313              		.syntax unified
+ 314              		.thumb
+ 315              		.thumb_func
+ 317              	Sync_Timer_Params:
+ 318              	.LVL23:
+ 319              	.LFB135:
+  53:Core/Src/Driver.c **** 
+  54:Core/Src/Driver.c **** void Sync_Timer_Params(TIM_TypeDef *TIMX, uint32_t base_freq) {
+ 320              		.loc 1 54 63 is_stmt 1 view -0
+ 321              		.cfi_startproc
+ 322              		@ args = 0, pretend = 0, frame = 0
+ 323              		@ frame_needed = 0, uses_anonymous_args = 0
+ 324              		@ link register save eliminated.
+  55:Core/Src/Driver.c ****     param_t.freq_PROC = base_freq; // значения частоты шины
+ 325              		.loc 1 55 5 view .LVU76
+ 326              		.loc 1 55 23 is_stmt 0 view .LVU77
+ 327 0000 024B     		ldr	r3, .L27
+ 328 0002 1960     		str	r1, [r3]
+  56:Core/Src/Driver.c ****     param_t.psc = TIMX->PSC;       // значения PSC, которое установил по�
+ 329              		.loc 1 56 5 is_stmt 1 view .LVU78
+ 330              		.loc 1 56 23 is_stmt 0 view .LVU79
+ 331 0004 826A     		ldr	r2, [r0, #40]
+ 332              		.loc 1 56 17 view .LVU80
+ 333 0006 5A60     		str	r2, [r3, #4]
+  57:Core/Src/Driver.c **** }
+ 334              		.loc 1 57 1 view .LVU81
+ 335 0008 7047     		bx	lr
+ 336              	.L28:
+ 337 000a 00BF     		.align	2
+ 338              	.L27:
+ 339 000c 00000000 		.word	param_t
+ 340              		.cfi_endproc
+ 341              	.LFE135:
+ 343              		.global	__aeabi_ldivmod
+ 344              		.section	.text.Acceleration,"ax",%progbits
+ 345              		.align	1
+ 346              		.global	Acceleration
+ 347              		.syntax unified
+ 348              		.thumb
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 8
+
+
+ 349              		.thumb_func
+ 351              	Acceleration:
+ 352              	.LVL24:
+ 353              	.LFB138:
+  58:Core/Src/Driver.c **** 
+  59:Core/Src/Driver.c **** void Rotation_GC(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t f, uint32_t f_steps, uint3
+  60:Core/Src/Driver.c ****     uint64_t f_max = ((uint64_t)param_m.max_rpm * param_m.const_steps) / 60U;  // расчет ма
+  61:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+  62:Core/Src/Driver.c ****     
+  63:Core/Src/Driver.c ****     uint32_t f_start;
+  64:Core/Src/Driver.c ****     if (param_n.sost_mot == 1) {
+  65:Core/Src/Driver.c ****         // этот алгоритм выполняется, если мотор уже запущ�
+  66:Core/Src/Driver.c ****         f_start = param_d.frequency;
+  67:Core/Src/Driver.c ****         Acceleration(TIMX, CCR_reg, f, f_start, f_steps, delay_time);
+  68:Core/Src/Driver.c ****     } else {
+  69:Core/Src/Driver.c ****         // начальный разгон мотора
+  70:Core/Src/Driver.c ****         param_n.sost_mot = 1; // инициализация флага, что мотор запу�
+  71:Core/Src/Driver.c ****         f_start = 250U;
+  72:Core/Src/Driver.c ****         if (f < f_start) f_start = f; // защита от ошибки, если стартова�
+  73:Core/Src/Driver.c ****         
+  74:Core/Src/Driver.c ****         uint32_t arr = Calculation_Freq(f_start); // расчет значения ARR для ст�
+  75:Core/Src/Driver.c ****         if (arr == 0U) arr = 1U; // защита от ошибки, если arr=0
+  76:Core/Src/Driver.c ****         
+  77:Core/Src/Driver.c ****         // применение настроек CCR и ARR
+  78:Core/Src/Driver.c ****         TIMX->ARR = arr;
+  79:Core/Src/Driver.c ****         *CCR_reg = (arr + 1U) / 2U;
+  80:Core/Src/Driver.c ****         
+  81:Core/Src/Driver.c ****         // Запуск двигателя и последующий разгон
+  82:Core/Src/Driver.c ****         Motor_Start(TIMX);
+  83:Core/Src/Driver.c ****         Acceleration(TIMX, CCR_reg, f, f_start, f_steps, delay_time);
+  84:Core/Src/Driver.c ****     } 
+  85:Core/Src/Driver.c **** }
+  86:Core/Src/Driver.c **** 
+  87:Core/Src/Driver.c **** void Rotation_OB(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t ob, uint32_t f_steps, uint
+  88:Core/Src/Driver.c ****     if ((ob == 0) || ob > param_m.max_rpm) return; // защита от ошибки, если ск
+  89:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // расчет ча
+  90:Core/Src/Driver.c ****     Rotation_GC(TIMX, CCR_reg, f, f_steps, delay_time); 
+  91:Core/Src/Driver.c **** }
+  92:Core/Src/Driver.c **** 
+  93:Core/Src/Driver.c **** void Acceleration(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t f, uint32_t f_st, uint32_
+ 354              		.loc 1 93 132 is_stmt 1 view -0
+ 355              		.cfi_startproc
+ 356              		@ args = 8, pretend = 0, frame = 8
+ 357              		@ frame_needed = 0, uses_anonymous_args = 0
+ 358              		.loc 1 93 132 is_stmt 0 view .LVU83
+ 359 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 360              	.LCFI1:
+ 361              		.cfi_def_cfa_offset 36
+ 362              		.cfi_offset 4, -36
+ 363              		.cfi_offset 5, -32
+ 364              		.cfi_offset 6, -28
+ 365              		.cfi_offset 7, -24
+ 366              		.cfi_offset 8, -20
+ 367              		.cfi_offset 9, -16
+ 368              		.cfi_offset 10, -12
+ 369              		.cfi_offset 11, -8
+ 370              		.cfi_offset 14, -4
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 9
+
+
+ 371 0004 83B0     		sub	sp, sp, #12
+ 372              	.LCFI2:
+ 373              		.cfi_def_cfa_offset 48
+ 374 0006 0746     		mov	r7, r0
+ 375 0008 8846     		mov	r8, r1
+ 376 000a 9346     		mov	fp, r2
+ 377 000c 9A46     		mov	r10, r3
+ 378 000e 0C9D     		ldr	r5, [sp, #48]
+  94:Core/Src/Driver.c ****     uint32_t arr;
+ 379              		.loc 1 94 5 is_stmt 1 view .LVU84
+  95:Core/Src/Driver.c ****     if (f_steps == 0U) f_steps = 1U; // защита от ошибки, если шаг разго�
+ 380              		.loc 1 95 5 view .LVU85
+ 381              		.loc 1 95 8 is_stmt 0 view .LVU86
+ 382 0010 05B9     		cbnz	r5, .L30
+ 383              		.loc 1 95 32 discriminator 1 view .LVU87
+ 384 0012 0125     		movs	r5, #1
+ 385              	.L30:
+ 386              	.LVL25:
+  96:Core/Src/Driver.c ****     int64_t delta = (int64_t)f - (int64_t)f_st; // расчет разницы нужной час�
+ 387              		.loc 1 96 5 is_stmt 1 view .LVU88
+ 388              		.loc 1 96 13 is_stmt 0 view .LVU89
+ 389 0014 BBEB0A06 		subs	r6, fp, r10
+ 390 0018 69EB0909 		sbc	r9, r9, r9
+ 391              	.LVL26:
+  97:Core/Src/Driver.c ****     
+  98:Core/Src/Driver.c ****     for (uint32_t i = 1; i <= f_steps; i++) {
+ 392              		.loc 1 98 5 is_stmt 1 view .LVU90
+ 393              	.LBB3:
+ 394              		.loc 1 98 10 view .LVU91
+ 395              		.loc 1 98 19 is_stmt 0 view .LVU92
+ 396 001c 0124     		movs	r4, #1
+ 397 001e CDF804B0 		str	fp, [sp, #4]
+ 398 0022 DDF834B0 		ldr	fp, [sp, #52]
+ 399              		.loc 1 98 5 view .LVU93
+ 400 0026 00E0     		b	.L31
+ 401              	.LVL27:
+ 402              	.L32:
+ 403              		.loc 1 98 41 is_stmt 1 discriminator 2 view .LVU94
+ 404 0028 0134     		adds	r4, r4, #1
+ 405              	.LVL28:
+ 406              	.L31:
+ 407              		.loc 1 98 28 discriminator 1 view .LVU95
+ 408 002a A542     		cmp	r5, r4
+ 409 002c 15D3     		bcc	.L36
+ 410              	.LBB4:
+  99:Core/Src/Driver.c ****         uint32_t f_current = (uint32_t)((int64_t)f_st + (delta * (int64_t)i) / (int64_t)f_steps); /
+ 411              		.loc 1 99 9 view .LVU96
+ 412              		.loc 1 99 64 is_stmt 0 view .LVU97
+ 413 002e A4FB0601 		umull	r0, r1, r4, r6
+ 414              		.loc 1 99 78 view .LVU98
+ 415 0032 2A46     		mov	r2, r5
+ 416 0034 0023     		movs	r3, #0
+ 417 0036 04FB0911 		mla	r1, r4, r9, r1
+ 418 003a FFF7FEFF 		bl	__aeabi_ldivmod
+ 419              	.LVL29:
+ 100:Core/Src/Driver.c ****         arr = Calculation_Freq(f_current); // расчет для ARR текущего значен
+ 420              		.loc 1 100 9 is_stmt 1 view .LVU99
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 10
+
+
+ 421              		.loc 1 100 15 is_stmt 0 view .LVU100
+ 422 003e 5044     		add	r0, r0, r10
+ 423              	.LVL30:
+ 424              		.loc 1 100 15 view .LVU101
+ 425 0040 FFF7FEFF 		bl	Calculation_Freq
+ 426              	.LVL31:
+ 101:Core/Src/Driver.c ****         
+ 102:Core/Src/Driver.c ****         // изменение регистров ARR и CCR
+ 103:Core/Src/Driver.c ****         TIMX->ARR = arr;
+ 427              		.loc 1 103 9 is_stmt 1 view .LVU102
+ 428              		.loc 1 103 19 is_stmt 0 view .LVU103
+ 429 0044 F862     		str	r0, [r7, #44]
+ 104:Core/Src/Driver.c ****         *CCR_reg = (arr + 1U) / 2U;
+ 430              		.loc 1 104 9 is_stmt 1 view .LVU104
+ 431              		.loc 1 104 25 is_stmt 0 view .LVU105
+ 432 0046 0130     		adds	r0, r0, #1
+ 433              	.LVL32:
+ 434              		.loc 1 104 31 view .LVU106
+ 435 0048 4008     		lsrs	r0, r0, #1
+ 436              		.loc 1 104 18 view .LVU107
+ 437 004a C8F80000 		str	r0, [r8]
+ 438              	.LVL33:
+ 105:Core/Src/Driver.c ****         
+ 106:Core/Src/Driver.c ****         // Не делаем задержку на последнем шаге, чтобы сраз
+ 107:Core/Src/Driver.c ****         if (i < f_steps) delay_ms(delay_time);
+ 439              		.loc 1 107 9 is_stmt 1 view .LVU108
+ 440              		.loc 1 107 12 is_stmt 0 view .LVU109
+ 441 004e A542     		cmp	r5, r4
+ 442 0050 EAD9     		bls	.L32
+ 443              		.loc 1 107 26 is_stmt 1 discriminator 1 view .LVU110
+ 444 0052 5846     		mov	r0, fp
+ 445 0054 FFF7FEFF 		bl	delay_ms
+ 446              	.LVL34:
+ 447 0058 E6E7     		b	.L32
+ 448              	.LVL35:
+ 449              	.L36:
+ 450              		.loc 1 107 26 is_stmt 0 discriminator 1 view .LVU111
+ 451              	.LBE4:
+ 452              	.LBE3:
+ 108:Core/Src/Driver.c ****     }
+ 109:Core/Src/Driver.c ****     param_n.freq_now = f;
+ 453              		.loc 1 109 22 view .LVU112
+ 454 005a DDF804B0 		ldr	fp, [sp, #4]
+ 455              		.loc 1 109 5 is_stmt 1 view .LVU113
+ 456              		.loc 1 109 22 is_stmt 0 view .LVU114
+ 457 005e 044B     		ldr	r3, .L37
+ 458 0060 C3F800B0 		str	fp, [r3]
+ 110:Core/Src/Driver.c ****     param_d.frequency = f; 
+ 459              		.loc 1 110 5 is_stmt 1 view .LVU115
+ 460              		.loc 1 110 23 is_stmt 0 view .LVU116
+ 461 0064 034B     		ldr	r3, .L37+4
+ 462 0066 C3F800B0 		str	fp, [r3]
+ 111:Core/Src/Driver.c **** }
+ 463              		.loc 1 111 1 view .LVU117
+ 464 006a 03B0     		add	sp, sp, #12
+ 465              	.LCFI3:
+ 466              		.cfi_def_cfa_offset 36
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 11
+
+
+ 467              		@ sp needed
+ 468 006c BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 469              	.LVL36:
+ 470              	.L38:
+ 471              		.loc 1 111 1 view .LVU118
+ 472              		.align	2
+ 473              	.L37:
+ 474 0070 00000000 		.word	param_n
+ 475 0074 00000000 		.word	param_d
+ 476              		.cfi_endproc
+ 477              	.LFE138:
+ 479              		.section	.text.Motor_Start,"ax",%progbits
+ 480              		.align	1
+ 481              		.global	Motor_Start
+ 482              		.syntax unified
+ 483              		.thumb
+ 484              		.thumb_func
+ 486              	Motor_Start:
+ 487              	.LVL37:
+ 488              	.LFB139:
+ 112:Core/Src/Driver.c **** 
+ 113:Core/Src/Driver.c **** void Motor_Start(TIM_TypeDef *TIMX) {
+ 489              		.loc 1 113 37 is_stmt 1 view -0
+ 490              		.cfi_startproc
+ 491              		@ args = 0, pretend = 0, frame = 0
+ 492              		@ frame_needed = 0, uses_anonymous_args = 0
+ 493              		@ link register save eliminated.
+ 114:Core/Src/Driver.c ****     // функция для запуска таймера и применение текущих �
+ 115:Core/Src/Driver.c ****     TIMX->EGR = (1U << 0);       // Принудительно обновляем регистры 
+ 494              		.loc 1 115 5 view .LVU120
+ 495              		.loc 1 115 15 is_stmt 0 view .LVU121
+ 496 0000 0123     		movs	r3, #1
+ 497 0002 4361     		str	r3, [r0, #20]
+ 116:Core/Src/Driver.c ****     TIMX->CR1 |= (1U << 0);      // Включаем счетчик таймера (бит CEN)
+ 498              		.loc 1 116 5 is_stmt 1 view .LVU122
+ 499              		.loc 1 116 9 is_stmt 0 view .LVU123
+ 500 0004 0368     		ldr	r3, [r0]
+ 501              		.loc 1 116 15 view .LVU124
+ 502 0006 43F00103 		orr	r3, r3, #1
+ 503 000a 0360     		str	r3, [r0]
+ 117:Core/Src/Driver.c **** }
+ 504              		.loc 1 117 1 view .LVU125
+ 505 000c 7047     		bx	lr
+ 506              		.cfi_endproc
+ 507              	.LFE139:
+ 509              		.section	.text.Rotation_GC,"ax",%progbits
+ 510              		.align	1
+ 511              		.global	Rotation_GC
+ 512              		.syntax unified
+ 513              		.thumb
+ 514              		.thumb_func
+ 516              	Rotation_GC:
+ 517              	.LVL38:
+ 518              	.LFB136:
+  59:Core/Src/Driver.c ****     uint64_t f_max = ((uint64_t)param_m.max_rpm * param_m.const_steps) / 60U;  // расчет ма
+ 519              		.loc 1 59 116 is_stmt 1 view -0
+ 520              		.cfi_startproc
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 12
+
+
+ 521              		@ args = 4, pretend = 0, frame = 0
+ 522              		@ frame_needed = 0, uses_anonymous_args = 0
+  59:Core/Src/Driver.c ****     uint64_t f_max = ((uint64_t)param_m.max_rpm * param_m.const_steps) / 60U;  // расчет ма
+ 523              		.loc 1 59 116 is_stmt 0 view .LVU127
+ 524 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 525              	.LCFI4:
+ 526              		.cfi_def_cfa_offset 24
+ 527              		.cfi_offset 4, -24
+ 528              		.cfi_offset 5, -20
+ 529              		.cfi_offset 6, -16
+ 530              		.cfi_offset 7, -12
+ 531              		.cfi_offset 8, -8
+ 532              		.cfi_offset 14, -4
+ 533 0004 82B0     		sub	sp, sp, #8
+ 534              	.LCFI5:
+ 535              		.cfi_def_cfa_offset 32
+ 536 0006 0546     		mov	r5, r0
+ 537 0008 0E46     		mov	r6, r1
+ 538 000a 1446     		mov	r4, r2
+ 539 000c 1F46     		mov	r7, r3
+  60:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+ 540              		.loc 1 60 5 is_stmt 1 view .LVU128
+  60:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+ 541              		.loc 1 60 40 is_stmt 0 view .LVU129
+ 542 000e 2E4A     		ldr	r2, .L52
+ 543              	.LVL39:
+  60:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+ 544              		.loc 1 60 40 view .LVU130
+ 545 0010 9368     		ldr	r3, [r2, #8]
+ 546              	.LVL40:
+  60:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+ 547              		.loc 1 60 58 view .LVU131
+ 548 0012 1168     		ldr	r1, [r2]
+ 549              	.LVL41:
+  60:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+ 550              		.loc 1 60 49 view .LVU132
+ 551 0014 A3FB01C1 		umull	ip, r1, r3, r1
+  60:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+ 552              		.loc 1 60 14 view .LVU133
+ 553 0018 0022     		movs	r2, #0
+ 554 001a 1CEB0103 		adds	r3, ip, r1
+ 555 001e 43D2     		bcs	.L50
+ 556              	.L41:
+ 557 0020 1A44     		add	r2, r2, r3
+ 558 0022 2A4B     		ldr	r3, .L52+4
+ 559 0024 A3FB0203 		umull	r0, r3, r3, r2
+ 560              	.LVL42:
+  60:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+ 561              		.loc 1 60 14 view .LVU134
+ 562 0028 DB08     		lsrs	r3, r3, #3
+ 563 002a C3EB0313 		rsb	r3, r3, r3, lsl #4
+ 564 002e D31A     		subs	r3, r2, r3
+ 565 0030 BCEB030C 		subs	ip, ip, r3
+ 566 0034 61F10001 		sbc	r1, r1, #0
+ 567 0038 254A     		ldr	r2, .L52+8
+ 568 003a 4FF0EE33 		mov	r3, #-286331154
+ 569 003e 03FB0CF3 		mul	r3, r3, ip
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 13
+
+
+ 570 0042 02FB0133 		mla	r3, r2, r1, r3
+ 571 0046 ACFB02C2 		umull	ip, r2, ip, r2
+ 572 004a 1344     		add	r3, r3, r2
+ 573 004c 4FEA9C0C 		lsr	ip, ip, #2
+ 574 0050 4CEA837C 		orr	ip, ip, r3, lsl #30
+ 575 0054 9B08     		lsrs	r3, r3, #2
+ 576              	.LVL43:
+  61:Core/Src/Driver.c ****     
+ 577              		.loc 1 61 5 is_stmt 1 view .LVU135
+  61:Core/Src/Driver.c ****     
+ 578              		.loc 1 61 8 is_stmt 0 view .LVU136
+ 579 0056 24B3     		cbz	r4, .L40
+  61:Core/Src/Driver.c ****     
+ 580              		.loc 1 61 17 discriminator 2 view .LVU137
+ 581 0058 A445     		cmp	ip, r4
+ 582 005a 73F10003 		sbcs	r3, r3, #0
+ 583              	.LVL44:
+  61:Core/Src/Driver.c ****     
+ 584              		.loc 1 61 17 discriminator 2 view .LVU138
+ 585 005e 20D3     		bcc	.L40
+  63:Core/Src/Driver.c ****     if (param_n.sost_mot == 1) {
+ 586              		.loc 1 63 5 is_stmt 1 view .LVU139
+  64:Core/Src/Driver.c ****         // этот алгоритм выполняется, если мотор уже запущ�
+ 587              		.loc 1 64 5 view .LVU140
+  64:Core/Src/Driver.c ****         // этот алгоритм выполняется, если мотор уже запущ�
+ 588              		.loc 1 64 16 is_stmt 0 view .LVU141
+ 589 0060 1C4B     		ldr	r3, .L52+12
+ 590 0062 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+  64:Core/Src/Driver.c ****         // этот алгоритм выполняется, если мотор уже запущ�
+ 591              		.loc 1 64 8 view .LVU142
+ 592 0064 012B     		cmp	r3, #1
+ 593 0066 21D0     		beq	.L51
+ 594              	.LBB5:
+  70:Core/Src/Driver.c ****         f_start = 250U;
+ 595              		.loc 1 70 9 is_stmt 1 view .LVU143
+  70:Core/Src/Driver.c ****         f_start = 250U;
+ 596              		.loc 1 70 26 is_stmt 0 view .LVU144
+ 597 0068 1A4B     		ldr	r3, .L52+12
+ 598 006a 0122     		movs	r2, #1
+ 599 006c 1A71     		strb	r2, [r3, #4]
+  71:Core/Src/Driver.c ****         if (f < f_start) f_start = f; // защита от ошибки, если стартова�
+ 600              		.loc 1 71 9 is_stmt 1 view .LVU145
+ 601              	.LVL45:
+  72:Core/Src/Driver.c ****         
+ 602              		.loc 1 72 9 view .LVU146
+  72:Core/Src/Driver.c ****         
+ 603              		.loc 1 72 12 is_stmt 0 view .LVU147
+ 604 006e F92C     		cmp	r4, #249
+ 605 0070 27D9     		bls	.L47
+  71:Core/Src/Driver.c ****         if (f < f_start) f_start = f; // защита от ошибки, если стартова�
+ 606              		.loc 1 71 17 view .LVU148
+ 607 0072 4FF0FA08 		mov	r8, #250
+ 608              	.L45:
+ 609              	.LVL46:
+  74:Core/Src/Driver.c ****         if (arr == 0U) arr = 1U; // защита от ошибки, если arr=0
+ 610              		.loc 1 74 9 is_stmt 1 view .LVU149
+  74:Core/Src/Driver.c ****         if (arr == 0U) arr = 1U; // защита от ошибки, если arr=0
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 14
+
+
+ 611              		.loc 1 74 24 is_stmt 0 view .LVU150
+ 612 0076 4046     		mov	r0, r8
+ 613 0078 FFF7FEFF 		bl	Calculation_Freq
+ 614              	.LVL47:
+  75:Core/Src/Driver.c ****         
+ 615              		.loc 1 75 9 is_stmt 1 view .LVU151
+  75:Core/Src/Driver.c ****         
+ 616              		.loc 1 75 12 is_stmt 0 view .LVU152
+ 617 007c 0346     		mov	r3, r0
+ 618 007e 00B9     		cbnz	r0, .L46
+  75:Core/Src/Driver.c ****         
+ 619              		.loc 1 75 28 discriminator 1 view .LVU153
+ 620 0080 0123     		movs	r3, #1
+ 621              	.L46:
+ 622              	.LVL48:
+  78:Core/Src/Driver.c ****         *CCR_reg = (arr + 1U) / 2U;
+ 623              		.loc 1 78 9 is_stmt 1 view .LVU154
+  78:Core/Src/Driver.c ****         *CCR_reg = (arr + 1U) / 2U;
+ 624              		.loc 1 78 19 is_stmt 0 view .LVU155
+ 625 0082 EB62     		str	r3, [r5, #44]
+  79:Core/Src/Driver.c ****         
+ 626              		.loc 1 79 9 is_stmt 1 view .LVU156
+  79:Core/Src/Driver.c ****         
+ 627              		.loc 1 79 25 is_stmt 0 view .LVU157
+ 628 0084 0133     		adds	r3, r3, #1
+ 629              	.LVL49:
+  79:Core/Src/Driver.c ****         
+ 630              		.loc 1 79 31 view .LVU158
+ 631 0086 5B08     		lsrs	r3, r3, #1
+  79:Core/Src/Driver.c ****         
+ 632              		.loc 1 79 18 view .LVU159
+ 633 0088 3360     		str	r3, [r6]
+ 634              	.LVL50:
+  82:Core/Src/Driver.c ****         Acceleration(TIMX, CCR_reg, f, f_start, f_steps, delay_time);
+ 635              		.loc 1 82 9 is_stmt 1 view .LVU160
+ 636 008a 2846     		mov	r0, r5
+ 637 008c FFF7FEFF 		bl	Motor_Start
+ 638              	.LVL51:
+  83:Core/Src/Driver.c ****     } 
+ 639              		.loc 1 83 9 view .LVU161
+ 640 0090 089B     		ldr	r3, [sp, #32]
+ 641 0092 0193     		str	r3, [sp, #4]
+ 642 0094 0097     		str	r7, [sp]
+ 643 0096 4346     		mov	r3, r8
+ 644 0098 2246     		mov	r2, r4
+ 645 009a 3146     		mov	r1, r6
+ 646 009c 2846     		mov	r0, r5
+ 647 009e FFF7FEFF 		bl	Acceleration
+ 648              	.LVL52:
+ 649              	.L40:
+  83:Core/Src/Driver.c ****     } 
+ 650              		.loc 1 83 9 is_stmt 0 view .LVU162
+ 651              	.LBE5:
+  85:Core/Src/Driver.c **** 
+ 652              		.loc 1 85 1 view .LVU163
+ 653 00a2 02B0     		add	sp, sp, #8
+ 654              	.LCFI6:
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 15
+
+
+ 655              		.cfi_remember_state
+ 656              		.cfi_def_cfa_offset 24
+ 657              		@ sp needed
+ 658 00a4 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 659              	.LVL53:
+ 660              	.L50:
+ 661              	.LCFI7:
+ 662              		.cfi_restore_state
+  60:Core/Src/Driver.c ****     if (f == 0U || f > f_max) return; // защита от ошибки, если частота, �
+ 663              		.loc 1 60 14 view .LVU164
+ 664 00a8 0122     		movs	r2, #1
+ 665 00aa B9E7     		b	.L41
+ 666              	.LVL54:
+ 667              	.L51:
+  66:Core/Src/Driver.c ****         Acceleration(TIMX, CCR_reg, f, f_start, f_steps, delay_time);
+ 668              		.loc 1 66 9 is_stmt 1 view .LVU165
+  67:Core/Src/Driver.c ****     } else {
+ 669              		.loc 1 67 9 view .LVU166
+ 670 00ac 089B     		ldr	r3, [sp, #32]
+ 671 00ae 0193     		str	r3, [sp, #4]
+ 672 00b0 0097     		str	r7, [sp]
+ 673 00b2 094B     		ldr	r3, .L52+16
+  67:Core/Src/Driver.c ****     } else {
+ 674              		.loc 1 67 9 is_stmt 0 view .LVU167
+ 675 00b4 1B68     		ldr	r3, [r3]
+ 676              	.LVL55:
+  67:Core/Src/Driver.c ****     } else {
+ 677              		.loc 1 67 9 view .LVU168
+ 678 00b6 2246     		mov	r2, r4
+ 679 00b8 3146     		mov	r1, r6
+  67:Core/Src/Driver.c ****     } else {
+ 680              		.loc 1 67 9 view .LVU169
+ 681 00ba 2846     		mov	r0, r5
+ 682 00bc FFF7FEFF 		bl	Acceleration
+ 683              	.LVL56:
+  67:Core/Src/Driver.c ****     } else {
+ 684              		.loc 1 67 9 view .LVU170
+ 685 00c0 EFE7     		b	.L40
+ 686              	.LVL57:
+ 687              	.L47:
+ 688              	.LBB6:
+  72:Core/Src/Driver.c ****         
+ 689              		.loc 1 72 34 discriminator 1 view .LVU171
+ 690 00c2 A046     		mov	r8, r4
+ 691 00c4 D7E7     		b	.L45
+ 692              	.L53:
+ 693 00c6 00BF     		.align	2
+ 694              	.L52:
+ 695 00c8 00000000 		.word	param_m
+ 696 00cc 89888888 		.word	-2004318071
+ 697 00d0 EFEEEEEE 		.word	-286331153
+ 698 00d4 00000000 		.word	param_n
+ 699 00d8 00000000 		.word	param_d
+ 700              	.LBE6:
+ 701              		.cfi_endproc
+ 702              	.LFE136:
+ 704              		.section	.text.Rotation_OB,"ax",%progbits
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 16
+
+
+ 705              		.align	1
+ 706              		.global	Rotation_OB
+ 707              		.syntax unified
+ 708              		.thumb
+ 709              		.thumb_func
+ 711              	Rotation_OB:
+ 712              	.LVL58:
+ 713              	.LFB137:
+  87:Core/Src/Driver.c ****     if ((ob == 0) || ob > param_m.max_rpm) return; // защита от ошибки, если ск
+ 714              		.loc 1 87 117 is_stmt 1 view -0
+ 715              		.cfi_startproc
+ 716              		@ args = 4, pretend = 0, frame = 0
+ 717              		@ frame_needed = 0, uses_anonymous_args = 0
+  88:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // расчет ча
+ 718              		.loc 1 88 5 view .LVU173
+  88:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // расчет ча
+ 719              		.loc 1 88 8 is_stmt 0 view .LVU174
+ 720 0000 22B1     		cbz	r2, .L59
+ 721 0002 9446     		mov	ip, r2
+  88:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // расчет ча
+ 722              		.loc 1 88 34 discriminator 2 view .LVU175
+ 723 0004 1B4A     		ldr	r2, .L64
+ 724              	.LVL59:
+  88:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // расчет ча
+ 725              		.loc 1 88 34 discriminator 2 view .LVU176
+ 726 0006 9268     		ldr	r2, [r2, #8]
+  88:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // расчет ча
+ 727              		.loc 1 88 19 discriminator 2 view .LVU177
+ 728 0008 6245     		cmp	r2, ip
+ 729 000a 00D2     		bcs	.L62
+ 730              	.LVL60:
+ 731              	.L59:
+  88:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // расчет ча
+ 732              		.loc 1 88 19 discriminator 2 view .LVU178
+ 733 000c 7047     		bx	lr
+ 734              	.LVL61:
+ 735              	.L62:
+  87:Core/Src/Driver.c ****     if ((ob == 0) || ob > param_m.max_rpm) return; // защита от ошибки, если ск
+ 736              		.loc 1 87 117 view .LVU179
+ 737 000e 30B5     		push	{r4, r5, lr}
+ 738              	.LCFI8:
+ 739              		.cfi_def_cfa_offset 12
+ 740              		.cfi_offset 4, -12
+ 741              		.cfi_offset 5, -8
+ 742              		.cfi_offset 14, -4
+ 743 0010 83B0     		sub	sp, sp, #12
+ 744              	.LCFI9:
+ 745              		.cfi_def_cfa_offset 24
+  89:Core/Src/Driver.c ****     Rotation_GC(TIMX, CCR_reg, f, f_steps, delay_time); 
+ 746              		.loc 1 89 5 is_stmt 1 view .LVU180
+  89:Core/Src/Driver.c ****     Rotation_GC(TIMX, CCR_reg, f, f_steps, delay_time); 
+ 747              		.loc 1 89 52 is_stmt 0 view .LVU181
+ 748 0012 184A     		ldr	r2, .L64
+ 749 0014 1268     		ldr	r2, [r2]
+  89:Core/Src/Driver.c ****     Rotation_GC(TIMX, CCR_reg, f, f_steps, delay_time); 
+ 750              		.loc 1 89 43 view .LVU182
+ 751 0016 ACFB02C2 		umull	ip, r2, ip, r2
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 17
+
+
+ 752              	.LVL62:
+  89:Core/Src/Driver.c ****     Rotation_GC(TIMX, CCR_reg, f, f_steps, delay_time); 
+ 753              		.loc 1 89 65 view .LVU183
+ 754 001a 1CF11E0C 		adds	ip, ip, #30
+ 755 001e 42F10002 		adc	r2, r2, #0
+  89:Core/Src/Driver.c ****     Rotation_GC(TIMX, CCR_reg, f, f_steps, delay_time); 
+ 756              		.loc 1 89 72 view .LVU184
+ 757 0022 0025     		movs	r5, #0
+ 758 0024 1CEB0204 		adds	r4, ip, r2
+ 759 0028 21D2     		bcs	.L63
+ 760              	.L56:
+ 761 002a 2544     		add	r5, r5, r4
+ 762 002c 124C     		ldr	r4, .L64+4
+ 763 002e A4FB054E 		umull	r4, lr, r4, r5
+ 764 0032 4FEADE0E 		lsr	lr, lr, #3
+ 765 0036 CEEB0E1E 		rsb	lr, lr, lr, lsl #4
+ 766 003a A5EB0E04 		sub	r4, r5, lr
+ 767 003e BCEB040C 		subs	ip, ip, r4
+ 768 0042 62F10005 		sbc	r5, r2, #0
+ 769 0046 0D4C     		ldr	r4, .L64+8
+ 770 0048 4FF0EE32 		mov	r2, #-286331154
+ 771 004c 02FB0CF2 		mul	r2, r2, ip
+ 772 0050 04FB0522 		mla	r2, r4, r5, r2
+ 773 0054 ACFB04C4 		umull	ip, r4, ip, r4
+ 774 0058 2244     		add	r2, r2, r4
+ 775 005a 4FEA9C0C 		lsr	ip, ip, #2
+ 776              	.LVL63:
+  90:Core/Src/Driver.c **** }
+ 777              		.loc 1 90 5 is_stmt 1 view .LVU185
+ 778 005e 069C     		ldr	r4, [sp, #24]
+ 779 0060 0094     		str	r4, [sp]
+ 780 0062 4CEA8272 		orr	r2, ip, r2, lsl #30
+ 781              	.LVL64:
+  90:Core/Src/Driver.c **** }
+ 782              		.loc 1 90 5 is_stmt 0 view .LVU186
+ 783 0066 FFF7FEFF 		bl	Rotation_GC
+ 784              	.LVL65:
+  91:Core/Src/Driver.c **** 
+ 785              		.loc 1 91 1 view .LVU187
+ 786 006a 03B0     		add	sp, sp, #12
+ 787              	.LCFI10:
+ 788              		.cfi_remember_state
+ 789              		.cfi_def_cfa_offset 12
+ 790              		@ sp needed
+ 791 006c 30BD     		pop	{r4, r5, pc}
+ 792              	.LVL66:
+ 793              	.L63:
+ 794              	.LCFI11:
+ 795              		.cfi_restore_state
+  89:Core/Src/Driver.c ****     Rotation_GC(TIMX, CCR_reg, f, f_steps, delay_time); 
+ 796              		.loc 1 89 72 view .LVU188
+ 797 006e 0125     		movs	r5, #1
+ 798 0070 DBE7     		b	.L56
+ 799              	.L65:
+ 800 0072 00BF     		.align	2
+ 801              	.L64:
+ 802 0074 00000000 		.word	param_m
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 18
+
+
+ 803 0078 89888888 		.word	-2004318071
+ 804 007c EFEEEEEE 		.word	-286331153
+ 805              		.cfi_endproc
+ 806              	.LFE137:
+ 808              		.section	.text.Motor_Stop,"ax",%progbits
+ 809              		.align	1
+ 810              		.global	Motor_Stop
+ 811              		.syntax unified
+ 812              		.thumb
+ 813              		.thumb_func
+ 815              	Motor_Stop:
+ 816              	.LVL67:
+ 817              	.LFB140:
+ 118:Core/Src/Driver.c **** 
+ 119:Core/Src/Driver.c **** void Motor_Stop(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg) {
+ 818              		.loc 1 119 64 is_stmt 1 view -0
+ 819              		.cfi_startproc
+ 820              		@ args = 0, pretend = 0, frame = 0
+ 821              		@ frame_needed = 0, uses_anonymous_args = 0
+ 822              		@ link register save eliminated.
+ 120:Core/Src/Driver.c ****     // остановка мотора
+ 121:Core/Src/Driver.c ****     TIMX->CR1 &= ~(1U << 0);     // Выключаем счетчик таймера (бит CEN)
+ 823              		.loc 1 121 5 view .LVU190
+ 824              		.loc 1 121 9 is_stmt 0 view .LVU191
+ 825 0000 0368     		ldr	r3, [r0]
+ 826              		.loc 1 121 15 view .LVU192
+ 827 0002 23F00103 		bic	r3, r3, #1
+ 828 0006 0360     		str	r3, [r0]
+ 122:Core/Src/Driver.c ****     *CCR_reg = 0U;               // Обнуляем скважность ШИМ
+ 829              		.loc 1 122 5 is_stmt 1 view .LVU193
+ 830              		.loc 1 122 14 is_stmt 0 view .LVU194
+ 831 0008 0023     		movs	r3, #0
+ 832 000a 0B60     		str	r3, [r1]
+ 123:Core/Src/Driver.c ****     
+ 124:Core/Src/Driver.c ****     // Сброс глобальных параметров состояния
+ 125:Core/Src/Driver.c ****     param_d.frequency = 0U;
+ 833              		.loc 1 125 5 is_stmt 1 view .LVU195
+ 834              		.loc 1 125 23 is_stmt 0 view .LVU196
+ 835 000c 034A     		ldr	r2, .L67
+ 836 000e 1360     		str	r3, [r2]
+ 126:Core/Src/Driver.c ****     param_d.rpm = 0U;
+ 837              		.loc 1 126 5 is_stmt 1 view .LVU197
+ 838              		.loc 1 126 17 is_stmt 0 view .LVU198
+ 839 0010 5360     		str	r3, [r2, #4]
+ 127:Core/Src/Driver.c ****     param_n.sost_mot = 0;
+ 840              		.loc 1 127 5 is_stmt 1 view .LVU199
+ 841              		.loc 1 127 22 is_stmt 0 view .LVU200
+ 842 0012 034A     		ldr	r2, .L67+4
+ 843 0014 1371     		strb	r3, [r2, #4]
+ 128:Core/Src/Driver.c ****     param_n.freq_now = 0;
+ 844              		.loc 1 128 5 is_stmt 1 view .LVU201
+ 845              		.loc 1 128 22 is_stmt 0 view .LVU202
+ 846 0016 1360     		str	r3, [r2]
+ 129:Core/Src/Driver.c **** }
+ 847              		.loc 1 129 1 view .LVU203
+ 848 0018 7047     		bx	lr
+ 849              	.L68:
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 19
+
+
+ 850 001a 00BF     		.align	2
+ 851              	.L67:
+ 852 001c 00000000 		.word	param_d
+ 853 0020 00000000 		.word	param_n
+ 854              		.cfi_endproc
+ 855              	.LFE140:
+ 857              		.section	.text.Motor_Smooth_Stop_GC,"ax",%progbits
+ 858              		.align	1
+ 859              		.global	Motor_Smooth_Stop_GC
+ 860              		.syntax unified
+ 861              		.thumb
+ 862              		.thumb_func
+ 864              	Motor_Smooth_Stop_GC:
+ 865              	.LVL68:
+ 866              	.LFB141:
+ 130:Core/Src/Driver.c **** 
+ 131:Core/Src/Driver.c **** void Motor_Smooth_Stop_GC(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t target_f, uint32_
+ 867              		.loc 1 131 132 is_stmt 1 view -0
+ 868              		.cfi_startproc
+ 869              		@ args = 4, pretend = 0, frame = 0
+ 870              		@ frame_needed = 0, uses_anonymous_args = 0
+ 871              		.loc 1 131 132 is_stmt 0 view .LVU205
+ 872 0000 30B5     		push	{r4, r5, lr}
+ 873              	.LCFI12:
+ 874              		.cfi_def_cfa_offset 12
+ 875              		.cfi_offset 4, -12
+ 876              		.cfi_offset 5, -8
+ 877              		.cfi_offset 14, -4
+ 878 0002 83B0     		sub	sp, sp, #12
+ 879              	.LCFI13:
+ 880              		.cfi_def_cfa_offset 24
+ 881 0004 0446     		mov	r4, r0
+ 882 0006 0D46     		mov	r5, r1
+ 132:Core/Src/Driver.c ****     if (f_steps == 0U) f_steps = 1U;
+ 883              		.loc 1 132 5 is_stmt 1 view .LVU206
+ 884              		.loc 1 132 8 is_stmt 0 view .LVU207
+ 885 0008 1946     		mov	r1, r3
+ 886              	.LVL69:
+ 887              		.loc 1 132 8 view .LVU208
+ 888 000a 03B9     		cbnz	r3, .L70
+ 889              		.loc 1 132 32 discriminator 1 view .LVU209
+ 890 000c 0121     		movs	r1, #1
+ 891              	.L70:
+ 892              	.LVL70:
+ 133:Core/Src/Driver.c ****     
+ 134:Core/Src/Driver.c ****     // Плавно снижаем частоту от ТЕКУЩЕЙ (param_n.freq_now) до ЦЕ�
+ 135:Core/Src/Driver.c ****     // Если target_f = 0, мотор плавно остановится.
+ 136:Core/Src/Driver.c ****     Acceleration(TIMX, CCR_reg, target_f, param_n.freq_now, f_steps, delay_time);
+ 893              		.loc 1 136 5 is_stmt 1 view .LVU210
+ 894 000e 069B     		ldr	r3, [sp, #24]
+ 895 0010 0193     		str	r3, [sp, #4]
+ 896 0012 0091     		str	r1, [sp]
+ 897 0014 054B     		ldr	r3, .L73
+ 898 0016 1B68     		ldr	r3, [r3]
+ 899 0018 2946     		mov	r1, r5
+ 900              	.LVL71:
+ 901              		.loc 1 136 5 is_stmt 0 view .LVU211
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 20
+
+
+ 902 001a 2046     		mov	r0, r4
+ 903              	.LVL72:
+ 904              		.loc 1 136 5 view .LVU212
+ 905 001c FFF7FEFF 		bl	Acceleration
+ 906              	.LVL73:
+ 137:Core/Src/Driver.c ****     
+ 138:Core/Src/Driver.c ****     // Полная остановка таймера
+ 139:Core/Src/Driver.c ****     Motor_Stop(TIMX, CCR_reg);
+ 907              		.loc 1 139 5 is_stmt 1 view .LVU213
+ 908 0020 2946     		mov	r1, r5
+ 909 0022 2046     		mov	r0, r4
+ 910 0024 FFF7FEFF 		bl	Motor_Stop
+ 911              	.LVL74:
+ 140:Core/Src/Driver.c **** }
+ 912              		.loc 1 140 1 is_stmt 0 view .LVU214
+ 913 0028 03B0     		add	sp, sp, #12
+ 914              	.LCFI14:
+ 915              		.cfi_def_cfa_offset 12
+ 916              		@ sp needed
+ 917 002a 30BD     		pop	{r4, r5, pc}
+ 918              	.LVL75:
+ 919              	.L74:
+ 920              		.loc 1 140 1 view .LVU215
+ 921              		.align	2
+ 922              	.L73:
+ 923 002c 00000000 		.word	param_n
+ 924              		.cfi_endproc
+ 925              	.LFE141:
+ 927              		.section	.text.Motor_Smooth_Stop_OB,"ax",%progbits
+ 928              		.align	1
+ 929              		.global	Motor_Smooth_Stop_OB
+ 930              		.syntax unified
+ 931              		.thumb
+ 932              		.thumb_func
+ 934              	Motor_Smooth_Stop_OB:
+ 935              	.LVL76:
+ 936              	.LFB142:
+ 141:Core/Src/Driver.c **** void Motor_Smooth_Stop_OB(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t ob, uint32_t f_st
+ 937              		.loc 1 141 126 is_stmt 1 view -0
+ 938              		.cfi_startproc
+ 939              		@ args = 4, pretend = 0, frame = 0
+ 940              		@ frame_needed = 0, uses_anonymous_args = 0
+ 142:Core/Src/Driver.c ****     // 1. Защита: если об/мин равен 0, нет смысла тормозить
+ 143:Core/Src/Driver.c ****     if (ob == 0U) return;
+ 941              		.loc 1 143 5 view .LVU217
+ 942              		.loc 1 143 8 is_stmt 0 view .LVU218
+ 943 0000 002A     		cmp	r2, #0
+ 944 0002 37D0     		beq	.L80
+ 141:Core/Src/Driver.c **** void Motor_Smooth_Stop_OB(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t ob, uint32_t f_st
+ 945              		.loc 1 141 126 view .LVU219
+ 946 0004 30B5     		push	{r4, r5, lr}
+ 947              	.LCFI15:
+ 948              		.cfi_def_cfa_offset 12
+ 949              		.cfi_offset 4, -12
+ 950              		.cfi_offset 5, -8
+ 951              		.cfi_offset 14, -4
+ 952 0006 83B0     		sub	sp, sp, #12
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 21
+
+
+ 953              	.LCFI16:
+ 954              		.cfi_def_cfa_offset 24
+ 955 0008 1446     		mov	r4, r2
+ 144:Core/Src/Driver.c ****     // 2. Защита: если мотор уже стоит, тормозить нечего
+ 145:Core/Src/Driver.c ****     if (param_n.sost_mot == 0) return;
+ 956              		.loc 1 145 5 is_stmt 1 view .LVU220
+ 957              		.loc 1 145 16 is_stmt 0 view .LVU221
+ 958 000a 1B4A     		ldr	r2, .L85
+ 959              	.LVL77:
+ 960              		.loc 1 145 16 view .LVU222
+ 961 000c 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
+ 962              		.loc 1 145 8 view .LVU223
+ 963 000e 42B3     		cbz	r2, .L75
+ 146:Core/Src/Driver.c ****     
+ 147:Core/Src/Driver.c ****     // 3. Переводим об/мин в Гц 
+ 148:Core/Src/Driver.c ****     uint32_t f_target_stop = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U);
+ 964              		.loc 1 148 5 is_stmt 1 view .LVU224
+ 965              		.loc 1 148 64 is_stmt 0 view .LVU225
+ 966 0010 1A4A     		ldr	r2, .L85+4
+ 967 0012 1268     		ldr	r2, [r2]
+ 968              		.loc 1 148 55 view .LVU226
+ 969 0014 A4FB022C 		umull	r2, ip, r4, r2
+ 970              		.loc 1 148 77 view .LVU227
+ 971 0018 1E32     		adds	r2, r2, #30
+ 972 001a 4CF1000C 		adc	ip, ip, #0
+ 973              		.loc 1 148 84 view .LVU228
+ 974 001e 0025     		movs	r5, #0
+ 975 0020 12EB0C04 		adds	r4, r2, ip
+ 976              	.LVL78:
+ 977              		.loc 1 148 84 view .LVU229
+ 978 0024 1FD2     		bcs	.L83
+ 979              	.L77:
+ 980 0026 2544     		add	r5, r5, r4
+ 981 0028 154C     		ldr	r4, .L85+8
+ 982 002a A4FB054E 		umull	r4, lr, r4, r5
+ 983 002e 4FEADE0E 		lsr	lr, lr, #3
+ 984 0032 CEEB0E1E 		rsb	lr, lr, lr, lsl #4
+ 985 0036 A5EB0E04 		sub	r4, r5, lr
+ 986 003a 121B     		subs	r2, r2, r4
+ 987 003c 6CF1000C 		sbc	ip, ip, #0
+ 988 0040 104D     		ldr	r5, .L85+12
+ 989 0042 4FF0EE34 		mov	r4, #-286331154
+ 990 0046 02FB04F4 		mul	r4, r2, r4
+ 991 004a 05FB0C44 		mla	r4, r5, ip, r4
+ 992 004e A2FB0525 		umull	r2, r5, r2, r5
+ 993 0052 2C44     		add	r4, r4, r5
+ 994 0054 9208     		lsrs	r2, r2, #2
+ 995 0056 42EA8472 		orr	r2, r2, r4, lsl #30
+ 996              	.LVL79:
+ 149:Core/Src/Driver.c ****     
+ 150:Core/Src/Driver.c ****     // 4. Защита: если целевая частота остановки выше теку
+ 151:Core/Src/Driver.c ****     if (f_target_stop >= param_n.freq_now) return;
+ 997              		.loc 1 151 5 is_stmt 1 view .LVU230
+ 998              		.loc 1 151 33 is_stmt 0 view .LVU231
+ 999 005a 074C     		ldr	r4, .L85
+ 1000 005c 2468     		ldr	r4, [r4]
+ 1001              		.loc 1 151 8 view .LVU232
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 22
+
+
+ 1002 005e 9442     		cmp	r4, r2
+ 1003 0060 03D8     		bhi	.L84
+ 1004              	.LVL80:
+ 1005              	.L75:
+ 152:Core/Src/Driver.c ****     
+ 153:Core/Src/Driver.c ****     // 5. Вызываем существующую функцию плавного торможе�
+ 154:Core/Src/Driver.c ****     // Она плавно снизит частоту от param_n.freq_now до f_target_stop, а
+ 155:Core/Src/Driver.c ****     Motor_Smooth_Stop_GC(TIMX, CCR_reg, f_target_stop, f_steps, delay_time);
+ 156:Core/Src/Driver.c **** }
+ 1006              		.loc 1 156 1 view .LVU233
+ 1007 0062 03B0     		add	sp, sp, #12
+ 1008              	.LCFI17:
+ 1009              		.cfi_remember_state
+ 1010              		.cfi_def_cfa_offset 12
+ 1011              		@ sp needed
+ 1012 0064 30BD     		pop	{r4, r5, pc}
+ 1013              	.LVL81:
+ 1014              	.L83:
+ 1015              	.LCFI18:
+ 1016              		.cfi_restore_state
+ 148:Core/Src/Driver.c ****     
+ 1017              		.loc 1 148 84 view .LVU234
+ 1018 0066 0125     		movs	r5, #1
+ 1019 0068 DDE7     		b	.L77
+ 1020              	.LVL82:
+ 1021              	.L84:
+ 155:Core/Src/Driver.c **** }
+ 1022              		.loc 1 155 5 is_stmt 1 view .LVU235
+ 1023 006a 069C     		ldr	r4, [sp, #24]
+ 1024 006c 0094     		str	r4, [sp]
+ 1025 006e FFF7FEFF 		bl	Motor_Smooth_Stop_GC
+ 1026              	.LVL83:
+ 155:Core/Src/Driver.c **** }
+ 1027              		.loc 1 155 5 is_stmt 0 view .LVU236
+ 1028 0072 F6E7     		b	.L75
+ 1029              	.LVL84:
+ 1030              	.L80:
+ 1031              	.LCFI19:
+ 1032              		.cfi_def_cfa_offset 0
+ 1033              		.cfi_restore 4
+ 1034              		.cfi_restore 5
+ 1035              		.cfi_restore 14
+ 155:Core/Src/Driver.c **** }
+ 1036              		.loc 1 155 5 view .LVU237
+ 1037 0074 7047     		bx	lr
+ 1038              	.L86:
+ 1039 0076 00BF     		.align	2
+ 1040              	.L85:
+ 1041 0078 00000000 		.word	param_n
+ 1042 007c 00000000 		.word	param_m
+ 1043 0080 89888888 		.word	-2004318071
+ 1044 0084 EFEEEEEE 		.word	-286331153
+ 1045              		.cfi_endproc
+ 1046              	.LFE142:
+ 1048              		.section	.text.Rotation_UGL_GC,"ax",%progbits
+ 1049              		.align	1
+ 1050              		.global	Rotation_UGL_GC
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 23
+
+
+ 1051              		.syntax unified
+ 1052              		.thumb
+ 1053              		.thumb_func
+ 1055              	Rotation_UGL_GC:
+ 1056              	.LVL85:
+ 1057              	.LFB143:
+ 157:Core/Src/Driver.c **** 
+ 158:Core/Src/Driver.c **** uint8_t Rotation_UGL_GC(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t f_target, float ang
+ 1058              		.loc 1 158 120 is_stmt 1 view -0
+ 1059              		.cfi_startproc
+ 1060              		@ args = 0, pretend = 0, frame = 0
+ 1061              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159:Core/Src/Driver.c ****     if (f_target == 0 || steps == 0 || angle <= 0.0f) { // защита от ошибки, если
+ 1062              		.loc 1 159 5 view .LVU239
+ 1063              		.loc 1 159 8 is_stmt 0 view .LVU240
+ 1064 0000 002A     		cmp	r2, #0
+ 1065 0002 39D0     		beq	.L89
+ 158:Core/Src/Driver.c ****     if (f_target == 0 || steps == 0 || angle <= 0.0f) { // защита от ошибки, если
+ 1066              		.loc 1 158 120 view .LVU241
+ 1067 0004 70B5     		push	{r4, r5, r6, lr}
+ 1068              	.LCFI20:
+ 1069              		.cfi_def_cfa_offset 16
+ 1070              		.cfi_offset 4, -16
+ 1071              		.cfi_offset 5, -12
+ 1072              		.cfi_offset 6, -8
+ 1073              		.cfi_offset 14, -4
+ 1074 0006 0646     		mov	r6, r0
+ 1075 0008 0D46     		mov	r5, r1
+ 1076 000a 1146     		mov	r1, r2
+ 1077              	.LVL86:
+ 1078              		.loc 1 159 23 discriminator 1 view .LVU242
+ 1079 000c 002B     		cmp	r3, #0
+ 1080 000e 35D0     		beq	.L90
+ 1081              		.loc 1 159 37 discriminator 2 view .LVU243
+ 1082 0010 B5EEC00A 		vcmpe.f32	s0, #0
+ 1083 0014 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 1084 0018 32D9     		bls	.L91
+ 160:Core/Src/Driver.c ****         return 0;
+ 161:Core/Src/Driver.c ****     }
+ 162:Core/Src/Driver.c ****     
+ 163:Core/Src/Driver.c ****     // Расчет целевого количества шагов на основе угла и 
+ 164:Core/Src/Driver.c ****     param_ugl.steps_target = (uint32_t)(angle / param_m.const_ugol + 0.5f);
+ 1085              		.loc 1 164 5 is_stmt 1 view .LVU244
+ 1086              		.loc 1 164 56 is_stmt 0 view .LVU245
+ 1087 001a 1A4A     		ldr	r2, .L98
+ 1088              	.LVL87:
+ 1089              		.loc 1 164 56 view .LVU246
+ 1090 001c 92ED017A 		vldr.32	s14, [r2, #4]
+ 1091              		.loc 1 164 47 view .LVU247
+ 1092 0020 C0EE077A 		vdiv.f32	s15, s0, s14
+ 1093              		.loc 1 164 68 view .LVU248
+ 1094 0024 B6EE007A 		vmov.f32	s14, #5.0e-1
+ 1095 0028 77EE877A 		vadd.f32	s15, s15, s14
+ 1096              		.loc 1 164 30 view .LVU249
+ 1097 002c FCEEE77A 		vcvt.u32.f32	s15, s15
+ 1098 0030 17EE902A 		vmov	r2, s15	@ int
+ 1099              		.loc 1 164 28 view .LVU250
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 24
+
+
+ 1100 0034 1448     		ldr	r0, .L98+4
+ 1101              	.LVL88:
+ 1102              		.loc 1 164 28 view .LVU251
+ 1103 0036 C0ED027A 		vstr.32	s15, [r0, #8]	@ int
+ 165:Core/Src/Driver.c ****     if (param_ugl.steps_target == 0U) {
+ 1104              		.loc 1 165 5 is_stmt 1 view .LVU252
+ 1105              		.loc 1 165 8 is_stmt 0 view .LVU253
+ 1106 003a 0AB9     		cbnz	r2, .L97
+ 166:Core/Src/Driver.c ****         return 0;
+ 1107              		.loc 1 166 16 view .LVU254
+ 1108 003c 0020     		movs	r0, #0
+ 1109 003e 1EE0     		b	.L88
+ 1110              	.L97:
+ 167:Core/Src/Driver.c ****     }
+ 168:Core/Src/Driver.c ****     
+ 169:Core/Src/Driver.c ****     // Инициализация параметров для работы через прерыв�
+ 170:Core/Src/Driver.c ****     param_ugl.steps = steps;
+ 1111              		.loc 1 170 5 is_stmt 1 view .LVU255
+ 1112              		.loc 1 170 21 is_stmt 0 view .LVU256
+ 1113 0040 0246     		mov	r2, r0
+ 1114 0042 0361     		str	r3, [r0, #16]
+ 171:Core/Src/Driver.c ****     param_ugl.f_target = f_target;
+ 1115              		.loc 1 171 5 is_stmt 1 view .LVU257
+ 1116              		.loc 1 171 24 is_stmt 0 view .LVU258
+ 1117 0044 C160     		str	r1, [r0, #12]
+ 172:Core/Src/Driver.c ****     param_ugl.steps_current = 0;
+ 1118              		.loc 1 172 5 is_stmt 1 view .LVU259
+ 1119              		.loc 1 172 29 is_stmt 0 view .LVU260
+ 1120 0046 0023     		movs	r3, #0
+ 1121              	.LVL89:
+ 1122              		.loc 1 172 29 view .LVU261
+ 1123 0048 4360     		str	r3, [r0, #4]
+ 173:Core/Src/Driver.c ****     param_ugl.sost_ugl_motor = 1;
+ 1124              		.loc 1 173 5 is_stmt 1 view .LVU262
+ 1125              		.loc 1 173 30 is_stmt 0 view .LVU263
+ 1126 004a 0124     		movs	r4, #1
+ 1127 004c 0470     		strb	r4, [r0]
+ 174:Core/Src/Driver.c ****     
+ 175:Core/Src/Driver.c ****     int32_t f_start = 1000U;         
+ 1128              		.loc 1 175 5 is_stmt 1 view .LVU264
+ 1129              	.LVL90:
+ 176:Core/Src/Driver.c ****     param_ugl.f_start = f_start;    
+ 1130              		.loc 1 176 5 view .LVU265
+ 1131              		.loc 1 176 23 is_stmt 0 view .LVU266
+ 1132 004e 4FF47A70 		mov	r0, #1000
+ 1133 0052 5061     		str	r0, [r2, #20]
+ 177:Core/Src/Driver.c ****     
+ 178:Core/Src/Driver.c ****     uint32_t arr = Calculation_Freq(f_start);  // Расчет ARR для старта
+ 1134              		.loc 1 178 5 is_stmt 1 view .LVU267
+ 1135              		.loc 1 178 20 is_stmt 0 view .LVU268
+ 1136 0054 FFF7FEFF 		bl	Calculation_Freq
+ 1137              	.LVL91:
+ 179:Core/Src/Driver.c ****     TIMX->ARR = arr;
+ 1138              		.loc 1 179 5 is_stmt 1 view .LVU269
+ 1139              		.loc 1 179 15 is_stmt 0 view .LVU270
+ 1140 0058 F062     		str	r0, [r6, #44]
+ 180:Core/Src/Driver.c ****     *CCR_reg = (arr + 1U) / 2U;
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 25
+
+
+ 1141              		.loc 1 180 5 is_stmt 1 view .LVU271
+ 1142              		.loc 1 180 21 is_stmt 0 view .LVU272
+ 1143 005a 2044     		add	r0, r0, r4
+ 1144              	.LVL92:
+ 1145              		.loc 1 180 27 view .LVU273
+ 1146 005c E040     		lsrs	r0, r0, r4
+ 1147              		.loc 1 180 14 view .LVU274
+ 1148 005e 2860     		str	r0, [r5]
+ 1149              	.LVL93:
+ 181:Core/Src/Driver.c ****     
+ 182:Core/Src/Driver.c ****     TIMX->DIER |= TIM_DIER_UIE;      // Разрешаем прерывание по обновле
+ 1150              		.loc 1 182 5 is_stmt 1 view .LVU275
+ 1151              		.loc 1 182 9 is_stmt 0 view .LVU276
+ 1152 0060 F368     		ldr	r3, [r6, #12]
+ 1153              		.loc 1 182 16 view .LVU277
+ 1154 0062 2343     		orrs	r3, r3, r4
+ 1155 0064 F360     		str	r3, [r6, #12]
+ 183:Core/Src/Driver.c ****     TIMX->SR &= ~TIM_SR_UIF;         // Очищаем флаг прерывания перед з�
+ 1156              		.loc 1 183 5 is_stmt 1 view .LVU278
+ 1157              		.loc 1 183 9 is_stmt 0 view .LVU279
+ 1158 0066 3369     		ldr	r3, [r6, #16]
+ 1159              		.loc 1 183 14 view .LVU280
+ 1160 0068 23F00103 		bic	r3, r3, #1
+ 1161 006c 3361     		str	r3, [r6, #16]
+ 184:Core/Src/Driver.c ****     
+ 185:Core/Src/Driver.c ****     Motor_Start(TIMX);
+ 1162              		.loc 1 185 5 is_stmt 1 view .LVU281
+ 1163 006e 3046     		mov	r0, r6
+ 1164 0070 FFF7FEFF 		bl	Motor_Start
+ 1165              	.LVL94:
+ 186:Core/Src/Driver.c ****     return 1;
+ 1166              		.loc 1 186 5 view .LVU282
+ 1167              		.loc 1 186 12 is_stmt 0 view .LVU283
+ 1168 0074 2046     		mov	r0, r4
+ 1169 0076 02E0     		b	.L88
+ 1170              	.LVL95:
+ 1171              	.L89:
+ 1172              	.LCFI21:
+ 1173              		.cfi_def_cfa_offset 0
+ 1174              		.cfi_restore 4
+ 1175              		.cfi_restore 5
+ 1176              		.cfi_restore 6
+ 1177              		.cfi_restore 14
+ 160:Core/Src/Driver.c ****     }
+ 1178              		.loc 1 160 16 view .LVU284
+ 1179 0078 0020     		movs	r0, #0
+ 1180              	.LVL96:
+ 187:Core/Src/Driver.c **** }
+ 1181              		.loc 1 187 1 view .LVU285
+ 1182 007a 7047     		bx	lr
+ 1183              	.LVL97:
+ 1184              	.L90:
+ 1185              	.LCFI22:
+ 1186              		.cfi_def_cfa_offset 16
+ 1187              		.cfi_offset 4, -16
+ 1188              		.cfi_offset 5, -12
+ 1189              		.cfi_offset 6, -8
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 26
+
+
+ 1190              		.cfi_offset 14, -4
+ 160:Core/Src/Driver.c ****     }
+ 1191              		.loc 1 160 16 view .LVU286
+ 1192 007c 0020     		movs	r0, #0
+ 1193              	.LVL98:
+ 1194              	.L88:
+ 1195              		.loc 1 187 1 view .LVU287
+ 1196 007e 70BD     		pop	{r4, r5, r6, pc}
+ 1197              	.LVL99:
+ 1198              	.L91:
+ 160:Core/Src/Driver.c ****     }
+ 1199              		.loc 1 160 16 view .LVU288
+ 1200 0080 0020     		movs	r0, #0
+ 1201              	.LVL100:
+ 160:Core/Src/Driver.c ****     }
+ 1202              		.loc 1 160 16 view .LVU289
+ 1203 0082 FCE7     		b	.L88
+ 1204              	.L99:
+ 1205              		.align	2
+ 1206              	.L98:
+ 1207 0084 00000000 		.word	param_m
+ 1208 0088 00000000 		.word	param_ugl
+ 1209              		.cfi_endproc
+ 1210              	.LFE143:
+ 1212              		.section	.text.Rotation_UGL_OB,"ax",%progbits
+ 1213              		.align	1
+ 1214              		.global	Rotation_UGL_OB
+ 1215              		.syntax unified
+ 1216              		.thumb
+ 1217              		.thumb_func
+ 1219              	Rotation_UGL_OB:
+ 1220              	.LVL101:
+ 1221              	.LFB144:
+ 188:Core/Src/Driver.c **** 
+ 189:Core/Src/Driver.c **** uint8_t Rotation_UGL_OB(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t ob, float angle, ui
+ 1222              		.loc 1 189 114 is_stmt 1 view -0
+ 1223              		.cfi_startproc
+ 1224              		@ args = 0, pretend = 0, frame = 0
+ 1225              		@ frame_needed = 0, uses_anonymous_args = 0
+ 190:Core/Src/Driver.c ****     if (ob == 0U || ob > param_m.max_rpm) return 0; // Защита от некорректных �
+ 1226              		.loc 1 190 5 view .LVU291
+ 1227              		.loc 1 190 8 is_stmt 0 view .LVU292
+ 1228 0000 A2B3     		cbz	r2, .L104
+ 1229 0002 9446     		mov	ip, r2
+ 1230              		.loc 1 190 33 discriminator 2 view .LVU293
+ 1231 0004 1A4A     		ldr	r2, .L112
+ 1232              	.LVL102:
+ 1233              		.loc 1 190 33 discriminator 2 view .LVU294
+ 1234 0006 9268     		ldr	r2, [r2, #8]
+ 1235              		.loc 1 190 18 discriminator 2 view .LVU295
+ 1236 0008 6245     		cmp	r2, ip
+ 1237 000a 01D2     		bcs	.L110
+ 1238              		.loc 1 190 50 discriminator 3 view .LVU296
+ 1239 000c 0020     		movs	r0, #0
+ 1240              	.LVL103:
+ 191:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 192:Core/Src/Driver.c ****     return Rotation_UGL_GC(TIMX, CCR_reg, f, angle, steps);
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 27
+
+
+ 193:Core/Src/Driver.c **** }  
+ 1241              		.loc 1 193 1 view .LVU297
+ 1242 000e 7047     		bx	lr
+ 1243              	.LVL104:
+ 1244              	.L110:
+ 189:Core/Src/Driver.c ****     if (ob == 0U || ob > param_m.max_rpm) return 0; // Защита от некорректных �
+ 1245              		.loc 1 189 114 view .LVU298
+ 1246 0010 38B5     		push	{r3, r4, r5, lr}
+ 1247              	.LCFI23:
+ 1248              		.cfi_def_cfa_offset 16
+ 1249              		.cfi_offset 3, -16
+ 1250              		.cfi_offset 4, -12
+ 1251              		.cfi_offset 5, -8
+ 1252              		.cfi_offset 14, -4
+ 191:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 1253              		.loc 1 191 5 is_stmt 1 view .LVU299
+ 191:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 1254              		.loc 1 191 52 is_stmt 0 view .LVU300
+ 1255 0012 174A     		ldr	r2, .L112
+ 1256 0014 1268     		ldr	r2, [r2]
+ 191:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 1257              		.loc 1 191 43 view .LVU301
+ 1258 0016 ACFB02C2 		umull	ip, r2, ip, r2
+ 1259              	.LVL105:
+ 191:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 1260              		.loc 1 191 65 view .LVU302
+ 1261 001a 1CF11E0C 		adds	ip, ip, #30
+ 1262 001e 42F10002 		adc	r2, r2, #0
+ 191:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 1263              		.loc 1 191 72 view .LVU303
+ 1264 0022 0025     		movs	r5, #0
+ 1265 0024 1CEB0204 		adds	r4, ip, r2
+ 1266 0028 1ED2     		bcs	.L111
+ 1267              	.L102:
+ 1268 002a 2544     		add	r5, r5, r4
+ 1269 002c 114C     		ldr	r4, .L112+4
+ 1270 002e A4FB054E 		umull	r4, lr, r4, r5
+ 1271 0032 4FEADE0E 		lsr	lr, lr, #3
+ 1272 0036 CEEB0E1E 		rsb	lr, lr, lr, lsl #4
+ 1273 003a A5EB0E04 		sub	r4, r5, lr
+ 1274 003e BCEB040C 		subs	ip, ip, r4
+ 1275 0042 62F10005 		sbc	r5, r2, #0
+ 1276 0046 0C4C     		ldr	r4, .L112+8
+ 1277 0048 4FF0EE32 		mov	r2, #-286331154
+ 1278 004c 02FB0CF2 		mul	r2, r2, ip
+ 1279 0050 04FB0522 		mla	r2, r4, r5, r2
+ 1280 0054 ACFB04C4 		umull	ip, r4, ip, r4
+ 1281 0058 2244     		add	r2, r2, r4
+ 1282 005a 4FEA9C0C 		lsr	ip, ip, #2
+ 1283              	.LVL106:
+ 192:Core/Src/Driver.c **** }  
+ 1284              		.loc 1 192 5 is_stmt 1 view .LVU304
+ 192:Core/Src/Driver.c **** }  
+ 1285              		.loc 1 192 12 is_stmt 0 view .LVU305
+ 1286 005e 4CEA8272 		orr	r2, ip, r2, lsl #30
+ 1287              	.LVL107:
+ 192:Core/Src/Driver.c **** }  
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 28
+
+
+ 1288              		.loc 1 192 12 view .LVU306
+ 1289 0062 FFF7FEFF 		bl	Rotation_UGL_GC
+ 1290              	.LVL108:
+ 1291              		.loc 1 193 1 view .LVU307
+ 1292 0066 38BD     		pop	{r3, r4, r5, pc}
+ 1293              	.LVL109:
+ 1294              	.L111:
+ 191:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 1295              		.loc 1 191 72 view .LVU308
+ 1296 0068 0125     		movs	r5, #1
+ 1297 006a DEE7     		b	.L102
+ 1298              	.LVL110:
+ 1299              	.L104:
+ 1300              	.LCFI24:
+ 1301              		.cfi_def_cfa_offset 0
+ 1302              		.cfi_restore 3
+ 1303              		.cfi_restore 4
+ 1304              		.cfi_restore 5
+ 1305              		.cfi_restore 14
+ 190:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 1306              		.loc 1 190 50 discriminator 3 view .LVU309
+ 1307 006c 0020     		movs	r0, #0
+ 1308              	.LVL111:
+ 190:Core/Src/Driver.c ****     uint32_t f = (uint32_t)(((uint64_t)ob * param_m.const_steps + 30U) / 60U); // Расчет ча
+ 1309              		.loc 1 190 50 discriminator 3 view .LVU310
+ 1310 006e 7047     		bx	lr
+ 1311              	.L113:
+ 1312              		.align	2
+ 1313              	.L112:
+ 1314 0070 00000000 		.word	param_m
+ 1315 0074 89888888 		.word	-2004318071
+ 1316 0078 EFEEEEEE 		.word	-286331153
+ 1317              		.cfi_endproc
+ 1318              	.LFE144:
+ 1320              		.section	.text.Rotation_UGL_IRQHandler,"ax",%progbits
+ 1321              		.align	1
+ 1322              		.global	Rotation_UGL_IRQHandler
+ 1323              		.syntax unified
+ 1324              		.thumb
+ 1325              		.thumb_func
+ 1327              	Rotation_UGL_IRQHandler:
+ 1328              	.LVL112:
+ 1329              	.LFB145:
+ 194:Core/Src/Driver.c **** 
+ 195:Core/Src/Driver.c **** void Rotation_UGL_IRQHandler(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg) {
+ 1330              		.loc 1 195 77 is_stmt 1 view -0
+ 1331              		.cfi_startproc
+ 1332              		@ args = 0, pretend = 0, frame = 0
+ 1333              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1334              		.loc 1 195 77 is_stmt 0 view .LVU312
+ 1335 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1336              	.LCFI25:
+ 1337              		.cfi_def_cfa_offset 24
+ 1338              		.cfi_offset 3, -24
+ 1339              		.cfi_offset 4, -20
+ 1340              		.cfi_offset 5, -16
+ 1341              		.cfi_offset 6, -12
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 29
+
+
+ 1342              		.cfi_offset 7, -8
+ 1343              		.cfi_offset 14, -4
+ 196:Core/Src/Driver.c ****     // Проверяем, что прерывание вызвано именно событием
+ 197:Core/Src/Driver.c ****     if (TIMX->SR & TIM_SR_UIF) {
+ 1344              		.loc 1 197 5 is_stmt 1 view .LVU313
+ 1345              		.loc 1 197 13 is_stmt 0 view .LVU314
+ 1346 0002 0369     		ldr	r3, [r0, #16]
+ 1347              		.loc 1 197 8 view .LVU315
+ 1348 0004 13F0010F 		tst	r3, #1
+ 1349 0008 24D0     		beq	.L114
+ 1350 000a 0446     		mov	r4, r0
+ 1351 000c 0D46     		mov	r5, r1
+ 1352              	.LBB7:
+ 198:Core/Src/Driver.c ****         TIMX->SR &= ~TIM_SR_UIF;         // Сбрасываем флаг прерывания 
+ 1353              		.loc 1 198 9 is_stmt 1 view .LVU316
+ 1354              		.loc 1 198 13 is_stmt 0 view .LVU317
+ 1355 000e 0369     		ldr	r3, [r0, #16]
+ 1356              		.loc 1 198 18 view .LVU318
+ 1357 0010 23F00103 		bic	r3, r3, #1
+ 1358 0014 0361     		str	r3, [r0, #16]
+ 199:Core/Src/Driver.c ****         param_ugl.steps_current++;       // Увеличиваем счетчик сделанны�
+ 1359              		.loc 1 199 9 is_stmt 1 view .LVU319
+ 1360              		.loc 1 199 18 is_stmt 0 view .LVU320
+ 1361 0016 154B     		ldr	r3, .L120
+ 1362 0018 5E68     		ldr	r6, [r3, #4]
+ 1363              		.loc 1 199 32 view .LVU321
+ 1364 001a 0136     		adds	r6, r6, #1
+ 1365 001c 5E60     		str	r6, [r3, #4]
+ 200:Core/Src/Driver.c ****         
+ 201:Core/Src/Driver.c ****         if (param_ugl.steps_current >= param_ugl.steps_target) {
+ 1366              		.loc 1 201 9 is_stmt 1 view .LVU322
+ 1367              		.loc 1 201 49 is_stmt 0 view .LVU323
+ 1368 001e 9B68     		ldr	r3, [r3, #8]
+ 1369              		.loc 1 201 12 view .LVU324
+ 1370 0020 9E42     		cmp	r6, r3
+ 1371 0022 18D2     		bcs	.L119
+ 202:Core/Src/Driver.c ****             // Мотор достиг нужного угла — останавливаем
+ 203:Core/Src/Driver.c ****             Motor_Stop(TIMX, CCR_reg);       // Выключаем таймер
+ 204:Core/Src/Driver.c ****             TIMX->DIER &= ~TIM_DIER_UIE;     // Запрещаем прерывание, чтобы
+ 205:Core/Src/Driver.c ****             param_ugl.sost_ugl_motor = 0;    // Мотор свободен
+ 206:Core/Src/Driver.c ****             return;                          // Выходим из функции
+ 207:Core/Src/Driver.c ****         }
+ 208:Core/Src/Driver.c ****         
+ 209:Core/Src/Driver.c ****         uint32_t f_current;
+ 1372              		.loc 1 209 9 is_stmt 1 view .LVU325
+ 210:Core/Src/Driver.c ****         int64_t delta = (int64_t)param_ugl.f_target - (int64_t)param_ugl.f_start; // Разница
+ 1373              		.loc 1 210 9 view .LVU326
+ 1374              		.loc 1 210 43 is_stmt 0 view .LVU327
+ 1375 0024 114B     		ldr	r3, .L120
+ 1376 0026 D868     		ldr	r0, [r3, #12]
+ 1377              	.LVL113:
+ 1378              		.loc 1 210 73 view .LVU328
+ 1379 0028 5F69     		ldr	r7, [r3, #20]
+ 1380              		.loc 1 210 17 view .LVU329
+ 1381 002a B0EB070C 		subs	ip, r0, r7
+ 1382 002e 61EB0101 		sbc	r1, r1, r1
+ 1383              	.LVL114:
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 30
+
+
+ 211:Core/Src/Driver.c ****         
+ 212:Core/Src/Driver.c ****         if (param_ugl.steps_current <= param_ugl.steps) {
+ 1384              		.loc 1 212 9 is_stmt 1 view .LVU330
+ 1385              		.loc 1 212 49 is_stmt 0 view .LVU331
+ 1386 0032 1A69     		ldr	r2, [r3, #16]
+ 1387              		.loc 1 212 12 view .LVU332
+ 1388 0034 9642     		cmp	r6, r2
+ 1389 0036 07D8     		bhi	.L117
+ 213:Core/Src/Driver.c ****             // Расчет текущей частоты 
+ 214:Core/Src/Driver.c ****             f_current = (uint32_t)((int64_t)param_ugl.f_start + (delta * (int64_t)param_ugl.steps_c
+ 1390              		.loc 1 214 13 is_stmt 1 view .LVU333
+ 1391              		.loc 1 214 72 is_stmt 0 view .LVU334
+ 1392 0038 A6FB0C0C 		umull	r0, ip, r6, ip
+ 1393              	.LVL115:
+ 1394              		.loc 1 214 108 view .LVU335
+ 1395 003c 0023     		movs	r3, #0
+ 1396 003e 06FB01C1 		mla	r1, r6, r1, ip
+ 1397              	.LVL116:
+ 1398              		.loc 1 214 108 view .LVU336
+ 1399 0042 FFF7FEFF 		bl	__aeabi_ldivmod
+ 1400              	.LVL117:
+ 1401              		.loc 1 214 23 view .LVU337
+ 1402 0046 3844     		add	r0, r0, r7
+ 1403              	.LVL118:
+ 1404              	.L117:
+ 215:Core/Src/Driver.c ****         } else {
+ 216:Core/Src/Driver.c ****             // Если фаза разгона закончена, держим целевую ч�
+ 217:Core/Src/Driver.c ****             f_current = param_ugl.f_target;
+ 218:Core/Src/Driver.c ****         }
+ 219:Core/Src/Driver.c ****         
+ 220:Core/Src/Driver.c ****         uint32_t arr = Calculation_Freq(f_current); // Расчет ARR для текущей ча�
+ 1405              		.loc 1 220 9 is_stmt 1 view .LVU338
+ 1406              		.loc 1 220 24 is_stmt 0 view .LVU339
+ 1407 0048 FFF7FEFF 		bl	Calculation_Freq
+ 1408              	.LVL119:
+ 221:Core/Src/Driver.c ****         TIMX->ARR = arr;                            // Применяем новую частоту
+ 1409              		.loc 1 221 9 is_stmt 1 view .LVU340
+ 1410              		.loc 1 221 19 is_stmt 0 view .LVU341
+ 1411 004c E062     		str	r0, [r4, #44]
+ 222:Core/Src/Driver.c ****         *CCR_reg = (arr + 1U) / 2U;                 // Поддерживаем скважност�
+ 1412              		.loc 1 222 9 is_stmt 1 view .LVU342
+ 1413              		.loc 1 222 25 is_stmt 0 view .LVU343
+ 1414 004e 0130     		adds	r0, r0, #1
+ 1415              	.LVL120:
+ 1416              		.loc 1 222 31 view .LVU344
+ 1417 0050 4008     		lsrs	r0, r0, #1
+ 1418              		.loc 1 222 18 view .LVU345
+ 1419 0052 2860     		str	r0, [r5]
+ 1420              	.LVL121:
+ 1421              	.L114:
+ 1422              		.loc 1 222 18 view .LVU346
+ 1423              	.LBE7:
+ 223:Core/Src/Driver.c ****     }
+ 224:Core/Src/Driver.c **** }...
+ 1424              		.loc 1 224 1 view .LVU347
+ 1425 0054 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1426              	.LVL122:
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 31
+
+
+ 1427              	.L119:
+ 1428              	.LBB8:
+ 203:Core/Src/Driver.c ****             Motor_Stop(TIMX, CCR_reg);       // Выключаем таймер
+ 1429              		.loc 1 203 13 is_stmt 1 view .LVU348
+ 1430 0056 FFF7FEFF 		bl	Motor_Stop
+ 1431              	.LVL123:
+ 204:Core/Src/Driver.c ****             TIMX->DIER &= ~TIM_DIER_UIE;     // Запрещаем прерывание, чтобы
+ 1432              		.loc 1 204 13 view .LVU349
+ 204:Core/Src/Driver.c ****             TIMX->DIER &= ~TIM_DIER_UIE;     // Запрещаем прерывание, чтобы
+ 1433              		.loc 1 204 17 is_stmt 0 view .LVU350
+ 1434 005a E368     		ldr	r3, [r4, #12]
+ 204:Core/Src/Driver.c ****             TIMX->DIER &= ~TIM_DIER_UIE;     // Запрещаем прерывание, чтобы
+ 1435              		.loc 1 204 24 view .LVU351
+ 1436 005c 23F00103 		bic	r3, r3, #1
+ 1437 0060 E360     		str	r3, [r4, #12]
+ 205:Core/Src/Driver.c ****             param_ugl.sost_ugl_motor = 0;    // Мотор свободен
+ 1438              		.loc 1 205 13 is_stmt 1 view .LVU352
+ 205:Core/Src/Driver.c ****             param_ugl.sost_ugl_motor = 0;    // Мотор свободен
+ 1439              		.loc 1 205 38 is_stmt 0 view .LVU353
+ 1440 0062 024B     		ldr	r3, .L120
+ 1441 0064 0022     		movs	r2, #0
+ 1442 0066 1A70     		strb	r2, [r3]
+ 206:Core/Src/Driver.c ****             return;                          // Выходим из функции
+ 1443              		.loc 1 206 13 is_stmt 1 view .LVU354
+ 1444 0068 F4E7     		b	.L114
+ 1445              	.L121:
+ 1446 006a 00BF     		.align	2
+ 1447              	.L120:
+ 1448 006c 00000000 		.word	param_ugl
+ 1449              	.LBE8:
+ 1450              		.cfi_endproc
+ 1451              	.LFE145:
+ 1453              		.global	param_ugl
+ 1454              		.section	.bss.param_ugl,"aw",%nobits
+ 1455              		.align	2
+ 1458              	param_ugl:
+ 1459 0000 00000000 		.space	24
+ 1459      00000000 
+ 1459      00000000 
+ 1459      00000000 
+ 1459      00000000 
+ 1460              		.global	param_t
+ 1461              		.section	.bss.param_t,"aw",%nobits
+ 1462              		.align	2
+ 1465              	param_t:
+ 1466 0000 00000000 		.space	8
+ 1466      00000000 
+ 1467              		.global	param_n
+ 1468              		.section	.bss.param_n,"aw",%nobits
+ 1469              		.align	2
+ 1472              	param_n:
+ 1473 0000 00000000 		.space	8
+ 1473      00000000 
+ 1474              		.global	param_d
+ 1475              		.section	.bss.param_d,"aw",%nobits
+ 1476              		.align	2
+ 1479              	param_d:
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 32
+
+
+ 1480 0000 00000000 		.space	8
+ 1480      00000000 
+ 1481              		.global	param_m
+ 1482              		.section	.bss.param_m,"aw",%nobits
+ 1483              		.align	2
+ 1486              	param_m:
+ 1487 0000 00000000 		.space	12
+ 1487      00000000 
+ 1487      00000000 
+ 1488              		.text
+ 1489              	.Letext0:
+ 1490              		.file 2 "C:/Users/adminasus/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-a
+ 1491              		.file 3 "C:/Users/adminasus/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64/xpack-a
+ 1492              		.file 4 "CMSIS/Include/../include/core_cm4.h"
+ 1493              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F429xx/stm32f429xx.h"
+ 1494              		.file 6 "Core/Inc/Driver.h"
+ 1495              		.file 7 "CMSIS/Devices/STM32F4xx/Inc/system_stm32f4xx.h"
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 33
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Driver.c
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:21     .text.DWT_Init:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:27     .text.DWT_Init:00000000 DWT_Init
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:57     .text.DWT_Init:00000020 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:63     .text.delay_us:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:69     .text.delay_us:00000000 delay_us
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:118    .text.delay_us:00000024 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:125    .text.delay_ms:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:131    .text.delay_ms:00000000 delay_ms
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:176    .text.Motor_Init:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:182    .text.Motor_Init:00000000 Motor_Init
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:220    .text.Motor_Init:0000001c $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1486   .bss.param_m:00000000 param_m
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1479   .bss.param_d:00000000 param_d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1472   .bss.param_n:00000000 param_n
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:227    .text.Calculation_Freq:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:233    .text.Calculation_Freq:00000000 Calculation_Freq
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:306    .text.Calculation_Freq:00000038 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1465   .bss.param_t:00000000 param_t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:311    .text.Sync_Timer_Params:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:317    .text.Sync_Timer_Params:00000000 Sync_Timer_Params
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:339    .text.Sync_Timer_Params:0000000c $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:345    .text.Acceleration:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:351    .text.Acceleration:00000000 Acceleration
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:474    .text.Acceleration:00000070 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:480    .text.Motor_Start:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:486    .text.Motor_Start:00000000 Motor_Start
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:510    .text.Rotation_GC:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:516    .text.Rotation_GC:00000000 Rotation_GC
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:695    .text.Rotation_GC:000000c8 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:705    .text.Rotation_OB:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:711    .text.Rotation_OB:00000000 Rotation_OB
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:802    .text.Rotation_OB:00000074 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:809    .text.Motor_Stop:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:815    .text.Motor_Stop:00000000 Motor_Stop
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:852    .text.Motor_Stop:0000001c $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:858    .text.Motor_Smooth_Stop_GC:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:864    .text.Motor_Smooth_Stop_GC:00000000 Motor_Smooth_Stop_GC
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:923    .text.Motor_Smooth_Stop_GC:0000002c $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:928    .text.Motor_Smooth_Stop_OB:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:934    .text.Motor_Smooth_Stop_OB:00000000 Motor_Smooth_Stop_OB
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1041   .text.Motor_Smooth_Stop_OB:00000078 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1049   .text.Rotation_UGL_GC:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1055   .text.Rotation_UGL_GC:00000000 Rotation_UGL_GC
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1207   .text.Rotation_UGL_GC:00000084 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1458   .bss.param_ugl:00000000 param_ugl
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1213   .text.Rotation_UGL_OB:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1219   .text.Rotation_UGL_OB:00000000 Rotation_UGL_OB
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1314   .text.Rotation_UGL_OB:00000070 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1321   .text.Rotation_UGL_IRQHandler:00000000 $t
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1327   .text.Rotation_UGL_IRQHandler:00000000 Rotation_UGL_IRQHandler
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1448   .text.Rotation_UGL_IRQHandler:0000006c $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1455   .bss.param_ugl:00000000 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1462   .bss.param_t:00000000 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1469   .bss.param_n:00000000 $d
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1476   .bss.param_d:00000000 $d
+ARM GAS  C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s 			page 34
+
+
+C:\Users\ADMINA~1\AppData\Local\Temp\cckkfm1Q.s:1483   .bss.param_m:00000000 $d
+
+UNDEFINED SYMBOLS
+SystemCoreClock
+__aeabi_ldivmod

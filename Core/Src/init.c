@@ -1,142 +1,92 @@
 #include "init.h"
-#define CONST_UGOL 0.036
 
-void DWT_Init(void) {
-    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; 
-    DWT->CYCCNT = 0;                               
-    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;            
+void GPIO_Init(void) {
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOEEN | RCC_AHB1ENR_GPIODEN;
+    (void)RCC->AHB1ENR;
 }
 
-
-void delay_us(uint32_t us) {
-    uint32_t start = DWT->CYCCNT;
-    uint32_t ticks = us * (SystemCoreClock / 1000000);
-    while ((DWT->CYCCNT - start) < ticks) {
-        __NOP(); 
-    }
-}
-
-// 3. Задержка в миллисекундах
-void delay_ms(uint32_t ms) {
-    for (uint32_t i = 0; i < ms; i++) {
-        delay_us(1000); 
-    }
-}
-
-void INIT_SVETODIOD(){ 
-     /*Синий*/
-     PORT_SV->MODER &= ~(0x3U << (NUM_BLUE*2));
-     PORT_SV->MODER |= (1U <<(NUM_BLUE*2));
-     PORT_SV->OTYPER &=~(1U <<(NUM_BLUE));
-     PORT_SV->OSPEEDR &= ~(0x3U << (NUM_BLUE*2));
-     PORT_SV->OSPEEDR |=(2U <<(NUM_BLUE*2));
-     PORT_SV->PUPDR &=~(0x3U<<(NUM_BLUE*2));
-     //Зеленный
-     PORT_SV->MODER &= ~(0x3U << (NUM_GREEN*2));
-     PORT_SV->MODER |= (1U <<(NUM_GREEN*2));
-     PORT_SV->OTYPER &=~(1U <<(NUM_GREEN));
-     PORT_SV->OSPEEDR &= ~(0x3U << (NUM_GREEN*2));
-     PORT_SV->OSPEEDR |=(2U <<(NUM_GREEN*2));
-     PORT_SV->PUPDR &=~(0x3U<<(NUM_GREEN*2));
-     //Красный
-     PORT_SV->MODER &= ~(0x3U << (NUM_RED*2));
-     PORT_SV->MODER |= (1U <<(NUM_RED*2));
-     PORT_SV->OTYPER &=~(1U <<(NUM_RED));
-     PORT_SV->OSPEEDR &= ~(0x3U << (NUM_RED*2));
-     PORT_SV->OSPEEDR |=(2U <<(NUM_RED*2));
-     PORT_SV->PUPDR &=~(0x3U<<(NUM_RED*2));
-}
-void INIT_UPRAVLENI_CCW(GPIO_TypeDef *port_ccw, uint8_t n2){ 
-     // CCW
-     port_ccw->MODER &= ~(0x3U << n2*2);
-     port_ccw->MODER |= (1U <<n2*2);
-     port_ccw->OTYPER &=~(1U <<n2);
-     port_ccw->OSPEEDR &= ~(0x3U << n2*2);
-     port_ccw->OSPEEDR |=(2U <<n2*2);
-     port_ccw->PUPDR &=~(0x3U<<n2*2);  
-
-}
-void INIT_UPRAVLENI_CW( GPIO_TypeDef *port_cw ,uint8_t n1){
-     // CW
-     port_cw->MODER &= ~(0x3U << n1*2);
-     port_cw->MODER |= (1U <<n1*2);
-     port_cw->OTYPER &=~(1U <<n1);
-     port_cw->OSPEEDR &= ~(0x3U << n1*2);
-     port_cw->OSPEEDR |=(2U <<n1*2);
-     port_cw->PUPDR &=~(0x3U<<n1*2);  
-}
- //Для запуска светодиода необходимо записать его цвет G,B или R 
- void SET_SVETODIOD(char svet){
-    if(svet=='G'){
-          PORT_SV->BSRR=(1U <<NUM_GREEN);
-     }
-     else if (svet=='B'){
-          PORT_SV->BSRR=(1U <<NUM_BLUE);
-     }
-     else if(svet=='R'){
-          PORT_SV->BSRR=(1U <<NUM_RED);
-     }
- }
- void RESET_SVETODIOD(char svet){
-     if(svet=='G'){
-          PORT_SV->BSRR=(1U <<(NUM_GREEN+16));
-     }
-     else if (svet=='B'){
-          PORT_SV->BSRR=(1U <<(NUM_BLUE+16));
-     }
-     else if(svet=='R'){
-          PORT_SV->BSRR=(1U <<(NUM_RED+16));
-     }
-     
- }
-void MoveCW(GPIO_TypeDef *port_cw, uint8_t n, uint32_t steps, uint32_t min_time){
-      uint32_t start_time=2000;
-     uint16_t raznosti=100;
+int RCC_Init(void) {
+    MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
+    CLEAR_REG(RCC->CFGR);
+    while(READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
     
-     for(uint32_t i=0;i<steps;i++){
-          port_cw->BSRR =(1U <<n);
-          delay_us(2);
-          port_cw->BSRR =(1U <<(n+16));
-          if(start_time >= min_time){
-               start_time=start_time-raznosti;
-          }
-          delay_us(start_time);
-
-     }
-  }
-
-void MoveCCW(GPIO_TypeDef *port_ccw, uint8_t n, uint32_t steps, uint32_t min_time ){
-     uint32_t start_time=2000;
-     uint16_t raznosti=100;
+    CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
+    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
     
-     for(uint32_t i=0;i<steps;i++){
-          port_ccw->BSRR =(1U <<n);
-          delay_us(2);
-          port_ccw->BSRR =(1U <<(n+16));
-          if(start_time >= min_time){
-               start_time=start_time-raznosti;
-          }
-          delay_us(start_time);
-
-     }
-  }
-void POVOROT_UGL(GPIO_TypeDef *port_ccw, uint8_t n, uint16_t ugol){
-     uint32_t steps= (ugol/CONST_UGOL);
-     uint16_t start_time=2000;
-     uint8_t raznosti=100;
-     for(uint32_t i=0;i<steps;i++){
-          port_ccw->BSRR =(1U <<n);
-          delay_us(2);
-          port_ccw->BSRR =(1U <<(n+16));
-          if(start_time >= 700){
-               start_time=start_time-raznosti;
-          }
-          delay_us(start_time);
-
-     }
+    CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON);
+    while(READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET);
+    
+    // !!! КРИТИЧЕСКИ ВАЖНО ДЛЯ NUCLEO-144 !!!
+    // Так как кварц не распаян, используем сигнал 8 МГц от ST-LINK (MCO)
+    SET_BIT(RCC->CR, RCC_CR_HSEBYP); 
+    
+    SET_BIT(RCC->CR, RCC_CR_HSEON);
+    while(READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET); // Теперь здесь не зависнет
+    
+    MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4);
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2);
+    
+    CLEAR_REG(RCC->PLLCFGR);
+    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
+    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLM, RCC_PLLCFGR_PLLM_2); // Делитель M = 4
+    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_Msk, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_4 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7); // N = 180
+    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_Msk); // P = 2
+    MODIFY_REG(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_Msk, RCC_PLLCFGR_PLLQ_3);
+    
+    SET_BIT(RCC->CR, RCC_CR_PLLON);
+    while(READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
+    
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_PLL);
+    while(READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL);
+    
+    SystemCoreClock = 180000000U;
+    return 0; // Успех
 }
 
-void OSTANOVKA(GPIO_TypeDef *port_ccw, uint8_t n){
-     port_ccw->BSRR =(1U <<(n+16));
+void INIT_UPRAVLENIE(GPIO_TypeDef *port, uint8_t n, uint8_t nf) {
+    port->MODER &= ~(0x3U << (n * 2));
+    port->MODER |= (0x2U << (n * 2));
+    if (n < 8) { 
+        port->AFR[0] &= ~(0xFU << (n * 4)); 
+        port->AFR[0] |= ((uint32_t)nf << (n * 4)); 
+    } else { 
+        port->AFR[1] &= ~(0xFU << ((n - 8) * 4)); 
+        port->AFR[1] |= ((uint32_t)nf << ((n - 8) * 4)); 
+    }
+    port->OTYPER &= ~(1U << n);
+    port->OSPEEDR &= ~(0x3U << (n * 2));
+    port->OSPEEDR |= (2U << (n * 2));
+    port->PUPDR &= ~(0x3U << (n * 2));
 }
 
+// ИСПРАВЛЕНО: Убрали жесткий CCR = 2000, теперь там 0, чтобы управлял Driver.c
+void INIT_TIM(volatile uint32_t *rcc_reg, uint32_t bit, TIM_TypeDef *TIMX, uint32_t fp, uint8_t chan) {
+    if (chan < 1U || chan > 4U) return;
+    *rcc_reg |= bit;
+    (void)*rcc_reg;
+    
+    TIMX->PSC = fp - 1; 
+    TIMX->CR1 |= (1U << 7); // ARPE
+    TIMX->ARR = 0xFFFFU;
+
+    if(chan == 1) {
+        TIMX->CCMR1 &= ~0xFFU; TIMX->CCMR1 |= 0x68;
+        TIMX->CCR1 = 0; TIMX->CCER |= (1U << 0); 
+    } else if (chan == 2) {
+        TIMX->CCMR1 &= ~0xFF00U; TIMX->CCMR1 |= 0x6800;
+        TIMX->CCR2 = 0; TIMX->CCER |= (1U << 4); 
+    } else if(chan == 3) {
+        TIMX->CCMR2 &= ~0xFFU; TIMX->CCMR2 |= 0x68;
+        TIMX->CCR3 = 0; TIMX->CCER |= (1U << 8); 
+    } else if (chan == 4) {
+        TIMX->CCMR2 &= ~0xFF00U; TIMX->CCMR2 |= 0x6800;
+        TIMX->CCR4 = 0; TIMX->CCER |= (1U << 12); 
+    }
+    
+    if (TIMX == TIM1 || TIMX == TIM8) { TIMX->BDTR |= (1U << 15); }
+    
+    TIMX->EGR = (1U << 0);
+    TIMX->SR = ~TIM_SR_UIF;
+}
