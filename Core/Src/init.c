@@ -2,21 +2,12 @@
 
 void GPIO_Ini(void)
 {
-    // Включение тактирования портов GPIOB (0x02) и GPIOC (0x04) -> 0x06
-    *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x06UL;
+    RCC_GPIO_EN   |= RCC_GPIOB_EN + RCC_GPIOC_EN; // Включение тактирования GPIOB и GPIOC
 
-    // Настройка пинов PB0, PB1, PB2, PB7, PB14, PB15 на выход (Output mode = 01)
-    *(uint32_t*)(0x40020400UL + 0x00UL) |= 0x50004015UL;
+    GPIOB_MODER   |= GPIOB_MODE_LEDS_OUT;         // Режим вывода (Output mode)
+    GPIOB_OTYPER  |= GPIOB_OTYPE_LEDS_PP;         // Режим Push-Pull
+    GPIOB_OSPEEDR |= GPIOB_OSPEED_LEDS_MID;       // Средняя скорость
+    GPIOB_PUPDR   |= GPIOB_PUPDR_LEDS_NOPUPD;     // Без подтяжки
 
-    // Настройка режима Push-Pull для порта GPIOB
-    *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x00UL;
-
-    // Настройка средней скорости работы для пинов светодиодов
-    *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x50004015UL;
-
-    // Отключение подтягивающих резисторов  для GPIOB
-    *(uint32_t*)(0x40020400UL + 0x0CUL) |= 0x00UL;
-
-    // Настройка подтяжки к земле (Pull-Down = 10) для внешних кнопок PC0 (0x02) и PC3 (0x80)
-    *(uint32_t*)(0x40020800UL + 0x0CUL) |= 0x82UL;
+    GPIOC_PUPDR   |= GPIOC_PUPDR_BTNS_PD;         // Стяжка к земле для PC0 и PC3
 }

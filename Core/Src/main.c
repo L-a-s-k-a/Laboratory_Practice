@@ -1,27 +1,23 @@
 #include "init.h"
 
-uint8_t led_count = 0; // Количество включенных светодиодов (0..6)
-uint8_t swap_mode = 0; // Режим кнопок (0 - обычный, 1 - кнопки 1 и 2 поменяны местами)
+uint8_t led_count = 0;
+uint8_t swap_mode = 0;
 
 int main(void)
 {
-    GPIO_Ini();
-
-    // Гасим все 6 светодиодов на старте через старшие биты регистра BSRR
-    *(uint32_t*)(0x40020400UL + 0x18UL) |= 0xC0870000UL;
+    GPIO_Ini(); // Инициализация портов GPIO
 
     uint8_t btn1_flag = 0;
     uint8_t btn2_flag = 0;
     uint8_t btn3_flag = 0;
 
-    // Запоминаем исходное состояние внешних кнопок PC0 и PC3
-    uint32_t btn2_start = (*(uint32_t*)(0x40020800UL + 0x10UL) & 0x0001UL);
-    uint32_t btn3_start = (*(uint32_t*)(0x40020800UL + 0x10UL) & 0x0008UL);
+    uint32_t btn2_start = READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN0);
+    uint32_t btn3_start = READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN3);
 
     while (1)
     {
         // кнопка 3
-        if ((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x0008UL) != btn3_start)
+        if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN3) != btn3_start)
         {
             if (btn3_flag == 0)
             {
@@ -36,7 +32,7 @@ int main(void)
         }
 
         // кнопка 1
-        if ((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x2000UL) != 0)
+        if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0)
         {
             if (btn1_flag == 0)
             {
@@ -57,7 +53,7 @@ int main(void)
         }
 
         // кнопка 2
-        if ((*(uint32_t*)(0x40020800UL + 0x10UL) & 0x0001UL) != btn2_start)
+        if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN0) != btn2_start)
         {
             if (btn2_flag == 0)
             {
@@ -77,15 +73,14 @@ int main(void)
             btn2_flag = 0;
         }
 
-        //  Включение/выключение светодиодов через регистр BSRR 
-        if (led_count >= 1) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x0001UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x00010000UL; // PB0
-        if (led_count >= 2) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x0080UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x00800000UL; // PB7
-        if (led_count >= 3) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x4000UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x40000000UL; // PB14
-        if (led_count >= 4) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x0002UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x00020000UL; // PB1
-        if (led_count >= 5) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x0004UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x00040000UL; // PB2
-        if (led_count >= 6) *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x8000UL; else *(uint32_t*)(0x40020400UL + 0x18UL) |= 0x80000000UL; // PB15
+        // Управление 6 светодиодами 
+        if (led_count >= 1) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET);  else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);
+        if (led_count >= 2) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET);  else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET);
+        if (led_count >= 3) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_RESET);
+        if (led_count >= 4) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN1_SET);  else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN1_RESET);
+        if (led_count >= 5) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN2_SET);  else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN2_RESET);
+        if (led_count >= 6) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN15_SET); else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN15_RESET);
 
-        // Задержка от дребезга контактов
         for (volatile int i = 0; i < 30000; i++);
     }
 }
