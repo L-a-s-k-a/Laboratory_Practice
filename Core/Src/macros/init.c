@@ -24,36 +24,3 @@ void GPIO_Ini(void)
     WRITE_REG(GPIOD_BSRR, RED_OFF | BLUE_OFF | ORANGE_OFF);
     GPIOD_MODER = (GPIOD_MODER & ~D_MODES) | D_OUTPUTS;
 }
-
-void GPIO_SetSharedOutput(bool output)
-{
-    if (output) {
-        GPIOE_MODER = (GPIOE_MODER & ~SHARED_MODE) | SHARED_OUTPUT;
-        GPIOE_MODER = (GPIOE_MODER & ~LED_SUPPLY_MODE) | LED_SUPPLY_OUTPUT;
-    } else {
-        GPIOE_MODER &= ~LED_SUPPLY_MODE;
-        GPIOE_MODER &= ~SHARED_MODE;
-    }
-}
-
-bool GPIO_ReadInputButton(void)
-{
-    return READ_BIT(GPIOE_IDR, INPUT_BUTTON) == 0U;
-}
-
-bool GPIO_ReadOutputButton(void)
-{
-    return READ_BIT(GPIOE_IDR, OUTPUT_BUTTON) == 0U;
-}
-
-bool GPIO_ReadSharedButton(void)
-{
-    return READ_BIT(GPIOE_IDR, SHARED_BUTTON) == 0U;
-}
-
-void GPIO_SetIndicators(bool red, bool blue, bool orange)
-{
-    WRITE_REG(GPIOD_BSRR, (red ? RED_ON : RED_OFF) |
-                         (blue ? BLUE_ON : BLUE_OFF) |
-                         (orange ? ORANGE_ON : ORANGE_OFF));
-}

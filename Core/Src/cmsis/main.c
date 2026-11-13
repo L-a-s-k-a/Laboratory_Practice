@@ -11,21 +11,24 @@ int main(void)
     GPIO_Ini();
 
     while (1) {
-        bool s1 = GPIO_ReadInputButton();
-        bool s2 = GPIO_ReadOutputButton();
+        bool s1 = READ_BIT(GPIOE->IDR, GPIO_IDR_ID7) == 0U;
+        bool s2 = READ_BIT(GPIOE->IDR, GPIO_IDR_ID8) == 0U;
 
-        bool old_output = output;
-        if (s1) {
+        // S1 выбирает вход, S2 — выход.
+        if (s1 && output) {
+            CLEAR_BIT(GPIOE->MODER, GPIO_MODER_MODER10);
+            CLEAR_BIT(GPIOE->MODER, GPIO_MODER_MODER9);
             output = false;
-        } else if (s2) {
+        } else if (!s1 && s2 && !output) {
+            SET_BIT(GPIOE->MODER, GPIO_MODER_MODER9_0);
+            SET_BIT(GPIOE->MODER, GPIO_MODER_MODER10_0);
             output = true;
         }
-        if (old_output != output) {
-            GPIO_SetSharedOutput(output);
-        }
 
-        bool s3 = !output && GPIO_ReadSharedButton();
-        GPIO_SetIndicators(s1, s2, s3);
+        bool s3 = !output && (READ_BIT(GPIOE->IDR, GPIO_IDR_ID9) == 0U);
+        WRITE_REG(GPIOD->BSRR, s1 ? GPIO_BSRR_BS_14 : GPIO_BSRR_BR_14);
+        WRITE_REG(GPIOD->BSRR, s2 ? GPIO_BSRR_BS_15 : GPIO_BSRR_BR_15);
+        WRITE_REG(GPIOD->BSRR, s3 ? GPIO_BSRR_BS_13 : GPIO_BSRR_BR_13);
 
         lab_mode = output;
         lab_buttons = (uint32_t)s1 | ((uint32_t)s2 << 1) | ((uint32_t)s3 << 2);

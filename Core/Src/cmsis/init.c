@@ -7,7 +7,7 @@
 #define D_MODES         (GPIO_MODER_MODER13 | GPIO_MODER_MODER14 | GPIO_MODER_MODER15)
 #define D_OUTPUTS       (GPIO_MODER_MODER13_0 | GPIO_MODER_MODER14_0 | GPIO_MODER_MODER15_0)
 
-/* PE7/PE8: active-low mode buttons. PE9: shared line. PE10: LED supply. */
+
 void GPIO_Ini(void)
 {
     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_GPIOEEN);
@@ -19,7 +19,7 @@ void GPIO_Ini(void)
                               GPIO_OSPEEDER_OSPEEDR9 | GPIO_OSPEEDER_OSPEEDR10);
     MODIFY_REG(GPIOE->PUPDR, GPIO_PUPDR_PUPDR7 | GPIO_PUPDR_PUPDR8 |
                              GPIO_PUPDR_PUPDR9 | GPIO_PUPDR_PUPDR10, BUTTON_PULLUPS);
-    /* Preload PE9 low and PE10 high while both pins are inputs. */
+
     WRITE_REG(GPIOE->BSRR, GPIO_BSRR_BR_9 | GPIO_BSRR_BS_10);
 
     CLEAR_BIT(GPIOD->OTYPER, D_PINS);
@@ -28,37 +28,4 @@ void GPIO_Ini(void)
     CLEAR_BIT(GPIOD->PUPDR, GPIO_PUPDR_PUPDR13 | GPIO_PUPDR_PUPDR14 | GPIO_PUPDR_PUPDR15);
     WRITE_REG(GPIOD->BSRR, GPIO_BSRR_BR_14 | GPIO_BSRR_BR_15 | GPIO_BSRR_BR_13);
     MODIFY_REG(GPIOD->MODER, D_MODES, D_OUTPUTS);
-}
-
-void GPIO_SetSharedOutput(bool output)
-{
-    if (output) {
-        MODIFY_REG(GPIOE->MODER, GPIO_MODER_MODER9, GPIO_MODER_MODER9_0);
-        MODIFY_REG(GPIOE->MODER, GPIO_MODER_MODER10, GPIO_MODER_MODER10_0);
-    } else {
-        CLEAR_BIT(GPIOE->MODER, GPIO_MODER_MODER10);
-        CLEAR_BIT(GPIOE->MODER, GPIO_MODER_MODER9);
-    }
-}
-
-bool GPIO_ReadInputButton(void)
-{
-    return READ_BIT(GPIOE->IDR, GPIO_IDR_ID7) == 0U;
-}
-
-bool GPIO_ReadOutputButton(void)
-{
-    return READ_BIT(GPIOE->IDR, GPIO_IDR_ID8) == 0U;
-}
-
-bool GPIO_ReadSharedButton(void)
-{
-    return READ_BIT(GPIOE->IDR, GPIO_IDR_ID9) == 0U;
-}
-
-void GPIO_SetIndicators(bool red, bool blue, bool orange)
-{
-    WRITE_REG(GPIOD->BSRR, (red ? GPIO_BSRR_BS_14 : GPIO_BSRR_BR_14) |
-                          (blue ? GPIO_BSRR_BS_15 : GPIO_BSRR_BR_15) |
-                          (orange ? GPIO_BSRR_BS_13 : GPIO_BSRR_BR_13));
 }

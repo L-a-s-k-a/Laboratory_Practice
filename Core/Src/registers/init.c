@@ -29,36 +29,3 @@ void GPIO_Ini(void)
     (*(volatile uint32_t *)0x40020C18UL) = (1UL << 30) | (1UL << 31) | (1UL << 29);
     (*(volatile uint32_t *)0x40020C00UL) = ((*(volatile uint32_t *)0x40020C00UL) & ~((3UL << 26) | (3UL << 28) | (3UL << 30))) | ((1UL << 26) | (1UL << 28) | (1UL << 30));
 }
-
-void GPIO_SetSharedOutput(bool output)
-{
-    if (output) {
-        (*(volatile uint32_t *)0x40021000UL) = ((*(volatile uint32_t *)0x40021000UL) & ~(3UL << 18)) | (1UL << 18);
-        (*(volatile uint32_t *)0x40021000UL) = ((*(volatile uint32_t *)0x40021000UL) & ~(3UL << 20)) | (1UL << 20);
-    } else {
-        (*(volatile uint32_t *)0x40021000UL) &= ~(3UL << 20);
-        (*(volatile uint32_t *)0x40021000UL) &= ~(3UL << 18);
-    }
-}
-
-bool GPIO_ReadInputButton(void)
-{
-    return ((*(volatile uint32_t *)0x40021010UL) & (1UL << 7)) == 0U;
-}
-
-bool GPIO_ReadOutputButton(void)
-{
-    return ((*(volatile uint32_t *)0x40021010UL) & (1UL << 8)) == 0U;
-}
-
-bool GPIO_ReadSharedButton(void)
-{
-    return ((*(volatile uint32_t *)0x40021010UL) & (1UL << 9)) == 0U;
-}
-
-void GPIO_SetIndicators(bool red, bool blue, bool orange)
-{
-    (*(volatile uint32_t *)0x40020C18UL) = (red ? (1UL << 14) : (1UL << 30)) |
-                 (blue ? (1UL << 15) : (1UL << 31)) |
-                 (orange ? (1UL << 13) : (1UL << 29));
-}
