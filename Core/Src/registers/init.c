@@ -57,18 +57,3 @@ void GPIO_SetIndicators(bool red, bool blue, bool orange)
                  (blue ? (1UL << 15) : (1UL << 31)) |
                  (orange ? (1UL << 13) : (1UL << 29));
 }
-
-/* Reset clock: HSI 16 MHz, AHB divider 1. SysTick is polled every 1 ms. */
-void Tick_Init(void)
-{
-    (*(volatile uint32_t *)0xE000E010UL) = 0U;
-    (*(volatile uint32_t *)0xE000E014UL) = 16000U - 1U;
-    (*(volatile uint32_t *)0xE000E018UL) = 0U;
-    (*(volatile uint32_t *)0xE000E010UL) = ((1UL << 0) | (1UL << 2));
-}
-
-void Tick_Wait(void)
-{
-    while (((*(volatile uint32_t *)0xE000E010UL) & (1UL << 16)) == 0U) {
-    }
-}

@@ -5,9 +5,6 @@
 #include <stdint.h>
 
 #define RCC_AHB1ENR     (*(volatile uint32_t *)0x40023830UL)
-#define SYST_CSR        (*(volatile uint32_t *)0xE000E010UL)
-#define SYST_RVR        (*(volatile uint32_t *)0xE000E014UL)
-#define SYST_CVR        (*(volatile uint32_t *)0xE000E018UL)
 #define GPIOD_MODER     (*(volatile uint32_t *)0x40020C00UL)
 #define GPIOD_OTYPER    (*(volatile uint32_t *)0x40020C04UL)
 #define GPIOD_OSPEEDR   (*(volatile uint32_t *)0x40020C08UL)
@@ -43,8 +40,6 @@
 #define RED_ON          (1UL << 14)
 #define BLUE_ON         (1UL << 15)
 #define ORANGE_ON       (1UL << 13)
-#define TICK_ENABLE     ((1UL << 0) | (1UL << 2))
-#define TICK_WRAP       (1UL << 16)
 
 #define READ_BIT(REG, MASK) ((REG) & (MASK))
 #define SET_BIT(REG, MASK) ((REG) |= (MASK))
@@ -57,7 +52,5 @@ bool GPIO_ReadInputButton(void);
 bool GPIO_ReadOutputButton(void);
 bool GPIO_ReadSharedButton(void);
 void GPIO_SetIndicators(bool red, bool blue, bool orange);
-void Tick_Init(void);
-void Tick_Wait(void);
 
 #endif

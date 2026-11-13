@@ -10,7 +10,5 @@ bool GPIO_ReadInputButton(void);
 bool GPIO_ReadOutputButton(void);
 bool GPIO_ReadSharedButton(void);
 void GPIO_SetIndicators(bool red, bool blue, bool orange);
-void Tick_Init(void);
-void Tick_Wait(void);
 
 #endif
