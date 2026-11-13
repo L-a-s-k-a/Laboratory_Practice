@@ -14,12 +14,14 @@ int main(void)
         bool s1 = GPIO_ReadInputButton();
         bool s2 = GPIO_ReadOutputButton();
 
-        if (s1 && output) {
-            GPIO_SetSharedOutput(false);
+        bool old_output = output;
+        if (s1) {
             output = false;
-        } else if (!s1 && s2 && !output) {
-            GPIO_SetSharedOutput(true);
+        } else if (s2) {
             output = true;
+        }
+        if (old_output != output) {
+            GPIO_SetSharedOutput(output);
         }
 
         bool s3 = !output && GPIO_ReadSharedButton();

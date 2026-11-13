@@ -33,8 +33,6 @@ ifeq ($(VARIANT),cmsis)
 C_SOURCES += $(CMSIS_FAMILY)/Src/system_stm32f4xx.c
 C_INCLUDES += -ICMSIS/Include -I$(CMSIS_FAMILY)/Inc -I$(CMSIS_FAMILY)/Inc/STM32F407xx
 C_DEFS := -DSTM32F407xx
-else
-C_SOURCES += Core/Src/system_reset.c
 endif
 
 PREFIX := arm-none-eabi-
