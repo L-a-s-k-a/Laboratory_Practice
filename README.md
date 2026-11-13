@@ -1,80 +1,121 @@
-- [Описание на русском](#ru_description)  
-      - [Список поддерживаемых контроллеров](#mk_list_ru)  
-      - [Описание файлов](#file_ru_description)
-***
-- [Description in English](#en_description)  
-      - [List of supported controllers](#mk_list_en)  
-      - [File description](#file_en_description)  
-<br/>
+# Лабораторная работа № 1. GPIO, вариант 4
 
-## <a name="ru_description"></a> Лабораторный практикум по программированию микроконтроллеров
-Здесь будет находится стартовый проект для программирования лабораторного стенда Nucleo-144 на базе микроконтроллера STM32F429ZIT6. Помимо этого, данный проект позволяет программировать микроконтроллеры других серий.
-#### <a name="mk_list_ru"></a> Список поддерживаемых контроллеров
-- STM32F446RE        (Target series -> STM32F446 | Target version -> RE)
-- STM32F429ZI        (Target series -> STM32F429 | Target version -> ZI)
-- STM32F411VE/CE/RE  (Target series -> STM32F411 | Target version -> VE/CE/RE)
-- STM32F407VE        (Target series -> STM32F407 | Target version -> VE)
-- STM32F103C8        (Target series -> STM32F103 | Target version -> C8)
-- STM32F103C6        (Target series -> STM32F103 | Target version -> C6)
+Плата из курсового проекта — STM32F407G Discovery с STM32F407VGT6. Задание на с. 53 методических указаний предусматривает три кнопки и четыре светодиода. Кнопка S1 переводит общую линию в режим входа и при удержании зажигает красный светодиод. S2 переводит линию в режим выхода и при удержании зажигает синий. В режиме входа удержание S3 зажигает оранжевый штатный светодиод Discovery, который выполняет роль жёлтого из задания. В режиме выхода горит внешний светодиод на общей линии.
 
-#### <a name="file_ru_description"></a> Описание файлов содержащихся в проекте  
+## Исходники
 
-**Makefile** - не имеет расширения, является инструкцией для сборщика. В нём уже прописано всё необходимое для работы с микроконтроллерами представленными выше, за исключением исполняемых файлов проекта. 
+| Вариант | Доступ к периферии |
+| --- | --- |
+| `registers` | Разыменование указателей `volatile uint32_t *` по физическим адресам регистров |
+| `macros` | Собственные регистры, маски и операции `READ_BIT`, `SET_BIT`, `CLEAR_BIT`, `WRITE_REG` в `Core/Inc/macros/init.h` |
+| `cmsis` | Структуры регистров, маски и операции CMSIS для STM32F407 через `stm32f4xx.h` |
 
-> - Для каждого нового исполняемого файла в проекте потребуется прописывать дирректорию, в которойй он нахоится. Это можно сделать в блоке **C sources** в переменной *C_SOURCES*.
-> - **TARGET_SERIES** указывает на серию микроконтроллера. В этом поле необходимо записывать серию и номер микроконтроллера, например STM32F103, STM32F407, STM32F411, STM32F446. По умолчанию поле заполняется значением "**STM32F429**". Чтобы переключить сборку под другую серию микроконтроллера необходимо заполнить это поле соответствующим названием из [списка поддерживаемых контроллеров](#mk_list_ru).
-> - **TARGET_VERSION** указывает на версию микроконтроллера. В этом поле необходимо записывать версию микроконтроллера, например RE, VE, ZI, CE, C8, C6. По умолчанию поле заполняется значением "*ZI*". Чтобы переключить сборку под другую версию микроконтроллера необходимо заполнить это поле соответствующим названием из [списка поддерживаемых контроллеров](#mk_list_ru).
-> - Строка 31 указывает на директорию, в которую будет собираться проект (*BUILD_DIR*). По умолчанию имеет значение "*build*".
-> - В строке 254 прописывается инструкция для загрузки исполняемых файлов в память микроконтроллера с помощью *openOCD*  
-> Загрузка осуществляется с помощью следующей инструкции:  
-> **flash: all**  
-> **openocd -f interface/stlink.cfg -f target/$(*TRGT_CFG*).cfg -c "program $(*BUILD_DIR*)/$(*TARGET*).elf verify reset exit"**
+Структура следует шаблону `Laboratory_Practice`. Исходники находятся в `Core/Src`, заголовки в `Core/Inc`, а в корне есть `Makefile` с целями сборки и прошивки. Внутри `Src` и `Inc` используются подпапки `registers`, `macros` и `cmsis`, чтобы выбирать одну реализацию при сборке.
 
-**NAME.svd** - для каждого устройства уникален, находится в папках с устройствами, имеет расширение .svd, необходим для просмотра памяти устройства через VSCode.
+У каждой версии свои `main.c`, `init.c` и `init.h`. Как в разделах 3.2–4.4 методички, `main.c` вызывает `GPIO_Ini()`, объявленную в `init.h` и определённую в `init.c`. Первые две версии используют минимальную функцию `SystemInit` из `Core/Src/system_reset.c`. Версия CMSIS использует `system_stm32f4xx.c` из каталога `CMSIS`. Стартовый файл и скрипт компоновщика STM32F407VG находятся в `STMDevices/STM32F407xx`.
 
-**startup_stm32fYYxx.s** - имеет расшщирение .s, является ассемблерным фалом, в котором прописаны все возможные вектора прерываний для микроконтроллеров приведенных выше. Он необходим для отслеживания прерываний и вызова их обработчиков.  
+## Схема подключения
 
-**CMSIS/Include** - папка содержащая заголовочные файлы, необходимые для корректной работы ядра микроконтролла.
+Ниже номера контактов разъёма P1 по UM1472. На плате ориентируйтесь также по маркировке PE7–PE10. У всех внешних компонентов общая земля с платой.
 
-**CMSIS/Devices** - содержит папки, которые имеют имена соответствующие названиям серии микроконтроллеров. В свою очередь эти директории подразделяются на **Inc** и **Src**.<br/> 
-> - В **Src** находятся исполняемые файлы, один из которых описан ннже **system_stm32fYxx.c**.<br/>
-> - В **Inc** находятся загаловочные файлы, необходимые для работы с устройствами входящими в состав микроконтроллера (*Периферией*). ***В этих файлах прописываются все директивы препроцессоров, необходимые для работы с микроконтроллерами***
-<br/>
+| Сигнал | Подключение | Назначение |
+| --- | --- | --- |
+| PE7 (P1.25) | S1 между PE7 и GND | Режим входа |
+| PE8 (P1.26) | S2 между PE8 и GND | Режим выхода |
+| PE9 (P1.27) | S3 и внешний HL4 | Общая линия с переключаемым направлением |
+| PE10 (P1.28) | Через 330 Ом к аноду HL4, катод HL4 к PE9 | Питание HL4 в режиме выхода |
+| PD14, PD15, PD13 | Штатные LD5, LD6, LD3 | Красный, синий, оранжевый |
 
-**system_stm32fYxx.c** - файл с описанием настроек системы. В данном файле находится описание двух функций SystemInit() и SystemCoreClockUpdate(), котрые необходимы для корректной настройки тактирования ядра и для аппаратного вычисления чисел с плавающей точкой (*только для контроллеров, в которых присутствует аппаратный FPU*).
+```text
+PE7 (P1.25) ── S1 ── GND
+PE8 (P1.26) ── S2 ── GND
+PE9 (P1.27) ── S3 ── GND
 
-## <a name="en_description"></a> Microcontroller Programming Lab Workshop
-Here will be the starting project for programming the Nucleo-144 lab bench based on the STM32F429ZIT6 microcontroller. In addition, this project allows you to program microcontrollers of other series.
+PE10 (P1.28) ── 330 Ом ── анод HL4 → катод HL4 ── PE9 (P1.27)
+```
 
-#### <a name="mk_list_en"></a> List of supported controllers
-- STM32F446RE        (Target series -> STM32F446 | Target version -> RE)
-- STM32F429ZI        (Target series -> STM32F429 | Target version -> ZI)
-- STM32F411VE/CE/RE  (Target series -> STM32F411 | Target version -> VE/CE/RE)
-- STM32F407VE        (Target series -> STM32F407 | Target version -> VE)
-- STM32F103C8        (Target series -> STM32F103 | Target version -> C8)
-- STM32F103C6        (Target series -> STM32F103 | Target version -> C6)
+Для HL4 подойдёт обычный красный светодиод. S1, S2 и S3 — нормально разомкнутые кнопки. Используйте контакт GND платы. Для всех трёх кнопок подтяжка к питанию включена программно, поэтому нажатие даёт логический ноль. Единственный внешний резистор, 330 Ом, ограничивает ток HL4.
 
-#### <a name="file_en_description"></a> Description of files contained in the project     
-**Makefile** - has no extension, it is an instruction for the builder/compiler. It already contains everything you need to work with the microcontrollers presented above, with the exception of project executables. 
+| Режим PE9 | PE9 | PE10 | HL4 |
+| --- | --- | --- | --- |
+| Вход | Вход с внутренней подтяжкой вверх, считывает S3 | Вход без подтяжки, высокоимпедансное состояние | Выключен |
+| Выход | Открытый сток, активно тянет линию к GND | Выход push-pull, выдаёт логическую единицу | Включён |
 
-> - For each new executable file in the project, you will need to specify the directory in which it is stored. This can be done in the **C sources** block in the *C_SOURCES* variable.
-> - **TARGET_SERIES** indicates the microcontroller series. In this field, you must write the series and number of the microcontroller, for example, STM32F103, STM32F407, STM32F411, STM32F446. By default, the value "*STM32F429*" is specified in the field. To switch the assembly to a microcontroller of a different series, you must enter the appropriate name in this field from the [list of supported controllers](#mk_list_en).
-> - **TARGET_VERSION** indicates the version of the microcontroller. In this field, you must record the version of the microcontroller, for example RE, VE, ZI, CE, C8, C6. By default, the field is filled with the value "*ZI*". To switch the assembly to a different version of the microcontroller, fill in this field with the appropriate name from the [list of supported controllers](#mk_list_en).
-> - Line 31 indicates the directory where the project will be built (*BUILD_DIR*). The default value is "*build*".
-> - Line 228 contains instructions for loading executable files into the microcontroller's memory using *OpenOCD*  
-> The download is performed using the following instructions:  
-> **flash: all**  
-> **openocd -f interface/stlink.cfg -f target/$(*TRGT_CFG*).cfg -c "program $(*BUILD_DIR*)/$(*TARGET*).elf verify reset exit"**
+В режиме выхода нажатие S3 соединяет PE9 с той же землёй, к которой его уже тянет открытый сток. Ток от PE10 в обеих ситуациях проходит через 330 Ом и HL4. Используйте эту разводку с обновлённой прошивкой. Если на плате записана предыдущая версия с активной единицей на PE9, сначала прошейте новую версию и затем подключите S3.
 
-**NAME.svd** - is unique for each device, located in device folders, has the .svd extension, and is required to view device memory via VSCode.
+В режиме выхода цепь тока замкнута через сам микроконтроллер. Ток идёт от PE10 через резистор и HL4 в PE9, а затем через открытый транзистор выходного каскада PE9 в GND. Катод остаётся на PE9, чтобы этот же узел можно было использовать как вход S3. Постоянное соединение катода с GND зафиксировало бы на PE9 логический ноль, и контроллер всегда считывал бы S3 как нажатую.
 
-**startup_stm32fYYxx.s** - has the extension .s, is an assembler file that contains all possible interrupt vectors for the STM32F429ZI microcontroller. It is necessary for tracking interrupts and calling their handlers.
+### Изменения в коде
 
-**CMSIS/Include** - is a folder containing header files necessary for the correct operation of the microcontroller core.
+Во всех трёх реализациях `GPIO_Ini()` задаёт для PE9 тип выхода open-drain через `OTYPER`. Через `BSRR` заранее записываются 0 для PE9 и 1 для PE10, пока оба вывода работают как входы. `GPIO_SetSharedOutput()` меняет поля `MODER`. При переходе на выход сначала подключается низкий уровень PE9, затем подаётся питание HL4 через PE10. При возврате на вход сначала отключается питание HL4, затем PE9 снова начинает считывать S3.
 
-**CMSIS/Devices** - contains folders that have names corresponding to the names of the microcontroller series. In turn, these directories are divided into **Inc** and **Src**.<br/> 
-> - The **Src** contains executable files, one of which is described below **system_stm32fYxx.c**.<br/>
-> - The **Inc** contains the header files necessary for working with the devices included in the microcontroller (*Peripherals*). ***These files contain all the preprocessor directives needed to work with microcontrollers***
-<br/>
+## Алгоритм
 
-**system_stm32f4xx.c** - a file describing system settings. This file contains a description of two functions SystemInit() and SystemCoreClockUpdate(), which are necessary for the correct setting of the core clock and for the hardware calculation of floating-point numbers (*only for controllers that have a hardware FPU*).
+После сброса PE9 работает как вход. SysTick опрашивается с периодом 1 мс при HSI 16 МГц. Для подтверждения изменения кнопки требуется 20 последовательных отсчётов нового уровня. Выбранный режим сохраняется после отпускания S1 или S2. Пока S1 и S2 удерживаются одновременно, приоритет имеет S1, а оба штатных индикатора горят. Если отпустить S1 при удерживаемой S2, включится режим выхода. В режиме выхода S3 не опрашивается.
+
+```mermaid
+flowchart TD
+    A["Сброс: PE9 — вход"] --> B["Дождаться отсчёта 1 мс"]
+    B --> C["Считать S1 и S2, подавить дребезг"]
+    C --> D["Выбрать режим PE9 и применить при изменении"]
+    D --> E{"PE9 — вход?"}
+    E -->|Да| F["Считать S3 и подавить дребезг"]
+    E -->|Нет| G["HL4 горит, состояние S3 сброшено"]
+    F --> H["Обновить штатные светодиоды и переменные"]
+    G --> H
+    H --> B
+```
+
+## Подключение Laboratory_Practice и сборка
+
+Откройте папку `lab1-variant4` в VS Code через **Файл → Открыть папку**. Команды ниже выполняются в терминале PowerShell из этой папки. Компилятор GNU Arm должен быть в `PATH`. Проверка установки:
+
+```powershell
+arm-none-eabi-gcc --version
+```
+
+Папка `lab1-variant4` сама является Git-репозиторием на основе истории локального клона шаблона. В корне находятся `Core`, `CMSIS`, `STMDevices` и `Makefile`. Ветка лабораторной — `codex/lab1-variant4`. Адрес `origin` указывает на `mrmdev-prog/Laboratory_Practice`, а `upstream` на `L-a-s-k-a/Laboratory_Practice` из методички по инфраструктуре. Проверить адреса можно командой `git remote -v`.
+
+Сборка выполняется напрямую через GNU Make. `C_SOURCES` включает `main.c` и `init.c` выбранной версии, `C_INCLUDES` задаёт путь к её заголовкам и добавляет пути CMSIS для версии `cmsis`.
+
+```powershell
+mingw32-make VARIANT=all
+mingw32-make flash VARIANT=cmsis
+```
+
+Для сборки одной версии укажите `VARIANT=registers`, `VARIANT=macros` или `VARIANT=cmsis`. По умолчанию собирается CMSIS. Для каждой версии в `build/<версия>/` появляются `lab1.elf`, `lab1.hex`, `lab1.bin` и `lab1.map`.
+
+В VS Code сочетание **Ctrl+Shift+B** собирает все версии. Для отладки выберите в **Run and Debug** конфигурацию **STM32F407VG — Регистры**, **Макросы** или **CMSIS** и нажмите **F5**. Cortex-Debug соберёт выбранную версию, загрузит её через OpenOCD и остановится на `main`. Файл `STM32F407.svd` используется для просмотра регистров. Для подсказок редактора выберите такую же конфигурацию через **C/C++: Select IntelliSense Configuration**.
+
+## Прошивка и проверка
+
+Подключите USB к разъёму ST-LINK и выберите одну сборку. Пример для CMSIS при установленном OpenOCD:
+
+```powershell
+openocd -f interface/stlink.cfg -c 'transport select swd' -f target/stm32f4x.cfg -c 'program build/cmsis/lab1.elf verify reset exit'
+```
+
+| Действие | Ожидаемое поведение |
+| --- | --- |
+| Сброс без нажатых кнопок | PE9 в режиме входа, все четыре светодиода выключены |
+| Удержать S3, затем отпустить | Оранжевый горит при удержании, HL4 выключен |
+| Удержать S2, затем отпустить | Синий горит при удержании, HL4 остаётся включённым после отпускания |
+| Нажать S3 в режиме выхода | HL4 продолжает гореть, оранжевый выключен |
+| Удержать S1, затем отпустить | HL4 гаснет, красный горит при удержании, PE9 остаётся входом |
+
+Для записи графиков в STMViewer выберите `lab1.elf` той версии, которая записана на плату. Добавьте переменные в **Variable Viewer** и обновите их адреса.
+
+| Переменная | Значения |
+| --- | --- |
+| `lab_mode` | 0 — вход, 1 — выход |
+| `lab_buttons` | Биты 0–2 — подтверждённые состояния S1–S3. В режиме выхода бит S3 равен 0 |
+| `lab_leds` | Биты 0–3 — красный, синий, оранжевый, внешний |
+
+Запустите запись и пройдите действия из таблицы. При одинаковой схеме три сборки должны давать одинаковую реакцию. Сборка проверена на GNU Arm, а таблица описывает ожидаемые результаты для проверки на плате.
+
+## Документация
+
+- [Исходный Laboratory_Practice из методички](https://github.com/L-a-s-k-a/Laboratory_Practice)
+- [ST UM1472 — схема и распиновка STM32F407G Discovery](https://www.st.com/resource/en/user_manual/dm00039084-stm32f4-discovery-kit-stm32f407vg-mcu-stmicroelectronics.pdf)
+- [ST RM0090 — регистры GPIO и RCC](https://www.st.com/resource/en/reference_manual/rm0090-stm32f407-advanced-armbased-32bit-mcus-stmicroelectronics.pdf)
+- [STMViewer](https://github.com/klonyyy/STMViewer)

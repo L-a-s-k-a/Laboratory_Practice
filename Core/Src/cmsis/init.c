@@ -1,0 +1,79 @@
+#include "init.h"
+
+#define E_MODES         (GPIO_MODER_MODER7 | GPIO_MODER_MODER8 | GPIO_MODER_MODER9 | GPIO_MODER_MODER10)
+#define E_PUSH_PULL     (GPIO_OTYPER_OT_7 | GPIO_OTYPER_OT_8 | GPIO_OTYPER_OT_10)
+#define BUTTON_PULLUPS  (GPIO_PUPDR_PUPDR7_0 | GPIO_PUPDR_PUPDR8_0 | GPIO_PUPDR_PUPDR9_0)
+#define D_PINS          (GPIO_OTYPER_OT_13 | GPIO_OTYPER_OT_14 | GPIO_OTYPER_OT_15)
+#define D_MODES         (GPIO_MODER_MODER13 | GPIO_MODER_MODER14 | GPIO_MODER_MODER15)
+#define D_OUTPUTS       (GPIO_MODER_MODER13_0 | GPIO_MODER_MODER14_0 | GPIO_MODER_MODER15_0)
+
+/* PE7/PE8: active-low mode buttons. PE9: shared line. PE10: LED supply. */
+void GPIO_Ini(void)
+{
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_GPIOEEN);
+    (void)READ_REG(RCC->AHB1ENR);
+
+    CLEAR_BIT(GPIOE->MODER, E_MODES);
+    MODIFY_REG(GPIOE->OTYPER, E_PUSH_PULL, GPIO_OTYPER_OT_9);
+    CLEAR_BIT(GPIOE->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7 | GPIO_OSPEEDER_OSPEEDR8 |
+                              GPIO_OSPEEDER_OSPEEDR9 | GPIO_OSPEEDER_OSPEEDR10);
+    MODIFY_REG(GPIOE->PUPDR, GPIO_PUPDR_PUPDR7 | GPIO_PUPDR_PUPDR8 |
+                             GPIO_PUPDR_PUPDR9 | GPIO_PUPDR_PUPDR10, BUTTON_PULLUPS);
+    /* Preload PE9 low and PE10 high while both pins are inputs. */
+    WRITE_REG(GPIOE->BSRR, GPIO_BSRR_BR_9 | GPIO_BSRR_BS_10);
+
+    CLEAR_BIT(GPIOD->OTYPER, D_PINS);
+    CLEAR_BIT(GPIOD->OSPEEDR, GPIO_OSPEEDER_OSPEEDR13 | GPIO_OSPEEDER_OSPEEDR14 |
+                              GPIO_OSPEEDER_OSPEEDR15);
+    CLEAR_BIT(GPIOD->PUPDR, GPIO_PUPDR_PUPDR13 | GPIO_PUPDR_PUPDR14 | GPIO_PUPDR_PUPDR15);
+    WRITE_REG(GPIOD->BSRR, GPIO_BSRR_BR_14 | GPIO_BSRR_BR_15 | GPIO_BSRR_BR_13);
+    MODIFY_REG(GPIOD->MODER, D_MODES, D_OUTPUTS);
+}
+
+void GPIO_SetSharedOutput(bool output)
+{
+    if (output) {
+        MODIFY_REG(GPIOE->MODER, GPIO_MODER_MODER9, GPIO_MODER_MODER9_0);
+        MODIFY_REG(GPIOE->MODER, GPIO_MODER_MODER10, GPIO_MODER_MODER10_0);
+    } else {
+        CLEAR_BIT(GPIOE->MODER, GPIO_MODER_MODER10);
+        CLEAR_BIT(GPIOE->MODER, GPIO_MODER_MODER9);
+    }
+}
+
+bool GPIO_ReadInputButton(void)
+{
+    return READ_BIT(GPIOE->IDR, GPIO_IDR_ID7) == 0U;
+}
+
+bool GPIO_ReadOutputButton(void)
+{
+    return READ_BIT(GPIOE->IDR, GPIO_IDR_ID8) == 0U;
+}
+
+bool GPIO_ReadSharedButton(void)
+{
+    return READ_BIT(GPIOE->IDR, GPIO_IDR_ID9) == 0U;
+}
+
+void GPIO_SetIndicators(bool red, bool blue, bool orange)
+{
+    WRITE_REG(GPIOD->BSRR, (red ? GPIO_BSRR_BS_14 : GPIO_BSRR_BR_14) |
+                          (blue ? GPIO_BSRR_BS_15 : GPIO_BSRR_BR_15) |
+                          (orange ? GPIO_BSRR_BS_13 : GPIO_BSRR_BR_13));
+}
+
+/* Reset clock: HSI 16 MHz, AHB divider 1. SysTick is polled every 1 ms. */
+void Tick_Init(void)
+{
+    SysTick->CTRL = 0U;
+    SysTick->LOAD = 16000U - 1U;
+    SysTick->VAL = 0U;
+    SysTick->CTRL = (SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk);
+}
+
+void Tick_Wait(void)
+{
+    while ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0U) {
+    }
+}
