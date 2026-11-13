@@ -1,13 +1,13 @@
 #include <stdint.h>
 #include <stm32f429xx.h>
 #define MAX_TIME_LED 5.32e6
-#define MAX_TIME_SHIM 100
+#define MAX_TIME_PWM 100 // разрешение ШИМ
 #define DREBEZG_TIME 20000
 #define SWITCH_TIME 125000
 
 void led_switch(_Bool direction);
 void led_brightness(uint32_t time1, uint32_t time2);
-void shim(void);
+void PWM(void);
 void leds_on(void);
 void leds_off(void);
 
@@ -44,7 +44,7 @@ void run_advance(void) {
 
     while(1) {
         test++;
-        shim();
+        PWM();
 
         if((GPIOB->IDR & GPIO_IDR_ID9) == 0) {
             while(drebezg_counter <= DREBEZG_TIME) drebezg_counter++;
@@ -114,14 +114,14 @@ void leds_off(void) {
     }
 }
 
-void shim(void) {
-    uint32_t duration_on = ((uint32_t)(brightness) * MAX_TIME_SHIM) / 100;
+void PWM(void) {
+    uint32_t duration_on = ((uint32_t)(brightness) * MAX_TIME_PWM) / 100;
 
     if(led_on_counter <= duration_on) {
         led_on_counter++;
         leds_on();
     } else {
-        if(led_off_counter <= MAX_TIME_SHIM - duration_on) {
+        if(led_off_counter <= MAX_TIME_PWM - duration_on) {
             led_off_counter++;
             leds_off();
         } else {
