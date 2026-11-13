@@ -11,13 +11,13 @@ int main(void)
     uint8_t btn2_flag = 0;
     uint8_t btn3_flag = 0;
 
-    uint32_t btn2_start = READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN0);
-    uint32_t btn3_start = READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN3);
+    uint32_t btn2_start = READ_BIT(GPIOC->IDR, GPIO_IDR_ID0);
+    uint32_t btn3_start = READ_BIT(GPIOC->IDR, GPIO_IDR_ID3);
 
     while (1)
     {
         // кнопка 3
-        if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN3) != btn3_start)
+        if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID3) != btn3_start)
         {
             if (btn3_flag == 0)
             {
@@ -32,7 +32,7 @@ int main(void)
         }
 
         // кнопка 1
-        if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN13) != 0)
+        if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID13) != 0)
         {
             if (btn1_flag == 0)
             {
@@ -53,7 +53,7 @@ int main(void)
         }
 
         // кнопка 2
-        if (READ_BIT(GPIOC_IDR, GPIOC_IDR_PIN0) != btn2_start)
+        if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID0) != btn2_start)
         {
             if (btn2_flag == 0)
             {
@@ -73,13 +73,13 @@ int main(void)
             btn2_flag = 0;
         }
 
-        // Управление 6 светодиодами 
-        if (led_count >= 1) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_SET);  else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN0_RESET);
-        if (led_count >= 2) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_SET);  else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN7_RESET);
-        if (led_count >= 3) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_SET); else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN14_RESET);
-        if (led_count >= 4) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN1_SET);  else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN1_RESET);
-        if (led_count >= 5) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN2_SET);  else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN2_RESET);
-        if (led_count >= 6) SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN15_SET); else SET_BIT(GPIOB_BSRR, GPIOB_BSRR_PIN15_RESET);
+        // Управление 6 светодиодами через библиотеку CMSIS 
+        if (led_count >= 1) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);  else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
+        if (led_count >= 2) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);  else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
+        if (led_count >= 3) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14); else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+        if (led_count >= 4) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS1);  else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR1);
+        if (led_count >= 5) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS2);  else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR2);
+        if (led_count >= 6) SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS15); else SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR15);
 
         for (volatile int i = 0; i < 30000; i++);
     }
