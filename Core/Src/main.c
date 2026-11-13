@@ -7,6 +7,8 @@ void run_cmsis_ver(void);
 void run_simple_ver(void);
 //void run_define_ver(void); закомментировал так как имена дефайнов совпадают с cmsis дефайнами
 
+work_mode = 0;
+
 int main(void){
     //run_cmsis_ver()
     //run_simple_ver()
