@@ -17,7 +17,7 @@
 #define GPIOE_IDR       (*(volatile uint32_t *)0x40021010UL)
 #define GPIOE_BSRR      (*(volatile uint32_t *)0x40021018UL)
 
-#define CLOCKS          ((1UL << 3) | (1UL << 4))
+#define CLOCKS          ((1UL << 3) | (1UL << 4)) //тактирование портов gpio
 #define E_MODES         ((3UL << 14) | (3UL << 16) | (3UL << 18) | (3UL << 20))
 #define E_PUSH_PULL     ((1UL << 7) | (1UL << 8) | (1UL << 10))
 #define SHARED_OPEN_DRAIN (1UL << 9)

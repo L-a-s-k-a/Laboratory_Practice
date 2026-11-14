@@ -1,11 +1,11 @@
 #include "init.h"
 
-// Вызывается перед main. Оставляем тактирование после сброса.
+
 void SystemInit(void)
 {
 }
 
-/* PE7/PE8: active-low mode buttons. PE9: shared line. PE10: LED supply. */
+
 void GPIO_Ini(void)
 {
     SET_BIT(RCC_AHB1ENR, CLOCKS);

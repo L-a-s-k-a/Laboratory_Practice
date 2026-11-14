@@ -2,6 +2,7 @@ TARGET_SERIES := STM32F407
 TARGET_VERSION := VG
 VARIANT ?= cmsis
 VARIANTS := registers macros cmsis
+EXTRA_VARIANT := cmsis_pwm
 
 .DEFAULT_GOAL := all
 .PHONY: all flash $(VARIANTS)
@@ -13,9 +14,9 @@ $(VARIANTS):
 	$(MAKE) VARIANT=$@ all
 
 flash:
-	$(error Select VARIANT=registers, VARIANT=macros or VARIANT=cmsis)
+	$(error Select one VARIANT for flash)
 else
-ifeq ($(filter $(VARIANT),$(VARIANTS)),)
+ifeq ($(filter $(VARIANT),$(VARIANTS) $(EXTRA_VARIANT)),)
 $(error Unknown VARIANT: $(VARIANT))
 endif
 
@@ -29,7 +30,7 @@ C_SOURCES := Core/Src/$(VARIANT)/main.c Core/Src/$(VARIANT)/init.c
 ASM_SOURCES := $(DEVICE_DIR)/startup_stm32f407xx.s
 C_INCLUDES := -ICore/Inc/$(VARIANT)
 
-ifeq ($(VARIANT),cmsis)
+ifneq ($(filter $(VARIANT),cmsis cmsis_pwm),)
 C_SOURCES += $(CMSIS_FAMILY)/Src/system_stm32f4xx.c
 C_INCLUDES += -ICMSIS/Include -I$(CMSIS_FAMILY)/Inc -I$(CMSIS_FAMILY)/Inc/STM32F407xx
 C_DEFS := -DSTM32F407xx

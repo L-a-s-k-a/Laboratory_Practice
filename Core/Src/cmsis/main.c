@@ -1,9 +1,5 @@
 #include "init.h"
 
-volatile uint32_t lab_mode;
-volatile uint32_t lab_buttons;
-volatile uint32_t lab_leds;
-
 int main(void)
 {
     bool output = false;
@@ -29,9 +25,5 @@ int main(void)
         WRITE_REG(GPIOD->BSRR, s1 ? GPIO_BSRR_BS_14 : GPIO_BSRR_BR_14);
         WRITE_REG(GPIOD->BSRR, s2 ? GPIO_BSRR_BS_15 : GPIO_BSRR_BR_15);
         WRITE_REG(GPIOD->BSRR, s3 ? GPIO_BSRR_BS_13 : GPIO_BSRR_BR_13);
-
-        lab_mode = output;
-        lab_buttons = (uint32_t)s1 | ((uint32_t)s2 << 1) | ((uint32_t)s3 << 2);
-        lab_leds = lab_buttons | ((uint32_t)output << 3);
     }
 }

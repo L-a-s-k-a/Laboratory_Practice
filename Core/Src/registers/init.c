@@ -5,14 +5,14 @@ void SystemInit(void)
 {
 }
 
-/* PE7/PE8: active-low mode buttons. PE9: shared line. PE10: LED supply. */
+
 void GPIO_Ini(void)
 {
     /* RCC_AHB1ENR: enable the GPIOD and GPIOE clocks. */
     (*(volatile uint32_t *)0x40023830UL) |= ((1UL << 3) | (1UL << 4));
     (void)(*(volatile uint32_t *)0x40023830UL);
 
-    /* GPIOE: MODER, OTYPER, OSPEEDR, PUPDR and BSRR. */
+    /* GPIOE MODER, OTYPER, OSPEEDR, PUPDR and BSRR. */
     (*(volatile uint32_t *)0x40021000UL) &= ~((3UL << 14) | (3UL << 16) | (3UL << 18) | (3UL << 20));
     (*(volatile uint32_t *)0x40021004UL) =
         ((*(volatile uint32_t *)0x40021004UL) & ~((1UL << 7) | (1UL << 8) | (1UL << 10))) |
@@ -22,7 +22,7 @@ void GPIO_Ini(void)
     /* Preload PE9 low and PE10 high while both pins are inputs. */
     (*(volatile uint32_t *)0x40021018UL) = (1UL << 25) | (1UL << 10);
 
-    /* GPIOD: configure the three on-board LEDs. */
+    /* GPIOD настраиваем 3 диода на плате */
     (*(volatile uint32_t *)0x40020C04UL) &= ~((1UL << 13) | (1UL << 14) | (1UL << 15));
     (*(volatile uint32_t *)0x40020C08UL) &= ~((3UL << 26) | (3UL << 28) | (3UL << 30));
     (*(volatile uint32_t *)0x40020C0CUL) &= ~((3UL << 26) | (3UL << 28) | (3UL << 30));
