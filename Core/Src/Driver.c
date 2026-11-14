@@ -96,21 +96,7 @@ Parametrs_Now    param_n;
 Parametrs_TIM    param_t;
 Parametrs_UGL    param_ugl;
   
-void DWT_Init(void) {
-    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Разрешаем доступ к отладочным регистрам
-    DWT->CYCCNT = 0;                                // Обнуляем счетчик циклов
-    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;            // Запускаем счетчик циклов DWT
-}
 
-void delay_us(uint32_t us) {
-    uint32_t start = DWT->CYCCNT;
-    uint32_t ticks = us * (SystemCoreClock / 1000000U); // Расчет количества тиков процессора для заданного времени
-    while ((DWT->CYCCNT - start) < ticks) { __NOP(); }  // Ожидаем, пока счетчик не наберет нужное значение
-}
-
-void delay_ms(uint32_t ms) {
-    for (uint32_t i = 0; i < ms; i++) { delay_us(1000U); } // Вызываем микросекундную задержку нужное количество раз
-}
 
 void Motor_Init(uint32_t steps, float c_ugol, uint32_t rpm) {
     // в этой функции пользователь вводит параметры двигателя
