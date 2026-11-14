@@ -53,5 +53,7 @@ void Sync_Timer_Params(TIM_TypeDef *TIMX, uint32_t base_freq);
 uint8_t Rotation_UGL_GC(TIM_TypeDef *TIMX,volatile uint32_t *CCR_reg,uint32_t f_target, float angle,uint32_t steps);
 void Rotation_UGL_IRQHandler(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg);
 uint8_t Rotation_UGL_OB(TIM_TypeDef *TIMX, volatile uint32_t *CCR_reg, uint32_t ob, float angle, uint32_t steps);
+void delay_us(uint32_t us) __attribute__((weak));
+void delay_ms(uint32_t ms) __attribute__((weak));
 
 #endif /* DRIVER_H */
