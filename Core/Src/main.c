@@ -7,9 +7,9 @@
 #define LED5_SET    BS_B5           // Uses GPIO_F
 #define LED6_SET    BS_B10          // Uses GPIO_F
 
-#define BUT1        GPIO_A+IDR_B5   // Включает светодиоды поочередно
-#define BUT2        GPIO_A+IDR_B6   // Выключает светодиоды в обратном порядке
-#define BUT3        GPIO_A+IDR_B7   // Меняет местами функционал кнопок 1 и 2
+#define BUT1        GPIO_A+IDR      // Включает светодиоды поочередно
+#define BUT2        GPIO_A+IDR      // Выключает светодиоды в обратном порядке
+#define BUT3        GPIO_A+IDR      // Меняет местами функционал кнопок 1 и 2
 
 int main(void){
     GPIO_init();
@@ -20,15 +20,15 @@ int main(void){
     while(1){
         uint8_t light_up_mode=0;    // режим: включаем (1)/выключаем (2) диоды или ничего не делаем (0)
 
-        if(BIT_READ(BUT3,1)){
+        if(BIT_READ(BUT3,IDR_B5)){
             if(is_reverse) is_reverse=0;
             else is_reverse=1;
         }
-        else if(BIT_READ(BUT1,1)){
+        else if(BIT_READ(BUT1,IDR_B6)){
             if(is_reverse) light_up_mode=2;
             else light_up_mode=1;
         }
-        else if(BIT_READ(BUT2,1) & light_amount>0){
+        else if(BIT_READ(BUT2,IDR_B7)){
             if(is_reverse) light_up_mode=1;
             else light_up_mode=2;
         }
