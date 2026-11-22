@@ -1,40 +1,75 @@
 #include "init.h"
 
-#define LED1_SET    GPIO_B+BS_B11
-#define LED2_SET    GPIO_B+BS_B10
-#define LED3_SET    GPIO_E+BS_B15
-#define LED4_SET    GPIO_E+BS_B14
-#define LED5_SET    GPIO_E+BS_B12
-#define LED6_SET    GPIO_E+BS_B10
+#define LED1_SET    BS_B3           // Uses GPIO_A
+#define LED2_SET    BS_B0           // Uses GPIO_C
+#define LED3_SET    BS_B3           // Uses GPIO_C
+#define LED4_SET    BS_B3           // Uses GPIO_F
+#define LED5_SET    BS_B5           // Uses GPIO_F
+#define LED6_SET    BS_B10          // Uses GPIO_F
 
-#define BUT1        GPIO_B+IDR_B12
-#define BUT2        GPIO_B+IDR_B13
-#define BUT3        GPIO_B+IDR_B15
+#define BUT1        GPIO_A+IDR_B5   // Включает светодиоды поочередно
+#define BUT2        GPIO_A+IDR_B6   // Выключает светодиоды в обратном порядке
+#define BUT3        GPIO_A+IDR_B7   // Меняет местами функционал кнопок 1 и 2
 
 int main(void){
     GPIO_init();
 
-    uint8_t light_amount=0;
-    uint8_t is_reverse=0;
+    uint8_t light_amount=0;     // Количество включенных диодов
+    uint8_t is_reverse=0;       // Инвертированы ли функции кнопок 1 и 2
 
     while(1){
-        if(BIT_READ(BUT1,1)){
-            light_amount=(light_amount+1)%7;
-        }
-        else if(BIT_READ(BUT2,1) & light_amount>0){
-            light_amount=light_amount-1;
-        }
-        else if(BIT_READ(BUT3,1)){
-            if(is_reverse>0) is_reverse=0;
+        uint8_t light_up_mode=0;    // режим: включаем (1)/выключаем (2) диоды или ничего не делаем (0)
+
+        if(BIT_READ(BUT3,1)){
+            if(is_reverse) is_reverse=0;
             else is_reverse=1;
         }
+        else if(BIT_READ(BUT1,1)){
+            if(is_reverse) light_up_mode=2;
+            else light_up_mode=1;
+        }
+        else if(BIT_READ(BUT2,1) & light_amount>0){
+            if(is_reverse) light_up_mode=1;
+            else light_up_mode=2;
+        }
 
-        if (light_amount==1) BIT_SET(GPIO_B+BSRR,LED1_SET+BR_MUL*(LED2_SET+LED3_SET+LED4_SET+LED5_SET+LED6_SET));
-        else if (light_amount==2) BIT_SET(GPIO_B+BSRR,LED1_SET+LED2_SET+BR_MUL*(LED3_SET+LED4_SET+LED5_SET+LED6_SET));
-        else if (light_amount==3) BIT_SET(GPIO_B+BSRR,LED1_SET+LED2_SET+LED3_SET+BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
-        else if (light_amount==4) BIT_SET(GPIO_B+BSRR,LED1_SET+LED2_SET+LED3_SET+LED4_SET+BR_MUL*(LED5_SET+LED6_SET));
-        else if (light_amount==5) BIT_SET(GPIO_B+BSRR,LED1_SET+LED2_SET+LED3_SET+LED4_SET+LED5_SET+BR_MUL*LED6_SET);
-        else if (light_amount==6) BIT_SET(GPIO_B+BSRR,LED1_SET+LED2_SET+LED3_SET+LED4_SET+LED5_SET+LED6_SET);
-        else BIT_SET(GPIO_B+BSRR,BR_MUL*(LED1_SET+LED2_SET+LED3_SET+LED4_SET+LED5_SET+LED6_SET));
+        if (light_up_mode>>1 & light_amount>0) light_amount--;
+        else if (light_up_mode & light_amount<6) light_amount++;
+
+        if (light_amount==1) {
+            BIT_SET(GPIO_A+BSRR,LED1_SET);
+            BIT_SET(GPIO_C+BSRR,BR_MUL*(LED2_SET+LED3_SET));
+            BIT_SET(GPIO_F+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+        }
+        else if (light_amount==2) {
+            BIT_SET(GPIO_A+BSRR,LED1_SET);
+            BIT_SET(GPIO_C+BSRR,LED2_SET+BR_MUL*LED3_SET);
+            BIT_SET(GPIO_F+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+        }
+        else if (light_amount==3) {
+            BIT_SET(GPIO_A+BSRR,LED1_SET);
+            BIT_SET(GPIO_C+BSRR,LED2_SET+LED3_SET);
+            BIT_SET(GPIO_F+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+        }
+        else if (light_amount==4) {
+            BIT_SET(GPIO_A+BSRR,LED1_SET);
+            BIT_SET(GPIO_C+BSRR,LED2_SET+LED3_SET);
+            BIT_SET(GPIO_F+BSRR,LED4_SET+BR_MUL*(LED5_SET+LED6_SET));
+        }
+        else if (light_amount==5) {
+            BIT_SET(GPIO_A+BSRR,LED1_SET);
+            BIT_SET(GPIO_C+BSRR,LED2_SET+LED3_SET);
+            BIT_SET(GPIO_F+BSRR,LED4_SET+LED5_SET+BR_MUL*LED6_SET);
+        }
+        else if (light_amount==6) {
+            BIT_SET(GPIO_A+BSRR,LED1_SET);
+            BIT_SET(GPIO_C+BSRR,LED2_SET+LED3_SET);
+            BIT_SET(GPIO_F+BSRR,LED4_SET+LED5_SET+LED6_SET);
+        }
+        else {
+            BIT_SET(GPIO_A+BSRR,BR_MUL*LED1_SET);
+            BIT_SET(GPIO_C+BSRR,BR_MUL*(LED2_SET+LED3_SET));
+            BIT_SET(GPIO_F+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+        }
     }
 }
