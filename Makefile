@@ -16,8 +16,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F429
-TARGET_VERSION = ZI
+TARGET_SERIES = STM32F407
+TARGET_VERSION = VG
 
 ######################################
 # building variables
@@ -35,6 +35,8 @@ ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F103C8)
 	BUILD_DIR = build_F103C8
 else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F103C6)
 	BUILD_DIR = build_F103C6
+else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F407VG)
+	BUILD_DIR = build_F407VG
 else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F407VE)
 	BUILD_DIR = build_F407VE
 else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F411VE)
@@ -81,6 +83,8 @@ else ifeq ($(TARGET_SERIES), STM32F407)
 	CMSIS_INC = CMSIS/Include
 	ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F407VE)
 		LD = STMDevices/STM32F407xx/STM32F407VETx_FLASH.ld
+	else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F407VG)
+		LD = STMDevices/STM32F407xx/STM32F407VGTx_FLASH.ld
 	endif
 	DEF = STM32F407xx
 	MCPU = cortex-m4
@@ -152,7 +156,7 @@ C_SOURCES =  \
 $(SYS) \
 Core/src/main.c \
 Core/src/init.c \
-# Core/src/it_handlers.c \
+Core/src/it_handlers.c
 
 # ASM sources
 ASM_SOURCES =  \
