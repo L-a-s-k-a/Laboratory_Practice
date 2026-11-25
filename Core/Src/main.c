@@ -33,8 +33,8 @@ int main(void){
             else light_up_mode=2;
         }
 
-        if (light_up_mode>>1 & light_amount>0) light_amount--;
-        else if (light_up_mode & light_amount<6) light_amount++;
+        if (light_up_mode>>1 & (light_amount>0)) light_amount--;
+        else if (light_up_mode & (light_amount<6)) light_amount++;
 
         if (light_amount==1) {
             BIT_SET(GPIO_A+BSRR,LED1_SET);
