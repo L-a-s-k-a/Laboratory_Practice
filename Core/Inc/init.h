@@ -39,15 +39,15 @@
 #define RCC_GPIO_E_EN   0x10UL
 #define RCC_GPIO_F_EN   0x20UL
 
-#define IDR_B0         0x0020UL
-#define IDR_B1         0x0040UL
-#define IDR_B2         0x0080UL
-#define IDR_B3         0x0020UL
-#define IDR_B4         0x0040UL
-#define IDR_B5         0x0080UL
-#define IDR_B6         0x0020UL
-#define IDR_B7         0x0040UL
-#define IDR_B8         0x0080UL
+#define IDR_B0          0x0001UL
+#define IDR_B1          0x0002UL
+#define IDR_B2          0x0004UL
+#define IDR_B3          0x0008UL
+#define IDR_B4          0x0010UL
+#define IDR_B5          0x0020UL
+#define IDR_B6          0x0040UL
+#define IDR_B7          0x0080UL
+#define IDR_B8          0x1000UL
 
 #define BIT_SET(REG, VAL) (*(uint32_t*)(REG)|=(VAL))
 #define BIT_READ(REG, VAL) (*(uint32_t*)(REG)&(VAL))

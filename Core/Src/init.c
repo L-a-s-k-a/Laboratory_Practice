@@ -23,13 +23,13 @@ void GPIO_init(){
     // Настраиваем  STM32F429ZI
     BIT_SET(RCC+AHB1ENR,RCC_GPIO_A_EN+RCC_GPIO_B_EN);               // Активируем тактирование портов A, C, F по RCC AHB1ENR
     // Настраиваем  GPIO_A
-    BIT_SET(GPIO_A+MODER,0x0000003FUL);                             //Режим General Purpose Output для 3го пина
+    BIT_SET(GPIO_A+MODER,0x0000555UL);                             //Режим General Purpose Output для 0, 1, 2, 3, 4, 5 пинов
     BIT_SET(GPIO_A+OTYPER,0x00UL);                                  //Режим вывода Push-Pull
-    BIT_SET(GPIO_A+OSPEEDR,0x0000003FUL);                           //Режим скорости работы 3го пина: middle
+    BIT_SET(GPIO_A+OSPEEDR,0x00000555UL);                           //Режим скорости работы 0, 1, 2, 3, 4, 5 пинов: middle
     BIT_SET(GPIO_A+PUPDR,0x00UL);                                   //Оставляем пины без подтяжки и стяжки к общему питанию
     // Настраиваем  GPIO_B
-    BIT_SET(GPIO_B+MODER,0x00000007UL);                             //Режим General Purpose Output для 0, 1, 2 пинов
+    BIT_SET(GPIO_B+MODER,0x00000015UL);                             //Режим General Purpose Output для 0, 1, 2 пинов
     BIT_SET(GPIO_B+OTYPER,0x00UL);                                  //Режим вывода Push-Pull
-    BIT_SET(GPIO_B+OSPEEDR,0x00000007UL);                           //Режим скорости работы 0, 1, 2 пинов: middle
+    BIT_SET(GPIO_B+OSPEEDR,0x00000015UL);                           //Режим скорости работы 0, 1, 2 пинов: middle
     BIT_SET(GPIO_B+PUPDR,0x00UL);  
 }

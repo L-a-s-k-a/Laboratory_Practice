@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\user\AppData\Local\Temp\ccq2FTWf.s 			page 1
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -39,63 +39,519 @@ ARM GAS  C:\Users\user\AppData\Local\Temp\ccq2FTWf.s 			page 1
    9:Core/Src/main.c **** 
   10:Core/Src/main.c **** #define BUT1        IDR_B0      // Включает светодиоды поочередно
   11:Core/Src/main.c **** #define BUT2        IDR_B1      // Выключает светодиоды в обратном по
-  12:Core/Src/main.c **** #define BUT3        IDR_B7      // Меняет местами функционал кнопок 1 
+  12:Core/Src/main.c **** #define BUT3        IDR_B2     // Меняет местами функционал кнопок 1 �
   13:Core/Src/main.c **** 
   14:Core/Src/main.c **** int main(void){
   29              		.loc 1 14 15 view -0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 0
   32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33 0000 08B5     		push	{r3, lr}
+  33 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
   34              	.LCFI0:
-  35              		.cfi_def_cfa_offset 8
-  36              		.cfi_offset 3, -8
-  37              		.cfi_offset 14, -4
+  35              		.cfi_def_cfa_offset 24
+  36              		.cfi_offset 3, -24
+  37              		.cfi_offset 4, -20
+  38              		.cfi_offset 5, -16
+  39              		.cfi_offset 6, -12
+  40              		.cfi_offset 7, -8
+  41              		.cfi_offset 14, -4
   15:Core/Src/main.c ****     GPIO_init();
-  38              		.loc 1 15 5 view .LVU1
-  39 0002 FFF7FEFF 		bl	GPIO_init
-  40              	.LVL0:
+  42              		.loc 1 15 5 view .LVU1
+  43 0002 FFF7FEFF 		bl	GPIO_init
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 2
+
+
+  44              	.LVL0:
   16:Core/Src/main.c **** 
   17:Core/Src/main.c ****     uint8_t light_amount=0;     // Количество включенных диодов
-  41              		.loc 1 17 5 view .LVU2
-ARM GAS  C:\Users\user\AppData\Local\Temp\ccq2FTWf.s 			page 2
-
-
+  45              		.loc 1 17 5 view .LVU2
   18:Core/Src/main.c ****     uint8_t is_reverse=0;       // Инвертированы ли функции кнопок 1 и
-  42              		.loc 1 18 5 view .LVU3
-  43              	.L2:
+  46              		.loc 1 18 5 view .LVU3
   19:Core/Src/main.c **** 
-  20:Core/Src/main.c ****     while(1){
-  44              		.loc 1 20 5 view .LVU4
-  21:Core/Src/main.c ****         *(uint32_t *)(GPIO_A+BSRR)|=LED1_SET|LED2_SET|LED3_SET|LED4_SET|LED5_SET|LED6_SET;
-  45              		.loc 1 21 9 discriminator 1 view .LVU5
-  46 0006 034A     		ldr	r2, .L4
-  47 0008 9369     		ldr	r3, [r2, #24]
-  48              		.loc 1 21 35 is_stmt 0 discriminator 1 view .LVU6
-  49 000a 43F03F03 		orr	r3, r3, #63
-  50 000e 9361     		str	r3, [r2, #24]
-  20:Core/Src/main.c ****         *(uint32_t *)(GPIO_A+BSRR)|=LED1_SET|LED2_SET|LED3_SET|LED4_SET|LED5_SET|LED6_SET;
-  51              		.loc 1 20 10 is_stmt 1 view .LVU7
-  52 0010 F9E7     		b	.L2
-  53              	.L5:
-  54 0012 00BF     		.align	2
-  55              	.L4:
-  56 0014 00000240 		.word	1073872896
-  57              		.cfi_endproc
-  58              	.LFE0:
-  60              		.text
-  61              	.Letext0:
-  62              		.file 2 "D:/For Work/Tools/arm-none-eabi-gcc/arm-none-eabi/include/machine/_default_types.h"
-  63              		.file 3 "D:/For Work/Tools/arm-none-eabi-gcc/arm-none-eabi/include/sys/_stdint.h"
-  64              		.file 4 "Core/Inc/init.h"
-ARM GAS  C:\Users\user\AppData\Local\Temp\ccq2FTWf.s 			page 3
+  20:Core/Src/main.c ****     uint8_t BUT1_triggered=0;
+  47              		.loc 1 20 5 view .LVU4
+  21:Core/Src/main.c ****     uint8_t BUT2_triggered=0;
+  48              		.loc 1 21 5 view .LVU5
+  22:Core/Src/main.c ****     uint8_t BUT3_triggered=0;
+  49              		.loc 1 22 5 view .LVU6
+  50              		.loc 1 22 13 is_stmt 0 view .LVU7
+  51 0006 0020     		movs	r0, #0
+  21:Core/Src/main.c ****     uint8_t BUT2_triggered=0;
+  52              		.loc 1 21 13 view .LVU8
+  53 0008 0646     		mov	r6, r0
+  20:Core/Src/main.c ****     uint8_t BUT2_triggered=0;
+  54              		.loc 1 20 13 view .LVU9
+  55 000a 0546     		mov	r5, r0
+  18:Core/Src/main.c **** 
+  56              		.loc 1 18 13 view .LVU10
+  57 000c 0446     		mov	r4, r0
+  17:Core/Src/main.c ****     uint8_t is_reverse=0;       // Инвертированы ли функции кнопок 1 и
+  58              		.loc 1 17 13 view .LVU11
+  59 000e 0246     		mov	r2, r0
+  60 0010 5FE0     		b	.L2
+  61              	.LVL1:
+  62              	.L3:
+  63              	.LBB2:
+  23:Core/Src/main.c **** 
+  24:Core/Src/main.c ****     while(1){
+  25:Core/Src/main.c ****         uint8_t light_up_mode=0;    // режим: включаем (1)/выключаем (2) ди
+  26:Core/Src/main.c **** 
+  27:Core/Src/main.c ****         if(BIT_READ(GPIO_B+IDR,BUT3) && !BUT3_triggered){          //Проверка сигнал�
+  28:Core/Src/main.c ****             if(is_reverse) is_reverse=0;
+  29:Core/Src/main.c ****             else is_reverse=1;
+  30:Core/Src/main.c ****             BUT3_triggered=1;
+  31:Core/Src/main.c ****         }
+  32:Core/Src/main.c ****         else if(!BIT_READ(GPIO_B+IDR,BUT3) && BUT3_triggered){
+  64              		.loc 1 32 14 is_stmt 1 view .LVU12
+  65              		.loc 1 32 16 is_stmt 0 view .LVU13
+  66 0012 01B9     		cbnz	r1, .L4
+  67              		.loc 1 32 44 discriminator 1 view .LVU14
+  68 0014 50B9     		cbnz	r0, .L19
+  69              	.LVL2:
+  70              	.L4:
+  33:Core/Src/main.c ****             BUT3_triggered=0;
+  34:Core/Src/main.c ****         }
+  35:Core/Src/main.c ****         if(BIT_READ(GPIO_B+IDR,BUT1) && !BUT1_triggered){     //Проверка сигнала н�
+  71              		.loc 1 35 9 is_stmt 1 view .LVU15
+  72              		.loc 1 35 11 is_stmt 0 view .LVU16
+  73 0016 13F00101 		ands	r1, r3, #1
+  74 001a 09D0     		beq	.L5
+  75              		.loc 1 35 38 discriminator 1 view .LVU17
+  76 001c 45B9     		cbnz	r5, .L5
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 3
+
+
+  36:Core/Src/main.c ****             if(is_reverse) light_up_mode=2;
+  77              		.loc 1 36 13 is_stmt 1 view .LVU18
+  78              		.loc 1 36 15 is_stmt 0 view .LVU19
+  79 001e 64B1     		cbz	r4, .L20
+  37:Core/Src/main.c ****             else light_up_mode=1;
+  38:Core/Src/main.c ****             BUT1_triggered=1;
+  80              		.loc 1 38 27 view .LVU20
+  81 0020 2546     		mov	r5, r4
+  82              	.LVL3:
+  36:Core/Src/main.c ****             if(is_reverse) light_up_mode=2;
+  83              		.loc 1 36 41 discriminator 1 view .LVU21
+  84 0022 0221     		movs	r1, #2
+  85 0024 0DE0     		b	.L6
+  86              	.LVL4:
+  87              	.L18:
+  30:Core/Src/main.c ****         }
+  88              		.loc 1 30 27 view .LVU22
+  89 0026 0120     		movs	r0, #1
+  90              	.LVL5:
+  29:Core/Src/main.c ****             BUT3_triggered=1;
+  91              		.loc 1 29 28 view .LVU23
+  92 0028 0446     		mov	r4, r0
+  93              	.LVL6:
+  29:Core/Src/main.c ****             BUT3_triggered=1;
+  94              		.loc 1 29 28 view .LVU24
+  95 002a F4E7     		b	.L4
+  96              	.LVL7:
+  97              	.L19:
+  33:Core/Src/main.c ****         }
+  98              		.loc 1 33 27 view .LVU25
+  99 002c 0020     		movs	r0, #0
+ 100              	.LVL8:
+  33:Core/Src/main.c ****         }
+ 101              		.loc 1 33 27 view .LVU26
+ 102 002e F2E7     		b	.L4
+ 103              	.LVL9:
+ 104              	.L5:
+  39:Core/Src/main.c ****         }
+  40:Core/Src/main.c ****         else if(!BIT_READ(GPIO_B+IDR,BUT1) && BUT1_triggered){
+ 105              		.loc 1 40 14 is_stmt 1 view .LVU27
+ 106              		.loc 1 40 16 is_stmt 0 view .LVU28
+ 107 0030 31B9     		cbnz	r1, .L21
+ 108              		.loc 1 40 44 discriminator 1 view .LVU29
+ 109 0032 35B1     		cbz	r5, .L6
+  25:Core/Src/main.c **** 
+ 110              		.loc 1 25 17 view .LVU30
+ 111 0034 0021     		movs	r1, #0
+  41:Core/Src/main.c ****             BUT1_triggered=0;
+ 112              		.loc 1 41 27 view .LVU31
+ 113 0036 0D46     		mov	r5, r1
+ 114              	.LVL10:
+ 115              		.loc 1 41 27 view .LVU32
+ 116 0038 03E0     		b	.L6
+ 117              	.LVL11:
+ 118              	.L20:
+  37:Core/Src/main.c ****             BUT1_triggered=1;
+ 119              		.loc 1 37 31 view .LVU33
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 4
+
+
+ 120 003a 0121     		movs	r1, #1
+  38:Core/Src/main.c ****         }
+ 121              		.loc 1 38 27 view .LVU34
+ 122 003c 0D46     		mov	r5, r1
+ 123              	.LVL12:
+  38:Core/Src/main.c ****         }
+ 124              		.loc 1 38 27 view .LVU35
+ 125 003e 00E0     		b	.L6
+ 126              	.LVL13:
+ 127              	.L21:
+  25:Core/Src/main.c **** 
+ 128              		.loc 1 25 17 view .LVU36
+ 129 0040 0021     		movs	r1, #0
+ 130              	.LVL14:
+ 131              	.L6:
+  42:Core/Src/main.c ****         }
+  43:Core/Src/main.c ****         if(BIT_READ(GPIO_B+IDR,BUT2) && !BUT2_triggered){     //Проверка сигнала н�
+ 132              		.loc 1 43 9 is_stmt 1 view .LVU37
+ 133              		.loc 1 43 11 is_stmt 0 view .LVU38
+ 134 0042 13F00203 		ands	r3, r3, #2
+ 135 0046 04D0     		beq	.L7
+ 136              		.loc 1 43 38 discriminator 1 view .LVU39
+ 137 0048 1EB9     		cbnz	r6, .L7
+  44:Core/Src/main.c ****             if(is_reverse) light_up_mode=1;
+ 138              		.loc 1 44 13 is_stmt 1 view .LVU40
+ 139              		.loc 1 44 15 is_stmt 0 view .LVU41
+ 140 004a 24B3     		cbz	r4, .L23
+ 141              		.loc 1 44 41 discriminator 1 view .LVU42
+ 142 004c 2146     		mov	r1, r4
+ 143              	.LVL15:
+  45:Core/Src/main.c ****             else light_up_mode=2;
+  46:Core/Src/main.c ****             BUT2_triggered=1;
+ 144              		.loc 1 46 27 view .LVU43
+ 145 004e 2646     		mov	r6, r4
+ 146              	.LVL16:
+ 147              		.loc 1 46 27 view .LVU44
+ 148 0050 01E0     		b	.L8
+ 149              	.LVL17:
+ 150              	.L7:
+  47:Core/Src/main.c ****         }
+  48:Core/Src/main.c ****         else if(!BIT_READ(GPIO_B+IDR,BUT2) && BUT2_triggered){
+ 151              		.loc 1 48 14 is_stmt 1 view .LVU45
+ 152              		.loc 1 48 16 is_stmt 0 view .LVU46
+ 153 0052 03B9     		cbnz	r3, .L8
+ 154              		.loc 1 48 44 discriminator 1 view .LVU47
+ 155 0054 16BB     		cbnz	r6, .L24
+ 156              	.LVL18:
+ 157              	.L8:
+  49:Core/Src/main.c ****             BUT2_triggered=0;
+  50:Core/Src/main.c ****         }
+  51:Core/Src/main.c **** 
+  52:Core/Src/main.c ****         if (light_up_mode>>1 & (light_amount>0)) light_amount=light_amount-1;
+ 158              		.loc 1 52 9 is_stmt 1 view .LVU48
+ 159              		.loc 1 52 45 is_stmt 0 view .LVU49
+ 160 0056 131E     		subs	r3, r2, #0
+ 161 0058 18BF     		it	ne
+ 162 005a 0123     		movne	r3, #1
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 5
+
+
+ 163              		.loc 1 52 12 view .LVU50
+ 164 005c 13EA5103 		ands	r3, r3, r1, lsr #1
+ 165 0060 1ED0     		beq	.L9
+ 166              		.loc 1 52 50 is_stmt 1 discriminator 1 view .LVU51
+ 167              		.loc 1 52 62 is_stmt 0 discriminator 1 view .LVU52
+ 168 0062 013A     		subs	r2, r2, #1
+ 169              	.LVL19:
+ 170              		.loc 1 52 62 discriminator 1 view .LVU53
+ 171 0064 D2B2     		uxtb	r2, r2
+ 172              	.LVL20:
+ 173              	.L10:
+  53:Core/Src/main.c ****         else if (light_up_mode & (light_amount<6)) light_amount=light_amount+1;
+  54:Core/Src/main.c **** 
+  55:Core/Src/main.c ****         if (light_amount==1) {
+ 174              		.loc 1 55 9 is_stmt 1 view .LVU54
+ 175              		.loc 1 55 12 is_stmt 0 view .LVU55
+ 176 0066 012A     		cmp	r2, #1
+ 177 0068 24D0     		beq	.L26
+  56:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED1_SET);
+  57:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED2_SET+LED3_SET));
+  58:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+  59:Core/Src/main.c ****         }
+  60:Core/Src/main.c ****         else if (light_amount==2) {
+ 178              		.loc 1 60 14 is_stmt 1 view .LVU56
+ 179              		.loc 1 60 17 is_stmt 0 view .LVU57
+ 180 006a 022A     		cmp	r2, #2
+ 181 006c 3FD0     		beq	.L27
+  61:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED1_SET);
+  62:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+BR_MUL*LED3_SET);
+  63:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+  64:Core/Src/main.c ****         }
+  65:Core/Src/main.c ****         else if (light_amount==3) {
+ 182              		.loc 1 65 14 is_stmt 1 view .LVU58
+ 183              		.loc 1 65 17 is_stmt 0 view .LVU59
+ 184 006e 032A     		cmp	r2, #3
+ 185 0070 4DD0     		beq	.L28
+  66:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED1_SET);
+  67:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+LED3_SET);
+  68:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+  69:Core/Src/main.c ****         }
+  70:Core/Src/main.c ****         else if (light_amount==4) {
+ 186              		.loc 1 70 14 is_stmt 1 view .LVU60
+ 187              		.loc 1 70 17 is_stmt 0 view .LVU61
+ 188 0072 042A     		cmp	r2, #4
+ 189 0074 59D0     		beq	.L29
+  71:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED1_SET);
+  72:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+LED3_SET);
+  73:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED4_SET+BR_MUL*(LED5_SET+LED6_SET));
+  74:Core/Src/main.c ****         }
+  75:Core/Src/main.c ****         else if (light_amount==5) {
+ 190              		.loc 1 75 14 is_stmt 1 view .LVU62
+ 191              		.loc 1 75 17 is_stmt 0 view .LVU63
+ 192 0076 052A     		cmp	r2, #5
+ 193 0078 65D0     		beq	.L30
+  76:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED1_SET);
+  77:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+LED3_SET);
+  78:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED4_SET+LED5_SET+BR_MUL*LED6_SET);
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 6
+
+
+  79:Core/Src/main.c ****         }
+  80:Core/Src/main.c ****         else if (light_amount==6) {
+ 194              		.loc 1 80 14 is_stmt 1 view .LVU64
+ 195              		.loc 1 80 17 is_stmt 0 view .LVU65
+ 196 007a 062A     		cmp	r2, #6
+ 197 007c 71D0     		beq	.L31
+  81:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED1_SET);
+  82:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+LED3_SET);
+  83:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED4_SET+LED5_SET+LED6_SET);
+  84:Core/Src/main.c ****         }
+  85:Core/Src/main.c ****         else {
+  86:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*LED1_SET);
+ 198              		.loc 1 86 13 is_stmt 1 view .LVU66
+ 199 007e 3F49     		ldr	r1, .L32
+ 200 0080 8B69     		ldr	r3, [r1, #24]
+ 201 0082 43F48037 		orr	r7, r3, #65536
+ 202 0086 8F61     		str	r7, [r1, #24]
+  87:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED2_SET+LED3_SET));
+ 203              		.loc 1 87 13 view .LVU67
+ 204 0088 43F4E027 		orr	r7, r3, #458752
+ 205 008c 8F61     		str	r7, [r1, #24]
+  88:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+ 206              		.loc 1 88 13 view .LVU68
+ 207 008e 43F47C13 		orr	r3, r3, #4128768
+ 208 0092 8B61     		str	r3, [r1, #24]
+ 209 0094 1DE0     		b	.L2
+ 210              	.LVL21:
+ 211              	.L23:
+  45:Core/Src/main.c ****             BUT2_triggered=1;
+ 212              		.loc 1 45 31 is_stmt 0 view .LVU69
+ 213 0096 0221     		movs	r1, #2
+ 214              	.LVL22:
+  46:Core/Src/main.c ****         }
+ 215              		.loc 1 46 27 view .LVU70
+ 216 0098 0126     		movs	r6, #1
+ 217              	.LVL23:
+  46:Core/Src/main.c ****         }
+ 218              		.loc 1 46 27 view .LVU71
+ 219 009a DCE7     		b	.L8
+ 220              	.LVL24:
+ 221              	.L24:
+  49:Core/Src/main.c ****         }
+ 222              		.loc 1 49 27 view .LVU72
+ 223 009c 0026     		movs	r6, #0
+ 224              	.LVL25:
+  49:Core/Src/main.c ****         }
+ 225              		.loc 1 49 27 view .LVU73
+ 226 009e DAE7     		b	.L8
+ 227              	.LVL26:
+ 228              	.L9:
+  53:Core/Src/main.c **** 
+ 229              		.loc 1 53 14 is_stmt 1 view .LVU74
+  53:Core/Src/main.c **** 
+ 230              		.loc 1 53 32 is_stmt 0 view .LVU75
+ 231 00a0 052A     		cmp	r2, #5
+ 232 00a2 8CBF     		ite	hi
+ 233 00a4 0021     		movhi	r1, #0
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 7
+
+
+ 234 00a6 01F00101 		andls	r1, r1, #1
+ 235              	.LVL27:
+  53:Core/Src/main.c **** 
+ 236              		.loc 1 53 17 view .LVU76
+ 237 00aa 0029     		cmp	r1, #0
+ 238 00ac DBD0     		beq	.L10
+  53:Core/Src/main.c **** 
+ 239              		.loc 1 53 52 is_stmt 1 discriminator 1 view .LVU77
+  53:Core/Src/main.c **** 
+ 240              		.loc 1 53 64 is_stmt 0 discriminator 1 view .LVU78
+ 241 00ae 0132     		adds	r2, r2, #1
+ 242              	.LVL28:
+  53:Core/Src/main.c **** 
+ 243              		.loc 1 53 64 discriminator 1 view .LVU79
+ 244 00b0 D2B2     		uxtb	r2, r2
+ 245 00b2 D8E7     		b	.L10
+ 246              	.LVL29:
+ 247              	.L26:
+  56:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED2_SET+LED3_SET));
+ 248              		.loc 1 56 13 is_stmt 1 view .LVU80
+ 249 00b4 3149     		ldr	r1, .L32
+ 250 00b6 8B69     		ldr	r3, [r1, #24]
+ 251 00b8 43F00107 		orr	r7, r3, #1
+ 252 00bc 8F61     		str	r7, [r1, #24]
+  57:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+ 253              		.loc 1 57 13 view .LVU81
+ 254 00be 43F4C027 		orr	r7, r3, #393216
+ 255 00c2 47F00107 		orr	r7, r7, #1
+ 256 00c6 8F61     		str	r7, [r1, #24]
+  58:Core/Src/main.c ****         }
+ 257              		.loc 1 58 13 view .LVU82
+ 258 00c8 43F47813 		orr	r3, r3, #4063232
+ 259 00cc 43F00103 		orr	r3, r3, #1
+ 260 00d0 8B61     		str	r3, [r1, #24]
+ 261              	.LVL30:
+ 262              	.L2:
+  58:Core/Src/main.c ****         }
+ 263              		.loc 1 58 13 is_stmt 0 view .LVU83
+ 264              	.LBE2:
+  24:Core/Src/main.c ****         uint8_t light_up_mode=0;    // режим: включаем (1)/выключаем (2) ди
+ 265              		.loc 1 24 5 is_stmt 1 view .LVU84
+ 266              	.LBB3:
+  25:Core/Src/main.c **** 
+ 267              		.loc 1 25 9 view .LVU85
+  27:Core/Src/main.c ****             if(is_reverse) is_reverse=0;
+ 268              		.loc 1 27 9 view .LVU86
+  27:Core/Src/main.c ****             if(is_reverse) is_reverse=0;
+ 269              		.loc 1 27 12 is_stmt 0 view .LVU87
+ 270 00d2 2A4B     		ldr	r3, .L32
+ 271 00d4 D3F81034 		ldr	r3, [r3, #1040]
+  27:Core/Src/main.c ****             if(is_reverse) is_reverse=0;
+ 272              		.loc 1 27 11 view .LVU88
+ 273 00d8 13F00401 		ands	r1, r3, #4
+ 274 00dc 99D0     		beq	.L3
+  27:Core/Src/main.c ****             if(is_reverse) is_reverse=0;
+ 275              		.loc 1 27 38 discriminator 1 view .LVU89
+ 276 00de 0028     		cmp	r0, #0
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 8
+
+
+ 277 00e0 97D1     		bne	.L3
+  28:Core/Src/main.c ****             else is_reverse=1;
+ 278              		.loc 1 28 13 is_stmt 1 view .LVU90
+  28:Core/Src/main.c ****             else is_reverse=1;
+ 279              		.loc 1 28 15 is_stmt 0 view .LVU91
+ 280 00e2 002C     		cmp	r4, #0
+ 281 00e4 9FD0     		beq	.L18
+ 282 00e6 2146     		mov	r1, r4
+  28:Core/Src/main.c ****             else is_reverse=1;
+ 283              		.loc 1 28 38 discriminator 1 view .LVU92
+ 284 00e8 0446     		mov	r4, r0
+ 285              	.LVL31:
+  30:Core/Src/main.c ****         }
+ 286              		.loc 1 30 27 view .LVU93
+ 287 00ea 0846     		mov	r0, r1
+ 288              	.LVL32:
+  30:Core/Src/main.c ****         }
+ 289              		.loc 1 30 27 view .LVU94
+ 290 00ec 93E7     		b	.L4
+ 291              	.LVL33:
+ 292              	.L27:
+  61:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+BR_MUL*LED3_SET);
+ 293              		.loc 1 61 13 is_stmt 1 view .LVU95
+ 294 00ee 2349     		ldr	r1, .L32
+ 295 00f0 8B69     		ldr	r3, [r1, #24]
+ 296 00f2 43F00107 		orr	r7, r3, #1
+ 297 00f6 8F61     		str	r7, [r1, #24]
+  62:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+ 298              		.loc 1 62 13 view .LVU96
+ 299 00f8 43F48027 		orr	r7, r3, #262144
+ 300 00fc 47F00307 		orr	r7, r7, #3
+ 301 0100 8F61     		str	r7, [r1, #24]
+  63:Core/Src/main.c ****         }
+ 302              		.loc 1 63 13 view .LVU97
+ 303 0102 43F47013 		orr	r3, r3, #3932160
+ 304 0106 43F00303 		orr	r3, r3, #3
+ 305 010a 8B61     		str	r3, [r1, #24]
+ 306 010c E1E7     		b	.L2
+ 307              	.L28:
+  66:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+LED3_SET);
+ 308              		.loc 1 66 13 view .LVU98
+ 309 010e 1B49     		ldr	r1, .L32
+ 310 0110 8B69     		ldr	r3, [r1, #24]
+ 311 0112 43F00107 		orr	r7, r3, #1
+ 312 0116 8F61     		str	r7, [r1, #24]
+  67:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,BR_MUL*(LED4_SET+LED5_SET+LED6_SET));
+ 313              		.loc 1 67 13 view .LVU99
+ 314 0118 43F00707 		orr	r7, r3, #7
+ 315 011c 8F61     		str	r7, [r1, #24]
+  68:Core/Src/main.c ****         }
+ 316              		.loc 1 68 13 view .LVU100
+ 317 011e 43F46013 		orr	r3, r3, #3670016
+ 318 0122 43F00703 		orr	r3, r3, #7
+ 319 0126 8B61     		str	r3, [r1, #24]
+ 320 0128 D3E7     		b	.L2
+ 321              	.L29:
+  71:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+LED3_SET);
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 9
+
+
+ 322              		.loc 1 71 13 view .LVU101
+ 323 012a 1449     		ldr	r1, .L32
+ 324 012c 8B69     		ldr	r3, [r1, #24]
+ 325 012e 43F00107 		orr	r7, r3, #1
+ 326 0132 8F61     		str	r7, [r1, #24]
+  72:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED4_SET+BR_MUL*(LED5_SET+LED6_SET));
+ 327              		.loc 1 72 13 view .LVU102
+ 328 0134 43F00707 		orr	r7, r3, #7
+ 329 0138 8F61     		str	r7, [r1, #24]
+  73:Core/Src/main.c ****         }
+ 330              		.loc 1 73 13 view .LVU103
+ 331 013a 43F44013 		orr	r3, r3, #3145728
+ 332 013e 43F00F03 		orr	r3, r3, #15
+ 333 0142 8B61     		str	r3, [r1, #24]
+ 334 0144 C5E7     		b	.L2
+ 335              	.L30:
+  76:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+LED3_SET);
+ 336              		.loc 1 76 13 view .LVU104
+ 337 0146 0D49     		ldr	r1, .L32
+ 338 0148 8B69     		ldr	r3, [r1, #24]
+ 339 014a 43F00107 		orr	r7, r3, #1
+ 340 014e 8F61     		str	r7, [r1, #24]
+  77:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED4_SET+LED5_SET+BR_MUL*LED6_SET);
+ 341              		.loc 1 77 13 view .LVU105
+ 342 0150 43F00707 		orr	r7, r3, #7
+ 343 0154 8F61     		str	r7, [r1, #24]
+  78:Core/Src/main.c ****         }
+ 344              		.loc 1 78 13 view .LVU106
+ 345 0156 43F40013 		orr	r3, r3, #2097152
+ 346 015a 43F01F03 		orr	r3, r3, #31
+ 347 015e 8B61     		str	r3, [r1, #24]
+ 348 0160 B7E7     		b	.L2
+ 349              	.L31:
+  81:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED2_SET+LED3_SET);
+ 350              		.loc 1 81 13 view .LVU107
+ 351 0162 0649     		ldr	r1, .L32
+ 352 0164 8B69     		ldr	r3, [r1, #24]
+ 353 0166 43F00107 		orr	r7, r3, #1
+ 354 016a 8F61     		str	r7, [r1, #24]
+  82:Core/Src/main.c ****             BIT_SET(GPIO_A+BSRR,LED4_SET+LED5_SET+LED6_SET);
+ 355              		.loc 1 82 13 view .LVU108
+ 356 016c 43F00707 		orr	r7, r3, #7
+ 357 0170 8F61     		str	r7, [r1, #24]
+  83:Core/Src/main.c ****         }
+ 358              		.loc 1 83 13 view .LVU109
+ 359 0172 43F03F03 		orr	r3, r3, #63
+ 360 0176 8B61     		str	r3, [r1, #24]
+ 361 0178 ABE7     		b	.L2
+ 362              	.L33:
+ 363 017a 00BF     		.align	2
+ 364              	.L32:
+ 365 017c 00000240 		.word	1073872896
+ 366              	.LBE3:
+ 367              		.cfi_endproc
+ 368              	.LFE0:
+ 370              		.text
+ 371              	.Letext0:
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 10
+
+
+ 372              		.file 2 "D:/For Work/Tools/arm-none-eabi-gcc/arm-none-eabi/include/machine/_default_types.h"
+ 373              		.file 3 "D:/For Work/Tools/arm-none-eabi-gcc/arm-none-eabi/include/sys/_stdint.h"
+ 374              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s 			page 11
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\user\AppData\Local\Temp\ccq2FTWf.s:21     .text.main:00000000 $t
-C:\Users\user\AppData\Local\Temp\ccq2FTWf.s:27     .text.main:00000000 main
-C:\Users\user\AppData\Local\Temp\ccq2FTWf.s:56     .text.main:00000014 $d
+C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s:21     .text.main:00000000 $t
+C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s:27     .text.main:00000000 main
+C:\Users\user\AppData\Local\Temp\cc3Kt0jB.s:365    .text.main:0000017c $d
 
 UNDEFINED SYMBOLS
 GPIO_init
