@@ -1,14 +1,14 @@
 #include "init.h"
 
-#define LED1_SET    BS_B3           // Uses GPIO_A
-#define LED2_SET    BS_B0           // Uses GPIO_C
-#define LED3_SET    BS_B3           // Uses GPIO_C
+#define LED1_SET    BS_B0           // Uses GPIO_A
+#define LED2_SET    BS_B1           // Uses GPIO_C
+#define LED3_SET    BS_B2           // Uses GPIO_C
 #define LED4_SET    BS_B3           // Uses GPIO_F
-#define LED5_SET    BS_B5           // Uses GPIO_F
-#define LED6_SET    BS_B10          // Uses GPIO_F
+#define LED5_SET    BS_B4           // Uses GPIO_F
+#define LED6_SET    BS_B5          // Uses GPIO_F
 
-#define BUT1        IDR_B5      // Включает светодиоды поочередно
-#define BUT2        IDR_B6      // Выключает светодиоды в обратном порядке
+#define BUT1        IDR_B0      // Включает светодиоды поочередно
+#define BUT2        IDR_B1      // Выключает светодиоды в обратном порядке
 #define BUT3        IDR_B7      // Меняет местами функционал кнопок 1 и 2
 
 int main(void){
