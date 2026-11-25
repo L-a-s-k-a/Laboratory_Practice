@@ -15,8 +15,8 @@
 ######################################
 # target
 ######################################
-TARGET_SERIES = STM32F429
-TARGET_VERSION = ZI
+TARGET_SERIES = STM32F401
+TARGET_VERSION = CE
 
 ######################################
 # building variables
@@ -46,6 +46,8 @@ else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F429ZI)
 	BUILD_DIR = build_F429ZI
 else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F446RE)
 	BUILD_DIR = build_F446RE
+else ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F401CE)
+	BUILD_DIR = build_F401CE
 endif
 ######################################
 # selecting source
@@ -123,6 +125,19 @@ else ifeq ($(TARGET_SERIES), STM32F446)
 		LD = STMDevices/STM32F446xx/STM32F446RETx_FLASH.ld
 	endif
 	DEF = STM32F446xx
+	MCPU = cortex-m4
+	MFPU = fpv4-sp-d16
+	TRGT_CFG = stm32f4x
+else ifeq ($(TARGET_SERIES), STM32F401)
+	SYS = CMSIS/Devices/STM32F4xx/Src/system_stm32f4xx.c \ CMSIS/Devices/Src/syscalls.c \ CMSIS/Devices/Src/sysmem.c
+	ASM = STMDevices/STM32F401xx/startup_stm32f401xe.s
+	CMSIS_INC_DEV = CMSIS/Devices/STM32F4xx/Inc
+	CMSIS_INC_UNIT = CMSIS/Devices/STM32F4xx/Inc/STM32F401xx
+	CMSIS_INC = CMSIS/Include
+	ifeq ($(TARGET_SERIES)$(TARGET_VERSION), STM32F401CE)
+		LD = STMDevices/STM32F401xx/STM32F401CE_FLASH.ld
+	endif
+	DEF = STM32F401xE
 	MCPU = cortex-m4
 	MFPU = fpv4-sp-d16
 	TRGT_CFG = stm32f4x
